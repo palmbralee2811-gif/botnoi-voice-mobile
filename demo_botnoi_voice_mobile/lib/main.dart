@@ -1,0 +1,152 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
+
+void main() {
+  runApp(const VoiceApp());
+}
+
+class VoiceApp extends StatelessWidget {
+  const VoiceApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Voice App',
+      home: VoiceScreen(),
+    );
+  }
+}
+
+class VoiceScreen extends StatefulWidget {
+  const VoiceScreen({super.key});
+
+  @override
+  _VoiceScreenState createState() => _VoiceScreenState();
+}
+
+class _VoiceScreenState extends State<VoiceScreen> {
+  final TextEditingController _textController = TextEditingController();
+  String _response = '';
+  String _audioUrl = '';
+
+  Future<void> _generateAudio(String text) async {
+    // Clear previous response
+    setState(() {
+      _response = '';
+    });
+
+    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    Map<String, dynamic> payload = {
+      "text": text,
+      "speaker": "1",
+      "volume": 1,
+      "speed": 1,
+      "type_media": "m4a",
+      "save_file": true,
+      "language": "th"
+    };
+    Map<String, String> headers = {
+      'Botnoi-Token': 'YW1XdTdDYnpFZFFnWE16c3Q5Yk1kN3l1NE8yMjU2MTg5NA==',
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        setState(() {
+          _audioUrl = jsonData['audio_url'];
+          _response = "Request successful!";
+        });
+      } else {
+        setState(() {
+          _response = "Failed to retrieve data. Status Code: ${response.statusCode}";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _response = "Failed to connect to the server. Error: $e";
+      });
+    }
+  }
+
+  void _playAudio() {
+    if (_audioUrl.isNotEmpty) {
+      AudioPlayer audioPlayer = AudioPlayer();
+      audioPlayer.play(_audioUrl);
+      audioPlayer.onPlayerCompletion.listen((event) {
+        print("Playback complete");
+      });
+    }
+  }
+
+  Future<void> _downloadAudio() async {
+    if (_audioUrl.isNotEmpty) {
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/audio.${_audioUrl.split('.').last}';
+        Dio dio = Dio();
+        await dio.download(_audioUrl, filePath);
+        setState(() {
+          _response = "Audio downloaded to $filePath";
+        });
+      } catch (e) {
+        setState(() {
+          _response = "Failed to download audio. Error: $e";
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Voice App'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _textController,
+              decoration: const InputDecoration(
+                hintText: 'Enter text...',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                _generateAudio(_textController.text);
+              },
+              child: const Text('Generate Audio'),
+            ),
+            const SizedBox(height: 16.0),
+            Text(_response, style: const TextStyle(color: Colors.red)),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: _playAudio,
+              child: const Text('Play Audio'),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: _downloadAudio,
+              child: const Text('Download Audio'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
