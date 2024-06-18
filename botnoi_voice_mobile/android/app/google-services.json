@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "836424383670",
+    "project_id": "botnoi-voice-mobile",
+    "storage_bucket": "botnoi-voice-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836424383670:android:59965520972d1498297a17",
+        "android_client_info": {
+          "package_name": "com.botnoimobile.botnoivoice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836424383670-chdg0j09e7b861dfn9p3drpd2q9gm2oh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtLx6LkC44JIhbW24RUZC2NN_qmIQdsQI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836424383670-chdg0j09e7b861dfn9p3drpd2q9gm2oh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
