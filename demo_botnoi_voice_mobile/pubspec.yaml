@@ -1,5 +1,5 @@
 name: demo_botnoi_voice_mobile
-description: "A new Flutter project."
+description: "version 0.1"
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -12,14 +12,26 @@ dependencies:
   flutter:
     sdk: flutter
 
-  http: ^0.13.3
-  # audioplayers: ^0.20.1
-  audioplayers: ^1.0.1
-  path_provider: ^2.0.11
-  dio: ^4.0.6
   cupertino_icons: ^1.0.6
-  just_audio: ^0.9.38
-  
+
+  # pick file from storage
+  file_picker: ^8.0.5
+
+  # text to voice generate and play audio
+  http: ^0.13.3
+  audioplayers: ^1.0.1
+
+  # download and save file
+  dio: ^4.0.0
+  path_provider: ^2.0.5
+
+  # open file
+  open_file: ^3.3.2
+
+  # ขออนุญาตการเข้าถึงไฟล์ใน Runtime
+  permission_handler: ^10.2.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -28,4 +40,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
 # https://flutter.dev/custom-fonts/#from-packages

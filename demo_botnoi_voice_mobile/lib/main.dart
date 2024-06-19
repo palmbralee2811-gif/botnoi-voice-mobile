@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 
 void main() {
   runApp(const VoiceApp());
@@ -94,27 +96,45 @@ class _VoiceScreenState extends State<VoiceScreen> {
     }
   }
 
-  // https://pub.dev/packages/flutter_downloader
+  Future openFile({required String url, String? fileName}) async {
+    final name = fileName ?? url.split('/').last;
+    final file = await pickFile();
+    if (file == null) return;
 
-  // Download File Function In Process
+    print('Path: ${file.path}');
 
-  Future<void> _downloadAudio() async {
-    if (_audioUrl.isNotEmpty) {
-      try {
-        Dio dio = Dio();
-        var dir = await getApplicationDocumentsDirectory();
-        String savePath = "${dir.path}/audio.m4a";
+    OpenFile.open(file.path);
+  }
 
-        await dio.download(_audioUrl, savePath);
+  Future<File?> pickFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return null;
 
-        setState(() {
-          _response = "Audio downloaded to $savePath";
-        });
-      } catch (e) {
-        setState(() {
-          _response = "Failed to download audio. Error: $e";
-        });
-      }
+    return File(result.files.first.path!);
+  }
+
+  // Download file into private folder not visible to user
+  Future<File?> downloadFile(String url, String name) async {
+    final appStorage = await getApplicationDocumentsDirectory();
+    final file = File('${appStorage.path}/$name');
+
+    try {
+      final response = await Dio().get(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          receiveTimeout: 0,
+        ),
+      );
+
+      final raf = file.openSync(mode: FileMode.write);
+      raf.writeFromSync(response.data);
+      await raf.close();
+
+      return file;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -122,7 +142,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Botnoi Voice Mobile 8'),
+        title: const Text('Botnoi Voice Mobile'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -151,8 +171,11 @@ class _VoiceScreenState extends State<VoiceScreen> {
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: _downloadAudio,
-              child: const Text('Download Audio'),
+              child: const Text('Download & Open'),
+              onPressed: () => openFile(
+                url:
+                    'https://cdn.pixabay.com/photo/2022/02/16/18/10/fox-7017260_640.jpg',
+              ),
             ),
           ],
         ),
