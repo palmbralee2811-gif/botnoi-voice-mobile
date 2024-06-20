@@ -6,7 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const VoiceApp());
@@ -37,7 +37,6 @@ class _VoiceScreenState extends State<VoiceScreen> {
   String _audioUrl = '';
 
   Future<void> _generateAudio(String text) async {
-    // Clear previous response
     setState(() {
       _response = '';
       _audioUrl = '';
@@ -49,7 +48,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
       "speaker": "1",
       "volume": 1,
       "speed": 1,
-      "type_media": "m4a",
+      "type_media": "mp3",
       "save_file": true,
       "language": "th"
     };
@@ -86,55 +85,46 @@ class _VoiceScreenState extends State<VoiceScreen> {
 
   void _playAudio() {
     if (_audioUrl.isNotEmpty) {
+      print("Audio URL: $_audioUrl");
+
       AudioPlayer audioPlayer = AudioPlayer();
       audioPlayer.play(UrlSource(_audioUrl));
-      // Handle audio player state changes, errors, etc.
+
       audioPlayer.onPlayerComplete.listen((event) {
-        // Do something when playback finishes
         print("Playback complete");
       });
+    } else {
+      print("Audio URL is empty, cannot play audio");
     }
   }
 
-  Future openFile({required String url, String? fileName}) async {
-    final name = fileName ?? url.split('/').last;
-    final file = await pickFile();
-    if (file == null) return;
-
-    print('Path: ${file.path}');
-
-    OpenFile.open(file.path);
-  }
-
-  Future<File?> pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result == null) return null;
-
-    return File(result.files.first.path!);
-  }
-
-  // Download file into private folder not visible to user
-  Future<File?> downloadFile(String url, String name) async {
-    final appStorage = await getApplicationDocumentsDirectory();
-    final file = File('${appStorage.path}/$name');
-
+  Future<void> downloadFile(String url, String filename) async {
     try {
-      final response = await Dio().get(
-        url,
-        options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          receiveTimeout: 0,
-        ),
-      );
+      // Request storage permissions
+      if (await Permission.storage.request().isGranted) {
+        // Create a Dio instance
+        Dio dio = Dio();
 
-      final raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
+        // Get the downloads directory
+        Directory? downloadsDir = await getExternalStorageDirectory();
+        if (downloadsDir != null) {
+          String downloadsPath = downloadsDir.path;
 
-      return file;
+          // Define the local file path
+          String filePath = "$downloadsPath/$filename";
+
+          // Download the file and save it locally
+          await dio.download(url, filePath);
+
+          print("File downloaded to: $filePath");
+        } else {
+          print("Could not access the downloads directory.");
+        }
+      } else {
+        print("Storage permission denied.");
+      }
     } catch (e) {
-      return null;
+      print("Error downloading file: $e");
     }
   }
 
@@ -142,42 +132,57 @@ class _VoiceScreenState extends State<VoiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Botnoi Voice Mobile'),
+        title: const Text('Botnoi Voice Mobile X'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _textController,
-              decoration: const InputDecoration(
-                hintText: 'Enter text...',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _textController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter text...',
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                _generateAudio(_textController.text);
-              },
-              child: const Text('Generate Audio'),
-            ),
-            const SizedBox(height: 16.0),
-            Text(_response, style: const TextStyle(color: Colors.red)),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _playAudio,
-              child: const Text('Play Audio'),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              child: const Text('Download & Open'),
-              onPressed: () => openFile(
-                url:
-                    'https://cdn.pixabay.com/photo/2022/02/16/18/10/fox-7017260_640.jpg',
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  _generateAudio(_textController.text);
+                },
+                child: const Text('Generate Audio'),
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              Text(
+                _response,
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _playAudio,
+                child: const Text('Play Audio'),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () async {
+                  // Request permission to access storage
+                  if (await Permission.storage.request().isGranted) {
+                    // URL of the file to be downloaded
+                    String fileUrl = _audioUrl;
+                    // Desired filename for the downloaded file
+                    String fileName = "downloaded_file.mp3";
+
+                    await downloadFile(fileUrl, fileName);
+                  } else {
+                    print("Storage permission denied.");
+                  }
+                },
+                child: const Text("Download File"),
+              ),
+            ],
+          ),
         ),
       ),
     );

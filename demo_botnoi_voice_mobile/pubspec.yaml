@@ -12,10 +12,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # icon
   cupertino_icons: ^1.0.6
 
   # pick file from storage
-  file_picker: ^8.0.5
+  file_picker: ^4.0.3
 
   # text to voice generate and play audio
   http: ^0.13.3
@@ -23,14 +24,16 @@ dependencies:
 
   # download and save file
   dio: ^4.0.0
-  path_provider: ^2.0.5
+  path_provider: ^2.0.0
 
   # open file
-  open_file: ^3.3.2
+  open_file: ^3.2.1
 
   # ขออนุญาตการเข้าถึงไฟล์ใน Runtime
-  permission_handler: ^10.2.0
+  permission_handler: ^10.0.0
 
+  # เพื่อเปิดไฟล์โดยใช้ URL ตรงของไฟล์ที่ดาวน์โหลดมาใหม่ โดยไม่ต้องผ่านทาง Content URI
+  url_launcher: ^6.0.0
 
 dev_dependencies:
   flutter_test:
