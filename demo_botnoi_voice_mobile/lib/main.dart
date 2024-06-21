@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:audioplayers/audioplayers.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:open_file/open_file.dart';
 
 void main() {
   runApp(const VoiceApp());
@@ -35,6 +36,9 @@ class _VoiceScreenState extends State<VoiceScreen> {
   final TextEditingController _textController = TextEditingController();
   String _response = '';
   String _audioUrl = '';
+  String _selectedTypeMedia = 'mp3'; // Default file type
+
+  final List<String> _typeMedia = ['wav', 'mp3', 'm4a'];
 
   Future<void> _generateAudio(String text) async {
     setState(() {
@@ -48,7 +52,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
       "speaker": "1",
       "volume": 1,
       "speed": 1,
-      "type_media": "mp3",
+      "type_media": _selectedTypeMedia,
       "save_file": true,
       "language": "th"
     };
@@ -83,7 +87,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
     }
   }
 
-  void _playAudio() {
+  Future<void> _playAudio() async {
     if (_audioUrl.isNotEmpty) {
       print("Audio URL: $_audioUrl");
 
@@ -91,14 +95,14 @@ class _VoiceScreenState extends State<VoiceScreen> {
       audioPlayer.play(UrlSource(_audioUrl));
 
       audioPlayer.onPlayerComplete.listen((event) {
-        print("Playback complete");
+        print("#### Play Audio's Complete");
       });
     } else {
       print("Audio URL is empty, cannot play audio");
     }
   }
 
-  Future<void> downloadFile(String url, String filename) async {
+  Future<void> downloadFile() async {
     try {
       // Request storage permissions
       if (await Permission.storage.request().isGranted) {
@@ -109,6 +113,8 @@ class _VoiceScreenState extends State<VoiceScreen> {
         Directory? downloadsDir = await getExternalStorageDirectory();
         if (downloadsDir != null) {
           String downloadsPath = downloadsDir.path;
+          String url = _audioUrl;
+          String filename = "Botnoi_Voice_${randomString(6)}.$_selectedTypeMedia";
 
           // Define the local file path
           String filePath = "$downloadsPath/$filename";
@@ -116,7 +122,10 @@ class _VoiceScreenState extends State<VoiceScreen> {
           // Download the file and save it locally
           await dio.download(url, filePath);
 
-          print("File downloaded to: $filePath");
+          print("#### File downloaded to: $filePath");
+
+          // Open the downloaded file
+          await OpenFile.open(filePath);
         } else {
           print("Could not access the downloads directory.");
         }
@@ -126,6 +135,16 @@ class _VoiceScreenState extends State<VoiceScreen> {
     } catch (e) {
       print("Error downloading file: $e");
     }
+  }
+
+  // ฟังก์ชันสุ่มชื่อไฟล์ a-z, A-Z และ 0-9
+  String randomString(int length) {
+    // const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters = '0123456789';
+
+    final random = Random();
+    return String.fromCharCodes(Iterable.generate(length,
+        (_) => characters.codeUnitAt(random.nextInt(characters.length))));
   }
 
   @override
@@ -165,19 +184,24 @@ class _VoiceScreenState extends State<VoiceScreen> {
                 child: const Text('Play Audio'),
               ),
               const SizedBox(height: 16.0),
+              DropdownButton<String>(
+                value: _selectedTypeMedia,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedTypeMedia = newValue!;
+                  });
+                },
+                items: _typeMedia.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () async {
-                  // Request permission to access storage
-                  if (await Permission.storage.request().isGranted) {
-                    // URL of the file to be downloaded
-                    String fileUrl = _audioUrl;
-                    // Desired filename for the downloaded file
-                    String fileName = "downloaded_file.mp3";
-
-                    await downloadFile(fileUrl, fileName);
-                  } else {
-                    print("Storage permission denied.");
-                  }
+                onPressed: () {
+                  downloadFile();
                 },
                 child: const Text("Download File"),
               ),
