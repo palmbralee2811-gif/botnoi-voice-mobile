@@ -16,34 +16,34 @@ class _TabsScreenState extends State<TabsScreen> {
     Widget activePage = const Home();
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.black),
-                  tooltip: 'Menu Icon',
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.comment, color: Colors.black),
-                  tooltip: 'Comment Icon',
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        leading: Container(
-          margin: const EdgeInsets.all(10),
-          child: Image(image: AssetImage('assets/images/point(1).png'),),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(10),
-          )
-        ),
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.white,
+        //   title: Center(
+        //     child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       children: <Widget>[
+        //         IconButton(
+        //           icon: const Icon(Icons.menu, color: Colors.black),
+        //           tooltip: 'Menu Icon',
+        //           onPressed: () {},
+        //         ),
+        //         IconButton(
+        //           icon: const Icon(Icons.comment, color: Colors.black),
+        //           tooltip: 'Comment Icon',
+        //           onPressed: () {},
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // leading: Container(
+        //   margin: const EdgeInsets.all(10),
+        //   child: Image(image: AssetImage('assets/images/point(1).png'),),
+        //   decoration: BoxDecoration(
+        //     color: Colors.blue,
+        //     borderRadius: BorderRadius.circular(10),
+        //   )
+        // ),
+        // ),
         body: activePage,
         bottomNavigationBar: BottomNavigationBar(
           items: const [
