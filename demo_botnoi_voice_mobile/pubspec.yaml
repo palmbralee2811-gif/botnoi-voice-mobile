@@ -35,6 +35,10 @@ dependencies:
   # เพื่อเปิดไฟล์โดยใช้ URL ตรงของไฟล์ที่ดาวน์โหลดมาใหม่ โดยไม่ต้องผ่านทาง Content URI
   url_launcher: ^6.0.0
 
+  # google & line sign-in
+  google_sign_in: ^5.0.7
+  flutter_line_sdk: ^2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

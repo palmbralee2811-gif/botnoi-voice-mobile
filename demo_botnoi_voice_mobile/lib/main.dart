@@ -1,4 +1,5 @@
-import 'package:demo_botnoi_voice_mobile/function/voiceScreen.dart';
+import 'package:demo_botnoi_voice_mobile/screen/loginModal.dart';
+import 'package:demo_botnoi_voice_mobile/screen/voiceScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,9 +11,10 @@ class VoiceApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Voice App',
-      home: VoiceScreen(),
+      // home: VoiceScreen(),
+      home: SignInPage(),
     );
   }
 }
