@@ -1,4 +1,9 @@
-import 'package:flow3/screen/data.dart';
+import 'package:flow3/widgets/CategorySetting.dart';
+import 'package:flow3/widgets/Inputtext.dart';
+import 'package:flow3/widgets/Setting.dart';
+
+import 'package:flow3/widgets/Voice.dart';
+import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 
 class Homescreen extends StatefulWidget {
@@ -103,9 +108,7 @@ class _HomescreenState extends State<Homescreen> {
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InputText(),
-              SelectVoice(),
-              Setting(),
+              BottomVoice(),
               BuildVoice(),
             ],
           ),
@@ -188,354 +191,90 @@ class BuildVoice extends StatelessWidget {
   }
 }
 
-class Setting extends StatefulWidget {
-  const Setting({Key? key}) : super(key: key);
+class BottomVoice extends StatefulWidget {
+  const BottomVoice({Key? key}) : super(key: key);
 
   @override
-  _SettingState createState() => _SettingState();
+  _BottomVoiceState createState() => _BottomVoiceState();
 }
 
-class _SettingState extends State<Setting> {
-  bool _isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ExpansionPanelList(
-              expandIconColor: Colors.black,
-              elevation: 4,
-              animationDuration: const Duration(milliseconds: 700),
-              expandedHeaderPadding: const EdgeInsets.all(4),
-              expansionCallback: (int index, bool isExpanded) {
-                setState(() {
-                  _isExpanded = !_isExpanded;
-                });
-              },
-              children: [
-                ExpansionPanel(
-                  backgroundColor: Colors.white,
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return const Padding(
-                      padding: EdgeInsets.only(
-                          left: 20, right: 20, top: 12, bottom: 12),
-                      child: Text(
-                        'ตั้งค่าเพิ่มเติม',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    );
-                  },
-                  body: Container(
-                    color: Colors.white,
-                    height: 247,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 20, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                  'assets/logo/Property 1=lange,Property 2=Default.png'),
-                              Image.asset('assets/logo/language.png'),
-                              Image.asset('assets/logo/Category.png'),
-                              Image.asset('assets/logo/Category (4).png'),
-                              Image.asset('assets/logo/Category (5).png'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  isExpanded: _isExpanded,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class SelectVoice extends StatefulWidget {
-  const SelectVoice({Key? key}) : super(key: key);
-
-  @override
-  _SelectVoiceState createState() => _SelectVoiceState();
-}
-
-class _SelectVoiceState extends State<SelectVoice> {
-  bool _isExpanded = false;
-
-  bool get isExpanded => _isExpanded;
-
-  void toggleExpandedState() {
+class _BottomVoiceState extends State<BottomVoice> {
+  int _selsectedPageIndexVoice = 0;
+  int _selsectedPageIndexSetting = 0;
+  void _selsectedPageVoice(int index) {
     setState(() {
-      _isExpanded = !_isExpanded;
+      _selsectedPageIndexVoice = index;
+    });
+  }
+  void _selsectedPageSetting(int index) {
+    setState(() {
+      _selsectedPageIndexSetting = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final data = AppDataBase.data;
-
+    Widget activePage1 = const SelectVoice();
+    Widget activePage2 = const InputText();
+    Widget activePage3 = const Setting();
+/////////////////////Voice/////////////////////
+    if (_selsectedPageIndexVoice == 1) {
+      activePage1 = const CategoryVoice();
+      activePage2 = const InputTextSlide();
+    }
+    if (_selsectedPageIndexVoice == 2) {
+      activePage1 = const SelectVoice();
+      activePage2 = const InputText();
+    }
+ ////////////////////Setting/////////////////
+    if (_selsectedPageIndexSetting == 1) {
+      // activePage3 = const Setting();
+      activePage1 = const CategorySetting();
+      activePage2 = const InputTextSlide();
+    }
+    if (_selsectedPageIndexSetting == 2) {
+      activePage1 = const SelectVoice();
+      activePage2 = const InputText();
+    }
     return Column(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ExpansionPanelList(
-              expandIconColor: Colors.black,
-              elevation: 4,
-              animationDuration: const Duration(milliseconds: 700),
-              expandedHeaderPadding: const EdgeInsets.all(4),
-              expansionCallback: (int index, bool isExpanded) {
-                toggleExpandedState();
-              },
-              children: [
-                ExpansionPanel(
-                  backgroundColor: Colors.white,
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return const Padding(
-                      padding: EdgeInsets.only(
-                          left: 20, right: 20, top: 12, bottom: 12),
-                      child: Text(
-                        'เลือกเสียง',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    );
-                  },
-                  body: Container(
-                    color: Colors.white,
-                    height: 247,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 20, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                  'assets/logo/Property 1=lange,Property 2=Default.png'),
-                              Image.asset('assets/logo/language.png'),
-                              Image.asset('assets/logo/Category.png'),
-                              Image.asset('assets/logo/Category (4).png'),
-                              Image.asset('assets/logo/Category (5).png'),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 170,
-                          width: 370,
-                          child: GridView.builder(
-                            itemCount: data.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 5,
-                              mainAxisSpacing: 5,
-                              crossAxisSpacing: 5,
-                              mainAxisExtent: 80,
-                            ),
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    width: 68,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: Container(
-                                            color: Colors.transparent,
-                                            child: Column(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                  child: Image.asset(
-                                                    '${data[index].image}',
-                                                    width: 40,
-                                                    height: 40,
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${data[index].name}',
-                                                  style: const TextStyle(
-                                                      fontSize: 10,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  isExpanded: _isExpanded,
-                ),
-              ],
-            ),
-          ],
-        ),
+        InkWell(
+            onTap: () {
+              if (_selsectedPageIndexVoice == 0) {
+                _selsectedPageVoice(1);
+                return;
+              }
+              if (_selsectedPageIndexVoice == 1) {
+                _selsectedPageVoice(2);
+                return;
+              }
+              if (_selsectedPageIndexVoice == 2) {
+                _selsectedPageVoice(1);
+                return;
+              }
+            },
+            child: Column(children: [
+              activePage2,
+              activePage1,
+              // activePage3
+            ])),
+        InkWell(
+            onTap: () {
+              if (_selsectedPageIndexSetting == 0) {
+                _selsectedPageSetting(1);
+                return;
+              }
+              if (_selsectedPageIndexSetting == 1) {
+                _selsectedPageSetting(2);
+                return;
+              }
+              if (_selsectedPageIndexSetting == 2) {
+                _selsectedPageSetting(1);
+                return;
+              }
+            },
+            child: Column(children: [activePage3]))
       ],
-    );
-  }
-}
-
-class InputText extends StatefulWidget {
-  const InputText({Key? key}) : super(key: key);
-
-  @override
-  _InputTextState createState() => _InputTextState();
-}
-
-class _InputTextState extends State<InputText> {
-  final TextEditingController _textController = TextEditingController();
-  _SelectVoiceState selectVoiceState = _SelectVoiceState();
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    bool expanded = selectVoiceState.isExpanded;
-
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Center(
-                child: Container(
-                  width: 380,
-                  height: expanded ? 240 : 230,
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 5.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 25, right: 10, top: 20),
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            TextField(
-                              style: const TextStyle(color: Colors.black),
-                              minLines: 6,
-                              maxLines: 9,
-                              keyboardType: TextInputType.multiline,
-                              controller: _textController,
-                              onChanged: (text) {
-                                setState(
-                                    () {}); // ต้องเรียก setState เพื่อให้การเปลี่ยนแปลงของ TextField ทำให้ Widget ที่เกี่ยวข้อง rebuild
-                              },
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText:
-                                    'กรุณากรอกข้อความที่ต้องการจะสร้าง...',
-                                hintStyle:
-                                    TextStyle(color: Colors.grey, fontSize: 20),
-                                hintMaxLines: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 25),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 1),
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        textStyle:
-                                            const TextStyle(fontSize: 10),
-                                      ),
-                                      onPressed: () {
-                                        _textController.clear();
-                                        setState(
-                                            () {}); // ต้องเรียก setState เพื่อให้การเปลี่ยนแปลงทำให้ Widget ที่เกี่ยวข้อง rebuild
-                                      },
-                                      child: const Text(
-                                        'ลบ',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 16,
-                                            height: 1),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '${_textController.text.length}/100',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  height: 1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
