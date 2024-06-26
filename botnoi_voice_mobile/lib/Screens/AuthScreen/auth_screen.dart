@@ -15,10 +15,11 @@ class AuthScreen extends StatelessWidget {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () async {
-              await Provider.of<Authentication>(context, listen: false).signInWithGoogle(context);
+              await Provider.of<Authentication>(context, listen: false)
+                  .signInWithGoogle(context);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
