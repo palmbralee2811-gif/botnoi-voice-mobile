@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class Authentication extends ChangeNotifier {
   User? user;
-  String response = '';
+  String? response;
   String? jwtToken;
 
   bool get isAuthenticated {
@@ -39,8 +40,8 @@ class Authentication extends ChangeNotifier {
         final idToken = await user.getIdToken();
         if (idToken != null) {
           await _callApiWithToken(idToken);
-          await _getProfileWithToken(jwtToken); // Pass jwtToken here
-          print("ID-TOKEN: $idToken");
+          await _getProfileWithToken(jwtToken);
+          await _getCredentialsToken(jwtToken);
         }
       }
 
@@ -73,11 +74,11 @@ class Authentication extends ChangeNotifier {
           var token = message.substring(tokenStartIndex);
           jwtToken = token;
           print('Token from message: $token');
+          return token;
         } else {
           print('Token not found in message: $message');
         }
-
-        print('Response data from _callApiWithToken: $data');
+        //print('Response data from _callApiWithToken: $data');
       } else {
         print(
             'Failed to load data from _callApiWithToken. Status code: ${response.statusCode}');
@@ -95,7 +96,6 @@ class Authentication extends ChangeNotifier {
 
     String url =
         'https://api-voice-staging.botnoi.ai/api/dashboard/get_profile';
-
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json'
@@ -107,12 +107,53 @@ class Authentication extends ChangeNotifier {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         print('Response data from _getProfileWithToken: $data');
+        //var credits = data['data']['credits']; // ดึงข้อมูล credits จาก data
+        //print('credits: $credits');
+        return data;
       } else {
         print(
             'Failed to load profile from _getProfileWithToken. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error in _getProfileWithToken: $e');
+    }
+  }
+
+  Future<String?> _getCredentialsToken(String? jwtToken) async {
+    if (jwtToken == null) {
+      print('jwtToken is null');
+      return null;
+    }
+
+    String url = 'https://api-voice-staging.botnoi.ai/api/service/get_token';
+    Map<String, dynamic> payload = {};
+
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        var token = data['data'][0]['token']; // ดึง token จาก data
+        //print('data -> _getCredentialsToken: $data');
+        print('Credentials-Token: $token');
+        return token; // Return the token here
+      } else {
+        print(
+            'Failed to load Credentials-Token. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching Credentials-Token: $e');
+      return null;
     }
   }
 
