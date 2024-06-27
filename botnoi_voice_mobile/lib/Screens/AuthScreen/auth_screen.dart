@@ -1,16 +1,50 @@
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/home_screen.dart';
 
+// Sign-in Screen
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Authentication>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Google Sign-in'),
+        title: const Text('Sign-in with Google'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            final user = await auth.signInWithGoogle(context);
+            if (user != null) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to sign in. Please try again.')),
+              );
+            }
+          },
+          child: const Text('Sign-in with Google'),
+        ),
+      ),
+    );
+  }
+}
+
+
+/*
+return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sign-in with Google'),
         centerTitle: true,
       ),
       body: Center(
@@ -18,7 +52,8 @@ class AuthScreen extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () async {
-              await Provider.of<Authentication>(context, listen: false).signInWithGoogle(context);
+              await Provider.of<Authentication>(context, listen: false)
+                  .signInWithGoogle(context);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -53,5 +88,4 @@ class AuthScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
+    */
