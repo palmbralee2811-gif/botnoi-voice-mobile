@@ -206,6 +206,7 @@ class _BottomVoiceState extends State<BottomVoice> {
       _selsectedPageIndexVoice = index;
     });
   }
+
   void _selsectedPageSetting(int index) {
     setState(() {
       _selsectedPageIndexSetting = index;
@@ -226,7 +227,7 @@ class _BottomVoiceState extends State<BottomVoice> {
       activePage1 = const SelectVoice();
       activePage2 = const InputText();
     }
- ////////////////////Setting/////////////////
+    ////////////////////Setting/////////////////
     if (_selsectedPageIndexSetting == 1) {
       // activePage3 = const Setting();
       activePage1 = const CategorySetting();
