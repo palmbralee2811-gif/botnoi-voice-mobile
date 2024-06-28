@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,6 +8,9 @@ class Authentication extends ChangeNotifier {
   User? user;
   String? response;
   String? jwtToken;
+  // Defind value to Fetch data in private class
+  String? _credentialsToken;
+  String? _dataProfileWithToken;
 
   bool get isAuthenticated {
     return user != null;
@@ -19,6 +21,16 @@ class Authentication extends ChangeNotifier {
       this.user = user;
       notifyListeners();
     });
+  }
+
+  // Push data in private class to public for other files
+  String? get credentialsToken => _credentialsToken;
+  String? get dataProfileWithToken => _dataProfileWithToken;
+
+  // Add a public method to update _dataProfileWithToken
+  void setDataProfileWithToken(String? data) {
+    _dataProfileWithToken = data;
+    notifyListeners();
   }
 
   Future<User?> signInWithGoogle(BuildContext context) async {
@@ -39,9 +51,11 @@ class Authentication extends ChangeNotifier {
       if (user != null) {
         final idToken = await user.getIdToken();
         if (idToken != null) {
-          await _callApiWithToken(idToken);
-          await _getProfileWithToken(jwtToken);
-          await _getCredentialsToken(jwtToken);
+          await callApiWithToken(idToken);
+          // waiting to get data from function
+          _dataProfileWithToken = await getProfileWithToken(jwtToken);
+          _credentialsToken = await getCredentialsToken(jwtToken);
+          notifyListeners();
         }
       }
 
@@ -52,7 +66,7 @@ class Authentication extends ChangeNotifier {
     }
   }
 
-  Future<void> _callApiWithToken(String idToken) async {
+  Future<String?> callApiWithToken(String idToken) async {
     String url =
         'https://api-voice-staging.botnoi.ai/api/dashboard/firebase_auth';
 
@@ -86,12 +100,13 @@ class Authentication extends ChangeNotifier {
     } catch (e) {
       print('Error in _callApiWithToken: $e');
     }
+    return null;
   }
 
-  Future<void> _getProfileWithToken(String? jwtToken) async {
+  Future<String?> getProfileWithToken(String? jwtToken) async {
     if (jwtToken == null) {
       print('jwtToken is null');
-      return;
+      return null;
     }
 
     String url =
@@ -106,10 +121,12 @@ class Authentication extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        print('Response data from _getProfileWithToken: $data');
-        //var credits = data['data']['credits']; // ดึงข้อมูล credits จาก data
-        //print('credits: $credits');
-        return data;
+        // print('Response data from _getProfileWithToken: $data');
+
+        var credits = data['data']['credits']; // ดึงข้อมูล credits จาก data
+        print('credits: $credits');
+
+        return credits.toString();
       } else {
         print(
             'Failed to load profile from _getProfileWithToken. Status code: ${response.statusCode}');
@@ -117,9 +134,10 @@ class Authentication extends ChangeNotifier {
     } catch (e) {
       print('Error in _getProfileWithToken: $e');
     }
+    return null;
   }
 
-  Future<String?> _getCredentialsToken(String? jwtToken) async {
+  Future<String?> getCredentialsToken(String? jwtToken) async {
     if (jwtToken == null) {
       print('jwtToken is null');
       return null;
