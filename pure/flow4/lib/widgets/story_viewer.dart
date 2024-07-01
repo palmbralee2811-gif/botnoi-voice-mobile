@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:story_view/story_view.dart';
-import '../data.dart/data.dart';
+import '../data/data.dart';
 
 class StoryViewer extends StatelessWidget {
   final List<Story> stories;
