@@ -1,9 +1,11 @@
 import 'package:flow3/widgets/CategorySetting.dart';
-import 'package:flow3/widgets/InputText.dart';
+import 'package:flow3/widgets/inputText.dart';
 import 'package:flow3/widgets/Setting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flow3/widgets/button_voice.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -13,7 +15,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  int _currentIndex = 0;
+  // int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -57,41 +59,41 @@ class _HomescreenState extends State<Homescreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedIconTheme: const IconThemeData(color: Color(0xFF9A96F5)),
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/logo/menubar11.png',
-              width: 50,
-              height: 50,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/logo/Property 1=studio, Property 2=deault.png',
-              width: 50,
-              height: 50,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/logo/menubar.png',
-              width: 50,
-              height: 50,
-            ),
-            label: '',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _currentIndex,
+      //   selectedIconTheme: const IconThemeData(color: Color(0xFF9A96F5)),
+      //   onTap: (index) {
+      //     setState(() {
+      //       _currentIndex = index;
+      //     });
+      //   },
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       icon: Image.asset(
+      //         'assets/logo/menubar11.png',
+      //         width: 50,
+      //         height: 50,
+      //       ),
+      //       label: '',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Image.asset(
+      //         'assets/logo/Property 1=studio, Property 2=deault.png',
+      //         width: 50,
+      //         height: 50,
+      //       ),
+      //       label: '',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Image.asset(
+      //         'assets/logo/menubar.png',
+      //         width: 50,
+      //         height: 50,
+      //       ),
+      //       label: '',
+      //     ),
+      //   ],
+      // ),
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: const Appbar(),
@@ -104,16 +106,49 @@ class _HomescreenState extends State<Homescreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter),
           ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BottomVoice(),
-              BuildVoice(),
-            ],
+          child: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [BottomVoice(), BuildVoice(), ButtomNavi()],
+            ),
           ),
         ),
       ),
     );
+  }
+}
+
+class ButtomNavi extends StatefulWidget {
+  const ButtomNavi({Key? key}) : super(key: key);
+
+  @override
+  _ButtomNaviState createState() => _ButtomNaviState();
+}
+
+class _ButtomNaviState extends State<ButtomNavi> {
+  int selectedIndex = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      GestureDetector(
+        onTap: () {
+          setState(() {
+            selectedIndex = 0;
+          });
+        },
+        child: Row(
+          children: [
+            Container(
+                height: 56,
+                width: 411.4,
+                color: const Color(0xFF27282B),
+                child: SvgPicture.asset(
+                    'assets/logo/Property 1=studio, Property 2=deault (1).svg'))
+          ],
+        ),
+      )
+    ]);
   }
 }
 
@@ -220,8 +255,7 @@ class _BottomVoiceState extends State<BottomVoice> {
 /////////////////////Voice/////////////////////
 
     if (_selsectedPageIndexVoice == 1) {
-  
-      activePage2 = const InputTextSlide();
+      activePage2 = const InputText();
       if (_selsectedPageIndexSetting == 1) {
         activePage3 = const Setting();
       }
@@ -231,7 +265,7 @@ class _BottomVoiceState extends State<BottomVoice> {
       activePage2 = const InputText();
     }
     if (_selsectedPageIndexSetting == 1) {
-      activePage2 = const InputTextSlide();
+      activePage2 = const InputText();
       if (_selsectedPageIndexVoice == 1) {
         activePage1 = const SelectVoice();
       }
@@ -263,7 +297,6 @@ class _BottomVoiceState extends State<BottomVoice> {
             },
             child: activePage1),
         if (_selsectedPageIndexVoice == 1) ...[const CategoryVoice()],
-      
         InkWell(
             onTap: () {
               setState(() {

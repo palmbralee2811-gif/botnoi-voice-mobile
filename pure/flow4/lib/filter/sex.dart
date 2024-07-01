@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class Sex extends StatelessWidget {
   const Sex({super.key});
 
@@ -18,18 +19,108 @@ class Sex extends StatelessWidget {
                     Container(
                       color: Colors.transparent,
                       width: 360,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         children: [
-                          const Text(
-                            'เพศ',
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'เพศ',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 25,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Image.asset('assets/logo/Frame 1028950648.png'),
+                          Container(
+                            height: 42,
+                            width: 320,
+                            color: Colors.white,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/Category.jpg',
+                                        width: 50,
+                                        height: 40,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      const Text(
+                                        'ชาย/หญิง',
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                          Container(
+                            height: 42,
+                            width: 320,
+                            color: Colors.white,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/Category (1).jpg',
+                                        width: 50,
+                                        height: 40,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      const Text(
+                                        'หญิง',
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                          Container(
+                            height: 42,
+                            width: 320,
+                            color: Colors.white,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/Category (2).jpg',
+                                        width: 50,
+                                        height: 40,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      const Text(
+                                        'ชาย',
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
                           ),
                         ],
                       ),
@@ -42,14 +133,39 @@ class Sex extends StatelessWidget {
         );
       },
       child: Container(
-        width: 65,
-        height: 35,
-        decoration: const BoxDecoration(
+        width: 62,
+        height: 26,
+        decoration: BoxDecoration(
           color: Colors.transparent,
-          image: DecorationImage(
-            image: AssetImage('assets/logo/language.png'),
-            fit: BoxFit.cover,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(4),
           ),
+          border: Border.all(
+            color: const Color(0xFFE2E3E9),
+            width: 1,
+          ),
+        ),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 3,
+                ),
+                Text(
+                  'ช/ญ',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF323130)),
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_down_sharp,
+                  size: 20,
+                  color: Color(0xFF323130),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
