@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/Screens/MarketPlaceScreen/marketplace_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -37,9 +38,10 @@ class _VoiceScreenState extends State<VoiceScreen> {
 
     final auth = Provider.of<Authentication>(context, listen: false);
 
-// Call getProfileWithToken before generating audio to fetch new data
-  String? profileData = await auth.getProfileWithToken(auth.jwtToken);
-  auth.setDataProfileWithToken(profileData); // Use the public method to update the data
+    // Call getProfileWithToken before generating audio to fetch new data
+    String? profileData = await auth.getProfileWithToken(auth.jwtToken);
+    // Use the public method to update the data
+    auth.setDataProfileWithToken(profileData); 
 
     String? token = auth.credentialsToken;
 
@@ -224,6 +226,18 @@ class _VoiceScreenState extends State<VoiceScreen> {
                   );
                 },
                 child: const Text('Sign-out'),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MarketplaceScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Marketplace Screen'),
               ),
             ],
           ),
