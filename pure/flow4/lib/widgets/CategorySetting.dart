@@ -20,7 +20,7 @@ class _CategorySettingState extends State<CategorySetting> {
             children: [
               Container(
                 color: Colors.white,
-                height: 245,
+                height: 210,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

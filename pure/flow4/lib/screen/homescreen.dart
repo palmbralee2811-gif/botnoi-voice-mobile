@@ -1,8 +1,7 @@
 import 'package:flow3/widgets/CategorySetting.dart';
-import 'package:flow3/widgets/inputText.dart';
-import 'package:flow3/widgets/Setting.dart';
+
 import 'package:flow3/widgets/CategoryVoice.dart';
-import 'package:flow3/widgets/button_voice.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +14,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  // int _currentIndex = 0;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,41 +58,53 @@ class _HomescreenState extends State<Homescreen> {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _currentIndex,
-      //   selectedIconTheme: const IconThemeData(color: Color(0xFF9A96F5)),
-      //   onTap: (index) {
-      //     setState(() {
-      //       _currentIndex = index;
-      //     });
-      //   },
-      //   items: [
-      //     BottomNavigationBarItem(
-      //       icon: Image.asset(
-      //         'assets/logo/menubar11.png',
-      //         width: 50,
-      //         height: 50,
-      //       ),
-      //       label: '',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Image.asset(
-      //         'assets/logo/Property 1=studio, Property 2=deault.png',
-      //         width: 50,
-      //         height: 50,
-      //       ),
-      //       label: '',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Image.asset(
-      //         'assets/logo/menubar.png',
-      //         width: 50,
-      //         height: 50,
-      //       ),
-      //       label: '',
-      //     ),
-      //   ],
-      // ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        selectedIconTheme: const IconThemeData(color: Color(0xFF9A96F5)),
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/logo/menubar11.png',
+              color: Colors.transparent,
+              width: 45,
+              height: 45,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: _currentIndex == 1
+                ? SvgPicture.asset(
+                    'assets/logo/waveform-bold 1 (1).svg',
+                    width: 24,
+                    height: 24,
+                  )
+                : SvgPicture.asset(
+                    'assets/logo/waveform-bold 1.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+            label: 'สตูดิโอ',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/logo/menubar.png',
+              color: Colors.transparent,
+              width: 50,
+              height: 50,
+            ),
+            label: '',
+          ),
+        ],
+        selectedLabelStyle: const TextStyle(
+          fontSize: 12,
+          color: Color(0xFFFFFFFF),
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: const Appbar(),
@@ -106,49 +117,13 @@ class _HomescreenState extends State<Homescreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter),
           ),
-          child: const SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [BottomVoice(), BuildVoice(), ButtomNavi()],
-            ),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [BottomVoice(), BuildVoice()],
           ),
         ),
       ),
     );
-  }
-}
-
-class ButtomNavi extends StatefulWidget {
-  const ButtomNavi({Key? key}) : super(key: key);
-
-  @override
-  _ButtomNaviState createState() => _ButtomNaviState();
-}
-
-class _ButtomNaviState extends State<ButtomNavi> {
-  int selectedIndex = 1;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedIndex = 0;
-          });
-        },
-        child: Row(
-          children: [
-            Container(
-                height: 56,
-                width: 411.4,
-                color: const Color(0xFF27282B),
-                child: SvgPicture.asset(
-                    'assets/logo/Property 1=studio, Property 2=deault (1).svg'))
-          ],
-        ),
-      )
-    ]);
   }
 }
 
@@ -228,96 +203,285 @@ class BuildVoice extends StatelessWidget {
 class BottomVoice extends StatefulWidget {
   const BottomVoice({Key? key}) : super(key: key);
 
+  final int maxLength = 1000;
+
   @override
   _BottomVoiceState createState() => _BottomVoiceState();
 }
 
 class _BottomVoiceState extends State<BottomVoice> {
-  int _selsectedPageIndexVoice = 0;
-  int _selsectedPageIndexSetting = 0;
-  void _selsectedPageVoice(int index) {
+  final TextEditingController _textController = TextEditingController();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  int _selectedPageIndexVoice = 0;
+  int _selectedPageIndexSetting = 0;
+  int _inputtext = 0;
+
+  void _selectPageVoice(int index) {
     setState(() {
-      _selsectedPageIndexVoice = index;
+      _selectedPageIndexVoice = index;
     });
   }
 
-  void _selsectedPageSetting(int index) {
+  void _selectPageSetting(int index) {
     setState(() {
-      _selsectedPageIndexSetting = index;
+      _selectedPageIndexSetting = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage1 = const SelectVoice();
-    Widget activePage2 = const InputText();
-    Widget activePage3 = const Setting();
-/////////////////////Voice/////////////////////
-
-    if (_selsectedPageIndexVoice == 1) {
-      activePage2 = const InputText();
-      if (_selsectedPageIndexSetting == 1) {
-        activePage3 = const Setting();
+    if (_selectedPageIndexVoice == 1) {
+      _inputtext = 1;
+      //categoryVoice
+      if (_selectedPageIndexSetting == 1) {
+        _selectedPageIndexVoice = 0;
+        _selectedPageIndexSetting = 1;
       }
     }
-    if (_selsectedPageIndexVoice == 2) {
-      activePage1 = const SelectVoice();
-      activePage2 = const InputText();
+    if (_selectedPageIndexSetting == 2) {
+      _selectedPageIndexVoice = 1;
+      _selectedPageIndexSetting = 0;
     }
-    if (_selsectedPageIndexSetting == 1) {
-      activePage2 = const InputText();
-      if (_selsectedPageIndexVoice == 1) {
-        activePage1 = const SelectVoice();
-      }
+    if (_selectedPageIndexVoice == 2) {
+      _inputtext = 0;
     }
-
-    if (_selsectedPageIndexSetting == 2) {
-      activePage3 = const Setting();
+    if (_selectedPageIndexSetting == 1) {
+      _inputtext = 1;
+      //categorySetting
     }
 
     return Column(
       children: [
-        activePage2,
-        InkWell(
-            onTap: () {
-              setState(() {
-                if (_selsectedPageIndexVoice == 0) {
-                  _selsectedPageVoice(1);
-                  return;
-                }
-                if (_selsectedPageIndexVoice == 1) {
-                  _selsectedPageVoice(2);
-                  return;
-                }
-                if (_selsectedPageIndexVoice == 2) {
-                  _selsectedPageVoice(1);
-                  return;
-                }
-              });
-            },
-            child: activePage1),
-        if (_selsectedPageIndexVoice == 1) ...[const CategoryVoice()],
-        InkWell(
-            onTap: () {
-              setState(() {
-                if (_selsectedPageIndexSetting == 0) {
-                  _selsectedPageSetting(1);
-                  return;
-                }
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 380,
+                        height: _inputtext == 1 ? 271 : 481,
+                        decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 5.0,
+                            ),
+                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 25, right: 10, top: 20),
+                          child: Column(
+                            children: [
+                              TextField(
+                                style: const TextStyle(color: Colors.black),
+                                minLines: _inputtext == 1 ? 7 : 16,
+                                maxLines: _inputtext == 1 ? 7 : 16,
+                                keyboardType: TextInputType.multiline,
+                                controller: _textController,
+                                onChanged: (text) {
+                                  if (_textController.text.length >
+                                      widget.maxLength) {
+                                    _textController.text = _textController.text
+                                        .substring(0, widget.maxLength);
 
-                if (_selsectedPageIndexSetting == 1) {
-                  _selsectedPageSetting(2);
-                  return;
-                }
-
-                if (_selsectedPageIndexSetting == 2) {
-                  _selsectedPageSetting(1);
-                  return;
-                }
-              });
-            },
-            child: activePage3),
-        if (_selsectedPageIndexSetting == 1) ...[const CategorySetting()]
+                                    _textController.selection =
+                                        TextSelection.fromPosition(
+                                      TextPosition(
+                                          offset: _textController.text.length),
+                                    );
+                                  }
+                                  setState(() {});
+                                },
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText:
+                                      'กรุณากรอกข้อความที่ต้องการจะสร้าง...',
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 20),
+                                  hintMaxLines: 1,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 25),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 1),
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              textStyle:
+                                                  const TextStyle(fontSize: 10),
+                                            ),
+                                            onPressed: () {
+                                              _textController.clear();
+                                              setState(
+                                                  () {}); // To update the counter
+                                            },
+                                            child: Image.asset(
+                                                'assets/logo/Frame 1028950648.png'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      '${_textController.text.length}/${widget.maxLength}',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            if (_selectedPageIndexVoice == 0) {
+              _selectPageVoice(1);
+            } else if (_selectedPageIndexVoice == 1) {
+              _selectPageVoice(2);
+            } else if (_selectedPageIndexVoice == 2) {
+              _selectPageVoice(1);
+            }
+          },
+          child: Column(
+            children: [
+              InkWell(
+                  child: Container(
+                      height: 55,
+                      decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 224, 221, 221),
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1,
+                          )),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 20),
+                            child: Text(
+                              "เลือกเสียง",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: _selectedPageIndexVoice == 1
+                                  ? const Icon(
+                                      Icons.expand_less,
+                                      color: Color(0xFF323130),
+                                      size: 30,
+                                    )
+                                  : const Icon(
+                                      Icons.expand_more,
+                                      color: Color(0xFF323130),
+                                      size: 30,
+                                    )),
+                        ],
+                      ))),
+            ],
+          ),
+        ),
+        if (_selectedPageIndexVoice == 1) ...[const CategoryVoice()],
+        InkWell(
+          onTap: () {
+            if (_selectedPageIndexSetting == 0) {
+              _selectPageSetting(1);
+            } else if (_selectedPageIndexSetting == 1) {
+              _selectPageSetting(2);
+            } else if (_selectedPageIndexSetting == 2) {
+              _selectPageSetting(1);
+            }
+          },
+          child: Column(
+            children: [
+              Container(
+                  height: 55,
+                  decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(255, 224, 221, 221),
+                          blurRadius: 6.0,
+                        ),
+                      ],
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1,
+                      )),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 20),
+                        child: Text(
+                          "ตั้งค่าเพิ่มเติม",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: _selectedPageIndexSetting == 1
+                              ? const Icon(
+                                  Icons.expand_less,
+                                  color: Color(0xFF323130),
+                                  size: 30,
+                                )
+                              : const Icon(
+                                  Icons.expand_more,
+                                  color: Color(0xFF323130),
+                                  size: 30,
+                                )),
+                    ],
+                  )),
+            ],
+          ),
+        ),
+        if (_selectedPageIndexSetting == 1) ...[const CategorySetting()],
       ],
     );
   }

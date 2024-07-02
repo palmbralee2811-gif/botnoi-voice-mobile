@@ -158,7 +158,7 @@ class Sex extends StatelessWidget {
                   'ช/ญ',
                   style: TextStyle(fontSize: 12, color: Color(0xFF323130)),
                 ),
-                const Icon(
+                Icon(
                   Icons.keyboard_arrow_down_sharp,
                   size: 20,
                   color: Color(0xFF323130),
