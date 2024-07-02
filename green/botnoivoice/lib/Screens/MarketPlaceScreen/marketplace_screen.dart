@@ -1,6 +1,8 @@
+// marketplace_screen.dart
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -84,6 +86,11 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // เรียงลำดับ speakers ตาม speakerId จากน้อยไปมาก 1,2,3,4
+    // Debug 1,100,100,13,15,2,3,4 เรียงลำดับผิด เพราะเป็น String จัดเรียงแบบอักษระ
+    // แปลงค่า speaker.speakerId จาก String เป็น int 
+    speakers.sort((a, b) => int.parse(a.speakerId).compareTo(int.parse(b.speakerId)));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Marketplace Data'),
@@ -94,10 +101,12 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               itemCount: speakers.length,
               itemBuilder: (context, index) {
                 Speaker speaker = speakers[index];
+                // id = speaker.speakerId
                 return ListTile(
                   leading: Image.network(speaker.faceImage),
                   title: Text(speaker.thaiName),
                   subtitle: Text(speaker.engName),
+                  
                   onTap: () async {
                     // https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/sound_1_alisa.wav
                     String? audioURL = speaker.audio;
@@ -128,9 +137,22 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                       }
                     }
 
+                    print('${speaker.speakerId}');
+                    print('${speaker.language}');
+                    print('${speaker.thaiName}');
+                    print('${speaker.engName}');
                     print('${speaker.audio}');
-                    await playAudio();
+                    //await playAudio();
+                    
+                    // นำทางไปยัง VoiceScreen พร้อมกับส่งค่า speakerId
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VoiceScreen(speakerId: speaker.speakerId),
+                      ),
+                    );
                   },
+                  
                 );
               },
             ),

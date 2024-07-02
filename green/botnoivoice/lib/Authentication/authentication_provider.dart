@@ -92,7 +92,7 @@ class Authentication extends ChangeNotifier {
         var tokenIndex = message.indexOf('token=');
         if (tokenIndex != -1) {
           var tokenStartIndex = tokenIndex + 'token='.length;
-          jwtToken= message.substring(tokenStartIndex);
+          jwtToken = message.substring(tokenStartIndex);
           print('jwtToken from getIdTokenWithFirebase: $jwtToken');
           return jwtToken;
         } else {
