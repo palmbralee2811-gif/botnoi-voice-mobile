@@ -11,6 +11,7 @@ class _CategorySettingState extends State<CategorySetting> {
   
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     double currentSliderValue = 20.00;
     return InkWell(
       child: Column(
@@ -20,7 +21,7 @@ class _CategorySettingState extends State<CategorySetting> {
             children: [
               Container(
                 color: Colors.white,
-                height: 210,
+                height: screenSize.height * 0.236,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

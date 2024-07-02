@@ -117,10 +117,12 @@ class _HomescreenState extends State<Homescreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter),
           ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [BottomVoice(), BuildVoice()],
-          ),
+          // child: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [BottomVoice(), BuildVoice()],
+            ),
+          // ),
         ),
       ),
     );
@@ -134,8 +136,9 @@ class BuildVoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return Container(
-      height: 100,
+      height: screenSize.height * 0.11,
       decoration: const BoxDecoration(
         color: Colors.white,
       ),
@@ -210,6 +213,7 @@ class BottomVoice extends StatefulWidget {
 }
 
 class _BottomVoiceState extends State<BottomVoice> {
+  
   final TextEditingController _textController = TextEditingController();
 
   @override
@@ -255,7 +259,7 @@ class _BottomVoiceState extends State<BottomVoice> {
       _inputtext = 1;
       //categorySetting
     }
-
+    var screenSize = MediaQuery.of(context).size;
     return Column(
       children: [
         Padding(
@@ -270,7 +274,7 @@ class _BottomVoiceState extends State<BottomVoice> {
                     children: [
                       Container(
                         width: 380,
-                        height: _inputtext == 1 ? 271 : 481,
+                        height: _inputtext == 1 ? screenSize.height * 0.286 : screenSize.height * 0.522,
                         decoration: BoxDecoration(
                           boxShadow: const [
                             BoxShadow(
@@ -288,8 +292,8 @@ class _BottomVoiceState extends State<BottomVoice> {
                             children: [
                               TextField(
                                 style: const TextStyle(color: Colors.black),
-                                minLines: _inputtext == 1 ? 7 : 16,
-                                maxLines: _inputtext == 1 ? 7 : 16,
+                                minLines: _inputtext == 1 ? 6 : 15,
+                                maxLines: _inputtext == 1 ? 6 : 15,
                                 keyboardType: TextInputType.multiline,
                                 controller: _textController,
                                 onChanged: (text) {
@@ -379,7 +383,7 @@ class _BottomVoiceState extends State<BottomVoice> {
             children: [
               InkWell(
                   child: Container(
-                      height: 55,
+                      height: -_selectedPageIndexVoice == 1 ? screenSize.height * 0.07 : screenSize.height * 0.076,
                       decoration: BoxDecoration(
                           boxShadow: const [
                             BoxShadow(
@@ -437,7 +441,7 @@ class _BottomVoiceState extends State<BottomVoice> {
           child: Column(
             children: [
               Container(
-                  height: 55,
+                  height: _selectedPageIndexSetting == 1 ? screenSize.height * 0.068 : screenSize.height * 0.068,
                   decoration: BoxDecoration(
                       boxShadow: const [
                         BoxShadow(

@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:flow3/filter/advert.dart';
 import 'package:flow3/filter/all.dart';
 import 'package:flow3/filter/favorite.dart';
 import 'package:flow3/filter/language.dart';
 import 'package:flow3/filter/new.dart';
+import 'package:flow3/filter/podcast.dart';
 import 'package:flow3/filter/recomman.dart';
 import 'package:flow3/filter/sex.dart';
 import 'package:flow3/widgets/voice.dart';
@@ -26,6 +28,7 @@ class _CategoryVoiceState extends State<CategoryVoice> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     final data = AppDataBase.data;
 
     return InkWell(
@@ -35,85 +38,27 @@ class _CategoryVoiceState extends State<CategoryVoice> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: 40,
+                height: screenSize.height * 0.04,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
                     Container(
                       color: Colors.white,
                       width: 600,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 20),
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 10, left: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Language(),
-                            const Sex(),
-                            const Recommant(),
-                            const Favorite(),
-                            const All(),
-                            const New(),
-                            const Voice(),
-                            Container(
-                              width: 63,
-                              height: 26,
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(4),
-                                ),
-                                border: Border.all(
-                                  color: const Color(0xFFE2E3E9),
-                                  width: 1,
-                                ),
-                              ),
-                              child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'ดูทั้งหมด',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF323130)),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: 63,
-                              height: 26,
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(4),
-                                ),
-                                border: Border.all(
-                                  color: const Color(0xFFE2E3E9),
-                                  width: 1,
-                                ),
-                              ),
-                              child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'ดูทั้งหมด',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF323130)),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
+                            Language(),
+                            Sex(),
+                            Recommant(),
+                            Favorite(),
+                            All(),
+                            New(),
+                            Voice(),
+                            const Advert(),
+                            Podcast(),
                           ],
                         ),
                       ),
@@ -123,7 +68,7 @@ class _CategoryVoiceState extends State<CategoryVoice> {
               ),
               Container(
                 color: Colors.white,
-                height: 170,
+                height: screenSize.height * 0.196,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -333,6 +278,3 @@ class _CategoryVoiceState extends State<CategoryVoice> {
     );
   }
 }
-
-
-
