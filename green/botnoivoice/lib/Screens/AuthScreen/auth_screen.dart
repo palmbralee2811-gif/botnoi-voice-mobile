@@ -1,6 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
 import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
+import 'package:botnoivoice/Screens/MarketPlaceScreen/marketplace_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class AuthScreen extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const VoiceScreen(),
+                  builder: (context) => const MarketplaceScreen(),
                 ),
               );
             } else {

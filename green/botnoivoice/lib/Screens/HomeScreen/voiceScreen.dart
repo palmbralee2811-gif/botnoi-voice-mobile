@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/Screens/MarketPlaceScreen/marketplace_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,9 @@ import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:provider/provider.dart';
 
 class VoiceScreen extends StatefulWidget {
-  const VoiceScreen({super.key});
+  final String speakerId;
+
+  const VoiceScreen({super.key, required this.speakerId});
 
   @override
   _VoiceScreenState createState() => _VoiceScreenState();
@@ -37,9 +40,10 @@ class _VoiceScreenState extends State<VoiceScreen> {
 
     final auth = Provider.of<Authentication>(context, listen: false);
 
-// Call getProfileWithToken before generating audio to fetch new data
-  String? profileData = await auth.getProfileWithToken(auth.jwtToken);
-  auth.setDataProfileWithToken(profileData); // Use the public method to update the data
+    // Call getProfileWithToken before generating audio to fetch new data
+    String? profileData = await auth.getProfileWithToken(auth.jwtToken);
+    // Use the public method to update the data
+    auth.setDataProfileWithToken(profileData);
 
     String? token = auth.credentialsToken;
 
@@ -48,12 +52,12 @@ class _VoiceScreenState extends State<VoiceScreen> {
         "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
-      "speaker": "1",
+      "speaker": widget.speakerId, // ใช้ speakerId ที่ส่งมา
       "volume": 1,
       "speed": 1,
       "type_media": _selectedTypeMedia,
       "save_file": true,
-      "language": "th"
+      // "language": "th"
     };
 
     Map<String, String> headers = {
@@ -147,7 +151,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Botnoi Voice Mobile X | Point: ${credits ?? 'N/A'}'),
+        title: Text('Botnoi Voice ${credits ?? 'N/A'}'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -224,6 +228,18 @@ class _VoiceScreenState extends State<VoiceScreen> {
                   );
                 },
                 child: const Text('Sign-out'),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MarketplaceScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Marketplace Screen'),
               ),
             ],
           ),

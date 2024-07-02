@@ -18,7 +18,8 @@ class BotnoiVoiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => Authentication()),
+        ChangeNotifierProvider(
+            create: (context) => Authentication()),
       ],
       child: MaterialApp(
         title: "Botnoi Voice",
@@ -26,7 +27,7 @@ class BotnoiVoiceApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const AuthChecker(),
+        home: const AuthChecker(speakerId: '',),
       ),
     );
   }
