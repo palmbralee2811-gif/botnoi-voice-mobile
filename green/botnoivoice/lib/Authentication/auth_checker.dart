@@ -1,6 +1,8 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Model/speaker_model.dart';
 import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
+import 'package:botnoivoice/Screens/AuthScreen/login_screen.dart';
+import 'package:botnoivoice/Screens/GenerateScreen/home_screen.dart';
 import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +22,10 @@ class _AuthCheckerState extends State<AuthChecker> {
   @override
   Widget build(BuildContext context) {
     if (Provider.of<Authentication>(context).isAuthenticated) {
-      // return const HomeScreen();
       return const VoiceScreen(speakerId: '',);
+      // return const Homescreen(speakerId: '',);
     } else {
-      return const AuthScreen();
+      return const LoginScreen();
     }
   }
 }

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Screens/MarketPlaceScreen/marketplace_screen.dart';
+import 'package:botnoivoice/Screens/AuthScreen/login_screen.dart';
+import 'package:botnoivoice/Screens/HomeScreen/marketplace_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // import file for function floder
-import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
 import 'package:botnoivoice/function/randomString.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:provider/provider.dart';
@@ -223,7 +223,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AuthScreen(),
+                      builder: (context) => const LoginScreen(),
                     ),
                   );
                 },

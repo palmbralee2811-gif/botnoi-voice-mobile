@@ -223,4 +223,5 @@ class Authentication extends ChangeNotifier {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
   }
+  
 }
