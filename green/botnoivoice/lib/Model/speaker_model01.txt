@@ -1,3 +1,5 @@
+/*
+// Backup
 class Speaker {
   final String speakerId;
   final String speakerName;
@@ -91,38 +93,5 @@ class Speaker {
       premier: json['premier'] ?? false,
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'speaker_id': speakerId,
-      'speaker_name': speakerName,
-      'eng_name': engName,
-      'thai_name': thaiName,
-      'image': image,
-      'face_image': faceImage,
-      'horizontal_face_image': horizontalFaceImage,
-      'square_image': squareImage,
-      'audio': audio,
-      'voice_style': voiceStyle,
-      'eng_voice_style': engVoiceStyle,
-      'age_style': ageStyle,
-      'eng_age_style': engAgeStyle,
-      'speech_style': speechStyle,
-      'eng_speech_style': engSpeechStyle,
-      'speed': speed,
-      'eng_speed': engSpeed,
-      'popularity': popularity,
-      'eng_popularity': engPopularity,
-      'type': type,
-      'language': language,
-      'status': status,
-      'gender': gender,
-      'eng_gender': engGender,
-      'private': private,
-      'allow_uid': allowUid,
-      'available_language': availableLanguage,
-      'premier': premier,
-    };
-  }
 }
-
+*/

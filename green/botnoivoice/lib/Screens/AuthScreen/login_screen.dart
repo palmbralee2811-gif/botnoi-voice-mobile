@@ -1,5 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/HomeScreen/marketplace_screen.dart';
+import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MarketplaceScreen(),
+                      builder: (context) => const VoiceScreen(speakerId: '',),
                     ),
                   );
                 } else {
