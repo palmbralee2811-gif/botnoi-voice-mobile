@@ -11,6 +11,7 @@ import 'package:flow3/filter/sex.dart';
 import 'package:flow3/widgets/voice.dart';
 import 'package:flutter/material.dart';
 import 'package:flow3/data/data.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 // import 'package:flow3/widgets/story_viewer.dart';
@@ -28,7 +29,9 @@ class _CategoryVoiceState extends State<CategoryVoice> {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
+      double screenSizewidth = MediaQuery.of(context).size.width;
+    double screenSizeheight = MediaQuery.of(context).size.height;
+    // var screenSize = MediaQuery.of(context).size;
     final data = AppDataBase.data;
 
     return InkWell(
@@ -37,17 +40,17 @@ class _CategoryVoiceState extends State<CategoryVoice> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                height: screenSize.height * 0.04,
+              SizedBox(
+                height: screenSizeheight * 0.04,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
                     Container(
-                      color: Colors.white,
-                      width: 600,
-                      child: const Padding(
-                        padding: EdgeInsets.only(right: 10, left: 20),
-                        child: Row(
+                      color: Colors.transparent,
+                      width: 500.w,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.w, left: 10.w),
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Language(),
@@ -57,7 +60,7 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                             All(),
                             New(),
                             Voice(),
-                            const Advert(),
+                            Advert(),
                             Podcast(),
                           ],
                         ),
@@ -68,13 +71,13 @@ class _CategoryVoiceState extends State<CategoryVoice> {
               ),
               Container(
                 color: Colors.white,
-                height: screenSize.height * 0.196,
+                height: screenSizeheight * 0.196,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      height: 170,
-                      width: 370,
+                      height: screenSizeheight * 0.195,
+                      width: screenSizewidth*0.90,
                       child: GridView.builder(
                         itemCount: data.length,
                         gridDelegate:
@@ -96,11 +99,11 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                                   });
                                 },
                                 child: Container(
-                                  width: 120,
-                                  height: 150,
+                                  width: screenSizewidth * 0.9,
+                                  height: screenSizeheight * 0.180,
                                   decoration: BoxDecoration(
                                     border: GradientBoxBorder(
-                                      width: 4,
+                                      width: screenSizeheight * 0.01,
                                       gradient: selectedIndex == index
                                           ? const LinearGradient(colors: [
                                               Color(0xFF9A96F5),
@@ -139,12 +142,12 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                                               children: [
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.only(
-                                                          right: 45, top: 5),
+                                                      EdgeInsets.only(
+                                                          right: 39.w, top: 8.w),
                                                   child: selectedIndex == index
                                                       ? Container(
-                                                          width: 31,
-                                                          height: 17,
+                                                          width: 21.w,
+                                                          height: 17.h,
                                                           decoration:
                                                               BoxDecoration(
                                                             gradient:
@@ -160,13 +163,13 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        10),
+                                                                        8.r),
                                                           ),
-                                                          child: const Center(
+                                                          child: Center(
                                                             child: Text('เลือก',
                                                                 style:
                                                                     TextStyle(
-                                                                  fontSize: 10,
+                                                                  fontSize: 7.sp,
                                                                 )),
                                                           ),
                                                         )
@@ -200,21 +203,21 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                                                             child: SvgPicture
                                                                 .asset(
                                                               'assets/logo/heart (1).svg',
-                                                              width: 16,
-                                                              height: 16,
+                                                              width: 10.w,
+                                                              height: 10.h,
                                                               color: Colors
                                                                   .white, // Optional: Default color of the SVG
                                                             ),
                                                           )
                                                         : SvgPicture.asset(
                                                             'assets/logo/heart.svg',
-                                                            width: 16,
-                                                            height: 16,
+                                                            width: 12.sp,
+                                                            height: 12.sp,
                                                           ))
                                               ]),
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8, right: 8, top: 89),
+                                            padding:  EdgeInsets.only(
+                                                left: 8.w, right: 8.w, top: 45.w),
                                             child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -237,8 +240,8 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                                                           child:
                                                               SvgPicture.asset(
                                                             'assets/logo/Vector.svg',
-                                                            width: 16,
-                                                            height: 16,
+                                                            width: 10.sp,
+                                                            height: 10.sp,
                                                             color: Colors
                                                                 .white, // Optional: Default color of the SVG
                                                           ),
@@ -248,8 +251,8 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                                                         ),
                                                   Text(
                                                     data[index].name,
-                                                    style: const TextStyle(
-                                                      fontSize: 15,
+                                                    style: TextStyle(
+                                                      fontSize: 11.sp,
                                                       color: Colors.white,
                                                       fontWeight:
                                                           FontWeight.bold,
