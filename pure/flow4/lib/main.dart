@@ -1,5 +1,5 @@
 import 'package:flow3/screen/home.dart';
-import 'package:flow3/screen/homescreen.dart';
+// import 'package:flow3/screen/homescreen.dart';
 // import 'package:flow3/screen/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: theme,
-        home: HomePage(),
+        home: const HomePage(),
       ),
     );
   }
