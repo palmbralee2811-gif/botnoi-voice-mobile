@@ -1,6 +1,6 @@
 // import 'package:flow3/widgets/CategorySetting.dart';
 // import 'package:flow3/widgets/CategoryVoice.dart';
-import 'package:flow3/widgets/CategorySetting.dart';
+// import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -205,7 +205,7 @@ class _BottomVoiceState extends State<BottomVoice> {
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
   int _inputtext = 0;
-  int _button = 0;
+  // int _button = 0;
 
   void _selectPageVoice(int index) {
     setState(() {
@@ -226,7 +226,7 @@ class _BottomVoiceState extends State<BottomVoice> {
     double screenSizeheight = MediaQuery.of(context).size.height;
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
-      _button = 1;
+      // _button = 1;
       // if (_selectedPageIndexSetting == 1) {
       //   _selectedPageIndexVoice = 0;
       //   _selectedPageIndexSetting = 1;

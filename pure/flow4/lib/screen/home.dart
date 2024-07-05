@@ -1,4 +1,3 @@
-
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,10 +39,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
+    // double screenSizewidthInputtext = MediaQuery.of(context).size.width;
+    double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
+    double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
     int _currentIndex = 0;
+    final screenHeightOpen = screenSizeheightInputtextOpen;
+    final maxLinesopen = (screenHeightOpen / 49)
+        .floor(); // 24 คือความสูงประมาณของแต่ละบรรทัดใน TextField
+    final screenHeightClose = screenSizeheightInputtextOpen;
+    final maxLinesclose = (screenHeightClose / 120)
+        .floor(); // 24 คือความสูงประมาณของแต่ละบรรทัดใน TextField
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
       // _button = 1;
@@ -110,80 +118,82 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: <Widget>[
           SafeArea(
-      child: Column(
-        children: [
-          Container(
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                SizedBox(width: 55.w,),
-                Image.asset(
-                  'assets/logo/Frame.png',
-                  width: 30.w,
-                  height: 34.h,
-                ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 54.w,
-                          decoration: BoxDecoration(
-                            
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromARGB(255, 224, 221, 221),
-                                blurRadius: 3.0,
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(50.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                Container(
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 55.w,
+                      ),
+                      Image.asset(
+                        'assets/logo/Frame.png',
+                        width: 30.w,
+                        height: 34.h,
+                      ),
+                      Column(
+                        children: [
+                          Row(
                             children: [
-                              SizedBox(
-                                height: 25.h,
-                                width: 20.h,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/logo/point.png',
-                                        width: 20.w,
-                                        height: 20.h,
+                              Container(
+                                width: 54.w,
+                                decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color.fromARGB(255, 224, 221, 221),
+                                      blurRadius: 3.0,
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50.r),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 25.h,
+                                      width: 20.h,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/logo/point.png',
+                                              width: 20.w,
+                                              height: 20.h,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '100',
+                                          style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Column(
-                                children: [
-                                  Text(
-                                    '100',
-                                    style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    ),
           Container(
             color: Colors.blue,
             height: _inputtext == 1
@@ -198,11 +208,8 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       width: screenSizewidth * 0.75.w,
                       height: _inputtext == 1
-                          ? screenSizeheight * 0.24.h
-                          : screenSizeheight * 0.40.h,
-                      // _inputtext == 1
-                      //     ? screenSizeheight * 0.270.h
-                      //     : screenSizeheight * 0.40.h,
+                          ? screenSizeheightInputtextClose * 0.24.h
+                          : screenSizeheightInputtextOpen * 0.40.h,
                       decoration: BoxDecoration(
                         boxShadow: const [
                           BoxShadow(
@@ -220,8 +227,8 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             TextField(
                               style: const TextStyle(color: Colors.black),
-                              minLines: _inputtext == 1 ? 5 : 13,
-                              maxLines: _inputtext == 1 ? 5 : 13,
+                              minLines: _inputtext == 1 ? maxLinesclose : maxLinesopen,
+                              maxLines: _inputtext == 1 ? maxLinesclose : maxLinesopen,
                               keyboardType: TextInputType.multiline,
                               controller: _textController,
                               onChanged: (text) {
@@ -318,10 +325,10 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   flex: 7,
                   child: InkWell(
-                    onTap: () {
-                      /////////////////
-                    },
-                    child: const BuildVoice()),
+                      onTap: () {
+                        /////////////////
+                      },
+                      child: const BuildVoice()),
                 ),
                 Container(
                     height: screenSizeheight * 0.052.h,
