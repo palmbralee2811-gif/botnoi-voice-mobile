@@ -49,6 +49,9 @@ dependencies:
 
   # svg file import
   flutter_svg: ^0.22.0
+  
+  # เก็บข้อมูลจาก API ไว้ใน้ Cache ของ Mobile Device
+  shared_preferences: ^2.0.8
 
 dev_dependencies:
   flutter_test:
