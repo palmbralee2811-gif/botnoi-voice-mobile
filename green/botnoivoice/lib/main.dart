@@ -4,6 +4,17 @@ import 'package:botnoivoice/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+final theme = ThemeData(
+  colorScheme: ColorScheme.fromSeed(
+    // brightness: Brightness.dark,
+    brightness: Brightness.light,
+    seedColor: Color.fromARGB(255, 253, 196, 153),
+  ),
+  textTheme: GoogleFonts.promptTextTheme(),
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +31,23 @@ class BotnoiVoiceApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => Authentication()),
       ],
-      child: MaterialApp(
-        title: "Botnoi Voice",
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const AuthChecker(),
+      child: ScreenUtilInit(
+        designSize: const Size(320, 684),
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp(
+
+            debugShowCheckedModeBanner: false,
+            title: "Botnoi Voice",
+            theme: theme,
+
+
+            home: AuthChecker(speakerId: ''),
+
+
+            
+          );
+        },
       ),
     );
   }
