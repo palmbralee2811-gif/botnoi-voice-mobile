@@ -1,4 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/HomeScreen/home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -211,7 +212,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const VoiceScreen(speakerId: '',),
+
+                      builder: (context) => HomePage(),
+                      // builder: (context) => VoiceScreen(),
+                      // builder: (context) => const Homescreen(),
+
+
+
                     ),
                   );
                 } else {
