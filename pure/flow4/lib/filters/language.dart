@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Language extends StatelessWidget {
   const Language({super.key});
@@ -273,8 +275,8 @@ class Language extends StatelessWidget {
         );
       },
       child: Container(
-        width: 62,
-        height: 26,
+        width: 62.w,
+        height: 26.h,
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: const BorderRadius.all(
@@ -297,9 +299,11 @@ class Language extends StatelessWidget {
                   height: 14,
                 ),
                 const SizedBox(width: 3,),
-                const Text(
+                Text(
                   'ไทย',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF323130)),
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp
+                  ),
                 ),
                 const Icon(
                   Icons.keyboard_arrow_down_sharp,

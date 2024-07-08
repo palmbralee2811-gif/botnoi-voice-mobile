@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Sex extends StatelessWidget {
   const Sex({super.key});
@@ -133,8 +135,8 @@ class Sex extends StatelessWidget {
         );
       },
       child: Container(
-        width: 62,
-        height: 26,
+        width: 62.w,
+        height: 26.h,
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: const BorderRadius.all(
@@ -145,20 +147,17 @@ class Sex extends StatelessWidget {
             width: 1,
           ),
         ),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 3,
                 ),
-                Text(
-                  'ช/ญ',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF323130)),
-                ),
-                Icon(
+                Text('ช/ญ', style: GoogleFonts.prompt(fontSize: 12.sp)),
+                const Icon(
                   Icons.keyboard_arrow_down_sharp,
                   size: 20,
                   color: Color(0xFF323130),
