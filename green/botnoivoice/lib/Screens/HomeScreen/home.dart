@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Model/speaker_model.dart';
 import 'package:botnoivoice/Screens/AuthScreen/login_screen.dart';
 import 'package:dio/dio.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
@@ -33,10 +30,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController textController = TextEditingController();
-
   String _response = '';
   String _audioUrl = '';
   String _selectedTypeMedia = 'mp3';
+  bool isAudioPlaying = false;
   bool isLoading = false;
   String? speakerId;
 
@@ -175,6 +172,24 @@ class _HomePageState extends State<HomePage> {
     auth.setDataProfileWithToken(profileData);
 
     String? token = auth.credentialsToken;
+
+    /*
+    String? language;
+    String th = "th";
+    String en = "en";
+
+    // Regular expression to check if text contains Thai characters
+    RegExp thaiRegex = RegExp(r'[\u0E00-\u0E7F]');
+
+    if (thaiRegex.hasMatch(text)) {
+      language = th;
+    } else {
+      language = en;
+    }
+    */
+
+    print('\n text: $text \n speaker: $speakerId \n');
+    // print('language: $language \n');
 
     String url =
         "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
@@ -321,9 +336,9 @@ class _HomePageState extends State<HomePage> {
                             Column(
                               children: [
                                 Text(
-                                  " $credits ??  '100' ",
+                                  " ${credits ?? '100'} ",
                                   style: TextStyle(
-                                      fontSize: 12.sp,
+                                      fontSize: 10.sp,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black),
                                 ),
@@ -364,7 +379,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, auth, child) {
                     return auth.user != null
                         ? Text(
-                            'Signed in as ${auth.user!.displayName}',
+                            '${auth.user!.displayName}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -380,9 +395,9 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(
               Icons.home,
-              color: Colors.white,
+              color: Colors.black,
             ),
-            title: const Text('Home'),
+            title: const Text('สตูดิโอ'),
             onTap: () {
               Navigator.pop(context);
             },
@@ -390,9 +405,14 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(
               Icons.settings,
-              color: Colors.white,
+              color: Colors.black,
             ),
-            title: const Text('Sign-out'),
+            title: const Text(
+              'ออกจากระบบ',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
             onTap: () async {
               await auth.signOut();
               if (!context.mounted) return;
@@ -413,11 +433,11 @@ class _HomePageState extends State<HomePage> {
   int selectedIndex = -1;
   int selectedIndex2 = -1;
 
+  /*
   Widget categoryVoice(BuildContext context) {
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
     // var screenSize = MediaQuery.of(context).size;
-    // final data = AppDataBase.data;
 
     return FutureBuilder<List<Speaker>>(
       future: _fetchMarketplaceDataFuture,
@@ -449,9 +469,7 @@ class _HomePageState extends State<HomePage> {
                             height: screenSizeheight * 0.195,
                             width: screenSizewidth * 0.90,
                             child: GridView.builder(
-                              // itemCount: data.length,
                               itemCount: speakers.length,
-
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 1,
@@ -460,7 +478,6 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisExtent: 110,
                               ),
                               scrollDirection: Axis.horizontal,
-
                               itemBuilder: (context, index) {
                                 Speaker speaker = speakers[index];
 
@@ -660,16 +677,350 @@ class _HomePageState extends State<HomePage> {
                                                         Text(
                                                           speaker.thaiName,
                                                           style: TextStyle(
-                                                            fontSize: 11.sp,
+                                                            fontSize: 10.sp,
                                                             color: Colors.white,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),
                                                         ),
+                                                      ]),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+  */
+
+  Widget categoryVoice02(BuildContext context) {
+    double screenSizewidth = MediaQuery.of(context).size.width;
+    double screenSizeheight = MediaQuery.of(context).size.height;
+    // var screenSize = MediaQuery.of(context).size;
+
+    return FutureBuilder<List<Speaker>>(
+      future: _fetchMarketplaceDataFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error loading data'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No data available'));
+        } else {
+          List<Speaker> speakers = snapshot.data!;
+          speakers.sort((a, b) =>
+              int.parse(a.speakerId).compareTo(int.parse(b.speakerId)));
+
+          return InkWell(
+            child: Column(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: screenSizeheight * 0.04,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          Container(
+                            color: Colors.transparent,
+                            width: 500.w,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 10.w, left: 10.w),
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  /*
+                            Language(),
+                            Sex(),
+                            Recommant(),
+                            Favorite(),
+                            All(),
+                            New(),
+                            Voice(),
+                            Advert(),
+                            Podcast(),
+                            */
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      height: screenSizeheight * 0.196,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: screenSizeheight * 0.195,
+                            width: screenSizewidth * 0.90,
+                            child: GridView.builder(
+                              itemCount: speakers.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                mainAxisExtent: 110,
+                              ),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                Speaker speaker = speakers[index];
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        // https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/sound_1_alisa.wav
+                                        String? audioURL = speaker.audio;
+
+                                        Future<void> playAudio() async {
+                                          if (audioURL.isNotEmpty) {
+                                            if (isAudioPlaying) {
+                                              // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                                              await audioPlayer.stop();
+                                            }
+
+                                            await audioPlayer
+                                                .play(UrlSource(audioURL));
+                                            setState(() {
+                                              isAudioPlaying = true;
+                                            });
+
+                                            audioPlayer.onPlayerComplete
+                                                .listen((event) {
+                                              print(
+                                                  "#### Play Audio's Complete");
+                                              setState(() {
+                                                isAudioPlaying = false;
+                                              });
+                                            });
+                                          } else {
+                                            setState(() {
+                                              isAudioPlaying = false;
+                                            });
+                                            print(
+                                                "Audio URL is empty, cannot play audio");
+                                          }
+                                        }
+
+                                        await playAudio();
+
+                                        speakerId = speaker.speakerId;
+                                        print(
+                                            '\n speakerId -> Widget(DataVoice): $speakerId');
+                                        print(
+                                            'thaiName -> Widget(DataVoice): ${speaker.thaiName}');
+                                        print(
+                                            'engName -> Widget(DataVoice): ${speaker.engName}');
+                                        print(
+                                            'language -> Widget(DataVoice): ${speaker.language}');
+                                        print(
+                                            'availableLanguage -> Widget(DataVoice): ${speaker.availableLanguage}');
+                                        setState(() {});
+
+                                        setState(() {
+                                          selectedIndex = index;
+                                        });
+                                      },
+                                      child: Container(
+                                        width: screenSizewidth * 0.9,
+                                        height: screenSizeheight * 0.180,
+                                        decoration: BoxDecoration(
+                                          border: GradientBoxBorder(
+                                            // width: screenSizeheight * 0.01,
+                                            width: 3.h,
+                                            gradient: selectedIndex == index
+                                                ? const LinearGradient(colors: [
+                                                    Color(0xFF9A96F5),
+                                                    Color(0xFF00E0FF)
+                                                  ])
+                                                : const LinearGradient(colors: [
+                                                    Colors.transparent,
+                                                    Colors.transparent
+                                                  ]),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                speaker.squareImage),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: selectedIndex == index
+                                                  ? Colors.blue.withOpacity(0.5)
+                                                  : Colors.transparent,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 39.w,
+                                                                top: 8.w),
+                                                        child: selectedIndex ==
+                                                                index
+                                                            ? Container(
+                                                                width: 21.w,
+                                                                height: 17.h,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  gradient:
+                                                                      const LinearGradient(
+                                                                    colors: [
+                                                                      Color(
+                                                                          0xFF9A96F5),
+                                                                      Color(
+                                                                          0xFF00E0FF)
+                                                                    ],
+                                                                  ),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.r),
+                                                                ),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                      'เลือก',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            7.sp,
+                                                                        color: Colors.white,
+                                                                      )),
+                                                                ),
+                                                              )
+                                                            : const Icon(
+                                                                Icons.check,
+                                                                color: Colors.transparent,
+                                                              ),
+                                                      ),
+                                                      /*
+                                                      GestureDetector(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              selectedIndex2 =
+                                                                  index;
+                                                            });
+                                                          },
+                                                          child:
+                                                              selectedIndex2 ==
+                                                                      index
+                                                                  ? ShaderMask(
+                                                                      shaderCallback:
+                                                                          (Rect
+                                                                              bounds) {
+                                                                        return const LinearGradient(
+                                                                          colors: [
+                                                                            Color(0xFF9A96F5),
+                                                                            Color(0xFF00E0FF),
+                                                                          ],
+                                                                        ).createShader(
+                                                                            bounds);
+                                                                      },
+                                                                      child: SvgPicture
+                                                                          .asset(
+                                                                        'assets/logo/heart (1).svg',
+                                                                        width:
+                                                                            10.w,
+                                                                        height:
+                                                                            10.h,
+                                                                        color: Colors
+                                                                            .white, // Optional: Default color of the SVG
+                                                                      ),
+                                                                    )
+                                                                  : SvgPicture
+                                                                      .asset(
+                                                                      'assets/logo/heart.svg',
+                                                                      width:
+                                                                          12.sp,
+                                                                      height:
+                                                                          12.sp,
+                                                                    ))
+                                                                    */
+                                                    ]),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 6.w,
+                                                      right: 6.w,
+                                                      top: 45.w),
+                                                  child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        selectedIndex == index
+                                                            ? ShaderMask(
+                                                                shaderCallback:
+                                                                    (Rect
+                                                                        bounds) {
+                                                                  return const LinearGradient(
+                                                                    colors: [
+                                                                      Color(
+                                                                          0xFF9A96F5),
+                                                                      Color(
+                                                                          0xFF00E0FF),
+                                                                    ],
+                                                                  ).createShader(
+                                                                      bounds);
+                                                                },
+                                                                child:
+                                                                    SvgPicture
+                                                                        .asset(
+                                                                  'assets/logo/Vector.svg',
+                                                                  width: 10.sp,
+                                                                  height: 10.sp,
+                                                                  color: Colors
+                                                                      .white, // Optional: Default color of the SVG
+                                                                ),
+                                                              )
+                                                            : SvgPicture.asset(
+                                                                'assets/logo/Vector.svg',
+                                                              ),
                                                         Text(
-                                                          speaker.engName,
+                                                          speaker.thaiName,
                                                           style: TextStyle(
-                                                            fontSize: 11.sp,
+                                                            fontSize: 10.sp,
                                                             color: Colors.white,
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -701,11 +1052,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /*
   // Original (ต้นฉบับ)
   Widget buildVoiceButton() {
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
-    
+
     return Container(
       height: screenSizeheight * 0.093.h,
       width: screenSizewidth * 0.78.w,
@@ -771,11 +1123,86 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  
+  */
+
+  Widget buildVoiceButton02() {
+    //final auth = Provider.of<Authentication>(context, listen: false);
+    //String? credits = auth.dataProfileWithToken;
+
+    double screenSizewidth = MediaQuery.of(context).size.width;
+    double screenSizeheight = MediaQuery.of(context).size.height;
+    return Container(
+      height: screenSizeheight * 0.093.h,
+      width: screenSizewidth * 0.78.w,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 55.h,
+                width: screenSizewidth * 0.7.w,
+                decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 224, 221, 221),
+                      blurRadius: 6.0,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(10.r),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "สร้างเสียง",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    /*
+                    Padding(
+                      padding: EdgeInsets.only(left: 5.w, top: 4.w),
+                      child: Image.asset(
+                        'assets/logo/point.png',
+                        width: 18.w,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0.w),
+                      child: Text(
+                        " ${credits ?? '100'} ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    */
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Authentication>(context, listen: false);
-    String? credits = auth.dataProfileWithToken;
+    // final auth = Provider.of<Authentication>(context, listen: false);
+    // String? credits = auth.dataProfileWithToken;
 
     final screenHeight = MediaQuery.of(context).size.height;
     double screenSizewidth = MediaQuery.of(context).size.width;
@@ -802,13 +1229,17 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      // ปิด Tag แสดงผล คำเตือน สีเหลือง
+      resizeToAvoidBottomInset: false,
+
       drawer: appBarDrawer(context),
-      // appBar: AppBar(
-      //   backgroundColor: const Color(0xFFFFFFFF),
-      //   title: appBar(),
-      // ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        title: appBar(),
+      ),
       body: Column(
         children: <Widget>[
+          /*
           SafeArea(
             child: Column(
               children: [
@@ -886,6 +1317,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          */
           Container(
             color: Colors.blue,
             height: _inputtext == 1
@@ -1016,20 +1448,30 @@ class _HomePageState extends State<HomePage> {
                         screenSizeheight: screenSizeheight,
                         selectedPageIndexVoice: _selectedPageIndexVoice)),
                 if (_selectedPageIndexVoice == 1)
-                  if (_selectedPageIndexVoice == 1) ...[categoryVoice(context)],
+                  if (_selectedPageIndexVoice == 1) ...[
+                    categoryVoice02(context)
+                  ],
                 Expanded(
                   flex: 7,
                   child: InkWell(
                       onTap: () {
+                        setState(() {
+                          if (textController.text.isNotEmpty) {
+                            audioPlayer.stop();
+                          }
+                        });
                         if (!isLoading) {
-                          generateAudio(textController.text).then((_) {
-                            print('_response $_response');
-                            downloadFile();
-                          });
+                          if (textController.text.isNotEmpty) {
+                              generateAudio(textController.text).then((_) {
+                              print('_response $_response');
+                              downloadFile();
+                            });
+                          }
                         }
                       },
-                      child: buildVoiceButton()),
+                      child: buildVoiceButton02()),
                 ),
+                /*
                 Container(
                     height: screenSizeheight * 0.052.h,
                     width: screenSizewidth * 0.78.w,
@@ -1041,7 +1483,9 @@ class _HomePageState extends State<HomePage> {
                               'assets/logo/Property 1=studio, Property 2=deault (2).svg')
                           : SvgPicture.asset(
                               'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                    ))
+                    ),
+                    )
+                */
               ]), // 40% of the screen height
             ),
           ),

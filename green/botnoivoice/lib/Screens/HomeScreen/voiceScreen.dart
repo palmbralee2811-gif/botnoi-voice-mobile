@@ -191,21 +191,6 @@ class _VoiceScreenState extends State<VoiceScreen> {
     }
   }
 
-  Future<void> _playAudio() async {
-    if (_audioUrl.isNotEmpty) {
-      print("Audio URL: $_audioUrl");
-
-      AudioPlayer audioPlayer = AudioPlayer();
-      audioPlayer.play(UrlSource(_audioUrl));
-
-      audioPlayer.onPlayerComplete.listen((event) {
-        print("#### Play Audio's Complete");
-      });
-    } else {
-      print("Audio URL is empty, cannot play audio");
-    }
-  }
-
   Future<void> downloadFile() async {
     try {
       if (await Permission.storage.request().isGranted) {
@@ -440,8 +425,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GestureDetector(
-                                      onTap: () {
-
+                                      onTap: ()  {
                                         speakerId = speaker.speakerId;
                                         print('speakerId -> Widget(DataVoice): $speakerId');
                                         print('thaiName -> Widget(DataVoice): ${speaker.thaiName}');
