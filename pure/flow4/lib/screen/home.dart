@@ -1,5 +1,6 @@
 // import 'dart:ffi';
 
+import 'package:flow3/filters/languagedrawer.dart';
 import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+ 
+
   @override
   Widget build(BuildContext context) {
     double screenSizewidth = MediaQuery.of(context).size.width;
@@ -50,9 +53,12 @@ class _HomePageState extends State<HomePage> {
     double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
     // int currentIndex = 0;
     final screenHeightOpen = screenSizeheightInputtextOpen;
-    final maxLinesopen = (screenHeightOpen / 58).floor();
+    final maxLinesopen = (screenHeightOpen / 65).floor();
     final screenHeightClose = screenSizeheightInputtextOpen;
-    final maxLinesclose = (screenHeightClose / 150).floor();
+    final maxLinesclose = (screenHeightClose / 180).floor();
+    bool _showClearIcon = false;
+
+    
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
       // _button = 1;
@@ -102,10 +108,10 @@ class _HomePageState extends State<HomePage> {
                             textStyle: TextStyle(fontSize: 10.sp),
                           ),
                           onPressed: () {
-                            // To update the counter
+                            Navigator.pop(context);
                           },
                           child: Icon(
-                            Icons.menu,
+                            Icons.menu_rounded,
                             color: const Color(0xFF323130),
                             size: 32.sp,
                           )),
@@ -138,6 +144,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
               leading: GradientIcon(
                 icon: Icons.account_circle_outlined,
                 size: 24.sp,
@@ -150,7 +157,7 @@ class _HomePageState extends State<HomePage> {
               title: GradientText(
                 text: 'ข้อมูลส่วนตัว',
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFFA19F9D),
                 ),
@@ -161,6 +168,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {},
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
               leading: Icon(
                 Icons.credit_card_rounded,
                 size: 24.sp,
@@ -169,7 +177,7 @@ class _HomePageState extends State<HomePage> {
               title: Text(
                 'แพ็คเกจ',
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),
@@ -177,6 +185,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {},
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
               leading: Icon(
                 Icons.question_mark_outlined,
                 size: 24.sp,
@@ -185,7 +194,7 @@ class _HomePageState extends State<HomePage> {
               title: Text(
                 'FAQ',
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),
@@ -193,6 +202,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {},
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
               leading: Icon(
                 Icons.email_outlined,
                 size: 24.sp,
@@ -201,7 +211,7 @@ class _HomePageState extends State<HomePage> {
               title: Text(
                 'ข้อเสนอแนะ',
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),
@@ -209,6 +219,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {},
             ),
             ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
               leading: Icon(
                 Icons.credit_card_sharp,
                 size: 24.sp,
@@ -217,7 +228,7 @@ class _HomePageState extends State<HomePage> {
               title: Text(
                 'เกี่ยวกับเรา',
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),
@@ -229,45 +240,11 @@ class _HomePageState extends State<HomePage> {
               opacity: 0.5, // 50% opacity
               child: Container(
                 width: 200.w,
-                height: 250.h,
+                height: screenSizeheight * 0.05.h,
                 color: Colors.transparent,
               ),
             )),
-            SizedBox(
-              width: 62.w,
-              height: 30.h,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/logo/Ellipse 12.jpg',
-                        width: 24.w,
-                        height: 24.w,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        'ไทย',
-                        style: GoogleFonts.prompt(
-                            fontSize: 20.sp, fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(
-                        width: 80.w,
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_down_sharp,
-                        size: 24.sp,
-                        color: const Color(0xFF323130),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            )
+            const Languagedrawer()
           ],
         ),
       ),
@@ -375,10 +352,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: Container(
-                      width: screenSizewidth * 0.70.w,
-                      // height: _inputtext == 1
-                      //     ? screenSizeheightInputtextClose * 0.19.h
-                      //     : screenSizeheightInputtextOpen * 0.20.h,
+                      width: 288.w,
                       decoration: BoxDecoration(
                         boxShadow: const [
                           BoxShadow(
@@ -395,7 +369,10 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: [
                             TextField(
-                              style: const TextStyle(color: Colors.black),
+                              cursorColor: const Color(0xFF000000),
+                              style: GoogleFonts.prompt(
+                                  fontSize: 14.sp,
+                                  color: const Color(0xFF323130)),
                               minLines: _inputtext == 1
                                   ? maxLinesclose
                                   : maxLinesopen,
@@ -415,17 +392,20 @@ class _HomePageState extends State<HomePage> {
                                         offset: _textController.text.length),
                                   );
                                 }
-                                setState(() {});
+                                setState(() {
+                                  _showClearIcon =
+                                      _textController.text.isNotEmpty;
+                                });
                               },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText:
                                     'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
                                 hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontStyle:
-                                        GoogleFonts.prompt(fontSize: 14.sp)
-                                            .fontStyle),
+                                  color: const Color(0xFFA19F9D),
+                                  fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                                      .fontStyle,
+                                ),
                                 hintMaxLines: 1,
                               ),
                             ),
@@ -438,31 +418,58 @@ class _HomePageState extends State<HomePage> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 1.w),
-                                        child: TextButton(
-                                            style: TextButton.styleFrom(
-                                              textStyle:
-                                                  TextStyle(fontSize: 10.sp),
-                                            ),
-                                            onPressed: () {
-                                              _textController.clear();
-                                              setState(
-                                                  () {}); // To update the counter
-                                            },
-                                            child: GradientIcon(
-                                              icon: Icons.close_sharp,
-                                              size: 20.sp,
-                                              gradient: const LinearGradient(
-                                                colors: [
-                                                  Color(0xFF9340FF),
-                                                  Color(0xFF34BDFA)
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
+                                      _showClearIcon ==
+                                              _textController.text.isNotEmpty
+                                          ? Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    textStyle: TextStyle(
+                                                        fontSize: 10.sp),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      // _showClearIcon =
+                                                      //     false; // To update the counter
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.close_sharp,
+                                                    size: 20.sp,
+                                                    color: Colors.transparent,
+                                                  )),
+                                            )
+                                          : Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10.sp),
+                                                ),
+                                                onPressed: () {
+                                                  _textController.clear();
+                                                  setState(() {
+                                                    // _showClearIcon =
+                                                    //     false; // To update the counter
+                                                  });
+                                                },
+                                                child: GradientIcon(
+                                                  icon: Icons.close_sharp,
+                                                  size: 20.sp,
+                                                  gradient:
+                                                      const LinearGradient(
+                                                    colors: [
+                                                      Color(0xFF9340FF),
+                                                      Color(0xFF34BDFA)
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
                                               ),
-                                            )),
-                                      ),
+                                            )
                                     ],
                                   ),
                                   Row(
@@ -499,7 +506,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-            ), // 60% of the screen height
+            ),
           ),
           Expanded(
             child: Container(
