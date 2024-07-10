@@ -1,7 +1,12 @@
+// import 'dart:ffi';
+
+import 'package:flow3/filters/languagedrawer.dart';
+import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -37,33 +42,35 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+ 
+
   @override
   Widget build(BuildContext context) {
-    // final screenHeight = MediaQuery.of(context).size.height;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
-    // double screenSizewidthInputtext = MediaQuery.of(context).size.width;
+
     double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
     double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
-    int _currentIndex = 0;
+    // int currentIndex = 0;
     final screenHeightOpen = screenSizeheightInputtextOpen;
-    final maxLinesopen = (screenHeightOpen / 49)
-        .floor(); // 24 คือความสูงประมาณของแต่ละบรรทัดใน TextField
+    final maxLinesopen = (screenHeightOpen / 65).floor();
     final screenHeightClose = screenSizeheightInputtextOpen;
-    final maxLinesclose = (screenHeightClose / 120)
-        .floor(); // 24 คือความสูงประมาณของแต่ละบรรทัดใน TextField
+    final maxLinesclose = (screenHeightClose / 180).floor();
+    bool _showClearIcon = false;
+
+    
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
       // _button = 1;
-      // if (_selectedPageIndexSetting == 1) {
-      //   _selectedPageIndexVoice = 0;
-      //   _selectedPageIndexSetting = 1;
-      // }
+      if (_selectedPageIndexSetting == 1) {
+        _selectedPageIndexVoice = 0;
+        _selectedPageIndexSetting = 1;
+      }
     }
-    // if (_selectedPageIndexSetting == 2) {
-    //   _selectedPageIndexVoice = 1;
-    //   _selectedPageIndexSetting = 0;
-    // }
+    if (_selectedPageIndexSetting == 2) {
+      _selectedPageIndexVoice = 1;
+      _selectedPageIndexSetting = 0;
+    }
     if (_selectedPageIndexVoice == 2) {
       _inputtext = 0;
     }
@@ -72,133 +79,272 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawer: Drawer(
         elevation: 16,
+        backgroundColor: Colors.white,
         shadowColor: Colors.black,
         child: ListView(
-          padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.sp,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              title: const Text('Home'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.settings,
-                color: Colors.white,
-              ),
-              title: const Text('Settings'),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-      // appBar: AppBar(
-      //   backgroundColor: const Color(0xFFFFFFFF),
-      //   title: AppBar(),
-      // ),
-      body: Column(
-        children: <Widget>[
-          SafeArea(
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: Row(
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: 55.w,
+                      CircleAvatar(
+                        backgroundColor: Colors.black,
+                        radius: 20.0.r,
+                        child: SvgPicture.asset(
+                          'assets/logo/logo.svg',
+                          width: 40.0.w,
+                          height: 40.0.h,
+                        ),
                       ),
-                      Image.asset(
-                        'assets/logo/Frame.png',
-                        width: 30.w,
-                        height: 34.h,
-                      ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 54.w,
-                                decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(255, 224, 221, 221),
-                                      blurRadius: 3.0,
-                                    ),
-                                  ],
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50.r),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      height: 25.h,
-                                      width: 20.h,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/logo/point.png',
-                                              width: 20.w,
-                                              height: 20.h,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          '100',
-                                          style: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 10.sp),
                           ),
-                        ],
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.menu_rounded,
+                            color: const Color(0xFF323130),
+                            size: 32.sp,
+                          )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Nonnssssssss',
+                        style: GoogleFonts.prompt(
+                          fontSize: 24.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF323130),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('UID:sdsdasdadassssssssssss',
+                          style: GoogleFonts.prompt(
+                            fontSize: 14.sp,
+                            color: const Color(0xFF323130),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
+              leading: GradientIcon(
+                icon: Icons.account_circle_outlined,
+                size: 24.sp,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              title: GradientText(
+                text: 'ข้อมูลส่วนตัว',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFA19F9D),
+                ),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.credit_card_rounded,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'แพ็คเกจ',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.question_mark_outlined,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'FAQ',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.email_outlined,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'ข้อเสนอแนะ',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.credit_card_sharp,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'เกี่ยวกับเรา',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {},
+            ),
+            Expanded(
+                child: Opacity(
+              opacity: 0.5, // 50% opacity
+              child: Container(
+                width: 200.w,
+                height: screenSizeheight * 0.05.h,
+                color: Colors.transparent,
+              ),
+            )),
+            const Languagedrawer()
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        title: const Appbar(),
+      ),
+      body: Column(
+        children: <Widget>[
+          // SafeArea(
+          // child:
+          // Column(
+          //   children: [
+          //     Container(
+          //       color: Colors.white,
+          //       child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           SizedBox(
+          //             width: 55.w,
+          //           ),
+          //           Image.asset(
+          //             'assets/logo/Frame.png',
+          //             width: 30.w,
+          //             height: 34.h,
+          //           ),
+          //           Column(
+          //             children: [
+          //               Row(
+          //                 children: [
+          //                   Container(
+          //                     width: 54.w,
+          //                     decoration: BoxDecoration(
+          //                       boxShadow: const [
+          //                         BoxShadow(
+          //                           color: Color.fromARGB(255, 224, 221, 221),
+          //                           blurRadius: 3.0,
+          //                         ),
+          //                       ],
+          //                       color: Colors.white,
+          //                       borderRadius: BorderRadius.circular(50.r),
+          //                     ),
+          //                     child: Row(
+          //                       mainAxisAlignment: MainAxisAlignment.center,
+          //                       children: [
+          //                         SizedBox(
+          //                           height: 25.h,
+          //                           width: 20.h,
+          //                           child: Padding(
+          //                             padding: const EdgeInsets.all(2),
+          //                             child: Column(
+          //                               mainAxisAlignment:
+          //                                   MainAxisAlignment.center,
+          //                               children: [
+          //                                 Image.asset(
+          //                                   'assets/logo/point.png',
+          //                                   width: 20.w,
+          //                                   height: 20.h,
+          //                                 ),
+          //                               ],
+          //                             ),
+          //                           ),
+          //                         ),
+          //                         Column(
+          //                           children: [
+          //                             Text(
+          //                               '100',
+          //                               style: GoogleFonts.prompt(
+          //                                 fontSize: 12.sp,
+          //                                 fontWeight: FontWeight.bold,
+          //                                 color: const Color(0xFF323130),
+          //                               ),
+          //                             ),
+          //                           ],
+          //                         ),
+          //                       ],
+          //                     ),
+          //                   ),
+          //                 ],
+          //               ),
+          //             ],
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // ),
           Container(
-            color: Colors.blue,
+            width: screenSizewidth,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
             height: _inputtext == 1
-                ? screenSizeheight * 0.35
-                : screenSizeheight * 0.64,
+                ? screenSizeheightInputtextClose * 0.30
+                : screenSizeheightInputtextOpen * 0.59,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
@@ -206,10 +352,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: Container(
-                      width: screenSizewidth * 0.75.w,
-                      height: _inputtext == 1
-                          ? screenSizeheightInputtextClose * 0.24.h
-                          : screenSizeheightInputtextOpen * 0.40.h,
+                      width: 288.w,
                       decoration: BoxDecoration(
                         boxShadow: const [
                           BoxShadow(
@@ -226,9 +369,16 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: [
                             TextField(
-                              style: const TextStyle(color: Colors.black),
-                              minLines: _inputtext == 1 ? maxLinesclose : maxLinesopen,
-                              maxLines: _inputtext == 1 ? maxLinesclose : maxLinesopen,
+                              cursorColor: const Color(0xFF000000),
+                              style: GoogleFonts.prompt(
+                                  fontSize: 14.sp,
+                                  color: const Color(0xFF323130)),
+                              minLines: _inputtext == 1
+                                  ? maxLinesclose
+                                  : maxLinesopen,
+                              maxLines: _inputtext == 1
+                                  ? maxLinesclose
+                                  : maxLinesopen,
                               keyboardType: TextInputType.multiline,
                               controller: _textController,
                               onChanged: (text) {
@@ -242,14 +392,20 @@ class _HomePageState extends State<HomePage> {
                                         offset: _textController.text.length),
                                   );
                                 }
-                                setState(() {});
+                                setState(() {
+                                  _showClearIcon =
+                                      _textController.text.isNotEmpty;
+                                });
                               },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText:
-                                    'กรุณากรอกข้อความที่ต้องการจะสร้าง...',
+                                    'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
                                 hintStyle: TextStyle(
-                                    color: Colors.grey, fontSize: 14.sp),
+                                  color: const Color(0xFFA19F9D),
+                                  fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                                      .fontStyle,
+                                ),
                                 hintMaxLines: 1,
                               ),
                             ),
@@ -262,31 +418,83 @@ class _HomePageState extends State<HomePage> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 1.w),
-                                        child: TextButton(
-                                          style: TextButton.styleFrom(
-                                            textStyle:
-                                                TextStyle(fontSize: 10.sp),
-                                          ),
-                                          onPressed: () {
-                                            _textController.clear();
-                                            setState(
-                                                () {}); // To update the counter
-                                          },
-                                          child: Image.asset(
-                                              'assets/logo/Frame 1028950648.png'),
+                                      _showClearIcon ==
+                                              _textController.text.isNotEmpty
+                                          ? Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    textStyle: TextStyle(
+                                                        fontSize: 10.sp),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      // _showClearIcon =
+                                                      //     false; // To update the counter
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.close_sharp,
+                                                    size: 20.sp,
+                                                    color: Colors.transparent,
+                                                  )),
+                                            )
+                                          : Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10.sp),
+                                                ),
+                                                onPressed: () {
+                                                  _textController.clear();
+                                                  setState(() {
+                                                    // _showClearIcon =
+                                                    //     false; // To update the counter
+                                                  });
+                                                },
+                                                child: GradientIcon(
+                                                  icon: Icons.close_sharp,
+                                                  size: 20.sp,
+                                                  gradient:
+                                                      const LinearGradient(
+                                                    colors: [
+                                                      Color(0xFF9340FF),
+                                                      Color(0xFF34BDFA)
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      GradientText(
+                                        text: '${_textController.text.length}',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFFA19F9D),
+                                        ),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF9340FF),
+                                            Color(0xFF34BDFA)
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        ' / ${widget.maxLength}',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFFA19F9D),
                                         ),
                                       ),
                                     ],
-                                  ),
-                                  Text(
-                                    '${_textController.text.length}/${widget.maxLength}',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12.sp,
-                                      height: 1.h,
-                                    ),
                                   ),
                                 ],
                               ),
@@ -298,11 +506,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-            ), // 60% of the screen height
+            ),
           ),
           Expanded(
             child: Container(
-              color: Colors.white,
+              color: const Color(0xFFFFFFFF),
               height: _inputtext == 1
                   ? screenSizeheight * 0.50
                   : screenSizeheight * 0.26,
@@ -320,28 +528,43 @@ class _HomePageState extends State<HomePage> {
                     child: Selectvoice(
                         screenSizeheight: screenSizeheight,
                         selectedPageIndexVoice: _selectedPageIndexVoice)),
-                if (_selectedPageIndexVoice == 1)
-                  if (_selectedPageIndexVoice == 1) ...[const CategoryVoice()],
+                if (_selectedPageIndexVoice == 1) ...[const CategoryVoice()],
+                InkWell(
+                  onTap: () {
+                    if (_selectedPageIndexSetting == 0) {
+                      _selectPageSetting(1);
+                    } else if (_selectedPageIndexSetting == 1) {
+                      _selectPageSetting(2);
+                    } else if (_selectedPageIndexSetting == 2) {
+                      _selectPageSetting(1);
+                    }
+                  },
+                  child: Setting(
+                      screenSizeheight: screenSizeheight,
+                      selectedPageIndexSetting: _selectedPageIndexSetting),
+                ),
+                if (_selectedPageIndexSetting == 1) ...[
+                  const CategorySetting()
+                ],
                 Expanded(
-                  flex: 7,
                   child: InkWell(
                       onTap: () {
                         /////////////////
                       },
                       child: const BuildVoice()),
                 ),
-                Container(
-                    height: screenSizeheight * 0.052.h,
-                    width: screenSizewidth * 0.78.w,
-                    color: const Color(0xFF27282B),
-                    child: InkWell(
-                      onTap: () {},
-                      child: _currentIndex == 1
-                          ? SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=deault (2).svg')
-                          : SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                    ))
+                // Container(
+                //     height: screenSizeheight * 0.052.h,
+                //     width: screenSizewidth * 0.78.w,
+                //     color: const Color(0xFF27282B),
+                //     child: InkWell(
+                //       onTap: () {},
+                //       child: currentIndex == 1
+                //           ? SvgPicture.asset(
+                //               'assets/logo/Property 1=studio, Property 2=deault (2).svg')
+                //           : SvgPicture.asset(
+                //               'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
+                //     ))
               ]), // 40% of the screen height
             ),
           ),
@@ -364,11 +587,11 @@ class Selectvoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: screenSizeheight * 0.06.h,
+        height: screenSizeheight * 0.05.h,
         decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(
-              color: Colors.grey,
+              color: const Color(0xFFE2E3E9),
               width: 1.w,
             )),
         child: Row(
@@ -378,15 +601,68 @@ class Selectvoice extends StatelessWidget {
               padding: EdgeInsets.only(left: 20.w),
               child: Text(
                 "เลือกเสียง",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.bold),
+                style: GoogleFonts.prompt(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
               ),
             ),
             Padding(
                 padding: EdgeInsets.only(right: 20.w),
                 child: _selectedPageIndexVoice == 1
+                    ? Icon(
+                        Icons.expand_less,
+                        color: const Color(0xFF323130),
+                        size: 20.sp,
+                      )
+                    : Icon(
+                        Icons.expand_more,
+                        color: const Color(0xFF323130),
+                        size: 20.sp,
+                      )),
+          ],
+        ));
+  }
+}
+
+class Setting extends StatelessWidget {
+  const Setting({
+    super.key,
+    required this.screenSizeheight,
+    required int selectedPageIndexSetting,
+  }) : _selectedPageIndexSetting = selectedPageIndexSetting;
+
+  final double screenSizeheight;
+  final int _selectedPageIndexSetting;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: screenSizeheight * 0.05.h,
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(
+              color: const Color(0xFFE2E3E9),
+              width: 1.w,
+            )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: Text(
+                "ตั้งค่าเพิ่มเติม",
+                style: GoogleFonts.prompt(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+            ),
+            Padding(
+                padding: EdgeInsets.only(right: 20.w),
+                child: _selectedPageIndexSetting == 1
                     ? Icon(
                         Icons.expand_less,
                         color: const Color(0xFF323130),
@@ -461,10 +737,11 @@ class Appbar extends StatelessWidget {
                               children: [
                                 Text(
                                   '100',
-                                  style: TextStyle(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
+                                  style: GoogleFonts.prompt(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF323130),
+                                  ),
                                 ),
                               ],
                             ),
@@ -483,13 +760,19 @@ class Appbar extends StatelessWidget {
   }
 }
 
-class BuildVoice extends StatelessWidget {
+class BuildVoice extends StatefulWidget {
   const BuildVoice({super.key});
 
+  @override
+  State<BuildVoice> createState() => _BuildVoiceState();
+}
+
+class _BuildVoiceState extends State<BuildVoice> {
   @override
   Widget build(BuildContext context) {
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
+
     return Container(
       height: screenSizeheight * 0.093.h,
       width: screenSizewidth * 0.78.w,
@@ -502,56 +785,96 @@ class BuildVoice extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: 55.h,
-                width: screenSizewidth * 0.7.w,
-                decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 224, 221, 221),
-                      blurRadius: 6.0,
+              InkWell(
+                onTap: () {
+                  /////////////////////////////////////////////////////////////////////////////////////
+                },
+                child: Container(
+                  height: 55.h,
+                  width: screenSizewidth * 0.7.w,
+                  decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(255, 224, 221, 221),
+                        blurRadius: 6.0,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(10.r),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                     ),
-                  ],
-                  borderRadius: BorderRadius.circular(10.r),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "สร้างเสียง",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 5.w, top: 4.w),
-                      child: Image.asset(
-                        'assets/logo/point.png',
-                        width: 18.w,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0.w),
-                      child: Text(
-                        '0',
-                        style: TextStyle(
-                          color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "สร้างเสียง",
+                        style: GoogleFonts.prompt(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
+                          color: const Color(0xFFFFFFFF),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class GradientText extends StatelessWidget {
+  final String text;
+
+  final TextStyle style;
+  final Gradient gradient;
+
+  GradientText({
+    required this.text,
+    required this.style,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) {
+        return gradient
+            .createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height));
+      },
+      child: Text(
+        text,
+        style: style.copyWith(color: Colors.white), // text color จะไม่ถูกใช้
+      ),
+    );
+  }
+}
+
+class GradientIcon extends StatelessWidget {
+  final IconData icon;
+  final double size;
+  final Gradient gradient;
+
+  GradientIcon({
+    required this.icon,
+    required this.size,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) {
+        return gradient.createShader(Rect.fromLTWH(0, 0, size, size));
+      },
+      child: Icon(
+        icon,
+        size: size,
+        color: Colors.white, // icon color จะไม่ถูกใช้
       ),
     );
   }

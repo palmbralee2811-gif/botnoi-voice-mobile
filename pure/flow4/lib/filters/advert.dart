@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Advert extends StatefulWidget {
   const Advert({super.key});
@@ -7,22 +10,26 @@ class Advert extends StatefulWidget {
   _AdvertState createState() => _AdvertState();
 }
 
-
 class _AdvertState extends State<Advert> {
-  int selectedIndex = 0;
+  bool ishover = false;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         setState(() {
-          selectedIndex = 1;
+          ishover = !ishover;
         });
+        /////////////////////////////
       },
       child: Container(
-        width: 63,
-        height: 26,
+        width: 68.w,
+        height: 26.h,
         decoration: BoxDecoration(
-          color: selectedIndex == 1 ? const Color(0xFF9A96F5) : Colors.transparent,
+          gradient: ishover
+              ? const LinearGradient(
+                  colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                )
+              : null,
           borderRadius: const BorderRadius.all(
             Radius.circular(4),
           ),
@@ -31,17 +38,23 @@ class _AdvertState extends State<Advert> {
             width: 1,
           ),
         ),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                ishover ? Text(
                   'โฆษณา',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF323130),
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                    color: const Color(0xFFFFFFFF),
+                  ),
+                ) : Text(
+                  'โฆษณา',
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                    color: const Color(0xFF323130),
                   ),
                 ),
               ],

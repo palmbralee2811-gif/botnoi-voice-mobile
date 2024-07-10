@@ -25,7 +25,7 @@ class AppDataBase {
       ],
     ),
     Data(
-      name: 'User1',
+      name: 'User1ss',
       image: 'assets/logo/Rectangle 10072 (2).png',
       stories: [
         Story(imageUrl: 'assets/logovoice1.jpg', userName: 'User1', duration: const Duration(seconds: 5)),
@@ -73,6 +73,39 @@ class AppDataBase {
       ],
     ),
     Data(
+      name: 'User1',
+      image: 'assets/logo/Rectangle 10072.png',
+      stories: [
+        Story(imageUrl: 'assets/logovoice1.jpg', userName: 'User1', duration: const Duration(seconds: 5)),
+
+      ],
+    ),
+     Data(
+      name: 'User1',
+      image: 'assets/logo/Rectangle 10072.png',
+      stories: [
+        Story(imageUrl: 'assets/logovoice1.jpg', userName: 'User1', duration: const Duration(seconds: 5)),
+
+      ],
+    ),
+     Data(
+      name: 'User1',
+      image: 'assets/logo/Rectangle 10072.png',
+      stories: [
+        Story(imageUrl: 'assets/logovoice1.jpg', userName: 'User1', duration: const Duration(seconds: 5)),
+
+      ],
+    ),
+
+     Data(
+      name: 'User1',
+      image: 'assets/logo/Rectangle 10072.png',
+      stories: [
+        Story(imageUrl: 'assets/logovoice1.jpg', userName: 'User1', duration: const Duration(seconds: 5)),
+
+      ],
+    ),
+     Data(
       name: 'User1',
       image: 'assets/logo/Rectangle 10072.png',
       stories: [
