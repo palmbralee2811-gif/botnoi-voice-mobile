@@ -16,10 +16,12 @@ class _FAQState extends State<FAQ> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          centerTitle: true,
           backgroundColor: Colors.white,
           title: Text(
             'FAQ',
-            style: GoogleFonts.prompt(fontSize: 16, color: Colors.black),
+            style: GoogleFonts.prompt(
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),

@@ -14,9 +14,10 @@ class _MyAccountState extends State<MyAccount> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "ข้อมูลส่วนตัว",
-          style: GoogleFonts.prompt(fontSize: 16),
+          style: GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         leading: IconButton(

@@ -14,10 +14,11 @@ class _About_usState extends State<About_us> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
           'เกี่ยวกับเรา',
-          style: GoogleFonts.prompt(fontSize: 16),
+          style: GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
