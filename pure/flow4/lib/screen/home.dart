@@ -1,12 +1,18 @@
 // import 'dart:ffi';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow3/filters/languagedrawer.dart';
+import 'package:flow3/screen/login.dart';
+// import 'package:flow3/screen/login.dart';
 import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flow3/firebase/login_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+// import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -41,24 +47,23 @@ class _HomePageState extends State<HomePage> {
       _selectedPageIndexSetting = index;
     });
   }
-
- 
+  
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
 
     double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
     double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
-    // int currentIndex = 0;
+    int currentIndex = 0;
     final screenHeightOpen = screenSizeheightInputtextOpen;
     final maxLinesopen = (screenHeightOpen / 65).floor();
     final screenHeightClose = screenSizeheightInputtextOpen;
     final maxLinesclose = (screenHeightClose / 180).floor();
     bool _showClearIcon = false;
 
-    
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
       // _button = 1;
@@ -95,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CircleAvatar(
-                        backgroundColor: Colors.black,
+                        backgroundImage: NetworkImage(user!.photoURL!),
                         radius: 20.0.r,
                         child: SvgPicture.asset(
                           'assets/logo/logo.svg',
@@ -121,9 +126,9 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Nonnssssssss',
+                        user.displayName!,
                         style: GoogleFonts.prompt(
-                          fontSize: 24.sp,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF323130),
                         ),
@@ -133,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('UID:sdsdasdadassssssssssss',
+                      Text(user.email!,
                           style: GoogleFonts.prompt(
                             fontSize: 14.sp,
                             color: const Color(0xFF323130),
@@ -235,6 +240,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onTap: () {},
             ),
+            SizedBox(height: 10.h),
             Expanded(
                 child: Opacity(
               opacity: 0.5, // 50% opacity
@@ -244,7 +250,26 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.transparent,
               ),
             )),
-            const Languagedrawer()
+            const Languagedrawer(),
+            SizedBox(height: 69.h),
+            ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                      (Route<dynamic> route) => false);
+                },
+                label: Text(
+                  'ออกจากระบบ',
+                  style: GoogleFonts.prompt(
+                    color: const Color(0xFF323130),
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                icon: Icon(Icons.logout,
+                    color: const Color(0xFF323130), size: 20.sp)),
           ],
         ),
       ),
@@ -254,85 +279,6 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: <Widget>[
-          // SafeArea(
-          // child:
-          // Column(
-          //   children: [
-          //     Container(
-          //       color: Colors.white,
-          //       child: Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           SizedBox(
-          //             width: 55.w,
-          //           ),
-          //           Image.asset(
-          //             'assets/logo/Frame.png',
-          //             width: 30.w,
-          //             height: 34.h,
-          //           ),
-          //           Column(
-          //             children: [
-          //               Row(
-          //                 children: [
-          //                   Container(
-          //                     width: 54.w,
-          //                     decoration: BoxDecoration(
-          //                       boxShadow: const [
-          //                         BoxShadow(
-          //                           color: Color.fromARGB(255, 224, 221, 221),
-          //                           blurRadius: 3.0,
-          //                         ),
-          //                       ],
-          //                       color: Colors.white,
-          //                       borderRadius: BorderRadius.circular(50.r),
-          //                     ),
-          //                     child: Row(
-          //                       mainAxisAlignment: MainAxisAlignment.center,
-          //                       children: [
-          //                         SizedBox(
-          //                           height: 25.h,
-          //                           width: 20.h,
-          //                           child: Padding(
-          //                             padding: const EdgeInsets.all(2),
-          //                             child: Column(
-          //                               mainAxisAlignment:
-          //                                   MainAxisAlignment.center,
-          //                               children: [
-          //                                 Image.asset(
-          //                                   'assets/logo/point.png',
-          //                                   width: 20.w,
-          //                                   height: 20.h,
-          //                                 ),
-          //                               ],
-          //                             ),
-          //                           ),
-          //                         ),
-          //                         Column(
-          //                           children: [
-          //                             Text(
-          //                               '100',
-          //                               style: GoogleFonts.prompt(
-          //                                 fontSize: 12.sp,
-          //                                 fontWeight: FontWeight.bold,
-          //                                 color: const Color(0xFF323130),
-          //                               ),
-          //                             ),
-          //                           ],
-          //                         ),
-          //                       ],
-          //                     ),
-          //                   ),
-          //                 ],
-          //               ),
-          //             ],
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // ),
           Container(
             width: screenSizewidth,
             decoration: const BoxDecoration(
@@ -553,18 +499,18 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: const BuildVoice()),
                 ),
-                // Container(
-                //     height: screenSizeheight * 0.052.h,
-                //     width: screenSizewidth * 0.78.w,
-                //     color: const Color(0xFF27282B),
-                //     child: InkWell(
-                //       onTap: () {},
-                //       child: currentIndex == 1
-                //           ? SvgPicture.asset(
-                //               'assets/logo/Property 1=studio, Property 2=deault (2).svg')
-                //           : SvgPicture.asset(
-                //               'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                //     ))
+                Container(
+                    height: screenSizeheight * 0.052.h,
+                    width: 320.w,
+                    color: const Color(0xFF27282B),
+                    child: InkWell(
+                      onTap: () {},
+                      child: currentIndex == 1
+                          ? SvgPicture.asset(
+                              'assets/logo/Property 1=studio, Property 2=deault (2).svg')
+                          : SvgPicture.asset(
+                              'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
+                    ))
               ]), // 40% of the screen height
             ),
           ),

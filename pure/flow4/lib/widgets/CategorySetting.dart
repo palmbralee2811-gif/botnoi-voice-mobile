@@ -12,8 +12,8 @@ class CategorySetting extends StatefulWidget {
 }
 
 class _CategorySettingState extends State<CategorySetting> {
-  double speedValue = 1.0;
-  double _volumevalue = 1.0;
+  double speedValue = 0.1; // ความเร็ว
+  double _volumevalue = 0.1; // ความดัง
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -51,8 +51,8 @@ class _CategorySettingState extends State<CategorySetting> {
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
                           value: _volumevalue,
-                          min: 0,
-                          max: 10,
+                          min: 0.1,
+                          max: 90,
                           onChanged: (newValue) {
                             setState(() {
                               _volumevalue = newValue;
@@ -64,7 +64,7 @@ class _CategorySettingState extends State<CategorySetting> {
                     ),
                     SizedBox(
                         width: 50,
-                        child: Text('${_volumevalue.round()}db',
+                        child: Text('${_volumevalue.toStringAsFixed(1)}db',
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
                             )))
@@ -76,7 +76,7 @@ class _CategorySettingState extends State<CategorySetting> {
                     SizedBox(
                         width: 70,
                         child: Text(
-                          'ความเร็ว',
+                          'ความเร็ว', //speed
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         )),
                     Expanded(
@@ -89,11 +89,12 @@ class _CategorySettingState extends State<CategorySetting> {
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
                           value: speedValue,
-                          min: 0,
-                          max: 10,
+                          min: 0.1,
+                          max: 0.2,
                           onChanged: (newValue) {
                             setState(() {
                               speedValue = newValue;
+                         
                             });
                           },
                         ),
@@ -103,7 +104,7 @@ class _CategorySettingState extends State<CategorySetting> {
                     SizedBox(
                         width: 50,
                         child: Text(
-                          '${speedValue.round()} x',
+                          '${speedValue.toStringAsFixed(1)} x',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         ))
                   ],
