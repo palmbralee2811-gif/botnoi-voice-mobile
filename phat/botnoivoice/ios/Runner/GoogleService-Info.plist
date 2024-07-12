@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>822010349951-4d7ekr9mbjo5p06fkbalpgmerkfnl7rg.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyApGk4ulnwN_-arMKBbBGhfccjwGwY18pM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>822010349951</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mobile.botnoivoice</string>
+	<key>PROJECT_ID</key>
+	<string>botnoivoice-1ff7a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>botnoivoice-1ff7a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:822010349951:ios:7f408b3078242adf9db24a</string>
+	<key>DATABASE_URL</key>
+	<string>https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
