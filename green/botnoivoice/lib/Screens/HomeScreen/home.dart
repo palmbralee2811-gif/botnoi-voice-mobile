@@ -29,6 +29,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // public value
   final TextEditingController textController = TextEditingController();
   String _response = '';
   String _audioUrl = '';
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
   bool isAudioPlaying = false;
   bool isLoading = false;
   String? speakerId;
+  String? language;
+  late List<String> availableLanguage;
 
   final List<String> _typeMedia = ['wav', 'mp3', 'm4a'];
   Future<List<Speaker>>? _fetchMarketplaceDataFuture;
@@ -173,23 +176,8 @@ class _HomePageState extends State<HomePage> {
 
     String? token = auth.credentialsToken;
 
-    /*
-    String? language;
-    String th = "th";
-    String en = "en";
-
-    // Regular expression to check if text contains Thai characters
-    RegExp thaiRegex = RegExp(r'[\u0E00-\u0E7F]');
-
-    if (thaiRegex.hasMatch(text)) {
-      language = th;
-    } else {
-      language = en;
-    }
-    */
-
-    print('\n text: $text \n speaker: $speakerId \n');
-    // print('language: $language \n');
+    print('\n ## generateAudio ## \n text: $text \n speaker: $speakerId');
+    print(' language: $language \n availableLanguage: ${availableLanguage.length} \n');
 
     String url =
         "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
@@ -200,6 +188,8 @@ class _HomePageState extends State<HomePage> {
       "speed": 1,
       "type_media": _selectedTypeMedia,
       "save_file": true,
+      "language": language,
+      "page": "mobile app"
     };
 
     Map<String, String> headers = {
@@ -220,6 +210,7 @@ class _HomePageState extends State<HomePage> {
           _audioUrl = jsonData['audio_url'];
           _response = "Request successful!";
           isLoading = false;
+          print("generateAudio -> _audioUrl: $_audioUrl");
           // downloadFile();
         });
       } else {
@@ -254,6 +245,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> downloadFile() async {
     try {
+      //var status = await Permission.audio.request();
       if (await Permission.storage.request().isGranted) {
         Dio dio = Dio();
         Directory? downloadsDir = await getExternalStorageDirectory();
@@ -828,17 +820,25 @@ class _HomePageState extends State<HomePage> {
 
                                         await playAudio();
 
+                                        // get data in value to the generate audio function
                                         speakerId = speaker.speakerId;
+                                        availableLanguage =
+                                            speaker.availableLanguage.toList();
+                                        language =
+                                            speaker.language.toLowerCase();
+
                                         print(
-                                            '\n speakerId -> Widget(DataVoice): $speakerId');
+                                            '\nspeakerId -> Widget(DataVoice): $speakerId');
+                                        print(
+                                            'squareImage -> Widget(DataVoice): ${speaker.squareImage}');
                                         print(
                                             'thaiName -> Widget(DataVoice): ${speaker.thaiName}');
                                         print(
                                             'engName -> Widget(DataVoice): ${speaker.engName}');
                                         print(
-                                            'language -> Widget(DataVoice): ${speaker.language}');
+                                            'language -> Widget(DataVoice): ${speaker.language.toLowerCase()}');
                                         print(
-                                            'availableLanguage -> Widget(DataVoice): ${speaker.availableLanguage}');
+                                            'availableLanguage -> Widget(DataVoice): ${speaker.availableLanguage.toList()} \n');
                                         setState(() {});
 
                                         setState(() {
@@ -896,44 +896,48 @@ class _HomePageState extends State<HomePage> {
                                                             EdgeInsets.only(
                                                                 right: 39.w,
                                                                 top: 8.w),
-                                                        child: selectedIndex ==
-                                                                index
-                                                            ? Container(
-                                                                width: 21.w,
-                                                                height: 17.h,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  gradient:
-                                                                      const LinearGradient(
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xFF9A96F5),
-                                                                      Color(
-                                                                          0xFF00E0FF)
-                                                                    ],
-                                                                  ),
-                                                                  color: Colors
-                                                                      .white,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
+                                                        child:
+                                                            selectedIndex ==
+                                                                    index
+                                                                ? Container(
+                                                                    width: 21.w,
+                                                                    height:
+                                                                        17.h,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      gradient:
+                                                                          const LinearGradient(
+                                                                        colors: [
+                                                                          Color(
+                                                                              0xFF9A96F5),
+                                                                          Color(
+                                                                              0xFF00E0FF)
+                                                                        ],
+                                                                      ),
+                                                                      color: Colors
+                                                                          .white,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
                                                                               8.r),
-                                                                ),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                      'เลือก',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            7.sp,
-                                                                        color: Colors.white,
-                                                                      )),
-                                                                ),
-                                                              )
-                                                            : const Icon(
-                                                                Icons.check,
-                                                                color: Colors.transparent,
-                                                              ),
+                                                                    ),
+                                                                    child:
+                                                                        Center(
+                                                                      child: Text(
+                                                                          'เลือก',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                7.sp,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          )),
+                                                                    ),
+                                                                  )
+                                                                : const Icon(
+                                                                    Icons.check,
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                  ),
                                                       ),
                                                       /*
                                                       GestureDetector(
@@ -1451,6 +1455,23 @@ class _HomePageState extends State<HomePage> {
                   if (_selectedPageIndexVoice == 1) ...[
                     categoryVoice02(context)
                   ],
+                const SizedBox(height: 16.0),
+                DropdownButton<String>(
+                  // ค่าเริ่มต้น
+                  value: _selectedTypeMedia,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedTypeMedia = newValue!;
+                    });
+                  },
+                  items:
+                      _typeMedia.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
                 Expanded(
                   flex: 7,
                   child: InkWell(
@@ -1462,7 +1483,7 @@ class _HomePageState extends State<HomePage> {
                         });
                         if (!isLoading) {
                           if (textController.text.isNotEmpty) {
-                              generateAudio(textController.text).then((_) {
+                            generateAudio(textController.text).then((_) {
                               print('_response $_response');
                               downloadFile();
                             });
