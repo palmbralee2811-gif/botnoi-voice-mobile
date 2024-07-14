@@ -12,9 +12,8 @@ class CategorySetting extends StatefulWidget {
 }
 
 class _CategorySettingState extends State<CategorySetting> {
-  double volumeValue = 50;
-  double speedValue = 50;
-  double _value = 1.0;
+  double speedValue = 0.1; // ความเร็ว
+  double _volumevalue = 0.1; // ความดัง
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -43,20 +42,29 @@ class _CategorySettingState extends State<CategorySetting> {
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         )),
                     Expanded(
-                      child: Slider(
-                        value: volumeValue,
-                        inactiveColor: const Color(0xFFF7F8FA),
-                        min: 0,
-                        max: 100,
-                        divisions: 100,
-                        label: volumeValue.round().toString(),
-                        onChanged: (value) =>
-                            setState(() => volumeValue = value),
+                       child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                            thumbShape: GradientThumbShape(),
+                            thumbColor: Colors.transparent,
+                            trackShape: const GradeintRoundedRectSliderTrackShape(),
+                            activeTrackColor: Colors.white,
+                            inactiveTrackColor: const Color(0xFFF7F8FA)),
+                        child: Slider(
+                          value: _volumevalue,
+                          min: 0.1,
+                          max: 90,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _volumevalue = newValue;
+                            });
+                          },
+                        ),
+                  
                       ),
                     ),
                     SizedBox(
                         width: 50,
-                        child: Text('${volumeValue.round()}db',
+                        child: Text('${_volumevalue.toStringAsFixed(1)}db',
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
                             )))
@@ -68,7 +76,7 @@ class _CategorySettingState extends State<CategorySetting> {
                     SizedBox(
                         width: 70,
                         child: Text(
-                          'ความเร็ว',
+                          'ความเร็ว', //speed
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         )),
                     Expanded(
@@ -76,35 +84,27 @@ class _CategorySettingState extends State<CategorySetting> {
                         data: SliderTheme.of(context).copyWith(
                             thumbShape: GradientThumbShape(),
                             thumbColor: Colors.transparent,
+                            trackShape: const GradeintRoundedRectSliderTrackShape(),
                             activeTrackColor: Colors.white,
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
-                          value: _value,
-                          min: 0,
-                          max: 10,
+                          value: speedValue,
+                          min: 0.1,
+                          max: 0.2,
                           onChanged: (newValue) {
                             setState(() {
-                              _value = newValue;
+                              speedValue = newValue;
+                         
                             });
                           },
                         ),
-                        // value: speedValue,
-
-                        // thumbColor: Colors.amber,
-                        // activeColor: Colors.amber,
-                        // inactiveColor: const Color(0xFFF7F8FA),
-                        // min: 0,
-                        // max: 100,
-                        // divisions: 100,
-                        // label: speedValue.round().toString(),
-                        // onChanged: (value) =>
-                        //     setState(() => speedValue = value),
+                       
                       ),
                     ),
                     SizedBox(
                         width: 50,
                         child: Text(
-                          '${_value.round()} x',
+                          '${speedValue.toStringAsFixed(1)} x',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         ))
                   ],
@@ -117,73 +117,10 @@ class _CategorySettingState extends State<CategorySetting> {
     );
   }
 }
-
-// class GradientTrackShape extends SliderTrackShape {
-//   @override
-//   void paint(
-    
-//     PaintingContext context,
-//     Offset offset, {
-//     required RenderBox parentBox,
-//     required SliderThemeData sliderTheme,
-//     required Animation<double> enableAnimation,
-//     required TextDirection textDirection,
-//     required Offset thumbCenter,
-//     bool isEnabled = false,
-//     bool isDiscrete = false,
-//     // required double additionalActiveTrackHeight,
-//     // required double additionalInactiveTrackHeight,
-//   }) {
-//     final double trackHeight = sliderTheme.trackHeight ?? 2.0;
-//     final Rect trackRect = Rect.fromLTWH(
-//       offset.dx,
-//       thumbCenter.dy - trackHeight / 2,
-//       parentBox.size.width,
-//       trackHeight,
-//     );
-
-//     final Paint activePaint = Paint()
-//       ..shader = const  LinearGradient(
-//         colors: <Color>[Colors.red, Colors.amber, Colors.green],
-//       ).createShader(
-//         Rect.fromLTWH(
-//           offset.dx,
-//           thumbCenter.dy - trackHeight / 2,
-//           thumbCenter.dx - offset.dx,
-//           trackHeight,
-//         ),
-//       );
-
-//     final Paint inactivePaint = Paint()
-//       ..color = Colors.grey;
-
-//     // Draw the active track
-//     context.canvas.drawRect(
-//       Rect.fromLTWH(
-//         offset.dx,
-//         thumbCenter.dy - trackHeight / 2,
-//         thumbCenter.dx - offset.dx,
-//         trackHeight,
-//       ),
-//       activePaint,
-//     );
-
-//     // Draw the inactive track
-//     context.canvas.drawRect(
-//       Rect.fromLTWH(
-//         thumbCenter.dx,
-//         thumbCenter.dy - trackHeight / 2,
-//         parentBox.size.width - thumbCenter.dx + offset.dx,
-//         trackHeight,
-//       ),
-//       inactivePaint,
-//     );
-//   }
-// }
 class GradientThumbShape extends SliderComponentShape {
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size(30.0, 30.0); // Size of the thumb
+    return const Size(16.0, 16.0); // Size of the thumb
   }
 
   @override
@@ -202,7 +139,7 @@ class GradientThumbShape extends SliderComponentShape {
     required Size sizeWithOverflow,
   }) {
     final Rect thumbRect =
-        Rect.fromCenter(center: center, width: 30.0, height: 30.0);
+        Rect.fromCenter(center: center, width: 20.0, height: 30.0);
     final Paint paint = Paint()
       ..shader = const LinearGradient(
         colors: <Color>[Color(0xFF9340FF), Color(0xFF34BDFA)],
@@ -211,5 +148,124 @@ class GradientThumbShape extends SliderComponentShape {
 
     context.canvas
         .drawCircle(center, 15.0, paint); // Radius is half of thumb size
+  }
+}
+
+class GradeintRoundedRectSliderTrackShape extends SliderTrackShape with BaseSliderTrackShape {
+  /// Create a slider track that draws two rectangles with rounded outer edges.
+  const GradeintRoundedRectSliderTrackShape();
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
+    Offset? secondaryOffset,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    double additionalActiveTrackHeight = 2,
+  }) {
+    assert(sliderTheme.disabledActiveTrackColor != null);
+    assert(sliderTheme.disabledInactiveTrackColor != null);
+    assert(sliderTheme.activeTrackColor != null);
+    assert(sliderTheme.inactiveTrackColor != null);
+    assert(sliderTheme.thumbShape != null);
+    // If the slider [SliderThemeData.trackHeight] is less than or equal to 0,
+    // then it makes no difference whether the track is painted or not,
+    // therefore the painting can be a no-op.
+    if (sliderTheme.trackHeight == null || sliderTheme.trackHeight! <= 0) {
+      return;
+    }
+    LinearGradient gradeinet = const LinearGradient(
+      colors: <Color>[Color(0xFF9340FF), Color(0xFF34BDFA)],
+    );
+
+    final Rect trackRect = getPreferredRect(
+      parentBox: parentBox,
+      offset: offset,
+      sliderTheme: sliderTheme,
+      isEnabled: isEnabled,
+      isDiscrete: isDiscrete,
+    );
+
+    // Assign the track segment paints, which are leading: active and
+    // trailing: inactive.
+    final ColorTween activeTrackColorTween = ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
+    final ColorTween inactiveTrackColorTween = ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
+    final Paint activePaint =  
+    Paint()
+    ..shader = gradeinet.createShader(trackRect)
+    ..color = activeTrackColorTween.evaluate(enableAnimation)!;
+    final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
+    final (Paint leftTrackPaint, Paint rightTrackPaint) = switch (textDirection) {
+      TextDirection.ltr => (activePaint, inactivePaint),
+      TextDirection.rtl => (inactivePaint, activePaint),
+    };
+
+    
+    final Radius trackRadius = Radius.circular(trackRect.height / 2);
+    final Radius activeTrackRadius = Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);
+
+    context.canvas.drawRRect(
+      RRect.fromLTRBAndCorners(
+        trackRect.left,
+        (textDirection == TextDirection.ltr) ? trackRect.top - (additionalActiveTrackHeight / 2): trackRect.top,
+        thumbCenter.dx,
+        (textDirection == TextDirection.ltr) ? trackRect.bottom + (additionalActiveTrackHeight / 2) : trackRect.bottom,
+        topLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius : trackRadius,
+        bottomLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius: trackRadius,
+      ),
+      leftTrackPaint,
+    );
+    context.canvas.drawRRect(
+      RRect.fromLTRBAndCorners(
+        thumbCenter.dx,
+        (textDirection == TextDirection.rtl) ? trackRect.top - (additionalActiveTrackHeight / 2) : trackRect.top,
+        trackRect.right,
+        (textDirection == TextDirection.rtl) ? trackRect.bottom + (additionalActiveTrackHeight / 2) : trackRect.bottom,
+        topRight: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
+        bottomRight: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
+      ),
+      rightTrackPaint,
+    );
+
+    final bool showSecondaryTrack = (secondaryOffset != null) &&
+        ((textDirection == TextDirection.ltr)
+            ? (secondaryOffset.dx > thumbCenter.dx)
+            : (secondaryOffset.dx < thumbCenter.dx));
+
+    if (showSecondaryTrack) {
+      final ColorTween secondaryTrackColorTween = ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
+      final Paint secondaryTrackPaint = Paint()..color = secondaryTrackColorTween.evaluate(enableAnimation)!;
+      if (textDirection == TextDirection.ltr) {
+        context.canvas.drawRRect(
+          RRect.fromLTRBAndCorners(
+            thumbCenter.dx,
+            trackRect.top,
+            secondaryOffset.dx,
+            trackRect.bottom,
+            topRight: trackRadius,
+            bottomRight: trackRadius,
+          ),
+          secondaryTrackPaint,
+        );
+      } else {
+        context.canvas.drawRRect(
+          RRect.fromLTRBAndCorners(
+            secondaryOffset.dx,
+            trackRect.top,
+            thumbCenter.dx,
+            trackRect.bottom,
+            topLeft: trackRadius,
+            bottomLeft: trackRadius,
+          ),
+          secondaryTrackPaint,
+        );
+      }
+    }
   }
 }

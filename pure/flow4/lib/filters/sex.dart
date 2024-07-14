@@ -2,137 +2,199 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Sex extends StatelessWidget {
+class Sex extends StatefulWidget {
   const Sex({super.key});
+
+  @override
+  State<Sex> createState() => _SexState();
+}
+
+class _SexState extends State<Sex> {
+  String selectedGender = 'ช/ญ';
+  bool changeIcon = false;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        setState(() {
+          changeIcon = !changeIcon;
+        });
         showModalBottomSheet(
           backgroundColor: Colors.white,
           context: context,
-          builder: (BuildContext context) => Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(25),
-                child: Column(
-                  children: [
-                    Container(
-                      color: Colors.transparent,
-                      width: 360,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+                return SizedBox(
+                  height: 220.h,
+                  child: Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      children: [
+                        Container(
+                          color: Colors.transparent,
+                          width: 360,
+                          child: Column(
                             children: [
-                              const Text(
-                                'เพศ',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.black),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'เพศ',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 24.sp,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15.h,
                               ),
                               InkWell(
                                 onTap: () {
+                                  setModalState(() {
+                                    selectedGender = 'ช/ญ';
+                                  });
+                                  setState(() {
+                                    changeIcon = false;
+                                  });
                                   Navigator.pop(context);
                                 },
-                                child: const Icon(
-                                  Icons.close,
-                                  size: 25,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            height: 42,
-                            width: 320,
-                            color: Colors.white,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 10.w),
+                                  height: 42.h,
+                                  width: 320.w,
+                                  color: Colors.white,
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Image.asset(
                                         'assets/logo/Category.jpg',
-                                        width: 50,
-                                        height: 40,
+                                        width: 24.w,
+                                        height: 24.h,
                                       ),
-                                      const SizedBox(
-                                        width: 10,
+                                      SizedBox(
+                                        width: 20.w,
                                       ),
-                                      const Text(
-                                        'ชาย/หญิง',
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.black),
+                                      Text(
+                                        'ช/ญ',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          fontWeight: selectedGender == 'ช/ญ'
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ]),
-                          ),
-                          Container(
-                            height: 42,
-                            width: 320,
-                            color: Colors.white,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setModalState(() {
+                                    selectedGender = 'หญิง';
+                                  });
+                                  setState(() {
+                                    changeIcon = false;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 10.w),
+                                  height: 42.h,
+                                  width: 320.w,
+                                  color: Colors.white,
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Image.asset(
                                         'assets/logo/Category (1).jpg',
-                                        width: 50,
-                                        height: 40,
+                                        width: 24.w,
+                                        height: 24.h,
                                       ),
-                                      const SizedBox(
-                                        width: 10,
+                                      SizedBox(
+                                        width: 20.w,
                                       ),
-                                      const Text(
+                                      Text(
                                         'หญิง',
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.black),
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          fontWeight: selectedGender == 'หญิง'
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ]),
-                          ),
-                          Container(
-                            height: 42,
-                            width: 320,
-                            color: Colors.white,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setModalState(() {
+                                    selectedGender = 'ชาย';
+                                  });
+                                  setState(() {
+                                    changeIcon = false;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 10.w),
+                                  height: 42.h,
+                                  width: 320.w,
+                                  color: Colors.white,
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Image.asset(
                                         'assets/logo/Category (2).jpg',
-                                        width: 50,
-                                        height: 40,
+                                        width: 24.w,
+                                        height: 24.h,
                                       ),
-                                      const SizedBox(
-                                        width: 10,
+                                      SizedBox(
+                                        width: 20.w,
                                       ),
-                                      const Text(
+                                      Text(
                                         'ชาย',
-                                        style: TextStyle(
-                                            fontSize: 14, color: Colors.black),
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          fontWeight: selectedGender == 'ชาย'
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ]),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        );
+                  ),
+                );
+              },
+            );
+          },
+        ).whenComplete(() {
+          setState(() {
+            changeIcon = false;
+          });
+        });
       },
       child: Container(
         width: 62.w,
@@ -156,14 +218,21 @@ class Sex extends StatelessWidget {
                 const SizedBox(
                   width: 3,
                 ),
-                Text('ช/ญ', style: GoogleFonts.prompt(fontSize: 12.sp)),
-                const Icon(
-                  Icons.keyboard_arrow_down_sharp,
-                  size: 20,
-                  color: Color(0xFF323130),
-                ),
+                Text(selectedGender,
+                    style: GoogleFonts.prompt(fontSize: 12.sp)),
+                changeIcon
+                    ? const Icon(
+                        Icons.keyboard_arrow_up_sharp,
+                        size: 20,
+                        color: Color(0xFF323130),
+                      )
+                    : const Icon(
+                        Icons.keyboard_arrow_down_sharp,
+                        size: 20,
+                        color: Color(0xFF323130),
+                      ),
               ],
-            )
+            ),
           ],
         ),
       ),

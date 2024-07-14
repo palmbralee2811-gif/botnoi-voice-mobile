@@ -27,6 +27,7 @@ class SeeAll extends StatefulWidget {
 }
 
 class _SeeAllState extends State<SeeAll> {
+  bool ishover = false;
   int selectedIndex = -1;
   int selectedIndex2 = -1;
 
@@ -38,27 +39,27 @@ class _SeeAllState extends State<SeeAll> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
-        title:
-            Padding(
-              padding: EdgeInsets.only(left: 89.w),
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                        // Icon(
-                        //   Icons.arrow_back_ios_new,
-                        //   size: 24.sp,
-                        //   color: const Color(0xFF323130),
-                        // ),
-                        Image.asset(
+        title: Padding(
+          padding: EdgeInsets.only(left: 89.w),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            // Icon(
+            //   Icons.arrow_back_ios_new,
+            //   size: 24.sp,
+            //   color: const Color(0xFF323130),
+            // ),
+            Image.asset(
               'assets/logo/Frame (1).png',
               width: 30.w,
               height: 34.h,
-                        ),
-                        Icon(
+            ),
+            Icon(
               Icons.search_rounded,
               size: 24.sp,
               color: const Color(0xFF323130),
-                        )
-                      ]),
-            ),
+            )
+          ]),
+        ),
       ),
       body: Column(
         children: [
@@ -68,14 +69,21 @@ class _SeeAllState extends State<SeeAll> {
             color: Colors.white,
             child: Padding(
               padding: EdgeInsets.only(left: 10.w, right: 10.w),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Language(),
-                  Sex(),
-                  Recommand(),
-                  Favorite(),
-                  All(),
+                  const Language(),
+                  const Sex(),
+                  const Recommand(),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        ishover = !ishover;
+                      });
+                    },
+                    child: Favorite(ishover: ishover),
+                  ),
+                  const All(),
                 ],
               ),
             ),
@@ -128,7 +136,7 @@ class _SeeAllState extends State<SeeAll> {
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: 6.w, right: 6.w, top: 7.h),
+                                    left: 5.w, right: 5.w, top: 7.h),
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -138,8 +146,8 @@ class _SeeAllState extends State<SeeAll> {
                                   },
                                   child: Expanded(
                                     child: Container(
-                                      width: 81.w,
-                                      height: 103.h,
+                                      width: 90.w,
+                                      height: 113.h,
                                       decoration: BoxDecoration(
                                         border: GradientBoxBorder(
                                           width: 3.w,
@@ -156,7 +164,7 @@ class _SeeAllState extends State<SeeAll> {
                                         borderRadius:
                                             BorderRadius.circular(8.r),
                                         image: DecorationImage(
-                                          image: AssetImage(data[index].image),
+                                          image: NetworkImage(data[index].image),
                                           fit: BoxFit.cover,
                                         ),
                                         boxShadow: [
@@ -269,10 +277,7 @@ class _SeeAllState extends State<SeeAll> {
                                                                 height: 16.sp,
                                                               ))
                                                   ]),
-                                              SizedBox(
-                                                height:
-                                                    screenSizeheight * 0.06.h,
-                                              ),
+                                              const Spacer(),
                                               Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
