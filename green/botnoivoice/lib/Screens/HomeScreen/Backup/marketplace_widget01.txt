@@ -22,6 +22,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   bool _isLoading = true;
   List<Speaker> speakers = [];
+  
 
   @override
   void initState() {

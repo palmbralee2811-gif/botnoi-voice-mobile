@@ -1,6 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home.dart';
-import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF3ACE01),
+                backgroundColor: const Color(0xFF3ACE01),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -178,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 60.0,
                     width: 60.0,
                   ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Text(
                     'เข้าสู่ระบบด้วย Line',
                     style: GoogleFonts.prompt(
@@ -209,20 +208,9 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () async {
                 final user = await auth.signInWithGoogle(context);
                 if (user != null) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-
-                      builder: (context) => HomePage(),
-                      // builder: (context) => VoiceScreen(),
-                      // builder: (context) => const Homescreen(),
-
-
-
-                    ),
-                  );
+                  Navigator.of(mounted as BuildContext).pushReplacement(MaterialPageRoute(builder: (context) => HomePage(),),);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(mounted as BuildContext).showSnackBar(
                     const SnackBar(
                         content: Text('Failed to sign in. Please try again.')),
                   );
