@@ -40,11 +40,9 @@ class _VoiceScreenState extends State<VoiceScreen> {
   @override
   void initState() {
     super.initState();
-    final auth = Provider.of<Authentication>(context, listen: false);
-    if (auth.isAuthenticated) {
-      loadData();
-      _fetchMarketplaceDataFuture = _fetchData();
-    }
+
+    loadData();
+    _fetchMarketplaceDataFuture = _fetchData();
   }
 
   Future<void> loadData() async {

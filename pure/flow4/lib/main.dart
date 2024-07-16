@@ -3,14 +3,19 @@
 // import 'package:flow3/model/favoritemodel.dart';
 // import 'package:firebase_core/firebase_core.dart'; login
 // import 'package:flow3/firebase_options.dart'; login
-import 'package:flow3/screen/home.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:flow3/firebase_options.dart';
+// >>>>>>> fe296224bda456abb2d9312054abf2cfccddf71b
+// import 'package:flow3/screen/home.dart';
 // import 'package:flow3/screen/home.dart';
 // import 'package:flow3/screen/login.dart'; login
-// import 'package:flow3/screen/home.dart';
-import 'package:flutter/material.dart';
+import 'package:flow3/screen/home.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:provider/provider.dart';
+
+import 'package:flutter/material.dart';
 
 final theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
