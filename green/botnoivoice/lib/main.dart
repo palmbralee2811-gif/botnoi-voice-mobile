@@ -39,7 +39,7 @@ class BotnoiVoiceApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "Botnoi Voice",
             theme: theme,
-            home: const AuthChecker(speakerId: ''),
+            home: const AuthChecker(),
           );
         },
       ),

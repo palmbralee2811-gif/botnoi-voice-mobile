@@ -1,5 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/AuthScreen/login_screen.dart';
+import 'package:botnoivoice/Screens/SignInScreen/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

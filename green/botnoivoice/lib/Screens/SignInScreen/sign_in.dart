@@ -56,22 +56,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          height: 50.0,
-        ),
-        _buildTop(context),
-        const SizedBox(height: 50.0),
-        _buildCenter(),
-        const SizedBox(height: 10.0),
-        _buildLoginLineButton(mediaSize),
-        const SizedBox(height: 10.0),
-        _buildLoginGoogleButton(mediaSize),
-        const SizedBox(height: 30.0),
-        _buildAccept(),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 50.0,
+          ),
+          _buildTop(context),
+          const SizedBox(height: 50.0),
+          _buildCenter(),
+          const SizedBox(height: 10.0),
+          // _buildLoginLineButton(mediaSize),
+          const SizedBox(height: 10.0),
+          _buildLoginGoogleButton(mediaSize),
+          const SizedBox(height: 30.0),
+          _buildAccept(),
+        ],
+      ),
     );
   }
 
@@ -208,7 +210,11 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () async {
                 final user = await auth.signInWithGoogle(context);
                 if (user != null) {
-                  Navigator.of(mounted as BuildContext).pushReplacement(MaterialPageRoute(builder: (context) => HomePage(),),);
+                  Navigator.of(mounted as BuildContext).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(),
+                    ),
+                  );
                 } else {
                   ScaffoldMessenger.of(mounted as BuildContext).showSnackBar(
                     const SnackBar(

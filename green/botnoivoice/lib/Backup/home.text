@@ -5,14 +5,14 @@ import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/SignInScreen/sign_in.dart';
 import 'package:botnoivoice/filters/languagedrawer.dart';
 import 'package:botnoivoice/widgets/CategorySetting.dart';
-// import 'package:botnoivoice/screen/login.dart';
-// import 'package:botnoivoice/screen/login.dart';
-// import 'package:botnoivoice/widgets/CategorySetting.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:botnoivoice/widgets/CategoryVoice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:botnoivoice/firebase/login_page.dart';
+// import 'package:flow3/firebase/login_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,7 @@ import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
-
+  
   final int maxLength = 1000;
 
   @override
@@ -30,11 +30,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -59,7 +54,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  String? getUserEmail(User? user) {
+    if (user == null) {
+      return null;
+    }
 
+    // Iterate through providerData to find the email
+    for (var userInfo in user.providerData) {
+      if (userInfo.email != null) {
+        return userInfo.email;
+      }
+    }
+
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +75,7 @@ class _HomePageState extends State<HomePage> {
 
     // แสดง email ผู้ใช้งาน ปัจจุบัน
     User? user = FirebaseAuth.instance.currentUser;
-    String? email = auth.getUserEmail(user);
+    String? email = getUserEmail(user);
 
     // final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
@@ -103,233 +111,11 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: Drawer(
-        elevation: 16,
-        backgroundColor: Colors.white,
-        shadowColor: Colors.black,
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              contentPadding:
-                  EdgeInsets.only(left: 30.w, top: 15.w, right: 30.w),
-              title: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(auth.user!.photoURL!),
-                        backgroundColor: Colors.black,
-                        radius: 20.0.r,
-                        child: SvgPicture.asset(
-                          'assets/logo/logo.svg',
-                          width: 40.0.w,
-                          height: 40.0.h,
-                        ),
-                      ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          textStyle: TextStyle(fontSize: 10.sp),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.menu_rounded,
-                          color: const Color(0xFF323130),
-                          size: 32.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    // user.displayName!,
-                    '${auth.user!.displayName}',
-                    style: GoogleFonts.prompt(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF323130),
-                    ),
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
-                    maxLines: 3,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          // user.email!,
-                          ' ${email ?? 'No email found'}',
-                          style: GoogleFonts.prompt(
-                            fontSize: 14.sp,
-                            color: const Color(0xFF323130),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
-              leading: GradientIcon(
-                icon: Icons.account_circle_outlined,
-                size: 24.sp,
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              title: GradientText(
-                text: 'ข้อมูลส่วนตัว',
-                style: GoogleFonts.prompt(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFFA19F9D),
-                ),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-              leading: Icon(
-                Icons.credit_card_rounded,
-                size: 24.sp,
-                color: const Color(0xFF323130),
-              ),
-              title: Text(
-                'แพ็คเกจ',
-                style: GoogleFonts.prompt(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-              leading: Icon(
-                Icons.question_mark_outlined,
-                size: 24.sp,
-                color: const Color(0xFF323130),
-              ),
-              title: Text(
-                'FAQ',
-                style: GoogleFonts.prompt(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-              leading: Icon(
-                Icons.email_outlined,
-                size: 24.sp,
-                color: const Color(0xFF323130),
-              ),
-              title: Text(
-                'ข้อเสนอแนะ',
-                style: GoogleFonts.prompt(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-              leading: Icon(
-                Icons.credit_card_sharp,
-                size: 24.sp,
-                color: const Color(0xFF323130),
-              ),
-              title: Text(
-                'เกี่ยวกับเรา',
-                style: GoogleFonts.prompt(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-              leading: Icon(
-                Icons.logout,
-                size: 24.sp,
-                color: const Color(0xFF323130),
-              ),
-              title: Text(
-                'ออกจากระบบ',
-                style: GoogleFonts.prompt(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () async {
-                await auth.signOut();
-                if (!context.mounted) return;
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 10.h),
-            Expanded(
-                child: Opacity(
-              opacity: 0.5, // 50% opacity
-              child: Container(
-                width: 200.w,
-                height: screenSizeheight * 0.05.h,
-                color: Colors.transparent,
-              ),
-            )),
-            const Languagedrawer(),
-            SizedBox(height: 69.h),
-            // ElevatedButton.icon(
-            //   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-            //   onPressed: () {
-            //     Navigator.pushAndRemoveUntil(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => const LoginPage()),
-            //         (Route<dynamic> route) => false);
-            //   },
-            //   label: Text(
-            //     'ออกจากระบบ',
-            //     style: GoogleFonts.prompt(
-            //       color: const Color(0xFF323130),
-            //       fontSize: 16.sp,
-            //       fontWeight: FontWeight.w600,
-            //     ),
-            //   ),
-            //   // icon: Icon(Icons.logout,
-            //   //     color: const Color(0xFF323130), size: 20.sp)
-            // ),
-          ],
-        ),
-      ),
+      drawer: DrawerAppbar(auth: auth, email: email, screenSizeheight: screenSizeheight),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
             return IconButton(
-              padding: EdgeInsets.only(left: 15.w),
               icon: Icon(
                 Icons.menu_rounded,
                 size: 32.sp,
@@ -587,6 +373,242 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class DrawerAppbar extends StatelessWidget {
+  const DrawerAppbar({
+    super.key,
+    required this.auth,
+    required this.email,
+    required this.screenSizeheight,
+  });
+
+  final Authentication auth;
+  final String? email;
+  final double screenSizeheight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      elevation: 16,
+      backgroundColor: Colors.white,
+      shadowColor: Colors.black,
+      child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      // backgroundImage: NetworkImage(user!.photoURL!),
+                      backgroundColor: Colors.white,
+                      radius: 20.0.r,
+                      child: SvgPicture.asset(
+                        'assets/logo/logo.svg',
+                        width: 40.0.w,
+                        height: 40.0.h,
+                      ),
+                    ),
+                    TextButton(
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(fontSize: 10.sp),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.menu_rounded,
+                          color: const Color(0xFF323130),
+                          size: 32.sp,
+                        )),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      // user.displayName!,
+                      '${auth.user!.displayName}',
+                      style: GoogleFonts.prompt(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF323130),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                        // user.email!,
+                        ' ${email ?? 'No email found'}',
+                        style: GoogleFonts.prompt(
+                          fontSize: 14.sp,
+                          color: const Color(0xFF323130),
+                        )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
+            leading: GradientIcon(
+              icon: Icons.account_circle_outlined,
+              size: 24.sp,
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            title: GradientText(
+              text: 'ข้อมูลส่วนตัว',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFA19F9D),
+              ),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            leading: Icon(
+              Icons.credit_card_rounded,
+              size: 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'แพ็คเกจ',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            leading: Icon(
+              Icons.question_mark_outlined,
+              size: 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'FAQ',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            leading: Icon(
+              Icons.email_outlined,
+              size: 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'ข้อเสนอแนะ',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            leading: Icon(
+              Icons.credit_card_sharp,
+              size: 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'เกี่ยวกับเรา',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            leading: Icon(
+              Icons.logout,
+              size: 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'ออกจากระบบ',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () async {
+              await auth.signOut();
+              if (!context.mounted) return;
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: 10.h),
+          Expanded(
+              child: Opacity(
+            opacity: 0.5, // 50% opacity
+            child: Container(
+              width: 200.w,
+              height: screenSizeheight * 0.05.h,
+              color: Colors.transparent,
+            ),
+          )),
+          const Languagedrawer(),
+          SizedBox(height: 69.h),
+          // ElevatedButton.icon(
+          //   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+          //   onPressed: () {
+          //     Navigator.pushAndRemoveUntil(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => const LoginPage()),
+          //         (Route<dynamic> route) => false);
+          //   },
+          //   label: Text(
+          //     'ออกจากระบบ',
+          //     style: GoogleFonts.prompt(
+          //       color: const Color(0xFF323130),
+          //       fontSize: 16.sp,
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          //   ),
+          //   // icon: Icon(Icons.logout,
+          //   //     color: const Color(0xFF323130), size: 20.sp)
+          // ),
+        ],
+      ),
+    );
+  }
+}
+
 class Selectvoice extends StatelessWidget {
   const Selectvoice({
     super.key,
@@ -696,9 +718,6 @@ class Appbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final auth = Provider.of<Authentication>(context);
-    
     return SafeArea(
       child: Column(
         children: [
@@ -706,78 +725,69 @@ class Appbar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 86.w),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/logo/App_Icon.png',
-                    width: 35.w,
-                    height: 35.h,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 5.w),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IntrinsicWidth(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 224, 221, 221),
-                                  blurRadius: 3.0,
-                                ),
-                              ],
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(50),
+                  padding: EdgeInsets.only(left: 86.w),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/logo/App_Icon.png',
+                      width: 35.w,
+                      height: 35.h,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 54.w,
+                        decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 224, 221, 221),
+                              blurRadius: 3.0,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(width: 5.w),
-                                SizedBox(
-                                  height: 25.h,
-                                  width: 20.h,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/logo/point.png',
-                                          width: 20.w,
-                                          height: 20.h,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Column(
+                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 25.h,
+                              width: 20.h,
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      // '10,000,000,000',
-                                      ' ${auth.credits ?? "N/A"}',
-                                      style: GoogleFonts.prompt(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: const Color(0xFF323130),
-                                      ),
+                                    Image.asset(
+                                      'assets/logo/point.png',
+                                      width: 20.w,
+                                      height: 20.h,
                                     ),
                                   ],
                                 ),
-                                SizedBox(width: 5.w),
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  '10000000000',
+                                  style: GoogleFonts.prompt(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF323130),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
