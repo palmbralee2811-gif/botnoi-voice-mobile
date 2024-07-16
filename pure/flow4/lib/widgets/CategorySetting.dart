@@ -13,8 +13,8 @@ class CategorySetting extends StatefulWidget {
 }
 
 class _CategorySettingState extends State<CategorySetting> {
-  double speedValue = 0.1; // ความเร็ว
-  double _volumevalue = 0.1; // ความดัง
+  double speedValue = 1.0; // ความเร็ว
+  double _volumevalue = 100; // ความดัง
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -37,8 +37,10 @@ class _CategorySettingState extends State<CategorySetting> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Icon(Icons.volume_up, color: const Color(0xFF323130), size: 20.sp),
+                    SizedBox(width: 3.w),
                     SizedBox(
-                        width: 70,
+                        width: 46.w,
                         child: Text(
                           'ความดัง',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
@@ -54,8 +56,8 @@ class _CategorySettingState extends State<CategorySetting> {
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
                           value: _volumevalue,
-                          min: 0.1,
-                          max: 90,
+                          min: 0,
+                          max: 100,
                           onChanged: (newValue) {
                             setState(() {
                               _volumevalue = newValue;
@@ -65,8 +67,8 @@ class _CategorySettingState extends State<CategorySetting> {
                       ),
                     ),
                     SizedBox(
-                        width: 50,
-                        child: Text('${_volumevalue.toStringAsFixed(1)}db',
+                        width: 55,
+                        child: Text('${_volumevalue.toStringAsFixed(1)}%',
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
                             )))
@@ -75,8 +77,10 @@ class _CategorySettingState extends State<CategorySetting> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Icon(Icons.speed, color: const Color(0xFF323130), size: 20.sp),
+                    SizedBox(width: 3.w),
                     SizedBox(
-                        width: 70,
+                        width: 46.w,
                         child: Text(
                           'ความเร็ว', //speed
                           style: GoogleFonts.prompt(fontSize: 12.sp),
@@ -92,8 +96,8 @@ class _CategorySettingState extends State<CategorySetting> {
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
                           value: speedValue,
-                          min: 0.1,
-                          max: 0.2,
+                          min: 0.2,
+                          max: 2.0,
                           onChanged: (newValue) {
                             setState(() {
                               speedValue = newValue;
@@ -103,7 +107,7 @@ class _CategorySettingState extends State<CategorySetting> {
                       ),
                     ),
                     SizedBox(
-                        width: 50,
+                        width: 55,
                         child: Text(
                           '${speedValue.toStringAsFixed(1)} x',
                           style: GoogleFonts.prompt(fontSize: 12.sp),

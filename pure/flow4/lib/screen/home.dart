@@ -91,17 +91,17 @@ class _HomePageState extends State<HomePage> {
         shadowColor: Colors.black,
         child: ListView(
           children: <Widget>[
-            DrawerHeader(
-              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            ListTile(
+              contentPadding:
+                  EdgeInsets.only(left: 30.w, top: 15.w, right: 30.w),
+              title: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CircleAvatar(
                         // backgroundImage: NetworkImage(user!.photoURL!),
-                        backgroundColor: Colors.white,
+                        backgroundColor: Colors.black,
                         radius: 20.0.r,
                         child: SvgPicture.asset(
                           'assets/logo/logo.svg',
@@ -110,47 +110,50 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                          style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.menu_rounded,
-                            color: const Color(0xFF323130),
-                            size: 32.sp,
-                          )),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        // user.displayName!,
-                        'ชื่อผู้ใช้งาน',
-                        style: GoogleFonts.prompt(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w600,
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(fontSize: 10.sp),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.menu_rounded,
                           color: const Color(0xFF323130),
+                          size: 32.sp,
                         ),
                       ),
                     ],
                   ),
+                  Text(
+                    // user.displayName!,
+                    'nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                    style: GoogleFonts.prompt(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF323130),
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    maxLines: 3,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      Expanded(
+                        child: Text(
                           // user.email!,
-                          'อีเมล',
+                          'อีเมลsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
                           style: GoogleFonts.prompt(
                             fontSize: 14.sp,
                             color: const Color(0xFF323130),
-                          )),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
+              onTap: () {},
             ),
             ListTile(
               contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
@@ -282,6 +285,7 @@ class _HomePageState extends State<HomePage> {
         leading: Builder(
           builder: (context) {
             return IconButton(
+              padding: EdgeInsets.only(left: 15.w),
               icon: Icon(
                 Icons.menu_rounded,
                 size: 32.sp,
@@ -649,27 +653,31 @@ class Appbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
+  child: Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                  padding: EdgeInsets.only(left: 86.w),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/logo/App_Icon.png',
-                      width: 35.w,
-                      height: 35.h,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 54.w,
+          Padding(
+            padding: EdgeInsets.only(left: 86.w),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/logo/App_Icon.png',
+                width: 35.w,
+                height: 35.h,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 5.w),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    IntrinsicWidth(
+                      child: Container(
+                    
                         decoration: BoxDecoration(
                           boxShadow: const [
                             BoxShadow(
@@ -683,6 +691,7 @@ class Appbar extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            SizedBox(width: 5.w),
                             SizedBox(
                               height: 25.h,
                               width: 20.h,
@@ -703,27 +712,33 @@ class Appbar extends StatelessWidget {
                             Column(
                               children: [
                                 Text(
-                                  '100',
+                                  '10,000,000,000',
                                   style: GoogleFonts.prompt(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
                                     color: const Color(0xFF323130),
                                   ),
+                                  
                                 ),
+
                               ],
                             ),
+                            SizedBox(width: 5.w),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
-    );
+    ],
+  ),
+)
+;
   }
 }
 
