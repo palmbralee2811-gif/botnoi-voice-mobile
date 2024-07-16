@@ -17,7 +17,6 @@ import 'package:botnoivoice/function/randomString.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -85,7 +84,7 @@ class _HomePageState extends State<HomePage> {
   int selectedIndex = -1;
   int selectedIndex2 = -1;
 
-  Widget categoryVoice(BuildContext context) {
+  Widget categoryVoice() {
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
     // var screenSize = MediaQuery.of(context).size;
@@ -688,7 +687,7 @@ class _HomePageState extends State<HomePage> {
                         screenSizeheight: screenSizeheight,
                         selectedPageIndexVoice: _selectedPageIndexVoice)),
                 if (_selectedPageIndexVoice == 1)
-                  if (_selectedPageIndexVoice == 1) ...[categoryVoice(context)],
+                  if (_selectedPageIndexVoice == 1) ...[categoryVoice()],
                 const SizedBox(height: 16.0),
                 DropdownButton<String>(
                   // ค่าเริ่มต้น
@@ -921,7 +920,7 @@ class _HomePageState extends State<HomePage> {
       var response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        String filename = "Botnoi_Voice_${randomString(6)}.$selectedTypeMedia";
+        String filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
         var tempDir = await getTemporaryDirectory();
         var path = '${tempDir.path}/$filename';
         var file = File(path);
@@ -964,8 +963,8 @@ class _HomePageState extends State<HomePage> {
       var response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        String filename = "Botnoi_Voice_${randomString(6)}.$selectedTypeMedia";
-        var tempDir = await getApplicationDocumentsDirectory();
+        String filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+        var tempDir = await getTemporaryDirectory();
         var path = '${tempDir.path}/$filename';
         var file = File(path);
         await file.writeAsBytes(response.bodyBytes);
