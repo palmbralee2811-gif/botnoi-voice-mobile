@@ -1,17 +1,21 @@
+import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/HomeScreen/home.dart';
+import 'package:botnoivoice/Screens/HomeScreen/voiceScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginScreenState extends State<LoginScreen> {
   late Size mediaSize;
   bool _isChecked = false;
 
@@ -53,24 +57,22 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildForm() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 50.0,
-          ),
-          _buildTop(context),
-          const SizedBox(height: 50.0),
-          _buildCenter(),
-          const SizedBox(height: 10.0),
-          //       _buildLoginLineButton(mediaSize),
-          const SizedBox(height: 10.0),
-          _buildLoginGoogleButton(mediaSize),
-          const SizedBox(height: 30.0),
-          _buildAccept(),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 50.0,
+        ),
+        _buildTop(context),
+        const SizedBox(height: 50.0),
+        _buildCenter(),
+        const SizedBox(height: 10.0),
+        _buildLoginLineButton(mediaSize),
+        const SizedBox(height: 10.0),
+        _buildLoginGoogleButton(mediaSize),
+        const SizedBox(height: 30.0),
+        _buildAccept(),
+      ],
     );
   }
 
@@ -195,6 +197,8 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildLoginGoogleButton(Size mediaSize) {
+    final auth = Provider.of<Authentication>(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -202,7 +206,28 @@ class _LoginState extends State<Login> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final user = await auth.signInWithGoogle(context);
+                if (user != null) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+
+                      builder: (context) => HomePage(),
+                      // builder: (context) => VoiceScreen(),
+                      // builder: (context) => const Homescreen(),
+
+
+
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Failed to sign in. Please try again.')),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
