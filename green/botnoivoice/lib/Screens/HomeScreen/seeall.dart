@@ -164,7 +164,7 @@ class _SeeAllState extends State<SeeAll> {
                                         borderRadius:
                                             BorderRadius.circular(8.r),
                                         image: DecorationImage(
-                                          image: NetworkImage(data[index].image),
+                                          image: NetworkImage(data[index].squareImage),
                                           fit: BoxFit.cover,
                                         ),
                                         boxShadow: [
@@ -327,7 +327,7 @@ class _SeeAllState extends State<SeeAll> {
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: null,
-                                                      data[index].name,
+                                                      data[index].thaiName,
                                                       style: GoogleFonts.prompt(
                                                         fontSize: 10.sp,
                                                         color: Colors.white,

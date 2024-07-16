@@ -11,6 +11,7 @@ class Authentication extends ChangeNotifier {
   String? jwtToken;
 
   bool get isAuthenticated {
+    print("isAuthenticated -> user: $user");
     return user != null;
   }
 
@@ -83,16 +84,13 @@ class Authentication extends ChangeNotifier {
   }
   
   Future<String?> getIdTokenWithFirebase(String? idToken) async {
+    print("\n ###### START getIdTokenWithFirebase");
     if (idToken == null) {
-      print("\n ############### ");
       print("getIdTokenWithFirebase -> idToken: $idToken");
-      print(" ############### \n");
     } else {
-      print("\n ############### ");
       print('getIdTokenWithFirebase -> idToken is empty ');
-      print(" ############### \n");
     }
-
+    print(" ###### END getIdTokenWithFirebase \n");
     String url =
         'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
 
@@ -139,8 +137,7 @@ class Authentication extends ChangeNotifier {
       return null;
     }
 
-    String url =
-        'https://api-voice.botnoi.ai/api/dashboard/get_profile';
+    String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json'
@@ -151,22 +148,22 @@ class Authentication extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        print('Response data from _getProfileWithToken: $data');
+        print('Response data from getProfileWithToken: $data');
 
         // เก็บค่า credits ในตัวแปรของ class
-        credits =
-            data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
+        credits = data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
         print('getProfileWithToken -> credits: $credits');
 
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credits;
       } else {
-        print(
-            'Failed to load profile from _getProfileWithToken. Status code: ${response.statusCode}');
+        print('Failed to load profile from getProfileWithToken. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error in _getProfileWithToken: $e');
+      print('Error in getProfileWithToken: $e');
     }
+
+    print('getProfileWithToken -> Returning null');
     return null;
   }
 

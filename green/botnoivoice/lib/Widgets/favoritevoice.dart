@@ -74,7 +74,7 @@ class _FavoriteVoiceState extends State<FavoriteVoice> {
                             ),
                             borderRadius: BorderRadius.circular(8.r),
                             image: DecorationImage(
-                              image: AssetImage(widget.data[index].image),
+                              image: AssetImage(widget.data[index].squareImage),
                               fit: BoxFit.cover,
                             ),
                             boxShadow: [
@@ -211,7 +211,7 @@ class _FavoriteVoiceState extends State<FavoriteVoice> {
                                         softWrap: true,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: null,
-                                        widget.data[index].name,
+                                        widget.data[index].thaiName,
                                         style: GoogleFonts.prompt(
                                           fontSize: 10.sp,
                                           color: Colors.white,

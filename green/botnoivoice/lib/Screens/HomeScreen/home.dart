@@ -759,8 +759,9 @@ class Appbar extends StatelessWidget {
                                 Column(
                                   children: [
                                     Text(
-                                      // '10,000,000,000',
-                                      ' ${auth.credits ?? "N/A"}',
+                                      // ' 10,000,000,000',
+                                      // ต้องเวนช่องว่างหน้าข้อความไว้ ไม่งั้น Error
+                                      ' ${auth.credits ?? " N/A"}',
                                       style: GoogleFonts.prompt(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w600,

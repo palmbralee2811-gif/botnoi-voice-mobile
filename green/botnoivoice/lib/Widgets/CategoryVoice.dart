@@ -191,7 +191,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                           borderRadius: BorderRadius.circular(8.r),
                           image: DecorationImage(
                             image: NetworkImage(
-                              widget.data[index].image,
+                              widget.data[index].squareImage,
                             ),
                             fit: BoxFit.cover,
                           ),
@@ -317,7 +317,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                   softWrap: true,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: null,
-                                  widget.data[index].name,
+                                  widget.data[index].thaiName,
                                   style: GoogleFonts.prompt(
                                     fontSize: 10.sp,
                                     color: Colors.white,
