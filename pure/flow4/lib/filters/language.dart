@@ -15,6 +15,7 @@ class _LanguageState extends State<Language> {
   bool isExpanded = false;
   String selectedLanguage = 'ไทย';
   String selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
+  String language = 'TH';
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,7 @@ class _LanguageState extends State<Language> {
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'ภาษา',
@@ -72,41 +72,49 @@ class _LanguageState extends State<Language> {
                                     _buildLanguageOption(
                                         'Thai(Thailand) - ไทย',
                                         'assets/logo/Ellipse 12.jpg',
+                                        'TH',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'English (UK) - อังกฤษ',
                                         'assets/logo/Ellipse 13.jpg',
+                                        'EN',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'Indonesia - อินโดนีเซีย',
                                         'assets/logo/Ellipse 13 (2).jpg',
+                                        'IN',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'Japanese - ญี่ปุ่น',
                                         'assets/logo/Ellipse 14.jpg',
+                                        'JP',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'Laos - ลาว',
                                         'assets/logo/Ellipse 15.jpg',
+                                        'LOAS',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'Myanmar - เมียนมาร์',
                                         'assets/logo/Ellipse 11.jpg',
+                                        'MYM',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'Vietnam - เวียดนาม',
                                         'assets/logo/Ellipse 19.jpg',
+                                        'VN',
                                         context,
                                         setState),
                                     _buildLanguageOption(
                                         'Chinese (Simplified) - จีน',
                                         'assets/logo/Ellipse 18.jpg',
+                                        'CH',
                                         context,
                                         setState),
                                   ],
@@ -174,14 +182,16 @@ class _LanguageState extends State<Language> {
     );
   }
 
-  Widget _buildLanguageOption(String text, String imagePath,
+  Widget _buildLanguageOption(String text, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
     return InkWell(
       onTap: () {
         setState(() {
           selectedLanguage = text.split(' - ')[1];
           selectedLanguageImage = imagePath;
+          language = lang; // Update the language variable
         });
+        print('Selected Language: $selectedLanguage, Code: $language'); // Print to debug console
         Navigator.pop(context);
       },
       child: Container(

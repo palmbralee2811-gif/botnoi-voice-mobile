@@ -1,10 +1,11 @@
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:flow3/firebase/login_page.dart';
 // import 'package:flow3/model/favoritemodel.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flow3/firebase_options.dart';
+// import 'package:firebase_core/firebase_core.dart'; login
+// import 'package:flow3/firebase_options.dart'; login
+import 'package:flow3/screen/home.dart';
 // import 'package:flow3/screen/home.dart';
-import 'package:flow3/screen/login.dart';
+// import 'package:flow3/screen/login.dart'; login
 // import 'package:flow3/screen/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,12 +19,15 @@ final theme = ThemeData(
   ),
   textTheme: GoogleFonts.promptTextTheme().copyWith(),
 );
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp(),);
+// void main() async{
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+//   runApp(const MyApp(),);
+// }
+void main ()  {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +41,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: theme,
-      home: const LoginPage(),
+      home: const HomePage(),
     ),
   );
 }

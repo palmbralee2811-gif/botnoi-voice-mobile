@@ -1,10 +1,11 @@
 // import 'dart:ffi';
 
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow3/filters/languagedrawer.dart';
-import 'package:flow3/screen/login.dart';
-// import 'package:flow3/screen/login.dart';
 import 'package:flow3/widgets/CategorySetting.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,11 +48,10 @@ class _HomePageState extends State<HomePage> {
       _selectedPageIndexSetting = index;
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    // final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
 
@@ -100,7 +100,8 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CircleAvatar(
-                        backgroundImage: NetworkImage(user!.photoURL!),
+                        // backgroundImage: NetworkImage(user!.photoURL!),
+                        backgroundColor: Colors.white,
                         radius: 20.0.r,
                         child: SvgPicture.asset(
                           'assets/logo/logo.svg',
@@ -126,7 +127,8 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        user.displayName!,
+                        // user.displayName!,
+                        'ชื่อผู้ใช้งาน',
                         style: GoogleFonts.prompt(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
@@ -138,7 +140,9 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(user.email!,
+                      Text(
+                          // user.email!,
+                          'อีเมล',
                           style: GoogleFonts.prompt(
                             fontSize: 14.sp,
                             color: const Color(0xFF323130),
@@ -252,29 +256,44 @@ class _HomePageState extends State<HomePage> {
             )),
             const Languagedrawer(),
             SizedBox(height: 69.h),
-            ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (Route<dynamic> route) => false);
-                },
-                label: Text(
-                  'ออกจากระบบ',
-                  style: GoogleFonts.prompt(
-                    color: const Color(0xFF323130),
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                icon: Icon(Icons.logout,
-                    color: const Color(0xFF323130), size: 20.sp)),
+            // ElevatedButton.icon(
+            //   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+            //   onPressed: () {
+            //     Navigator.pushAndRemoveUntil(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => const LoginPage()),
+            //         (Route<dynamic> route) => false);
+            //   },
+            //   label: Text(
+            //     'ออกจากระบบ',
+            //     style: GoogleFonts.prompt(
+            //       color: const Color(0xFF323130),
+            //       fontSize: 16.sp,
+            //       fontWeight: FontWeight.w600,
+            //     ),
+            //   ),
+            //   // icon: Icon(Icons.logout,
+            //   //     color: const Color(0xFF323130), size: 20.sp)
+            // ),
           ],
         ),
       ),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: Icon(
+                Icons.menu_rounded,
+                size: 32.sp,
+                color: const Color(0xFF323130),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
         backgroundColor: const Color(0xFFFFFFFF),
+        // backgroundColor: Colors.black,
         title: const Appbar(),
       ),
       body: Column(
@@ -636,13 +655,15 @@ class Appbar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 90.w),
-                child: Image.asset(
-                  'assets/logo/Frame.png',
-                  width: 30.w,
-                  height: 34.h,
-                ),
-              ),
+                  padding: EdgeInsets.only(left: 86.w),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/logo/App_Icon.png',
+                      width: 35.w,
+                      height: 35.h,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
               Column(
                 children: [
                   Row(
@@ -731,6 +752,7 @@ class _BuildVoiceState extends State<BuildVoice> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // const Spacer(),
               InkWell(
                 onTap: () {
                   /////////////////////////////////////////////////////////////////////////////////////
@@ -741,7 +763,7 @@ class _BuildVoiceState extends State<BuildVoice> {
                   decoration: BoxDecoration(
                     boxShadow: const [
                       BoxShadow(
-                        color: Color.fromARGB(255, 224, 221, 221),
+                        color: Colors.black12,
                         blurRadius: 6.0,
                       ),
                     ],
