@@ -9,6 +9,7 @@ class Authentication extends ChangeNotifier {
   String? credits;
   String? response;
   String? jwtToken;
+  String? credentialsToken;
 
   bool get isAuthenticated {
     print("isAuthenticated -> user: $user");
@@ -82,7 +83,7 @@ class Authentication extends ChangeNotifier {
 
     return null;
   }
-  
+
   Future<String?> getIdTokenWithFirebase(String? idToken) async {
     print("\n ###### START getIdTokenWithFirebase");
     if (idToken == null) {
@@ -91,8 +92,7 @@ class Authentication extends ChangeNotifier {
       print('getIdTokenWithFirebase -> idToken is empty ');
     }
     print(" ###### END getIdTokenWithFirebase \n");
-    String url =
-        'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
+    String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
 
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
@@ -151,13 +151,15 @@ class Authentication extends ChangeNotifier {
         print('Response data from getProfileWithToken: $data');
 
         // เก็บค่า credits ในตัวแปรของ class
-        credits = data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
+        credits =
+            data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
         print('getProfileWithToken -> credits: $credits');
 
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credits;
       } else {
-        print('Failed to load profile from getProfileWithToken. Status code: ${response.statusCode}');
+        print(
+            'Failed to load profile from getProfileWithToken. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error in getProfileWithToken: $e');
@@ -190,10 +192,14 @@ class Authentication extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        var credentialsToken = data['data'][0]['token']; // ดึง token จาก data
-        //print('data -> _getCredentialsToken: $data');
+        print('Response data from getCredentialsToken: $data');
+
+        credentialsToken = data['data'][0]['token'].toString(); // ดึง token จาก data
         print('Credentials Token: $credentialsToken');
+
+        notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credentialsToken; // Return the token here
+
       } else {
         print(
             'Failed to load Credentials-Token. Status code: ${response.statusCode}');
