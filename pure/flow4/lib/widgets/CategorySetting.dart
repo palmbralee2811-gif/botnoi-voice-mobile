@@ -1,3 +1,4 @@
+import 'package:flow3/filters/language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,8 +13,8 @@ class CategorySetting extends StatefulWidget {
 }
 
 class _CategorySettingState extends State<CategorySetting> {
-  double speedValue = 1.0;
-  double _volumevalue = 1.0;
+  double speedValue = 1.0; // ความเร็ว
+  double _volumevalue = 100; // ความดัง
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -32,39 +33,42 @@ class _CategorySettingState extends State<CategorySetting> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Language(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Icon(Icons.volume_up, color: const Color(0xFF323130), size: 20.sp),
+                    SizedBox(width: 3.w),
                     SizedBox(
-                        width: 70,
+                        width: 46.w,
                         child: Text(
                           'ความดัง',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         )),
                     Expanded(
-                       child: SliderTheme(
+                      child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                             thumbShape: GradientThumbShape(),
                             thumbColor: Colors.transparent,
-                            trackShape: const GradeintRoundedRectSliderTrackShape(),
+                            trackShape:
+                                const GradeintRoundedRectSliderTrackShape(),
                             activeTrackColor: Colors.white,
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
                           value: _volumevalue,
                           min: 0,
-                          max: 10,
+                          max: 100,
                           onChanged: (newValue) {
                             setState(() {
                               _volumevalue = newValue;
                             });
                           },
                         ),
-                  
                       ),
                     ),
                     SizedBox(
-                        width: 50,
-                        child: Text('${_volumevalue.round()}db',
+                        width: 55,
+                        child: Text('${_volumevalue.toStringAsFixed(1)}%',
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
                             )))
@@ -73,10 +77,12 @@ class _CategorySettingState extends State<CategorySetting> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Icon(Icons.speed, color: const Color(0xFF323130), size: 20.sp),
+                    SizedBox(width: 3.w),
                     SizedBox(
-                        width: 70,
+                        width: 46.w,
                         child: Text(
-                          'ความเร็ว',
+                          'ความเร็ว', //speed
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         )),
                     Expanded(
@@ -84,26 +90,26 @@ class _CategorySettingState extends State<CategorySetting> {
                         data: SliderTheme.of(context).copyWith(
                             thumbShape: GradientThumbShape(),
                             thumbColor: Colors.transparent,
-                            trackShape: const GradeintRoundedRectSliderTrackShape(),
+                            trackShape:
+                                const GradeintRoundedRectSliderTrackShape(),
                             activeTrackColor: Colors.white,
                             inactiveTrackColor: const Color(0xFFF7F8FA)),
                         child: Slider(
                           value: speedValue,
-                          min: 0,
-                          max: 10,
+                          min: 0.2,
+                          max: 2.0,
                           onChanged: (newValue) {
                             setState(() {
                               speedValue = newValue;
                             });
                           },
                         ),
-                       
                       ),
                     ),
                     SizedBox(
-                        width: 50,
+                        width: 55,
                         child: Text(
-                          '${speedValue.round()} x',
+                          '${speedValue.toStringAsFixed(1)} x',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
                         ))
                   ],
@@ -116,6 +122,7 @@ class _CategorySettingState extends State<CategorySetting> {
     );
   }
 }
+
 class GradientThumbShape extends SliderComponentShape {
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -150,7 +157,8 @@ class GradientThumbShape extends SliderComponentShape {
   }
 }
 
-class GradeintRoundedRectSliderTrackShape extends SliderTrackShape with BaseSliderTrackShape {
+class GradeintRoundedRectSliderTrackShape extends SliderTrackShape
+    with BaseSliderTrackShape {
   /// Create a slider track that draws two rectangles with rounded outer edges.
   const GradeintRoundedRectSliderTrackShape();
 
@@ -193,41 +201,62 @@ class GradeintRoundedRectSliderTrackShape extends SliderTrackShape with BaseSlid
 
     // Assign the track segment paints, which are leading: active and
     // trailing: inactive.
-    final ColorTween activeTrackColorTween = ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
-    final ColorTween inactiveTrackColorTween = ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
-    final Paint activePaint =  
-    Paint()
-    ..shader = gradeinet.createShader(trackRect)
-    ..color = activeTrackColorTween.evaluate(enableAnimation)!;
-    final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
-    final (Paint leftTrackPaint, Paint rightTrackPaint) = switch (textDirection) {
+    final ColorTween activeTrackColorTween = ColorTween(
+        begin: sliderTheme.disabledActiveTrackColor,
+        end: sliderTheme.activeTrackColor);
+    final ColorTween inactiveTrackColorTween = ColorTween(
+        begin: sliderTheme.disabledInactiveTrackColor,
+        end: sliderTheme.inactiveTrackColor);
+    final Paint activePaint = Paint()
+      ..shader = gradeinet.createShader(trackRect)
+      ..color = activeTrackColorTween.evaluate(enableAnimation)!;
+    final Paint inactivePaint = Paint()
+      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
+    final (Paint leftTrackPaint, Paint rightTrackPaint) =
+        switch (textDirection) {
       TextDirection.ltr => (activePaint, inactivePaint),
       TextDirection.rtl => (inactivePaint, activePaint),
     };
 
-    
     final Radius trackRadius = Radius.circular(trackRect.height / 2);
-    final Radius activeTrackRadius = Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);
+    final Radius activeTrackRadius =
+        Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);
 
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         trackRect.left,
-        (textDirection == TextDirection.ltr) ? trackRect.top - (additionalActiveTrackHeight / 2): trackRect.top,
+        (textDirection == TextDirection.ltr)
+            ? trackRect.top - (additionalActiveTrackHeight / 2)
+            : trackRect.top,
         thumbCenter.dx,
-        (textDirection == TextDirection.ltr) ? trackRect.bottom + (additionalActiveTrackHeight / 2) : trackRect.bottom,
-        topLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius : trackRadius,
-        bottomLeft: (textDirection == TextDirection.ltr) ? activeTrackRadius: trackRadius,
+        (textDirection == TextDirection.ltr)
+            ? trackRect.bottom + (additionalActiveTrackHeight / 2)
+            : trackRect.bottom,
+        topLeft: (textDirection == TextDirection.ltr)
+            ? activeTrackRadius
+            : trackRadius,
+        bottomLeft: (textDirection == TextDirection.ltr)
+            ? activeTrackRadius
+            : trackRadius,
       ),
       leftTrackPaint,
     );
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         thumbCenter.dx,
-        (textDirection == TextDirection.rtl) ? trackRect.top - (additionalActiveTrackHeight / 2) : trackRect.top,
+        (textDirection == TextDirection.rtl)
+            ? trackRect.top - (additionalActiveTrackHeight / 2)
+            : trackRect.top,
         trackRect.right,
-        (textDirection == TextDirection.rtl) ? trackRect.bottom + (additionalActiveTrackHeight / 2) : trackRect.bottom,
-        topRight: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
-        bottomRight: (textDirection == TextDirection.rtl) ? activeTrackRadius : trackRadius,
+        (textDirection == TextDirection.rtl)
+            ? trackRect.bottom + (additionalActiveTrackHeight / 2)
+            : trackRect.bottom,
+        topRight: (textDirection == TextDirection.rtl)
+            ? activeTrackRadius
+            : trackRadius,
+        bottomRight: (textDirection == TextDirection.rtl)
+            ? activeTrackRadius
+            : trackRadius,
       ),
       rightTrackPaint,
     );
@@ -238,8 +267,11 @@ class GradeintRoundedRectSliderTrackShape extends SliderTrackShape with BaseSlid
             : (secondaryOffset.dx < thumbCenter.dx));
 
     if (showSecondaryTrack) {
-      final ColorTween secondaryTrackColorTween = ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
-      final Paint secondaryTrackPaint = Paint()..color = secondaryTrackColorTween.evaluate(enableAnimation)!;
+      final ColorTween secondaryTrackColorTween = ColorTween(
+          begin: sliderTheme.disabledSecondaryActiveTrackColor,
+          end: sliderTheme.secondaryActiveTrackColor);
+      final Paint secondaryTrackPaint = Paint()
+        ..color = secondaryTrackColorTween.evaluate(enableAnimation)!;
       if (textDirection == TextDirection.ltr) {
         context.canvas.drawRRect(
           RRect.fromLTRBAndCorners(

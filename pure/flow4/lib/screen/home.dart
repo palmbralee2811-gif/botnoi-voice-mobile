@@ -1,12 +1,19 @@
 // import 'dart:ffi';
 
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow3/filters/languagedrawer.dart';
 import 'package:flow3/widgets/CategorySetting.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/widgets/CategorySetting.dart';
 import 'package:flow3/widgets/CategoryVoice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flow3/firebase/login_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+// import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -42,23 +49,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
+    // final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
 
     double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
     double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
-    // int currentIndex = 0;
+    int currentIndex = 0;
     final screenHeightOpen = screenSizeheightInputtextOpen;
     final maxLinesopen = (screenHeightOpen / 65).floor();
     final screenHeightClose = screenSizeheightInputtextOpen;
     final maxLinesclose = (screenHeightClose / 180).floor();
     bool _showClearIcon = false;
 
-    
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
       // _button = 1;
@@ -86,15 +91,16 @@ class _HomePageState extends State<HomePage> {
         shadowColor: Colors.black,
         child: ListView(
           children: <Widget>[
-            DrawerHeader(
-              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            ListTile(
+              contentPadding:
+                  EdgeInsets.only(left: 30.w, top: 15.w, right: 30.w),
+              title: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CircleAvatar(
+                        // backgroundImage: NetworkImage(user!.photoURL!),
                         backgroundColor: Colors.black,
                         radius: 20.0.r,
                         child: SvgPicture.asset(
@@ -104,44 +110,50 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                          style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.menu_rounded,
-                            color: const Color(0xFF323130),
-                            size: 32.sp,
-                          )),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Nonnssssssss',
-                        style: GoogleFonts.prompt(
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w600,
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(fontSize: 10.sp),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.menu_rounded,
                           color: const Color(0xFF323130),
+                          size: 32.sp,
                         ),
                       ),
                     ],
                   ),
+                  Text(
+                    // user.displayName!,
+                    'nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                    style: GoogleFonts.prompt(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF323130),
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    maxLines: 3,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('UID:sdsdasdadassssssssssss',
+                      Expanded(
+                        child: Text(
+                          // user.email!,
+                          'อีเมลsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
                           style: GoogleFonts.prompt(
                             fontSize: 14.sp,
                             color: const Color(0xFF323130),
-                          )),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
+              onTap: () {},
             ),
             ListTile(
               contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
@@ -235,6 +247,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onTap: () {},
             ),
+            SizedBox(height: 10.h),
             Expanded(
                 child: Opacity(
               opacity: 0.5, // 50% opacity
@@ -244,95 +257,51 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.transparent,
               ),
             )),
-            const Languagedrawer()
+            const Languagedrawer(),
+            SizedBox(height: 69.h),
+            // ElevatedButton.icon(
+            //   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+            //   onPressed: () {
+            //     Navigator.pushAndRemoveUntil(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => const LoginPage()),
+            //         (Route<dynamic> route) => false);
+            //   },
+            //   label: Text(
+            //     'ออกจากระบบ',
+            //     style: GoogleFonts.prompt(
+            //       color: const Color(0xFF323130),
+            //       fontSize: 16.sp,
+            //       fontWeight: FontWeight.w600,
+            //     ),
+            //   ),
+            //   // icon: Icon(Icons.logout,
+            //   //     color: const Color(0xFF323130), size: 20.sp)
+            // ),
           ],
         ),
       ),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              padding: EdgeInsets.only(left: 15.w),
+              icon: Icon(
+                Icons.menu_rounded,
+                size: 32.sp,
+                color: const Color(0xFF323130),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
         backgroundColor: const Color(0xFFFFFFFF),
+        // backgroundColor: Colors.black,
         title: const Appbar(),
       ),
       body: Column(
         children: <Widget>[
-          // SafeArea(
-          // child:
-          // Column(
-          //   children: [
-          //     Container(
-          //       color: Colors.white,
-          //       child: Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           SizedBox(
-          //             width: 55.w,
-          //           ),
-          //           Image.asset(
-          //             'assets/logo/Frame.png',
-          //             width: 30.w,
-          //             height: 34.h,
-          //           ),
-          //           Column(
-          //             children: [
-          //               Row(
-          //                 children: [
-          //                   Container(
-          //                     width: 54.w,
-          //                     decoration: BoxDecoration(
-          //                       boxShadow: const [
-          //                         BoxShadow(
-          //                           color: Color.fromARGB(255, 224, 221, 221),
-          //                           blurRadius: 3.0,
-          //                         ),
-          //                       ],
-          //                       color: Colors.white,
-          //                       borderRadius: BorderRadius.circular(50.r),
-          //                     ),
-          //                     child: Row(
-          //                       mainAxisAlignment: MainAxisAlignment.center,
-          //                       children: [
-          //                         SizedBox(
-          //                           height: 25.h,
-          //                           width: 20.h,
-          //                           child: Padding(
-          //                             padding: const EdgeInsets.all(2),
-          //                             child: Column(
-          //                               mainAxisAlignment:
-          //                                   MainAxisAlignment.center,
-          //                               children: [
-          //                                 Image.asset(
-          //                                   'assets/logo/point.png',
-          //                                   width: 20.w,
-          //                                   height: 20.h,
-          //                                 ),
-          //                               ],
-          //                             ),
-          //                           ),
-          //                         ),
-          //                         Column(
-          //                           children: [
-          //                             Text(
-          //                               '100',
-          //                               style: GoogleFonts.prompt(
-          //                                 fontSize: 12.sp,
-          //                                 fontWeight: FontWeight.bold,
-          //                                 color: const Color(0xFF323130),
-          //                               ),
-          //                             ),
-          //                           ],
-          //                         ),
-          //                       ],
-          //                     ),
-          //                   ),
-          //                 ],
-          //               ),
-          //             ],
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // ),
           Container(
             width: screenSizewidth,
             decoration: const BoxDecoration(
@@ -553,18 +522,18 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: const BuildVoice()),
                 ),
-                // Container(
-                //     height: screenSizeheight * 0.052.h,
-                //     width: screenSizewidth * 0.78.w,
-                //     color: const Color(0xFF27282B),
-                //     child: InkWell(
-                //       onTap: () {},
-                //       child: currentIndex == 1
-                //           ? SvgPicture.asset(
-                //               'assets/logo/Property 1=studio, Property 2=deault (2).svg')
-                //           : SvgPicture.asset(
-                //               'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                //     ))
+                Container(
+                    height: screenSizeheight * 0.052.h,
+                    width: 320.w,
+                    color: const Color(0xFF27282B),
+                    child: InkWell(
+                      onTap: () {},
+                      child: currentIndex == 1
+                          ? SvgPicture.asset(
+                              'assets/logo/Property 1=studio, Property 2=deault (2).svg')
+                          : SvgPicture.asset(
+                              'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
+                    ))
               ]), // 40% of the screen height
             ),
           ),
@@ -684,25 +653,31 @@ class Appbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
+  child: Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 90.w),
-                child: Image.asset(
-                  'assets/logo/Frame.png',
-                  width: 30.w,
-                  height: 34.h,
-                ),
+          Padding(
+            padding: EdgeInsets.only(left: 86.w),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/logo/App_Icon.png',
+                width: 35.w,
+                height: 35.h,
+                fit: BoxFit.cover,
               ),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 54.w,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 5.w),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    IntrinsicWidth(
+                      child: Container(
+                    
                         decoration: BoxDecoration(
                           boxShadow: const [
                             BoxShadow(
@@ -716,6 +691,7 @@ class Appbar extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            SizedBox(width: 5.w),
                             SizedBox(
                               height: 25.h,
                               width: 20.h,
@@ -736,27 +712,33 @@ class Appbar extends StatelessWidget {
                             Column(
                               children: [
                                 Text(
-                                  '100',
+                                  '10,000,000,000',
                                   style: GoogleFonts.prompt(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
                                     color: const Color(0xFF323130),
                                   ),
+                                  
                                 ),
+
                               ],
                             ),
+                            SizedBox(width: 5.w),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
-    );
+    ],
+  ),
+)
+;
   }
 }
 
@@ -785,6 +767,7 @@ class _BuildVoiceState extends State<BuildVoice> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // const Spacer(),
               InkWell(
                 onTap: () {
                   /////////////////////////////////////////////////////////////////////////////////////
@@ -795,7 +778,7 @@ class _BuildVoiceState extends State<BuildVoice> {
                   decoration: BoxDecoration(
                     boxShadow: const [
                       BoxShadow(
-                        color: Color.fromARGB(255, 224, 221, 221),
+                        color: Colors.black12,
                         blurRadius: 6.0,
                       ),
                     ],

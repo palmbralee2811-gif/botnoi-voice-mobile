@@ -1,0 +1,75 @@
+import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/SignInScreen/sign_in.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+Widget appBarDrawer(BuildContext context) {
+    final auth = Provider.of<Authentication>(context, listen: false);
+
+    return Drawer(
+      elevation: 16,
+      shadowColor: Colors.black,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16.0),
+                Consumer<Authentication>(
+                  builder: (context, auth, child) {
+                    return auth.user != null
+                        ? Text(
+                            '${auth.user!.displayName}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          )
+                        : const SizedBox
+                            .shrink(); // or any other widget if you want to show something when not signed in
+                  },
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
+            title: const Text('สตูดิโอ'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.settings,
+              color: Colors.black,
+            ),
+            title: const Text(
+              'ออกจากระบบ',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onTap: () async {
+              await auth.signOut();
+              if (!context.mounted) return;
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }

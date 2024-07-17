@@ -11,7 +11,7 @@ final theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     // brightness: Brightness.dark,
     brightness: Brightness.light,
-    seedColor: Color.fromARGB(255, 253, 196, 153),
+    seedColor: const Color.fromARGB(255, 253, 196, 153),
   ),
   textTheme: GoogleFonts.promptTextTheme(),
 );
@@ -36,16 +36,10 @@ class BotnoiVoiceApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp(
-
             debugShowCheckedModeBanner: false,
             title: "Botnoi Voice",
             theme: theme,
-
-
-            home: AuthChecker(speakerId: ''),
-
-
-            
+            home: const AuthChecker(),
           );
         },
       ),

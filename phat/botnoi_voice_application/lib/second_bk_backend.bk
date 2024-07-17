@@ -1,0 +1,81 @@
+import 'dart:convert';
+
+import 'package:botnoi_voice_application/models/models.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class Backend{
+  
+  String? jwtToken;
+  List<ListProject> listProjects = [];
+  List<Map<String, dynamic>> _textList = [];
+
+  Future<void> getInfo() async {
+    String url = 'api-voice.botnoi.ai';
+    String path = '/api/workspace/get_all_workspace';
+    String jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjAwNzI3ODIsImlhdCI6MTcxOTk4NjM4MiwibmJmIjoxNzE5OTg2MzgyLCJ1aWQiOiIzOGI1NjUwMS05MGMyLTU3MzctODA4Ni0zMGM3OTRkOWY4ZjIiLCJ1c2VyX2lkIjoiSG9nbjlrdkpYY1hTOTVnRTdpbDZzaUtBbVkyMyJ9.o2x024kV6xmfRTdBPHutTwKV3dxyq2EzL6mVeeWnjFU'; 
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json'
+    };
+   try {
+      final response = await http.get(Uri.https(url, path), headers: headers);
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        final data = responseData['data'];
+        if (data != null && data['list_project'] != null) {
+          listProjects = (data['list_project'] as List)
+              .map((e) => ListProject.fromJson(e))
+              .toList();
+          if (listProjects.isNotEmpty) {
+            await getWorkspaceById(listProjects.first.workspaceId);
+            print(listProjects.first.workSpaces[1].text);
+          } else {
+            print('No projects found.');
+          }
+        } else {
+          print('No projects found.');
+        }
+      } else {
+        print('Failed to fetch projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in getInfo: $e');
+    }
+  }
+
+  Future<void> getWorkspaceById(String workspaceId) async {
+    String url = 'api-voice.botnoi.ai';
+    String path = '/api/workspace/get_workspace';
+    String jwtToken = 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjAwNzI3ODIsImlhdCI6MTcxOTk4NjM4MiwibmJmIjoxNzE5OTg2MzgyLCJ1aWQiOiIzOGI1NjUwMS05MGMyLTU3MzctODA4Ni0zMGM3OTRkOWY4ZjIiLCJ1c2VyX2lkIjoiSG9nbjlrdkpYY1hTOTVnRTdpbDZzaUtBbVkyMyJ9.o2x024kV6xmfRTdBPHutTwKV3dxyq2EzL6mVeeWnjFU';
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json'
+    };
+    Map<String, String> params = {
+      'workspace_id': workspaceId,
+    };
+  try {
+      final response =
+          await http.get(Uri.https(url, path, params), headers: headers);
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        final data = responseData['data'];
+        final textList = data['text_list'] as List<dynamic>;
+        _textList = textList.cast<Map<String, dynamic>>();
+        for (var project in listProjects) {
+          if (project.workspaceId == workspaceId) {
+            project.updateWorkSpaces(_textList);
+          }
+        }
+        print('Workspace Details: $_textList');
+      } else {
+        print('Failed to load workspace details: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in getWorkspaceById: $e');
+    }
+  }
+
+}
