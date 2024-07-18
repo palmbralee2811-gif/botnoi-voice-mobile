@@ -32,7 +32,7 @@ class AppDataBase {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/square_ngam.webp',
     ),
     Data(
-      name: 'Aunty Grace',
+      name: 'Aunty Graceiiiiiiiiiiii',
       image:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/square_yingaiko.webp',
     ),

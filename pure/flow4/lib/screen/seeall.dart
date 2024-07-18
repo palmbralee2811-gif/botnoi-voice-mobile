@@ -1,6 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flow3/data/data.dart';
 import 'package:flow3/filters/advert.dart';
-import 'package:flow3/filters/all.dart';
 import 'package:flow3/filters/commandie.dart';
 import 'package:flow3/filters/discreetly.dart';
 import 'package:flow3/filters/favorite.dart';
@@ -27,31 +27,49 @@ class SeeAll extends StatefulWidget {
 }
 
 class _SeeAllState extends State<SeeAll> {
+  final data = AppDataBase.data;
+  Set<int> selectedIndex2 = <int>{};
+  Set<int> selectedIndex = <int>{};
   bool ishover = false;
-  int selectedIndex = -1;
-  int selectedIndex2 = -1;
+  // int selectedIndex = -1;
+  // int selectedIndex2 = -1;
 
   @override
   Widget build(BuildContext context) {
     double screenSizewidth = MediaQuery.of(context).size.width;
-    double screenSizeheight = MediaQuery.of(context).size.height;
+    // double screenSizeheight = MediaQuery.of(context).size.height;
     final data = AppDataBase.data;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              padding: EdgeInsets.only(left: 15.w),
+              icon: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
         title: Padding(
-          padding: EdgeInsets.only(left: 89.w),
+          padding: EdgeInsets.only(left: 86.w),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            // Icon(
-            //   Icons.arrow_back_ios_new,
-            //   size: 24.sp,
-            //   color: const Color(0xFF323130),
-            // ),
-            Image.asset(
-              'assets/logo/Frame (1).png',
-              width: 30.w,
-              height: 34.h,
+           
+            ClipOval(
+              child: Image.asset(
+                'assets/logo/App_Icon.png',
+                width: 35.w,
+                height: 35.h,
+                fit: BoxFit.cover,
+              ),
             ),
             Icon(
               Icons.search_rounded,
@@ -83,7 +101,52 @@ class _SeeAllState extends State<SeeAll> {
                     },
                     child: Favorite(ishover: ishover),
                   ),
-                  const All(),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 63.w,
+                      height: 26.h,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                        ),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                        border: Border.all(
+                          color: const Color(0xFFE2E3E9),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ishover
+                                  ? Text(
+                                      'ดูทั้งหมด',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 12.sp,
+                                        color: const Color(0xFFFFFFFF),
+                                      ),
+                                    )
+                                  : Text(
+                                      'ดูทั้งหมด',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 12.sp,
+                                        color: const Color(0xFF323130),
+                                      ),
+                                    ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -140,150 +203,126 @@ class _SeeAllState extends State<SeeAll> {
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      selectedIndex = index;
+                                      if (selectedIndex.contains(index)) {
+                                        selectedIndex.remove(index);
+                                      } else {
+                                        // Clear the previously selected index before adding the new one
+                                        selectedIndex.clear();
+                                        selectedIndex.add(index);
+                                      }
                                     });
-                                    //////////
                                   },
-                                  child: Expanded(
-                                    child: Container(
-                                      width: 90.w,
-                                      height: 113.h,
-                                      decoration: BoxDecoration(
-                                        border: GradientBoxBorder(
-                                          width: 3.w,
-                                          gradient: selectedIndex == index
-                                              ? const LinearGradient(colors: [
-                                                  Color(0xFF9A96F5),
-                                                  Color(0xFF00E0FF)
-                                                ])
-                                              : const LinearGradient(colors: [
-                                                  Colors.transparent,
-                                                  Colors.transparent
-                                                ]),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                        image: DecorationImage(
-                                          image: NetworkImage(data[index].image),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: selectedIndex == index
-                                                ? Colors.blue.withOpacity(0.5)
-                                                : Colors.transparent,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 25.w,
-                                                          top: 4.w),
-                                                      child:
-                                                          selectedIndex == index
-                                                              ? Container(
-                                                                  width: 31.w,
-                                                                  height: 17.h,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    gradient:
-                                                                        const LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                            0xFF9A96F5),
-                                                                        Color(
-                                                                            0xFF00E0FF)
-                                                                      ],
-                                                                    ),
-                                                                    color: Colors
-                                                                        .white,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            8.r),
-                                                                  ),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                        'เลือก',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontStyle:
-                                                                              GoogleFonts.prompt(
-                                                                            fontSize:
-                                                                                10.sp,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ).fontStyle,
-                                                                        )),
-                                                                  ),
-                                                                )
-                                                              : const Icon(
-                                                                  Icons.check,
-                                                                  color: Colors
-                                                                      .transparent,
-                                                                ),
-                                                    ),
-                                                    GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            selectedIndex2 =
-                                                                index;
-                                                          });
-                                                        },
-                                                        child: selectedIndex2 ==
-                                                                index
-                                                            ? ShaderMask(
-                                                                shaderCallback:
-                                                                    (Rect
-                                                                        bounds) {
-                                                                  return const LinearGradient(
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xFF9A96F5),
-                                                                      Color(
-                                                                          0xFF00E0FF),
-                                                                    ],
-                                                                  ).createShader(
-                                                                      bounds);
-                                                                },
-                                                                child:
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                  'assets/logo/heart (1).svg',
-                                                                  width: 16.w,
-                                                                  height: 16.h,
-                                                                  color: Colors
-                                                                      .white, // Optional: Default color of the SVG
-                                                                ),
-                                                              )
-                                                            : SvgPicture.asset(
-                                                                'assets/logo/heart.svg',
-                                                                width: 16.sp,
-                                                                height: 16.sp,
-                                                              ))
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 100.w,
+                                        height: 113.h,
+                                        decoration: BoxDecoration(
+                                          border: GradientBoxBorder(
+                                            width: 3.w,
+                                            gradient: selectedIndex
+                                                    .contains(index)
+                                                ? const LinearGradient(colors: [
+                                                    Color(0xFF9A96F5),
+                                                    Color(0xFF00E0FF)
+                                                  ])
+                                                : const LinearGradient(colors: [
+                                                    Colors.transparent,
+                                                    Colors.transparent
                                                   ]),
-                                              const Spacer(),
-                                              Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    selectedIndex == index
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                          image: DecorationImage(
+                                            image:
+                                                NetworkImage(data[index].image),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: selectedIndex
+                                                      .contains(index)
+                                                  ? Colors.blue.withOpacity(0.5)
+                                                  : Colors.transparent,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 5.w,
+                                                      top: 5.w,
+                                                      left: 5.w),
+                                                  child: selectedIndex
+                                                          .contains(index)
+                                                      ? Container(
+                                                          width: 31.w,
+                                                          height: 17.h,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            gradient:
+                                                                const LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                    0xFF9A96F5),
+                                                                Color(
+                                                                    0xFF00E0FF)
+                                                              ],
+                                                            ),
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8.r),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text('เลือก',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontStyle: GoogleFonts
+                                                                          .prompt()
+                                                                      .fontStyle,
+                                                                  fontSize:
+                                                                      10.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                )),
+                                                          ),
+                                                        )
+                                                      : const Icon(
+                                                          Icons.check,
+                                                          color: Colors
+                                                              .transparent,
+                                                        ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 5.w, top: 5.w),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        if (selectedIndex2
+                                                            .contains(index)) {
+                                                          selectedIndex2
+                                                              .remove(index);
+                                                        } else {
+                                                          selectedIndex2
+                                                              .add(index);
+                                                        }
+                                                      });
+                                                    },
+                                                    child: selectedIndex2
+                                                            .contains(index)
                                                         ? ShaderMask(
                                                             shaderCallback:
                                                                 (Rect bounds) {
@@ -292,55 +331,83 @@ class _SeeAllState extends State<SeeAll> {
                                                                   Color(
                                                                       0xFF9A96F5),
                                                                   Color(
-                                                                      0xFF00E0FF),
+                                                                      0xFF00E0FF)
                                                                 ],
                                                               ).createShader(
                                                                   bounds);
                                                             },
                                                             child: SvgPicture
                                                                 .asset(
-                                                              'assets/logo/Vector.svg',
-                                                              width:
-                                                                  screenSizeheight *
-                                                                      0.01.h,
-                                                              height:
-                                                                  screenSizeheight *
-                                                                      0.017.h,
-                                                              color: Colors
-                                                                  .white, // Optional: Default color of the SVG
+                                                              'assets/logo/heart (1).svg',
+                                                              width: 20.w,
+                                                              height: 20.h,
+                                                              color:
+                                                                  Colors.white,
                                                             ),
                                                           )
                                                         : SvgPicture.asset(
-                                                            'assets/logo/Vector (1).svg',
-                                                            width:
-                                                                screenSizeheight *
-                                                                    0.005.h,
-                                                            height:
-                                                                screenSizeheight *
-                                                                    0.017.h,
+                                                            'assets/logo/heart.svg',
+                                                            width: 20.w,
+                                                            height: 20.h,
                                                           ),
-                                                    SizedBox(
-                                                      width: 5.w,
-                                                    ),
-                                                    Text(
-                                                      softWrap: true,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: null,
-                                                      data[index].name,
-                                                      style: GoogleFonts.prompt(
-                                                        fontSize: 10.sp,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 12.w,
+                                                ),
+                                                selectedIndex.contains(index)
+                                                    ? ShaderMask(
+                                                        shaderCallback:
+                                                            (Rect bounds) {
+                                                          return const LinearGradient(
+                                                            colors: [
+                                                              Color(0xFF9A96F5),
+                                                              Color(0xFF00E0FF)
+                                                            ],
+                                                          ).createShader(
+                                                              bounds);
+                                                        },
+                                                        child: SvgPicture.asset(
+                                                          'assets/logo/Vector.svg',
+                                                          width: 16.h,
+                                                          height: 16.w,
+                                                          color: Colors.white,
+                                                        ),
+                                                      )
+                                                    : SvgPicture.asset(
+                                                        'assets/logo/Vector (1).svg',
+                                                        width: 16.h,
+                                                        height: 16.w,
                                                       ),
+                                                SizedBox(width: 3.w),
+                                                Expanded(
+                                                  child: AutoSizeText(
+                                                    data[index].name,
+                                                    style: GoogleFonts.prompt(
+                                                      fontSize: 10.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
-                                                  ])
-                                            ],
-                                          ),
-                                        ],
+                                                    softWrap: true,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    maxLines: 2,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -358,54 +425,55 @@ class _SeeAllState extends State<SeeAll> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            /////////////////////////////////////////////////////////////////////////////////////
-                          },
-                          child: Container(
-                            height: 55.h,
-                            width: screenSizewidth * 0.7.w,
-                            decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 224, 221, 221),
-                                  blurRadius: 6.0,
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(10.r),
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "ตกลง",
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFFFFFFFF),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(bottom: 20.w, left: 20.w, right: 20.w),
+                  child: SizedBox(
+                    child: GradientButton(
+                      text: 'ส่งข้อเสนอแนะ',
+                      onPressed: () {
+                        print('ส่งข้อเสนอแนะ');
+                      },
                     ),
-                  ],
+                  ),
                 ),
               )
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class GradientButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+
+  GradientButton({required this.text, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 50.h,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+        ),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
+        onPressed: onPressed,
+        child: Text(text,
+            style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600)),
       ),
     );
   }
