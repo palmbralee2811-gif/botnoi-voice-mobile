@@ -1,17 +1,17 @@
 import 'package:botnoivoice/Database/data.dart';
-import 'package:botnoivoice/filters/advert.dart';
-import 'package:botnoivoice/filters/all.dart';
-import 'package:botnoivoice/filters/commandie.dart';
-import 'package:botnoivoice/filters/discreetly.dart';
-import 'package:botnoivoice/filters/favorite.dart';
-import 'package:botnoivoice/filters/fresh.dart';
-import 'package:botnoivoice/filters/language.dart';
-import 'package:botnoivoice/filters/new.dart';
-import 'package:botnoivoice/filters/podcast.dart';
-import 'package:botnoivoice/filters/recomman.dart';
-import 'package:botnoivoice/filters/sad.dart';
-import 'package:botnoivoice/filters/sex.dart';
-import 'package:botnoivoice/filters/voice.dart';
+import 'package:botnoivoice/Filters/advert.dart';
+import 'package:botnoivoice/Filters/all.dart';
+import 'package:botnoivoice/Filters/commandie.dart';
+import 'package:botnoivoice/Filters/discreetly.dart';
+import 'package:botnoivoice/Filters/favorite.dart';
+import 'package:botnoivoice/Filters/fresh.dart';
+import 'package:botnoivoice/Filters/language.dart';
+import 'package:botnoivoice/Filters/new.dart';
+import 'package:botnoivoice/Filters/podcast.dart';
+import 'package:botnoivoice/Filters/recomman.dart';
+import 'package:botnoivoice/Filters/sad.dart';
+import 'package:botnoivoice/Filters/sex.dart';
+import 'package:botnoivoice/Filters/voice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -99,14 +99,14 @@ class _SeeAllState extends State<SeeAll> {
                   spacing: 13.0,
                   runSpacing: 13.0,
                   children: [
-                    New(),
-                    Voice(),
-                    Advert(),
-                    Podcast(),
-                    Commandie(),
-                    Fresh(),
-                    Discreetly(),
-                    Sad(),
+                    // New(),
+                    // Voice(),
+                    // Advert(),
+                    // Podcast(),
+                    // Commandie(),
+                    // Fresh(),
+                    // Discreetly(),
+                    // Sad(),
                   ]),
             ),
           ),

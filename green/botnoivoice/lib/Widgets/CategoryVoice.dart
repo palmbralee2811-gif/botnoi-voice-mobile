@@ -1,30 +1,27 @@
-/*
-
 import 'dart:ui';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Database/data.dart';
-import 'package:botnoivoice/filters/advert.dart';
-import 'package:botnoivoice/filters/all.dart';
-import 'package:botnoivoice/filters/favorite.dart';
-// import 'package:botnoivoice/filters/favorite.dart';
-import 'package:botnoivoice/filters/language.dart';
-import 'package:botnoivoice/filters/new.dart';
-import 'package:botnoivoice/filters/podcast.dart';
-import 'package:botnoivoice/filters/recomman.dart';
-import 'package:botnoivoice/filters/sex.dart';
-import 'package:botnoivoice/filters/voice.dart';
-// import 'package:botnoivoice/model/favoritemodel.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:botnoivoice/Filters/advert.dart';
+import 'package:botnoivoice/Filters/all.dart';
+import 'package:botnoivoice/Filters/favorite.dart';
+// import 'package:botnoivoice/Filters/favorite.dart';
+import 'package:botnoivoice/Filters/language.dart';
+import 'package:botnoivoice/Filters/new.dart';
+import 'package:botnoivoice/Filters/podcast.dart';
+import 'package:botnoivoice/Filters/recomman.dart';
+import 'package:botnoivoice/Filters/sex.dart';
+import 'package:botnoivoice/Filters/voice.dart';
+// import 'package:flow3/model/favoritemodel.dart';
 import 'package:botnoivoice/widgets/favoriteVoice.dart';
 import 'package:flutter/material.dart';
+import 'package:botnoivoice/Database/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 // import 'package:provider/provider.dart';
-// import 'package:botnoivoice/widgets/story_viewer.dart';
-
-
+// import 'package:flow3/widgets/story_viewer.dart';
 
 class CategoryVoice extends StatefulWidget {
   const CategoryVoice({
@@ -48,10 +45,6 @@ class _CategoryVoiceState extends State<CategoryVoice> {
     final data = AppDataBase.data;
     // final filterModel = Provider.of<FilterModel>(context);
 
-    String speakerId = data[0].speakerId;
-    String language = data[0].language;
-    List<String> availableLanguage = data[0].availableLanguage;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -71,14 +64,14 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                       // const Language(),
                       // const Sex(),
                       // const Recommand(),
-                      // InkWell(
-                      //   onTap: () {
-                      //     setState(() {
-                      //       ishover = !ishover;
-                      //     });
-                      //   },
-                      //   child: Favorite(ishover: ishover),
-                      // ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            ishover = !ishover;
+                          });
+                        },
+                        child: Favorite(ishover: ishover),
+                      ),
                       // const All(),
                       // const New(),
                       // const Voice(),
@@ -108,9 +101,6 @@ class _CategoryVoiceState extends State<CategoryVoice> {
                       screenSizeheight: screenSizeheight,
                       screenSizewidth: screenSizewidth,
                       data: data,
-                      speakerId: speakerId,
-                      language: language,
-                      availableLanguage: availableLanguage,
                     )
             ],
           ),
@@ -126,9 +116,6 @@ class VoiceWidget extends StatefulWidget {
     required this.screenSizeheight,
     required this.screenSizewidth,
     required this.data,
-    required this.speakerId,
-    required this.language,
-    required this.availableLanguage,
     // required this.onToggleFavorite,
   });
 
@@ -137,28 +124,11 @@ class VoiceWidget extends StatefulWidget {
   final List<Data> data;
   // final void Function(Data data) onToggleFavorite;
 
-  // Generate Audio
-  final String speakerId;
-  // String? token;
-  final String language;
-  final List<String> availableLanguage;
-
   @override
   State<VoiceWidget> createState() => _VoiceWidgetState();
 }
 
 class _VoiceWidgetState extends State<VoiceWidget> {
-  // Generate Audio
-  late String speakerId;
-  // String? token;
-  late String language;
-  late List<String> availableLanguage;
-
-  // Player Audio
-  bool isAudioPlaying = false;
-  AudioPlayer audioPlayer = AudioPlayer();
-  List<Data> data = [];
-
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
   // final List<Data> _favoriteVoice = [];
@@ -186,65 +156,19 @@ class _VoiceWidgetState extends State<VoiceWidget> {
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final data = widget.data[index];
-
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 15.w),
                 child: GestureDetector(
-                  onTap: () async {
-
-                    print("\n### VoiceWidget -> Line 197 is working !!! ### \n");
-
-                    String audioURL = data.audio;
-                    Future<void> playAudio() async {
-                      if (audioURL.isNotEmpty) {
-                        if (isAudioPlaying) {
-                          // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
-                          await audioPlayer.stop();
-                        }
-                        await audioPlayer.play(UrlSource(audioURL));
-                        setState(() {
-                          isAudioPlaying = true;
-                        });
-
-                        audioPlayer.onPlayerComplete.listen((event) {
-                          print("#### Play Audio's Complete");
-                          setState(() {
-                            isAudioPlaying = false;
-                          });
-                        });
-                      } else {
-                        setState(() {
-                          isAudioPlaying = false;
-                        });
-                        print("Audio URL is empty, cannot play audio");
-                      }
-                    }
-
-                    await playAudio();
-
-                    // get data in value to the generate audio function
-                    speakerId = data.speakerId;
-                    language = data.language.toLowerCase();
-                    availableLanguage = data.availableLanguage.toList();
-
-                    print('\nspeakerId -> Widget(DataVoice): $speakerId');
-                    print(
-                        'squareImage -> Widget(DataVoice): ${data.squareImage}');
-                    print('thaiName -> Widget(DataVoice): ${data.thaiName}');
-                    print('engName -> Widget(DataVoice): ${data.engName}');
-                    print(
-                        'language -> Widget(DataVoice): ${data.language.toLowerCase()}');
-                    print(
-                        'availableLanguage -> Widget(DataVoice): ${data.availableLanguage.toList()} \n');
-
+                  onTap: () {
                     setState(() {
                       if (selectedIndex.contains(index)) {
                         selectedIndex.remove(index);
                       } else {
+                        // Clear the previously selected index before adding the new one
+                        selectedIndex.clear();
                         selectedIndex.add(index);
                       }
                     });
@@ -363,10 +287,13 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                 )
                               ],
                             ),
-                            const Spacer(), // Add Spacer to push the content below to the bottom
+                            const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                SizedBox(
+                                  width: 15.w,
+                                ),
                                 selectedIndex.contains(index)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
@@ -392,15 +319,17 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                 SizedBox(
                                   width: 3.w,
                                 ),
-                                Text(
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: null,
-                                  widget.data[index].thaiName,
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 10.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
+                                Expanded(
+                                  child: AutoSizeText(
+                                    widget.data[index].engName,
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    softWrap: true,
+                                    overflow: TextOverflow.visible,
+                                    maxLines: 2,
                                   ),
                                 ),
                               ],
@@ -408,17 +337,6 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                           ],
                         ),
                       ),
-                      // Text(
-                      //   softWrap: true,
-                      //   overflow: TextOverflow.ellipsis,
-                      //   maxLines: null,
-                      //   widget.data[index].name,
-                      //   style: GoogleFonts.prompt(
-                      //     fontSize: 12.sp,
-                      //     color: Colors.black,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -430,5 +348,3 @@ class _VoiceWidgetState extends State<VoiceWidget> {
     );
   }
 }
-
-*/

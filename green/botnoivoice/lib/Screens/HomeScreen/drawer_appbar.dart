@@ -1,21 +1,20 @@
-// import 'dart:ffi';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-// import 'package:botnoivoice/Screens/HomeScreen/home.dart';
-import 'package:botnoivoice/Screens/SignInScreen/sign_in.dart';
-import 'package:botnoivoice/filters/languagedrawer.dart';
+import 'package:botnoivoice/Filters/languagedrawer.dart';
+import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
+import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
+import 'package:botnoivoice/Screens/LoginScreen/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'gradient_icon_home.dart';
-import 'gradient_text_home.dart';
 
-class DrawerAppBar extends StatelessWidget {
-  const DrawerAppBar({
+class DrawerAppbar extends StatelessWidget {
+  const DrawerAppbar({
     super.key,
     required this.auth,
     required this.email,
     required this.screenSizeheight,
+
   });
 
   final Authentication auth;
@@ -42,11 +41,11 @@ class DrawerAppBar extends StatelessWidget {
                       backgroundImage: NetworkImage(auth.user!.photoURL!),
                       backgroundColor: Colors.black,
                       radius: 20.0.r,
-                      child: SvgPicture.asset(
-                        'assets/logo/logo.svg',
-                        width: 40.0.w,
-                        height: 40.0.h,
-                      ),
+                      // child: SvgPicture.asset(
+                      //   ' ${auth.user!.photoURL}',
+                      //   width: 40.0.w,
+                      //   height: 40.0.h,
+                      // ),
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -65,7 +64,7 @@ class DrawerAppBar extends StatelessWidget {
                 ),
                 Text(
                   // user.displayName!,
-                  '${auth.user!.displayName}',
+                  ' ${auth.user!.displayName}',
                   style: GoogleFonts.prompt(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -81,7 +80,7 @@ class DrawerAppBar extends StatelessWidget {
                     Expanded(
                       child: Text(
                         // user.email!,
-                        ' ${email ?? 'No email found'}',
+                        ' ${email ?? ' No email found'}',
                         style: GoogleFonts.prompt(
                           fontSize: 14.sp,
                           color: const Color(0xFF323130),
@@ -94,6 +93,8 @@ class DrawerAppBar extends StatelessWidget {
             ),
             onTap: () {},
           ),
+
+          /* 
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
             leading: GradientIconHome(
@@ -116,7 +117,11 @@ class DrawerAppBar extends StatelessWidget {
                 colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              //  Navigator.push(context,
+              //         MaterialPageRoute(builder: (context) => const MyAccount()));
+              //     print("My Account");
+            },
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -150,7 +155,11 @@ class DrawerAppBar extends StatelessWidget {
                 color: const Color(0xFF323130),
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              // Navigator.push(
+              //     context, MaterialPageRoute(builder: (context) => const FAQ()));
+              // print("FAQ");
+            },
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -167,7 +176,13 @@ class DrawerAppBar extends StatelessWidget {
                 color: const Color(0xFF323130),
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => const Suggestions()));
+              // print("Suggestions");
+            },
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -184,8 +199,14 @@ class DrawerAppBar extends StatelessWidget {
                 color: const Color(0xFF323130),
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => const About_us()));
+              // print("About Us");
+            },
           ),
+
+          */
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
             leading: Icon(
@@ -212,17 +233,18 @@ class DrawerAppBar extends StatelessWidget {
               );
             },
           ),
-          SizedBox(height: 10.h),
-          Expanded(
-              child: Opacity(
-            opacity: 0.5, // 50% opacity
-            child: Container(
-              width: 200.w,
-              height: screenSizeheight * 0.05.h,
-              color: Colors.transparent,
-            ),
-          )),
-          const Languagedrawer(),
+
+          // SizedBox(height: 10.h),
+          // Opacity(
+          //   opacity: 0.5, // 50% opacity
+          //   child: Container(
+          //     width: 200.w,
+          //     height: screenSizeheight * 0.05.h,
+          //     color: Colors.transparent,
+          //   ),
+          // ),
+          // const Languagedrawer(),
+          
           SizedBox(height: 69.h),
           // ElevatedButton.icon(
           //   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),

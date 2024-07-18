@@ -26,7 +26,7 @@ class Languagedrawer extends StatelessWidget {
                     children: [
                       Container(
                         color: Colors.transparent,
-                        width: 360,
+                        width: 280.w,
                         child: Column(
                           children: [
                             Row(

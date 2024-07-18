@@ -1,6 +1,6 @@
 import 'package:botnoivoice/Authentication/auth_checker.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/firebase_options.dart';
+import 'package:botnoivoice/Firebase/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

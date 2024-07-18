@@ -1,11 +1,11 @@
 plugins {
-    id "com.android.application"
+    id 'com.android.application'
     // START: FlutterFire Configuration
     id 'com.google.gms.google-services'
     // END: FlutterFire Configuration
-    id "kotlin-android"
+    id 'kotlin-android'
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -35,6 +35,7 @@ if (keystorePropertiesFile.exists()) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     // Androind API 30 = Android 11
@@ -46,7 +47,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mobile.botnoivoice"
-        minSdkVersion 30
+        minSdkVersion 29
         targetSdkVersion 34
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
@@ -75,13 +76,15 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true // เปิดใช้งานการย่อขนาดโค้ด
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // minifyEnabled true // เปิดใช้งานการย่อขนาดโค้ด
+            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.1.2')
+    implementation 'com.google.firebase:firebase-analytics'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
