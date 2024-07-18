@@ -41,7 +41,7 @@ class _LanguageState extends State<Language> {
                             children: [
                               Container(
                                 color: Colors.transparent,
-                                width: 360,
+                                width: 280.w,
                                 child: Column(
                                   children: [
                                     Row(
@@ -137,7 +137,7 @@ class _LanguageState extends State<Language> {
         });
       },
       child: Container(
-        width: 72.w,
+        width: 67.w,
         height: 26.h,
         decoration: BoxDecoration(
           color: Colors.transparent,

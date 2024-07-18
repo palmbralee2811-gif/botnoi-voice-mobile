@@ -34,7 +34,7 @@ class _SexState extends State<Sex> {
                       children: [
                         Container(
                           color: Colors.transparent,
-                          width: 360,
+                          width: 280.w,
                           child: Column(
                             children: [
                               Row(
