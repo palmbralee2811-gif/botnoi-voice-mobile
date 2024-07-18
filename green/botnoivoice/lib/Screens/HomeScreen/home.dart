@@ -1,60 +1,79 @@
-import 'package:botnoivoice/Screens/HomeScreen/Widgets/Selectvoice.dart';
-import 'package:botnoivoice/Screens/HomeScreen/Widgets/appBar.dart';
-import 'package:botnoivoice/Screens/HomeScreen/Widgets/appBarDrawer.dart';
-import 'package:botnoivoice/Screens/HomeScreen/Widgets/buildVoiceButton.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Model/speaker_model.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:http/http.dart' as http;
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:botnoivoice/function/randomString.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Database/data.dart';
+import 'package:botnoivoice/Function/randomString.dart';
+import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
+import 'package:botnoivoice/Widgets/favoritevoice.dart';
+// import 'package:botnoivoice/filters/languagedrawer.dart';
+// import 'package:botnoivoice/widgets/CategorySetting.dart';
+// import 'package:botnoivoice/widgets/CategorySetting.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:open_app_file/open_app_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'drawer_app_bar.dart';
+// import 'gradient_icon_home.dart';
+import 'gradient_text_home.dart';
+import 'selectvoice.dart';
+import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   final int maxLength = 1000;
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // Text
   final TextEditingController textController = TextEditingController();
+
   // Generate Audio
-  String? speakerId;
-  String? token;
-  String? language;
-  late List<String> availableLanguage;
   String _response = '';
   String _audioUrl = '';
-  // Download Audio
-  String selectedTypeMedia = 'mp3';
-  final List<String> _typeMedia = ['wav', 'mp3', 'm4a'];
-  // Player Audio
-  bool isAudioPlaying = false;
+  String? speakerId;
+  String? language;
+  List<String>? availableLanguage;
+  String? credits;
+
+  // Download File
+  String progress = '';
   bool isLoading = false;
   AudioPlayer audioPlayer = AudioPlayer();
 
-  // List<Speaker> speakers = [];
+  // Player Audio
+  bool isAudioPlaying = false;
+  List<Data>? data;
 
-  Future<List<Speaker>>? _fetchMarketplaceDataFuture;
+  // Download Audio
+  String selectedTypeMedia = 'mp3';
+  // final List<String> _typeMedia = ['wav', 'mp3', 'm4a'];
+
+  Set<int> selectedIndex2 = <int>{};
+  Set<int> selectedIndex = <int>{};
+  // final List<Data> _favoriteVoice = [];
+
+  // void _toggleVoiceFavorite(Data data) {
+  //   final isExist = _favoriteVoice.contains(data);
+
+  //   if (isExist) {
+  //     _favoriteVoice.remove(data);
+  //   } else {
+  //     _favoriteVoice.add(data);
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    loadDatatFromProfile();
-    loadData();
-    _fetchMarketplaceDataFuture = _fetchData();
   }
 
   @override
@@ -80,386 +99,39 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  String _progress = '';
-  int selectedIndex = -1;
-  int selectedIndex2 = -1;
-
-  Widget categoryVoice() {
-    double screenSizewidth = MediaQuery.of(context).size.width;
-    double screenSizeheight = MediaQuery.of(context).size.height;
-    // var screenSize = MediaQuery.of(context).size;
-
-    return FutureBuilder<List<Speaker>>(
-      future: _fetchMarketplaceDataFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return const Center(child: Text('Error loading data'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No data available'));
-        } else {
-          List<Speaker> speakers = snapshot.data!;
-          speakers.sort((a, b) =>
-              int.parse(a.speakerId).compareTo(int.parse(b.speakerId)));
-
-          return InkWell(
-            child: Column(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: screenSizeheight * 0.04,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: <Widget>[
-                          Container(
-                            color: Colors.transparent,
-                            width: 500.w,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 10.w, left: 10.w),
-                              child: const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  /*
-                            Language(),
-                            Sex(),
-                            Recommant(),
-                            Favorite(),
-                            All(),
-                            New(),
-                            Voice(),
-                            Advert(),
-                            Podcast(),
-                            */
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      height: screenSizeheight * 0.196,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: screenSizeheight * 0.195,
-                            width: screenSizewidth * 0.90,
-                            child: GridView.builder(
-                              itemCount: speakers.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
-                                mainAxisExtent: 110,
-                              ),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                Speaker speaker = speakers[index];
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        // https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/sound_1_alisa.wav
-                                        String? audioURL = speaker.audio;
-
-                                        Future<void> playAudio() async {
-                                          if (audioURL.isNotEmpty) {
-                                            if (isAudioPlaying) {
-                                              // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
-                                              await audioPlayer.stop();
-                                            }
-
-                                            await audioPlayer
-                                                .play(UrlSource(audioURL));
-                                            setState(() {
-                                              isAudioPlaying = true;
-                                            });
-
-                                            audioPlayer.onPlayerComplete
-                                                .listen((event) {
-                                              print(
-                                                  "#### Play Audio's Complete");
-                                              setState(() {
-                                                isAudioPlaying = false;
-                                              });
-                                            });
-                                          } else {
-                                            setState(() {
-                                              isAudioPlaying = false;
-                                            });
-                                            print(
-                                                "Audio URL is empty, cannot play audio");
-                                          }
-                                        }
-
-                                        await playAudio();
-
-                                        // get data in value to the generate audio function
-                                        speakerId = speaker.speakerId;
-                                        availableLanguage =
-                                            speaker.availableLanguage.toList();
-                                        language =
-                                            speaker.language.toLowerCase();
-
-                                        print(
-                                            '\nspeakerId -> Widget(DataVoice): $speakerId');
-                                        print(
-                                            'squareImage -> Widget(DataVoice): ${speaker.squareImage}');
-                                        print(
-                                            'thaiName -> Widget(DataVoice): ${speaker.thaiName}');
-                                        print(
-                                            'engName -> Widget(DataVoice): ${speaker.engName}');
-                                        print(
-                                            'language -> Widget(DataVoice): ${speaker.language.toLowerCase()}');
-                                        print(
-                                            'availableLanguage -> Widget(DataVoice): ${speaker.availableLanguage.toList()} \n');
-                                        setState(() {});
-
-                                        setState(() {
-                                          selectedIndex = index;
-                                        });
-                                      },
-                                      child: Container(
-                                        width: screenSizewidth * 0.9,
-                                        height: screenSizeheight * 0.180,
-                                        decoration: BoxDecoration(
-                                          border: GradientBoxBorder(
-                                            // width: screenSizeheight * 0.01,
-                                            width: 3.h,
-                                            gradient: selectedIndex == index
-                                                ? const LinearGradient(colors: [
-                                                    Color(0xFF9A96F5),
-                                                    Color(0xFF00E0FF)
-                                                  ])
-                                                : const LinearGradient(colors: [
-                                                    Colors.transparent,
-                                                    Colors.transparent
-                                                  ]),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                speaker.squareImage),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: selectedIndex == index
-                                                  ? Colors.blue.withOpacity(0.5)
-                                                  : Colors.transparent,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: 39.w,
-                                                                top: 8.w),
-                                                        child:
-                                                            selectedIndex ==
-                                                                    index
-                                                                ? Container(
-                                                                    width: 21.w,
-                                                                    height:
-                                                                        17.h,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      gradient:
-                                                                          const LinearGradient(
-                                                                        colors: [
-                                                                          Color(
-                                                                              0xFF9A96F5),
-                                                                          Color(
-                                                                              0xFF00E0FF)
-                                                                        ],
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.r),
-                                                                    ),
-                                                                    child:
-                                                                        Center(
-                                                                      child: Text(
-                                                                          'เลือก',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                7.sp,
-                                                                            color:
-                                                                                Colors.white,
-                                                                          )),
-                                                                    ),
-                                                                  )
-                                                                : const Icon(
-                                                                    Icons.check,
-                                                                    color: Colors
-                                                                        .transparent,
-                                                                  ),
-                                                      ),
-                                                      /*
-                                                      GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              selectedIndex2 =
-                                                                  index;
-                                                            });
-                                                          },
-                                                          child:
-                                                              selectedIndex2 ==
-                                                                      index
-                                                                  ? ShaderMask(
-                                                                      shaderCallback:
-                                                                          (Rect
-                                                                              bounds) {
-                                                                        return const LinearGradient(
-                                                                          colors: [
-                                                                            Color(0xFF9A96F5),
-                                                                            Color(0xFF00E0FF),
-                                                                          ],
-                                                                        ).createShader(
-                                                                            bounds);
-                                                                      },
-                                                                      child: SvgPicture
-                                                                          .asset(
-                                                                        'assets/logo/heart (1).svg',
-                                                                        width:
-                                                                            10.w,
-                                                                        height:
-                                                                            10.h,
-                                                                        color: Colors
-                                                                            .white, // Optional: Default color of the SVG
-                                                                      ),
-                                                                    )
-                                                                  : SvgPicture
-                                                                      .asset(
-                                                                      'assets/logo/heart.svg',
-                                                                      width:
-                                                                          12.sp,
-                                                                      height:
-                                                                          12.sp,
-                                                                    ))
-                                                                    */
-                                                    ]),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 6.w,
-                                                      right: 6.w,
-                                                      top: 45.w),
-                                                  child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        selectedIndex == index
-                                                            ? ShaderMask(
-                                                                shaderCallback:
-                                                                    (Rect
-                                                                        bounds) {
-                                                                  return const LinearGradient(
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xFF9A96F5),
-                                                                      Color(
-                                                                          0xFF00E0FF),
-                                                                    ],
-                                                                  ).createShader(
-                                                                      bounds);
-                                                                },
-                                                                child:
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                  'assets/logo/Vector.svg',
-                                                                  width: 10.sp,
-                                                                  height: 10.sp,
-                                                                  color: Colors
-                                                                      .white, // Optional: Default color of the SVG
-                                                                ),
-                                                              )
-                                                            : SvgPicture.asset(
-                                                                'assets/logo/Vector.svg',
-                                                              ),
-                                                        Text(
-                                                          speaker.thaiName,
-                                                          style: TextStyle(
-                                                            fontSize: 10.sp,
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ]),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // final auth = Provider.of<Authentication>(context, listen: false);
-    // String? credits = auth.dataProfileWithToken;
+    final auth = Provider.of<Authentication>(context, listen: false);
 
-    final screenHeight = MediaQuery.of(context).size.height;
+    // แสดง email ผู้ใช้งาน ปัจจุบัน
+    User? user = FirebaseAuth.instance.currentUser;
+    String? email = auth.getUserEmail(user);
+
+    // final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
-    int _currentIndex = 0;
+
+    double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
+    double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
+    int currentIndex = 0;
+    final screenHeightOpen = screenSizeheightInputtextOpen;
+    final maxLinesopen = (screenHeightOpen / 65).floor();
+    final screenHeightClose = screenSizeheightInputtextOpen;
+    final maxLinesclose = (screenHeightClose / 180).floor();
+    bool _showClearIcon = false;
 
     if (_selectedPageIndexVoice == 1) {
       _inputtext = 1;
       // _button = 1;
-      // if (_selectedPageIndexSetting == 1) {
-      //   _selectedPageIndexVoice = 0;
-      //   _selectedPageIndexSetting = 1;
-      // }
+      if (_selectedPageIndexSetting == 1) {
+        _selectedPageIndexVoice = 0;
+        _selectedPageIndexSetting = 1;
+      }
     }
-    // if (_selectedPageIndexSetting == 2) {
-    //   _selectedPageIndexVoice = 1;
-    //   _selectedPageIndexSetting = 0;
-    // }
+    if (_selectedPageIndexSetting == 2) {
+      _selectedPageIndexVoice = 1;
+      _selectedPageIndexSetting = 0;
+    }
     if (_selectedPageIndexVoice == 2) {
       _inputtext = 0;
     }
@@ -468,114 +140,205 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      // ปิด Tag แสดงผล คำเตือน สีเหลือง
       resizeToAvoidBottomInset: false,
-
-      drawer: appBarDrawer(context),
+      drawer: DrawerAppBar(
+          auth: auth, email: email, screenSizeheight: screenSizeheight),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              padding: EdgeInsets.only(left: 15.w),
+              icon: Icon(
+                Icons.menu_rounded,
+                size: 32.sp,
+                color: const Color(0xFF323130),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
         backgroundColor: const Color(0xFFFFFFFF),
+        // backgroundColor: Colors.black,
         title: appBar(context),
       ),
       body: Column(
         children: <Widget>[
-          /*
-          SafeArea(
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 55.w,
-                      ),
-                      Image.asset(
-                        'assets/logo/Frame.png',
-                        width: 30.w,
-                        height: 34.h,
-                      ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 54.w,
-                                decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(255, 224, 221, 221),
-                                      blurRadius: 3.0,
-                                    ),
-                                  ],
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50.r),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      height: 25.h,
-                                      width: 20.h,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/logo/point.png',
-                                              width: 20.w,
-                                              height: 20.h,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          " $credits ??  '100' ",
-                                          style: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          */
           Container(
-            color: Colors.blue,
+            width: screenSizewidth,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
             height: _inputtext == 1
-                ? screenSizeheight * 0.35
-                : screenSizeheight * 0.64,
+                ? screenSizeheightInputtextClose * 0.30
+                : screenSizeheightInputtextOpen * 0.59,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Expanded(
+                  //   child: Container(
+                  //     width: 288.w,
+                  //     decoration: BoxDecoration(
+                  //       boxShadow: const [
+                  //         BoxShadow(
+                  //           color: Colors.grey,
+                  //           blurRadius: 5.0,
+                  //         ),
+                  //       ],
+                  //       color: Colors.white,
+                  //       borderRadius: BorderRadius.circular(14.r),
+                  //     ),
+                  //     child: Padding(
+                  //       padding:
+                  //           EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+                  //       child: Column(
+                  //         children: [
+                  //           TextField(
+                  //             cursorColor: const Color(0xFF000000),
+                  //             style: GoogleFonts.prompt(
+                  //                 fontSize: 14.sp,
+                  //                 color: const Color(0xFF323130)),
+                  //             minLines: _inputtext == 1
+                  //                 ? maxLinesclose
+                  //                 : maxLinesopen,
+                  //             maxLines: _inputtext == 1
+                  //                 ? maxLinesclose
+                  //                 : maxLinesopen,
+                  //             keyboardType: TextInputType.multiline,
+                  //             controller: textController,
+                  //             onChanged: (text) {
+                  //               if (textController.text.length >
+                  //                   widget.maxLength) {
+                  //                 textController.text = textController.text
+                  //                     .substring(0, widget.maxLength);
+                  //                 textController.selection =
+                  //                     TextSelection.fromPosition(
+                  //                   TextPosition(
+                  //                       offset: textController.text.length),
+                  //                 );
+                  //               }
+                  //               setState(() {
+                  //                 _showClearIcon =
+                  //                     textController.text.isNotEmpty;
+                  //               });
+                  //             },
+                  //             decoration: InputDecoration(
+                  //               border: InputBorder.none,
+                  //               hintText:
+                  //                   'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
+                  //               hintStyle: TextStyle(
+                  //                 color: const Color(0xFFA19F9D),
+                  //                 fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                  //                     .fontStyle,
+                  //               ),
+                  //               hintMaxLines: 1,
+                  //             ),
+                  //           ),
+                  //           Padding(
+                  //             padding: EdgeInsets.only(right: 25.w),
+                  //             child: Row(
+                  //               mainAxisAlignment:
+                  //                   MainAxisAlignment.spaceBetween,
+                  //               children: [
+                  //                 Column(
+                  //                   mainAxisSize: MainAxisSize.min,
+                  //                   children: [
+                  //                     _showClearIcon ==
+                  //                             textController.text.isNotEmpty
+                  //                         ? Padding(
+                  //                             padding:
+                  //                                 EdgeInsets.only(right: 1.w),
+                  //                             child: TextButton(
+                  //                                 style: TextButton.styleFrom(
+                  //                                   textStyle: TextStyle(
+                  //                                       fontSize: 10.sp),
+                  //                                 ),
+                  //                                 onPressed: () {
+                  //                                   setState(() {
+                  //                                     // _showClearIcon =
+                  //                                     //     false; // To update the counter
+                  //                                   });
+                  //                                 },
+                  //                                 child: Icon(
+                  //                                   Icons.close_sharp,
+                  //                                   size: 20.sp,
+                  //                                   color: Colors.transparent,
+                  //                                 )),
+                  //                           )
+                  //                         : Padding(
+                  //                             padding:
+                  //                                 EdgeInsets.only(right: 1.w),
+                  //                             child: TextButton(
+                  //                               style: TextButton.styleFrom(
+                  //                                 textStyle: TextStyle(
+                  //                                     fontSize: 10.sp),
+                  //                               ),
+                  //                               onPressed: () {
+                  //                                 textController.clear();
+                  //                                 setState(() {
+                  //                                   // _showClearIcon =
+                  //                                   //     false; // To update the counter
+                  //                                 });
+                  //                               },
+                  //                               child: GradientIconHome(
+                  //                                 icon: Icons.close_sharp,
+                  //                                 size: 20.sp,
+                  //                                 gradient:
+                  //                                     const LinearGradient(
+                  //                                   colors: [
+                  //                                     Color(0xFF9340FF),
+                  //                                     Color(0xFF34BDFA)
+                  //                                   ],
+                  //                                   begin: Alignment.topLeft,
+                  //                                   end: Alignment.bottomRight,
+                  //                                 ),
+                  //                               ),
+                  //                             ),
+                  //                           )
+                  //                   ],
+                  //                 ),
+                  //                 Row(
+                  //                   children: [
+                  //                     GradientTextHome(
+                  //                       text: '${textController.text.length}',
+                  //                       style: GoogleFonts.prompt(
+                  //                         fontSize: 14.sp,
+                  //                         color: const Color(0xFFA19F9D),
+                  //                       ),
+                  //                       gradient: const LinearGradient(
+                  //                         colors: [
+                  //                           Color(0xFF9340FF),
+                  //                           Color(0xFF34BDFA)
+                  //                         ],
+                  //                       ),
+                  //                     ),
+                  //                     Text(
+                  //                       ' / ${widget.maxLength}',
+                  //                       style: GoogleFonts.prompt(
+                  //                         fontSize: 14.sp,
+                  //                         color: const Color(0xFFA19F9D),
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
                   Expanded(
                     child: Container(
-                      width: screenSizewidth * 0.75.w,
-                      height: _inputtext == 1
-                          ? screenSizeheight * 0.24.h
-                          : screenSizeheight * 0.40.h,
-                      // _inputtext == 1
-                      //     ? screenSizeheight * 0.270.h
-                      //     : screenSizeheight * 0.40.h,
+                      width: 288.w,
                       decoration: BoxDecoration(
                         boxShadow: const [
                           BoxShadow(
@@ -592,9 +355,17 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: [
                             TextField(
-                              style: const TextStyle(color: Colors.black),
-                              minLines: _inputtext == 1 ? 5 : 13,
-                              maxLines: _inputtext == 1 ? 5 : 13,
+                              cursorColor: const Color(0xFF000000),
+                              style: GoogleFonts.prompt(
+                                fontSize: 14.sp,
+                                color: const Color(0xFF323130),
+                              ),
+                              minLines: _inputtext == 1
+                                  ? maxLinesclose
+                                  : maxLinesopen,
+                              maxLines: _inputtext == 1
+                                  ? maxLinesclose
+                                  : maxLinesopen,
                               keyboardType: TextInputType.multiline,
                               controller: textController,
                               onChanged: (text) {
@@ -608,14 +379,20 @@ class _HomePageState extends State<HomePage> {
                                         offset: textController.text.length),
                                   );
                                 }
-                                setState(() {});
+                                setState(() {
+                                  _showClearIcon =
+                                      textController.text.isNotEmpty;
+                                });
                               },
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText:
-                                    'กรุณากรอกข้อความที่ต้องการจะสร้าง...',
+                                    'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
                                 hintStyle: TextStyle(
-                                    color: Colors.grey, fontSize: 14.sp),
+                                  color: const Color(0xFFA19F9D),
+                                  fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                                      .fontStyle,
+                                ),
                                 hintMaxLines: 1,
                               ),
                             ),
@@ -628,31 +405,81 @@ class _HomePageState extends State<HomePage> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 1.w),
-                                        child: TextButton(
-                                          style: TextButton.styleFrom(
-                                            textStyle:
-                                                TextStyle(fontSize: 10.sp),
-                                          ),
-                                          onPressed: () {
-                                            textController.clear();
-                                            setState(
-                                                () {}); // To update the counter
-                                          },
-                                          child: Image.asset(
-                                              'assets/logo/Frame 1028950648.png'),
+                                      _showClearIcon
+                                          ? Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10.sp),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    // _showClearIcon = false; // To update the counter
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  Icons.close_sharp,
+                                                  size: 20.sp,
+                                                  color: Colors.transparent,
+                                                ),
+                                              ),
+                                            )
+                                          : Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10.sp),
+                                                ),
+                                                onPressed: () {
+                                                  textController.clear();
+                                                  setState(() {
+                                                    // _showClearIcon = false; // To update the counter
+                                                  });
+                                                },
+                                                child: GradientIconHome(
+                                                  icon: Icons.close_sharp,
+                                                  size: 20.sp,
+                                                  gradient:
+                                                      const LinearGradient(
+                                                    colors: [
+                                                      Color(0xFF9340FF),
+                                                      Color(0xFF34BDFA)
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      GradientTextHome(
+                                        text: '${textController.text.length}',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFFA19F9D),
+                                        ),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF9340FF),
+                                            Color(0xFF34BDFA)
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        ' / ${widget.maxLength}',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFFA19F9D),
                                         ),
                                       ),
                                     ],
-                                  ),
-                                  Text(
-                                    '${textController.text.length}/${widget.maxLength}',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12.sp,
-                                      height: 1.h,
-                                    ),
                                   ),
                                 ],
                               ),
@@ -664,11 +491,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-            ), // 60% of the screen height
+            ),
           ),
           Expanded(
             child: Container(
-              color: Colors.white,
+              color: const Color(0xFFFFFFFF),
               height: _inputtext == 1
                   ? screenSizeheight * 0.50
                   : screenSizeheight * 0.26,
@@ -686,29 +513,36 @@ class _HomePageState extends State<HomePage> {
                     child: Selectvoice(
                         screenSizeheight: screenSizeheight,
                         selectedPageIndexVoice: _selectedPageIndexVoice)),
-                if (_selectedPageIndexVoice == 1)
-                  if (_selectedPageIndexVoice == 1) ...[categoryVoice()],
-                const SizedBox(height: 16.0),
-                DropdownButton<String>(
-                  // ค่าเริ่มต้น
-                  value: selectedTypeMedia,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedTypeMedia = newValue!;
-                    });
-                  },
-                  items:
-                      _typeMedia.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+                if (_selectedPageIndexVoice == 1) ...[
+                  categoryVoiceHome(context)
+                ],
+                // InkWell(
+                //   onTap: () {
+                //     if (_selectedPageIndexSetting == 0) {
+                //       _selectPageSetting(1);
+                //     } else if (_selectedPageIndexSetting == 1) {
+                //       _selectPageSetting(2);
+                //     } else if (_selectedPageIndexSetting == 2) {
+                //       _selectPageSetting(1);
+                //     }
+                //   },
+                //   child: Setting(
+                //       screenSizeheight: screenSizeheight,
+                //       selectedPageIndexSetting: _selectedPageIndexSetting),
+                // ),
+                // if (_selectedPageIndexSetting == 1) ...[
+                //   const CategorySetting()
+                // ],
+                
                 Expanded(
-                  flex: 7,
                   child: InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        // await generateAudio(textController.text).then((_) {
+                        //   print('response $_response');
+                        //   downloadFile();
+                        //   print('progress -> downloadFile(): $progress \n');
+                        // });
+
                         setState(() {
                           if (textController.text.isNotEmpty) {
                             audioPlayer.stop();
@@ -717,31 +551,28 @@ class _HomePageState extends State<HomePage> {
                         if (!isLoading) {
                           if (textController.text.isNotEmpty) {
                             generateAudio(textController.text).then((_) {
-                              print('_response $_response');
+                              print('response $_response');
                               downloadFile();
-                              print(
-                                  '_progress -> downloadFile(): $_progress \n');
+                              print('progress -> downloadFile(): $progress \n');
                             });
                           }
                         }
+                        print("\n### END generateAudio -> Line 410 ### \n");
                       },
-                      child: buildVoiceButton02(context)),
+                      child: buildVoiceHome(context)),
                 ),
-                /*
                 Container(
                     height: screenSizeheight * 0.052.h,
-                    width: screenSizewidth * 0.78.w,
+                    width: 320.w,
                     color: const Color(0xFF27282B),
                     child: InkWell(
                       onTap: () {},
-                      child: _currentIndex == 1
+                      child: currentIndex == 1
                           ? SvgPicture.asset(
                               'assets/logo/Property 1=studio, Property 2=deault (2).svg')
                           : SvgPicture.asset(
                               'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                    ),
-                    )
-                */
+                    ))
               ]), // 40% of the screen height
             ),
           ),
@@ -750,95 +581,465 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> loadDatatFromProfile() async {
-    final auth = Provider.of<Authentication>(context, listen: false);
-    String? profileData = await auth.getProfileWithToken(auth.jwtToken);
-    auth.setDataProfileWithToken(profileData);
+  Widget appBar(BuildContext context) {
+    final auth = Provider.of<Authentication>(context);
+    credits = auth.credits;
+
+    return SafeArea(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/logo/App_Icon.png',
+                    width: 35.w,
+                    height: 35.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 10.w),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 224, 221, 221),
+                                blurRadius: 3.0,
+                              ),
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(width: 5.w),
+                              SizedBox(
+                                height: 25.h,
+                                width: 20.h,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/point.png',
+                                        width: 20.w,
+                                        height: 20.h,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    ' ${credits ?? " N/A"}',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF323130),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 5.w),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  Future<void> loadData() async {
-    final auth = Provider.of<Authentication>(context, listen: false);
-    await auth.getProfileWithToken(auth.jwtToken);
-    setState(() {});
+  bool ishover = false;
+  Widget categoryVoiceHome(BuildContext context) {
+    double screenSizewidth = MediaQuery.of(context).size.width;
+    double screenSizeheight = MediaQuery.of(context).size.height;
+
+    // var screenSize = MediaQuery.of(context).size;
+    final data = AppDataBase.data;
+    // final filterModel = Provider.of<FilterModel>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: screenSizeheight * 0.05.h,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              Container(
+                color: const Color(0xFFFFFFFF),
+                width: 600.w,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 10.w, left: 10.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // const Language(),
+                      // const Sex(),
+                      // const Recommand(),
+                      // InkWell(
+                      //   onTap: () {
+                      //     setState(() {
+                      //       ishover = !ishover;
+                      //     });
+                      //   },
+                      //   child: Favorite(ishover: ishover),
+                      // ),
+                      // const All(),
+                      // const New(),
+                      // const Voice(),
+                      // const Advert(),
+                      // const Podcast(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          // color: Colors.amber,
+          color: const Color(0xFFFFFFFF),
+          height: 148.h,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ishover
+                  ? FavoriteVoice(
+                      screenSizeheight: screenSizeheight,
+                      screenSizewidth: screenSizewidth,
+                      data: data,
+                    )
+                  : voiceWidGetHome(context)
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
-  Future<List<Speaker>> _fetchData() async {
-    List<Speaker>? cachedData = await _loadDataFromCache();
-    if (cachedData != null && cachedData.isNotEmpty) {
-      return cachedData;
-    } else {
-      return fetchMarketplaceData();
-    }
+  Widget voiceWidGetHome(BuildContext context) {
+    double screenSizewidth = MediaQuery.of(context).size.width;
+    return SizedBox(
+      height: 140.h,
+      width: screenSizewidth * 0.95.w,
+      child: GridView.builder(
+        itemCount: AppDataBase.data.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1,
+          mainAxisExtent: 150,
+        ),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final data = AppDataBase.data[index];
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 15.w),
+                child: GestureDetector(
+                  onTap: () async {
+                    String audioURL = data.audio;
+                    Future<void> playAudio() async {
+                      if (audioURL.isNotEmpty) {
+                        if (isAudioPlaying) {
+                          // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                          await audioPlayer.stop();
+                        }
+                        await audioPlayer.play(UrlSource(audioURL));
+                        setState(() {
+                          isAudioPlaying = true;
+                        });
+
+                        audioPlayer.onPlayerComplete.listen((event) {
+                          print("#### Play Audio's Complete");
+                          setState(() {
+                            isAudioPlaying = false;
+                          });
+                        });
+                      } else {
+                        setState(() {
+                          isAudioPlaying = false;
+                        });
+                        print("Audio URL is empty, cannot play audio");
+                      }
+                    }
+
+                    await playAudio();
+
+                    speakerId = data.speakerId;
+                    language = data.language.toLowerCase();
+                    availableLanguage = data.availableLanguage.toList();
+                    print("\n### START voiceWidGetHome ###\n");
+                    print("-> speakerId: $speakerId");
+                    print("-> language: $language");
+                    print("-> availableLanguage: $availableLanguage");
+                    print("\n### END voiceWidGetHome ###\n");
+
+                    setState(() {
+                      if (selectedIndex.contains(index)) {
+                        selectedIndex.remove(index);
+                      } else {
+                        selectedIndex.clear();
+                        selectedIndex.add(index);
+                      }
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 100.w,
+                        height: 113.h,
+                        decoration: BoxDecoration(
+                          border: GradientBoxBorder(
+                            width: 3.w,
+                            gradient: selectedIndex.contains(index)
+                                ? const LinearGradient(colors: [
+                                    Color(0xFF9A96F5),
+                                    Color(0xFF00E0FF)
+                                  ])
+                                : const LinearGradient(colors: [
+                                    Colors.transparent,
+                                    Colors.transparent
+                                  ]),
+                          ),
+                          borderRadius: BorderRadius.circular(8.r),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              AppDataBase.data[index].squareImage,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: selectedIndex.contains(index)
+                                  ? Colors.blue.withOpacity(0.5)
+                                  : Colors.transparent,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 5.w, top: 5.w, left: 5.w),
+                                  child: selectedIndex.contains(index)
+                                      ? Container(
+                                          width: 31.w,
+                                          height: 17.h,
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFF9A96F5),
+                                                Color(0xFF00E0FF)
+                                              ],
+                                            ),
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(8.r),
+                                          ),
+                                          child: Center(
+                                            child: Text('เลือก',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontStyle:
+                                                      GoogleFonts.prompt()
+                                                          .fontStyle,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                )),
+                                          ),
+                                        )
+                                      : const Icon(
+                                          Icons.check,
+                                          color: Colors.transparent,
+                                        ),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(right: 5.w, top: 5.w),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        if (selectedIndex2.contains(index)) {
+                                          selectedIndex2.remove(index);
+                                        } else {
+                                          // widget.onToggleFavorite(widget.data[index]);
+                                          selectedIndex2.add(index);
+                                        }
+                                      });
+                                    },
+                                    child: selectedIndex2.contains(index)
+                                        ? ShaderMask(
+                                            shaderCallback: (Rect bounds) {
+                                              return const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF9A96F5),
+                                                  Color(0xFF00E0FF),
+                                                ],
+                                              ).createShader(bounds);
+                                            },
+                                            child: SvgPicture.asset(
+                                              'assets/logo/heart (1).svg',
+                                              width: 20.w,
+                                              height: 20.h,
+                                              color: Colors.white,
+                                            ),
+                                          )
+                                        : SvgPicture.asset(
+                                            'assets/logo/heart.svg',
+                                            width: 20.w,
+                                            height: 20.h,
+                                          ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Spacer(), // Add Spacer to push the content below to the bottom
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                selectedIndex.contains(index)
+                                    ? ShaderMask(
+                                        shaderCallback: (Rect bounds) {
+                                          return const LinearGradient(
+                                            colors: [
+                                              Color(0xFF9A96F5),
+                                              Color(0xFF00E0FF),
+                                            ],
+                                          ).createShader(bounds);
+                                        },
+                                        child: SvgPicture.asset(
+                                          'assets/logo/Vector.svg',
+                                          width: 16.h,
+                                          height: 16.w,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : SvgPicture.asset(
+                                        'assets/logo/Vector (1).svg',
+                                        width: 16.h,
+                                        height: 16.w,
+                                      ),
+                                SizedBox(
+                                  width: 3.w,
+                                ),
+                                Text(
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: null,
+                                  AppDataBase.data[index].thaiName,
+                                  style: GoogleFonts.prompt(
+                                    fontSize: 10.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Text(
+                      //   softWrap: true,
+                      //   overflow: TextOverflow.ellipsis,
+                      //   maxLines: null,
+                      //   widget.data[index].name,
+                      //   style: GoogleFonts.prompt(
+                      //     fontSize: 12.sp,
+                      //     color: Colors.black,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
-  Future<List<Speaker>> fetchMarketplaceData() async {
-    final auth = Provider.of<Authentication>(context, listen: false);
-    String? jwtToken = auth.idTokenWithFirebase;
+  Widget buildVoiceHome(BuildContext context) {
+    double screenSizewidth = MediaQuery.of(context).size.width;
+    double screenSizeheight = MediaQuery.of(context).size.height;
 
-    if (jwtToken != null) {
-      String? data = await getAllMarketplace(jwtToken);
-      if (data != null) {
-        var jsonData = json.decode(data);
-        List<Speaker> speakers = List<Speaker>.from(jsonData['response']
-            .map((speakerJson) => Speaker.fromJson(speakerJson)));
-
-        _saveDataToCache(speakers);
-        return speakers;
-      } else {
-        return [];
-      }
-    } else {
-      return [];
-    }
-  }
-
-  Future<String?> getAllMarketplace(String? jwtToken) async {
-    if (jwtToken == null) {
-      print('jwtToken is null');
-      return null;
-    }
-
-    String url =
-        'https://api-voice-staging.botnoi.ai/api/service/get_all_marketplace';
-
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
-      'Content-Type': 'application/json'
-    };
-
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        return utf8.decode(response.bodyBytes);
-      } else {
-        print(
-            'Failed to load Marketplace data. Status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching Marketplace data: $e');
-      return null;
-    }
-  }
-
-  Future<List<Speaker>?> _loadDataFromCache() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? cachedData = prefs.getString('marketplaceData');
-    if (cachedData != null && cachedData.isNotEmpty) {
-      var jsonData = json.decode(cachedData);
-      return List<Speaker>.from(jsonData.map((x) => Speaker.fromJson(x)));
-    }
-    return null;
-  }
-
-  Future<void> _saveDataToCache(List<Speaker> data) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonData = json.encode(data.map((e) => e.toJson()).toList());
-    prefs.setString('marketplaceData', jsonData);
+    return Container(
+      height: screenSizeheight * 0.093.h,
+      width: screenSizewidth * 0.78.w,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // const Spacer(),
+              InkWell(
+                // onTap: () {},
+                child: Container(
+                  height: 55.h,
+                  width: screenSizewidth * 0.7.w,
+                  decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6.0,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(10.r),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "สร้างเสียง",
+                        style: GoogleFonts.prompt(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFFFFFFF),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> generateAudio(String text) async {
@@ -849,16 +1050,22 @@ class _HomePageState extends State<HomePage> {
     });
 
     final auth = Provider.of<Authentication>(context, listen: false);
-    // String? profileData = await auth.getProfileWithToken(auth.jwtToken);
-    // auth.setDataProfileWithToken(profileData);
+    
+    /* 
+    // ดึงข้อมูล point มาเก็บไว้ในตัวแปร แล้วทำการหักคะแนน ตาม จำนวนตัวอักษร ที่ผู้ใช้งาน สร้างเสียง
 
-    String? token = auth.credentialsToken;
+    String credits = auth.credits; 
+    int creditsInt = int.parse(credits); 
 
-    print('\n ## generateAudio ## \n text: $text \n speaker: $speakerId');
+    creditsInt = creditsInt - textController.text.length; 
+    credits = creditsInt.toString(); 
+    print("update credits: $credits");
+    */
+
+    print('\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
     print(' language: $language \n availableLanguage: $availableLanguage \n');
 
-    String url =
-        "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -866,12 +1073,11 @@ class _HomePageState extends State<HomePage> {
       "speed": 1,
       "type_media": selectedTypeMedia,
       "save_file": true,
-      "language": language,
-      "page": "mobile app"
+      // "language": language,
     };
 
     Map<String, String> headers = {
-      'Botnoi-Token': '$token',
+      'Botnoi-Token': '${auth.credentialsToken}',
       'Content-Type': 'application/json'
     };
 
@@ -887,8 +1093,8 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _audioUrl = jsonData['audio_url'];
           _response = "Request successful!";
-          isLoading = false;
           print("generateAudio -> _audioUrl: $_audioUrl");
+          isLoading = false;
         });
       } else {
         setState(() {
@@ -927,65 +1133,108 @@ class _HomePageState extends State<HomePage> {
         await file.writeAsBytes(response.bodyBytes);
 
         setState(() {
-          _progress = 'Download complete';
+          progress = 'Download complete';
         });
         print("Printing Path: ");
         print(tempDir);
         print(path);
         print(file);
-        OpenFile.open(path);
+
+        // OpenFile.open(path);
+
+        /*
+          WARNING!!! น้องภัทร ช่วย ทดสอบ OpenAppFile บน iOS ให้ด้วยนะ
+        */
+        OpenAppFile.open(path);
       } else {
         setState(() {
-          _progress = 'Failed to download file';
+          progress = 'Failed to download file';
         });
       }
     } catch (e) {
       setState(() {
-        _progress = 'Error: $e';
+        progress = 'Error: $e';
       });
     }
   }
 
+  /*
   Future<void> _androidDownloadFunction() async {
-    /*
-    // working
-    var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
-    var path = "/storage/emulated/0/Download/$filename";
-    var file = File(path);
-    String url = _audioUrl;
-    var res = await http.get(Uri.parse(url));
-    await file.writeAsBytes(res.bodyBytes);
-    */
-
     try {
+      var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+
+      // working on EMULATOR ONLY!
+      var path = "/storage/emulated/0/Download/$filename";
+
+      var file = File(path);
       String url = _audioUrl;
+      var res = await http.get(Uri.parse(url));
 
-      var response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        String filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
-        var tempDir = await getTemporaryDirectory();
-        var path = '${tempDir.path}/$filename';
-        var file = File(path);
-        await file.writeAsBytes(response.bodyBytes);
+      if (res.statusCode == 200) {
+        await file.writeAsBytes(res.bodyBytes);
+        print('Download successful: $filename');
 
         setState(() {
-          _progress = 'Download complete';
+          progress = 'Download complete';
         });
+
         print("Printing Path: ");
-        print(tempDir);
+        print(filename);
         print(path);
         print(file);
-        OpenFile.open(path);
+        OpenAppFile.open(path);
+        
       } else {
-        setState(() {
-          _progress = 'Failed to download file';
-        });
+        print('Failed to download file: ${res.statusCode}');
       }
     } catch (e) {
-      setState(() {
-        _progress = 'Error: $e';
-      });
+      print('An error occurred: $e');
+    }
+  }
+  */
+
+  Future<void> _androidDownloadFunction() async {
+    try {
+      var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+
+      // Get the download directory
+      List<Directory>? directories =
+          await getExternalStorageDirectories(type: StorageDirectory.downloads);
+      if (directories == null || directories.isEmpty) {
+        throw Exception('No external storage directories found');
+      }
+
+      // Create the full path by appending the filename to the directory path
+      String directoryPath = directories.first.path;
+      String filePath = "$directoryPath/$filename";
+
+      // Create the file object
+      var file = File(filePath);
+
+      // Download the file from the URL
+      String url = _audioUrl;
+      var res = await http.get(Uri.parse(url));
+
+      // Check if the request was successful
+      if (res.statusCode == 200) {
+        // Write the downloaded bytes to the file
+        await file.writeAsBytes(res.bodyBytes);
+        print('Download successful: $filename');
+
+        setState(() {
+          progress = 'Download complete';
+        });
+
+        print("Printing Path: ");
+        print(filename);
+        print(filePath);
+        print(file);
+        OpenAppFile.open(filePath);
+      } else {
+        print('Failed to download file: ${res.statusCode}');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
     }
   }
 }

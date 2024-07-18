@@ -53,22 +53,24 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          height: 50.0,
-        ),
-        _buildTop(context),
-        const SizedBox(height: 50.0),
-        _buildCenter(),
-        const SizedBox(height: 10.0),
-        _buildLoginLineButton(mediaSize),
-        const SizedBox(height: 10.0),
-        _buildLoginGoogleButton(mediaSize),
-        const SizedBox(height: 30.0),
-        _buildAccept(),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 50.0,
+          ),
+          _buildTop(context),
+          const SizedBox(height: 50.0),
+          _buildCenter(),
+          const SizedBox(height: 10.0),
+          //       _buildLoginLineButton(mediaSize),
+          const SizedBox(height: 10.0),
+          _buildLoginGoogleButton(mediaSize),
+          const SizedBox(height: 30.0),
+          _buildAccept(),
+        ],
+      ),
     );
   }
 
