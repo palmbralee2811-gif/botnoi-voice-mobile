@@ -680,12 +680,13 @@ class Appbar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 86.w),
-                child: ClipOval(
+                padding: EdgeInsets.only(left: 88.w,top: 5.h),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
                   child: Image.asset(
-                    'assets/logo/App_Icon.png',
-                    width: 35.w,
-                    height: 35.h,
+                    'assets/logo/Aboutus_icon.png',
+                    width: 25.w,
+                    height: 25.h,
                     fit: BoxFit.cover,
                   ),
                 ),
