@@ -151,8 +151,7 @@ class Authentication extends ChangeNotifier {
         print('Response data from getProfileWithToken: $data');
 
         // เก็บค่า credits ในตัวแปรของ class
-        credits =
-            data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
+        credits = data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
         print('getProfileWithToken -> credits: $credits');
 
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง

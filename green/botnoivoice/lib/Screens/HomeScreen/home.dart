@@ -4,9 +4,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/data.dart';
 import 'package:botnoivoice/Function/randomString.dart';
+import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Widgets/favoritevoice.dart';
 // import 'package:botnoivoice/filters/languagedrawer.dart';
-import 'package:botnoivoice/widgets/CategorySetting.dart';
+// import 'package:botnoivoice/widgets/CategorySetting.dart';
 // import 'package:botnoivoice/widgets/CategorySetting.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,16 +17,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'appbar.dart';
 import 'drawer_app_bar.dart';
-import 'gradient_icon_home.dart';
+// import 'gradient_icon_home.dart';
 import 'gradient_text_home.dart';
 import 'selectvoice.dart';
-import 'setting.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_file/open_file.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatefulWidget {
@@ -45,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   String? speakerId;
   String? language;
   List<String>? availableLanguage;
+  String? credits;
 
   // Download File
   String progress = '';
@@ -162,7 +160,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: const Color(0xFFFFFFFF),
         // backgroundColor: Colors.black,
-        title: const Appbar(),
+        title: appBar(context),
       ),
       body: Column(
         children: <Widget>[
@@ -183,6 +181,161 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Expanded(
+                  //   child: Container(
+                  //     width: 288.w,
+                  //     decoration: BoxDecoration(
+                  //       boxShadow: const [
+                  //         BoxShadow(
+                  //           color: Colors.grey,
+                  //           blurRadius: 5.0,
+                  //         ),
+                  //       ],
+                  //       color: Colors.white,
+                  //       borderRadius: BorderRadius.circular(14.r),
+                  //     ),
+                  //     child: Padding(
+                  //       padding:
+                  //           EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+                  //       child: Column(
+                  //         children: [
+                  //           TextField(
+                  //             cursorColor: const Color(0xFF000000),
+                  //             style: GoogleFonts.prompt(
+                  //                 fontSize: 14.sp,
+                  //                 color: const Color(0xFF323130)),
+                  //             minLines: _inputtext == 1
+                  //                 ? maxLinesclose
+                  //                 : maxLinesopen,
+                  //             maxLines: _inputtext == 1
+                  //                 ? maxLinesclose
+                  //                 : maxLinesopen,
+                  //             keyboardType: TextInputType.multiline,
+                  //             controller: textController,
+                  //             onChanged: (text) {
+                  //               if (textController.text.length >
+                  //                   widget.maxLength) {
+                  //                 textController.text = textController.text
+                  //                     .substring(0, widget.maxLength);
+                  //                 textController.selection =
+                  //                     TextSelection.fromPosition(
+                  //                   TextPosition(
+                  //                       offset: textController.text.length),
+                  //                 );
+                  //               }
+                  //               setState(() {
+                  //                 _showClearIcon =
+                  //                     textController.text.isNotEmpty;
+                  //               });
+                  //             },
+                  //             decoration: InputDecoration(
+                  //               border: InputBorder.none,
+                  //               hintText:
+                  //                   'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
+                  //               hintStyle: TextStyle(
+                  //                 color: const Color(0xFFA19F9D),
+                  //                 fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                  //                     .fontStyle,
+                  //               ),
+                  //               hintMaxLines: 1,
+                  //             ),
+                  //           ),
+                  //           Padding(
+                  //             padding: EdgeInsets.only(right: 25.w),
+                  //             child: Row(
+                  //               mainAxisAlignment:
+                  //                   MainAxisAlignment.spaceBetween,
+                  //               children: [
+                  //                 Column(
+                  //                   mainAxisSize: MainAxisSize.min,
+                  //                   children: [
+                  //                     _showClearIcon ==
+                  //                             textController.text.isNotEmpty
+                  //                         ? Padding(
+                  //                             padding:
+                  //                                 EdgeInsets.only(right: 1.w),
+                  //                             child: TextButton(
+                  //                                 style: TextButton.styleFrom(
+                  //                                   textStyle: TextStyle(
+                  //                                       fontSize: 10.sp),
+                  //                                 ),
+                  //                                 onPressed: () {
+                  //                                   setState(() {
+                  //                                     // _showClearIcon =
+                  //                                     //     false; // To update the counter
+                  //                                   });
+                  //                                 },
+                  //                                 child: Icon(
+                  //                                   Icons.close_sharp,
+                  //                                   size: 20.sp,
+                  //                                   color: Colors.transparent,
+                  //                                 )),
+                  //                           )
+                  //                         : Padding(
+                  //                             padding:
+                  //                                 EdgeInsets.only(right: 1.w),
+                  //                             child: TextButton(
+                  //                               style: TextButton.styleFrom(
+                  //                                 textStyle: TextStyle(
+                  //                                     fontSize: 10.sp),
+                  //                               ),
+                  //                               onPressed: () {
+                  //                                 textController.clear();
+                  //                                 setState(() {
+                  //                                   // _showClearIcon =
+                  //                                   //     false; // To update the counter
+                  //                                 });
+                  //                               },
+                  //                               child: GradientIconHome(
+                  //                                 icon: Icons.close_sharp,
+                  //                                 size: 20.sp,
+                  //                                 gradient:
+                  //                                     const LinearGradient(
+                  //                                   colors: [
+                  //                                     Color(0xFF9340FF),
+                  //                                     Color(0xFF34BDFA)
+                  //                                   ],
+                  //                                   begin: Alignment.topLeft,
+                  //                                   end: Alignment.bottomRight,
+                  //                                 ),
+                  //                               ),
+                  //                             ),
+                  //                           )
+                  //                   ],
+                  //                 ),
+                  //                 Row(
+                  //                   children: [
+                  //                     GradientTextHome(
+                  //                       text: '${textController.text.length}',
+                  //                       style: GoogleFonts.prompt(
+                  //                         fontSize: 14.sp,
+                  //                         color: const Color(0xFFA19F9D),
+                  //                       ),
+                  //                       gradient: const LinearGradient(
+                  //                         colors: [
+                  //                           Color(0xFF9340FF),
+                  //                           Color(0xFF34BDFA)
+                  //                         ],
+                  //                       ),
+                  //                     ),
+                  //                     Text(
+                  //                       ' / ${widget.maxLength}',
+                  //                       style: GoogleFonts.prompt(
+                  //                         fontSize: 14.sp,
+                  //                         color: const Color(0xFFA19F9D),
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
                   Expanded(
                     child: Container(
                       width: 288.w,
@@ -204,8 +357,9 @@ class _HomePageState extends State<HomePage> {
                             TextField(
                               cursorColor: const Color(0xFF000000),
                               style: GoogleFonts.prompt(
-                                  fontSize: 14.sp,
-                                  color: const Color(0xFF323130)),
+                                fontSize: 14.sp,
+                                color: const Color(0xFF323130),
+                              ),
                               minLines: _inputtext == 1
                                   ? maxLinesclose
                                   : maxLinesopen,
@@ -251,27 +405,26 @@ class _HomePageState extends State<HomePage> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      _showClearIcon ==
-                                              textController.text.isNotEmpty
+                                      _showClearIcon
                                           ? Padding(
                                               padding:
                                                   EdgeInsets.only(right: 1.w),
                                               child: TextButton(
-                                                  style: TextButton.styleFrom(
-                                                    textStyle: TextStyle(
-                                                        fontSize: 10.sp),
-                                                  ),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      // _showClearIcon =
-                                                      //     false; // To update the counter
-                                                    });
-                                                  },
-                                                  child: Icon(
-                                                    Icons.close_sharp,
-                                                    size: 20.sp,
-                                                    color: Colors.transparent,
-                                                  )),
+                                                style: TextButton.styleFrom(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10.sp),
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    // _showClearIcon = false; // To update the counter
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  Icons.close_sharp,
+                                                  size: 20.sp,
+                                                  color: Colors.transparent,
+                                                ),
+                                              ),
                                             )
                                           : Padding(
                                               padding:
@@ -284,8 +437,7 @@ class _HomePageState extends State<HomePage> {
                                                 onPressed: () {
                                                   textController.clear();
                                                   setState(() {
-                                                    // _showClearIcon =
-                                                    //     false; // To update the counter
+                                                    // _showClearIcon = false; // To update the counter
                                                   });
                                                 },
                                                 child: GradientIconHome(
@@ -378,9 +530,10 @@ class _HomePageState extends State<HomePage> {
                 //       screenSizeheight: screenSizeheight,
                 //       selectedPageIndexSetting: _selectedPageIndexSetting),
                 // ),
-                if (_selectedPageIndexSetting == 1) ...[
-                  const CategorySetting()
-                ],
+                // if (_selectedPageIndexSetting == 1) ...[
+                //   const CategorySetting()
+                // ],
+                
                 Expanded(
                   child: InkWell(
                       onTap: () async {
@@ -422,6 +575,93 @@ class _HomePageState extends State<HomePage> {
                     ))
               ]), // 40% of the screen height
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget appBar(BuildContext context) {
+    final auth = Provider.of<Authentication>(context);
+    credits = auth.credits;
+
+    return SafeArea(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/logo/App_Icon.png',
+                    width: 35.w,
+                    height: 35.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 10.w),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 224, 221, 221),
+                                blurRadius: 3.0,
+                              ),
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(width: 5.w),
+                              SizedBox(
+                                height: 25.h,
+                                width: 20.h,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/point.png',
+                                        width: 20.w,
+                                        height: 20.h,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    ' ${credits ?? " N/A"}',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF323130),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 5.w),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -810,9 +1050,19 @@ class _HomePageState extends State<HomePage> {
     });
 
     final auth = Provider.of<Authentication>(context, listen: false);
+    
+    /* 
+    // ดึงข้อมูล point มาเก็บไว้ในตัวแปร แล้วทำการหักคะแนน ตาม จำนวนตัวอักษร ที่ผู้ใช้งาน สร้างเสียง
 
-    print(
-        '\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
+    String credits = auth.credits; 
+    int creditsInt = int.parse(credits); 
+
+    creditsInt = creditsInt - textController.text.length; 
+    credits = creditsInt.toString(); 
+    print("update credits: $credits");
+    */
+
+    print('\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
     print(' language: $language \n availableLanguage: $availableLanguage \n');
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
@@ -889,7 +1139,13 @@ class _HomePageState extends State<HomePage> {
         print(tempDir);
         print(path);
         print(file);
-        OpenFile.open(path);
+
+        // OpenFile.open(path);
+
+        /*
+          WARNING!!! น้องภัทร ช่วย ทดสอบ OpenAppFile บน iOS ให้ด้วยนะ
+        */
+        OpenAppFile.open(path);
       } else {
         setState(() {
           progress = 'Failed to download file';
@@ -902,11 +1158,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /*
   Future<void> _androidDownloadFunction() async {
     try {
-      // working
       var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+
+      // working on EMULATOR ONLY!
       var path = "/storage/emulated/0/Download/$filename";
+
       var file = File(path);
       String url = _audioUrl;
       var res = await http.get(Uri.parse(url));
@@ -925,6 +1184,52 @@ class _HomePageState extends State<HomePage> {
         print(file);
         OpenAppFile.open(path);
         
+      } else {
+        print('Failed to download file: ${res.statusCode}');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
+    }
+  }
+  */
+
+  Future<void> _androidDownloadFunction() async {
+    try {
+      var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+
+      // Get the download directory
+      List<Directory>? directories =
+          await getExternalStorageDirectories(type: StorageDirectory.downloads);
+      if (directories == null || directories.isEmpty) {
+        throw Exception('No external storage directories found');
+      }
+
+      // Create the full path by appending the filename to the directory path
+      String directoryPath = directories.first.path;
+      String filePath = "$directoryPath/$filename";
+
+      // Create the file object
+      var file = File(filePath);
+
+      // Download the file from the URL
+      String url = _audioUrl;
+      var res = await http.get(Uri.parse(url));
+
+      // Check if the request was successful
+      if (res.statusCode == 200) {
+        // Write the downloaded bytes to the file
+        await file.writeAsBytes(res.bodyBytes);
+        print('Download successful: $filename');
+
+        setState(() {
+          progress = 'Download complete';
+        });
+
+        print("Printing Path: ");
+        print(filename);
+        print(filePath);
+        print(file);
+        OpenAppFile.open(filePath);
       } else {
         print('Failed to download file: ${res.statusCode}');
       }
