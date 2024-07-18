@@ -58,7 +58,7 @@ class AppDataBase {
       squareImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/square_alan.webp',
       audio:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/alan.mp3',
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/sound_1_alan.wav',
       language: 'th',
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
     ),
@@ -98,4 +98,5 @@ class AppDataBase {
 
     // Add more users and their stories
   ];
+
 }

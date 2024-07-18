@@ -2,6 +2,10 @@
 
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flow3/filters/languagedrawer.dart';
+import 'package:flow3/views/About_us.dart';
+import 'package:flow3/views/FAQ.dart';
+import 'package:flow3/views/MyAccount.dart';
+import 'package:flow3/views/Suggestions.dart';
 import 'package:flow3/widgets/CategorySetting.dart';
 // import 'package:flow3/screen/login.dart';
 // import 'package:flow3/screen/login.dart';
@@ -104,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: Colors.black,
                         radius: 20.0.r,
                         child: SvgPicture.asset(
-                          'assets/logo/logo.svg',
+                          'assets/logo/language.svg',
                           width: 40.0.w,
                           height: 40.0.h,
                         ),
@@ -177,7 +181,11 @@ class _HomePageState extends State<HomePage> {
                   colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+               Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const MyAccount()));
+                  print("My Account");
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -211,7 +219,11 @@ class _HomePageState extends State<HomePage> {
                   color: const Color(0xFF323130),
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const FAQ()));
+                print("FAQ");
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -228,7 +240,13 @@ class _HomePageState extends State<HomePage> {
                   color: const Color(0xFF323130),
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Suggestions()));
+                print("Suggestions");
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -245,18 +263,21 @@ class _HomePageState extends State<HomePage> {
                   color: const Color(0xFF323130),
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const About_us()));
+                print("About Us");
+              },
             ),
             SizedBox(height: 10.h),
-            Expanded(
-                child: Opacity(
-              opacity: 0.5, // 50% opacity
-              child: Container(
-                width: 200.w,
-                height: screenSizeheight * 0.05.h,
-                color: Colors.transparent,
-              ),
-            )),
+            Opacity(
+                          opacity: 0.5, // 50% opacity
+                          child: Container(
+            width: 200.w,
+            height: screenSizeheight * 0.05.h,
+            color: Colors.transparent,
+                          ),
+                        ),
             const Languagedrawer(),
             SizedBox(height: 69.h),
             // ElevatedButton.icon(
@@ -653,92 +674,88 @@ class Appbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-  child: Column(
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(left: 86.w),
-            child: ClipOval(
-              child: Image.asset(
-                'assets/logo/App_Icon.png',
-                width: 35.w,
-                height: 35.h,
-                fit: BoxFit.cover,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 88.w,top: 5.h),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Image.asset(
+                    'assets/logo/Aboutus_icon.png',
+                    width: 25.w,
+                    height: 25.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 5.w),
-            child: Column(
-              children: [
-                Row(
+              Padding(
+                padding: EdgeInsets.only(right: 5.w),
+                child: Column(
                   children: [
-                    IntrinsicWidth(
-                      child: Container(
-                    
-                        decoration: BoxDecoration(
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromARGB(255, 224, 221, 221),
-                              blurRadius: 3.0,
-                            ),
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 5.w),
-                            SizedBox(
-                              height: 25.h,
-                              width: 20.h,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/logo/point.png',
-                                      width: 20.w,
-                                      height: 20.h,
-                                    ),
-                                  ],
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 224, 221, 221),
+                                blurRadius: 3.0,
+                              ),
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(width: 5.w),
+                              SizedBox(
+                                height: 25.h,
+                                width: 20.h,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/point.png',
+                                        width: 20.w,
+                                        height: 20.h,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '10,000,000,000',
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF323130),
+                              Column(
+                                children: [
+                                  Text(
+                                    '100000000',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF323130),
+                                    ),
                                   ),
-                                  
-                                ),
-
-                              ],
-                            ),
-                            SizedBox(width: 5.w),
-                          ],
+                                ],
+                              ),
+                              SizedBox(width: 5.w),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
-    ],
-  ),
-)
-;
+    );
   }
 }
 
@@ -772,7 +789,8 @@ class _BuildVoiceState extends State<BuildVoice> {
                 onTap: () {
                   /////////////////////////////////////////////////////////////////////////////////////
                 },
-                child: Container(
+                child: 
+                Container(
                   height: 55.h,
                   width: screenSizewidth * 0.7.w,
                   decoration: BoxDecoration(
@@ -787,21 +805,29 @@ class _BuildVoiceState extends State<BuildVoice> {
                       colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "สร้างเสียง",
-                        style: GoogleFonts.prompt(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFFFFFFFF),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: 
+                // Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Text(
+                //         "สร้างเสียง",
+                //         style: GoogleFonts.prompt(
+                //           fontSize: 16.sp,
+                //           fontWeight: FontWeight.bold,
+                //           color: const Color(0xFFFFFFFF),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                GradientButton(
+                  text: 'สร้างเสียง',
+                  onPressed: () {
+                    print('สร้างเสียง');
+                  },
                 ),
               ),
+              )
             ],
           ),
         ],
@@ -858,6 +884,34 @@ class GradientIcon extends StatelessWidget {
         icon,
         size: size,
         color: Colors.white, // icon color จะไม่ถูกใช้
+      ),
+    );
+  }
+}
+class GradientButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+
+  GradientButton({required this.text, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 50.h,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+        ),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
+        onPressed: onPressed,
+        child: Text(text, style: GoogleFonts.prompt(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600)),
       ),
     );
   }

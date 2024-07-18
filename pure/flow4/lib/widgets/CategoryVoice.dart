@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flow3/filters/advert.dart';
 import 'package:flow3/filters/all.dart';
 import 'package:flow3/filters/favorite.dart';
@@ -166,6 +167,8 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                       if (selectedIndex.contains(index)) {
                         selectedIndex.remove(index);
                       } else {
+                        // Clear the previously selected index before adding the new one
+                        selectedIndex.clear();
                         selectedIndex.add(index);
                       }
                     });
@@ -210,8 +213,8 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 5.w, top: 5.w,left: 5.w),
+                                  padding: EdgeInsets.only(
+                                      right: 5.w, top: 5.w, left: 5.w),
                                   child: selectedIndex.contains(index)
                                       ? Container(
                                           width: 31.w,
@@ -245,9 +248,9 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                         ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(right: 5.w,top: 5.w),
+                                  padding:
+                                      EdgeInsets.only(right: 5.w, top: 5.w),
                                   child: GestureDetector(
-                                    
                                     onTap: () {
                                       setState(() {
                                         if (selectedIndex2.contains(index)) {
@@ -284,10 +287,13 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                 )
                               ],
                             ),
-                            const Spacer(), // Add Spacer to push the content below to the bottom
+                            const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                SizedBox(
+                                  width: 15.w,
+                                ),
                                 selectedIndex.contains(index)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
@@ -313,15 +319,17 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                 SizedBox(
                                   width: 3.w,
                                 ),
-                                Text(
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: null,
-                                  widget.data[index].name,
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 10.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
+                                Expanded(
+                                  child: AutoSizeText(
+                                    widget.data[index].name,
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    softWrap: true,
+                                    overflow: TextOverflow.visible,
+                                    maxLines: 2,
                                   ),
                                 ),
                               ],
@@ -329,17 +337,6 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                           ],
                         ),
                       ),
-                      // Text(
-                      //   softWrap: true,
-                      //   overflow: TextOverflow.ellipsis,
-                      //   maxLines: null,
-                      //   widget.data[index].name,
-                      //   style: GoogleFonts.prompt(
-                      //     fontSize: 12.sp,
-                      //     color: Colors.black,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
