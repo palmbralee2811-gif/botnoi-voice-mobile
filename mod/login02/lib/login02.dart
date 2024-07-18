@@ -76,11 +76,10 @@ class _LoginState extends State<Login> {
 
   Widget _buildTop(BuildContext context) {
     mediaSize = MediaQuery.of(context).size;
-    return Positioned(
-      top: 40,
-      left: 40,
-      child: SafeArea(
-        child: SingleChildScrollView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SingleChildScrollView(
           child: SizedBox(
             width: mediaSize.width,
             child: Column(
@@ -132,7 +131,7 @@ class _LoginState extends State<Login> {
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
