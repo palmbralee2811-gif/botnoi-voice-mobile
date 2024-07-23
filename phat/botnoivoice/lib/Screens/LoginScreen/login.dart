@@ -1,7 +1,9 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -54,32 +56,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          height: 50.0,
-        ),
-        _buildTop(context),
-        const SizedBox(height: 50.0),
-        _buildCenter(),
-        const SizedBox(height: 10.0),
-        _buildLoginLineButton(mediaSize),
-        const SizedBox(height: 10.0),
-        _buildLoginGoogleButton(mediaSize),
-        const SizedBox(height: 30.0),
-        _buildAccept(),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 50.0,
+          ),
+          _buildTop(context),
+          const SizedBox(height: 50.0),
+          _buildCenter(),
+          const SizedBox(height: 10.0),
+          // _buildLoginLineButton(mediaSize),
+          const SizedBox(height: 10.0),
+          _buildLoginGoogleButton(),
+          const SizedBox(height: 30.0),
+          _buildAccept(),
+        ],
+      ),
     );
   }
 
   Widget _buildTop(BuildContext context) {
     mediaSize = MediaQuery.of(context).size;
-    return Positioned(
-      top: 40,
-      left: 40,
-      child: SafeArea(
-        child: SingleChildScrollView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SingleChildScrollView(
           child: SizedBox(
             width: mediaSize.width,
             child: Column(
@@ -131,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -160,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF3ACE01),
+                backgroundColor: const Color(0xFF3ACE01),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -175,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 60.0,
                     width: 60.0,
                   ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Text(
                     'เข้าสู่ระบบด้วย Line',
                     style: GoogleFonts.prompt(
@@ -193,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginGoogleButton(Size mediaSize) {
+  Widget _buildLoginGoogleButton() {
     final auth = Provider.of<Authentication>(context);
 
     return Column(
@@ -205,17 +208,11 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 final user = await auth.signInWithGoogle(context);
+                if (!mounted) return; // ตรวจสอบว่าถ้ายัง mounted อยู่หรือไม่
                 if (user != null) {
-                  Navigator.pushReplacement(
-                    context,
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-
-                      builder: (context) => HomePage(),
-                      // builder: (context) => VoiceScreen(),
-                      // builder: (context) => const Homescreen(),
-
-
-
+                      builder: (context) => const HomePage(),
                     ),
                   );
                 } else {
@@ -231,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(mediaSize.width * 60.0, 60.0),
+                minimumSize: Size(mediaSize.width * 0.8, 60.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -280,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: TextSpan(
                     text: 'I agree that I have read and accepted the ',
                     style: GoogleFonts.prompt(
-                        fontSize: 14, color: Color(0xFF605E5C)),
+                        fontSize: 14, color: const Color(0xFF605E5C)),
                     children: <TextSpan>[
                       TextSpan(
                         text: 'Terms of USE',
@@ -297,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: ' and ',
                         style: GoogleFonts.prompt(
-                            fontSize: 14, color: Color(0xFF605E5C)),
+                            fontSize: 14, color: const Color(0xFF605E5C)),
                       ),
                       TextSpan(
                         text: 'Private Policy',
@@ -314,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: '.',
                         style: GoogleFonts.prompt(
-                            fontSize: 14, color: Color(0xFF605E5C)),
+                            fontSize: 14, color: const Color(0xFF605E5C)),
                       ),
                     ],
                   ),
