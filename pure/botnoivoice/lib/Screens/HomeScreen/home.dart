@@ -23,6 +23,7 @@ import 'package:botnoivoice/Widgets/favoritevoice.dart';
 // import 'package:botnoivoice/widgets/CategorySetting.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -53,6 +54,9 @@ class _HomePageState extends State<HomePage> {
   String _audioUrl = '';
   String? speakerId;
   String? language;
+  String? gender;
+
+  ///new
   List<String>? availableLanguage;
   String? credits;
 
@@ -87,6 +91,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Initialize language and other variables
     language = 'th'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น
+    gender = '';
+
     // Initialize other variables here...
   } ////////new/////
 
@@ -632,7 +638,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget appBar(BuildContext context, String text) {
-  // Widget appBar(BuildContext context) {
+    // Widget appBar(BuildContext context) {
     /////รับค่า text มาใช้คำนวณ
     return SafeArea(
       child: Column(
@@ -982,7 +988,7 @@ class _HomePageState extends State<HomePage> {
                                                 _buildGenderOption(
                                                     'ช/ญ',
                                                     'assets/logo/Category.jpg',
-                                                    'ผู้ชาย/ผู้หญิง',
+                                                    '',
                                                     context,
                                                     setState),
                                                 _buildGenderOption(
@@ -997,147 +1003,6 @@ class _HomePageState extends State<HomePage> {
                                                     'ผู้ชาย',
                                                     context,
                                                     setState)
-                                                // InkWell(
-                                                //   onTap: () {
-                                                //     setModalState(() {
-                                                //       selectedGender = 'ช/ญ';
-                                                //     });
-                                                //     setState(() {
-                                                //       changeIcon = false;
-                                                //     });
-                                                //     Navigator.pop(context);
-                                                //   },
-                                                //   child: Container(
-                                                //     padding: EdgeInsets.only(
-                                                //         left: 10.w),
-                                                //     height: 42.h,
-                                                //     width: 320.w,
-                                                //     color: Colors.white,
-                                                //     child: Row(
-                                                //       mainAxisAlignment:
-                                                //           MainAxisAlignment
-                                                //               .start,
-                                                //       children: [
-                                                //         Image.asset(
-                                                //           'assets/logo/Category.jpg',
-                                                //           width: 24.w,
-                                                //           height: 24.h,
-                                                //         ),
-                                                //         SizedBox(
-                                                //           width: 20.w,
-                                                //         ),
-                                                //         Text(
-                                                //           'ช/ญ',
-                                                //           style: GoogleFonts
-                                                //               .prompt(
-                                                //             fontSize: 14.sp,
-                                                //             fontWeight:
-                                                //                 selectedGender ==
-                                                //                         'ช/ญ'
-                                                //                     ? FontWeight
-                                                //                         .w600
-                                                //                     : FontWeight
-                                                //                         .normal,
-                                                //           ),
-                                                //         ),
-                                                //       ],
-                                                //     ),
-                                                //   ),
-                                                // ),
-                                                // InkWell(
-                                                //   onTap: () {
-                                                //     setModalState(() {
-                                                //       selectedGender = 'หญิง';
-                                                //     });
-                                                //     setState(() {
-                                                //       changeIcon = false;
-                                                //     });
-                                                //     Navigator.pop(context);
-                                                //   },
-                                                //   child: Container(
-                                                //     padding: EdgeInsets.only(
-                                                //         left: 10.w),
-                                                //     height: 42.h,
-                                                //     width: 320.w,
-                                                //     color: Colors.white,
-                                                //     child: Row(
-                                                //       mainAxisAlignment:
-                                                //           MainAxisAlignment
-                                                //               .start,
-                                                //       children: [
-                                                //         Image.asset(
-                                                //           'assets/logo/Category (1).jpg',
-                                                //           width: 24.w,
-                                                //           height: 24.h,
-                                                //         ),
-                                                //         SizedBox(
-                                                //           width: 20.w,
-                                                //         ),
-                                                //         Text(
-                                                //           'หญิง',
-                                                //           style: GoogleFonts
-                                                //               .prompt(
-                                                //             fontSize: 14.sp,
-                                                //             fontWeight:
-                                                //                 selectedGender ==
-                                                //                         'หญิง'
-                                                //                     ? FontWeight
-                                                //                         .w600
-                                                //                     : FontWeight
-                                                //                         .normal,
-                                                //           ),
-                                                //         ),
-                                                //       ],
-                                                //     ),
-                                                //   ),
-                                                // ),
-                                                // InkWell(
-                                                //   onTap: () {
-                                                //     setModalState(() {
-                                                //       selectedGender = 'ชาย';
-                                                //     });
-                                                //     setState(() {
-                                                //       changeIcon = false;
-                                                //     });
-                                                //     Navigator.pop(context);
-                                                //   },
-                                                //   child: Container(
-                                                //     padding: EdgeInsets.only(
-                                                //         left: 10.w),
-                                                //     height: 42.h,
-                                                //     width: 320.w,
-                                                //     color: Colors.white,
-                                                //     child: Row(
-                                                //       mainAxisAlignment:
-                                                //           MainAxisAlignment
-                                                //               .start,
-                                                //       children: [
-                                                //         Image.asset(
-                                                //           'assets/logo/Category (2).jpg',
-                                                //           width: 24.w,
-                                                //           height: 24.h,
-                                                //         ),
-                                                //         SizedBox(
-                                                //           width: 20.w,
-                                                //         ),
-                                                //         Text(
-                                                //           'ชาย',
-                                                //           style: GoogleFonts
-                                                //               .prompt(
-                                                //             fontSize: 14.sp,
-                                                //             fontWeight:
-                                                //                 selectedGender ==
-                                                //                         'ชาย'
-                                                //                     ? FontWeight
-                                                //                         .w600
-                                                //                     : FontWeight
-                                                //                         .normal,
-                                                //           ),
-                                                //         ),
-                                                //       ],
-                                                //     ),
-                                                //   ),
-                                                // ),
                                               ],
                                             ),
                                           ),
@@ -1173,12 +1038,22 @@ class _HomePageState extends State<HomePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
-                                    width: 3,
-                                  ),
-                                  Text(selectedGender,
-                                      style:
-                                          GoogleFonts.prompt(fontSize: 12.sp)),
+                                  const SizedBox(width: 3),
+                                  if (gender == '')
+                                    Text(
+                                      'ช/ญ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                  if (gender.toString() !=
+                                      '') // ตรวจสอบว่า selectedGender ไม่เป็นค่าว่าง
+                                    Text(
+                                      selectedGender,
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
                                   changeIcon
                                       ? const Icon(
                                           Icons.keyboard_arrow_up_sharp,
@@ -1238,8 +1113,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLanguageOption(String text, String imagePath, String lang,
-      BuildContext context, StateSetter setState) {
+  Widget _buildLanguageOption(
+      String text,
+      String imagePath,
+      String lang, ///// เลือกภาษา
+      BuildContext context,
+      StateSetter setState) {
     return InkWell(
       onTap: () {
         setState(() {
@@ -1248,7 +1127,7 @@ class _HomePageState extends State<HomePage> {
           language = lang; // Update the language variable
         });
         print(
-            'Selected Language: $selectedLanguage, Code: $language'); // Print to debug console
+            'Selected Language: $selectedLanguage, language: $language'); // Print to debug console
         Navigator.pop(context);
       },
       child: Container(
@@ -1287,15 +1166,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildGenderOption(String text, String imagePath, String gender,
-      BuildContext context, StateSetter setState) {
+  Widget _buildGenderOption(
+      String text,
+      String imagePath,
+      String gen, ///// เลือกเพศ
+      BuildContext context,
+      StateSetter setState) {
     return InkWell(
       onTap: () {
         setState(() {
-          selectedGender = text; // Update the gender variable
-          selectedGenderImage = imagePath;
+          if (text == 'ช/ญ') {
+            gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+          } else {
+            selectedGender = text;
+            selectedGenderImage = imagePath;
+            gender = gen;
+          }
         });
-        print('Selected Gender: $selectedGender'); // Print to debug console
+        print(
+            'Selected Gender: $selectedGender Gender: $gender'); // Print to debug console
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
@@ -1315,7 +1204,7 @@ class _HomePageState extends State<HomePage> {
               text,
               style: GoogleFonts.prompt(
                 fontSize: 14.sp,
-                fontWeight: selectedGender == text.split(' - ')[1]
+                fontWeight: selectedGender == text
                     ? FontWeight.w600
                     : FontWeight.normal,
               ),
@@ -1336,7 +1225,9 @@ class _HomePageState extends State<HomePage> {
       child: GridView.builder(
         // itemCount: AppDataBase.data.length, //old
         itemCount: AppDataBase.data
-            .where((item) => item.language == language)
+            .where((item) =>
+                (gender == '' || item.gender == gender) &&
+                item.language == language)
             .length, //new
 
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -1348,7 +1239,9 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (context, index) {
           // final data = AppDataBase.data[index];   //old.
           final data = AppDataBase.data
-              .where((item) => item.language == language)
+              .where((item) =>
+                  (gender == '' || item.gender == gender) &&
+                  item.language == language)
               .toList()[index]; ////new
 
           return Column(
@@ -1359,6 +1252,7 @@ class _HomePageState extends State<HomePage> {
                 child: GestureDetector(
                   onTap: () async {
                     String audioURL = data.audio;
+
                     Future<void> playAudio() async {
                       if (audioURL.isNotEmpty) {
                         if (isAudioPlaying) {
