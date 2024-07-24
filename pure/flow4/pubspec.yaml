@@ -50,7 +50,10 @@ dependencies:
   google_sign_in: ^5.4.2
   auto_size_text: ^3.0.0
   sign_in_button: ^3.0.0
+  flutter_localization: ^0.2.0
+  easy_localization: ^3.0.7
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
