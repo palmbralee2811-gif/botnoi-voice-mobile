@@ -9,6 +9,7 @@
 // import 'package:flow3/screen/home.dart';
 // import 'package:flow3/screen/home.dart';
 // import 'package:flow3/screen/login.dart'; login
+
 import 'package:flow3/screen/home.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,22 +33,23 @@ final theme = ThemeData(
 //   runApp(const MyApp(),);
 // }
 
-void main ()  {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) => ScreenUtilInit(
-    designSize: const Size(320, 684),
-    splitScreenMode: true,
-    builder: (context, child) => MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: theme,
-      home: const HomePage(),
-    ),
-  );
+        designSize: const Size(320, 684),
+        splitScreenMode: true,
+        builder: (context, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: theme,
+          home: const HomePage(),
+        ),
+      );
 }
