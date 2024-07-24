@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/data.dart';
 import 'package:botnoivoice/Function/randomString.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
+import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
 import 'package:botnoivoice/Widgets/favoritevoice.dart';
-// import 'package:botnoivoice/filters/languagedrawer.dart';
-// import 'package:botnoivoice/widgets/CategorySetting.dart';
-// import 'package:botnoivoice/widgets/CategorySetting.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,9 +17,8 @@ import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'drawer_app_bar.dart';
-// import 'gradient_icon_home.dart';
-import 'gradient_text_home.dart';
+import 'drawer_appbar.dart';
+import 'gradient_button_home.dart';
 import 'selectvoice.dart';
 import 'package:http/http.dart' as http;
 
@@ -141,8 +139,11 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: DrawerAppBar(
-          auth: auth, email: email, screenSizeheight: screenSizeheight),
+      drawer: DrawerAppbar(
+        auth: auth,
+        email: email,
+        screenSizeheight: screenSizeheight,
+      ),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -181,161 +182,6 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Expanded(
-                  //   child: Container(
-                  //     width: 288.w,
-                  //     decoration: BoxDecoration(
-                  //       boxShadow: const [
-                  //         BoxShadow(
-                  //           color: Colors.grey,
-                  //           blurRadius: 5.0,
-                  //         ),
-                  //       ],
-                  //       color: Colors.white,
-                  //       borderRadius: BorderRadius.circular(14.r),
-                  //     ),
-                  //     child: Padding(
-                  //       padding:
-                  //           EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
-                  //       child: Column(
-                  //         children: [
-                  //           TextField(
-                  //             cursorColor: const Color(0xFF000000),
-                  //             style: GoogleFonts.prompt(
-                  //                 fontSize: 14.sp,
-                  //                 color: const Color(0xFF323130)),
-                  //             minLines: _inputtext == 1
-                  //                 ? maxLinesclose
-                  //                 : maxLinesopen,
-                  //             maxLines: _inputtext == 1
-                  //                 ? maxLinesclose
-                  //                 : maxLinesopen,
-                  //             keyboardType: TextInputType.multiline,
-                  //             controller: textController,
-                  //             onChanged: (text) {
-                  //               if (textController.text.length >
-                  //                   widget.maxLength) {
-                  //                 textController.text = textController.text
-                  //                     .substring(0, widget.maxLength);
-                  //                 textController.selection =
-                  //                     TextSelection.fromPosition(
-                  //                   TextPosition(
-                  //                       offset: textController.text.length),
-                  //                 );
-                  //               }
-                  //               setState(() {
-                  //                 _showClearIcon =
-                  //                     textController.text.isNotEmpty;
-                  //               });
-                  //             },
-                  //             decoration: InputDecoration(
-                  //               border: InputBorder.none,
-                  //               hintText:
-                  //                   'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
-                  //               hintStyle: TextStyle(
-                  //                 color: const Color(0xFFA19F9D),
-                  //                 fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
-                  //                     .fontStyle,
-                  //               ),
-                  //               hintMaxLines: 1,
-                  //             ),
-                  //           ),
-                  //           Padding(
-                  //             padding: EdgeInsets.only(right: 25.w),
-                  //             child: Row(
-                  //               mainAxisAlignment:
-                  //                   MainAxisAlignment.spaceBetween,
-                  //               children: [
-                  //                 Column(
-                  //                   mainAxisSize: MainAxisSize.min,
-                  //                   children: [
-                  //                     _showClearIcon ==
-                  //                             textController.text.isNotEmpty
-                  //                         ? Padding(
-                  //                             padding:
-                  //                                 EdgeInsets.only(right: 1.w),
-                  //                             child: TextButton(
-                  //                                 style: TextButton.styleFrom(
-                  //                                   textStyle: TextStyle(
-                  //                                       fontSize: 10.sp),
-                  //                                 ),
-                  //                                 onPressed: () {
-                  //                                   setState(() {
-                  //                                     // _showClearIcon =
-                  //                                     //     false; // To update the counter
-                  //                                   });
-                  //                                 },
-                  //                                 child: Icon(
-                  //                                   Icons.close_sharp,
-                  //                                   size: 20.sp,
-                  //                                   color: Colors.transparent,
-                  //                                 )),
-                  //                           )
-                  //                         : Padding(
-                  //                             padding:
-                  //                                 EdgeInsets.only(right: 1.w),
-                  //                             child: TextButton(
-                  //                               style: TextButton.styleFrom(
-                  //                                 textStyle: TextStyle(
-                  //                                     fontSize: 10.sp),
-                  //                               ),
-                  //                               onPressed: () {
-                  //                                 textController.clear();
-                  //                                 setState(() {
-                  //                                   // _showClearIcon =
-                  //                                   //     false; // To update the counter
-                  //                                 });
-                  //                               },
-                  //                               child: GradientIconHome(
-                  //                                 icon: Icons.close_sharp,
-                  //                                 size: 20.sp,
-                  //                                 gradient:
-                  //                                     const LinearGradient(
-                  //                                   colors: [
-                  //                                     Color(0xFF9340FF),
-                  //                                     Color(0xFF34BDFA)
-                  //                                   ],
-                  //                                   begin: Alignment.topLeft,
-                  //                                   end: Alignment.bottomRight,
-                  //                                 ),
-                  //                               ),
-                  //                             ),
-                  //                           )
-                  //                   ],
-                  //                 ),
-                  //                 Row(
-                  //                   children: [
-                  //                     GradientTextHome(
-                  //                       text: '${textController.text.length}',
-                  //                       style: GoogleFonts.prompt(
-                  //                         fontSize: 14.sp,
-                  //                         color: const Color(0xFFA19F9D),
-                  //                       ),
-                  //                       gradient: const LinearGradient(
-                  //                         colors: [
-                  //                           Color(0xFF9340FF),
-                  //                           Color(0xFF34BDFA)
-                  //                         ],
-                  //                       ),
-                  //                     ),
-                  //                     Text(
-                  //                       ' / ${widget.maxLength}',
-                  //                       style: GoogleFonts.prompt(
-                  //                         fontSize: 14.sp,
-                  //                         color: const Color(0xFFA19F9D),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-
                   Expanded(
                     child: Container(
                       width: 288.w,
@@ -357,9 +203,8 @@ class _HomePageState extends State<HomePage> {
                             TextField(
                               cursorColor: const Color(0xFF000000),
                               style: GoogleFonts.prompt(
-                                fontSize: 14.sp,
-                                color: const Color(0xFF323130),
-                              ),
+                                  fontSize: 14.sp,
+                                  color: const Color(0xFF323130)),
                               minLines: _inputtext == 1
                                   ? maxLinesclose
                                   : maxLinesopen,
@@ -405,26 +250,27 @@ class _HomePageState extends State<HomePage> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      _showClearIcon
+                                      _showClearIcon ==
+                                              textController.text.isNotEmpty
                                           ? Padding(
                                               padding:
                                                   EdgeInsets.only(right: 1.w),
                                               child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  textStyle: TextStyle(
-                                                      fontSize: 10.sp),
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    // _showClearIcon = false; // To update the counter
-                                                  });
-                                                },
-                                                child: Icon(
-                                                  Icons.close_sharp,
-                                                  size: 20.sp,
-                                                  color: Colors.transparent,
-                                                ),
-                                              ),
+                                                  style: TextButton.styleFrom(
+                                                    textStyle: TextStyle(
+                                                        fontSize: 10.sp),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      // _showClearIcon =
+                                                      //     false; // To update the counter
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.close_sharp,
+                                                    size: 20.sp,
+                                                    color: Colors.transparent,
+                                                  )),
                                             )
                                           : Padding(
                                               padding:
@@ -437,7 +283,8 @@ class _HomePageState extends State<HomePage> {
                                                 onPressed: () {
                                                   textController.clear();
                                                   setState(() {
-                                                    // _showClearIcon = false; // To update the counter
+                                                    // _showClearIcon =
+                                                    //     false; // To update the counter
                                                   });
                                                 },
                                                 child: GradientIconHome(
@@ -533,33 +380,8 @@ class _HomePageState extends State<HomePage> {
                 // if (_selectedPageIndexSetting == 1) ...[
                 //   const CategorySetting()
                 // ],
-                
                 Expanded(
-                  child: InkWell(
-                      onTap: () async {
-                        // await generateAudio(textController.text).then((_) {
-                        //   print('response $_response');
-                        //   downloadFile();
-                        //   print('progress -> downloadFile(): $progress \n');
-                        // });
-
-                        setState(() {
-                          if (textController.text.isNotEmpty) {
-                            audioPlayer.stop();
-                          }
-                        });
-                        if (!isLoading) {
-                          if (textController.text.isNotEmpty) {
-                            generateAudio(textController.text).then((_) {
-                              print('response $_response');
-                              downloadFile();
-                              print('progress -> downloadFile(): $progress \n');
-                            });
-                          }
-                        }
-                        print("\n### END generateAudio -> Line 410 ### \n");
-                      },
-                      child: buildVoiceHome(context)),
+                  child: InkWell(onTap: () {}, child: buildVoiceHome(context)),
                 ),
                 Container(
                     height: screenSizeheight * 0.052.h,
@@ -592,18 +414,19 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: ClipOval(
+                padding: EdgeInsets.only(left: 88.w, top: 5.h),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
                   child: Image.asset(
-                    'assets/logo/App_Icon.png',
-                    width: 35.w,
-                    height: 35.h,
+                    'assets/logo/Aboutus_icon.png',
+                    width: 25.w,
+                    height: 25.h,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 10.w),
+                padding: EdgeInsets.only(right: 5.w),
                 child: Column(
                   children: [
                     Row(
@@ -690,7 +513,10 @@ class _HomePageState extends State<HomePage> {
                 width: 600.w,
                 child: Padding(
                   padding: EdgeInsets.only(right: 10.w, left: 10.w),
-                  child: Row(
+
+                  // Remove const when Open Language !!!!!!!
+
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // const Language(),
@@ -766,6 +592,7 @@ class _HomePageState extends State<HomePage> {
                           // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
                           await audioPlayer.stop();
                         }
+
                         await audioPlayer.play(UrlSource(audioURL));
                         setState(() {
                           isAudioPlaying = true;
@@ -799,7 +626,11 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       if (selectedIndex.contains(index)) {
                         selectedIndex.remove(index);
+                        if (audioPlayer.state == PlayerState.playing) {
+                          audioPlayer.pause();
+                        }
                       } else {
+                        // Clear the previously selected index before adding the new one
                         selectedIndex.clear();
                         selectedIndex.add(index);
                       }
@@ -919,10 +750,13 @@ class _HomePageState extends State<HomePage> {
                                 )
                               ],
                             ),
-                            const Spacer(), // Add Spacer to push the content below to the bottom
+                            const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                SizedBox(
+                                  width: 15.w,
+                                ),
                                 selectedIndex.contains(index)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
@@ -948,15 +782,17 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(
                                   width: 3.w,
                                 ),
-                                Text(
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: null,
-                                  AppDataBase.data[index].thaiName,
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 10.sp,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
+                                Expanded(
+                                  child: AutoSizeText(
+                                    AppDataBase.data[index].thaiName,
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 10.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    softWrap: true,
+                                    overflow: TextOverflow.visible,
+                                    maxLines: 2,
                                   ),
                                 ),
                               ],
@@ -964,17 +800,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                      // Text(
-                      //   softWrap: true,
-                      //   overflow: TextOverflow.ellipsis,
-                      //   maxLines: null,
-                      //   widget.data[index].name,
-                      //   style: GoogleFonts.prompt(
-                      //     fontSize: 12.sp,
-                      //     color: Colors.black,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -1004,7 +829,9 @@ class _HomePageState extends State<HomePage> {
             children: [
               // const Spacer(),
               InkWell(
-                // onTap: () {},
+                onTap: () {
+                  /////////////////////////////////////////////////////////////////////////////////////
+                },
                 child: Container(
                   height: 55.h,
                   width: screenSizewidth * 0.7.w,
@@ -1020,21 +847,51 @@ class _HomePageState extends State<HomePage> {
                       colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "สร้างเสียง",
-                        style: GoogleFonts.prompt(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFFFFFFFF),
-                        ),
-                      ),
-                    ],
+                  child:
+                      // Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Text(
+                      //         "สร้างเสียง",
+                      //         style: GoogleFonts.prompt(
+                      //           fontSize: 16.sp,
+                      //           fontWeight: FontWeight.bold,
+                      //           color: const Color(0xFFFFFFFF),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      GradientButtonHome(
+                    text: 'สร้างเสียง',
+                    onPressed: () async {
+                      print('สร้างเสียง');
+
+                      // await generateAudio(textController.text).then((_) {
+                      //   print('response $_response');
+                      //   downloadFile();
+                      //   print('progress -> downloadFile(): $progress \n');
+                      // });
+
+                      setState(() {
+                        if (textController.text.isNotEmpty) {
+                          audioPlayer.stop();
+                        }
+                      });
+                      if (!isLoading) {
+                        if (textController.text.isNotEmpty) {
+                          await generateAudio(textController.text).then((_) {
+                            print('response $_response');
+                            downloadFile();
+                            print('progress -> downloadFile(): $progress \n');
+                          });
+                        }
+                      }
+                      print("\n### END generateAudio -> Line 410 ### \n");
+                    },
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ],
@@ -1050,7 +907,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     final auth = Provider.of<Authentication>(context, listen: false);
-    
+
     /* 
     // ดึงข้อมูล point มาเก็บไว้ในตัวแปร แล้วทำการหักคะแนน ตาม จำนวนตัวอักษร ที่ผู้ใช้งาน สร้างเสียง
 
@@ -1062,7 +919,8 @@ class _HomePageState extends State<HomePage> {
     print("update credits: $credits");
     */
 
-    print('\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
+    print(
+        '\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
     print(' language: $language \n availableLanguage: $availableLanguage \n');
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
