@@ -16,7 +16,7 @@ class Data {
     required this.audio,
     required this.language,
     required this.availableLanguage,
-    required  this.gender,
+    required this.gender,
   });
 }
 
@@ -35,6 +35,54 @@ class AppDataBase {
       gender: "ผู้หญิง",
     ),
     Data(
+      speakerId: "59",
+      engName: 'Juan',
+      thaiName: 'เจวียน',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/square_juan.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/sound_1_juan.wav',
+      language: 'ZH',
+      availableLanguage: ["zh"],
+      gender: "ผู้หญิง",
+    ),
+    Data(
+      speakerId: "64",
+      engName: 'Sae',
+      thaiName: 'ซาเอะ',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/square_sae.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/sound_1_sae.wav',
+      language: 'JA',
+      availableLanguage: ["en", "id", "ja", "lo", "my", "th", "vi", "zh"],
+      gender: "ผู้หญิง",
+    ),
+    Data(
+      speakerId: "66",
+      engName: 'Taufik',
+      thaiName: 'เทาฟิก',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/square_taufik.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/sound_1_taufik.wav',
+      language: 'ID',
+      availableLanguage: ["en", "id", "ja", "lo", "my", "th", "vi", "zh"],
+      gender: "ผู้ชาย",
+    ),
+    Data(
+      speakerId: "65",
+      engName: 'Dia',
+      thaiName: 'เดีย',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/square_dia.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/sound_1_dia.wav',
+      language: 'ID',
+      availableLanguage: ["en", "id", "ja", "lo", "my", "th", "vi", "zh"],
+      gender: "ผู้หญิง",
+    ),
+    Data(
       speakerId: "2",
       engName: 'Bow',
       thaiName: 'โบ',
@@ -44,6 +92,51 @@ class AppDataBase {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/sound_1_bow.wav',
       language: 'th',
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
+      gender: "ผู้หญิง",
+    ),
+    Data(
+      speakerId: "73",
+      engName: 'Phuong',
+      thaiName: 'เฟื่อง',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/square_phuong.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/sound_1_phuong.wav',
+      language: 'VI',
+      availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
+      gender: "ผู้หญิง",
+    ),
+    Data(
+      speakerId: "77",
+      engName: 'Phorn',
+      thaiName: 'พร',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/square_phorn.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/sound_1_phorn.wav',
+      language: 'LO',
+      availableLanguage: ["lo"],
+      gender: "ผู้หญิง",
+    ),
+    Data(
+      speakerId: "81",
+      engName: 'Yati',
+      thaiName: 'ยาตี',
+      squareImage:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/square_yati.webp',
+      audio:
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/sound_1_yati.wav',
+      language: 'MY',
+      availableLanguage: [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
       gender: "ผู้หญิง",
     ),
     Data(

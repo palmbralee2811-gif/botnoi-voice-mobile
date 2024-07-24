@@ -6,18 +6,16 @@ import 'package:botnoivoice/Database/data.dart';
 import 'package:botnoivoice/Filters/advert.dart';
 import 'package:botnoivoice/Filters/all.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
-import 'package:botnoivoice/Filters/language.dart';
 import 'package:botnoivoice/Filters/new.dart';
 import 'package:botnoivoice/Filters/podcast.dart';
 import 'package:botnoivoice/Filters/recomman.dart';
-import 'package:botnoivoice/Filters/sex.dart';
 import 'package:botnoivoice/Filters/voice.dart';
 import 'package:botnoivoice/Function/randomString.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradientbuttom.dart';
 import 'package:botnoivoice/Screens/HomeScreen/setting.dart';
 import 'package:botnoivoice/Widgets/CategorySetting.dart';
-import 'package:botnoivoice/Widgets/favoritevoice.dart';
+// import 'package:botnoivoice/Widgets/favoritevoice.dart';     /////ไม่ได้ใช้   old
 // import 'package:botnoivoice/filters/languagedrawer.dart';
 // import 'package:botnoivoice/widgets/CategorySetting.dart';
 // import 'package:botnoivoice/widgets/CategorySetting.dart';
@@ -53,8 +51,10 @@ class _HomePageState extends State<HomePage> {
   String _response = '';
   String _audioUrl = '';
   String? speakerId;
-  String? language;
+  String? language; // เลือกภาษา   new
   String? gender;
+
+  /// เลือกเพศ  new
 
   ///new
   List<String>? availableLanguage;
@@ -75,6 +75,8 @@ class _HomePageState extends State<HomePage> {
 
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
+  List<int> selectedIndexFavorites = []; /////เลือกเสียงที่ชอบ  new
+
   // final List<Data> _favoriteVoice = [];
 
   // void _toggleVoiceFavorite(Data data) {
@@ -90,8 +92,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // Initialize language and other variables
-    language = 'th'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น
-    gender = '';
+    language = 'th'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
+    gender = ''; ///////////////////////// กำนดค่าเริ่มต้น  new
+
+    /// กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
 
     // Initialize other variables here...
   } ////////new/////
@@ -125,13 +129,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   ///เลือกภาษา
-  String selectedLanguage = 'ไทย';
-  String selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
+  String selectedLanguage = 'ไทย'; ///// กำหนดค่าเริ่มต้น  new
+  String selectedLanguageImage =
+      'assets/logo/Ellipse 12.jpg'; ///// กำหนดรูปค่าเริ่มต้น new
   bool isExpanded = false;
 
   ///เลือกเพศ
-  String selectedGender = 'ช/ญ';
-  String selectedGenderImage = 'assets/logo/Category.jpg';
+  String selectedGender = 'ช/ญ'; ///// กำหนดค่าเริ่มต้น  new
+  String selectedGenderImage =
+      'assets/logo/Category.jpg'; ///// กำหนดรูปค่าเริ่มต้น  new
   bool changeIcon = false;
 
   @override
@@ -745,12 +751,14 @@ class _HomePageState extends State<HomePage> {
 
   bool ishover = false;
   Widget categoryVoiceHome(BuildContext context) {
-    double screenSizewidth = MediaQuery.of(context).size.width;
+    // double screenSizewidth = MediaQuery.of(context).size.width;   ///// ไม่ได้ใช้
     double screenSizeheight = MediaQuery.of(context).size.height;
 
     // var screenSize = MediaQuery.of(context).size;
-    final data =
-        AppDataBase.data.where((item) => item.language == language).toList();
+    // final data =
+    //     AppDataBase.data.where((item) => item.language == language).toList();   //// ไม่ได้ใช้
+
+    ///ใช้ใน favorite
 
     // final filterModel = Provider.of<FilterModel>(context);
     return Column(
@@ -770,6 +778,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
+                        ////////เลือกภาษา
                         onTap: () {
                           setState(() {
                             isExpanded = true;
@@ -845,31 +854,31 @@ class _HomePageState extends State<HomePage> {
                                                     _buildLanguageOption(
                                                         'Japanese - ญี่ปุ่น',
                                                         'assets/logo/Ellipse 14.jpg',
-                                                        'jp',
+                                                        'JA',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Laos - ลาว',
                                                         'assets/logo/Ellipse 15.jpg',
-                                                        'loas',
+                                                        'LO',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Myanmar - เมียนมาร์',
                                                         'assets/logo/Ellipse 11.jpg',
-                                                        'mym',
+                                                        'MY',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Vietnam - เวียดนาม',
                                                         'assets/logo/Ellipse 19.jpg',
-                                                        'vn',
+                                                        'VI',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Chinese (Simplified) - จีน',
                                                         'assets/logo/Ellipse 18.jpg',
-                                                        'ch',
+                                                        'ZH',
                                                         context,
                                                         setState),
                                                   ],
@@ -935,6 +944,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       InkWell(
+                        ///////// เลือกเพศ
                         onTap: () {
                           setState(() {
                             changeIcon = !changeIcon;
@@ -1039,7 +1049,8 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const SizedBox(width: 3),
-                                  if (gender == '')
+                                  if (gender ==
+                                      '') //////////////////// text แสดงในปุ่มกด
                                     Text(
                                       'ช/ญ',
                                       style: GoogleFonts.prompt(
@@ -1053,7 +1064,7 @@ class _HomePageState extends State<HomePage> {
                                       style: GoogleFonts.prompt(
                                         fontSize: 12.sp,
                                       ),
-                                    ),
+                                    ), //////////////////// text แสดงในปุ่มกด
                                   changeIcon
                                       ? const Icon(
                                           Icons.keyboard_arrow_up_sharp,
@@ -1093,6 +1104,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Container(
+          //////////////พื้นหลัง widget
           // color: Colors.amber,
           color: const Color(0xFFFFFFFF),
           height: 148.h,
@@ -1100,12 +1112,10 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ishover
-                  ? FavoriteVoice(
-                      screenSizeheight: screenSizeheight,
-                      screenSizewidth: screenSizewidth,
-                      data: data,
+                  ? voiceWidGetfavorite(
+                      context, ///// เลือกเสียงที่ชอบ
                     )
-                  : voiceWidGetHome(context),
+                  : voiceWidGetHome(context), ///// หน้าเลือกเสียงหลัก
             ],
           ),
         ),
@@ -1114,6 +1124,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildLanguageOption(
+      /////////widget buttomsheet เลือกภาษา
       String text,
       String imagePath,
       String lang, ///// เลือกภาษา
@@ -1183,8 +1194,10 @@ class _HomePageState extends State<HomePage> {
             gender = gen;
           }
         });
+
         print(
             'Selected Gender: $selectedGender Gender: $gender'); // Print to debug console
+        Navigator.pop(context);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
@@ -1237,295 +1250,323 @@ class _HomePageState extends State<HomePage> {
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          // final data = AppDataBase.data[index];   //old.
+          // final data = AppDataBase.data[index];   /////////////////////////////old.
           final data = AppDataBase.data
               .where((item) =>
                   (gender == '' || item.gender == gender) &&
                   item.language == language)
               .toList()[index]; ////new
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 15.w),
-                child: GestureDetector(
-                  onTap: () async {
-                    String audioURL = data.audio;
+          return voicewidget(data, index);
+        },
+      ),
+    );
+  }
 
-                    Future<void> playAudio() async {
-                      if (audioURL.isNotEmpty) {
-                        if (isAudioPlaying) {
-                          // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
-                          await audioPlayer.stop();
-                        }
-                        await audioPlayer.play(UrlSource(audioURL));
-                        setState(() {
-                          isAudioPlaying = true;
-                        });
+  Widget voiceWidGetfavorite(BuildContext context) {        ////////widget รายการโปรด new
+    // double screenSizewidth = MediaQuery.of(context).size.width; ///////////////// Old
+    return SizedBox(
+      // height: 140.h,
+      // width: screenSizewidth * 0.95.w,
+      height: 127.h,
+      width: 320.w,
+      child: GridView.builder(
+        itemCount: selectedIndexFavorites.length, 
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1,
+          // mainAxisExtent: 150,
+          mainAxisExtent: 125,
+        ),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final data = AppDataBase.data[selectedIndexFavorites[index]]; 
 
-                        audioPlayer.onPlayerComplete.listen((event) {
-                          print("#### Play Audio's Complete");
-                          setState(() {
-                            isAudioPlaying = false;
-                          });
-                        });
-                      } else {
-                        setState(() {
-                          isAudioPlaying = false;
-                        });
-                        print("Audio URL is empty, cannot play audio");
-                      }
-                    }
+          return voicewidget(data, selectedIndexFavorites[index]); ////เลือกใช้ method แทน   new
+        },
+      ),
+    );
+  }
 
-                    await playAudio();
+  Column voicewidget(Data data, int index) {
+    ////method voicewidget    new
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 15.w),
+          child: GestureDetector(
+            onTap: () async {
+              String audioURL = data.audio;
 
-                    speakerId = data.speakerId;
-                    language = data.language.toLowerCase();
-                    availableLanguage = data.availableLanguage.toList();
-                    print("\n### START voiceWidGetHome ###\n");
-                    print("-> speakerId: $speakerId");
-                    print("-> language: $language");
-                    print("-> availableLanguage: $availableLanguage");
-                    print("\n### END voiceWidGetHome ###\n");
+              Future<void> playAudio() async {
+                if (audioURL.isNotEmpty) {
+                  if (isAudioPlaying) {
+                    // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                    await audioPlayer.stop();
+                  }
+                  await audioPlayer.play(UrlSource(audioURL));
+                  setState(() {
+                    isAudioPlaying = true;
+                  });
 
+                  audioPlayer.onPlayerComplete.listen((event) {
+                    print("#### Play Audio's Complete");
                     setState(() {
-                      if (selectedIndex.contains(index)) {
-                        selectedIndex.remove(index);
-                      } else {
-                        selectedIndex.clear();
-                        selectedIndex.add(index);
-                      }
+                      isAudioPlaying = false;
                     });
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        // width: 100.w,
-                        // height: 113.h,
-                        width: 81.w,
-                        height: 103.h,
-                        decoration: BoxDecoration(
-                          border: GradientBoxBorder(
-                            width: 3.w,
-                            gradient: selectedIndex.contains(index)
-                                // ? const LinearGradient(colors: [
-                                //     Color(0xFF9A96F5),
-                                //     Color(0xFF00E0FF)
-                                //   ])
-                                // : const LinearGradient(colors: [
-                                //     Colors.transparent,
-                                //     Colors.transparent
-                                //   ]),
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFF9A96F5),
-                                      Color(0xFF00E0FF)
-                                    ],
-                                  )
-                                : LinearGradient(
-                                    colors: [
-                                      Colors.black.withOpacity(0.9),
-                                      Colors.transparent,
-                                    ],
-                                    begin: const Alignment(1, 1), ////change new
-                                  ),
-                          ),
-                          borderRadius: BorderRadius.circular(8.r),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              // AppDataBase.data[index].squareImage, //old
-                              data.squareImage, //new
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 10, // new
-                              spreadRadius: 1, // new
-                              color: selectedIndex.contains(index)
-                                  // ? Colors.blue.withOpacity(0.5) //old
-                                  ? const Color(0xFF9340FF)
-                                      .withOpacity(0.6) //new
-                                  : Colors.transparent,
-                              // offset: const Offset(0, 2), //old
-                              offset: const Offset(0, 4), //new
-                            ),
-                          ],
-                        ),
-                        child: Container(
-                          //////new
-                          width: 100.w,
-                          height: 113.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.r),
-                            gradient: LinearGradient(
-                              begin: const Alignment(1, 1),
+                  });
+                } else {
+                  setState(() {
+                    isAudioPlaying = false;
+                  });
+                  print("Audio URL is empty, cannot play audio");
+                }
+              }
+
+              await playAudio();
+
+              speakerId = data.speakerId;
+              language = data.language.toLowerCase();
+              availableLanguage = data.availableLanguage.toList();
+              print("\n### START voiceWidGetHome ###\n");
+              print("-> speakerId: $speakerId");
+              print("-> language: $language");
+              print("-> availableLanguage: $availableLanguage");
+              print("\n### END voiceWidGetHome ###\n");
+
+              setState(() {
+                if (selectedIndex.contains(index)) {
+                  selectedIndex.remove(index);
+                } else {
+                  selectedIndex.clear();
+                  selectedIndex.add(index);
+                }
+              });
+            },
+            child: Column(
+              children: [
+                Container(
+                  // width: 100.w,
+                  // height: 113.h,
+                  width: 81.w,
+                  height: 103.h,
+                  decoration: BoxDecoration(
+                    border: GradientBoxBorder(
+                      width: 3.w,
+                      gradient: selectedIndex.contains(index)
+                          // ? const LinearGradient(colors: [
+                          //     Color(0xFF9A96F5),
+                          //     Color(0xFF00E0FF)
+                          //   ])
+                          // : const LinearGradient(colors: [
+                          //     Colors.transparent,
+                          //     Colors.transparent
+                          //   ]),
+                          ? const LinearGradient(
+                              colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                            )
+                          : LinearGradient(
                               colors: [
                                 Colors.black.withOpacity(0.9),
                                 Colors.transparent,
                               ],
+                              begin: const Alignment(1, 1), ////change new
                             ),
-                          ), ////refector container
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        right: 5.w, top: 5.w, left: 5.w),
-                                    child: selectedIndex.contains(index)
-                                        ? Container(
-                                            width: 31.w,
-                                            height: 17.h,
-                                            decoration: BoxDecoration(
-                                              gradient: const LinearGradient(
-                                                colors: [
-                                                  Color(0xFF9A96F5),
-                                                  Color(0xFF00E0FF)
-                                                ],
-                                              ),
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(8.r),
-                                            ),
-                                            child: Center(
-                                              child: Text('เลือก',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontStyle:
-                                                        GoogleFonts.prompt()
-                                                            .fontStyle,
-                                                    fontSize: 10.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                  )),
-                                            ),
-                                          )
-                                        : const Icon(
-                                            Icons.check,
-                                            color: Colors.transparent,
-                                          ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(right: 5.w, top: 5.w),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (selectedIndex2.contains(index)) {
-                                            selectedIndex2.remove(index);
-                                          } else {
-                                            // widget.onToggleFavorite(widget.data[index]);
-                                            selectedIndex2.add(index);
-                                          }
-                                        });
-                                      },
-                                      child: selectedIndex2.contains(index)
-                                          ? ShaderMask(
-                                              shaderCallback: (Rect bounds) {
-                                                return const LinearGradient(
-                                                  colors: [
-                                                    Color(0xFF9A96F5),
-                                                    Color(0xFF00E0FF),
-                                                  ],
-                                                ).createShader(bounds);
-                                              },
-                                              child: SvgPicture.asset(
-                                                'assets/logo/heart (1).svg',
-                                                width: 20.w,
-                                                height: 20.h,
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          : SvgPicture.asset(
-                                              'assets/logo/heart.svg',
-                                              width: 20.w,
-                                              height: 20.h,
-                                            ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const Spacer(), // Add Spacer to push the content below to the bottom
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 10.w,
-                                  ), //new
-                                  selectedIndex.contains(index)
-                                      ? ShaderMask(
-                                          shaderCallback: (Rect bounds) {
-                                            return const LinearGradient(
-                                              colors: [
-                                                Color(0xFF9A96F5),
-                                                Color(0xFF00E0FF),
-                                              ],
-                                            ).createShader(bounds);
-                                          },
-                                          child: SvgPicture.asset(
-                                            'assets/logo/Vector.svg',
-                                            width: 16.h,
-                                            height: 16.w,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : SvgPicture.asset(
-                                          'assets/logo/Vector (1).svg',
-                                          width: 16.h,
-                                          height: 16.w,
-                                        ),
-                                  SizedBox(
-                                    width: 3.w,
-                                  ),
-                                  // Text(
-                                  //   softWrap: true,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  //   maxLines: null,
-                                  //   AppDataBase.data[index].thaiName,
-                                  //   style: GoogleFonts.prompt(
-                                  //     fontSize: 10.sp,
-                                  //     color: Colors.white,
-                                  //     fontWeight: FontWeight.w500,
-                                  //   ),
-                                  // ), /////old
-                                  Expanded(
-                                      child: Text(
-                                    // AppDataBase.data[index].thaiName, //old
-                                    data.thaiName,
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 10.sp,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )), ////////new
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                    ),
+                    borderRadius: BorderRadius.circular(8.r),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        // AppDataBase.data[index].squareImage, //old
+                        data.squareImage, //new
                       ),
-                      // Text(
-                      //   softWrap: true,
-                      //   overflow: TextOverflow.ellipsis,
-                      //   maxLines: null,
-                      //   widget.data[index].name,
-                      //   style: GoogleFonts.prompt(
-                      //     fontSize: 12.sp,
-                      //     color: Colors.black,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 10, // new
+                        spreadRadius: 1, // new
+                        color: selectedIndex.contains(index)
+                            // ? Colors.blue.withOpacity(0.5) //old
+                            ? const Color(0xFF9340FF).withOpacity(0.6) //new
+                            : Colors.transparent,
+                        // offset: const Offset(0, 2), //old
+                        offset: const Offset(0, 4), //new
+                      ),
                     ],
                   ),
+                  child: Container(
+                    //////new
+                    width: 100.w,
+                    height: 113.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.r),
+                      gradient: LinearGradient(
+                        begin: const Alignment(1, 1),
+                        colors: [
+                          Colors.black.withOpacity(0.9),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ), ////refector container
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: 5.w, top: 5.w, left: 5.w),
+                              child: selectedIndex.contains(index)
+                                  ? Container(
+                                      width: 31.w,
+                                      height: 17.h,
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF9A96F5),
+                                            Color(0xFF00E0FF)
+                                          ],
+                                        ),
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      child: Center(
+                                        child: Text('เลือก',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontStyle: GoogleFonts.prompt()
+                                                  .fontStyle,
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.bold,
+                                            )),
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.check,
+                                      color: Colors.transparent,
+                                    ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 5.w, top: 5.w),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (selectedIndexFavorites
+                                        .contains(index)) {
+                                      ///////new
+                                      selectedIndexFavorites
+                                          .remove(index); ///////new
+                                    } else {
+                                      // widget.onToggleFavorite(widget.data[index]);
+                                      selectedIndexFavorites
+                                          .add(index); ///////new
+                                          print("selectedIndexFavorites: $selectedIndexFavorites");
+                                    }
+                                  });
+                                },
+                                child: selectedIndexFavorites
+                                        .contains(index) ///////new
+                                    ? ShaderMask(
+                                        shaderCallback: (Rect bounds) {
+                                          return const LinearGradient(
+                                            colors: [
+                                              Color(0xFF9A96F5),
+                                              Color(0xFF00E0FF),
+                                            ],
+                                          ).createShader(bounds);
+                                        },
+                                        child: SvgPicture.asset(
+                                          'assets/logo/heart (1).svg',
+                                          width: 20.w,
+                                          height: 20.h,
+                                          // color: Colors.white, //// ไม่ได้ใช้
+                                        ),
+                                      )
+                                    : SvgPicture.asset(
+                                        'assets/logo/heart.svg',
+                                        width: 20.w,
+                                        height: 20.h,
+                                      ),
+                              ),
+                            )
+                          ],
+                        ),
+                        const Spacer(), // Add Spacer to push the content below to the bottom
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 10.w,
+                            ), //new
+                            selectedIndex.contains(index)
+                                ? ShaderMask(
+                                    shaderCallback: (Rect bounds) {
+                                      return const LinearGradient(
+                                        colors: [
+                                          Color(0xFF9A96F5),
+                                          Color(0xFF00E0FF),
+                                        ],
+                                      ).createShader(bounds);
+                                    },
+                                    child: SvgPicture.asset(
+                                      'assets/logo/Vector.svg',
+                                      width: 16.h,
+                                      height: 16.w,
+                                      // color: Colors.white, //// ไม่ได้ใช้
+                                    ),
+                                  )
+                                : SvgPicture.asset(
+                                    'assets/logo/Vector (1).svg',
+                                    width: 16.h,
+                                    height: 16.w,
+                                  ),
+                            SizedBox(
+                              width: 3.w,
+                            ),
+                            // Text(
+                            //   softWrap: true,
+                            //   overflow: TextOverflow.ellipsis,
+                            //   maxLines: null,
+                            //   AppDataBase.data[index].thaiName,
+                            //   style: GoogleFonts.prompt(
+                            //     fontSize: 10.sp,
+                            //     color: Colors.white,
+                            //     fontWeight: FontWeight.w500,
+                            //   ),
+                            // ), /////old
+                            Expanded(
+                                child: Text(
+                              // AppDataBase.data[index].thaiName, //old
+                              data.thaiName,
+                              style: GoogleFonts.prompt(
+                                fontSize: 10.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )), ////////new
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
-      ),
+                // Text(
+                //   softWrap: true,
+                //   overflow: TextOverflow.ellipsis,
+                //   maxLines: null,
+                //   widget.data[index].name,
+                //   style: GoogleFonts.prompt(
+                //     fontSize: 12.sp,
+                //     color: Colors.black,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
