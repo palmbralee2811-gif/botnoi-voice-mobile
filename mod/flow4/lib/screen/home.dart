@@ -1,0 +1,936 @@
+// import 'dart:ffi';
+
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flow3/filters/languagedrawer.dart';
+import 'package:flow3/views/About_us.dart';
+import 'package:flow3/views/FAQ.dart';
+import 'package:flow3/views/MyAccount.dart';
+import 'package:flow3/views/Suggestions.dart';
+import 'package:flow3/widgets/CategorySetting.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/screen/login.dart';
+// import 'package:flow3/widgets/CategorySetting.dart';
+import 'package:flow3/widgets/CategoryVoice.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flow3/firebase/login_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+// import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  final int maxLength = 1000;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final TextEditingController _textController = TextEditingController();
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  int _selectedPageIndexVoice = 0;
+  int _selectedPageIndexSetting = 0;
+  int _inputtext = 0;
+  // int _button = 0;
+
+  void _selectPageVoice(int index) {
+    setState(() {
+      _selectedPageIndexVoice = index;
+    });
+  }
+
+  void _selectPageSetting(int index) {
+    setState(() {
+      _selectedPageIndexSetting = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // final user = FirebaseAuth.instance.currentUser;
+    double screenSizewidth = MediaQuery.of(context).size.width;
+    double screenSizeheight = MediaQuery.of(context).size.height;
+
+    double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
+    double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
+    int currentIndex = 0;
+    final screenHeightOpen = screenSizeheightInputtextOpen;
+    final maxLinesopen = (screenHeightOpen / 65).floor();
+    final screenHeightClose = screenSizeheightInputtextOpen;
+    final maxLinesclose = (screenHeightClose / 180).floor();
+    bool _showClearIcon = false;
+
+    if (_selectedPageIndexVoice == 1) {
+      _inputtext = 1;
+      // _button = 1;
+      if (_selectedPageIndexSetting == 1) {
+        _selectedPageIndexVoice = 0;
+        _selectedPageIndexSetting = 1;
+      }
+    }
+    if (_selectedPageIndexSetting == 2) {
+      _selectedPageIndexVoice = 1;
+      _selectedPageIndexSetting = 0;
+    }
+    if (_selectedPageIndexVoice == 2) {
+      _inputtext = 0;
+    }
+    if (_selectedPageIndexSetting == 1) {
+      _inputtext = 1;
+    }
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      drawer: Drawer(
+        elevation: 16,
+        backgroundColor: Colors.white,
+        shadowColor: Colors.black,
+        child: ListView(
+          children: <Widget>[
+            ListTile(
+              contentPadding:
+                  EdgeInsets.only(left: 30.w, top: 15.w, right: 30.w),
+              title: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        // backgroundImage: NetworkImage(user!.photoURL!),
+                        backgroundColor: Colors.black,
+                        radius: 20.0.r,
+                        child: SvgPicture.asset(
+                          'assets/logo/language.svg',
+                          width: 40.0.w,
+                          height: 40.0.h,
+                        ),
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          textStyle: TextStyle(fontSize: 10.sp),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.menu_rounded,
+                          color: const Color(0xFF323130),
+                          size: 32.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    // user.displayName!,
+                    'nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+                    style: GoogleFonts.prompt(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF323130),
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    maxLines: 3,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          // user.email!,
+                          'อีเมลsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
+                          style: GoogleFonts.prompt(
+                            fontSize: 14.sp,
+                            color: const Color(0xFF323130),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
+              leading: GradientIcon(
+                icon: Icons.account_circle_outlined,
+                size: 24.sp,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              title: GradientText(
+                text: 'Profile',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFA19F9D),
+                ),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                ),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const MyAccount()));
+                print("My Account");
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.credit_card_rounded,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'Packages',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.question_mark_outlined,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'FAQ',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const FAQ()));
+                print("FAQ");
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.email_outlined,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'Suggestions',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Suggestions()));
+                print("Suggestions");
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+              leading: Icon(
+                Icons.credit_card_sharp,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'About Us',
+                style: GoogleFonts.prompt(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const About_us()));
+                print("About Us");
+              },
+            ),
+            SizedBox(height: 10.h),
+            Opacity(
+              opacity: 0.5, // 50% opacity
+              child: Container(
+                width: 200.w,
+                height: screenSizeheight * 0.05.h,
+                color: Colors.transparent,
+              ),
+            ),
+            const Languagedrawer(),
+            SizedBox(height: 69.h),
+            // ElevatedButton.icon(
+            //   style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+            //   onPressed: () {
+            //     Navigator.pushAndRemoveUntil(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => const LoginPage()),
+            //         (Route<dynamic> route) => false);
+            //   },
+            //   label: Text(
+            //     'ออกจากระบบ',
+            //     style: GoogleFonts.prompt(
+            //       color: const Color(0xFF323130),
+            //       fontSize: 16.sp,
+            //       fontWeight: FontWeight.w600,
+            //     ),
+            //   ),
+            //   // icon: Icon(Icons.logout,
+            //   //     color: const Color(0xFF323130), size: 20.sp)
+            // ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              padding: EdgeInsets.only(left: 15.w),
+              icon: Icon(
+                Icons.menu_rounded,
+                size: 32.sp,
+                color: const Color(0xFF323130),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
+        backgroundColor: const Color(0xFFFFFFFF),
+        // backgroundColor: Colors.black,
+        title: const Appbar(),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            width: screenSizewidth,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            height: _inputtext == 1
+                ? screenSizeheightInputtextClose * 0.30
+                : screenSizeheightInputtextOpen * 0.59,
+            child: Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: 288.w,
+                      decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5.0,
+                          ),
+                        ],
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+                        child: Column(
+                          children: [
+                            TextField(
+                              cursorColor: const Color(0xFF000000),
+                              style: GoogleFonts.prompt(
+                                  fontSize: 14.sp,
+                                  color: const Color(0xFF323130)),
+                              minLines: _inputtext == 1
+                                  ? maxLinesclose
+                                  : maxLinesopen,
+                              maxLines: _inputtext == 1
+                                  ? maxLinesclose
+                                  : maxLinesopen,
+                              keyboardType: TextInputType.multiline,
+                              controller: _textController,
+                              onChanged: (text) {
+                                if (_textController.text.length >
+                                    widget.maxLength) {
+                                  _textController.text = _textController.text
+                                      .substring(0, widget.maxLength);
+                                  _textController.selection =
+                                      TextSelection.fromPosition(
+                                    TextPosition(
+                                        offset: _textController.text.length),
+                                  );
+                                }
+                                setState(() {
+                                  _showClearIcon =
+                                      _textController.text.isNotEmpty;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter text to generate voice . . .',
+                                hintStyle: TextStyle(
+                                  color: const Color(0xFFA19F9D),
+                                  fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                                      .fontStyle,
+                                ),
+                                hintMaxLines: 1,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 25.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      _showClearIcon ==
+                                              _textController.text.isNotEmpty
+                                          ? Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    textStyle: TextStyle(
+                                                        fontSize: 10.sp),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      // _showClearIcon =
+                                                      //     false; // To update the counter
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.close_sharp,
+                                                    size: 20.sp,
+                                                    color: Colors.transparent,
+                                                  )),
+                                            )
+                                          : Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 1.w),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10.sp),
+                                                ),
+                                                onPressed: () {
+                                                  _textController.clear();
+                                                  setState(() {
+                                                    // _showClearIcon =
+                                                    //     false; // To update the counter
+                                                  });
+                                                },
+                                                child: GradientIcon(
+                                                  icon: Icons.close_sharp,
+                                                  size: 20.sp,
+                                                  gradient:
+                                                      const LinearGradient(
+                                                    colors: [
+                                                      Color(0xFF9340FF),
+                                                      Color(0xFF34BDFA)
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      GradientText(
+                                        text: '${_textController.text.length}',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFFA19F9D),
+                                        ),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF9340FF),
+                                            Color(0xFF34BDFA)
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        ' / ${widget.maxLength}',
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFFA19F9D),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: const Color(0xFFFFFFFF),
+              height: _inputtext == 1
+                  ? screenSizeheight * 0.50
+                  : screenSizeheight * 0.26,
+              child: Column(children: [
+                InkWell(
+                    onTap: () {
+                      if (_selectedPageIndexVoice == 0) {
+                        _selectPageVoice(1);
+                      } else if (_selectedPageIndexVoice == 1) {
+                        _selectPageVoice(2);
+                      } else if (_selectedPageIndexVoice == 2) {
+                        _selectPageVoice(1);
+                      }
+                    },
+                    child: Selectvoice(
+                        screenSizeheight: screenSizeheight,
+                        selectedPageIndexVoice: _selectedPageIndexVoice)),
+                if (_selectedPageIndexVoice == 1) ...[const CategoryVoice()],
+                InkWell(
+                  onTap: () {
+                    if (_selectedPageIndexSetting == 0) {
+                      _selectPageSetting(1);
+                    } else if (_selectedPageIndexSetting == 1) {
+                      _selectPageSetting(2);
+                    } else if (_selectedPageIndexSetting == 2) {
+                      _selectPageSetting(1);
+                    }
+                  },
+                  child: ButtomSetting(
+                      screenSizeheight: screenSizeheight,
+                      selectedPageIndexSetting: _selectedPageIndexSetting),
+                ),
+                if (_selectedPageIndexSetting == 1) ...[
+                  const CategorySetting()
+                ],
+                Expanded(
+                  child: InkWell(
+                      onTap: () {
+                        /////////////////
+                      },
+                      child: const BuildVoice()),
+                ),
+                Container(
+                    height: screenSizeheight * 0.052.h,
+                    width: 320.w,
+                    color: const Color(0xFF27282B),
+                    child: InkWell(
+                      onTap: () {},
+                      child: currentIndex == 1
+                          ? SvgPicture.asset(
+                              'assets/logo/Property 1=studio, Property 2=deault (2).svg')
+                          : SvgPicture.asset(
+                              'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
+                    ))
+              ]), // 40% of the screen height
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Selectvoice extends StatelessWidget {
+  const Selectvoice({
+    super.key,
+    required this.screenSizeheight,
+    required int selectedPageIndexVoice,
+  }) : _selectedPageIndexVoice = selectedPageIndexVoice;
+
+  final double screenSizeheight;
+  final int _selectedPageIndexVoice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: screenSizeheight * 0.05.h,
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(
+              color: const Color(0xFFE2E3E9),
+              width: 1.w,
+            )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: Text(
+                "Select Voice",
+                style: GoogleFonts.prompt(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+            ),
+            Padding(
+                padding: EdgeInsets.only(right: 20.w),
+                child: _selectedPageIndexVoice == 1
+                    ? Icon(
+                        Icons.expand_less,
+                        color: const Color(0xFF323130),
+                        size: 20.sp,
+                      )
+                    : Icon(
+                        Icons.expand_more,
+                        color: const Color(0xFF323130),
+                        size: 20.sp,
+                      )),
+          ],
+        ));
+  }
+}
+
+class ButtomSetting extends StatelessWidget {
+  const ButtomSetting({
+    super.key,
+    required this.screenSizeheight,
+    required int selectedPageIndexSetting,
+  }) : _selectedPageIndexSetting = selectedPageIndexSetting;
+
+  final double screenSizeheight;
+  final int _selectedPageIndexSetting;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: screenSizeheight * 0.05.h,
+        decoration: BoxDecoration(
+            border: Border.all(
+          color: const Color(0xFFE2E3E9),
+          width: 1.w,
+        )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: Text(
+                "Additional Settings",
+                style: GoogleFonts.prompt(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+            ),
+            Padding(
+                padding: EdgeInsets.only(right: 20.w),
+                child: _selectedPageIndexSetting == 1
+                    ? Icon(
+                        Icons.expand_less,
+                        color: const Color(0xFF323130),
+                        size: 20.sp,
+                      )
+                    : Icon(
+                        Icons.expand_more,
+                        color: const Color(0xFF323130),
+                        size: 20.sp,
+                      )),
+          ],
+        ));
+  }
+}
+
+class Appbar extends StatelessWidget {
+  const Appbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 88.w, top: 5.h),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Image.asset(
+                    'assets/logo/Aboutus_icon.png',
+                    width: 25.w,
+                    height: 25.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 5.w),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 224, 221, 221),
+                                blurRadius: 3.0,
+                              ),
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(width: 5.w),
+                              SizedBox(
+                                height: 25.h,
+                                width: 20.h,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/logo/point.png',
+                                        width: 20.w,
+                                        height: 20.h,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    '100',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF323130),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 5.w),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BuildVoice extends StatefulWidget {
+  const BuildVoice({super.key});
+
+  @override
+  State<BuildVoice> createState() => _BuildVoiceState();
+}
+
+class _BuildVoiceState extends State<BuildVoice> {
+  @override
+  Widget build(BuildContext context) {
+    // double screenSizewidth = MediaQuery.of(context).size.width;
+    // double screenSizeheight = MediaQuery.of(context).size.height;
+
+    return
+        // Container(
+        //   height: screenSizeheight * 0.093.h,
+        //   width: screenSizewidth * 0.78.w,
+        //   decoration: const BoxDecoration(
+        //     color: Colors.white,
+        //   ),
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           // const Spacer(),
+        //           InkWell(
+        //             onTap: () {
+        //               /////////////////////////////////////////////////////////////////////////////////////
+        //             },
+        //             child: Container(
+        //               height: 55.h,
+        //               width: screenSizewidth * 0.7.w,
+        //               decoration: BoxDecoration(
+        //                 boxShadow: const [
+        //                   BoxShadow(
+        //                     color: Colors.black12,
+        //                     blurRadius: 6.0,
+        //                   ),
+        //                 ],
+        //                 borderRadius: BorderRadius.circular(10.r),
+        //                 gradient: const LinearGradient(
+        //                   colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+        //                 ),
+        //               ),
+        //               child:
+        //                   // Row(
+        //                   //     mainAxisAlignment: MainAxisAlignment.center,
+        //                   //     children: [
+        //                   //       Text(
+        //                   //         "สร้างเสียง",
+        //                   //         style: GoogleFonts.prompt(
+        //                   //           fontSize: 16.sp,
+        //                   //           fontWeight: FontWeight.bold,
+        //                   //           color: const Color(0xFFFFFFFF),
+        //                   //         ),
+        //                   //       ),
+        //                   //     ],
+        //                   //   ),
+        //                   // ),
+        //                   GradientButton(
+        //                 text: 'สร้างเสียง',
+        //                 onPressed: () {
+        //                   print('สร้างเสียง');
+        //                 },
+        //               ),
+        //             ),
+        //           )
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // );
+        ///// new version ////
+        Column(
+      children: [
+        const Spacer(),
+        Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: GradientButton(
+            text: 'Generate',
+            onPressed: () {
+              print('สร้างเสียง');
+            },
+          ),
+        ),
+      ],
+    );
+    ////////////////
+  }
+}
+
+class GradientText extends StatelessWidget {
+  final String text;
+
+  final TextStyle style;
+  final Gradient gradient;
+
+  GradientText({
+    required this.text,
+    required this.style,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) {
+        return gradient
+            .createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height));
+      },
+      child: Text(
+        text,
+        style: style.copyWith(color: Colors.white), // text color จะไม่ถูกใช้
+      ),
+    );
+  }
+}
+
+class GradientIcon extends StatelessWidget {
+  final IconData icon;
+  final double size;
+  final Gradient gradient;
+
+  GradientIcon({
+    required this.icon,
+    required this.size,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) {
+        return gradient.createShader(Rect.fromLTWH(0, 0, size, size));
+      },
+      child: Icon(
+        icon,
+        size: size,
+        color: Colors.white, // icon color จะไม่ถูกใช้
+      ),
+    );
+  }
+}
+
+class GradientButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+
+  GradientButton({required this.text, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 290.w,
+      height: 50.h,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+        ),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
+        onPressed: onPressed,
+        child: Text(text,
+            style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600)),
+      ),
+    );
+  }
+}
