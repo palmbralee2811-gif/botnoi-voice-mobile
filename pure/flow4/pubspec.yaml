@@ -52,9 +52,7 @@ dependencies:
   sign_in_button: ^3.0.0
   flutter_localization: ^0.2.0
   easy_localization: ^3.0.7
-   flutter_localizations:
-    sdk: flutter
-  intl: ^0.17.0
+
   
 dev_dependencies:
   flutter_test:
