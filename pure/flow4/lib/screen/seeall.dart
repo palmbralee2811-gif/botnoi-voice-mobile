@@ -177,7 +177,7 @@ class _SeeAllState extends State<SeeAll> {
             children: [
               Container(
                 color: Colors.white,
-                height: 412.h,
+                height: 400.h,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -1,6 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home.dart';
-import 'package:botnoivoice/Screens/SignInScreen/sign_in.dart';
+import 'package:botnoivoice/Screens/LoginScreen/login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

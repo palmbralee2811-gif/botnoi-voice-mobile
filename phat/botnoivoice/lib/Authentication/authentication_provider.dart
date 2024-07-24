@@ -1,48 +1,65 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class Authentication extends ChangeNotifier {
   User? user;
+  String? credits;
   String? response;
   String? jwtToken;
-  // Defind value to Fetch data in private class
-  String? _idTokenWithFirebase;
-  String? _credentialsToken;
-  String? _dataProfileWithToken;
-  String? _allMarketplace;
+  String? credentialsToken;
 
+  final _storage = const FlutterSecureStorage();
+  
   bool get isAuthenticated {
-    return user != null;
+    print("isAuthenticated -> user: $user");
+    return user != null && jwtToken != null && credentialsToken!=null;
   }
 
   Authentication() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    FirebaseAuth.instance.authStateChanges().listen((
+      User? user,
+    ) {
+      print("Printing user details");
       this.user = user;
       notifyListeners();
     });
+    _loadJwtToken();
+    _loadCredentialsToken();
   }
 
-  // Push data in private class to public for other files
-  String? get idTokenWithFirebase => _idTokenWithFirebase;
-  String? get credentialsToken => _credentialsToken;
-  String? get dataProfileWithToken => _dataProfileWithToken;
-  String? get allMarketplace => _allMarketplace;
-
-  // Add a public method to update _dataProfileWithToken
-  void setDataProfileWithToken(String? data) {
-    _dataProfileWithToken = data;
+  Future<void> _loadJwtToken() async {
+    jwtToken = await _storage.read(key: 'jwtToken');
+    print('Loaded JWT Token: $jwtToken');
     notifyListeners();
   }
+
+  Future<void> _saveJwtToken(String token) async {
+    await _storage.write(key: 'jwtToken', value: token);
+    print('Saved JWT Token: $token');
+  }
+  
+  Future<void> _loadCredentialsToken() async {
+    credentialsToken = await _storage.read(key: 'credentialsToken');
+    print('Loaded Credential Token: $credentialsToken');
+    notifyListeners();
+  }
+
+  Future<void> _saveCredentialsToken(String token) async {
+    await _storage.write(key: 'credentialsToken', value: credentialsToken);
+    print('Saved Credential Token: $token');
+  }
+
+
 
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return null;
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -54,16 +71,23 @@ class Authentication extends ChangeNotifier {
 
       if (user != null) {
         final idToken = await user.getIdToken();
+
         if (idToken != null) {
-          _idTokenWithFirebase = await getIdTokenWithFirebase(idToken);
-          // waiting to get data from function
+          await getIdTokenWithFirebase(idToken);
+          print("### START -> signInWithGoogle  ### \n");
+          print("getIdTokenWithFirebase: $idToken");
 
-          print('_idTokenWithFirebase: $_idTokenWithFirebase');
-
-          _dataProfileWithToken = await getProfileWithToken(jwtToken);
-          _credentialsToken = await getCredentialsToken(jwtToken);
-          _allMarketplace = await getAllMarketplace(jwtToken);
-          notifyListeners();
+          if (jwtToken != null) {
+            print("jwtToken: $jwtToken");
+            await _saveJwtToken(jwtToken!);
+            credentialsToken = await getCredentialsToken(jwtToken);
+            await _saveCredentialsToken(credentialsToken!);
+            print("getCredentialsToken: $credentialsToken");
+            await getProfileWithToken(jwtToken);
+            print("getProfileWithToken: $getProfileWithToken");
+            print("### END -> signInWithGoogle ### \n");
+            notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
+          }
         }
       }
 
@@ -74,9 +98,30 @@ class Authentication extends ChangeNotifier {
     }
   }
 
-  Future<String?> getIdTokenWithFirebase(String idToken) async {
-    String url =
-        'https://api-voice-staging.botnoi.ai/api/dashboard/firebase_auth';
+  String? getUserEmail(User? user) {
+    if (user == null) {
+      return null;
+    }
+
+    // Iterate through providerData to find the email
+    for (var userInfo in user.providerData) {
+      if (userInfo.email != null) {
+        return userInfo.email;
+      }
+    }
+
+    return null;
+  }
+
+  Future<String?> getIdTokenWithFirebase(String? idToken) async {
+    print("\n ###### START getIdTokenWithFirebase");
+    if (idToken == null) {
+      print("getIdTokenWithFirebase -> idToken: $idToken");
+    } else {
+      print('getIdTokenWithFirebase -> idToken is empty ');
+    }
+    print(" ###### END getIdTokenWithFirebase \n");
+    String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
 
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
@@ -89,34 +134,39 @@ class Authentication extends ChangeNotifier {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         var message = data['message'];
+
+        // *** START jwtToken ***
         var tokenIndex = message.indexOf('token=');
+
         if (tokenIndex != -1) {
           var tokenStartIndex = tokenIndex + 'token='.length;
           jwtToken = message.substring(tokenStartIndex);
+
           print('jwtToken from getIdTokenWithFirebase: $jwtToken');
+
           return jwtToken;
+
+          // *** END jwtToken ***
         } else {
-          print('Token not found in getIdTokenWithFirebase: $message');
+          print('Token not found -> getIdTokenWithFirebase: $message');
         }
-        //print('Response data from _callApiWithToken: $data');
       } else {
         print(
-            'Failed to load data from getIdTokenWithFirebase. Status code: ${response.statusCode}');
+            'Failed to load data -> getIdTokenWithFirebase: Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error in getIdTokenWithFirebase: $e');
+      print('Error -> getIdTokenWithFirebase: $e');
     }
     return null;
   }
 
   Future<String?> getProfileWithToken(String? jwtToken) async {
     if (jwtToken == null) {
-      print('jwtToken is null');
+      print('getProfileWithToken -> jwtToken is null');
       return null;
     }
 
-    String url =
-        'https://api-voice-staging.botnoi.ai/api/dashboard/get_profile';
+    String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json'
@@ -127,29 +177,34 @@ class Authentication extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        // print('Response data from _getProfileWithToken: $data');
+        print('Response data from getProfileWithToken: $data');
 
-        var credits = data['data']['credits']; // ดึงข้อมูล credits จาก data
-        print('credits: $credits');
+        // เก็บค่า credits ในตัวแปรของ class
+        credits = data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
+        print('getProfileWithToken -> credits: $credits');
 
-        return credits.toString();
+        notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
+        return credits;
       } else {
         print(
-            'Failed to load profile from _getProfileWithToken. Status code: ${response.statusCode}');
+            'Failed to load profile from getProfileWithToken. Status code: ${response.statusCode}');
+            return null;
       }
     } catch (e) {
-      print('Error in _getProfileWithToken: $e');
+      print('Error in getProfileWithToken: $e');
     }
+
+    print('getProfileWithToken -> Returning null');
     return null;
   }
 
   Future<String?> getCredentialsToken(String? jwtToken) async {
     if (jwtToken == null) {
-      print('jwtToken is null');
+      print('getCredentialsToken -> jwtToken is null');
       return null;
     }
 
-    String url = 'https://api-voice-staging.botnoi.ai/api/service/get_token';
+    String url = 'https://api-voice.botnoi.ai/api/service/get_token';
     Map<String, dynamic> payload = {};
 
     Map<String, String> headers = {
@@ -166,10 +221,14 @@ class Authentication extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        var credentialsToken = data['data'][0]['token']; // ดึง token จาก data
-        //print('data -> _getCredentialsToken: $data');
+        print('Response data from getCredentialsToken: $data');
+
+        credentialsToken = data['data'][0]['token'].toString(); // ดึง token จาก data
         print('Credentials Token: $credentialsToken');
+
+        notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credentialsToken; // Return the token here
+
       } else {
         print(
             'Failed to load Credentials-Token. Status code: ${response.statusCode}');
@@ -179,49 +238,18 @@ class Authentication extends ChangeNotifier {
       print('Error fetching Credentials-Token: $e');
       return null;
     }
-  }
-
-  // get all sound
-  Future<String?> getAllMarketplace(String? jwtToken) async {
-    if (jwtToken == null) {
-      print('jwtToken is null');
-      return null;
-    }
-
-    String url =
-        'https://api-voice-staging.botnoi.ai/api/service/get_all_marketplace';
-
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
-      'Content-Type': 'application/json'
-    };
-
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        // แปลงข้อมูลที่ได้ให้เป็น UTF-8 ก่อนที่จะ decode
-        var utf8Data = utf8.decode(response.bodyBytes);
-        var data = json.decode(utf8Data);
-        print('getAllMarketplace: $data');
-        return utf8Data;
-      } else {
-        print(
-            'Failed to load Credentials-Token. Status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching Credentials-Token: $e');
-    }
-    return null;
   }
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
+    user = null;
+    jwtToken = null;
+    credentialsToken = null;
+    credits = null;
+    await _storage.delete(key: 'jwtToken');
+    await _storage.delete(key: 'credentialsToken');
+    notifyListeners();
   }
   
 }
