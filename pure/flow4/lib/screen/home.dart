@@ -182,9 +182,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () {
-               Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const MyAccount()));
-                  print("My Account");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const MyAccount()));
+                print("My Account");
               },
             ),
             ListTile(
@@ -220,8 +220,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const FAQ()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const FAQ()));
                 print("FAQ");
               },
             ),
@@ -271,13 +271,13 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10.h),
             Opacity(
-                          opacity: 0.5, // 50% opacity
-                          child: Container(
-            width: 200.w,
-            height: screenSizeheight * 0.05.h,
-            color: Colors.transparent,
-                          ),
-                        ),
+              opacity: 0.5, // 50% opacity
+              child: Container(
+                width: 200.w,
+                height: screenSizeheight * 0.05.h,
+                color: Colors.transparent,
+              ),
+            ),
             const Languagedrawer(),
             SizedBox(height: 69.h),
             // ElevatedButton.icon(
@@ -529,7 +529,7 @@ class _HomePageState extends State<HomePage> {
                       _selectPageSetting(1);
                     }
                   },
-                  child: Setting(
+                  child: ButtomSetting(
                       screenSizeheight: screenSizeheight,
                       selectedPageIndexSetting: _selectedPageIndexSetting),
                 ),
@@ -616,8 +616,8 @@ class Selectvoice extends StatelessWidget {
   }
 }
 
-class Setting extends StatelessWidget {
-  const Setting({
+class ButtomSetting extends StatelessWidget {
+  const ButtomSetting({
     super.key,
     required this.screenSizeheight,
     required int selectedPageIndexSetting,
@@ -631,7 +631,7 @@ class Setting extends StatelessWidget {
     return Container(
         height: screenSizeheight * 0.05.h,
         decoration: BoxDecoration(
-            color: Colors.transparent,
+        
             border: Border.all(
               color: const Color(0xFFE2E3E9),
               width: 1.w,
@@ -680,7 +680,7 @@ class Appbar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 88.w,top: 5.h),
+                padding: EdgeInsets.only(left: 88.w, top: 5.h),
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   child: Image.asset(
@@ -718,8 +718,7 @@ class Appbar extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(2),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Image.asset(
                                         'assets/logo/point.png',
@@ -733,7 +732,7 @@ class Appbar extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    '100000000',
+                                    '100',
                                     style: GoogleFonts.prompt(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
@@ -769,70 +768,86 @@ class BuildVoice extends StatefulWidget {
 class _BuildVoiceState extends State<BuildVoice> {
   @override
   Widget build(BuildContext context) {
-    double screenSizewidth = MediaQuery.of(context).size.width;
-    double screenSizeheight = MediaQuery.of(context).size.height;
+    // double screenSizewidth = MediaQuery.of(context).size.width;
+    // double screenSizeheight = MediaQuery.of(context).size.height;
 
-    return Container(
-      height: screenSizeheight * 0.093.h,
-      width: screenSizewidth * 0.78.w,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // const Spacer(),
-              InkWell(
-                onTap: () {
-                  /////////////////////////////////////////////////////////////////////////////////////
-                },
-                child: 
-                Container(
-                  height: 55.h,
-                  width: screenSizewidth * 0.7.w,
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6.0,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(10.r),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                    ),
-                  ),
-                  child: 
-                // Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       Text(
-                //         "สร้างเสียง",
-                //         style: GoogleFonts.prompt(
-                //           fontSize: 16.sp,
-                //           fontWeight: FontWeight.bold,
-                //           color: const Color(0xFFFFFFFF),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                GradientButton(
-                  text: 'สร้างเสียง',
-                  onPressed: () {
-                    print('สร้างเสียง');
-                  },
-                ),
-              ),
-              )
-            ],
+    return
+        // Container(
+        //   height: screenSizeheight * 0.093.h,
+        //   width: screenSizewidth * 0.78.w,
+        //   decoration: const BoxDecoration(
+        //     color: Colors.white,
+        //   ),
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           // const Spacer(),
+        //           InkWell(
+        //             onTap: () {
+        //               /////////////////////////////////////////////////////////////////////////////////////
+        //             },
+        //             child: Container(
+        //               height: 55.h,
+        //               width: screenSizewidth * 0.7.w,
+        //               decoration: BoxDecoration(
+        //                 boxShadow: const [
+        //                   BoxShadow(
+        //                     color: Colors.black12,
+        //                     blurRadius: 6.0,
+        //                   ),
+        //                 ],
+        //                 borderRadius: BorderRadius.circular(10.r),
+        //                 gradient: const LinearGradient(
+        //                   colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+        //                 ),
+        //               ),
+        //               child:
+        //                   // Row(
+        //                   //     mainAxisAlignment: MainAxisAlignment.center,
+        //                   //     children: [
+        //                   //       Text(
+        //                   //         "สร้างเสียง",
+        //                   //         style: GoogleFonts.prompt(
+        //                   //           fontSize: 16.sp,
+        //                   //           fontWeight: FontWeight.bold,
+        //                   //           color: const Color(0xFFFFFFFF),
+        //                   //         ),
+        //                   //       ),
+        //                   //     ],
+        //                   //   ),
+        //                   // ),
+        //                   GradientButton(
+        //                 text: 'สร้างเสียง',
+        //                 onPressed: () {
+        //                   print('สร้างเสียง');
+        //                 },
+        //               ),
+        //             ),
+        //           )
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // );
+        ///// new version ////
+        Column(
+      children: [
+        const Spacer(),
+        Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: GradientButton(
+            text: 'สร้างเสียง',
+            onPressed: () {
+              print('สร้างเสียง');
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
+    ////////////////
   }
 }
 
@@ -888,6 +903,7 @@ class GradientIcon extends StatelessWidget {
     );
   }
 }
+
 class GradientButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -897,7 +913,7 @@ class GradientButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: 290.w,
       height: 50.h,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -911,7 +927,11 @@ class GradientButton extends StatelessWidget {
           shadowColor: Colors.transparent,
         ),
         onPressed: onPressed,
-        child: Text(text, style: GoogleFonts.prompt(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600)),
+        child: Text(text,
+            style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600)),
       ),
     );
   }

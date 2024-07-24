@@ -13,6 +13,7 @@ import 'package:flow3/filters/sex.dart';
 import 'package:flow3/filters/voice.dart';
 // import 'package:flow3/model/favoritemodel.dart';
 import 'package:flow3/widgets/favoriteVoice.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flow3/data/data.dart';
 import 'package:flutter/widgets.dart';
@@ -145,14 +146,15 @@ class _VoiceWidgetState extends State<VoiceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 140.h,
-      width: widget.screenSizewidth * 0.95.w,
+    return Container(
+     
+      height: 127.h,
+      width: 320.w,
       child: GridView.builder(
         itemCount: widget.data.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          mainAxisExtent: 150,
+          mainAxisExtent: 125,
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
@@ -176,20 +178,25 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                   child: Column(
                     children: [
                       Container(
-                        width: 100.w,
-                        height: 113.h,
+                        width: 81.w,
+                        height: 103.h,
                         decoration: BoxDecoration(
                           border: GradientBoxBorder(
                             width: 3.w,
                             gradient: selectedIndex.contains(index)
-                                ? const LinearGradient(colors: [
-                                    Color(0xFF9A96F5),
-                                    Color(0xFF00E0FF)
-                                  ])
-                                : const LinearGradient(colors: [
-                                    Colors.transparent,
-                                    Colors.transparent
-                                  ]),
+                                ? const LinearGradient(
+                                    colors: [
+                                      Color(0xFF9A96F5),
+                                      Color(0xFF00E0FF)
+                                    ],
+                                  )
+                                : LinearGradient(
+                                    colors: [
+                                      Colors.black.withOpacity(0.9),
+                                      Colors.transparent,
+                                    ],
+                                    begin: const Alignment(1, 1),
+                                  ),
                           ),
                           borderRadius: BorderRadius.circular(8.r),
                           image: DecorationImage(
@@ -200,141 +207,158 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                           ),
                           boxShadow: [
                             BoxShadow(
+                              blurRadius: 10,
+                              spreadRadius: 1,
                               color: selectedIndex.contains(index)
-                                  ? Colors.blue.withOpacity(0.5)
+                                  ? const Color(0xFF9340FF).withOpacity(0.6)
                                   : Colors.transparent,
-                              offset: const Offset(0, 2),
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      right: 5.w, top: 5.w, left: 5.w),
-                                  child: selectedIndex.contains(index)
-                                      ? Container(
-                                          width: 31.w,
-                                          height: 17.h,
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                Color(0xFF9A96F5),
-                                                Color(0xFF00E0FF)
-                                              ],
-                                            ),
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(8.r),
-                                          ),
-                                          child: Center(
-                                            child: Text('เลือก',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontStyle:
-                                                      GoogleFonts.prompt()
-                                                          .fontStyle,
-                                                  fontSize: 10.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                )),
-                                          ),
-                                        )
-                                      : const Icon(
-                                          Icons.check,
-                                          color: Colors.transparent,
-                                        ),
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 5.w, top: 5.w),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (selectedIndex2.contains(index)) {
-                                          selectedIndex2.remove(index);
-                                        } else {
-                                          // widget.onToggleFavorite(widget.data[index]);
-                                          selectedIndex2.add(index);
-                                        }
-                                      });
-                                    },
-                                    child: selectedIndex2.contains(index)
-                                        ? ShaderMask(
-                                            shaderCallback: (Rect bounds) {
-                                              return const LinearGradient(
+                        child: Container(
+                          width: 100.w,
+                          height: 113.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.r),
+                            gradient: LinearGradient(
+                              begin: const Alignment(1, 1),
+                              colors: [
+                                Colors.black.withOpacity(0.9),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: 5.w, top: 5.w, left: 5.w),
+                                    child: selectedIndex.contains(index)
+                                        ? Container(
+                                            width: 31.w,
+                                            height: 17.h,
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
                                                 colors: [
                                                   Color(0xFF9A96F5),
-                                                  Color(0xFF00E0FF),
+                                                  Color(0xFF00E0FF)
                                                 ],
-                                              ).createShader(bounds);
-                                            },
-                                            child: SvgPicture.asset(
-                                              'assets/logo/heart (1).svg',
-                                              width: 20.w,
-                                              height: 20.h,
+                                              ),
                                               color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
+                                            ),
+                                            child: Center(
+                                              child: Text('เลือก',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontStyle:
+                                                        GoogleFonts.prompt()
+                                                            .fontStyle,
+                                                    fontSize: 10.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  )),
                                             ),
                                           )
-                                        : SvgPicture.asset(
-                                            'assets/logo/heart.svg',
-                                            width: 20.w,
-                                            height: 20.h,
+                                        : const Icon(
+                                            Icons.check,
+                                            color: Colors.transparent,
                                           ),
                                   ),
-                                )
-                              ],
-                            ),
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 15.w,
-                                ),
-                                selectedIndex.contains(index)
-                                    ? ShaderMask(
-                                        shaderCallback: (Rect bounds) {
-                                          return const LinearGradient(
-                                            colors: [
-                                              Color(0xFF9A96F5),
-                                              Color(0xFF00E0FF),
-                                            ],
-                                          ).createShader(bounds);
-                                        },
-                                        child: SvgPicture.asset(
-                                          'assets/logo/Vector.svg',
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(right: 5.w, top: 5.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (selectedIndex2.contains(index)) {
+                                            selectedIndex2.remove(index);
+                                          } else {
+                                            // widget.onToggleFavorite(widget.data[index]);
+                                            selectedIndex2.add(index);
+                                          }
+                                        });
+                                      },
+                                      child: selectedIndex2.contains(index)
+                                          ? ShaderMask(
+                                              shaderCallback: (Rect bounds) {
+                                                return const LinearGradient(
+                                                  colors: [
+                                                    Color(0xFF9A96F5),
+                                                    Color(0xFF00E0FF),
+                                                  ],
+                                                ).createShader(bounds);
+                                              },
+                                              child: SvgPicture.asset(
+                                                'assets/logo/heart (1).svg',
+                                                width: 20.w,
+                                                height: 20.h,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : SvgPicture.asset(
+                                              'assets/logo/heart.svg',
+                                              width: 20.w,
+                                              height: 20.h,
+                                            ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  selectedIndex.contains(index)
+                                      ? ShaderMask(
+                                          shaderCallback: (Rect bounds) {
+                                            return const LinearGradient(
+                                              colors: [
+                                                Color(0xFF9A96F5),
+                                                Color(0xFF00E0FF),
+                                              ],
+                                            ).createShader(bounds);
+                                          },
+                                          child: SvgPicture.asset(
+                                            'assets/logo/Vector.svg',
+                                            width: 16.h,
+                                            height: 16.w,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : SvgPicture.asset(
+                                          'assets/logo/Vector (1).svg',
                                           width: 16.h,
                                           height: 16.w,
-                                          color: Colors.white,
                                         ),
-                                      )
-                                    : SvgPicture.asset(
-                                        'assets/logo/Vector (1).svg',
-                                        width: 16.h,
-                                        height: 16.w,
-                                      ),
-                                SizedBox(
-                                  width: 3.w,
-                                ),
-                                Expanded(
-                                  child: AutoSizeText(
-                                    widget.data[index].name,
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 10.sp,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible,
-                                    maxLines: 2,
+                                  SizedBox(
+                                    width: 3.w,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  Expanded(
+                                    child: AutoSizeText(
+                                      widget.data[index].name,
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 10.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
