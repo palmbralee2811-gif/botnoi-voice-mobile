@@ -1,6 +1,10 @@
+import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/LoginScreen/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({super.key});
@@ -10,8 +14,14 @@ class MyAccount extends StatefulWidget {
 }
 
 class _MyAccountState extends State<MyAccount> {
+
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Authentication>(context, listen: false);
+    // แสดง email ผู้ใช้งาน ปัจจุบัน
+    User? user = FirebaseAuth.instance.currentUser;
+    String? email = auth.getUserEmail(user);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -43,10 +53,10 @@ class _MyAccountState extends State<MyAccount> {
           children: [
             UserInfoRow(
               title: 'ชื่อผู้ใช้',
-              value: 'xxxxxx',
+              value: '${auth.user!.displayName}',
             ),
-            UserInfoRow(title: 'UID', value: 'xxxxxxx'),
-            UserInfoRow(title: 'อีเมล', value: 'XXXXXX@gmail.com'),
+            UserInfoRow(title: 'UID', value: ' 3087755e-b0fa-5e07-937d-4ec4846f3987'),
+            UserInfoRow(title: 'อีเมล', value: ' ${email ?? ' No email found'}'),
             Row(
               children: [
                 Text(
@@ -70,8 +80,15 @@ class _MyAccountState extends State<MyAccount> {
             const Spacer(),
             GradientButton(
               text: 'ออกจากระบบ',
-              onPressed: () {
-                print('Logout');
+              onPressed: () async {
+                await auth.signOut();
+                if (!context.mounted) return;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 8),
@@ -112,7 +129,9 @@ class UserInfoRow extends StatelessWidget {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130))),
-          Text(value, style: GoogleFonts.prompt(fontSize: 14.sp,color: const Color(0xFFBBBFC4))),
+          Text(value,
+              style: GoogleFonts.prompt(
+                  fontSize: 14.sp, color: const Color(0xFFBBBFC4))),
         ],
       ),
     );

@@ -1,4 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/AcceptScreen/PrivacyPolicy.dart';
+import 'package:botnoivoice/Screens/AcceptScreen/TremsofService.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -275,12 +277,14 @@ class _LoginScreenState extends State<LoginScreen> {
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    text: 'I agree that I have read and accepted the ',
+                    // text: 'I agree that I have read and accepted the ',
+                    text:
+                        'By continuing, you are indicating that you accept our ',
                     style: GoogleFonts.prompt(
                         fontSize: 14, color: const Color(0xFF605E5C)),
                     children: <TextSpan>[
                       TextSpan(
-                        text: 'Terms of USE',
+                        text: 'Terms of Service',
                         style: GoogleFonts.prompt(
                           fontSize: 14,
                           color: Colors.blue,
@@ -288,6 +292,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const TermsofServiceScreen(),
+                              ),
+                            );
                             print("Terms of USE tapped");
                           },
                       ),
@@ -297,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 14, color: const Color(0xFF605E5C)),
                       ),
                       TextSpan(
-                        text: 'Private Policy',
+                        text: 'Private Policy.',
                         style: GoogleFonts.prompt(
                           fontSize: 14,
                           color: Colors.blue,
@@ -305,6 +314,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const PrivacyPolicyScreen(),
+                              ),
+                            );
                             print("Private Policy tapped");
                           },
                       ),
