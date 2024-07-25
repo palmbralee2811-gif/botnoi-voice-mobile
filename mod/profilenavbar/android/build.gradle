@@ -16,14 +16,14 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-android {
-    compileSdkVersion 34
-    defaultConfig {
-        applicationId "com.example.yourapp"
-        minSdkVersion 16
-        //noinspection OldTargetApi
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
-    }
-}
+// android {
+//     compileSdkVersion 34
+//     defaultConfig {
+//         applicationId "com.example.yourapp"
+//         minSdkVersion 16
+//         //noinspection OldTargetApi
+//         targetSdkVersion 33
+//         versionCode 1
+//         versionName "1.0"
+//     }
+// }
