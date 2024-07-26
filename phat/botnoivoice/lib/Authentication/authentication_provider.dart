@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:botnoivoice/model/models.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:botnoivoice/model/models.dart';
 class Authentication extends ChangeNotifier {
   User? user;
   String? credits;
@@ -12,6 +13,10 @@ class Authentication extends ChangeNotifier {
   String? jwtToken;
   String? credentialsToken;
 
+  List<ListProject> listProjects = [];
+  List<Map<String, dynamic>> _textList = [];
+  String url = 'api-voice.botnoi.ai';
+  
   final _storage = const FlutterSecureStorage();
   
   bool get isAuthenticated {
@@ -29,6 +34,12 @@ class Authentication extends ChangeNotifier {
     });
     _loadJwtToken();
     _loadCredentialsToken();
+  }
+  Future<void> loadAuthStatus() async {
+    await Future.wait([
+      _loadJwtToken(),
+      _loadCredentialsToken(),
+    ]);
   }
 
   Future<void> _loadJwtToken() async {
@@ -171,7 +182,8 @@ class Authentication extends ChangeNotifier {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json'
     };
-
+    print('Testing Signing out');
+    
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
 
@@ -182,7 +194,6 @@ class Authentication extends ChangeNotifier {
         // เก็บค่า credits ในตัวแปรของ class
         credits = data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
         print('getProfileWithToken -> credits: $credits');
-
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credits;
       } else {
@@ -218,24 +229,215 @@ class Authentication extends ChangeNotifier {
         headers: headers,
         body: jsonEncode(payload),
       );
-
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         print('Response data from getCredentialsToken: $data');
 
         credentialsToken = data['data'][0]['token'].toString(); // ดึง token จาก data
         print('Credentials Token: $credentialsToken');
-
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credentialsToken; // Return the token here
 
-      } else {
+      }
+      else if(response.statusCode==401){
+        signOut();
+        print('Unauthorized Token ${response.statusCode}');
+        return null;
+      } 
+      else {
         print(
             'Failed to load Credentials-Token. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {
       print('Error fetching Credentials-Token: $e');
+      return null;
+    }
+  }
+
+  Future<void> getAllWorkspace() async {
+    String path = '/api/workspace/get_all_workspace';
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json',
+    };
+    try {
+      print(Uri.https(url, path));
+      final response = await http.get(Uri.https(url, path), headers: headers);
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        final data = responseData['data'];
+        if (data != null && data['list_project'] != null) {
+          listProjects = (data['list_project'] as List)
+              .map((e) => ListProject.fromJson(e))
+              .toList();
+          if (listProjects.isNotEmpty) {
+            for (var project in listProjects) {
+              print("printing projects ${project.workSpaces}");
+              await getWorkspaceById(project.workspaceId);
+            }
+          } else {
+            print('No projects found.');
+          }
+        } else {
+          print('No projects found.');
+        }
+      } else {
+        print('Failed to fetch projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in getInfo: $e');
+    }
+  }
+  Future<void> getWorkspaceById(String workspaceId) async {
+    String path = '/api/workspace/get_workspace';
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json',
+    };
+    Map<String, String> params = {
+      'workspace_id': workspaceId,
+    };
+
+    try {
+      final response =
+          await http.get(Uri.https(url, path, params), headers: headers);
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        final data = responseData['data'];
+        final textList = data['text_list'] as List<dynamic>;
+        _textList = textList.cast<Map<String, dynamic>>();
+      
+        for (var project in listProjects) {
+          if (project.workspaceId == workspaceId) {
+            project.updateWorkSpaces(_textList);
+          }
+        }
+        print('Workspace Details for $workspaceId: $_textList');
+      } else {
+        print('Failed to load workspace details: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in getWorkspaceById: $e');
+    }
+  }
+
+  Future<void> updateWorkSpaces(String workspaceId, List<WorkSpace> workSpaces) async {
+    String path = '/api/workspace/workspace_text_save';
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json'
+    };
+    try {
+      // Prepare the request body
+      List<Map<String, dynamic>> textList = [];
+
+      // Build textList from workSpaces
+      for (var workSpace in workSpaces) {
+        textList.add({
+          'text': workSpace.text,
+          'speaker': workSpace.speaker,
+          'audio_id': workSpace.audioId,
+          'speed': workSpace.speed,
+          'status_download': workSpace.statusDownload,
+          'url': workSpace.url,
+          'volume': workSpace.volume,
+        });
+      }
+
+      // Construct the request body
+      Map<String, dynamic> requestBody = {
+        'workspace_id': workspaceId,
+        'text_list': textList,
+      };
+
+      // Convert the request body to JSON
+      String requestBodyJson = jsonEncode(requestBody);
+
+      // Make the POST request
+      final response = await http.post(
+        Uri.https(url, path),
+        headers: headers,
+        body: requestBodyJson,
+      );
+
+      // Check if the request was successful
+      if (response.statusCode == 200) {
+        print('Post successful');
+      } else {
+        print('Failed to post data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in updateWorkSpaces: $e');
+    }
+  }
+
+  Future<List<Map<String, String>>> fetchImageUrl(List<int> speakerIds) async {
+  String path = '/api/service/get_all_marketplace';
+  Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json',
+  };
+    try {
+      final response = await http.get(Uri.https(url, path), headers: headers);
+      if (response.statusCode == 200) {
+        print("connected");
+        final data = json.decode(response.body);
+        final speakers = data['response'] as List;
+        List<Map<String, String>> speakerDetails = [];
+        for (var speakerId in speakerIds) {
+          for (var speaker in speakers) {
+            if (speaker['speaker_id'] == speakerId.toString()) {
+              speakerDetails.add({
+              'face_image': speaker['face_image'],
+              'eng_name': speaker['eng_name'], // assuming you want to use thai_name as eng_name
+              });
+              break;
+              }
+          }
+        } 
+        return speakerDetails;
+      } else {
+        print('Failed to post data: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Error in fetchImageUrls: $e');
+      return [];
+    }
+  }
+
+  Future<String?> generateAudio (String text,int speaker) async {
+    String genUrl =
+        "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    Map<String, dynamic> payload = {
+      "text": text,
+      "speaker": speaker,
+      "volume": 1,
+      "speed": 1,
+      "type_media": "wav",
+      "save_file": true,
+    };
+
+    Map<String, String> headers = {
+      'Botnoi-Token': 'Bearer $jwtToken',
+      'Content-Type': 'application/json',
+    };
+    try {
+      final response = await http.post(
+        Uri.parse(genUrl),
+        headers: headers,
+        body: jsonEncode(payload),
+      );
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        return jsonData['audio_url'];
+      } else {
+        print('Failed to post data: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error in _generateAudio: $e');
       return null;
     }
   }

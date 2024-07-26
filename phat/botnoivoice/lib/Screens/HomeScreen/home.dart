@@ -8,7 +8,9 @@ import 'package:botnoivoice/Function/randomString.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
 import 'package:botnoivoice/Screens/LoginScreen/login.dart';
+import 'package:botnoivoice/Screens/my_home_page.dart';
 import 'package:botnoivoice/Widgets/favoritevoice.dart';
+import 'package:botnoivoice/widgets/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,11 +76,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // final auth = Provider.of<Authentication>(context, listen: false);
     // print("Printing initial state ${auth.credentialsToken}"); 
+    fetchedCredits();
+    super.initState();
+  }
+  Future<void> fetchedCredits() async{
     final auth = Provider.of<Authentication>(context, listen: false);
     credits = auth.getProfileWithToken(auth.jwtToken).toString();
-    print('(Credit) JWT token is : ${auth.jwtToken}');
 
-    super.initState();
+    print('(Credit) JWT token isss : ${auth.jwtToken}');
   }
 
   @override
@@ -168,7 +173,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: const Color(0xFFFFFFFF),
         // backgroundColor: Colors.black,
-        title: appBar(context),
+        title: CustomAppBar(context),
       ),
       body: Column(
         children: <Widget>[
@@ -410,93 +415,93 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget appBar(BuildContext context) {
-    final auth = Provider.of<Authentication>(context);
-    credits = auth.credits;
-
-    return SafeArea(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 88.w, top: 5.h),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Image.asset(
-                    'assets/logo/Aboutus_icon.png',
-                    width: 25.w,
-                    height: 25.h,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 5.w),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromARGB(255, 224, 221, 221),
-                                blurRadius: 3.0,
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(width: 5.w),
-                              SizedBox(
-                                height: 25.h,
-                                width: 20.h,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/logo/point.png',
-                                        width: 20.w,
-                                        height: 20.h,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    ' ${credits ?? " N/A"}',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF323130),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 5.w),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget appBar(BuildContext context) {
+  //   final auth = Provider.of<Authentication>(context);
+  //   credits = auth.credits;
+  //   print('credits iss ${credits}');
+  //   return SafeArea(
+  //     child: Column(
+  //       children: [
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Padding(
+  //               padding: EdgeInsets.only(left: 88.w, top: 5.h),
+  //               child: CircleAvatar(
+  //                 backgroundColor: Colors.white,
+  //                 child: Image.asset(
+  //                   'assets/logo/Aboutus_icon.png',
+  //                   width: 25.w,
+  //                   height: 25.h,
+  //                   fit: BoxFit.cover,
+  //                 ),
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: EdgeInsets.only(right: 5.w),
+  //               child: Column(
+  //                 children: [
+  //                   Row(
+  //                     children: [
+  //                       Container(
+  //                         decoration: BoxDecoration(
+  //                           boxShadow: const [
+  //                             BoxShadow(
+  //                               color: Color.fromARGB(255, 224, 221, 221),
+  //                               blurRadius: 3.0,
+  //                             ),
+  //                           ],
+  //                           color: Colors.white,
+  //                           borderRadius: BorderRadius.circular(50),
+  //                         ),
+  //                         child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             SizedBox(width: 5.w),
+  //                             SizedBox(
+  //                               height: 25.h,
+  //                               width: 20.h,
+  //                               child: Padding(
+  //                                 padding: const EdgeInsets.all(2),
+  //                                 child: Column(
+  //                                   mainAxisAlignment: MainAxisAlignment.center,
+  //                                   children: [
+  //                                     Image.asset(
+  //                                       'assets/logo/point.png',
+  //                                       width: 20.w,
+  //                                       height: 20.h,
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             Column(
+  //                               children: [
+  //                                 Text(
+  //                                   ' ${credits ?? " N/A"}',
+  //                                   style: GoogleFonts.prompt(
+  //                                     fontSize: 12.sp,
+  //                                     fontWeight: FontWeight.w600,
+  //                                     color: const Color(0xFF323130),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             SizedBox(width: 5.w),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   bool ishover = false;
   Widget categoryVoiceHome(BuildContext context) {
@@ -872,6 +877,7 @@ class _HomePageState extends State<HomePage> {
                       GradientButtonHome(
                     text: 'สร้างเสียง',
                     onPressed: () async {
+
                       print('สร้างเสียง');
 
                       // await generateAudio(textController.text).then((_) {
@@ -895,6 +901,10 @@ class _HomePageState extends State<HomePage> {
                               final auth = Provider.of<Authentication>(context, listen: false);
                               credits = auth.getProfileWithToken(auth.jwtToken).toString();
                             });
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MyHomePage()),
+                            );
                           });
                         }
                       }

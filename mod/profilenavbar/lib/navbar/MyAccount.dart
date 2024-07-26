@@ -35,10 +35,17 @@ class _MyAccountState extends State<MyAccount> {
           children: [
             UserInfoRow(
               title: 'ชื่อผู้ใช้งาน',
-              value: 'xxxxxx',
+              value: 'HUBERTBLAINEWOLFE­SCHLEGEL­STEIN­HAUSEN­BERGER­DORFF SR',
             ),
-            UserInfoRow(title: 'UID', value: 'xxxxxxx'),
-            UserInfoRow(title: 'อีเมล', value: 'XXXXXX@gmail.com'),
+            UserInfoRow(
+              title: 'UID',
+              value:
+                  '3087755e-b0fa-5e07-937d-4ec4846f39873087755e-b0fa-5e07-937d-4ec4846f39873087755e-b0fa-5e07-937d-4ec4846f3987',
+            ),
+            UserInfoRow(
+                title: 'อีเมล',
+                value:
+                    'HUBERTBLAINE WOLFE­SCHLEGEL­STEIN­HAUSEN­BERGER­DORFFSR@gmail.com '),
             Row(
               children: [
                 Text(
@@ -86,17 +93,29 @@ class UserInfoRow extends StatelessWidget {
   final String title;
   final String value;
 
-  UserInfoRow({required this.title, required this.value});
+  const UserInfoRow({Key? key, required this.title, required this.value})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: GoogleFonts.prompt(fontSize: 14)),
-          Text(value, style: GoogleFonts.prompt(fontSize: 14)),
+          Text(
+            title,
+            style: GoogleFonts.prompt(fontSize: 14),
+          ),
+          const Spacer(),
+          Flexible(
+            child: Text(
+              value,
+              style: GoogleFonts.prompt(fontSize: 14),
+              maxLines: null,
+              overflow: TextOverflow.visible,
+            ),
+          ),
         ],
       ),
     );

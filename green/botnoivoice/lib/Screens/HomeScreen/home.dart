@@ -7,6 +7,7 @@ import 'package:botnoivoice/Database/data.dart';
 import 'package:botnoivoice/Function/randomString.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
+import 'package:botnoivoice/Screens/LoginScreen/login.dart';
 import 'package:botnoivoice/Widgets/favoritevoice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   String? language;
   List<String>? availableLanguage;
   String? credits;
+  String? userProfile;
 
   // Download File
   String progress = '';
@@ -71,6 +73,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    final auth = Provider.of<Authentication>(context, listen: false);
+    credits = auth.getProfileWithToken(auth.jwtToken).toString();
+    print('(Credit) JWT token is : ${auth.jwtToken}');
+
     super.initState();
   }
 
@@ -105,7 +111,6 @@ class _HomePageState extends State<HomePage> {
     User? user = FirebaseAuth.instance.currentUser;
     String? email = auth.getUserEmail(user);
 
-    // final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
 
@@ -161,7 +166,8 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: const Color(0xFFFFFFFF),
         // backgroundColor: Colors.black,
-        title: appBar(context),
+
+        title: appBar(context, auth.credits ?? 'N/A'),
       ),
       body: Column(
         children: <Widget>[
@@ -403,9 +409,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget appBar(BuildContext context) {
+  Widget appBar(BuildContext context, String text) {
+    //// รับค่า text มาใช้คำนวณ
     final auth = Provider.of<Authentication>(context);
-    credits = auth.credits;
 
     return SafeArea(
       child: Column(
@@ -466,7 +472,7 @@ class _HomePageState extends State<HomePage> {
                               Column(
                                 children: [
                                   Text(
-                                    ' ${credits ?? " N/A"}',
+                                    ' ${auth.credits ?? " N/A"}',
                                     style: GoogleFonts.prompt(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
@@ -620,6 +626,7 @@ class _HomePageState extends State<HomePage> {
                     print("\n### START voiceWidGetHome ###\n");
                     print("-> speakerId: $speakerId");
                     print("-> language: $language");
+                    print("-> squareImage: ${data.squareImage.toString()}");
                     print("-> availableLanguage: $availableLanguage");
                     print("\n### END voiceWidGetHome ###\n");
 
@@ -656,7 +663,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           borderRadius: BorderRadius.circular(8.r),
                           image: DecorationImage(
-                            image: NetworkImage(
+                            image: AssetImage(
                               AppDataBase.data[index].squareImage,
                             ),
                             fit: BoxFit.cover,
@@ -865,7 +872,7 @@ class _HomePageState extends State<HomePage> {
                       GradientButtonHome(
                     text: 'สร้างเสียง',
                     onPressed: () async {
-                      print('สร้างเสียง');
+                      print("\n### START generateAudio -> 889 ###\n");
 
                       // await generateAudio(textController.text).then((_) {
                       //   print('response $_response');
@@ -878,16 +885,30 @@ class _HomePageState extends State<HomePage> {
                           audioPlayer.stop();
                         }
                       });
+
                       if (!isLoading) {
                         if (textController.text.isNotEmpty) {
                           await generateAudio(textController.text).then((_) {
                             print('response $_response');
                             downloadFile();
                             print('progress -> downloadFile(): $progress \n');
+
+                            setState(() {
+                              // อัพเดตค่า credits หลังจากการทำงานเสร็จสิ้น
+                              final auth = Provider.of<Authentication>(context,
+                                  listen: false);
+                              credits = auth
+                                  .getProfileWithToken(auth.jwtToken)
+                                  .toString();
+                            });
+                          });
+
+                          setState(() {
+                            isLoading = false;
                           });
                         }
                       }
-                      print("\n### END generateAudio -> Line 410 ### \n");
+                      print("\n### END generateAudio -> 922 ###\n");
                     },
                   ),
                 ),
@@ -907,17 +928,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     final auth = Provider.of<Authentication>(context, listen: false);
-
-    /* 
-    // ดึงข้อมูล point มาเก็บไว้ในตัวแปร แล้วทำการหักคะแนน ตาม จำนวนตัวอักษร ที่ผู้ใช้งาน สร้างเสียง
-
-    String credits = auth.credits; 
-    int creditsInt = int.parse(credits); 
-
-    creditsInt = creditsInt - textController.text.length; 
-    credits = creditsInt.toString(); 
-    print("update credits: $credits");
-    */
+    // print('Printting auth when generating ${auth.credentialsToken}');
 
     print(
         '\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
@@ -954,11 +965,25 @@ class _HomePageState extends State<HomePage> {
           print("generateAudio -> _audioUrl: $_audioUrl");
           isLoading = false;
         });
+      } else if (response.statusCode == 404) {
+        // เครดิตไม่พอ
+        _response = "Not enough credits: ${response.statusCode}";
+        print("not enough credits");
+      } else if (response.statusCode == 403) {
+        // ถ้ายังไม่ได้ ใส่ text และ เลือกเสียงพากษ์ ไม่สามารถสร้างเสียงได้
+        setState(() {
+          _response = "Something went wrong: ${response.statusCode}";
+          isLoading = false;
+        });
       } else {
         setState(() {
           _response =
               "Failed to retrieve data. Status Code: ${response.statusCode}";
           isLoading = false;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
         });
       }
     } catch (e) {

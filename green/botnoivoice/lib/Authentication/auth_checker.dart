@@ -15,7 +15,7 @@ class _AuthCheckerState extends State<AuthChecker> {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<Authentication>(context).isAuthenticated) {
+    if (Provider.of<Authentication>(context).isAuthenticated!=false) {
       return const HomePage();
     } else {
       return const LoginScreen();
