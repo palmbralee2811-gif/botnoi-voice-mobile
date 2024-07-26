@@ -1,11 +1,7 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Filters/languagedrawer.dart';
-import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
-import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
 import 'package:botnoivoice/Screens/LoginScreen/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DrawerAppbar extends StatelessWidget {
