@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pricepackage/Addonpackage/Indicatethepoints.dart';
 import 'package:pricepackage/Addonpackage/more.dart';
 import 'package:pricepackage/Addonpackage/noads.dart';
 import 'package:pricepackage/Addonpackage/report.dart';
