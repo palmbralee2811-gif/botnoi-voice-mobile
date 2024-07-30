@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/data.dart';
-import 'package:botnoivoice/Filters/advert.dart';
+import 'package:botnoivoice/Database/newdata.dart';
+// import 'package:botnoivoice/Filters/advert.dart';   ยังไม่ได้ใช้
 import 'package:botnoivoice/Filters/all.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
-import 'package:botnoivoice/Filters/new.dart';
-import 'package:botnoivoice/Filters/podcast.dart';
+// import 'package:botnoivoice/Filters/new.dart';  ยังไม่ได้ใช้
+// import 'package:botnoivoice/Filters/podcast.dart';  ยังไม่ได้ใช้
 import 'package:botnoivoice/Filters/recomman.dart';
-import 'package:botnoivoice/Filters/voice.dart';
+// import 'package:botnoivoice/Filters/voice.dart';   ยังไม่ได้ใช้
 import 'package:botnoivoice/Function/randomString.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradientbuttom.dart';
@@ -52,7 +53,9 @@ class _HomePageState extends State<HomePage> {
   String _audioUrl = '';
   String? speakerId;
   String? language; // เลือกภาษา   new
-  String? gender;
+  String? gender; ////เลือกเพศ
+  String? speechStyle; /////เลือกสไตล์
+  String? voiceStyle; /////เลือกหมวดหมู่
 
   /// เลือกเพศ  new
 
@@ -75,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
-  List<int> selectedIndexFavorites = []; /////เลือกเสียงที่ชอบ  new
+  List<String> selectedIndexFavorites = []; /////เลือกเสียงที่ชอบ  new
 
   // final List<Data> _favoriteVoice = [];
 
@@ -92,8 +95,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // Initialize language and other variables
-    language = 'th'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
+    language = 'TH'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
     gender = ''; ///////////////////////// กำนดค่าเริ่มต้น  new
+
+    speechStyle = ''; // สไตล์ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
+
+    voiceStyle = ''; // หมวดหมู่ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
 
     /// กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
 
@@ -138,7 +145,36 @@ class _HomePageState extends State<HomePage> {
   String selectedGender = 'ช/ญ'; ///// กำหนดค่าเริ่มต้น  new
   String selectedGenderImage =
       'assets/logo/Category.jpg'; ///// กำหนดรูปค่าเริ่มต้น  new
-  bool changeIcon = false;
+  bool changeIcon = false; /////////////เลือกเพศ
+  bool selectStyle = false; /////////////เลือกสไตล์
+  bool selectStyle1 = false; /////////////เลือกสไตล์
+  bool selectStyle2 = false; /////////////เลือกสไตล์
+  bool selectStyle3 = false; /////////////เลือกสไตล์
+  bool selectStyle4 = false; /////////////เลือกสไตล์
+  bool selectStyle5 = false; /////////////เลือกสไตล์
+  bool selectStyle6 = false; /////////////เลือกสไตล์
+  bool selectStyle7 = false; /////////////เลือกสไตล์
+  bool selectStyle8 = false; /////////////เลือกสไตล์
+  bool selectStyle9 = false; /////////////เลือกสไตล์
+  bool selectStyle10 = false; /////////////เลือกสไตล์
+  bool selectStyle11 = false; /////////////เลือกสไตล์
+  bool selectStyle12 = false; /////////////เลือกสไตล์
+  bool selectStyle13 = false; /////////////เลือกสไตล์
+  bool selectStyle14 = false; /////////////เลือกสไตล์
+  bool selectStyle15 = false; /////////////เลือกสไตล์
+  bool selectStyle16 = false; /////////////เลือกสไตล์
+
+  bool selectCategory = false; /////////////เลือกหมวดหมู่
+  bool selectCategory1 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory2 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory3 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory4 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory5 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory6 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory7 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory8 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory9 = false; /////////////เลือกหมวดหมู่
+  bool selectCategory10 = false; /////////////เลือกหมวดหมู่
 
   @override
   Widget build(BuildContext context) {
@@ -771,7 +807,8 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Container(
                 color: const Color(0xFFFFFFFF),
-                width: 600.w,
+                // width: 800.w,
+                width: 450.w,
                 child: Padding(
                   padding: EdgeInsets.only(right: 10.w, left: 10.w),
                   child: Row(
@@ -795,7 +832,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Row(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.all(20),
+                                          padding: const EdgeInsets.all(25),
                                           child: Column(
                                             children: [
                                               Container(
@@ -834,15 +871,21 @@ class _HomePageState extends State<HomePage> {
                                                       height: 15.h,
                                                     ),
                                                     _buildLanguageOption(
+                                                        'All(AllLanguages) - ทั้งหมด',
+                                                        'assets/logo/13766953.png',
+                                                        '',
+                                                        context,
+                                                        setState),
+                                                    _buildLanguageOption(
                                                         'Thai(Thailand) - ไทย',
                                                         'assets/logo/Ellipse 12.jpg',
-                                                        'th',
+                                                        'TH',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'English (UK) - อังกฤษ',
                                                         'assets/logo/Ellipse 13.jpg',
-                                                        'en',
+                                                        'EN',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
@@ -879,6 +922,24 @@ class _HomePageState extends State<HomePage> {
                                                         'Chinese (Simplified) - จีน',
                                                         'assets/logo/Ellipse 18.jpg',
                                                         'ZH',
+                                                        context,
+                                                        setState),
+                                                    _buildLanguageOption(
+                                                        'India - อินเดีย',
+                                                        'assets/logo/png-transparent-flag-of-india-national-flag-india-flag-orange-india.png',
+                                                        'ID',
+                                                        context,
+                                                        setState),
+                                                        _buildLanguageOption(
+                                                        'Cambodia - กัมพูชา',
+                                                        'assets/logo/images (1).png',
+                                                        'KM',
+                                                        context,
+                                                        setState),
+                                                         _buildLanguageOption(
+                                                        'Phillippines - ฟิลิปปินส์',
+                                                        'assets/logo/Flag_of_the_Philippines.svg.png',
+                                                        'FIL',
                                                         context,
                                                         setState),
                                                   ],
@@ -1082,20 +1143,751 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
+                      //////////////////////////////////////////////////////////ปุ่มแนะนำ
                       const Recommand(),
+                      ////////////////////////////////////////////////////////ปุ่มหัวใจ
                       InkWell(
                         onTap: () {
                           setState(() {
                             ishover = !ishover;
                           });
                         },
-                        child: Favorite(ishover: ishover),
+                        child: Favorite(
+                          ishover: ishover,
+                        ),
                       ),
+                      ////////////////////////////////////////////////////////ปุ่มทั้งหมด
                       const All(),
-                      const New(),
-                      const Voice(),
-                      const Advert(),
-                      const Podcast(),
+                      ////////////////////////////////////////////////////////ปุ่มสไตล์
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selectStyle = !selectStyle;
+                          });
+                          showModalBottomSheet(
+                            backgroundColor: Colors.white,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context,
+                                    StateSetter setModalState) {
+                                  return SizedBox(
+                                    height: 220.h,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(25),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            color: Colors.transparent,
+                                            width: 360,
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      'สไตล์',
+                                                      style: GoogleFonts.prompt(
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 24.sp,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 15.h,
+                                                ),
+                                                Wrap(
+                                                  alignment:
+                                                      WrapAlignment.start,
+                                                  spacing: 13.0,
+                                                  runSpacing: 13.0,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle1 =
+                                                              !selectStyle1;
+                                                          voiceStyle =
+                                                              selectStyle1
+                                                                  ? 'เสียงน่ารัก'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: น่ารัก, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'น่ารัก',
+                                                          selectStyle1),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle2 =
+                                                              !selectStyle2;
+                                                          voiceStyle =
+                                                              selectStyle2
+                                                                  ? 'เสียงมั่นใจ'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: มั่นใจ, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'มั่นใจ',
+                                                          selectStyle2),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle3 =
+                                                              !selectStyle3;
+                                                          voiceStyle = selectStyle3
+                                                              ? 'เสียงน่าเชื่อถือ'
+                                                              : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: น่าเชื่อถือ, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'น่าเชื่อถือ',
+                                                          selectStyle3),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle4 =
+                                                              !selectStyle4;
+                                                          voiceStyle = selectStyle4
+                                                              ? 'เสียงตื่นเต้น'
+                                                              : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: ตื่นเต้น, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ตื่นเต้น',
+                                                          selectStyle4),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle5 =
+                                                              !selectStyle5;
+                                                          voiceStyle =
+                                                              selectStyle5
+                                                                  ? 'เสียงจริงจัง'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: จริงจัง, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'จริงจัง',
+                                                          selectStyle5),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle6 =
+                                                              !selectStyle6;
+                                                          voiceStyle =
+                                                              selectStyle6
+                                                                  ? 'เสียงหวาน'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: หวาน, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'หวาน', selectStyle6),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle7 =
+                                                              !selectStyle7;
+                                                          voiceStyle =
+                                                              selectStyle7
+                                                                  ? 'เสียงอบอุ่น'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: อบอุ่น, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'อบอุ่น',
+                                                          selectStyle7),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle8 =
+                                                              !selectStyle8;
+                                                          voiceStyle =
+                                                              selectStyle8
+                                                                  ? 'เสียงขี้เล่น'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: ขี้เล่น, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ขี้เล่น',
+                                                          selectStyle8),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle9 =
+                                                              !selectStyle9;
+                                                          voiceStyle =
+                                                              selectStyle9
+                                                                  ? 'เสียงทุ้ม'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: ทุ้ม, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ทุ้ม', selectStyle9),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle10 =
+                                                              !selectStyle10;
+                                                          voiceStyle =
+                                                              selectStyle10
+                                                                  ? 'เสียงนุ่มนวล'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: นุ่มนวล, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'นุ่มนวล',
+                                                          selectStyle10),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle11 =
+                                                              !selectStyle11;
+                                                          voiceStyle =
+                                                              selectStyle11
+                                                                  ? 'เสียงท้องถิ่น'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: ท้องถิ่น, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ท้องถิ่น',
+                                                          selectStyle11),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle12 =
+                                                              !selectStyle12;
+                                                          voiceStyle =
+                                                              selectStyle12
+                                                                  ? 'เสียงใจเย็น'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: ใจเย็น, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ใจเย็น',
+                                                          selectStyle12),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle13 =
+                                                              !selectStyle13;
+                                                          voiceStyle =
+                                                              selectStyle13
+                                                                  ? 'เสียงนิ่มนวล'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: นิ่มนวล, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'นิ่มนวล',
+                                                          selectStyle13),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle14 =
+                                                              !selectStyle14;
+                                                          voiceStyle =
+                                                              selectStyle14
+                                                                  ? 'เสียงชัดเจน'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: ชัดเจน, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ชัดเจน',
+                                                          selectStyle14),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle15 =
+                                                              !selectStyle15;
+                                                          voiceStyle =
+                                                              selectStyle15
+                                                                  ? 'เสียงเหนือ'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: เหนือ, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'เหนือ',
+                                                          selectStyle15),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectStyle16 =
+                                                              !selectStyle16;
+                                                          voiceStyle =
+                                                              selectStyle16
+                                                                  ? 'เสียงอีสาน'
+                                                                  : '';
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                        print(
+                                                            'Selected voice: อีสาน, voice: $voiceStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'อีสาน',
+                                                          selectStyle16),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ).whenComplete(() {
+                            setState(() {
+                              selectStyle = false;
+                            });
+                          });
+                        },
+                        child: Container(
+                          width: 62.w,
+                          height: 26.h,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(4),
+                            ),
+                            border: Border.all(
+                              color: const Color(0xFFE2E3E9),
+                              width: 1,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'สไตล์',
+                                        style:
+                                            GoogleFonts.prompt(fontSize: 12.sp),
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    selectStyle
+                                        ? Icons.keyboard_arrow_up_sharp
+                                        : Icons.keyboard_arrow_down_sharp,
+                                    size: 20,
+                                    color: const Color(0xFF323130),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            selectCategory = !selectCategory;
+                          });
+                          showModalBottomSheet(
+                            backgroundColor: Colors.white,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context,
+                                    StateSetter setModalState) {
+                                  return SizedBox(
+                                    height: 230.h,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(25),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            color: Colors.transparent,
+                                            width: 360,
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      'หมวดหมู่',
+                                                      style: GoogleFonts.prompt(
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 24.sp,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 15.h,
+                                                ),
+                                                Wrap(
+                                                  alignment:
+                                                      WrapAlignment.start,
+                                                  spacing: 13.0,
+                                                  runSpacing: 13.0,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory1 =
+                                                              !selectCategory1;
+                                                          speechStyle = selectCategory1
+                                                              ? 'สไตล์เล่าเรื่อง'
+                                                                  'สไตล์อ่านข่าว'
+                                                              : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: เล่าเรื่อง, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'เล่าเรื่อง',
+                                                          selectCategory1),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory2 =
+                                                              !selectCategory2;
+                                                          speechStyle = selectCategory2
+                                                              ? 'สไตล์อ่านข่าว'
+                                                                  'สไตล์เล่าเรื่อง'
+                                                              : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: อ่านข่าว, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'อ่านข่าว',
+                                                          selectCategory2),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory3 =
+                                                              !selectCategory3;
+                                                          speechStyle = selectCategory3
+                                                              ? 'สไตล์เล่าเรื่อง'
+                                                                  'สไตล์ตัวละคร'
+                                                              : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: ตัวละคร, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ตัวละคร',
+                                                          selectCategory3),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory4 =
+                                                              !selectCategory4;
+                                                          speechStyle =
+                                                              selectCategory4
+                                                                  ? 'สไตล์บรรยาย'
+                                                                      'สไตล์ตัวละคร'
+                                                                  : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: บรรยาย, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'บรรยาย',
+                                                          selectCategory4),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory5 =
+                                                              !selectCategory5;
+                                                          speechStyle = selectCategory5
+                                                              ? 'สไตล์อ่านข่าว'
+                                                                  'สไตล์สปอตโฆษณา'
+                                                              : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: สปอตโฆษณา, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'สปอตโฆษณา',
+                                                          selectCategory5),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory6 =
+                                                              !selectCategory6;
+                                                          speechStyle =
+                                                              selectCategory6
+                                                                  ? 'สไตล์สารคดี'
+                                                                      'สไตล์บรรยาย'
+                                                                  : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: สารคดี, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'สารคดี',
+                                                          selectCategory6),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory7 =
+                                                              !selectCategory7;
+                                                          speechStyle =
+                                                              selectCategory7
+                                                                  ? 'สไตล์ตัวละคร'
+                                                                      'สไตล์อนิเมะ'
+                                                                  : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: อนิเมะ, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'อนิเมะ',
+                                                          selectCategory7),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory8 =
+                                                              !selectCategory8;
+                                                          speechStyle =
+                                                              selectCategory8
+                                                                  ? 'สไตล์บรรยาย'
+                                                                      'สไตล์อาจารย์'
+                                                                  : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: อาจารย์, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'อาจารย์',
+                                                          selectCategory8),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory9 =
+                                                              !selectCategory9;
+                                                          speechStyle = selectCategory9
+                                                              ? 'สไตล์เล่าเรื่อง'
+                                                                  'สไตล์ท้องถิ่น'
+                                                              : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: ท้องถิ่น, category: $speechStyle');
+                                                      },
+                                                      child: filterStyle(
+                                                          'ท้องถิ่น',
+                                                          selectCategory9),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setModalState(() {
+                                                          selectCategory10 =
+                                                              !selectCategory10;
+                                                          speechStyle =
+                                                              selectCategory10
+                                                                  ? 'สไตล์อ่านข่าว'
+                                                                      'สไตล์เสียงต่างประเทศ'
+                                                                  : '';
+                                                        });
+                                                        Navigator.pop(context);
+                                                        print(
+                                                            'Selected category: เสียงต่างประเทศ, category: $speechStyle'); // Print to debug console
+                                                      },
+                                                      child: filterStyle(
+                                                          'เสียงต่างประเทศ',
+                                                          selectCategory10),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ).whenComplete(() {
+                            setState(() {
+                              selectCategory = false;
+                            });
+                          });
+                        },
+                        child: Container(
+                          width: 62.w,
+                          height: 26.h,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(4),
+                            ),
+                            border: Border.all(
+                              color: const Color(0xFFE2E3E9),
+                              width: 1,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'หมวดหมู่',
+                                        style:
+                                            GoogleFonts.prompt(fontSize: 12.sp),
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    selectCategory
+                                        ? Icons.keyboard_arrow_up_sharp
+                                        : Icons.keyboard_arrow_down_sharp,
+                                    size: 20,
+                                    color: const Color(0xFF323130),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // const New(), ////ยังไม่ใช้
+                      // const Voice(),
+                      // const Advert(),
+                      // const Podcast(),
                     ],
                   ),
                 ),
@@ -1104,7 +1896,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Container(
-          //////////////พื้นหลัง widget
+          //////////////พื้นหลัง widget voice
           // color: Colors.amber,
           color: const Color(0xFFFFFFFF),
           height: 148.h,
@@ -1112,7 +1904,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ishover
-                  ? voiceWidGetfavorite(
+                  ? voiceWidgetFavorite(
                       context, ///// เลือกเสียงที่ชอบ
                     )
                   : voiceWidGetHome(context), ///// หน้าเลือกเสียงหลัก
@@ -1123,19 +1915,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLanguageOption(
-      /////////widget buttomsheet เลือกภาษา
-      String text,
-      String imagePath,
-      String lang, ///// เลือกภาษา
-      BuildContext context,
-      StateSetter setState) {
+  Widget filterStyle(String text, bool isSelected) {
+    return IntrinsicWidth(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: 8.w, vertical: 4.h), // ปรับ padding ให้เล็กลง
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                )
+              : null,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(4),
+          ),
+          border: Border.all(
+            color: const Color(0xFFE2E3E9),
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.prompt(
+              fontSize: 12.sp,
+              color: isSelected
+                  ? const Color(0xFFFFFFFF)
+                  : const Color(0xFF323130),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(String text, String imagePath, String lang,
+      BuildContext context, StateSetter setState) {
     return InkWell(
       onTap: () {
         setState(() {
-          selectedLanguage = text.split(' - ')[1];
-          selectedLanguageImage = imagePath;
-          language = lang; // Update the language variable
+          if (text == 'ทั้งหมด') {
+            language = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+          } else {
+            List<String> parts = text.split(' - ');
+            if (parts.length > 1) {
+              selectedLanguage = parts[1];
+            } else {
+              selectedLanguage = text; // กรณีที่ไม่มีตัวแบ่งให้ใช้ค่าเดิม
+            }
+            selectedLanguageImage = imagePath;
+            language = lang; // Update the language variable
+          }
         });
         print(
             'Selected Language: $selectedLanguage, language: $language'); // Print to debug console
@@ -1164,7 +1994,10 @@ class _HomePageState extends State<HomePage> {
                   text,
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
-                    fontWeight: selectedLanguage == text.split(' - ')[1]
+                    fontWeight: selectedLanguage ==
+                            (text.split(' - ').length > 1
+                                ? text.split(' - ')[1]
+                                : text)
                         ? FontWeight.w600
                         : FontWeight.normal,
                   ),
@@ -1237,10 +2070,12 @@ class _HomePageState extends State<HomePage> {
       width: 320.w,
       child: GridView.builder(
         // itemCount: AppDataBase.data.length, //old
-        itemCount: AppDataBase.data
+        itemCount: NewAppDataBase.data
             .where((item) =>
                 (gender == '' || item.gender == gender) &&
-                item.language == language)
+                (language == '' || item.language == language) &&
+                (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
+                (speechStyle == '' || item.speechStyle == speechStyle))
             .length, //new
 
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -1251,10 +2086,12 @@ class _HomePageState extends State<HomePage> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           // final data = AppDataBase.data[index];   /////////////////////////////old.
-          final data = AppDataBase.data
+          final data = NewAppDataBase.data
               .where((item) =>
                   (gender == '' || item.gender == gender) &&
-                  item.language == language)
+                  (language == '' || item.language == language) &&
+                  (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
+                  (speechStyle == '' || item.speechStyle == speechStyle))
               .toList()[index]; ////new
 
           return voicewidget(data, index);
@@ -1263,31 +2100,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget voiceWidGetfavorite(BuildContext context) {        ////////widget รายการโปรด new
-    // double screenSizewidth = MediaQuery.of(context).size.width; ///////////////// Old
-    return SizedBox(
-      // height: 140.h,
-      // width: screenSizewidth * 0.95.w,
-      height: 127.h,
-      width: 320.w,
-      child: GridView.builder(
-        itemCount: selectedIndexFavorites.length, 
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          // mainAxisExtent: 150,
-          mainAxisExtent: 125,
-        ),
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final data = AppDataBase.data[selectedIndexFavorites[index]]; 
-
-          return voicewidget(data, selectedIndexFavorites[index]); ////เลือกใช้ method แทน   new
-        },
-      ),
-    );
-  }
-
-  Column voicewidget(Data data, int index) {
+  Column voicewidget(NewData data, int index) {
     ////method voicewidget    new
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -1451,22 +2264,26 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.only(right: 5.w, top: 5.w),
                               child: GestureDetector(
                                 onTap: () {
+                                  print('/////////' '$speakerId');
+
                                   setState(() {
                                     if (selectedIndexFavorites
-                                        .contains(index)) {
+                                        .contains(data.speakerId)) {
                                       ///////new
                                       selectedIndexFavorites
-                                          .remove(index); ///////new
+                                          .remove(data.speakerId); ///////new
                                     } else {
                                       // widget.onToggleFavorite(widget.data[index]);
                                       selectedIndexFavorites
-                                          .add(index); ///////new
-                                          print("selectedIndexFavorites: $selectedIndexFavorites");
+                                          .add(data.speakerId); ///////new
+                                      print(
+                                          "selectedIndexFavorites: $selectedIndexFavorites");
                                     }
                                   });
                                 },
                                 child: selectedIndexFavorites
-                                        .contains(index) ///////new
+                                        .contains(data.speakerId) ///////new
+
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
                                           return const LinearGradient(
@@ -1492,6 +2309,7 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
+
                         const Spacer(), // Add Spacer to push the content below to the bottom
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1567,6 +2385,34 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget voiceWidgetFavorite(BuildContext context) {
+    return SizedBox(
+      height: 127.h,
+      width: 320.w,
+      child: GridView.builder(
+        itemCount: NewAppDataBase.data
+            .where((item) =>
+                selectedIndexFavorites.isEmpty ||
+                selectedIndexFavorites.contains(item.speakerId))
+            .length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1,
+          mainAxisExtent: 125,
+        ),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final data = NewAppDataBase.data
+              .where((item) =>
+                  selectedIndexFavorites.isEmpty ||
+                  selectedIndexFavorites.contains(item.speakerId))
+              .toList()[index];
+
+          return voicewidget(data, index);
+        },
+      ),
     );
   }
 

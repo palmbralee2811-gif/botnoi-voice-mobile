@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
+// Save & Load JwtToken to Cache on Device (Mobile)
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class Authentication extends ChangeNotifier {
   User? user;
   String? credits;
@@ -11,18 +14,46 @@ class Authentication extends ChangeNotifier {
   String? jwtToken;
   String? credentialsToken;
 
+  // Save & Load JwtToken to Cache on Device (Mobile)
+  final _storage = const FlutterSecureStorage();
+
   bool get isAuthenticated {
     print("isAuthenticated -> user: $user");
-    return user != null;
+    return user != null && jwtToken != null && credentialsToken != null;
   }
 
   Authentication() {
     FirebaseAuth.instance.authStateChanges().listen((
       User? user,
     ) {
+      print("Printing user details");
       this.user = user;
       notifyListeners();
     });
+    _loadJwtToken();
+    _loadCredentialsToken();
+  }
+
+  Future<void> _loadJwtToken() async {
+    jwtToken = await _storage.read(key: 'jwtToken');
+    print('Loaded JWT Token: $jwtToken');
+    notifyListeners();
+  }
+
+  Future<void> _saveJwtToken(String token) async {
+    await _storage.write(key: 'jwtToken', value: token);
+    print('Saved JWT Token: $token');
+  }
+
+  Future<void> _loadCredentialsToken() async {
+    credentialsToken = await _storage.read(key: 'credentialsToken');
+    print('Loaded Credential Token: $credentialsToken');
+    notifyListeners();
+  }
+
+  Future<void> _saveCredentialsToken(String token) async {
+    await _storage.write(key: 'credentialsToken', value: credentialsToken);
+    print('Saved Credential Token: $token');
   }
 
   Future<User?> signInWithGoogle(BuildContext context) async {
@@ -44,17 +75,23 @@ class Authentication extends ChangeNotifier {
         final idToken = await user.getIdToken();
 
         if (idToken != null) {
-          await getIdTokenWithFirebase(idToken);
           print("### START -> signInWithGoogle  ### \n");
+          await getIdTokenWithFirebase(idToken);
           print("getIdTokenWithFirebase: $idToken");
 
           if (jwtToken != null) {
             print("jwtToken: $jwtToken");
 
-            await getCredentialsToken(jwtToken);
-            print("getCredentialsToken: $getCredentialsToken");
+            await _saveJwtToken(jwtToken!);
+
+            credentialsToken = await getCredentialsToken(jwtToken);
+            print("getCredentialsToken: $credentialsToken");
+
+            await _saveCredentialsToken(credentialsToken!);
+
             await getProfileWithToken(jwtToken);
             print("getProfileWithToken: $getProfileWithToken");
+
             print("### END -> signInWithGoogle ### \n");
 
             notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
@@ -151,7 +188,8 @@ class Authentication extends ChangeNotifier {
         print('Response data from getProfileWithToken: $data');
 
         // เก็บค่า credits ในตัวแปรของ class
-        credits = data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
+        credits =
+            data['data']['credits'].toString(); // ดึงข้อมูล credits จาก data
         print('getProfileWithToken -> credits: $credits');
 
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
@@ -159,6 +197,7 @@ class Authentication extends ChangeNotifier {
       } else {
         print(
             'Failed to load profile from getProfileWithToken. Status code: ${response.statusCode}');
+        return null;
       }
     } catch (e) {
       print('Error in getProfileWithToken: $e');
@@ -193,12 +232,12 @@ class Authentication extends ChangeNotifier {
         var data = json.decode(response.body);
         print('Response data from getCredentialsToken: $data');
 
-        credentialsToken = data['data'][0]['token'].toString(); // ดึง token จาก data
+        credentialsToken =
+            data['data'][0]['token'].toString(); // ดึง token จาก data
         print('Credentials Token: $credentialsToken');
 
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credentialsToken; // Return the token here
-
       } else {
         print(
             'Failed to load Credentials-Token. Status code: ${response.statusCode}');
@@ -213,6 +252,12 @@ class Authentication extends ChangeNotifier {
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
+    user = null;
+    jwtToken = null;
+    credentialsToken = null;
+    credits = null;
+    await _storage.delete(key: 'jwtToken');
+    await _storage.delete(key: 'credentialsToken');
+    notifyListeners();
   }
-  
 }

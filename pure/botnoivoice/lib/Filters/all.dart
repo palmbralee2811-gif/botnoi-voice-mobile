@@ -23,7 +23,7 @@ class _AllState extends State<All> {
           ishover = !ishover;
         });
         Navigator.push(context, MaterialPageRoute(builder: (context) => const SeeAll()));
-        
+        ishover = !ishover;
 
       },
       child: Container(
