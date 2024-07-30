@@ -8,6 +8,7 @@ import 'package:pricepackage/Buypoint/expertpackage.dart';
 import 'package:pricepackage/Buypoint/promotionCard.dart';
 import 'package:pricepackage/Buypoint/regularpackage.dart';
 import 'package:pricepackage/Buypoint/startpackage.dart';
+import 'package:pricepackage/Indicatethepoints.dart';
 import 'package:pricepackage/Pointcard.dart';
 
 class Package extends StatefulWidget {
