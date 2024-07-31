@@ -5,7 +5,6 @@ import 'package:botnoivoice/model/models.dart';
 import 'package:botnoivoice/widgets/custom_app_bar.dart';
 import 'package:botnoivoice/widgets/custom_add_new_button.dart';
 import 'package:botnoivoice/widgets/home_page/custom_card.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -72,24 +71,25 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
     void updateCardSentences(int projectIndex, int workspaceIndex, String updatedSentences) async{
       final auth = Provider.of<Authentication>(context, listen: false);
       var speaker = listProjects[projectIndex].workSpaces[workspaceIndex].speaker;
+
       await updateUrlAudio(projectIndex, workspaceIndex,updatedSentences,speaker);
       setState(() {
         listProjects[projectIndex].workSpaces[workspaceIndex].text = updatedSentences;
+        // รับตัว speaker listProjects[projectIndex].workSpaces[workspaceIndex].speaker 
+        // ดูได้ที่ตัว models
         auth.updateWorkSpaces(listProjects[projectIndex].workspaceId, listProjects[projectIndex].workSpaces);
       });
     }
     Future<void> updateUrlAudio (int projectIndex,int workspaceIndex,String updatedSentences, int speaker) async{
       final auth = Provider.of<Authentication>(context, listen: false);
       String? urlAudio = await auth.generateAudio(updatedSentences,speaker);
-      // print(urlAudio);
+      print('URL audio $urlAudio');
       if (urlAudio != null) {
         setState(() {
           listProjects[projectIndex].workSpaces[workspaceIndex].url =urlAudio;
         });
       }
     }
-    
-    
     
     Future<void> _refreshData() async {
       // Fetch data from backend again
@@ -154,7 +154,6 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
                         return const CustomAddNewButton();  
                       }
                       else {
-                        // print('Displaying WorkSpace ${index+1}');
                         return CustomCard(
                         sentences: listProjects[0].workSpaces[index].text,
                         audioUrl: listProjects[0].workSpaces[index].url,

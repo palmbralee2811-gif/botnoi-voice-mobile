@@ -5,9 +5,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/data.dart';
 import 'package:botnoivoice/Function/randomString.dart';
+import 'package:botnoivoice/model/models.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
-import 'package:botnoivoice/Screens/LoginScreen/login.dart';
 import 'package:botnoivoice/Screens/my_home_page.dart';
 import 'package:botnoivoice/Widgets/favoritevoice.dart';
 import 'package:botnoivoice/widgets/custom_app_bar.dart';
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
     final auth = Provider.of<Authentication>(context, listen: false);
     credits = auth.getProfileWithToken(auth.jwtToken).toString();
 
-    print('(Credit) JWT token isss : ${auth.jwtToken}');
+    print('(Credit) JWT token is : ${credits}');
   }
 
   @override
@@ -826,7 +826,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildVoiceHome(BuildContext context) {
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
-
+    List<ListProject> listProjects = [];
     return Container(
       height: screenSizeheight * 0.093.h,
       width: screenSizewidth * 0.78.w,
@@ -877,7 +877,7 @@ class _HomePageState extends State<HomePage> {
                       GradientButtonHome(
                     text: 'สร้างเสียง',
                     onPressed: () async {
-
+                        
                       print('สร้างเสียง');
 
                       // await generateAudio(textController.text).then((_) {
@@ -885,30 +885,43 @@ class _HomePageState extends State<HomePage> {
                       //   downloadFile();
                       //   print('progress -> downloadFile(): $progress \n');
                       // });
-
-                      setState(() {
-                        if (textController.text.isNotEmpty) {
+                    
+                      if (textController.text.isNotEmpty) {
+                        setState(() {
                           audioPlayer.stop();
-                        }
-                      });
-                      if (!isLoading) {
+                          isLoading = true;
+                        });
+                        // try{
+                        //  await generateAudio(textController.text);
+                        // }
+                      }
+                      
                         if (textController.text.isNotEmpty) {
-                          await generateAudio(textController.text).then((_) {
-                            print('response $_response');
-                            downloadFile();
-                            print('progress -> downloadFile(): $progress \n');
-                            setState(() {
-                              final auth = Provider.of<Authentication>(context, listen: false);
-                              credits = auth.getProfileWithToken(auth.jwtToken).toString();
-                            });
-                            Navigator.pushReplacement(
+                          final auth = Provider.of<Authentication>(context, listen: false);
+                          // await generateAudio(textController.text).then((_) async {
+                          //   print('response $_response');
+                          //   // downloadFile();
+                          //   print('progress -> downloadFile(): $progress \n');
+                          //   setState(() {
+                              
+                          //     credits = auth.getProfileWithToken(auth.jwtToken).toString();
+                          //   });   
+                          // });
+                          _audioUrl = await generateAudio(textController.text); 
+                          print('printing audiourl $_audioUrl');
+                          var temp_text = textController.text;
+                          print('printing audiourl $temp_text');
+                          if(_audioUrl.isNotEmpty&&_audioUrl!=''){
+                            print("In the loops $temp_text");
+                            await textSave(textController.text,_audioUrl);
+                          }
+                        }
+                      
+                      print("\n### END generateAudio -> Line 410 ### \n");
+                      Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => const MyHomePage()),
-                            );
-                          });
-                        }
-                      }
-                      print("\n### END generateAudio -> Line 410 ### \n");
+                      );
                     },
                   ),
                 ),
@@ -920,7 +933,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> generateAudio(String text) async {
+  Future<String> generateAudio(String text) async {
     setState(() {
       isLoading = true;
       _response = '';
@@ -929,21 +942,10 @@ class _HomePageState extends State<HomePage> {
     
     final auth = Provider.of<Authentication>(context, listen: false);
     print('Printting auth when generating ${auth.credentialsToken}');
-    /* 
-    // ดึงข้อมูล point มาเก็บไว้ในตัวแปร แล้วทำการหักคะแนน ตาม จำนวนตัวอักษร ที่ผู้ใช้งาน สร้างเสียง
 
-    String credits = auth.credits; 
-    int creditsInt = int.parse(credits); 
-
-    creditsInt = creditsInt - textController.text.length; 
-    credits = creditsInt.toString(); 
-    print("update credits: $credits");
-    */
-  
     print(
         '\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
     print(' language: $language \n availableLanguage: $availableLanguage \n');
-    
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
@@ -972,15 +974,11 @@ class _HomePageState extends State<HomePage> {
         final jsonData = jsonDecode(response.body);
         setState(() {
           _audioUrl = jsonData['audio_url'];
-          _response = "Request successful!";
           print("generateAudio -> _audioUrl: $_audioUrl");
+
           isLoading = false;
         });
-      }else if(response.statusCode==404){
-        _response =
-              "Not enough credits: ${response.statusCode}";
-        print("not enough credits");
-      } 
+      }
       else if (response.statusCode==403){
         setState(() {
           _response =
@@ -988,15 +986,18 @@ class _HomePageState extends State<HomePage> {
           isLoading = false;
         });
       }
+      else if(response.statusCode==404){
+        _response =
+              "Not enough credits: ${response.statusCode}";
+        print("not enough credits");
+      } 
+      
       else{
         setState(() {
             _response =
                 "Failed to retrieve data. Status Code: ${response.statusCode}";
             isLoading = false;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
+            auth.signOut();
           });
         }
     } catch (e) {
@@ -1005,7 +1006,54 @@ class _HomePageState extends State<HomePage> {
         isLoading = false;
       });
     }
+    return _audioUrl;
   }
+
+ Future<void> textSave(String text, String audioUrl) async {
+  final auth = Provider.of<Authentication>(context, listen: false);
+  print('Printing auth when generating ${auth.credentialsToken}');
+
+  // Define the new WorkSpace object
+  WorkSpace newWorkSpace = WorkSpace(
+    text: textController.text,
+    speaker: int.parse(speakerId!),
+    audioId: '',
+    speed: '1',
+    statusDownload: true,
+    url: audioUrl,
+    volume: '1',
+  );
+
+  // Fetch existing workspaces for the project
+  await auth.getAllWorkspace();
+  if (auth.listProjects.isNotEmpty) {
+    // Assuming you are working with the first project (adjust index as needed)
+    ListProject project = auth.listProjects[0];
+    print('Project ID: ${project.workspaceId}');
+    print('Existing WorkSpaces: ${project.workSpaces.length}');
+
+    // Create a new list from existing workspaces
+    List<WorkSpace> existingWorkSpaces = List<WorkSpace>.from(project.workSpaces);
+    print('Existing WorkSpaces (copied): ${existingWorkSpaces.length}');
+
+    // Add the new workspace to the existing workspaces
+    existingWorkSpaces.add(newWorkSpace);
+    print('New WorkSpace added. Total WorkSpaces: ${existingWorkSpaces.length}');
+
+    // Update the workspaces with the new list
+    await auth.updateWorkSpaces(project.workspaceId, existingWorkSpaces);
+  } else {
+    print('No projects found.');
+  }
+
+  if (mounted) {
+    setState(() {
+      print('New workspace added.');
+    });
+  }
+}
+
+
 
   Future<void> downloadFile() async {
     if (Platform.isAndroid) {

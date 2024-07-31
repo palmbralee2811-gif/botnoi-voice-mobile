@@ -25,7 +25,7 @@ class CustomAddNewButton extends StatelessWidget {
             ),
             child: OutlinedButton.icon(
               onPressed: () { 
-                Navigator.pushReplacement(
+                Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
             );

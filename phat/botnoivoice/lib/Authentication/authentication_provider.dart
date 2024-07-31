@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:botnoivoice/Function/randomString.dart';
+import 'package:botnoivoice/Screens/LoginScreen/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:botnoivoice/model/models.dart'; 
 import 'package:flutter/material.dart';
@@ -6,6 +9,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:botnoivoice/model/models.dart';
+import 'package:open_app_file/open_app_file.dart';
+import 'package:path_provider/path_provider.dart';
 class Authentication extends ChangeNotifier {
   User? user;
   String? credits;
@@ -196,10 +201,17 @@ class Authentication extends ChangeNotifier {
         print('getProfileWithToken -> credits: $credits');
         notifyListeners(); // แจ้งให้ UI ทราบว่าข้อมูลมีการเปลี่ยนแปลง
         return credits;
-      } else {
-        print(
-            'Failed to load profile from getProfileWithToken. Status code: ${response.statusCode}');
-            return null;
+      }
+      else if (response.statusCode==403){
+        print("Something went wrong: ${response.statusCode}");
+      }
+      else if(response.statusCode==404){
+        print("Not enough credits: ${response.statusCode}");
+        print("not enough credits");
+      }  
+      else {
+        signOut();
+        print("Failed to retrieve data. Status Code: ${response.statusCode}");
       }
     } catch (e) {
       print('Error in getProfileWithToken: $e');
@@ -322,55 +334,51 @@ class Authentication extends ChangeNotifier {
     }
   }
 
-  Future<void> updateWorkSpaces(String workspaceId, List<WorkSpace> workSpaces) async {
-    String path = '/api/workspace/workspace_text_save';
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
-      'Content-Type': 'application/json'
+Future<void> updateWorkSpaces(String workspaceId, List<WorkSpace> workSpaces) async {
+  String path = '/api/workspace/workspace_text_save';
+  Map<String, String> headers = {
+    'Authorization': 'Bearer $jwtToken',
+    'Content-Type': 'application/json'
+  };
+  try {
+    // Prepare the request body
+    List<Map<String, dynamic>> textList = workSpaces.map((workSpace) => {
+      'text': workSpace.text,
+      'speaker': workSpace.speaker,
+      'audio_id': workSpace.audioId,
+      'speed': workSpace.speed,
+      'status_download': workSpace.statusDownload,
+      'url': workSpace.url,
+      'volume': workSpace.volume,
+    }).toList();
+
+    // Construct the request body
+    Map<String, dynamic> requestBody = {
+      'workspace_id': workspaceId,
+      'text_list': textList,
     };
-    try {
-      // Prepare the request body
-      List<Map<String, dynamic>> textList = [];
 
-      // Build textList from workSpaces
-      for (var workSpace in workSpaces) {
-        textList.add({
-          'text': workSpace.text,
-          'speaker': workSpace.speaker,
-          'audio_id': workSpace.audioId,
-          'speed': workSpace.speed,
-          'status_download': workSpace.statusDownload,
-          'url': workSpace.url,
-          'volume': workSpace.volume,
-        });
-      }
+    // Convert the request body to JSON
+    String requestBodyJson = jsonEncode(requestBody);
 
-      // Construct the request body
-      Map<String, dynamic> requestBody = {
-        'workspace_id': workspaceId,
-        'text_list': textList,
-      };
-
-      // Convert the request body to JSON
-      String requestBodyJson = jsonEncode(requestBody);
-
-      // Make the POST request
-      final response = await http.post(
-        Uri.https(url, path),
-        headers: headers,
-        body: requestBodyJson,
-      );
-
-      // Check if the request was successful
-      if (response.statusCode == 200) {
-        print('Post successful');
-      } else {
-        print('Failed to post data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error in updateWorkSpaces: $e');
+    // Make the POST request
+    final response = await http.post(
+      Uri.https(url, path),
+      headers: headers,
+      body: requestBodyJson,
+    );
+    print(response);
+    // Check if the request was successful
+    if (response.statusCode == 200) {
+      print('Post successful');
+    } else {
+      print('Failed to post data: ${response.statusCode}');
     }
+  } catch (e) {
+    print('Error in updateWorkSpaces: $e');
   }
+}
+
 
   Future<List<Map<String, String>>> fetchImageUrl(List<int> speakerIds) async {
   String path = '/api/service/get_all_marketplace';
@@ -418,9 +426,9 @@ class Authentication extends ChangeNotifier {
       "type_media": "wav",
       "save_file": true,
     };
-
+    print('JWT token at Generate $credentialsToken');
     Map<String, String> headers = {
-      'Botnoi-Token': 'Bearer $jwtToken',
+      'Botnoi-Token': '$credentialsToken',
       'Content-Type': 'application/json',
     };
     try {
@@ -431,6 +439,7 @@ class Authentication extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
+        print('Json data = $jsonData');
         return jsonData['audio_url'];
       } else {
         print('Failed to post data: ${response.statusCode}');
@@ -441,6 +450,79 @@ class Authentication extends ChangeNotifier {
       return null;
     }
   }
+
+   Future<void> downloadFile(String audioUrl) async {
+    if (Platform.isAndroid) {
+      await _androidDownloadFunction(audioUrl);
+    } else if (Platform.isIOS) {
+      await _iOSDownloadFunction(audioUrl);
+    }
+  }
+
+  Future<void> _iOSDownloadFunction(String audioUrl) async {
+  try {
+    var response = await http.get(Uri.parse(audioUrl));
+    if (response.statusCode == 200) {
+      String filename = "BotnoiVoice${randomString(6)}.mp3";
+      var tempDir = await getTemporaryDirectory();
+      var path = '${tempDir.path}/$filename';
+      var file = File(path);
+      await file.writeAsBytes(response.bodyBytes);
+
+      print("Printing Path: ");
+      print(tempDir);
+      print(path);
+      print(file);
+
+      OpenAppFile.open(path);
+    } else {
+      print('Failed to download file: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('An error occurred: $e');
+  }
+}
+  Future<void> _androidDownloadFunction(String audioUrl) async {
+  try {
+    var filename = "BotnoiVoice${randomString(6)}.mp3";
+
+    // Get the download directory
+    List<Directory>? directories =
+        await getExternalStorageDirectories(type: StorageDirectory.downloads);
+    if (directories == null || directories.isEmpty) {
+      throw Exception('No external storage directories found');
+    }
+
+    // Create the full path by appending the filename to the directory path
+    String directoryPath = directories.first.path;
+    String filePath = "$directoryPath/$filename";
+
+    // Create the file object
+    var file = File(filePath);
+
+    // Download the file from the URL
+    var res = await http.get(Uri.parse(audioUrl));
+
+    // Check if the request was successful
+    if (res.statusCode == 200) {
+      // Write the downloaded bytes to the file
+      await file.writeAsBytes(res.bodyBytes);
+      print('Download successful: $filename');
+
+      print('Download complete');
+
+      print("Printing Path: ");
+      print(filename);
+      print(filePath);
+      print(file);
+      OpenAppFile.open(filePath);
+    } else {
+      print('Failed to download file: ${res.statusCode}');
+    }
+  } catch (e) {
+    print('An error occurred: $e');
+  }
+}
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();

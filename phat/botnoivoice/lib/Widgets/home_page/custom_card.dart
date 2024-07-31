@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/screens/edit_screen.dart';
 import 'package:botnoivoice/widgets/audio_player.dart';
 // import 'package:botnoivoice/widgets/home_page/custom_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // ignore: must_be_immutable
   class CustomCard extends StatefulWidget {
     final String sentences;
@@ -89,8 +93,8 @@ class _CustomCardState extends State<CustomCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.speakerName, style: const TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Prompt')),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Text('ไทย', style: const TextStyle(color: Colors.grey,fontFamily: 'Prompt')),
                       ),
                     ],
@@ -102,8 +106,10 @@ class _CustomCardState extends State<CustomCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             // Your download logic here
+                            final auth = Provider.of<Authentication>(context, listen: false);
+                            auth.downloadFile(widget.audioUrl);
                           },
                           child: const Icon(Icons.download_for_offline_outlined),
                         ),
@@ -153,8 +159,10 @@ class _CustomCardState extends State<CustomCard> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () //=>_editCard(context),
-                    {},
+                    onPressed: ()
+                    {
+                      _editCard(context);
+                    },
                   ),
                   const SizedBox(width: 5),
                 ],
