@@ -1,0 +1,1 @@
+ C:\\Users\\kku\\Desktop\\botnoi_voice_mobile\\botnoi-voice-mobile\\green\\mobileapp\\mobileapp\\.dart_tool\\flutter_build\\882df69768154c9765202d990b0a53ea\\native_assets.yaml: 

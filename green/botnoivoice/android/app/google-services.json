@@ -23,14 +23,6 @@
           }
         },
         {
-          "client_id": "822010349951-8df44f5rqbpqlh2v9aigfnsuh7kopddf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mobile.botnoivoice",
-            "certificate_hash": "5cddc181b14fadf70dc61009cbefd710e06e01ed"
-          }
-        },
-        {
           "client_id": "822010349951-l05mc6ev3d7pdv7o3t3qidn91ia518bh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

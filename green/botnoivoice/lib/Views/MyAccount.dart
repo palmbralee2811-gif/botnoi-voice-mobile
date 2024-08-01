@@ -55,7 +55,7 @@ class _MyAccountState extends State<MyAccount> {
               title: 'ชื่อผู้ใช้',
               value: '${auth.user!.displayName}',
             ),
-            UserInfoRow(title: 'UID', value: ' 3087755e-b0fa-5e07-937d-4ec4846f3987'),
+            UserInfoRow(title: 'UID', value: ' UID'),
             UserInfoRow(title: 'อีเมล', value: ' ${email ?? ' No email found'}'),
             Row(
               children: [

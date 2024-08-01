@@ -5,10 +5,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/data.dart';
 import 'package:botnoivoice/Function/randomString.dart';
+import 'package:botnoivoice/Model/models.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_icon_home.dart';
 import 'package:botnoivoice/Screens/HomeScreen/gradient_text_home.dart';
-import 'package:botnoivoice/Screens/LoginScreen/login.dart';
+import 'package:botnoivoice/Screens/my_home_page.dart';
 import 'package:botnoivoice/Widgets/favoritevoice.dart';
+import 'package:botnoivoice/Widgets/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,7 +44,6 @@ class _HomePageState extends State<HomePage> {
   String? language;
   List<String>? availableLanguage;
   String? credits;
-  String? userProfile;
 
   // Download File
   String progress = '';
@@ -73,11 +74,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    // final auth = Provider.of<Authentication>(context, listen: false);
+    // print("Printing initial state ${auth.credentialsToken}"); 
+    fetchedCredits();
+    super.initState();
+  }
+  Future<void> fetchedCredits() async{
     final auth = Provider.of<Authentication>(context, listen: false);
     credits = auth.getProfileWithToken(auth.jwtToken).toString();
-    print('(Credit) JWT token is : ${auth.jwtToken}');
 
-    super.initState();
+    print('(Credit) JWT token is : ${credits}');
   }
 
   @override
@@ -111,6 +117,7 @@ class _HomePageState extends State<HomePage> {
     User? user = FirebaseAuth.instance.currentUser;
     String? email = auth.getUserEmail(user);
 
+    // final user = FirebaseAuth.instance.currentUser;
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
 
@@ -166,8 +173,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: const Color(0xFFFFFFFF),
         // backgroundColor: Colors.black,
-
-        title: appBar(context, auth.credits ?? 'N/A'),
+        title: CustomAppBar(context),
       ),
       body: Column(
         children: <Widget>[
@@ -409,93 +415,93 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget appBar(BuildContext context, String text) {
-    //// รับค่า text มาใช้คำนวณ
-    final auth = Provider.of<Authentication>(context);
-
-    return SafeArea(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 88.w, top: 5.h),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Image.asset(
-                    'assets/logo/Aboutus_icon.png',
-                    width: 25.w,
-                    height: 25.h,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(right: 5.w),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromARGB(255, 224, 221, 221),
-                                blurRadius: 3.0,
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(width: 5.w),
-                              SizedBox(
-                                height: 25.h,
-                                width: 20.h,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/logo/point.png',
-                                        width: 20.w,
-                                        height: 20.h,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    ' ${auth.credits ?? " N/A"}',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF323130),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 5.w),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget appBar(BuildContext context) {
+  //   final auth = Provider.of<Authentication>(context);
+  //   credits = auth.credits;
+  //   print('credits iss ${credits}');
+  //   return SafeArea(
+  //     child: Column(
+  //       children: [
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Padding(
+  //               padding: EdgeInsets.only(left: 88.w, top: 5.h),
+  //               child: CircleAvatar(
+  //                 backgroundColor: Colors.white,
+  //                 child: Image.asset(
+  //                   'assets/logo/Aboutus_icon.png',
+  //                   width: 25.w,
+  //                   height: 25.h,
+  //                   fit: BoxFit.cover,
+  //                 ),
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: EdgeInsets.only(right: 5.w),
+  //               child: Column(
+  //                 children: [
+  //                   Row(
+  //                     children: [
+  //                       Container(
+  //                         decoration: BoxDecoration(
+  //                           boxShadow: const [
+  //                             BoxShadow(
+  //                               color: Color.fromARGB(255, 224, 221, 221),
+  //                               blurRadius: 3.0,
+  //                             ),
+  //                           ],
+  //                           color: Colors.white,
+  //                           borderRadius: BorderRadius.circular(50),
+  //                         ),
+  //                         child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             SizedBox(width: 5.w),
+  //                             SizedBox(
+  //                               height: 25.h,
+  //                               width: 20.h,
+  //                               child: Padding(
+  //                                 padding: const EdgeInsets.all(2),
+  //                                 child: Column(
+  //                                   mainAxisAlignment: MainAxisAlignment.center,
+  //                                   children: [
+  //                                     Image.asset(
+  //                                       'assets/logo/point.png',
+  //                                       width: 20.w,
+  //                                       height: 20.h,
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             Column(
+  //                               children: [
+  //                                 Text(
+  //                                   ' ${credits ?? " N/A"}',
+  //                                   style: GoogleFonts.prompt(
+  //                                     fontSize: 12.sp,
+  //                                     fontWeight: FontWeight.w600,
+  //                                     color: const Color(0xFF323130),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                             SizedBox(width: 5.w),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   bool ishover = false;
   Widget categoryVoiceHome(BuildContext context) {
@@ -626,7 +632,6 @@ class _HomePageState extends State<HomePage> {
                     print("\n### START voiceWidGetHome ###\n");
                     print("-> speakerId: $speakerId");
                     print("-> language: $language");
-                    print("-> squareImage: ${data.squareImage.toString()}");
                     print("-> availableLanguage: $availableLanguage");
                     print("\n### END voiceWidGetHome ###\n");
 
@@ -663,7 +668,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           borderRadius: BorderRadius.circular(8.r),
                           image: DecorationImage(
-                            image: AssetImage(
+                            image: NetworkImage(
                               AppDataBase.data[index].squareImage,
                             ),
                             fit: BoxFit.cover,
@@ -821,7 +826,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildVoiceHome(BuildContext context) {
     double screenSizewidth = MediaQuery.of(context).size.width;
     double screenSizeheight = MediaQuery.of(context).size.height;
-
+    List<ListProject> listProjects = [];
     return Container(
       height: screenSizeheight * 0.093.h,
       width: screenSizewidth * 0.78.w,
@@ -872,43 +877,51 @@ class _HomePageState extends State<HomePage> {
                       GradientButtonHome(
                     text: 'สร้างเสียง',
                     onPressed: () async {
-                      print("\n### START generateAudio -> 889 ###\n");
+                        
+                      print('สร้างเสียง');
 
                       // await generateAudio(textController.text).then((_) {
                       //   print('response $_response');
                       //   downloadFile();
                       //   print('progress -> downloadFile(): $progress \n');
                       // });
-
-                      setState(() {
-                        if (textController.text.isNotEmpty) {
+                    
+                      if (textController.text.isNotEmpty) {
+                        setState(() {
                           audioPlayer.stop();
-                        }
-                      });
-
-                      if (!isLoading) {
-                        if (textController.text.isNotEmpty) {
-                          await generateAudio(textController.text).then((_) {
-                            print('response $_response');
-                            downloadFile();
-                            print('progress -> downloadFile(): $progress \n');
-
-                            setState(() {
-                              // อัพเดตค่า credits หลังจากการทำงานเสร็จสิ้น
-                              final auth = Provider.of<Authentication>(context,
-                                  listen: false);
-                              credits = auth
-                                  .getProfileWithToken(auth.jwtToken)
-                                  .toString();
-                            });
-                          });
-
-                          setState(() {
-                            isLoading = false;
-                          });
-                        }
+                          isLoading = true;
+                        });
+                        // try{
+                        //  await generateAudio(textController.text);
+                        // }
                       }
-                      print("\n### END generateAudio -> 922 ###\n");
+                      
+                        if (textController.text.isNotEmpty) {
+                          final auth = Provider.of<Authentication>(context, listen: false);
+                          // await generateAudio(textController.text).then((_) async {
+                          //   print('response $_response');
+                          //   // downloadFile();
+                          //   print('progress -> downloadFile(): $progress \n');
+                          //   setState(() {
+                              
+                          //     credits = auth.getProfileWithToken(auth.jwtToken).toString();
+                          //   });   
+                          // });
+                          _audioUrl = await generateAudio(textController.text); 
+                          print('printing audiourl $_audioUrl');
+                          var temp_text = textController.text;
+                          print('printing audiourl $temp_text');
+                          if(_audioUrl.isNotEmpty&&_audioUrl!=''){
+                            print("In the loops $temp_text");
+                            await textSave(textController.text,_audioUrl);
+                          }
+                        }
+                      
+                      print("\n### END generateAudio -> Line 410 ### \n");
+                      Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MyHomePage()),
+                      );
                     },
                   ),
                 ),
@@ -920,15 +933,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> generateAudio(String text) async {
+  Future<String> generateAudio(String text) async {
     setState(() {
       isLoading = true;
       _response = '';
       _audioUrl = '';
     });
-
+    
     final auth = Provider.of<Authentication>(context, listen: false);
-    // print('Printting auth when generating ${auth.credentialsToken}');
+    print('Printting auth when generating ${auth.credentialsToken}');
 
     print(
         '\n ## generateAudio ## \n credentialsToken: ${auth.credentialsToken} \n text: $text \n speaker: $speakerId');
@@ -961,38 +974,86 @@ class _HomePageState extends State<HomePage> {
         final jsonData = jsonDecode(response.body);
         setState(() {
           _audioUrl = jsonData['audio_url'];
-          _response = "Request successful!";
           print("generateAudio -> _audioUrl: $_audioUrl");
+
           isLoading = false;
-        });
-      } else if (response.statusCode == 404) {
-        // เครดิตไม่พอ
-        _response = "Not enough credits: ${response.statusCode}";
-        print("not enough credits");
-      } else if (response.statusCode == 403) {
-        // ถ้ายังไม่ได้ ใส่ text และ เลือกเสียงพากษ์ ไม่สามารถสร้างเสียงได้
-        setState(() {
-          _response = "Something went wrong: ${response.statusCode}";
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          _response =
-              "Failed to retrieve data. Status Code: ${response.statusCode}";
-          isLoading = false;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
         });
       }
+      else if (response.statusCode==403){
+        setState(() {
+          _response =
+              "Something went wrong: ${response.statusCode}";
+          isLoading = false;
+        });
+      }
+      else if(response.statusCode==404){
+        _response =
+              "Not enough credits: ${response.statusCode}";
+        print("not enough credits");
+      } 
+      
+      else{
+        setState(() {
+            _response =
+                "Failed to retrieve data. Status Code: ${response.statusCode}";
+            isLoading = false;
+            auth.signOut();
+          });
+        }
     } catch (e) {
       setState(() {
         _response = "Failed to connect to the server. Error: $e";
         isLoading = false;
       });
     }
+    return _audioUrl;
   }
+
+ Future<void> textSave(String text, String audioUrl) async {
+  final auth = Provider.of<Authentication>(context, listen: false);
+  print('Printing auth when generating ${auth.credentialsToken}');
+
+  // Define the new WorkSpace object
+  WorkSpace newWorkSpace = WorkSpace(
+    text: textController.text,
+    speaker: int.parse(speakerId!),
+    audioId: '',
+    speed: '1',
+    statusDownload: true,
+    url: audioUrl,
+    volume: '1',
+  );
+
+  // Fetch existing workspaces for the project
+  await auth.getAllWorkspace();
+  if (auth.listProjects.isNotEmpty) {
+    // Assuming you are working with the first project (adjust index as needed)
+    ListProject project = auth.listProjects[0];
+    print('Project ID: ${project.workspaceId}');
+    print('Existing WorkSpaces: ${project.workSpaces.length}');
+
+    // Create a new list from existing workspaces
+    List<WorkSpace> existingWorkSpaces = List<WorkSpace>.from(project.workSpaces);
+    print('Existing WorkSpaces (copied): ${existingWorkSpaces.length}');
+
+    // Add the new workspace to the existing workspaces
+    existingWorkSpaces.add(newWorkSpace);
+    print('New WorkSpace added. Total WorkSpaces: ${existingWorkSpaces.length}');
+
+    // Update the workspaces with the new list
+    await auth.updateWorkSpaces(project.workspaceId, existingWorkSpaces);
+  } else {
+    print('No projects found.');
+  }
+
+  if (mounted) {
+    setState(() {
+      print('New workspace added.');
+    });
+  }
+}
+
+
 
   Future<void> downloadFile() async {
     if (Platform.isAndroid) {
