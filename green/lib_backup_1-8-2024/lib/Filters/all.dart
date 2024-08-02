@@ -1,8 +1,8 @@
-import 'package:botnoivoice/Screens/HomeScreen/display_all_voice_screen.dart';
+
+import 'package:botnoivoice/Screens/HomeScreen/seeall.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 class All extends StatefulWidget {
   const All({
     super.key,
@@ -18,23 +18,23 @@ class _AllState extends State<All> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+
         setState(() {
           if (ishover == true) {
             ishover = !ishover;
-          }
+          } 
         });
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const DisplayAllVoiceScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SeeAll()));
+        
+
       },
       child: Container(
         width: 63.w,
         height: 26.h,
-        decoration: BoxDecoration(
-          gradient: ishover
-              ? const LinearGradient(
-                  colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
-                )
-              : null,
+       decoration:BoxDecoration(
+          gradient: ishover ? const LinearGradient(
+            colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+          ) : null,
           borderRadius: const BorderRadius.all(
             Radius.circular(4),
           ),
@@ -49,21 +49,20 @@ class _AllState extends State<All> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ishover
-                    ? Text(
-                        'ดูทั้งหมด',
-                        style: GoogleFonts.prompt(
-                          fontSize: 12.sp,
-                          color: const Color(0xFFFFFFFF),
-                        ),
-                      )
-                    : Text(
-                        'ดูทั้งหมด',
-                        style: GoogleFonts.prompt(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF323130),
-                        ),
-                      ),
+                ishover ? Text(
+                  'ดูทั้งหมด',
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                    color: const Color(0xFFFFFFFF),
+                  ),
+                ) : Text(
+                  'ดูทั้งหมด',
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                    color: const Color(0xFF323130),
+                  ),
+                ),
+               
               ],
             )
           ],
@@ -72,7 +71,6 @@ class _AllState extends State<All> {
     );
   }
 }
-
 class GradientButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;

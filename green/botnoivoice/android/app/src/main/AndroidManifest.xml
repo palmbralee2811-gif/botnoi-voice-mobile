@@ -2,7 +2,11 @@
     <application
         android:label="Botnoi Voice"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
+        <!-- OnBackInvokedCallback เป็น callback ที่ใช้จัดการการกลับ (back) 
+        บน Android 13 (API level 33) ขึ้นไป ซึ่งแนะนำให้เปิดใช้งานใน 
+        AndroidManifest.xml เพื่อให้แอปพลิเคชันสามารถจัดการการกลับแบบใหม่ของระบบได้ -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

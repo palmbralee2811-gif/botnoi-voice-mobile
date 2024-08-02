@@ -30,8 +30,8 @@ class GradientBorderPainter extends CustomPainter {
     _drawDashedLine(canvas, rRect, paint);
   }
   void _drawDashedLine(Canvas canvas, RRect rRect, Paint paint) {
-    final dashWidth = 10.0; // Increase the length of the dash
-    final dashSpace = 7.0;
+    const dashWidth = 10.0; // Increase the length of the dash
+    const dashSpace = 7.0;
     double distance = 0.0;
 
     final path = Path()..addRRect(rRect);
