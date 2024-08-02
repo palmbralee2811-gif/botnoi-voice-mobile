@@ -45,7 +45,7 @@ class _DownloadingState extends State<Downloading> {
                         width: 50,
                         child: CircularProgressIndicator(
                           value: value,
-                          backgroundColor: Color(0xFFF7F8FA),
+                          backgroundColor: const Color(0xFFF7F8FA),
                           strokeWidth: 5,
                         ),
                       ),
@@ -72,7 +72,7 @@ class _DownloadingState extends State<Downloading> {
                       children: [
                         ShaderMask(
                           blendMode: BlendMode.srcIn,
-                          shaderCallback: (bounds) => LinearGradient(
+                          shaderCallback: (bounds) => const LinearGradient(
                             colors: <Color>[
                               Color(0xFF9340FF),
                               Color(0xFF34BDFA),
@@ -81,7 +81,7 @@ class _DownloadingState extends State<Downloading> {
                             end: Alignment.bottomRight,
                           ).createShader(
                               Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                          child: Icon(
+                          child: const Icon(
                             Icons.check_circle,
                             color: Colors.green,
                             size: 60,
