@@ -184,7 +184,7 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
         ),
       ),
 
-      drawer: DrawerAppbar(
+      drawer: DrawerAppbarScreen(
         auth: auth,
         email: email,
         screenSizeheight: MediaQuery.of(context).size.height,

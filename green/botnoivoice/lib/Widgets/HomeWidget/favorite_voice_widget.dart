@@ -1,5 +1,5 @@
 // import 'package:botnoivoice/widgets/CategoryVoice.dart';
-import 'package:botnoivoice/Database/data.dart';
+import 'package:botnoivoice/Database/newdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,20 +15,20 @@ class FavoriteVoiceWidget extends StatefulWidget {
   });
   final double screenSizeheight;
   final double screenSizewidth;
-  final List<Data> data;
+  final List<NewData> data;
   @override
   State<FavoriteVoiceWidget> createState() => _FavoriteVoiceWidgetState();
 }
 
 class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
-  final List<Data> data = AppDataBase.data;
+  final List<NewData> data = NewAppDataBase.data;
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Choice Voice'),
+        const Text('Choice Voice'),
         if (data.isNotEmpty)
           SizedBox(
             height: widget.screenSizeheight * 0.165.h,

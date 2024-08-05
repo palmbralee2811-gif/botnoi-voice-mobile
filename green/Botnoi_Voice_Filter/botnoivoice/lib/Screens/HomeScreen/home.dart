@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
-  List<String> selectedIndexFavorites = []; /////เลือกเสียงที่ชอบ  new
+  List<String> selectedIndexFavorites = []; // เลือกเสียงที่ชอบ
 
   // final List<Data> _favoriteVoice = [];
 

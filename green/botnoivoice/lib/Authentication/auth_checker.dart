@@ -40,7 +40,7 @@ class _AuthCheckerState extends State<AuthChecker> {
     if (Provider.of<Authentication>(context).isAuthenticated != false) {
       return const HomeScreen();
     } else {
-      return const LoginScreen();
+      return const SignInScreen();
     }
   }
 }

@@ -1,27 +1,12 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:botnoivoice/Filters/advert.dart';
-import 'package:botnoivoice/Filters/all.dart';
+import 'package:botnoivoice/Database/newdata.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
-// import 'package:botnoivoice/Filters/favorite.dart';
-import 'package:botnoivoice/Filters/language.dart';
-import 'package:botnoivoice/Filters/new.dart';
-import 'package:botnoivoice/Filters/podcast.dart';
-import 'package:botnoivoice/Filters/recomman.dart';
-import 'package:botnoivoice/Filters/sex.dart';
-import 'package:botnoivoice/Filters/voice.dart';
 import 'package:botnoivoice/Widgets/HomeWidget/favorite_voice_widget.dart';
-// import 'package:flow3/model/favoritemodel.dart';
 import 'package:flutter/material.dart';
-import 'package:botnoivoice/Database/data.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-// import 'package:provider/provider.dart';
-// import 'package:flow3/widgets/story_viewer.dart';
 
 class CategoryVoiceWidget extends StatefulWidget {
   const CategoryVoiceWidget({
@@ -42,7 +27,7 @@ class _CategoryVoiceWidgetState extends State<CategoryVoiceWidget> {
     double screenSizeheight = MediaQuery.of(context).size.height;
 
     // var screenSize = MediaQuery.of(context).size;
-    final data = AppDataBase.data;
+    final data = NewAppDataBase.data;
     // final filterModel = Provider.of<FilterModel>(context);
 
     return Column(
@@ -121,7 +106,7 @@ class VoiceWidget extends StatefulWidget {
 
   final double screenSizeheight;
   final double screenSizewidth;
-  final List<Data> data;
+  final List<NewData> data;
   // final void Function(Data data) onToggleFavorite;
 
   @override

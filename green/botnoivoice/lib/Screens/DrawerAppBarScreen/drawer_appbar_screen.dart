@@ -2,7 +2,7 @@ import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Filters/languagedrawer.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
-import 'package:botnoivoice/Screens/SignInScreen/sign_in_screen.dart';
+import 'package:botnoivoice/Screens/PackageScreen/package_screen.dart';
 import 'package:botnoivoice/Widgets/DrawerAppBarWidget/about_us_widget.dart';
 import 'package:botnoivoice/Widgets/DrawerAppBarWidget/faq_widget.dart';
 import 'package:botnoivoice/Widgets/DrawerAppBarWidget/my_account_widget.dart';
@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DrawerAppbar extends StatelessWidget {
-  const DrawerAppbar({
+class DrawerAppbarScreen extends StatelessWidget {
+  const DrawerAppbarScreen({
     super.key,
     required this.auth,
     required this.email,
@@ -137,7 +137,13 @@ class DrawerAppbar extends StatelessWidget {
                 color: const Color(0xFF323130),
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PackageScreen()));
+              print("Package");
+            },
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
@@ -204,32 +210,6 @@ class DrawerAppbar extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => const AboutUsWidget()));
               print("About Us");
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-            leading: Icon(
-              Icons.logout,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'ออกจากระบบ',
-              style: GoogleFonts.prompt(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
-              ),
-            ),
-            onTap: () async {
-              await auth.signOut();
-              if (!context.mounted) return;
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
             },
           ),
           SizedBox(height: 10.h),

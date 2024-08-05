@@ -3,21 +3,19 @@ import 'package:botnoivoice/Screens/AcceptScreen/privacy_policy_screen.dart';
 import 'package:botnoivoice/Screens/AcceptScreen/terms_service_screen.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
 import 'package:botnoivoice/Screens/SignInScreen/gradient_text_sign_in_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   late Size mediaSize;
   bool _isChecked = false;
 

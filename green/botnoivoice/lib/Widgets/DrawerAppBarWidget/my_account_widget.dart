@@ -87,7 +87,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
+                    builder: (context) => const SignInScreen(),
                   ),
                 );
               },
