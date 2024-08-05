@@ -12,6 +12,7 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
+  /// Check if the app is initialized
   bool _initialized = false;
 
   @override

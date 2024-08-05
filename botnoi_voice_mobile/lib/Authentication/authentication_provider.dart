@@ -21,6 +21,7 @@ class Authentication extends ChangeNotifier {
     });
   }
 
+  /// Sign in with Google
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
