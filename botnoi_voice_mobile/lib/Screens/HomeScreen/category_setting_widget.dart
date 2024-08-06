@@ -1,17 +1,17 @@
-import 'package:botnoivoice/Filters/language.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/language_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 //
-class CategorySettingWidget extends StatefulWidget {
-  const CategorySettingWidget({super.key});
+class CategorySettings extends StatefulWidget {
+  const CategorySettings({super.key});
 
   @override
-  _CategorySettingWidgetState createState() => _CategorySettingWidgetState();
+  State<CategorySettings> createState() => _CategorySettingsState();
 }
 
-class _CategorySettingWidgetState extends State<CategorySettingWidget> {
+class _CategorySettingsState extends State<CategorySettings> {
   double speedValue = 1.0; // ความเร็ว
   double _volumevalue = 100; // ความดัง
   @override
@@ -32,7 +32,7 @@ class _CategorySettingWidgetState extends State<CategorySettingWidget> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Language(),
+                const LanguageFilter(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

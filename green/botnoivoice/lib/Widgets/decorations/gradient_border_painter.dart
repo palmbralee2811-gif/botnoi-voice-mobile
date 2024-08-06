@@ -1,16 +1,13 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class GradientBorderPainter extends CustomPainter {
   final List<Color> gradientColors;
   final double borderRadius;
 
-  GradientBorderPainter({
-    required this.gradientColors, 
-    required this.borderRadius
-    });
-  
+  GradientBorderPainter(
+      {required this.gradientColors, required this.borderRadius});
+
   @override
   void paint(Canvas canvas, Size size) {
     final Rect rect = Offset.zero & size;
@@ -23,12 +20,11 @@ class GradientBorderPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
-    final RRect rRect = RRect.fromRectAndRadius(
-      rect.deflate(1),
-      Radius.circular(borderRadius)
-    );
+    final RRect rRect =
+        RRect.fromRectAndRadius(rect.deflate(1), Radius.circular(borderRadius));
     _drawDashedLine(canvas, rRect, paint);
   }
+
   void _drawDashedLine(Canvas canvas, RRect rRect, Paint paint) {
     const dashWidth = 10.0; // Increase the length of the dash
     const dashSpace = 7.0;
@@ -38,15 +34,18 @@ class GradientBorderPainter extends CustomPainter {
 
     for (PathMetric measurePath in path.computeMetrics()) {
       while (distance < measurePath.length) {
-        final extractPath = measurePath.extractPath(distance, distance + dashWidth);
+        final extractPath =
+            measurePath.extractPath(distance, distance + dashWidth);
         canvas.drawPath(extractPath, paint);
         distance += dashWidth + dashSpace;
       }
       distance = 0.0; // Reset distance for next segment
     }
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
   }
 }
+

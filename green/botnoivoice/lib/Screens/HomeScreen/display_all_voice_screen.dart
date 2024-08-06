@@ -1455,13 +1455,11 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
               // itemCount: AppDataBase.data.length, //old
 
               itemCount: NewAppDataBase.data
-                  .where((item) => 
+                  .where((item) =>
                       (gender == '' || item.gender == gender) &&
-                      (language == '' || item.language == language)
-                      &&
+                      (language == '' || item.language == language) &&
                       (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
-                      (speechStyle == '' || item.speechStyle == speechStyle)
-                      )
+                      (speechStyle == '' || item.speechStyle == speechStyle))
                   .length, //new
 
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -1473,14 +1471,11 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
               itemBuilder: (context, index) {
                 // final data = AppDataBase.data[index];   /////////////////////////////old.
                 final data = NewAppDataBase.data
-                    .where(
-                        (item) => 
+                    .where((item) =>
                         (gender == '' || item.gender == gender) &&
-                        (language == '' || item.language == language)
-                        &&
+                        (language == '' || item.language == language) &&
                         (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
-                        (speechStyle == '' || item.speechStyle == speechStyle)
-                        )
+                        (speechStyle == '' || item.speechStyle == speechStyle))
                     .toList()[index]; ////new
                 print(data.language);
                 return voicewidget(data, index);
@@ -1505,7 +1500,8 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (isAudioPlaying) {
-                    await audioPlayer.stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                    await audioPlayer
+                        .stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
                   }
                   await audioPlayer.play(UrlSource(audioURL));
                   setState(() {
@@ -1524,6 +1520,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                   print("Audio URL is empty, cannot play audio");
                 }
               }
+
               await playAudio();
               speakerId = data.speakerId;
               print("-> speakerId: $speakerId");

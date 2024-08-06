@@ -3,8 +3,8 @@ import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/about_us_screen.d
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/account_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/faq_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/review_screen.dart';
-import 'package:botnoi_voice_mobile/Screens/GradientScreen/gradient_icon.dart';
-import 'package:botnoi_voice_mobile/Screens/GradientScreen/gradient_text.dart';
+import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
+import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';

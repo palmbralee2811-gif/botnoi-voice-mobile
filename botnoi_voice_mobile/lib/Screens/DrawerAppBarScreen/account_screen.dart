@@ -1,5 +1,5 @@
 import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
-import 'package:botnoi_voice_mobile/Screens/GradientScreen/gradient_button.dart';
+import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
