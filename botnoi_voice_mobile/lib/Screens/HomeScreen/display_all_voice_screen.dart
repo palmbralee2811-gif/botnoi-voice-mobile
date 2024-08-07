@@ -463,7 +463,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         _isSelected = !_isSelected;
                       });
                     },
-                    child: FavouriteGenreFilter(isSelected: _isSelected),
+                    child: FavouriteFilterButton(isSelected: _isSelected),
                   ),
                   InkWell(
                     onTap: () {

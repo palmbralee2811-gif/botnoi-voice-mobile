@@ -1,3 +1,4 @@
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/favourite_genre_filter.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/favourite_voice_widget.dart';
@@ -20,9 +21,6 @@ class _CategoryVoiceWidgetState extends State<CategoryVoiceWidget> {
   bool _isSelected = false;
   @override
   Widget build(BuildContext context) {
-    double screenSizewidth = MediaQuery.of(context).size.width;
-    double screenSizeheight = MediaQuery.of(context).size.height;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -39,22 +37,15 @@ class _CategoryVoiceWidgetState extends State<CategoryVoiceWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // const Language(),
-                      // const Sex(),
-                      // const Recommand(),
                       InkWell(
                         onTap: () {
                           setState(() {
                             _isSelected = !_isSelected;
                           });
                         },
-                        child: FavouriteGenreFilter(isSelected: _isSelected),
+                        child: FavouriteFilterButton(
+                            isFavouriteSelected: _isSelected),
                       ),
-                      // const All(),
-                      // const New(),
-                      // const Voice(),
-                      // const Advert(),
-                      // const Podcast(),
                     ],
                   ),
                 ),
@@ -71,13 +62,9 @@ class _CategoryVoiceWidgetState extends State<CategoryVoiceWidget> {
             children: [
               _isSelected
                   ? FavoriteVoiceWidget(
-                      screenSizeheight: screenSizeheight,
-                      screenSizewidth: screenSizewidth,
                       speakerMetadata: speakerMetadata,
                     )
                   : VoiceWidget(
-                      screenSizeheight: screenSizeheight,
-                      screenSizewidth: screenSizewidth,
                       speakerMetadata: speakerMetadata,
                     )
             ],
@@ -94,13 +81,11 @@ class VoiceWidget extends StatefulWidget {
     required this.screenSizeheight,
     required this.screenSizewidth,
     required this.speakerMetadata,
-    // required this.onToggleFavorite,
   });
 
   final double screenSizeheight;
   final double screenSizewidth;
   final List<SpeakerMetadataModel> speakerMetadata;
-  // final void Function(Data data) onToggleFavorite;
 
   @override
   State<VoiceWidget> createState() => _VoiceWidgetState();
@@ -109,17 +94,6 @@ class VoiceWidget extends StatefulWidget {
 class _VoiceWidgetState extends State<VoiceWidget> {
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
-  // final List<Data> _favoriteVoice = [];
-
-  // void _toggleVoiceFavorite(Data data) {
-  //   final isExist = _favoriteVoice.contains(data);
-
-  //   if (isExist) {
-  //     _favoriteVoice.remove(data);
-  //   } else {
-  //     _favoriteVoice.add(data);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +119,6 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                       if (selectedIndex.contains(index)) {
                         selectedIndex.remove(index);
                       } else {
-                        // Clear the previously selected index before adding the new one
                         selectedIndex.clear();
                         selectedIndex.add(index);
                       }
@@ -209,15 +182,16 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                                 BorderRadius.circular(8.r),
                                           ),
                                           child: Center(
-                                            child: Text('เลือก',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontStyle:
-                                                      GoogleFonts.prompt()
-                                                          .fontStyle,
-                                                  fontSize: 10.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                )),
+                                            child: Text(
+                                              'เลือก',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontStyle: GoogleFonts.prompt()
+                                                    .fontStyle,
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         )
                                       : const Icon(

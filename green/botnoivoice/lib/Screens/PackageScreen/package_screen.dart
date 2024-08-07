@@ -1,16 +1,15 @@
 import 'package:botnoivoice/Screens/PackageScreen/AddOnPackage/more.dart';
 import 'package:botnoivoice/Screens/PackageScreen/AddOnPackage/noads.dart';
 import 'package:botnoivoice/Screens/PackageScreen/AddOnPackage/report.dart';
-import 'package:botnoivoice/Screens/PackageScreen/Buypoint/Indicatethepoints.dart';
-import 'package:botnoivoice/Screens/PackageScreen/Buypoint/buffetpackage.dart';
-import 'package:botnoivoice/Screens/PackageScreen/Buypoint/expertpackage.dart';
-import 'package:botnoivoice/Screens/PackageScreen/Buypoint/promotionCard.dart';
-import 'package:botnoivoice/Screens/PackageScreen/Buypoint/regularpackage.dart';
-import 'package:botnoivoice/Screens/PackageScreen/Buypoint/startpackage.dart';
+import 'package:botnoivoice/Screens/PackageScreen/BuyPoint/Indicatethepoints.dart';
+import 'package:botnoivoice/Screens/PackageScreen/BuyPoint/buffetpackage.dart';
+import 'package:botnoivoice/Screens/PackageScreen/BuyPoint/expertpackage.dart';
+import 'package:botnoivoice/Screens/PackageScreen/BuyPoint/promotionCard.dart';
+import 'package:botnoivoice/Screens/PackageScreen/BuyPoint/regularpackage.dart';
+import 'package:botnoivoice/Screens/PackageScreen/BuyPoint/startpackage.dart';
 import 'package:botnoivoice/Screens/PackageScreen/point_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class PackageScreen extends StatefulWidget {
   const PackageScreen({super.key});

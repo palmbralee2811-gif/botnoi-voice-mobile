@@ -1,6 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_gender_metadata.dart';
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
+import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
-import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/text_box_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
@@ -9,8 +11,6 @@ import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/favourite_genre_f
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/recommended_filters.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/select_all_genre_button.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/category_setting_widget.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/select_voice_screen.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/setting_audio_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
 import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/workspace_screen.dart';
@@ -25,7 +25,6 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  final int maxLength = 1000;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -35,40 +34,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Generate Audio
   String _audioUrl = '';
-  String? speakerId;
-  String? language; // เลือกภาษา   new
-  String? gender; ////เลือกเพศ
-  String? speechStyle; /////เลือกสไตล์
-  String? voiceStyle; /////เลือกหมวดหมู่
+  String? _selectedSpeakerId;
 
-  List<String>? availableLanguage;
-  String? credits;
+  String _selectedLanguage = "TH";
+  String _selectedLanguageImage =
+      'assets/logo/Ellipse 12.jpg'; ///// กำหนดรูปค่าเริ่มต้น new
+
+  String _selectedGender = "";
+  String _selectedSpeechStyle = "";
+  String _selectedVoiceStyle = "";
 
   // Download File
-  String progress = '';
-  bool isLoading = false;
-  AudioPlayer audioPlayer = AudioPlayer();
+  String downloadProgress = '';
+  bool isDownloading = false;
 
-  // Player Audio
+  // Audio Player
+  final AudioPlayer audioPlayer = AudioPlayer();
   bool isAudioPlaying = false;
-  List<SpeakerMetadataModel>? data;
 
-  // Download Audio
-  String selectedTypeMedia = 'mp3';
-
-  Set<int> selectedIndex2 = <int>{};
-  Set<int> selectedIndex = <int>{};
+  Set<int> selectedIndex2 = {};
+  Set<int> selectedIndex = {};
   List<String> selectedIndexFavorites = []; // เลือกเสียงที่ชอบ
-
-  @override
-  void initState() {
-    super.initState();
-    language = 'TH'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
-    gender = ''; ///////////////////////// กำนดค่าเริ่มต้น  new
-    speechStyle = ''; // สไตล์ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-    voiceStyle = ''; // หมวดหมู่ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-    /// กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
-  }
 
   @override
   void dispose() {
@@ -92,17 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  ///เลือกภาษา
-  String selectedLanguage = 'ไทย'; ///// กำหนดค่าเริ่มต้น  new
-  String selectedLanguageImage =
-      'assets/logo/Ellipse 12.jpg'; ///// กำหนดรูปค่าเริ่มต้น new
-  bool isExpanded = false;
+  bool _isFavouriteSelected = false;
 
-  ///เลือกเพศ
-  String selectedGender = 'ช/ญ'; ///// กำหนดค่าเริ่มต้น  new
-  String selectedGenderImage =
-      'assets/logo/Category.jpg'; ///// กำหนดรูปค่าเริ่มต้น  new
+  //เลือกภาษา
+
   bool changeIcon = false; /////////////เลือกเพศ
+
   bool selectStyle = false; /////////////เลือกสไตล์
   bool selectStyle1 = false; /////////////เลือกสไตล์
   bool selectStyle2 = false; /////////////เลือกสไตล์
@@ -182,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: Colors.white,
         title: WorkspaceAppBarWidget(context),
       ),
       body: Column(
@@ -223,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           children: [
                             TextField(
-                              cursorColor: const Color(0xFF000000),
+                              cursorColor: Colors.white,
                               style: GoogleFonts.prompt(
                                 fontSize: 14.sp,
                                 color: const Color(0xFF323130),
@@ -237,14 +218,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               keyboardType: TextInputType.multiline,
                               controller: textController,
                               onChanged: (text) {
-                                if (textController.text.length >
-                                    widget.maxLength) {
-                                  textController.text = textController.text
-                                      .substring(0, widget.maxLength);
+                                if (textController.text.length > 1000) {
+                                  textController.text =
+                                      textController.text.substring(0, 1000);
                                   textController.selection =
                                       TextSelection.fromPosition(
                                     TextPosition(
-                                        offset: textController.text.length),
+                                      offset: textController.text.length,
+                                    ),
                                   );
                                 }
                                 setState(() {
@@ -277,16 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ? Padding(
                                               padding:
                                                   EdgeInsets.only(right: 1.w),
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  textStyle: TextStyle(
-                                                      fontSize: 10.sp),
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    // _showClearIcon = false; // To update the counter
-                                                  });
-                                                },
+                                              child: InkWell(
                                                 child: Icon(
                                                   Icons.close_sharp,
                                                   size: 20.sp,
@@ -297,17 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           : Padding(
                                               padding:
                                                   EdgeInsets.only(right: 1.w),
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  textStyle: TextStyle(
-                                                      fontSize: 10.sp),
-                                                ),
-                                                onPressed: () {
-                                                  textController.clear();
-                                                  setState(() {
-                                                    // _showClearIcon = false; // To update the counter
-                                                  });
-                                                },
+                                              child: InkWell(
                                                 child: GradientIcon(
                                                   icon: Icons.close_sharp,
                                                   size: 20.sp,
@@ -341,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       Text(
-                                        ' / ${widget.maxLength}',
+                                        ' / 1000',
                                         style: GoogleFonts.prompt(
                                           fontSize: 14.sp,
                                           color: const Color(0xFFA19F9D),
@@ -363,12 +325,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: Container(
-              color: const Color(0xFFFFFFFF),
+              color: Colors.white,
               height: _inputtext == 1
                   ? screenSizeheight * 0.50
                   : screenSizeheight * 0.26,
-              child: Column(children: [
-                InkWell(
+              child: Column(
+                children: [
+                  InkWell(
                     onTap: () {
                       if (_selectedPageIndexVoice == 0) {
                         _selectPageVoice(1);
@@ -378,33 +341,108 @@ class _HomeScreenState extends State<HomeScreen> {
                         _selectPageVoice(1);
                       }
                     },
-                    child: SelectVoiceScreen(
-                        screenSizeheight: screenSizeheight,
-                        selectedPageIndexVoice: _selectedPageIndexVoice)),
-                if (_selectedPageIndexVoice == 1) ...[
-                  categoryVoiceHome(context)
-                ],
-                InkWell(
-                  onTap: () {
-                    if (_selectedPageIndexSetting == 0) {
-                      _selectPageSetting(1);
-                    } else if (_selectedPageIndexSetting == 1) {
-                      _selectPageSetting(2);
-                    } else if (_selectedPageIndexSetting == 2) {
-                      _selectPageSetting(1);
-                    }
-                  },
-                  child: SettingAudioScreen(
-                      screenSizeheight: screenSizeheight,
-                      selectedPageIndexSetting: _selectedPageIndexSetting),
-                ),
-                if (_selectedPageIndexSetting == 1) ...[
-                  const CategorySettings()
-                ],
-                Expanded(
-                  child: buildVoiceHome(context),
-                ),
-                Container(
+                    child: Container(
+                      height: screenSizeheight * 0.05.h,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(
+                          color: const Color(0xFFE2E3E9),
+                          width: 1.w,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.w),
+                            child: Text(
+                              "เลือกเสียง",
+                              style: GoogleFonts.prompt(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF323130),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.w),
+                            child: _selectedPageIndexVoice == 1
+                                ? Icon(
+                                    Icons.expand_less,
+                                    color: const Color(0xFF323130),
+                                    size: 20.sp,
+                                  )
+                                : Icon(
+                                    Icons.expand_more,
+                                    color: const Color(0xFF323130),
+                                    size: 20.sp,
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (_selectedPageIndexVoice == 1) ...[
+                    _buildConfigurationBar(context)
+                  ],
+                  InkWell(
+                    onTap: () {
+                      if (_selectedPageIndexSetting == 0) {
+                        _selectPageSetting(1);
+                      } else if (_selectedPageIndexSetting == 1) {
+                        _selectPageSetting(2);
+                      } else if (_selectedPageIndexSetting == 2) {
+                        _selectPageSetting(1);
+                      }
+                    },
+                    child: Container(
+                      height: screenSizeheight * 0.05.h,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(
+                          color: const Color(0xFFE2E3E9),
+                          width: 1.w,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.w),
+                            child: Text(
+                              "ตั้งค่าเพิ่มเติม",
+                              style: GoogleFonts.prompt(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF323130),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.w),
+                            child: _selectedPageIndexSetting == 1
+                                ? Icon(
+                                    Icons.expand_less,
+                                    color: const Color(0xFF323130),
+                                    size: 20.sp,
+                                  )
+                                : Icon(
+                                    Icons.expand_more,
+                                    color: const Color(0xFF323130),
+                                    size: 20.sp,
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (_selectedPageIndexSetting == 1) ...[
+                    const CategorySettings()
+                  ],
+                  Expanded(
+                    child: buildVoiceHome(context),
+                  ),
+                  Container(
                     height: screenSizeheight * 0.052.h,
                     width: 320.w,
                     color: const Color(0xFF27282B),
@@ -412,11 +450,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {},
                       child: currentIndex == 1
                           ? SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=deault (2).svg')
+                              'assets/logo/Property 1=studio, Property 2=deault (2).svg',
+                            )
                           : SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                    ))
-              ]), // 40% of the screen height
+                              'assets/logo/Property 1=studio, Property 2=hover (1).svg',
+                            ),
+                    ),
+                  )
+                ],
+              ), // 40% of the screen height
             ),
           ),
         ],
@@ -424,18 +466,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool _isSelected = false;
-  Widget categoryVoiceHome(BuildContext context) {
-    // double screenSizewidth = MediaQuery.of(context).size.width;   ///// ไม่ได้ใช้
+  Widget _buildConfigurationBar(BuildContext context) {
+    //TODO: remove this variable
     double screenSizeheight = MediaQuery.of(context).size.height;
 
-    // var screenSize = MediaQuery.of(context).size;
-    // final data =
-    //     AppDataBase.data.where((item) => item.language == language).toList();   //// ไม่ได้ใช้
-
-    ///ใช้ใน favorite
-
-    // final filterModel = Provider.of<FilterModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -443,10 +477,9 @@ class _HomeScreenState extends State<HomeScreen> {
           height: screenSizeheight * 0.05.h,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: <Widget>[
+            children: [
               Container(
-                color: const Color(0xFFFFFFFF),
-                // width: 800.w,
+                color: Colors.white,
                 width: 450.w,
                 child: Padding(
                   padding: EdgeInsets.only(right: 10.w, left: 10.w),
@@ -454,144 +487,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        ////////เลือกภาษา
                         onTap: () {
-                          setState(() {
-                            isExpanded = true;
-                          });
-
-                          showModalBottomSheet(
-                            backgroundColor: Colors.white,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                builder: (BuildContext context,
-                                    StateSetter setState) {
-                                  return SingleChildScrollView(
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(25),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                color: Colors.transparent,
-                                                width: 360,
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          'ภาษา',
-                                                          style: GoogleFonts
-                                                              .prompt(
-                                                            fontSize: 16.sp,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        InkWell(
-                                                          onTap: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child: Icon(
-                                                            Icons.close,
-                                                            size: 24.sp,
-                                                            color: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 15.h,
-                                                    ),
-                                                    _buildLanguageOption(
-                                                        'All(AllLanguages) - ทั้งหมด',
-                                                        'assets/logo/13766953.png',
-                                                        '',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Thai(Thailand) - ไทย',
-                                                        'assets/logo/Ellipse 12.jpg',
-                                                        'TH',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'English (UK) - อังกฤษ',
-                                                        'assets/logo/Ellipse 13.jpg',
-                                                        'EN',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Indonesia - อินโดนีเซีย',
-                                                        'assets/logo/Ellipse 13 (2).jpg',
-                                                        'ID',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Japanese - ญี่ปุ่น',
-                                                        'assets/logo/Ellipse 14.jpg',
-                                                        'JA',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Laos - ลาว',
-                                                        'assets/logo/Ellipse 15.jpg',
-                                                        'LO',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Myanmar - เมียนมาร์',
-                                                        'assets/logo/Ellipse 11.jpg',
-                                                        'MY',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Vietnam - เวียดนาม',
-                                                        'assets/logo/Ellipse 19.jpg',
-                                                        'VI',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Chinese (Simplified) - จีน',
-                                                        'assets/logo/Ellipse 18.jpg',
-                                                        'ZH',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Cambodia - กัมพูชา',
-                                                        'assets/logo/images (1).png',
-                                                        'KM',
-                                                        context,
-                                                        setState),
-                                                    _buildLanguageOption(
-                                                        'Phillippines - ฟิลิปปินส์',
-                                                        'assets/logo/Flag_of_the_Philippines.svg.png',
-                                                        'FIL',
-                                                        context,
-                                                        setState),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ).whenComplete(() {
-                            setState(() {
-                              isExpanded = false;
-                            });
-                          });
+                          _showLanguageOptionModal(context);
                         },
                         child: Container(
                           width: 72.w,
@@ -610,7 +507,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                selectedLanguageImage,
+                                _selectedLanguageImage,
                                 width: 14,
                                 height: 14,
                               ),
@@ -618,16 +515,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: 3,
                               ),
                               Flexible(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    selectedLanguage,
-                                    style: GoogleFonts.prompt(fontSize: 12.sp),
-                                  ),
+                                child: Text(
+                                  _selectedLanguage,
+                                  style: GoogleFonts.prompt(fontSize: 12.sp),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               Icon(
-                                isExpanded
+                                _isLanguageOptionExpanded
                                     ? Icons.keyboard_arrow_up_sharp
                                     : Icons.keyboard_arrow_down_sharp,
                                 size: 20,
@@ -638,7 +533,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       InkWell(
-                        ///////// เลือกเพศ
                         onTap: () {
                           setState(() {
                             changeIcon = !changeIcon;
@@ -689,24 +583,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 SizedBox(
                                                   height: 15.h,
                                                 ),
-                                                _buildGenderOption(
-                                                    'ช/ญ',
-                                                    'assets/logo/Category.jpg',
-                                                    '',
+                                                ...genderMetadata.map(
+                                                    (GenderMetadataModel g) {
+                                                  return _buildGenderOption(
+                                                    g,
                                                     context,
-                                                    setState),
-                                                _buildGenderOption(
-                                                    'หญิง',
-                                                    'assets/logo/Category (1).jpg',
-                                                    'ผู้หญิง',
-                                                    context,
-                                                    setState),
-                                                _buildGenderOption(
-                                                    'ชาย',
-                                                    'assets/logo/Category (2).jpg',
-                                                    'ผู้ชาย',
-                                                    context,
-                                                    setState)
+                                                    setModalState,
+                                                  );
+                                                }),
                                               ],
                                             ),
                                           ),
@@ -717,11 +601,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                               );
                             },
-                          ).whenComplete(() {
-                            setState(() {
-                              changeIcon = false;
-                            });
-                          });
+                          );
                         },
                         child: Container(
                           width: 62.w,
@@ -743,22 +623,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const SizedBox(width: 3),
-                                  if (gender ==
-                                      '') //////////////////// text แสดงในปุ่มกด
+                                  if (_selectedGender == '')
                                     Text(
                                       'ช/ญ',
                                       style: GoogleFonts.prompt(
                                         fontSize: 12.sp,
                                       ),
                                     ),
-                                  if (gender.toString() !=
-                                      '') // ตรวจสอบว่า selectedGender ไม่เป็นค่าว่าง
+                                  if (_selectedGender.toString() != '')
                                     Text(
-                                      selectedGender,
+                                      _selectedGender,
                                       style: GoogleFonts.prompt(
                                         fontSize: 12.sp,
                                       ),
-                                    ), //////////////////// text แสดงในปุ่มกด
+                                    ),
                                   changeIcon
                                       ? const Icon(
                                           Icons.keyboard_arrow_up_sharp,
@@ -780,11 +658,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            _isSelected = !_isSelected;
+                            _isFavouriteSelected = !_isFavouriteSelected;
                           });
                         },
-                        child: FavouriteGenreFilter(
-                          isSelected: _isSelected,
+                        child: FavouriteFilterButton(
+                          isFavouriteSelected: _isFavouriteSelected,
                         ),
                       ),
                       const SelectAllGenreButton(),
@@ -850,17 +728,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle1 =
                                                               !selectStyle1;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle1
                                                                   ? 'เสียงน่ารัก'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: น่ารัก, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'น่ารัก',
                                                           selectStyle1),
                                                     ),
@@ -869,17 +745,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle2 =
                                                               !selectStyle2;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle2
                                                                   ? 'เสียงมั่นใจ'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: มั่นใจ, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'มั่นใจ',
                                                           selectStyle2),
                                                     ),
@@ -888,16 +762,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle3 =
                                                               !selectStyle3;
-                                                          voiceStyle = selectStyle3
-                                                              ? 'เสียงน่าเชื่อถือ'
-                                                              : '';
+                                                          _selectedVoiceStyle =
+                                                              selectStyle3
+                                                                  ? 'เสียงน่าเชื่อถือ'
+                                                                  : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: น่าเชื่อถือ, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'น่าเชื่อถือ',
                                                           selectStyle3),
                                                     ),
@@ -906,16 +779,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle4 =
                                                               !selectStyle4;
-                                                          voiceStyle = selectStyle4
-                                                              ? 'เสียงตื่นเต้น'
-                                                              : '';
+                                                          _selectedVoiceStyle =
+                                                              selectStyle4
+                                                                  ? 'เสียงตื่นเต้น'
+                                                                  : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: ตื่นเต้น, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ตื่นเต้น',
                                                           selectStyle4),
                                                     ),
@@ -924,17 +796,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle5 =
                                                               !selectStyle5;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle5
                                                                   ? 'เสียงจริงจัง'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: จริงจัง, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'จริงจัง',
                                                           selectStyle5),
                                                     ),
@@ -943,17 +813,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle6 =
                                                               !selectStyle6;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle6
                                                                   ? 'เสียงหวาน'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: หวาน, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'หวาน', selectStyle6),
                                                     ),
                                                     InkWell(
@@ -961,17 +829,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle7 =
                                                               !selectStyle7;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle7
                                                                   ? 'เสียงอบอุ่น'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: อบอุ่น, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'อบอุ่น',
                                                           selectStyle7),
                                                     ),
@@ -980,17 +846,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle8 =
                                                               !selectStyle8;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle8
                                                                   ? 'เสียงขี้เล่น'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: ขี้เล่น, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ขี้เล่น',
                                                           selectStyle8),
                                                     ),
@@ -999,17 +863,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle9 =
                                                               !selectStyle9;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle9
                                                                   ? 'เสียงทุ้ม'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: ทุ้ม, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ทุ้ม', selectStyle9),
                                                     ),
                                                     InkWell(
@@ -1017,17 +879,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle10 =
                                                               !selectStyle10;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle10
                                                                   ? 'เสียงนุ่มนวล'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: นุ่มนวล, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'นุ่มนวล',
                                                           selectStyle10),
                                                     ),
@@ -1036,17 +896,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle11 =
                                                               !selectStyle11;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle11
                                                                   ? 'เสียงท้องถิ่น'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: ท้องถิ่น, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ท้องถิ่น',
                                                           selectStyle11),
                                                     ),
@@ -1055,17 +913,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle12 =
                                                               !selectStyle12;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle12
                                                                   ? 'เสียงใจเย็น'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: ใจเย็น, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ใจเย็น',
                                                           selectStyle12),
                                                     ),
@@ -1074,17 +930,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle13 =
                                                               !selectStyle13;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle13
                                                                   ? 'เสียงนิ่มนวล'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: นิ่มนวล, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'นิ่มนวล',
                                                           selectStyle13),
                                                     ),
@@ -1093,17 +947,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle14 =
                                                               !selectStyle14;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle14
                                                                   ? 'เสียงชัดเจน'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: ชัดเจน, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ชัดเจน',
                                                           selectStyle14),
                                                     ),
@@ -1112,17 +964,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle15 =
                                                               !selectStyle15;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle15
                                                                   ? 'เสียงเหนือ'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: เหนือ, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'เหนือ',
                                                           selectStyle15),
                                                     ),
@@ -1131,17 +981,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectStyle16 =
                                                               !selectStyle16;
-                                                          voiceStyle =
+                                                          _selectedVoiceStyle =
                                                               selectStyle16
                                                                   ? 'เสียงอีสาน'
                                                                   : '';
                                                           Navigator.pop(
                                                               context);
                                                         });
-                                                        print(
-                                                            'Selected voice: อีสาน, voice: $voiceStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'อีสาน',
                                                           selectStyle16),
                                                     ),
@@ -1186,13 +1034,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 3,
                                   ),
                                   Flexible(
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        'สไตล์',
-                                        style:
-                                            GoogleFonts.prompt(fontSize: 12.sp),
-                                      ),
+                                    child: Text(
+                                      'สไตล์',
+                                      style:
+                                          GoogleFonts.prompt(fontSize: 12.sp),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Icon(
@@ -1270,16 +1116,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory1 =
                                                               !selectCategory1;
-                                                          speechStyle = selectCategory1
-                                                              ? 'สไตล์เล่าเรื่อง'
-                                                                  'สไตล์อ่านข่าว'
-                                                              : '';
+                                                          _selectedSpeechStyle =
+                                                              selectCategory1
+                                                                  ? 'สไตล์เล่าเรื่อง'
+                                                                      'สไตล์อ่านข่าว'
+                                                                  : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: เล่าเรื่อง, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'เล่าเรื่อง',
                                                           selectCategory1),
                                                     ),
@@ -1288,16 +1133,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory2 =
                                                               !selectCategory2;
-                                                          speechStyle = selectCategory2
-                                                              ? 'สไตล์อ่านข่าว'
-                                                                  'สไตล์เล่าเรื่อง'
-                                                              : '';
+                                                          _selectedSpeechStyle =
+                                                              selectCategory2
+                                                                  ? 'สไตล์อ่านข่าว'
+                                                                      'สไตล์เล่าเรื่อง'
+                                                                  : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: อ่านข่าว, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'อ่านข่าว',
                                                           selectCategory2),
                                                     ),
@@ -1306,16 +1150,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory3 =
                                                               !selectCategory3;
-                                                          speechStyle = selectCategory3
-                                                              ? 'สไตล์เล่าเรื่อง'
-                                                                  'สไตล์ตัวละคร'
-                                                              : '';
+                                                          _selectedSpeechStyle =
+                                                              selectCategory3
+                                                                  ? 'สไตล์เล่าเรื่อง'
+                                                                      'สไตล์ตัวละคร'
+                                                                  : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: ตัวละคร, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ตัวละคร',
                                                           selectCategory3),
                                                     ),
@@ -1324,17 +1167,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory4 =
                                                               !selectCategory4;
-                                                          speechStyle =
+                                                          _selectedSpeechStyle =
                                                               selectCategory4
                                                                   ? 'สไตล์บรรยาย'
                                                                       'สไตล์ตัวละคร'
                                                                   : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: บรรยาย, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'บรรยาย',
                                                           selectCategory4),
                                                     ),
@@ -1343,16 +1184,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory5 =
                                                               !selectCategory5;
-                                                          speechStyle = selectCategory5
-                                                              ? 'สไตล์อ่านข่าว'
-                                                                  'สไตล์สปอตโฆษณา'
-                                                              : '';
+                                                          _selectedSpeechStyle =
+                                                              selectCategory5
+                                                                  ? 'สไตล์อ่านข่าว'
+                                                                      'สไตล์สปอตโฆษณา'
+                                                                  : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: สปอตโฆษณา, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'สปอตโฆษณา',
                                                           selectCategory5),
                                                     ),
@@ -1361,17 +1201,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory6 =
                                                               !selectCategory6;
-                                                          speechStyle =
+                                                          _selectedSpeechStyle =
                                                               selectCategory6
                                                                   ? 'สไตล์สารคดี'
                                                                       'สไตล์บรรยาย'
                                                                   : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: สารคดี, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'สารคดี',
                                                           selectCategory6),
                                                     ),
@@ -1380,17 +1218,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory7 =
                                                               !selectCategory7;
-                                                          speechStyle =
+                                                          _selectedSpeechStyle =
                                                               selectCategory7
                                                                   ? 'สไตล์ตัวละคร'
                                                                       'สไตล์อนิเมะ'
                                                                   : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: อนิเมะ, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'อนิเมะ',
                                                           selectCategory7),
                                                     ),
@@ -1399,17 +1235,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory8 =
                                                               !selectCategory8;
-                                                          speechStyle =
+                                                          _selectedSpeechStyle =
                                                               selectCategory8
                                                                   ? 'สไตล์บรรยาย'
                                                                       'สไตล์อาจารย์'
                                                                   : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: อาจารย์, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'อาจารย์',
                                                           selectCategory8),
                                                     ),
@@ -1418,16 +1252,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory9 =
                                                               !selectCategory9;
-                                                          speechStyle = selectCategory9
-                                                              ? 'สไตล์เล่าเรื่อง'
-                                                                  'สไตล์ท้องถิ่น'
-                                                              : '';
+                                                          _selectedSpeechStyle =
+                                                              selectCategory9
+                                                                  ? 'สไตล์เล่าเรื่อง'
+                                                                      'สไตล์ท้องถิ่น'
+                                                                  : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: ท้องถิ่น, category: $speechStyle');
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'ท้องถิ่น',
                                                           selectCategory9),
                                                     ),
@@ -1436,17 +1269,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         setModalState(() {
                                                           selectCategory10 =
                                                               !selectCategory10;
-                                                          speechStyle =
+                                                          _selectedSpeechStyle =
                                                               selectCategory10
                                                                   ? 'สไตล์อ่านข่าว'
                                                                       'สไตล์เสียงต่างประเทศ'
                                                                   : '';
                                                         });
                                                         Navigator.pop(context);
-                                                        print(
-                                                            'Selected category: เสียงต่างประเทศ, category: $speechStyle'); // Print to debug console
                                                       },
-                                                      child: filterStyle(
+                                                      child: _buildGenereFilter(
                                                           'เสียงต่างประเทศ',
                                                           selectCategory10),
                                                     ),
@@ -1491,13 +1322,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 3,
                                   ),
                                   Flexible(
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        'หมวดหมู่',
-                                        style:
-                                            GoogleFonts.prompt(fontSize: 12.sp),
-                                      ),
+                                    child: Text(
+                                      'หมวดหมู่',
+                                      style:
+                                          GoogleFonts.prompt(fontSize: 12.sp),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Icon(
@@ -1530,11 +1359,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _isSelected
-                  ? voiceWidgetFavorite(
-                      context, ///// เลือกเสียงที่ชอบ
-                    )
-                  : voiceWidGetHome(context), ///// หน้าเลือกเสียงหลัก
+              _isFavouriteSelected
+                  ? _buildFavouriteSpeakerOption(context)
+                  : _buildSpeakerOption(context),
             ],
           ),
         ),
@@ -1542,15 +1369,157 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget filterStyle(String text, bool isSelected) {
+  Future<void> _showLanguageOptionModal(BuildContext context) {
+    return showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (
+            context,
+            setModalState,
+          ) {
+            return SingleChildScrollView(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      children: [
+                        Container(
+                          color: Colors.transparent,
+                          width: 360,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'ภาษา',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 24.sp,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15.h,
+                              ),
+                              _buildLanguageOption(
+                                'All(AllLanguages) - ทั้งหมด',
+                                'assets/logo/13766953.png',
+                                '',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Thai(Thailand) - ไทย',
+                                'assets/logo/Ellipse 12.jpg',
+                                'TH',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'English (UK) - อังกฤษ',
+                                'assets/logo/Ellipse 13.jpg',
+                                'EN',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Indonesia - อินโดนีเซีย',
+                                'assets/logo/Ellipse 13 (2).jpg',
+                                'ID',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Japanese - ญี่ปุ่น',
+                                'assets/logo/Ellipse 14.jpg',
+                                'JA',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Laos - ลาว',
+                                'assets/logo/Ellipse 15.jpg',
+                                'LO',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Myanmar - เมียนมาร์',
+                                'assets/logo/Ellipse 11.jpg',
+                                'MY',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Vietnam - เวียดนาม',
+                                'assets/logo/Ellipse 19.jpg',
+                                'VI',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Chinese (Simplified) - จีน',
+                                'assets/logo/Ellipse 18.jpg',
+                                'ZH',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Cambodia - กัมพูชา',
+                                'assets/logo/images (1).png',
+                                'KM',
+                                context,
+                                setModalState,
+                              ),
+                              _buildLanguageOption(
+                                'Phillippines - ฟิลิปปินส์',
+                                'assets/logo/Flag_of_the_Philippines.svg.png',
+                                'FIL',
+                                context,
+                                setModalState,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildGenereFilter(String text, bool isSelected) {
     return IntrinsicWidth(
       child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: 8.w, vertical: 4.h), // ปรับ padding ให้เล็กลง
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                  colors: [
+                    Color(0xFF9A96F5),
+                    Color(0xFF00E0FF),
+                  ],
                 )
               : null,
           borderRadius: const BorderRadius.all(
@@ -1566,9 +1535,7 @@ class _HomeScreenState extends State<HomeScreen> {
             text,
             style: GoogleFonts.prompt(
               fontSize: 12.sp,
-              color: isSelected
-                  ? const Color(0xFFFFFFFF)
-                  : const Color(0xFF323130),
+              color: isSelected ? Colors.white : const Color(0xFF323130),
             ),
           ),
         ),
@@ -1576,33 +1543,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildLanguageOption(String text, String imagePath, String lang,
-      BuildContext context, StateSetter setState) {
+  Widget _buildLanguageOption(
+    String text,
+    String imagePath,
+    String langCode,
+    BuildContext context,
+    StateSetter setModalState,
+  ) {
     return InkWell(
       onTap: () {
-        setState(() {
+        setModalState(() {
           if (text == 'ทั้งหมด') {
-            language = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+            _selectedLanguage = '';
           } else {
             List<String> parts = text.split(' - ');
             if (parts.length > 1) {
-              selectedLanguage = parts[1];
+              _selectedLanguage = parts[1];
             } else {
-              selectedLanguage = text; // กรณีที่ไม่มีตัวแบ่งให้ใช้ค่าเดิม
+              _selectedLanguage = text;
             }
-            selectedLanguageImage = imagePath;
-            language = lang; // Update the language variable
+            _selectedLanguageImage = imagePath;
+            _selectedLanguage = langCode;
           }
         });
-        print(
-            'Selected Language: $selectedLanguage, language: $language'); // Print to debug console
         Navigator.pop(context);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
         height: 42.h,
         width: 320.w,
-        color: const Color(0xFFFFFFFF),
+        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1621,7 +1591,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   text,
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
-                    fontWeight: selectedLanguage ==
+                    fontWeight: _selectedLanguage ==
                             (text.split(' - ').length > 1
                                 ? text.split(' - ')[1]
                                 : text)
@@ -1638,48 +1608,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildGenderOption(
-      String text,
-      String imagePath,
-      String gen, ///// เลือกเพศ
-      BuildContext context,
-      StateSetter setState) {
+    GenderMetadataModel genderModel,
+    BuildContext context,
+    StateSetter setState,
+  ) {
     return InkWell(
       onTap: () {
         setState(() {
-          if (text == 'ช/ญ') {
-            gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+          if (genderModel.gender == 'ช/ญ') {
+            _selectedGender = '';
           } else {
-            selectedGender = text;
-            selectedGenderImage = imagePath;
-            gender = gen;
+            _selectedGender = genderModel.gender;
           }
         });
-
-        print(
-            'Selected Gender: $selectedGender Gender: $gender'); // Print to debug console
         Navigator.pop(context);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
         height: 42.h,
         width: 320.w,
-        color: const Color(0xFFFFFFFF),
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              imagePath,
+              genderModel.imagePath,
               width: 23.w,
               height: 23.h,
             ),
             SizedBox(width: 20.w),
             Text(
-              text,
+              genderModel.gender,
               style: GoogleFonts.prompt(
                 fontSize: 14.sp,
-                fontWeight: selectedGender == text
-                    ? FontWeight.w600
-                    : FontWeight.normal,
+                fontWeight:
+                    (_selectedGender.isEmpty ? "ช/ญ" : _selectedGender) ==
+                            genderModel.gender
+                        ? FontWeight.w600
+                        : FontWeight.normal,
               ),
             ),
           ],
@@ -1688,40 +1654,277 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget voiceWidGetHome(BuildContext context) {
-    // double screenSizewidth = MediaQuery.of(context).size.width; //// Old
+  Widget _buildSpeakerOption(BuildContext context) {
     return SizedBox(
-      // height: 140.h,
-      // width: screenSizewidth * 0.95.w,
       height: 127.h,
       width: 320.w,
       child: GridView.builder(
-        // itemCount: AppDataBase.data.length, //old
         itemCount: speakerMetadata
             .where((item) =>
-                (gender == '' || item.gender == gender) &&
-                (language == '' || item.language == language) &&
-                (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
-                (speechStyle == '' || item.speechStyle.contains(speechStyle)))
-            .length, //new
-
+                (_selectedGender == '' || item.gender == _selectedGender) &&
+                (_selectedLanguage == '' ||
+                    item.language == _selectedLanguage) &&
+                (_selectedVoiceStyle == '' ||
+                    item.voiceStyle == _selectedVoiceStyle) &&
+                (_selectedSpeechStyle == '' ||
+                    item.speechStyle.contains(_selectedSpeechStyle)))
+            .length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          // mainAxisExtent: 150,
           mainAxisExtent: 125,
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          // final data = AppDataBase.data[index];   /////////////////////////////old.
           final data = speakerMetadata
               .where((item) =>
-                  (gender == '' || item.gender == gender) &&
-                  (language == '' || item.language == language) &&
-                  (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
-                  (speechStyle == '' || item.speechStyle.contains(speechStyle)))
+                  (_selectedGender == '' || item.gender == _selectedGender) &&
+                  (_selectedLanguage == '' ||
+                      item.language == _selectedLanguage) &&
+                  (_selectedVoiceStyle == '' ||
+                      item.voiceStyle == _selectedVoiceStyle) &&
+                  (_selectedSpeechStyle == '' ||
+                      item.speechStyle.contains(_selectedSpeechStyle)))
               .toList()[index]; ////new
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 15.w),
+                child: GestureDetector(
+                  onTap: () async {
+                    String audioURL = data.audio;
+                    Future<void> playAudio() async {
+                      if (audioURL.isNotEmpty) {
+                        if (isAudioPlaying) {
+                          await audioPlayer.stop();
+                        }
+                        await audioPlayer.play(UrlSource(audioURL));
+                        setState(() {
+                          isAudioPlaying = true;
+                        });
+                        audioPlayer.onPlayerComplete.listen((event) {
+                          setState(() {
+                            isAudioPlaying = false;
+                          });
+                        });
+                      } else {
+                        setState(() {
+                          isAudioPlaying = false;
+                        });
+                      }
+                    }
 
-          return voicewidget(data, index);
+                    await playAudio();
+                    _selectedSpeakerId = data.speakerId;
+                    setState(() {
+                      if (selectedIndex.contains(index)) {
+                        selectedIndex.remove(index);
+                        if (audioPlayer.state == PlayerState.playing) {
+                          audioPlayer.stop();
+                        }
+                      } else {
+                        selectedIndex.clear();
+                        selectedIndex.add(index);
+                      }
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 81.w,
+                        height: 103.h,
+                        decoration: BoxDecoration(
+                          border: GradientBoxBorder(
+                            width: 3.w,
+                            gradient: selectedIndex.contains(index)
+                                ? const LinearGradient(
+                                    colors: [
+                                      Color(0xFF9A96F5),
+                                      Color(0xFF00E0FF)
+                                    ],
+                                  )
+                                : LinearGradient(
+                                    colors: [
+                                      Colors.black.withOpacity(0.9),
+                                      Colors.transparent,
+                                    ],
+                                    begin: const Alignment(1, 1), ////change new
+                                  ),
+                          ),
+                          borderRadius: BorderRadius.circular(8.r),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              data.squareImage,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                              color: selectedIndex.contains(index)
+                                  ? const Color(0xFF9340FF)
+                                      .withOpacity(0.6) //new
+                                  : Colors.transparent,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          width: 100.w,
+                          height: 113.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.r),
+                            gradient: LinearGradient(
+                              begin: const Alignment(1, 1),
+                              colors: [
+                                Colors.black.withOpacity(0.9),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      right: 5.w,
+                                      top: 5.w,
+                                      left: 5.w,
+                                    ),
+                                    child: selectedIndex.contains(index)
+                                        ? Container(
+                                            width: 31.w,
+                                            height: 17.h,
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF9A96F5),
+                                                  Color(0xFF00E0FF)
+                                                ],
+                                              ),
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
+                                            ),
+                                            child: Center(
+                                              child: Text('เลือก',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontStyle:
+                                                        GoogleFonts.prompt()
+                                                            .fontStyle,
+                                                    fontSize: 10.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  )),
+                                            ),
+                                          )
+                                        : const Icon(
+                                            Icons.check,
+                                            color: Colors.transparent,
+                                          ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(right: 5.w, top: 5.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (selectedIndexFavorites
+                                              .contains(data.speakerId)) {
+                                            selectedIndexFavorites
+                                                .remove(data.speakerId);
+                                          } else {
+                                            selectedIndexFavorites
+                                                .add(data.speakerId);
+                                          }
+                                        });
+                                      },
+                                      child: selectedIndexFavorites
+                                              .contains(data.speakerId)
+                                          ? ShaderMask(
+                                              shaderCallback: (Rect bounds) {
+                                                return const LinearGradient(
+                                                  colors: [
+                                                    Color(0xFF9A96F5),
+                                                    Color(0xFF00E0FF),
+                                                  ],
+                                                ).createShader(bounds);
+                                              },
+                                              child: SvgPicture.asset(
+                                                'assets/logo/heart (1).svg',
+                                                width: 20.w,
+                                                height: 20.h,
+                                                // color: Colors.white, //// ไม่ได้ใช้
+                                              ),
+                                            )
+                                          : SvgPicture.asset(
+                                              'assets/logo/heart.svg',
+                                              width: 20.w,
+                                              height: 20.h,
+                                            ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 10.w,
+                                  ), //new
+                                  selectedIndex.contains(index)
+                                      ? ShaderMask(
+                                          shaderCallback: (Rect bounds) {
+                                            return const LinearGradient(
+                                              colors: [
+                                                Color(0xFF9A96F5),
+                                                Color(0xFF00E0FF),
+                                              ],
+                                            ).createShader(bounds);
+                                          },
+                                          child: SvgPicture.asset(
+                                            'assets/logo/Vector.svg',
+                                            width: 16.h,
+                                            height: 16.w,
+                                            // color: Colors.white, //// ไม่ได้ใช้
+                                          ),
+                                        )
+                                      : SvgPicture.asset(
+                                          'assets/logo/Vector (1).svg',
+                                          width: 16.h,
+                                          height: 16.w,
+                                        ),
+                                  SizedBox(
+                                    width: 3.w,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      // AppDataBase.data[index].thaiName, //old
+                                      data.thaiName,
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 10.sp,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
         },
       ),
     );
@@ -1739,8 +1942,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (isAudioPlaying) {
-                    await audioPlayer
-                        .stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                    await audioPlayer.stop();
                   }
                   await audioPlayer.play(UrlSource(audioURL));
                   setState(() {
@@ -1759,7 +1961,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
 
               await playAudio();
-              speakerId = speakerMetadata.speakerId;
+              _selectedSpeakerId = speakerMetadata.speakerId;
               setState(() {
                 if (selectedIndex.contains(index)) {
                   selectedIndex.remove(index);
@@ -1795,21 +1997,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
                       image: NetworkImage(
-                        // AppDataBase.data[index].squareImage, //old
-                        speakerMetadata.squareImage, //new
+                        speakerMetadata.squareImage,
                       ),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        blurRadius: 10, // new
-                        spreadRadius: 1, // new
+                        blurRadius: 10,
+                        spreadRadius: 1,
                         color: selectedIndex.contains(index)
-                            // ? Colors.blue.withOpacity(0.5) //old
                             ? const Color(0xFF9340FF).withOpacity(0.6) //new
                             : Colors.transparent,
-                        // offset: const Offset(0, 2), //old
-                        offset: const Offset(0, 4), //new
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -1833,7 +2032,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                  right: 5.w, top: 5.w, left: 5.w),
+                                right: 5.w,
+                                top: 5.w,
+                                left: 5.w,
+                              ),
                               child: selectedIndex.contains(index)
                                   ? Container(
                                       width: 31.w,
@@ -1872,19 +2074,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   setState(() {
                                     if (selectedIndexFavorites
                                         .contains(speakerMetadata.speakerId)) {
-                                      ///////new
-                                      selectedIndexFavorites.remove(
-                                          speakerMetadata.speakerId); ///////new
+                                      selectedIndexFavorites
+                                          .remove(speakerMetadata.speakerId);
                                     } else {
-                                      // widget.onToggleFavorite(widget.data[index]);
-                                      selectedIndexFavorites.add(
-                                          speakerMetadata.speakerId); ///////new
+                                      selectedIndexFavorites
+                                          .add(speakerMetadata.speakerId);
                                     }
                                   });
                                 },
-                                child: selectedIndexFavorites.contains(
-                                        speakerMetadata.speakerId) ///////new
-
+                                child: selectedIndexFavorites
+                                        .contains(speakerMetadata.speakerId)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
                                           return const LinearGradient(
@@ -1967,7 +2166,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget voiceWidgetFavorite(BuildContext context) {
+  Widget _buildFavouriteSpeakerOption(BuildContext context) {
     return SizedBox(
       height: 127.h,
       width: 320.w,
@@ -2007,12 +2206,13 @@ class _HomeScreenState extends State<HomeScreen> {
               if (textController.text.isNotEmpty) {
                 setState(() {
                   audioPlayer.stop();
-                  isLoading = true;
+                  isDownloading = true;
                 });
               }
               if (textController.text.isNotEmpty) {
-                _audioUrl = await Provider.of<MainServerProvider>(context)
-                    .generateAudio(textController.text);
+                //TODO: Generate audio
+                //_audioUrl = await Provider.of<MainServerProvider>(context)
+                //    .generateAudio(textController.text);
                 if (_audioUrl.isNotEmpty && _audioUrl != '') {
                   await textSave(_audioUrl);
                 }
@@ -2039,7 +2239,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Define the new WorkSpace object
     TextBoxModel newTextBox = TextBoxModel(
       text: textController.text,
-      speaker: int.parse(speakerId!),
+      speaker: int.parse(_selectedSpeakerId!),
       audioId: '',
       speed: '1',
       statusDownload: true,

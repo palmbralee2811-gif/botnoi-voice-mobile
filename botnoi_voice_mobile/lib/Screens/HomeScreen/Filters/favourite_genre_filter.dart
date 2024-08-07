@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class FavouriteGenreFilter extends StatelessWidget {
-  const FavouriteGenreFilter({
+class FavouriteFilterButton extends StatelessWidget {
+  const FavouriteFilterButton({
     super.key,
-    required this.isSelected,
+    required this.isFavouriteSelected,
   });
 
-  final bool isSelected;
+  final bool isFavouriteSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class FavouriteGenreFilter extends StatelessWidget {
       width: 25.w,
       height: 25.h,
       decoration: BoxDecoration(
-        gradient: isSelected
+        gradient: isFavouriteSelected
             ? const LinearGradient(
                 colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
               )
@@ -34,7 +34,7 @@ class FavouriteGenreFilter extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              isSelected
+              isFavouriteSelected
                   ? Icon(
                       Icons.favorite,
                       size: 16.sp,

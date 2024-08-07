@@ -1,5 +1,5 @@
 import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
-import 'package:botnoivoice/widgets/decorations/gradient_border_painter.dart';
+import 'package:botnoivoice/Widgets/decorations/gradient_border_painter.dart';
 import 'package:flutter/material.dart';
 
 class WorkspaceAddButtonWidget extends StatelessWidget {
