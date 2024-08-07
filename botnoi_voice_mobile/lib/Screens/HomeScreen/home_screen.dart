@@ -1,7 +1,9 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_gender_metadata.dart';
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_language_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
+import 'package:botnoi_voice_mobile/MainServer/ObjectModels/language_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/text_box_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
@@ -736,7 +738,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'น่ารัก',
                                                           selectStyle1),
                                                     ),
@@ -753,7 +755,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'มั่นใจ',
                                                           selectStyle2),
                                                     ),
@@ -770,7 +772,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'น่าเชื่อถือ',
                                                           selectStyle3),
                                                     ),
@@ -787,7 +789,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ตื่นเต้น',
                                                           selectStyle4),
                                                     ),
@@ -804,7 +806,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'จริงจัง',
                                                           selectStyle5),
                                                     ),
@@ -821,7 +823,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'หวาน', selectStyle6),
                                                     ),
                                                     InkWell(
@@ -837,7 +839,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'อบอุ่น',
                                                           selectStyle7),
                                                     ),
@@ -854,7 +856,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ขี้เล่น',
                                                           selectStyle8),
                                                     ),
@@ -871,7 +873,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ทุ้ม', selectStyle9),
                                                     ),
                                                     InkWell(
@@ -887,7 +889,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'นุ่มนวล',
                                                           selectStyle10),
                                                     ),
@@ -904,7 +906,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ท้องถิ่น',
                                                           selectStyle11),
                                                     ),
@@ -921,7 +923,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ใจเย็น',
                                                           selectStyle12),
                                                     ),
@@ -938,7 +940,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'นิ่มนวล',
                                                           selectStyle13),
                                                     ),
@@ -955,7 +957,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ชัดเจน',
                                                           selectStyle14),
                                                     ),
@@ -972,7 +974,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'เหนือ',
                                                           selectStyle15),
                                                     ),
@@ -989,7 +991,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               context);
                                                         });
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'อีสาน',
                                                           selectStyle16),
                                                     ),
@@ -1124,7 +1126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'เล่าเรื่อง',
                                                           selectCategory1),
                                                     ),
@@ -1141,7 +1143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'อ่านข่าว',
                                                           selectCategory2),
                                                     ),
@@ -1158,7 +1160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ตัวละคร',
                                                           selectCategory3),
                                                     ),
@@ -1175,7 +1177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'บรรยาย',
                                                           selectCategory4),
                                                     ),
@@ -1192,7 +1194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'สปอตโฆษณา',
                                                           selectCategory5),
                                                     ),
@@ -1209,7 +1211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'สารคดี',
                                                           selectCategory6),
                                                     ),
@@ -1226,7 +1228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'อนิเมะ',
                                                           selectCategory7),
                                                     ),
@@ -1243,7 +1245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'อาจารย์',
                                                           selectCategory8),
                                                     ),
@@ -1260,7 +1262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'ท้องถิ่น',
                                                           selectCategory9),
                                                     ),
@@ -1277,7 +1279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenereFilter(
+                                                      child: _buildGenreFilter(
                                                           'เสียงต่างประเทศ',
                                                           selectCategory10),
                                                     ),
@@ -1417,82 +1419,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 15.h,
                               ),
-                              _buildLanguageOption(
-                                'All(AllLanguages) - ทั้งหมด',
-                                'assets/logo/13766953.png',
-                                '',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Thai(Thailand) - ไทย',
-                                'assets/logo/Ellipse 12.jpg',
-                                'TH',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'English (UK) - อังกฤษ',
-                                'assets/logo/Ellipse 13.jpg',
-                                'EN',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Indonesia - อินโดนีเซีย',
-                                'assets/logo/Ellipse 13 (2).jpg',
-                                'ID',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Japanese - ญี่ปุ่น',
-                                'assets/logo/Ellipse 14.jpg',
-                                'JA',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Laos - ลาว',
-                                'assets/logo/Ellipse 15.jpg',
-                                'LO',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Myanmar - เมียนมาร์',
-                                'assets/logo/Ellipse 11.jpg',
-                                'MY',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Vietnam - เวียดนาม',
-                                'assets/logo/Ellipse 19.jpg',
-                                'VI',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Chinese (Simplified) - จีน',
-                                'assets/logo/Ellipse 18.jpg',
-                                'ZH',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Cambodia - กัมพูชา',
-                                'assets/logo/images (1).png',
-                                'KM',
-                                context,
-                                setModalState,
-                              ),
-                              _buildLanguageOption(
-                                'Phillippines - ฟิลิปปินส์',
-                                'assets/logo/Flag_of_the_Philippines.svg.png',
-                                'FIL',
-                                context,
-                                setModalState,
+                              ...languageMetadata.map(
+                                (LanguageMetadataModel l) {
+                                  return _buildLanguageOption(
+                                    l,
+                                    context,
+                                    setModalState,
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -1509,7 +1443,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGenereFilter(String text, bool isSelected) {
+  Widget _buildGenreFilter(String text, bool isSelected) {
     return IntrinsicWidth(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
@@ -1544,27 +1478,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLanguageOption(
-    String text,
-    String imagePath,
-    String langCode,
+    LanguageMetadataModel languageModel,
     BuildContext context,
     StateSetter setModalState,
   ) {
     return InkWell(
       onTap: () {
         setModalState(() {
-          if (text == 'ทั้งหมด') {
-            _selectedLanguage = '';
-          } else {
-            List<String> parts = text.split(' - ');
-            if (parts.length > 1) {
-              _selectedLanguage = parts[1];
-            } else {
-              _selectedLanguage = text;
-            }
-            _selectedLanguageImage = imagePath;
-            _selectedLanguage = langCode;
-          }
+          _selectedLanguage = languageModel.languageCode;
+          _selectedLanguageImage = languageModel.imagePath;
         });
         Navigator.pop(context);
       },
@@ -1580,7 +1502,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Image.asset(
-                  imagePath,
+                  languageModel.imagePath,
                   width: 23.w,
                   height: 23.h,
                 ),
@@ -1588,13 +1510,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 20.w,
                 ),
                 Text(
-                  text,
+                  languageModel.languageName,
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
-                    fontWeight: _selectedLanguage ==
-                            (text.split(' - ').length > 1
-                                ? text.split(' - ')[1]
-                                : text)
+                    fontWeight: _selectedLanguage == languageModel.languageCode
                         ? FontWeight.w600
                         : FontWeight.normal,
                   ),
@@ -1660,14 +1579,16 @@ class _HomeScreenState extends State<HomeScreen> {
       width: 320.w,
       child: GridView.builder(
         itemCount: speakerMetadata
-            .where((item) =>
-                (_selectedGender == '' || item.gender == _selectedGender) &&
-                (_selectedLanguage == '' ||
-                    item.language == _selectedLanguage) &&
-                (_selectedVoiceStyle == '' ||
-                    item.voiceStyle == _selectedVoiceStyle) &&
-                (_selectedSpeechStyle == '' ||
-                    item.speechStyle.contains(_selectedSpeechStyle)))
+            .where(
+              (item) =>
+                  (_selectedGender == '' || item.gender == _selectedGender) &&
+                  (_selectedLanguage == '' ||
+                      item.language == _selectedLanguage) &&
+                  (_selectedVoiceStyle == '' ||
+                      item.voiceStyle == _selectedVoiceStyle) &&
+                  (_selectedSpeechStyle == '' ||
+                      item.speechStyle.contains(_selectedSpeechStyle)),
+            )
             .length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
@@ -1675,15 +1596,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final data = speakerMetadata
-              .where((item) =>
-                  (_selectedGender == '' || item.gender == _selectedGender) &&
-                  (_selectedLanguage == '' ||
-                      item.language == _selectedLanguage) &&
-                  (_selectedVoiceStyle == '' ||
-                      item.voiceStyle == _selectedVoiceStyle) &&
-                  (_selectedSpeechStyle == '' ||
-                      item.speechStyle.contains(_selectedSpeechStyle)))
+          final speaker = speakerMetadata
+              .where(
+                (item) =>
+                    (_selectedGender == '' || item.gender == _selectedGender) &&
+                    (_selectedLanguage == '' ||
+                        item.language == _selectedLanguage) &&
+                    (_selectedVoiceStyle == '' ||
+                        item.voiceStyle == _selectedVoiceStyle) &&
+                    (_selectedSpeechStyle == '' ||
+                        item.speechStyle.contains(_selectedSpeechStyle)),
+              )
               .toList()[index]; ////new
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1692,7 +1615,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: 15.w),
                 child: GestureDetector(
                   onTap: () async {
-                    String audioURL = data.audio;
+                    String audioURL = speaker.audio;
                     Future<void> playAudio() async {
                       if (audioURL.isNotEmpty) {
                         if (isAudioPlaying) {
@@ -1715,7 +1638,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
 
                     await playAudio();
-                    _selectedSpeakerId = data.speakerId;
+                    _selectedSpeakerId = speaker.speakerId;
                     setState(() {
                       if (selectedIndex.contains(index)) {
                         selectedIndex.remove(index);
@@ -1754,7 +1677,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(8.r),
                           image: DecorationImage(
                             image: NetworkImage(
-                              data.squareImage,
+                              speaker.squareImage,
                             ),
                             fit: BoxFit.cover,
                           ),
@@ -1834,17 +1757,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                       onTap: () {
                                         setState(() {
                                           if (selectedIndexFavorites
-                                              .contains(data.speakerId)) {
+                                              .contains(speaker.speakerId)) {
                                             selectedIndexFavorites
-                                                .remove(data.speakerId);
+                                                .remove(speaker.speakerId);
                                           } else {
                                             selectedIndexFavorites
-                                                .add(data.speakerId);
+                                                .add(speaker.speakerId);
                                           }
                                         });
                                       },
                                       child: selectedIndexFavorites
-                                              .contains(data.speakerId)
+                                              .contains(speaker.speakerId)
                                           ? ShaderMask(
                                               shaderCallback: (Rect bounds) {
                                                 return const LinearGradient(
@@ -1904,8 +1827,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      // AppDataBase.data[index].thaiName, //old
-                                      data.thaiName,
+                                      speaker.thaiName,
                                       style: GoogleFonts.prompt(
                                         fontSize: 10.sp,
                                         color: Colors.white,
