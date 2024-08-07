@@ -37,28 +37,28 @@ class _TextBoxInputState extends State<TextBoxInput> {
   Widget build(BuildContext context) {
     // bool expanded = selectVoiceState.isExpanded;
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
             child: Center(
               child: Container(
-                width: (MediaQuery.of(context).size.width) * 0.85,
-                height: (MediaQuery.of(context).size.height) * 0.32,
+                width: (MediaQuery.of(context).size.width) * 0.85.w,
+                height: (MediaQuery.of(context).size.height) * 0.32.h,
                 decoration: BoxDecoration(
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
                       color: Colors.grey,
-                      blurRadius: 5.0,
+                      blurRadius: 5.r,
                     ),
                   ],
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 10, top: 20),
+                  padding: EdgeInsets.only(left: 25.w, right: 10.w, top: 20.h),
                   child: Column(
                     children: [
                       Expanded(
@@ -103,7 +103,7 @@ class _TextBoxInputState extends State<TextBoxInput> {
                         children: [
                           TextButton(
                             style: TextButton.styleFrom(
-                              textStyle: const TextStyle(fontSize: 10),
+                              textStyle: TextStyle(fontSize: 10.sp),
                             ),
                             onPressed: () {
                               textController.clear();
@@ -113,11 +113,11 @@ class _TextBoxInputState extends State<TextBoxInput> {
                           ),
                           Text(
                             '${textController.text.length} / ${widget.maxLength}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontFamily: 'Prompt',
-                              height: 1,
+                              height: 1.h,
                             ),
                           ),
                         ],

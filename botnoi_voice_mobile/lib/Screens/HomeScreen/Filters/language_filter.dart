@@ -34,7 +34,7 @@ class _LanguageFilterState extends State<LanguageFilter> {
                     child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: EdgeInsets.all(20.w),
                           child: Column(
                             children: [
                               Container(
@@ -140,12 +140,12 @@ class _LanguageFilterState extends State<LanguageFilter> {
         height: 26.h,
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
+          borderRadius: BorderRadius.all(
+            Radius.circular(4.r),
           ),
           border: Border.all(
             color: const Color(0xFFE2E3E9),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Row(
@@ -153,11 +153,11 @@ class _LanguageFilterState extends State<LanguageFilter> {
           children: [
             Image.asset(
               selectedLanguageImage,
-              width: 14,
-              height: 14,
+              width: 14.w,
+              height: 14.h,
             ),
-            const SizedBox(
-              width: 3,
+            SizedBox(
+              width: 3.w,
             ),
             Flexible(
               child: FittedBox(
@@ -172,7 +172,7 @@ class _LanguageFilterState extends State<LanguageFilter> {
               isExpanded
                   ? Icons.keyboard_arrow_up_sharp
                   : Icons.keyboard_arrow_down_sharp,
-              size: 20,
+              size: 20.sp,
               color: const Color(0xFF323130),
             ),
           ],

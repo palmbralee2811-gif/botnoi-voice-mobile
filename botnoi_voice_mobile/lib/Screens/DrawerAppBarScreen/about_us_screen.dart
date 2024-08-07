@@ -41,7 +41,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           children: [
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.w),
                 child: Image.asset(
                   'assets/logo/botnoivoice.png',
                   width: 54.71.w,
@@ -52,7 +52,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
             ),
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.w),
                 child: Text(
                   'Botnoi Voice',
                   style: GoogleFonts.prompt(
@@ -64,7 +64,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
             ),
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.w),
                 child: Text(
                   'Version 8.8.8',
                   style: GoogleFonts.prompt(
@@ -84,7 +84,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
             ),
             const Spacer(),
             Padding(
-              padding: EdgeInsets.only(bottom: 20.w),
+              padding: EdgeInsets.only(bottom: 20.h),
               child: Center(
                 child: Text(
                   'Copyright 2024 BOTNOI. All rights reserved',

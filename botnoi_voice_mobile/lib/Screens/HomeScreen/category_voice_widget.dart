@@ -192,7 +192,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      right: 5.w, top: 5.w, left: 5.w),
+                                      right: 5.w, top: 5.h, left: 5.w),
                                   child: selectedIndex.contains(index)
                                       ? Container(
                                           width: 31.w,
@@ -227,7 +227,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                 ),
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(right: 5.w, top: 5.w),
+                                      EdgeInsets.only(right: 5.w, top: 5.h),
                                   child: GestureDetector(
                                     onTap: () {
                                       setState(() {
@@ -284,15 +284,15 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                         },
                                         child: SvgPicture.asset(
                                           'assets/logo/Vector.svg',
-                                          width: 16.h,
-                                          height: 16.w,
+                                          width: 16.w,
+                                          height: 16.h,
                                           color: Colors.white,
                                         ),
                                       )
                                     : SvgPicture.asset(
                                         'assets/logo/Vector (1).svg',
-                                        width: 16.h,
-                                        height: 16.w,
+                                        width: 16.w,
+                                        height: 16.h,
                                       ),
                                 SizedBox(
                                   width: 3.w,

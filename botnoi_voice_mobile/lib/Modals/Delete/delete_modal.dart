@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_popup.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class Deletemodal extends StatefulWidget {
   const Deletemodal({super.key});
@@ -25,10 +26,10 @@ class _DeleteModalState extends State<Deletemodal> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
           child: SizedBox(
             width: double.infinity,
             child: Center(
@@ -36,21 +37,21 @@ class _DeleteModalState extends State<Deletemodal> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.w),
                     child: Image(
-                      image: AssetImage('assets/images/Delete.png'),
-                      height: 54,
-                      width: 54,
+                      image: const AssetImage('assets/images/Delete.png'),
+                      height: 54.h,
+                      width: 54.w,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.w),
                     child: Text(
                       'คุณแน่ใจที่จะลบไฟล์นี้ใช่หรือไม่ ?',
                       style: GoogleFonts.prompt(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -61,7 +62,7 @@ class _DeleteModalState extends State<Deletemodal> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.prompt(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.normal,
                       color: Colors.black54,
                     ),
@@ -83,10 +84,10 @@ class _DeleteModalState extends State<Deletemodal> {
         Expanded(
             child: Container(
           alignment: Alignment.center,
-          height: 60,
-          width: 150,
+          height: 60.h,
+          width: 150.w,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.w),
             child: OutlinedButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -98,7 +99,7 @@ class _DeleteModalState extends State<Deletemodal> {
                 padding: EdgeInsets.zero,
                 side: BorderSide(color: Colors.transparent, width: 2.w),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
               ),
               child: Ink(
@@ -108,19 +109,15 @@ class _DeleteModalState extends State<Deletemodal> {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
-                  borderRadius: BorderRadius.circular(
-                    10,
-                  ),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Container(
                   alignment: Alignment.center,
-                  height: 60,
-                  width: 150,
+                  height: 60.h,
+                  width: 150.w,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                      10,
-                    ),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -134,7 +131,7 @@ class _DeleteModalState extends State<Deletemodal> {
                           ],
                         ),
                         style: GoogleFonts.prompt(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -146,16 +143,16 @@ class _DeleteModalState extends State<Deletemodal> {
           ),
         )),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SizedBox(width: 10),
+          padding: EdgeInsets.all(8.w),
+          child: SizedBox(width: 10.w),
         ),
         Expanded(
             child: Container(
           alignment: Alignment.center,
-          height: 60,
-          width: 150,
+          height: 60.h,
+          width: 150.w,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.w),
             child: OutlinedButton(
               onPressed: () {
                 _openDelete();
@@ -165,7 +162,7 @@ class _DeleteModalState extends State<Deletemodal> {
                 shadowColor: Colors.grey.withOpacity(0.5),
                 elevation: 7,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 padding: EdgeInsets.zero,
               ),
@@ -176,19 +173,19 @@ class _DeleteModalState extends State<Deletemodal> {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Container(
                   alignment: Alignment.center,
-                  height: 60,
-                  width: 150,
+                  height: 60.h,
+                  width: 150.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "ลบ",
                         style: GoogleFonts.prompt(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),

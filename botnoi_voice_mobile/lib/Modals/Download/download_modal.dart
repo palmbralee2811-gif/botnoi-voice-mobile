@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DownlaodModal extends StatefulWidget {
   const DownlaodModal({super.key});
@@ -28,32 +29,32 @@ class _DownlaodModalState extends State<DownlaodModal> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
           child: SizedBox(
             width: double.infinity,
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
+                  Padding(
+                    padding: EdgeInsets.all(8.w),
                     child: Image(
-                      image: AssetImage('assets/images/Vector.png'),
-                      height: 54,
-                      width: 54,
+                      image: const AssetImage('assets/images/Vector.png'),
+                      height: 54.h,
+                      width: 54.w,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.w),
                     child: Text(
                       'ดาวน์โหลดไฟล์',
                       style: GoogleFonts.prompt(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -64,7 +65,7 @@ class _DownlaodModalState extends State<DownlaodModal> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.prompt(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.normal,
                       color: Colors.black54,
                     ),
@@ -85,7 +86,7 @@ class _DownlaodModalState extends State<DownlaodModal> {
       children: [
         Expanded(
             child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.w),
           child: ElevatedButton(
             onPressed: () => _openDownloading(),
             style: ElevatedButton.styleFrom(
@@ -93,7 +94,7 @@ class _DownlaodModalState extends State<DownlaodModal> {
               shadowColor: Colors.grey.withOpacity(0.5),
               elevation: 7,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(30.r),
               ),
               padding: EdgeInsets.zero,
             ),
@@ -104,33 +105,33 @@ class _DownlaodModalState extends State<DownlaodModal> {
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
               ),
               child: Container(
                 alignment: Alignment.center,
-                height: 50,
+                height: 50.h,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "ดาวน์โหลด",
                       style: GoogleFonts.prompt(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 5.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 5.w),
                       child: Image(
-                        image: AssetImage('assets/images/point.png'),
-                        height: 16,
-                        width: 16,
+                        image: const AssetImage('assets/images/point.png'),
+                        height: 16.h,
+                        width: 16.w,
                       ),
                     ),
                     Text(
                       ' 15',
                       style: GoogleFonts.prompt(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),

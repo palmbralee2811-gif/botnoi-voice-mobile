@@ -46,7 +46,7 @@ class _EditWorkspaceScreen extends State<EditWorkspaceScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.w),
                 child: Form(
                   child: SingleChildScrollView(
                     child: Column(

@@ -94,9 +94,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
     super.initState();
     language = ''; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
     gender = '';
-
     speechStyle = ''; // สไตล์ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-
     voiceStyle = ''; // หมวดหมู่ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
   }
 
@@ -158,12 +156,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(25),
+                                      padding: EdgeInsets.all(25.w),
                                       child: Column(
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -283,12 +281,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       height: 26.h,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(4),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4.r),
                         ),
                         border: Border.all(
                           color: const Color(0xFFE2E3E9),
-                          width: 1,
+                          width: 1.w,
                         ),
                       ),
                       child: Row(
@@ -296,11 +294,11 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         children: [
                           Image.asset(
                             selectedLanguageImage,
-                            width: 14,
-                            height: 14,
+                            width: 14.w,
+                            height: 14.h,
                           ),
-                          const SizedBox(
-                            width: 3,
+                          SizedBox(
+                            width: 3.w,
                           ),
                           Flexible(
                             child: FittedBox(
@@ -315,7 +313,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                             isExpanded
                                 ? Icons.keyboard_arrow_up_sharp
                                 : Icons.keyboard_arrow_down_sharp,
-                            size: 20,
+                            size: 20.sp,
                             color: const Color(0xFF323130),
                           ),
                         ],
@@ -337,12 +335,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                               return SizedBox(
                                 height: 220.h,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(25),
+                                  padding: EdgeInsets.all(25.w),
                                   child: Column(
                                     children: [
                                       Container(
                                         color: Colors.transparent,
-                                        width: 360,
+                                        width: 360.w,
                                         child: Column(
                                           children: [
                                             Row(
@@ -411,12 +409,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       height: 26.h,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(4),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4.r),
                         ),
                         border: Border.all(
                           color: const Color(0xFFE2E3E9),
-                          width: 1,
+                          width: 1.w,
                         ),
                       ),
                       child: Column(
@@ -425,7 +423,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const SizedBox(width: 3),
+                              SizedBox(width: 3.w),
                               if (gender == '')
                                 Text(
                                   'ช/ญ',
@@ -442,15 +440,15 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                   ),
                                 ),
                               changeIcon
-                                  ? const Icon(
+                                  ? Icon(
                                       Icons.keyboard_arrow_up_sharp,
-                                      size: 20,
-                                      color: Color(0xFF323130),
+                                      size: 20.sp,
+                                      color: const Color(0xFF323130),
                                     )
-                                  : const Icon(
+                                  : Icon(
                                       Icons.keyboard_arrow_down_sharp,
-                                      size: 20,
-                                      color: Color(0xFF323130),
+                                      size: 20.sp,
+                                      color: const Color(0xFF323130),
                                     ),
                             ],
                           ),
@@ -478,12 +476,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         gradient: const LinearGradient(
                           colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                         ),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(4),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4.r),
                         ),
                         border: Border.all(
                           color: const Color(0xFFE2E3E9),
-                          width: 1,
+                          width: 1.w,
                         ),
                       ),
                       child: Column(
@@ -522,7 +520,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
             width: 320.w,
             color: Colors.white,
             child: Padding(
-              padding: EdgeInsets.only(right: 13.w, left: 13.w, top: 8.w),
+              padding: EdgeInsets.only(right: 13.w, left: 13.w, top: 8.h),
               child: Wrap(
                   alignment: WrapAlignment.start,
                   spacing: 13.0,
@@ -548,7 +546,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                       children: [
                                         Container(
                                           color: Colors.transparent,
-                                          width: 360,
+                                          width: 360.w,
                                           child: Column(
                                             children: [
                                               Row(
@@ -878,12 +876,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         height: 26.h,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(4),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(4.r),
                           ),
                           border: Border.all(
                             color: const Color(0xFFE2E3E9),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                         child: Column(
@@ -892,8 +890,8 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(
-                                  width: 3,
+                                SizedBox(
+                                  width: 3.w,
                                 ),
                                 Flexible(
                                   child: FittedBox(
@@ -909,7 +907,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                   selectStyle
                                       ? Icons.keyboard_arrow_up_sharp
                                       : Icons.keyboard_arrow_down_sharp,
-                                  size: 20,
+                                  size: 20.sp,
                                   color: const Color(0xFF323130),
                                 ),
                               ],
@@ -938,7 +936,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                       children: [
                                         Container(
                                           color: Colors.transparent,
-                                          width: 360,
+                                          width: 360.w,
                                           child: Column(
                                             children: [
                                               Row(
@@ -1179,12 +1177,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         height: 26.h,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(4),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(4.r),
                           ),
                           border: Border.all(
                             color: const Color(0xFFE2E3E9),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                         child: Column(
@@ -1193,8 +1191,8 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(
-                                  width: 3,
+                                SizedBox(
+                                  width: 3.w,
                                 ),
                                 Flexible(
                                   child: FittedBox(
@@ -1210,7 +1208,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                   selectCategory
                                       ? Icons.keyboard_arrow_up_sharp
                                       : Icons.keyboard_arrow_down_sharp,
-                                  size: 20,
+                                  size: 20.sp,
                                   color: const Color(0xFF323130),
                                 ),
                               ],
@@ -1254,7 +1252,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                 // color: Colors.amber,
                 ),
             child: Padding(
-              padding: EdgeInsets.only(bottom: 20.w, left: 20.w, right: 20.w),
+              padding: EdgeInsets.only(bottom: 20.h, left: 20.w, right: 20.w),
               child: SizedBox(
                 child: GradientButton(
                   text: 'ส่งข้อเสนอแนะ',
@@ -1281,12 +1279,12 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                   colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                 )
               : null,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
+          borderRadius: BorderRadius.all(
+            Radius.circular(4.r),
           ),
           border: Border.all(
             color: const Color(0xFFE2E3E9),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Center(
@@ -1560,7 +1558,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                  right: 5.w, top: 5.w, left: 5.w),
+                                  right: 5.w, top: 5.h, left: 5.w),
                               child: selectedIndex.contains(index)
                                   ? Container(
                                       width: 31.w,
@@ -1593,7 +1591,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                     ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(right: 5.w, top: 5.w),
+                              padding: EdgeInsets.only(right: 5.w, top: 5.h),
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -1655,15 +1653,15 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                     },
                                     child: SvgPicture.asset(
                                       'assets/logo/Vector.svg',
-                                      width: 16.h,
-                                      height: 16.w,
+                                      width: 16.w,
+                                      height: 16.h,
                                       // color: Colors.white,
                                     ),
                                   )
                                 : SvgPicture.asset(
                                     'assets/logo/Vector (1).svg',
-                                    width: 16.h,
-                                    height: 16.w,
+                                    width: 16.w,
+                                    height: 16.h,
                                   ),
                             SizedBox(
                               width: 3.w,

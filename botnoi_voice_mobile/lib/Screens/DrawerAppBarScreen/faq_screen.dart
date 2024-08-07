@@ -66,8 +66,7 @@ class _FaqScreenState extends State<FaqScreen> {
                             foreground: Paint()
                               ..shader = const LinearGradient(
                                 colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                              ).createShader(
-                                  const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                              ).createShader(Rect.fromLTWH(0.0, 0.0, 200.w, 70.h)),
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                           )

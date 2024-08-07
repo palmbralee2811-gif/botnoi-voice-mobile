@@ -27,7 +27,7 @@ class DrawerAppbar extends StatelessWidget {
       child: ListView(
         children: <Widget>[
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w, right: 30.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h, right: 30.w),
             title: Column(
               children: [
                 Row(
@@ -38,7 +38,7 @@ class DrawerAppbar extends StatelessWidget {
                         Provider.of<Authentication>(context).user!.photoURL!,
                       ),
                       backgroundColor: Colors.black,
-                      radius: 20.0.r,
+                      radius: 20.r,
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -85,7 +85,7 @@ class DrawerAppbar extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 30.h),
             leading: GradientIcon(
               icon: Icons.account_circle_outlined,
               size: 24.sp,
@@ -116,7 +116,7 @@ class DrawerAppbar extends StatelessWidget {
             },
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
             leading: Icon(
               Icons.credit_card_rounded,
               size: 24.sp,
@@ -133,7 +133,7 @@ class DrawerAppbar extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
             leading: Icon(
               Icons.question_mark_outlined,
               size: 24.sp,
@@ -157,7 +157,7 @@ class DrawerAppbar extends StatelessWidget {
             },
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
             leading: Icon(
               Icons.email_outlined,
               size: 24.sp,
@@ -181,7 +181,7 @@ class DrawerAppbar extends StatelessWidget {
             },
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
             leading: Icon(
               Icons.credit_card_sharp,
               size: 24.sp,
@@ -205,7 +205,7 @@ class DrawerAppbar extends StatelessWidget {
             },
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
             leading: Icon(
               Icons.logout,
               size: 24.sp,

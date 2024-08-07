@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class DeletePopup extends StatefulWidget {
   const DeletePopup({super.key});
@@ -15,11 +17,11 @@ class _DeletePopupState extends State<DeletePopup> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 160,
-        width: 240,
+        height: 160.h,
+        width: 240.w,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         child: Padding(
           padding: const EdgeInsets.only(),
@@ -38,18 +40,18 @@ class _DeletePopupState extends State<DeletePopup> {
                         });
                       },
                       builder: (context, value, child) => SizedBox(
-                        height: 50,
-                        width: 50,
+                        height: 50.h,
+                        width: 50.w,
                         child: CircularProgressIndicator(
                           value: value,
                           backgroundColor: const Color(0xFFF7F8FA),
-                          strokeWidth: 5,
+                          strokeWidth: 5.w,
                         ),
                       ),
                     ),
                   if (!isDone)
                     Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.only(top: 20.h),
                       child: GradientText(
                         'กำลังลบ...',
                         gradient: const LinearGradient(
@@ -59,7 +61,7 @@ class _DeletePopupState extends State<DeletePopup> {
                           ],
                         ),
                         style: GoogleFonts.prompt(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -78,14 +80,14 @@ class _DeletePopupState extends State<DeletePopup> {
                             end: Alignment.bottomRight,
                           ).createShader(
                               Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                          child: const Icon(
+                          child: Icon(
                             Icons.check_circle,
                             color: Colors.green,
-                            size: 60,
+                            size: 60.w,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 20),
+                          padding: EdgeInsets.only(top: 20.h),
                           child: GradientText(
                             'ลบไฟล์สำเร็จ',
                             gradient: const LinearGradient(
@@ -95,7 +97,7 @@ class _DeletePopupState extends State<DeletePopup> {
                               ],
                             ),
                             style: GoogleFonts.prompt(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

@@ -44,7 +44,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
+              padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
               child: SizedBox(
                 child: Text(
                   'ความรู้สึก',
@@ -64,7 +64,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             ),
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 10),
+              padding: EdgeInsets.only(bottom: 10.h, top: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -107,7 +107,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 16.sp),
+            SizedBox(height: 16.h),
             Padding(
               padding: EdgeInsets.only(
                 right: 140.w,
@@ -120,31 +120,31 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10.sp),
+            SizedBox(height: 10.h),
             Padding(
               padding: EdgeInsets.only(left: 30.w, right: 30.w),
               child: TextField(
                 cursorColor: const Color(0xFF000000),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFD9D9D9),
-                      width: 1.0,
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide(
+                      color: const Color(0xFFD9D9D9),
+                      width: 1.w,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFD9D9D9),
-                      width: 1.0,
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide(
+                      color: const Color(0xFFD9D9D9),
+                      width: 1.w,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFD9D9D9),
-                      width: 1.0,
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide(
+                      color: const Color(0xFFD9D9D9),
+                      width: 1.w,
                     ),
                   ),
                   labelText: '',
@@ -159,7 +159,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+              padding: EdgeInsets.only(bottom: 20.h, left: 20.w, right: 20.w),
               child: SizedBox(
                 child: GradientButton(
                   text: 'ส่งข้อเสนอแนะ',

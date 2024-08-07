@@ -40,7 +40,7 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
+        padding: EdgeInsets.only(left: 20.w, right: 20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,7 +61,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 await Provider.of<Authentication>(context).signOut(context);
               },
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Center(
               child: TextButton(
                 onPressed: () {
@@ -90,7 +90,7 @@ class UserInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

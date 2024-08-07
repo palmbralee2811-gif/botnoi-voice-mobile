@@ -4,6 +4,7 @@ import 'package:botnoi_voice_mobile/Screens/AcceptScreen/terms_service_screen.da
 import 'package:botnoi_voice_mobile/Screens/AuthScreen/gradient_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -62,17 +63,17 @@ class _AuthScreenState extends State<AuthScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 50.0,
+          SizedBox(
+            height: 50.h,
           ),
           _buildTop(context),
-          const SizedBox(height: 50.0),
+          SizedBox(height: 50.h),
           _buildCenter(),
-          const SizedBox(height: 10.0),
+          SizedBox(height: 10.h),
           _buildLoginLineButton(mediaSize),
-          const SizedBox(height: 10.0),
+          SizedBox(height: 10.h),
           _buildLoginGoogleButton(),
-          const SizedBox(height: 30.0),
+          SizedBox(height: 30.h),
           _buildAccept(),
         ],
       ),
@@ -91,7 +92,7 @@ class _AuthScreenState extends State<AuthScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                    padding: const EdgeInsets.only(left: 20.0, bottom: 10),
+                    padding: EdgeInsets.only(left: 20.w, bottom: 10.h),
                     child: GradientText(
                       'ยินดีต้อนรับ',
                       gradient: const LinearGradient(
@@ -101,12 +102,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                       ),
                       style: GoogleFonts.prompt(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         decoration: TextDecoration.none,
                       ),
                     )),
                 Padding(
-                    padding: const EdgeInsets.only(left: 20.0, bottom: 10),
+                    padding: EdgeInsets.only(left: 20.w, bottom: 10.h),
                     child: GradientText(
                       'BOTNOI Voice',
                       gradient: const LinearGradient(
@@ -117,16 +118,16 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       style: GoogleFonts.prompt(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         decoration: TextDecoration.none,
                       ),
                     )),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20.0, bottom: 0.5),
+                  padding: EdgeInsets.only(left: 20.w, bottom: 0.5.h),
                   child: Text(
                     'เปลี่ยนข้อความเป็นเสียงในทันที!\nไม่ว่าคุณจะต้องการพากษ์บทความ ฟังหนังสือ\nหรือสร้างเสียงบรรยายสำหรับวิดีโอ',
                     style: GoogleFonts.prompt(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.black,
                       decoration: TextDecoration.none,
                     ),
@@ -143,8 +144,8 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _buildCenter() {
     return Center(
       child: Container(
-        width: 200,
-        height: 200,
+        width: 200.w,
+        height: 200.h,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/image559.png'),
@@ -161,13 +162,13 @@ class _AuthScreenState extends State<AuthScreen> {
       children: [
         Center(
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10.w),
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3ACE01),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 padding: EdgeInsets.zero,
                 minimumSize: Size(mediaSize.width * 0.2, 50.0),
@@ -177,14 +178,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 children: [
                   Image.asset(
                     'assets/images/line.png',
-                    height: 60.0,
-                    width: 60.0,
+                    height: 60.h,
+                    width: 60.w,
                   ),
-                  const SizedBox(width: 8.0),
+                  SizedBox(width: 8.w),
                   Text(
                     'เข้าสู่ระบบด้วย Line',
                     style: GoogleFonts.prompt(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: Colors.white,
                       decoration: TextDecoration.none,
                     ),
@@ -204,7 +205,7 @@ class _AuthScreenState extends State<AuthScreen> {
       children: [
         Center(
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10.w),
             child: ElevatedButton(
               onPressed: () async {
                 await Provider.of<Authentication>(context)
@@ -213,7 +214,7 @@ class _AuthScreenState extends State<AuthScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 padding: EdgeInsets.zero,
                 minimumSize: Size(mediaSize.width * 0.8, 60.0),
@@ -223,14 +224,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 children: [
                   Image.asset(
                     'assets/images/google.png',
-                    height: 40.0,
-                    width: 40.0,
+                    height: 40.h,
+                    width: 40.w,
                   ),
-                  const SizedBox(width: 8.0),
+                  SizedBox(width: 8.w),
                   Text(
                     'เข้าสู่ระบบด้วย Google',
                     style: GoogleFonts.prompt(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: Colors.black,
                       decoration: TextDecoration.none,
                     ),
@@ -246,7 +247,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Widget _buildAccept() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -267,12 +268,12 @@ class _AuthScreenState extends State<AuthScreen> {
                     text:
                         'By continuing, you are indicating that you accept our ',
                     style: GoogleFonts.prompt(
-                        fontSize: 14, color: const Color(0xFF605E5C)),
+                        fontSize: 14.sp, color: const Color(0xFF605E5C)),
                     children: <TextSpan>[
                       TextSpan(
                         text: 'Terms of Service',
                         style: GoogleFonts.prompt(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.blue,
                           decoration: TextDecoration.underline,
                         ),
@@ -289,12 +290,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       TextSpan(
                         text: ' and ',
                         style: GoogleFonts.prompt(
-                            fontSize: 14, color: const Color(0xFF605E5C)),
+                            fontSize: 14.sp, color: const Color(0xFF605E5C)),
                       ),
                       TextSpan(
                         text: 'Private Policy',
                         style: GoogleFonts.prompt(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.blue,
                           decoration: TextDecoration.underline,
                         ),
@@ -302,8 +303,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ..onTap = () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const PrivacyPolicyScreen(),
+                                builder: (context) => const PrivacyPolicyScreen(),
                               ),
                             );
                           },
@@ -311,7 +311,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       TextSpan(
                         text: '.',
                         style: GoogleFonts.prompt(
-                            fontSize: 14, color: const Color(0xFF605E5C)),
+                            fontSize: 14.sp, color: const Color(0xFF605E5C)),
                       ),
                     ],
                   ),

@@ -30,12 +30,12 @@ class _PodcastGenreFilterState extends State<PodcastGenreFilter> {
                   colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                 )
               : null,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
+          borderRadius: BorderRadius.all(
+            Radius.circular(4.r),
           ),
           border: Border.all(
             color: const Color(0xFFE2E3E9),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Column(

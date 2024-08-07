@@ -29,7 +29,7 @@ class _GenderFilterState extends State<GenderFilter> {
                 return SizedBox(
                   height: 220.h,
                   child: Padding(
-                    padding: const EdgeInsets.all(25),
+                    padding: EdgeInsets.all(25.w),
                     child: Column(
                       children: [
                         Container(
@@ -201,12 +201,12 @@ class _GenderFilterState extends State<GenderFilter> {
         height: 26.h,
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
+          borderRadius: BorderRadius.all(
+            Radius.circular(4.r),
           ),
           border: Border.all(
             color: const Color(0xFFE2E3E9),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Column(
@@ -215,21 +215,21 @@ class _GenderFilterState extends State<GenderFilter> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(
-                  width: 3,
+                SizedBox(
+                  width: 3.w,
                 ),
                 Text(selectedGender,
                     style: GoogleFonts.prompt(fontSize: 12.sp)),
                 changeIcon
-                    ? const Icon(
+                    ? Icon(
                         Icons.keyboard_arrow_up_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
+                        size: 20.sp,
+                        color: const Color(0xFF323130),
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.keyboard_arrow_down_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
+                        size: 20.sp,
+                        color: const Color(0xFF323130),
                       ),
               ],
             ),

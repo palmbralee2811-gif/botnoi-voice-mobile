@@ -25,7 +25,7 @@ class _CategorySettingsState extends State<CategorySettings> {
           height: screenSize.height * 0.200.h,
           child: Padding(
             padding: EdgeInsets.only(
-              top: 20.w,
+              top: 20.h,
               right: 10.w,
               left: 20.w,
             ),
@@ -67,7 +67,7 @@ class _CategorySettingsState extends State<CategorySettings> {
                       ),
                     ),
                     SizedBox(
-                        width: 55,
+                        width: 55.w,
                         child: Text('${_volumevalue.toStringAsFixed(1)}%',
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
@@ -108,7 +108,7 @@ class _CategorySettingsState extends State<CategorySettings> {
                       ),
                     ),
                     SizedBox(
-                        width: 55,
+                        width: 55.w,
                         child: Text(
                           '${speedValue.toStringAsFixed(1)} x',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
@@ -127,7 +127,7 @@ class _CategorySettingsState extends State<CategorySettings> {
 class GradientThumbShape extends SliderComponentShape {
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return const Size(16.0, 16.0); // Size of the thumb
+    return Size(16.w, 16.h); // Size of the thumb
   }
 
   @override
@@ -146,7 +146,7 @@ class GradientThumbShape extends SliderComponentShape {
     required Size sizeWithOverflow,
   }) {
     final Rect thumbRect =
-        Rect.fromCenter(center: center, width: 20.0, height: 30.0);
+        Rect.fromCenter(center: center, width: 20.w, height: 30.h);
     final Paint paint = Paint()
       ..shader = const LinearGradient(
         colors: <Color>[Color(0xFF9340FF), Color(0xFF34BDFA)],
@@ -154,7 +154,7 @@ class GradientThumbShape extends SliderComponentShape {
       ..style = PaintingStyle.fill;
 
     context.canvas
-        .drawCircle(center, 15.0, paint); // Radius is half of thumb size
+        .drawCircle(center, 15.r, paint); // Radius is half of thumb size
   }
 }
 

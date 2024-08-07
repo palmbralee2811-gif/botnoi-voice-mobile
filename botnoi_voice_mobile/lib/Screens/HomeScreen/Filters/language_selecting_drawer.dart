@@ -17,7 +17,7 @@ class LanguageSelectingDrawer extends StatelessWidget {
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.w),
                   child: Column(
                     children: [
                       Container(
@@ -135,7 +135,7 @@ class LanguageSelectingDrawer extends StatelessWidget {
                 Image.asset(
                   'assets/logo/Ellipse 12.jpg',
                   width: 24.w,
-                  height: 24.w,
+                  height: 24.h,
                 ),
                 SizedBox(
                   width: 10.w,
