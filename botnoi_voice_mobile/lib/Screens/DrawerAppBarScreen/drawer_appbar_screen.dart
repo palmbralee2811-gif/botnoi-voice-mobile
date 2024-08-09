@@ -13,10 +13,7 @@ import 'package:provider/provider.dart';
 class DrawerAppbar extends StatelessWidget {
   const DrawerAppbar({
     super.key,
-    required this.screenSizeheight,
   });
-
-  final double screenSizeheight;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +225,7 @@ class DrawerAppbar extends StatelessWidget {
             opacity: 0.5, // 50% opacity
             child: Container(
               width: 200.w,
-              height: screenSizeheight * 0.05.h,
+              height: 10.h,
               color: Colors.transparent,
             ),
           ),
