@@ -198,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: <Widget>[
           Container(
-            width: 320.w, //screenSizewidth,
+            width: 320.w,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],

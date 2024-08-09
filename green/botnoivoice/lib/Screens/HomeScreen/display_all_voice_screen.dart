@@ -99,33 +99,23 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
     // Initialize language and other variables
     language = ''; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
     gender = ''; ///////////////////////// กำนดค่าเริ่มต้น  new
-
     speechStyle = ''; // สไตล์ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-
     voiceStyle = ''; // หมวดหมู่ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-
     /// กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
-
     // Initialize other variables here...
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenSizewidth = MediaQuery.of(context).size.width;
-    // double screenSizeheight = MediaQuery.of(context).size.height;
-    // final data = AppDataBase.data;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: Padding(
           padding: EdgeInsets.only(left: 89.w),
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            // Icon(
-            //   Icons.arrow_back_ios_new,
-            //   size: 24.sp,
-            //   color: const Color(0xFF323130),
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+              children: [
             Image.asset(
               'assets/logo/Frame (1).png',
               width: 30.w,
@@ -151,7 +141,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   InkWell(
-                    ////////เลือกภาษา
+                    // เลือกภาษา
                     onTap: () {
                       setState(() {
                         isExpanded = true;
@@ -1254,33 +1244,33 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
             //////////////พื้นหลัง widget voice
             // color: Colors.amber,
             color: const Color(0xFFFFFFFF),
-
             height: 420.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ishover
                     ? voiceWidgetFavorite(
-                        context, ///// เลือกเสียงที่ชอบ
+                        context, /// เลือกเสียงที่ชอบ
                       )
-                    : voiceWidGetHome(context), ///// หน้าเลือกเสียงหลัก
+                    : voiceWidGetHome(context), /// หน้าเลือกเสียงหลัก
               ],
             ),
           ),
           const Spacer(),
           Container(
-            height: 64.h,
-            width: screenSizewidth * 0.78.w,
+            height: 56.h,
+            width: 320.w,
             decoration: const BoxDecoration(
                 // color: Colors.amber,
                 ),
             child: Padding(
-              padding: EdgeInsets.only(bottom: 20.w, left: 20.w, right: 20.w),
+              padding: EdgeInsets.only(
+                  left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
               child: SizedBox(
                 child: GradientButton(
-                  text: 'ส่งข้อเสนอแนะ',
+                  text: 'ตกลง',
                   onPressed: () {
-                    print('ส่งข้อเสนอแนะ');
+                    debugPrint('ตกลง');
                   },
                 ),
               ),
@@ -1438,10 +1428,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
   }
 
   Widget voiceWidGetHome(BuildContext context) {
-    // double screenSizewidth = MediaQuery.of(context).size.width; //// Old
     return SizedBox(
-      // height: 140.h,
-      // width: screenSizewidth * 0.95.w,
       height: 420.h,
       width: 320.w,
 

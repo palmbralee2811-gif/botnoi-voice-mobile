@@ -100,21 +100,15 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenSizewidth = MediaQuery.of(context).size.width;
-    // double screenSizeheight = MediaQuery.of(context).size.height;
-    // final data = AppDataBase.data;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: Padding(
           padding: EdgeInsets.only(left: 89.w),
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            // Icon(
-            //   Icons.arrow_back_ios_new,
-            //   size: 24.sp,
-            //   color: const Color(0xFF323130),
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+              children: [
             Image.asset(
               'assets/logo/Frame (1).png',
               width: 30.w,
@@ -144,7 +138,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       setState(() {
                         isExpanded = true;
                       });
-
                       showModalBottomSheet(
                         backgroundColor: Colors.white,
                         context: context,
@@ -297,9 +290,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                             width: 14.w,
                             height: 14.h,
                           ),
-                          SizedBox(
-                            width: 3.w,
-                          ),
+                          SizedBox(width: 3.w),
                           Flexible(
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
@@ -367,9 +358,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(
-                                              height: 15.h,
-                                            ),
+                                            SizedBox(height: 15.h),
                                             _buildGenderOption(
                                                 'ช/ญ',
                                                 'assets/logo/Category.jpg',
@@ -876,9 +865,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         height: 26.h,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(4.r),
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(4.r)),
                           border: Border.all(
                             color: const Color(0xFFE2E3E9),
                             width: 1.w,
@@ -890,9 +877,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                  width: 3.w,
-                                ),
+                                SizedBox(width: 3.w),
                                 Flexible(
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
@@ -931,7 +916,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                 return SizedBox(
                                   height: 200.h,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(25),
+                                    padding: EdgeInsets.all(25.w),
                                     child: Column(
                                       children: [
                                         Container(
@@ -1177,9 +1162,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                         height: 26.h,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(4.r),
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(4.r)),
                           border: Border.all(
                             color: const Color(0xFFE2E3E9),
                             width: 1.w,
@@ -1191,9 +1174,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                  width: 3.w,
-                                ),
+                                SizedBox(width: 3.w),
                                 Flexible(
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
@@ -1231,7 +1212,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
           Container(
             // color: Colors.amber,
             color: const Color(0xFFFFFFFF),
-
             height: 420.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1247,15 +1227,15 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
           const Spacer(),
           Container(
             height: 64.h,
-            width: screenSizewidth * 0.78.w,
+            width: 320.w, 
             decoration: const BoxDecoration(
                 // color: Colors.amber,
                 ),
             child: Padding(
-              padding: EdgeInsets.only(bottom: 20.h, left: 20.w, right: 20.w),
+              padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
               child: SizedBox(
                 child: GradientButton(
-                  text: 'ส่งข้อเสนอแนะ',
+                  text: 'ตกลง',
                   onPressed: () {
                     //TODO: Add onPressed function
                   },
@@ -1340,9 +1320,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                   width: 23.w,
                   height: 23.h,
                 ),
-                SizedBox(
-                  width: 20.w,
-                ),
+                SizedBox(width: 20.w),
                 Text(
                   text,
                   style: GoogleFonts.prompt(
@@ -1425,7 +1403,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
                       (speechStyle == '' ||
                           item.speechStyle.contains(speechStyle)))
-                  .length, //new
+                  .length,
 
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -1434,7 +1412,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
               ),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                // final data = AppDataBase.data[index];
                 final data = speakerMetadata
                     .where((item) =>
                         (gender == '' || item.gender == gender) &&
@@ -1464,8 +1441,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (isAudioPlaying) {
-                    await audioPlayer
-                        .stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                    await audioPlayer.stop();
                   }
                   await audioPlayer.play(UrlSource(audioURL));
                   setState(() {
@@ -1482,7 +1458,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                   });
                 }
               }
-
               await playAudio();
               speakerId = speakerMetadata.speakerId;
               setState(() {
@@ -1520,21 +1495,18 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
                       image: NetworkImage(
-                        // AppDataBase.data[index].squareImage, //old
-                        speakerMetadata.squareImage, //new
+                        speakerMetadata.squareImage,
                       ),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        blurRadius: 10, // new
-                        spreadRadius: 1, // new
+                        blurRadius: 10, 
+                        spreadRadius: 1,
                         color: selectedIndex.contains(index)
-                            // ? Colors.blue.withOpacity(0.5) //old
                             ? const Color(0xFF9340FF).withOpacity(0.6) //new
                             : Colors.transparent,
-                        // offset: const Offset(0, 2), //old
-                        offset: const Offset(0, 4), //new
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -1621,7 +1593,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                           'assets/logo/heart (1).svg',
                                           width: 20.w,
                                           height: 20.h,
-                                          // color: Colors.white,
                                         ),
                                       )
                                     : SvgPicture.asset(
@@ -1640,7 +1611,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                           children: [
                             SizedBox(
                               width: 10.w,
-                            ), //new
+                            ),
                             selectedIndex.contains(index)
                                 ? ShaderMask(
                                     shaderCallback: (Rect bounds) {
@@ -1655,7 +1626,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                       'assets/logo/Vector.svg',
                                       width: 16.w,
                                       height: 16.h,
-                                      // color: Colors.white,
                                     ),
                                   )
                                 : SvgPicture.asset(
@@ -1663,9 +1633,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                                     width: 16.w,
                                     height: 16.h,
                                   ),
-                            SizedBox(
-                              width: 3.w,
-                            ),
+                            SizedBox(width: 3.w),
                             Expanded(
                               child: Text(
                                 // AppDataBase.data[index].thaiName, //old
@@ -1713,7 +1681,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                   selectedIndexFavorites.isEmpty ||
                   selectedIndexFavorites.contains(item.speakerId))
               .toList()[index];
-
           return voicewidget(data, index);
         },
       ),
