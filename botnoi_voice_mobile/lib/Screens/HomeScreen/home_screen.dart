@@ -39,8 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _selectedSpeakerId;
 
   String _selectedLanguage = "TH";
-  String _selectedLanguageImage =
-      'assets/logo/Ellipse 12.jpg'; ///// กำหนดรูปค่าเริ่มต้น new
+  String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
 
   String _selectedGender = "";
   String _selectedSpeechStyle = "";
@@ -56,13 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Set<int> selectedIndex2 = {};
   Set<int> selectedIndex = {};
-  List<String> selectedIndexFavorites = []; // เลือกเสียงที่ชอบ
-
-  @override
-  void dispose() {
-    textController.dispose();
-    super.dispose();
-  }
+  List<String> selectedIndexFavorites = [];
 
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
@@ -84,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //เลือกภาษา
 
-  bool changeIcon = false; /////////////เลือกเพศ
+  bool isSelectingGender = false; /////////////เลือกเพศ
 
   bool selectStyle = false; /////////////เลือกสไตล์
   bool selectStyle1 = false; /////////////เลือกสไตล์
@@ -115,6 +108,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool selectCategory8 = false; /////////////เลือกหมวดหมู่
   bool selectCategory9 = false; /////////////เลือกหมวดหมู่
   bool selectCategory10 = false; /////////////เลือกหมวดหมู่
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -537,7 +536,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            changeIcon = !changeIcon;
+                            isSelectingGender = !isSelectingGender;
                           });
                           showModalBottomSheet(
                             backgroundColor: Colors.white,
@@ -639,7 +638,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         fontSize: 12.sp,
                                       ),
                                     ),
-                                  changeIcon
+                                  isSelectingGender
                                       ? const Icon(
                                           Icons.keyboard_arrow_up_sharp,
                                           size: 20,
@@ -739,8 +738,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         });
                                                       },
                                                       child: _buildGenreFilter(
-                                                          'น่ารัก',
-                                                          selectStyle1),
+                                                        'น่ารัก',
+                                                        selectStyle1,
+                                                      ),
                                                     ),
                                                     InkWell(
                                                       onTap: () {
