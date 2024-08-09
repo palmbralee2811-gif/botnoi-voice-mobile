@@ -29,7 +29,7 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
     return Column(
       children: [
         const Text('Choice Voice'),
-        if (speakerMetadata.isNotEmpty)
+        if (embeddedSpeakerMetadata.isNotEmpty)
           SizedBox(
             height: 103.h, //103
             width: 81.w, //81

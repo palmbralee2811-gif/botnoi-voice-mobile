@@ -62,10 +62,10 @@ class _CategoryVoiceWidgetState extends State<CategoryVoiceWidget> {
             children: [
               _isSelected
                   ? FavoriteVoiceWidget(
-                      speakerMetadata: speakerMetadata,
+                      speakerMetadata: embeddedSpeakerMetadata,
                     )
                   : VoiceWidget(
-                      speakerMetadata: speakerMetadata,
+                      speakerMetadata: embeddedSpeakerMetadata,
                     )
             ],
           ),

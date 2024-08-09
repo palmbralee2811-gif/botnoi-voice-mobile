@@ -1,6 +1,6 @@
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
 
-const List<SpeakerMetadataModel> speakerMetadata = [
+const List<SpeakerMetadataModel> embeddedSpeakerMetadata = [
   SpeakerMetadataModel(
     speakerId: '1',
     speakerName: 'tonkhaow',

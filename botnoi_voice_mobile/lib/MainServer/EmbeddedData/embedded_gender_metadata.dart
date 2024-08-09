@@ -1,6 +1,6 @@
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
 
-List<GenderMetadataModel> genderMetadata = [
+List<GenderMetadataModel> embeddedGenderMetadata = [
   GenderMetadataModel(
     gender: "ช/ญ",
     imagePath: "assets/logo/Category.jpg",

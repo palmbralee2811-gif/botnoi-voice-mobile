@@ -1,7 +1,9 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_category_list.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_gender_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_language_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_style_list.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/language_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
@@ -32,26 +34,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
   final TextEditingController textController = TextEditingController();
 
-  // Generate Audio
-  String _audioUrl = '';
+  String _generatedAudioUrl = '';
   String? _selectedSpeakerId;
-
   String _selectedLanguage = "TH";
   String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
-
   String _selectedGender = "";
-  String _selectedSpeechStyle = "";
-  String _selectedVoiceStyle = "";
+  final List<String> _selectedStyles = [];
+  final List<String> _selectedCategories = [];
 
-  // Download File
-  String downloadProgress = '';
-  bool isDownloading = false;
-
-  // Audio Player
-  final AudioPlayer audioPlayer = AudioPlayer();
-  bool isAudioPlaying = false;
+  bool _isAudioPlaying = false;
+  bool _isFavouriteSelected = false;
+  bool _isSelectingGender = false;
+  bool _isSelectingCategory = false;
+  bool _isSelectingStyle = false;
+  int _isTypingText = 0;
 
   Set<int> selectedIndex2 = {};
   Set<int> selectedIndex = {};
@@ -59,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
-  int _inputtext = 0;
 
   void _selectPageVoice(int index) {
     setState(() {
@@ -72,42 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedPageIndexSetting = index;
     });
   }
-
-  bool _isFavouriteSelected = false;
-
-  //เลือกภาษา
-
-  bool isSelectingGender = false; /////////////เลือกเพศ
-
-  bool selectStyle = false; /////////////เลือกสไตล์
-  bool selectStyle1 = false; /////////////เลือกสไตล์
-  bool selectStyle2 = false; /////////////เลือกสไตล์
-  bool selectStyle3 = false; /////////////เลือกสไตล์
-  bool selectStyle4 = false; /////////////เลือกสไตล์
-  bool selectStyle5 = false; /////////////เลือกสไตล์
-  bool selectStyle6 = false; /////////////เลือกสไตล์
-  bool selectStyle7 = false; /////////////เลือกสไตล์
-  bool selectStyle8 = false; /////////////เลือกสไตล์
-  bool selectStyle9 = false; /////////////เลือกสไตล์
-  bool selectStyle10 = false; /////////////เลือกสไตล์
-  bool selectStyle11 = false; /////////////เลือกสไตล์
-  bool selectStyle12 = false; /////////////เลือกสไตล์
-  bool selectStyle13 = false; /////////////เลือกสไตล์
-  bool selectStyle14 = false; /////////////เลือกสไตล์
-  bool selectStyle15 = false; /////////////เลือกสไตล์
-  bool selectStyle16 = false; /////////////เลือกสไตล์
-
-  bool selectCategory = false; /////////////เลือกหมวดหมู่
-  bool selectCategory1 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory2 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory3 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory4 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory5 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory6 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory7 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory8 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory9 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory10 = false; /////////////เลือกหมวดหมู่
 
   @override
   void dispose() {
@@ -123,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
     bool showClearIcon = false;
 
     if (_selectedPageIndexVoice == 1) {
-      _inputtext = 1;
+      _isTypingText = 1;
       if (_selectedPageIndexSetting == 1) {
         _selectedPageIndexVoice = 0;
         _selectedPageIndexSetting = 1;
@@ -134,10 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedPageIndexSetting = 0;
     }
     if (_selectedPageIndexVoice == 2) {
-      _inputtext = 0;
+      _isTypingText = 0;
     }
     if (_selectedPageIndexSetting == 1) {
-      _inputtext = 1;
+      _isTypingText = 1;
     }
 
     return Scaffold(
@@ -172,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 end: Alignment.bottomCenter,
               ),
             ),
-            height: _inputtext == 1 ? 196.h : 404.h,
+            height: _isTypingText == 1 ? 196.h : 404.h,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
@@ -202,10 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 14.sp,
                                 color: const Color(0xFF323130),
                               ),
-                              minLines: _inputtext == 1
+                              minLines: _isTypingText == 1
                                   ? maxLinesclose
                                   : maxLinesopen,
-                              maxLines: _inputtext == 1
+                              maxLines: _isTypingText == 1
                                   ? maxLinesclose
                                   : maxLinesopen,
                               keyboardType: TextInputType.multiline,
@@ -319,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: Container(
               color: Colors.white,
-              height: _inputtext == 1 ? 261.h : 261.h,
+              height: _isTypingText == 1 ? 261.h : 261.h,
               child: Column(
                 children: [
                   InkWell(
@@ -520,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            isSelectingGender = !isSelectingGender;
+                            _isSelectingGender = !_isSelectingGender;
                           });
                           showModalBottomSheet(
                             backgroundColor: Colors.white,
@@ -568,7 +530,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 SizedBox(
                                                   height: 15.h,
                                                 ),
-                                                ...genderMetadata.map(
+                                                ...embeddedGenderMetadata.map(
                                                     (GenderMetadataModel g) {
                                                   return _buildGenderOption(
                                                     g,
@@ -622,7 +584,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         fontSize: 12.sp,
                                       ),
                                     ),
-                                  isSelectingGender
+                                  _isSelectingGender
                                       ? Icon(
                                           Icons.keyboard_arrow_up_sharp,
                                           size: 20.sp,
@@ -654,15 +616,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            selectStyle = !selectStyle;
+                            _isSelectingStyle = !_isSelectingStyle;
                           });
                           showModalBottomSheet(
                             backgroundColor: Colors.white,
                             context: context,
                             builder: (BuildContext context) {
                               return StatefulBuilder(
-                                builder: (BuildContext context,
-                                    StateSetter setModalState) {
+                                builder: (
+                                  BuildContext context,
+                                  StateSetter setModalState,
+                                ) {
                                   return SizedBox(
                                     height: 220.h,
                                     child: Padding(
@@ -707,279 +671,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       WrapAlignment.start,
                                                   spacing: 13.0,
                                                   runSpacing: 13.0,
-                                                  children: [
-                                                    InkWell(
+                                                  children: embeddedStyleList
+                                                      .map((style) {
+                                                    return InkWell(
                                                       onTap: () {
                                                         setModalState(() {
-                                                          selectStyle1 =
-                                                              !selectStyle1;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle1
-                                                                  ? 'เสียงน่ารัก'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
+                                                          _selectedStyles
+                                                              .add(style);
                                                         });
+                                                        Navigator.pop(context);
                                                       },
-                                                      child: _buildGenreFilter(
-                                                        'น่ารัก',
-                                                        selectStyle1,
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle2 =
-                                                              !selectStyle2;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle2
-                                                                  ? 'เสียงมั่นใจ'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'มั่นใจ',
-                                                          selectStyle2),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle3 =
-                                                              !selectStyle3;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle3
-                                                                  ? 'เสียงน่าเชื่อถือ'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'น่าเชื่อถือ',
-                                                          selectStyle3),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle4 =
-                                                              !selectStyle4;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle4
-                                                                  ? 'เสียงตื่นเต้น'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ตื่นเต้น',
-                                                          selectStyle4),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle5 =
-                                                              !selectStyle5;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle5
-                                                                  ? 'เสียงจริงจัง'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'จริงจัง',
-                                                          selectStyle5),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle6 =
-                                                              !selectStyle6;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle6
-                                                                  ? 'เสียงหวาน'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'หวาน', selectStyle6),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle7 =
-                                                              !selectStyle7;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle7
-                                                                  ? 'เสียงอบอุ่น'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'อบอุ่น',
-                                                          selectStyle7),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle8 =
-                                                              !selectStyle8;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle8
-                                                                  ? 'เสียงขี้เล่น'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ขี้เล่น',
-                                                          selectStyle8),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle9 =
-                                                              !selectStyle9;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle9
-                                                                  ? 'เสียงทุ้ม'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ทุ้ม', selectStyle9),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle10 =
-                                                              !selectStyle10;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle10
-                                                                  ? 'เสียงนุ่มนวล'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'นุ่มนวล',
-                                                          selectStyle10),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle11 =
-                                                              !selectStyle11;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle11
-                                                                  ? 'เสียงท้องถิ่น'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ท้องถิ่น',
-                                                          selectStyle11),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle12 =
-                                                              !selectStyle12;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle12
-                                                                  ? 'เสียงใจเย็น'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ใจเย็น',
-                                                          selectStyle12),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle13 =
-                                                              !selectStyle13;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle13
-                                                                  ? 'เสียงนิ่มนวล'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'นิ่มนวล',
-                                                          selectStyle13),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle14 =
-                                                              !selectStyle14;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle14
-                                                                  ? 'เสียงชัดเจน'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ชัดเจน',
-                                                          selectStyle14),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle15 =
-                                                              !selectStyle15;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle15
-                                                                  ? 'เสียงเหนือ'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'เหนือ',
-                                                          selectStyle15),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectStyle16 =
-                                                              !selectStyle16;
-                                                          _selectedVoiceStyle =
-                                                              selectStyle16
-                                                                  ? 'เสียงอีสาน'
-                                                                  : '';
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'อีสาน',
-                                                          selectStyle16),
-                                                    ),
-                                                  ],
+                                                      child: _buildFilterButton(
+                                                          style),
+                                                    );
+                                                  }).toList(),
                                                 ),
                                               ],
                                             ),
@@ -991,11 +696,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                               );
                             },
-                          ).whenComplete(() {
-                            setState(() {
-                              selectStyle = false;
-                            });
-                          });
+                          );
                         },
                         child: Container(
                           width: 62.w,
@@ -1028,7 +729,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Icon(
-                                    selectStyle
+                                    _isSelectingStyle
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
                                     size: 20.sp,
@@ -1043,7 +744,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            selectCategory = !selectCategory;
+                            _isSelectingCategory = !_isSelectingCategory;
                           });
                           showModalBottomSheet(
                             backgroundColor: Colors.white,
@@ -1096,178 +797,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       WrapAlignment.start,
                                                   spacing: 13.0,
                                                   runSpacing: 13.0,
-                                                  children: [
-                                                    InkWell(
+                                                  children: embeddedCategoryList
+                                                      .map((category) {
+                                                    return InkWell(
                                                       onTap: () {
                                                         setModalState(() {
-                                                          selectCategory1 =
-                                                              !selectCategory1;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory1
-                                                                  ? 'สไตล์เล่าเรื่อง'
-                                                                      'สไตล์อ่านข่าว'
-                                                                  : '';
+                                                          _selectedCategories
+                                                              .add(category);
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: _buildGenreFilter(
-                                                          'เล่าเรื่อง',
-                                                          selectCategory1),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory2 =
-                                                              !selectCategory2;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory2
-                                                                  ? 'สไตล์อ่านข่าว'
-                                                                      'สไตล์เล่าเรื่อง'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'อ่านข่าว',
-                                                          selectCategory2),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory3 =
-                                                              !selectCategory3;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory3
-                                                                  ? 'สไตล์เล่าเรื่อง'
-                                                                      'สไตล์ตัวละคร'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ตัวละคร',
-                                                          selectCategory3),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory4 =
-                                                              !selectCategory4;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory4
-                                                                  ? 'สไตล์บรรยาย'
-                                                                      'สไตล์ตัวละคร'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'บรรยาย',
-                                                          selectCategory4),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory5 =
-                                                              !selectCategory5;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory5
-                                                                  ? 'สไตล์อ่านข่าว'
-                                                                      'สไตล์สปอตโฆษณา'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'สปอตโฆษณา',
-                                                          selectCategory5),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory6 =
-                                                              !selectCategory6;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory6
-                                                                  ? 'สไตล์สารคดี'
-                                                                      'สไตล์บรรยาย'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'สารคดี',
-                                                          selectCategory6),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory7 =
-                                                              !selectCategory7;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory7
-                                                                  ? 'สไตล์ตัวละคร'
-                                                                      'สไตล์อนิเมะ'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'อนิเมะ',
-                                                          selectCategory7),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory8 =
-                                                              !selectCategory8;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory8
-                                                                  ? 'สไตล์บรรยาย'
-                                                                      'สไตล์อาจารย์'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'อาจารย์',
-                                                          selectCategory8),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory9 =
-                                                              !selectCategory9;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory9
-                                                                  ? 'สไตล์เล่าเรื่อง'
-                                                                      'สไตล์ท้องถิ่น'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'ท้องถิ่น',
-                                                          selectCategory9),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          selectCategory10 =
-                                                              !selectCategory10;
-                                                          _selectedSpeechStyle =
-                                                              selectCategory10
-                                                                  ? 'สไตล์อ่านข่าว'
-                                                                      'สไตล์เสียงต่างประเทศ'
-                                                                  : '';
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildGenreFilter(
-                                                          'เสียงต่างประเทศ',
-                                                          selectCategory10),
-                                                    ),
-                                                  ],
+                                                      child: _buildFilterButton(
+                                                          category),
+                                                    );
+                                                  }).toList(),
                                                 ),
                                               ],
                                             ),
@@ -1279,11 +822,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                               );
                             },
-                          ).whenComplete(() {
-                            setState(() {
-                              selectCategory = false;
-                            });
-                          });
+                          );
                         },
                         child: Container(
                           width: 62.w,
@@ -1328,10 +867,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      // const New(), ////ยังไม่ใช้
-                      // const Voice(),
-                      // const Advert(),
-                      // const Podcast(),
                     ],
                   ),
                 ),
@@ -1403,7 +938,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 15.h,
                               ),
-                              ...languageMetadata.map(
+                              ...embeddedLanguageMetadata.map(
                                 (LanguageMetadataModel l) {
                                   return _buildLanguageOption(
                                     l,
@@ -1427,12 +962,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGenreFilter(String text, bool isSelected) {
+  Widget _buildFilterButton(String text) {
     return IntrinsicWidth(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         decoration: BoxDecoration(
-          gradient: isSelected
+          gradient: _selectedStyles.contains(text)
               ? const LinearGradient(
                   colors: [
                     Color(0xFF9A96F5),
@@ -1453,7 +988,9 @@ class _HomeScreenState extends State<HomeScreen> {
             text,
             style: GoogleFonts.prompt(
               fontSize: 12.sp,
-              color: isSelected ? Colors.white : const Color(0xFF323130),
+              color: _selectedStyles.contains(text)
+                  ? Colors.white
+                  : const Color(0xFF323130),
             ),
           ),
         ),
@@ -1562,7 +1099,7 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 127.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: speakerMetadata
+        itemCount: embeddedSpeakerMetadata
             .where(
               (item) =>
                   (_selectedGender == '' || item.gender == _selectedGender) &&
@@ -1580,7 +1117,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final speaker = speakerMetadata
+          final speaker = embeddedSpeakerMetadata
               .where(
                 (item) =>
                     (_selectedGender == '' || item.gender == _selectedGender) &&
@@ -1602,21 +1139,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     String audioURL = speaker.audio;
                     Future<void> playAudio() async {
                       if (audioURL.isNotEmpty) {
-                        if (isAudioPlaying) {
-                          await audioPlayer.stop();
+                        if (_isAudioPlaying) {
+                          await _audioPlayer.stop();
                         }
-                        await audioPlayer.play(UrlSource(audioURL));
+                        await _audioPlayer.play(UrlSource(audioURL));
                         setState(() {
-                          isAudioPlaying = true;
+                          _isAudioPlaying = true;
                         });
-                        audioPlayer.onPlayerComplete.listen((event) {
+                        _audioPlayer.onPlayerComplete.listen((event) {
                           setState(() {
-                            isAudioPlaying = false;
+                            _isAudioPlaying = false;
                           });
                         });
                       } else {
                         setState(() {
-                          isAudioPlaying = false;
+                          _isAudioPlaying = false;
                         });
                       }
                     }
@@ -1626,8 +1163,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       if (selectedIndex.contains(index)) {
                         selectedIndex.remove(index);
-                        if (audioPlayer.state == PlayerState.playing) {
-                          audioPlayer.stop();
+                        if (_audioPlayer.state == PlayerState.playing) {
+                          _audioPlayer.stop();
                         }
                       } else {
                         selectedIndex.clear();
@@ -1847,21 +1384,21 @@ class _HomeScreenState extends State<HomeScreen> {
               String audioURL = speakerMetadata.audio;
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
-                  if (isAudioPlaying) {
-                    await audioPlayer.stop();
+                  if (_isAudioPlaying) {
+                    await _audioPlayer.stop();
                   }
-                  await audioPlayer.play(UrlSource(audioURL));
+                  await _audioPlayer.play(UrlSource(audioURL));
                   setState(() {
-                    isAudioPlaying = true;
+                    _isAudioPlaying = true;
                   });
-                  audioPlayer.onPlayerComplete.listen((event) {
+                  _audioPlayer.onPlayerComplete.listen((event) {
                     setState(() {
-                      isAudioPlaying = false;
+                      _isAudioPlaying = false;
                     });
                   });
                 } else {
                   setState(() {
-                    isAudioPlaying = false;
+                    _isAudioPlaying = false;
                   });
                 }
               }
@@ -1871,8 +1408,8 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 if (selectedIndex.contains(index)) {
                   selectedIndex.remove(index);
-                  if (audioPlayer.state == PlayerState.playing) {
-                    audioPlayer.stop();
+                  if (_audioPlayer.state == PlayerState.playing) {
+                    _audioPlayer.stop();
                   }
                 } else {
                   selectedIndex.clear();
@@ -2003,7 +1540,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           'assets/logo/heart (1).svg',
                                           width: 20.w,
                                           height: 20.h,
-                                          // color: Colors.white, //// ไม่ได้ใช้
                                         ),
                                       )
                                     : SvgPicture.asset(
@@ -2021,7 +1557,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             SizedBox(
                               width: 10.w,
-                            ), //new
+                            ),
                             selectedIndex.contains(index)
                                 ? ShaderMask(
                                     shaderCallback: (Rect bounds) {
@@ -2036,7 +1572,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       'assets/logo/Vector.svg',
                                       width: 16.w,
                                       height: 16.h,
-                                      // color: Colors.white, //// ไม่ได้ใช้
                                     ),
                                   )
                                 : SvgPicture.asset(
@@ -2049,7 +1584,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Expanded(
                               child: Text(
-                                // AppDataBase.data[index].thaiName, //old
                                 speakerMetadata.thaiName,
                                 style: GoogleFonts.prompt(
                                   fontSize: 10.sp,
@@ -2077,7 +1611,7 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 127.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: speakerMetadata
+        itemCount: embeddedSpeakerMetadata
             .where((item) =>
                 selectedIndexFavorites.isEmpty ||
                 selectedIndexFavorites.contains(item.speakerId))
@@ -2088,7 +1622,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final data = speakerMetadata
+          final data = embeddedSpeakerMetadata
               .where((item) =>
                   selectedIndexFavorites.isEmpty ||
                   selectedIndexFavorites.contains(item.speakerId))
@@ -2111,16 +1645,15 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               if (textController.text.isNotEmpty) {
                 setState(() {
-                  audioPlayer.stop();
-                  isDownloading = true;
+                  _audioPlayer.stop();
                 });
               }
               if (textController.text.isNotEmpty) {
                 //TODO: Generate audio
                 //_audioUrl = await Provider.of<MainServerProvider>(context)
                 //    .generateAudio(textController.text);
-                if (_audioUrl.isNotEmpty && _audioUrl != '') {
-                  await textSave(_audioUrl);
+                if (_generatedAudioUrl.isNotEmpty && _generatedAudioUrl != '') {
+                  await textSave(_generatedAudioUrl);
                 }
               }
               await Future.delayed(const Duration(seconds: 2));

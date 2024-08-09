@@ -1,6 +1,6 @@
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/language_metadata_model.dart';
 
-List<LanguageMetadataModel> languageMetadata = [
+List<LanguageMetadataModel> embeddedLanguageMetadata = [
   LanguageMetadataModel(
     languageName: 'ทั้งหมด',
     languageCode: '',
