@@ -31,8 +31,8 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
         const Text('Choice Voice'),
         if (data.isNotEmpty)
           SizedBox(
-            height: 103.h, //103
-            width: 81.w, //81
+            height: 684.h, //103
+            width: 320.w, //81
             child: GridView.builder(
               itemCount: widget.data.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,8 +57,8 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                           });
                         },
                         child: Container(
-                          width: widget.screenSizewidth * 0.9.w,
-                          height: widget.screenSizeheight * 0.145.h,
+                          width: 320.w, // width: widget.screenSizewidth * 0.9.w,
+                          height: 684.h, // height: widget.screenSizeheight * 0.145.h,
                           decoration: BoxDecoration(
                             border: GradientBoxBorder(
                               width: 3.w,
@@ -97,8 +97,7 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(
-                                            right: 20.w, top: 4.w),
+                                        padding: EdgeInsets.only(right: 20.w, top: 4.w),
                                         child: selectedIndex.contains(index)
                                             ? Container(
                                                 width: 31.w,
@@ -112,20 +111,14 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                                                     ],
                                                   ),
                                                   color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.r),
+                                                  borderRadius: BorderRadius.circular(8.r),
                                                 ),
                                                 child: Center(
                                                   child: Text('เลือก',
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                        fontStyle:
-                                                            GoogleFonts.prompt()
-                                                                .fontStyle,
-                                                        fontSize: 10.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        fontStyle: GoogleFonts.prompt().fontStyle, fontSize: 10.sp,
+                                                        fontWeight: FontWeight.bold,
                                                       )),
                                                 ),
                                               )
@@ -157,15 +150,14 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                                                 },
                                                 child: SvgPicture.asset(
                                                   'assets/logo/heart (1).svg',
-                                                  width: 16.w,
-                                                  height: 16.h,
-                                                  color: Colors.white,
+                                                  width: 100.w, // 16
+                                                  height: 100.h, // 16
                                                 ),
                                               )
                                             : SvgPicture.asset(
                                                 'assets/logo/heart.svg',
-                                                width: 16,
-                                                height: 16,
+                                                width: 100.w, // 16
+                                                height: 100.h, // 16
                                               ),
                                       )
                                     ],
@@ -189,24 +181,16 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                                               },
                                               child: SvgPicture.asset(
                                                 'assets/logo/Vector.svg',
-                                                width: widget.screenSizeheight *
-                                                    0.03.h,
-                                                height:
-                                                    widget.screenSizeheight *
-                                                        0.02.w,
-                                                color: Colors.white,
+                                                width: 300.w,
+                                                height: 300.h,
                                               ),
                                             )
                                           : SvgPicture.asset(
                                               'assets/logo/Vector (1).svg',
-                                              width: widget.screenSizeheight *
-                                                  0.01.h,
-                                              height: widget.screenSizeheight *
-                                                  0.02.w,
+                                              width: 300.w,
+                                              height: 300.h,
                                             ),
-                                      SizedBox(
-                                        width: 3.w,
-                                      ),
+                                      SizedBox(width: 3.w),
                                       Text(
                                         softWrap: true,
                                         overflow: TextOverflow.ellipsis,

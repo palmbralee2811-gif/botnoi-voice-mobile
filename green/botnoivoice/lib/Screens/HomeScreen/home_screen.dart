@@ -47,9 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String? gender; ////เลือกเพศ
   String? speechStyle; /////เลือกสไตล์
   String? voiceStyle; /////เลือกหมวดหมู่
-
-  /// เลือกเพศ  new
-
   ///new
   List<String>? availableLanguage;
   String? credits;
@@ -65,23 +62,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Download Audio
   String selectedTypeMedia = 'mp3';
-  // final List<String> _typeMedia = ['wav', 'mp3', 'm4a'];
 
   Set<int> selectedIndex2 = <int>{};
   Set<int> selectedIndex = <int>{};
   List<String> selectedIndexFavorites = []; // เลือกเสียงที่ชอบ
 
-  // final List<Data> _favoriteVoice = [];
-
-  // void _toggleVoiceFavorite(Data data) {
-  //   final isExist = _favoriteVoice.contains(data);
-
-  //   if (isExist) {
-  //     _favoriteVoice.remove(data);
-  //   } else {
-  //     _favoriteVoice.add(data);
-  //   }
-  // }
   @override
   void initState() {
     super.initState();
@@ -89,8 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     gender = ''; ///////////////////////// กำนดค่าเริ่มต้น  new
     speechStyle = ''; // สไตล์ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
     voiceStyle = ''; // หมวดหมู่ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-    /// กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
-  } 
+  }
 
   @override
   void dispose() {
@@ -101,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
   int _inputtext = 0;
-  // int _button = 0;
 
   void _selectPageVoice(int index) {
     setState(() {
@@ -161,14 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final auth = Provider.of<Authentication>(context, listen: false);
     User? user = FirebaseAuth.instance.currentUser;
     String? email = auth.getUserEmail(user);
-    double screenSizewidth = MediaQuery.of(context).size.width;
+
     double screenSizeheight = MediaQuery.of(context).size.height;
-    double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
-    double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
+    // double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
+
     int currentIndex = 0;
-    final screenHeightOpen = screenSizeheightInputtextOpen;
+    final screenHeightOpen = 404.h; //screenSizeheightInputtextOpen;
     final maxLinesopen = (screenHeightOpen / 65).floor();
-    final screenHeightClose = screenSizeheightInputtextOpen;
+    final screenHeightClose = 404.h; //screenSizeheightInputtextOpen;
     final maxLinesclose = (screenHeightClose / 180).floor();
     bool showClearIcon = false;
 
@@ -215,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: <Widget>[
           Container(
-            width: screenSizewidth,
+            width: 320.w, //screenSizewidth,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
@@ -224,8 +207,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             height: _inputtext == 1
-                ? screenSizeheightInputtextClose * 0.30
-                : screenSizeheightInputtextOpen * 0.59,
+                ? 196.h //screenSizeheightInputtextClose * 0.30
+                : 404.h, //screenSizeheightInputtextOpen * 0.59,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
@@ -306,9 +289,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   EdgeInsets.only(right: 1.w),
                                               child: TextButton(
                                                 style: TextButton.styleFrom(
-                                                  textStyle: TextStyle(
-                                                      fontSize: 10.sp),
-                                                ),
+                                                    textStyle: TextStyle(
+                                                        fontSize: 10.sp)),
                                                 onPressed: () {
                                                   setState(() {
                                                     // _showClearIcon = false; // To update the counter
@@ -326,9 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   EdgeInsets.only(right: 1.w),
                                               child: TextButton(
                                                 style: TextButton.styleFrom(
-                                                  textStyle: TextStyle(
-                                                      fontSize: 10.sp),
-                                                ),
+                                                    textStyle: TextStyle(
+                                                        fontSize: 10.sp)),
                                                 onPressed: () {
                                                   textController.clear();
                                                   setState(() {
@@ -392,8 +373,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               color: const Color(0xFFFFFFFF),
               height: _inputtext == 1
-                  ? screenSizeheight * 0.50
-                  : screenSizeheight * 0.26,
+                  ? 261.h //screenSizeheight * 0.50
+                  : 261.h, //screenSizeheight * 0.26,
               child: Column(children: [
                 InkWell(
                     onTap: () {
@@ -429,15 +410,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   const CategorySettingWidget()
                 ],
                 Expanded(
-                  child:
-                      buildVoiceHome(context),
+                  child: buildVoiceHome(context),
                 ),
                 Container(
-                    height: screenSizeheight * 0.052.h,
+                    height: 54.h, //screenSizeheight * 0.052.h,
                     width: 320.w,
                     color: const Color(0xFF27282B),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        debugPrint('on tapped Studio !!!');
+                      },
                       child: currentIndex == 1
                           ? SvgPicture.asset(
                               'assets/logo/Property 1=studio, Property 2=deault (2).svg')
@@ -454,40 +436,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool ishover = false;
   Widget categoryVoiceHome(BuildContext context) {
-    // double screenSizewidth = MediaQuery.of(context).size.width;   ///// ไม่ได้ใช้
-    double screenSizeheight = MediaQuery.of(context).size.height;
-
-    // var screenSize = MediaQuery.of(context).size;
-    // final data =
-    //     AppDataBase.data.where((item) => item.language == language).toList();   //// ไม่ได้ใช้
-
-    ///ใช้ใน favorite
-
-    // final filterModel = Provider.of<FilterModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: screenSizeheight * 0.05.h,
+          height: 65.h, //screenSizeheight * 0.05.h,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
               Container(
                 color: const Color(0xFFFFFFFF),
-                // width: 800.w,
-                width: 450.w,
+                width: 480.w, // ระยะห่างเวลา Filter
                 child: Padding(
                   padding: EdgeInsets.only(right: 10.w, left: 10.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        ////////เลือกภาษา
+                        /// เลือกภาษา
                         onTap: () {
                           setState(() {
                             isExpanded = true;
                           });
-
                           showModalBottomSheet(
                             backgroundColor: Colors.white,
                             context: context,
@@ -499,12 +469,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Row(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.all(25),
+                                          padding: EdgeInsets.all(20.w),
                                           child: Column(
                                             children: [
                                               Container(
                                                 color: Colors.transparent,
-                                                width: 360,
+                                                width: 280.w,
                                                 child: Column(
                                                   children: [
                                                     Row(
@@ -591,13 +561,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         'ZH',
                                                         context,
                                                         setState),
-                                                        _buildLanguageOption(
+                                                    _buildLanguageOption(
                                                         'Cambodia - กัมพูชา',
                                                         'assets/logo/images (1).png',
                                                         'KM',
                                                         context,
                                                         setState),
-                                                         _buildLanguageOption(
+                                                    _buildLanguageOption(
                                                         'Phillippines - ฟิลิปปินส์',
                                                         'assets/logo/Flag_of_the_Philippines.svg.png',
                                                         'FIL',
@@ -626,12 +596,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
-                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.r)),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Row(
@@ -639,12 +608,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Image.asset(
                                 selectedLanguageImage,
-                                width: 14,
-                                height: 14,
+                                width: 14.w,
+                                height: 14.h,
                               ),
-                              const SizedBox(
-                                width: 3,
-                              ),
+                              SizedBox(width: 3.w),
                               Flexible(
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
@@ -658,7 +625,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 isExpanded
                                     ? Icons.keyboard_arrow_up_sharp
                                     : Icons.keyboard_arrow_down_sharp,
-                                size: 20,
+                                size: 20.sp,
                                 color: const Color(0xFF323130),
                               ),
                             ],
@@ -681,12 +648,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return SizedBox(
                                     height: 220.h,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(25),
+                                      padding: EdgeInsets.all(25.r),
                                       child: Column(
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -756,12 +723,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
-                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.r)),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Column(
@@ -770,7 +736,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(width: 3),
+                                  SizedBox(width: 3.w),
                                   if (gender ==
                                       '') //////////////////// text แสดงในปุ่มกด
                                     Text(
@@ -788,15 +754,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ), //////////////////// text แสดงในปุ่มกด
                                   changeIcon
-                                      ? const Icon(
+                                      ? Icon(
                                           Icons.keyboard_arrow_up_sharp,
-                                          size: 20,
-                                          color: Color(0xFF323130),
+                                          size: 20.sp,
+                                          color: const Color(0xFF323130),
                                         )
-                                      : const Icon(
+                                      : Icon(
                                           Icons.keyboard_arrow_down_sharp,
-                                          size: 20,
-                                          color: Color(0xFF323130),
+                                          size: 20.sp,
+                                          color: const Color(0xFF323130),
                                         ),
                                 ],
                               ),
@@ -804,9 +770,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      //////////////////////////////////////////////////////////ปุ่มแนะนำ
+
+                      /// ปุ่มแนะนำ
                       const Recommand(),
-                      ////////////////////////////////////////////////////////ปุ่มหัวใจ
+
+                      /// ปุ่มหัวใจ
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -817,9 +785,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ishover: ishover,
                         ),
                       ),
-                      ////////////////////////////////////////////////////////ปุ่มทั้งหมด
+
+                      /// ปุ่มทั้งหมด
                       const All(),
-                      ////////////////////////////////////////////////////////ปุ่มสไตล์
+
+                      /// ปุ่มสไตล์
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -835,12 +805,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return SizedBox(
                                     height: 220.h,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(25),
+                                      padding: EdgeInsets.all(25.r),
                                       child: Column(
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -1200,12 +1170,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
-                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.r)),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Column(
@@ -1214,9 +1183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
-                                    width: 3,
-                                  ),
+                                  SizedBox(width: 3.w),
                                   Flexible(
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
@@ -1231,7 +1198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     selectStyle
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
-                                    size: 20,
+                                    size: 20.sp,
                                     color: const Color(0xFF323130),
                                   ),
                                 ],
@@ -1255,12 +1222,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return SizedBox(
                                     height: 230.h,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(25),
+                                      padding: EdgeInsets.all(25.r),
                                       child: Column(
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -1505,12 +1472,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
-                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.r)),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Column(
@@ -1519,9 +1485,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
-                                    width: 3,
-                                  ),
+                                  SizedBox(width: 3.w),
                                   Flexible(
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
@@ -1536,7 +1500,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     selectCategory
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
-                                    size: 20,
+                                    size: 20.sp,
                                     color: const Color(0xFF323130),
                                   ),
                                 ],
@@ -1587,12 +1551,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                 )
               : null,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
+          borderRadius: BorderRadius.all(Radius.circular(4.r)),
           border: Border.all(
             color: const Color(0xFFE2E3E9),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Center(
@@ -1723,38 +1685,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget voiceWidGetHome(BuildContext context) {
-    // double screenSizewidth = MediaQuery.of(context).size.width; //// Old
     return SizedBox(
-      // height: 140.h,
-      // width: screenSizewidth * 0.95.w,
       height: 127.h,
       width: 320.w,
       child: GridView.builder(
-        // itemCount: AppDataBase.data.length, //old
         itemCount: NewAppDataBase.data
             .where((item) =>
                 (gender == '' || item.gender == gender) &&
                 (language == '' || item.language == language) &&
                 (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
                 (speechStyle == '' || item.speechStyle == speechStyle))
-            .length, //new
-
+            .length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          // mainAxisExtent: 150,
           mainAxisExtent: 125,
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          // final data = AppDataBase.data[index];   /////////////////////////////old.
           final data = NewAppDataBase.data
               .where((item) =>
                   (gender == '' || item.gender == gender) &&
                   (language == '' || item.language == language) &&
                   (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
                   (speechStyle == '' || item.speechStyle == speechStyle))
-              .toList()[index]; ////new
-
+              .toList()[index];
           return voicewidget(data, index);
         },
       ),
@@ -1773,7 +1727,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (isAudioPlaying) {
-                    await audioPlayer.stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                    await audioPlayer
+                        .stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
                   }
                   await audioPlayer.play(UrlSource(audioURL));
                   setState(() {
@@ -1792,6 +1747,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   print("Audio URL is empty, cannot play audio");
                 }
               }
+
               await playAudio();
               speakerId = data.speakerId;
               print("-> speakerId: $speakerId");
@@ -1810,22 +1766,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 Container(
-                  // width: 100.w,
-                  // height: 113.h,
                   width: 81.w,
                   height: 103.h,
                   decoration: BoxDecoration(
                     border: GradientBoxBorder(
                       width: 3.w,
                       gradient: selectedIndex.contains(index)
-                          // ? const LinearGradient(colors: [
-                          //     Color(0xFF9A96F5),
-                          //     Color(0xFF00E0FF)
-                          //   ])
-                          // : const LinearGradient(colors: [
-                          //     Colors.transparent,
-                          //     Colors.transparent
-                          //   ]),
                           ? const LinearGradient(
                               colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                             )
@@ -1840,26 +1786,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
                       image: NetworkImage(
-                        // AppDataBase.data[index].squareImage, //old
-                        data.squareImage, //new
+                        data.squareImage,
                       ),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        blurRadius: 10, // new
-                        spreadRadius: 1, // new
+                        blurRadius: 10.r,
+                        spreadRadius: 1.r,
                         color: selectedIndex.contains(index)
-                            // ? Colors.blue.withOpacity(0.5) //old
-                            ? const Color(0xFF9340FF).withOpacity(0.6) //new
+                            ? const Color(0xFF9340FF).withOpacity(0.6)
                             : Colors.transparent,
-                        // offset: const Offset(0, 2), //old
-                        offset: const Offset(0, 4), //new
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: Container(
-                    //////new
                     width: 100.w,
                     height: 113.h,
                     decoration: BoxDecoration(
@@ -1871,7 +1813,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Colors.transparent,
                         ],
                       ),
-                    ), ////refector container
+                    ),
                     child: Column(
                       children: [
                         Row(
@@ -1879,7 +1821,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                  right: 5.w, top: 5.w, left: 5.w),
+                                  right: 5.w, top: 5.h, left: 5.w),
                               child: selectedIndex.contains(index)
                                   ? Container(
                                       width: 31.w,
@@ -1912,29 +1854,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(right: 5.w, top: 5.w),
+                              padding: EdgeInsets.only(right: 5.w, top: 5.h),
                               child: GestureDetector(
                                 onTap: () {
-                                  print('/////////' '$speakerId');
+                                  debugPrint(
+                                      '// 1874 -> speakerId ' '$speakerId');
 
                                   setState(() {
                                     if (selectedIndexFavorites
                                         .contains(data.speakerId)) {
-                                      ///////new
                                       selectedIndexFavorites
-                                          .remove(data.speakerId); ///////new
+                                          .remove(data.speakerId);
                                     } else {
-                                      // widget.onToggleFavorite(widget.data[index]);
                                       selectedIndexFavorites
-                                          .add(data.speakerId); ///////new
+                                          .add(data.speakerId);
                                       print(
                                           "selectedIndexFavorites: $selectedIndexFavorites");
                                     }
                                   });
                                 },
                                 child: selectedIndexFavorites
-                                        .contains(data.speakerId) ///////new
-
+                                        .contains(data.speakerId)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
                                           return const LinearGradient(
@@ -1948,7 +1888,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           'assets/logo/heart (1).svg',
                                           width: 20.w,
                                           height: 20.h,
-                                          // color: Colors.white, //// ไม่ได้ใช้
                                         ),
                                       )
                                     : SvgPicture.asset(
@@ -1960,8 +1899,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             )
                           ],
                         ),
-
-                        const Spacer(), // Add Spacer to push the content below to the bottom
+                        const Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -1980,57 +1918,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                     },
                                     child: SvgPicture.asset(
                                       'assets/logo/Vector.svg',
-                                      width: 16.h,
-                                      height: 16.w,
-                                      // color: Colors.white, //// ไม่ได้ใช้
+                                      width: 16.w,
+                                      height: 16.h,
                                     ),
                                   )
                                 : SvgPicture.asset(
                                     'assets/logo/Vector (1).svg',
-                                    width: 16.h,
-                                    height: 16.w,
+                                    width: 16.w,
+                                    height: 16.h,
                                   ),
-                            SizedBox(
-                              width: 3.w,
-                            ),
-                            // Text(
-                            //   softWrap: true,
-                            //   overflow: TextOverflow.ellipsis,
-                            //   maxLines: null,
-                            //   AppDataBase.data[index].thaiName,
-                            //   style: GoogleFonts.prompt(
-                            //     fontSize: 10.sp,
-                            //     color: Colors.white,
-                            //     fontWeight: FontWeight.w500,
-                            //   ),
-                            // ), /////old
+                            SizedBox(width: 3.w),
                             Expanded(
                                 child: Text(
-                              // AppDataBase.data[index].thaiName, //old
                               data.thaiName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                               ),
-                            )), ////////new
+                            )),
                           ],
                         ),
                       ],
                     ),
                   ),
                 ),
-                // Text(
-                //   softWrap: true,
-                //   overflow: TextOverflow.ellipsis,
-                //   maxLines: null,
-                //   widget.data[index].name,
-                //   style: GoogleFonts.prompt(
-                //     fontSize: 12.sp,
-                //     color: Colors.black,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -2068,61 +1980,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildVoiceHome(BuildContext context) {
-    // double screenSizewidth = MediaQuery.of(context).size.width;
-    // double screenSizeheight = MediaQuery.of(context).size.height;
-
-    return
-        // Container(
-        //   height: screenSizeheight * 0.093.h,
-        //   width: screenSizewidth * 0.78.w,
-        //   decoration: const BoxDecoration(
-        //     color: Colors.white,
-        //   ),
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Row(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           // const Spacer(),
-        //           InkWell(
-        //             // onTap: () {},
-        //             child: Container(
-        //               height: 55.h,
-        //               width: screenSizewidth * 0.7.w,
-        //               decoration: BoxDecoration(
-        //                 boxShadow: const [
-        //                   BoxShadow(
-        //                     color: Colors.black12,
-        //                     blurRadius: 6.0,
-        //                   ),
-        //                 ],
-        //                 borderRadius: BorderRadius.circular(10.r),
-        //                 gradient: const LinearGradient(
-        //                   colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-        //                 ),
-        //               ),
-        //               child: Row(
-        //                 mainAxisAlignment: MainAxisAlignment.center,
-        //                 children: [
-        //                   Text(
-        //                     "สร้างเสียง",
-        //                     style: GoogleFonts.prompt(
-        //                       fontSize: 16.sp,
-        //                       fontWeight: FontWeight.bold,
-        //                       color: const Color(0xFFFFFFFF),
-        //                     ),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // );
-        Column(
+    return Column(
       children: [
         const Spacer(),
         Padding(
@@ -2130,7 +1988,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {
-              print('START DO สร้างเสียง');
+              debugPrint('START DO สร้างเสียง');
               if (textController.text.isNotEmpty) {
                 setState(() {
                   audioPlayer.stop();

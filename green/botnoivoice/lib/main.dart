@@ -1,5 +1,3 @@
-
-
 import 'package:botnoivoice/Authentication/auth_checker.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Firebase/firebase_options.dart';

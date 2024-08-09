@@ -118,15 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenSizewidth = MediaQuery.of(context).size.width;
-    double screenSizeheight = MediaQuery.of(context).size.height;
-    double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
-    double screenSizeheightInputtextClose = MediaQuery.of(context).size.height;
     int currentIndex = 0;
-    final screenHeightOpen = screenSizeheightInputtextOpen;
-    final maxLinesopen = (screenHeightOpen / 65).floor();
-    final screenHeightClose = screenSizeheightInputtextOpen;
-    final maxLinesclose = (screenHeightClose / 180).floor();
+    final maxLinesopen = (404.h / 65).floor();
+    final maxLinesclose = (404.h / 180).floor();
     bool showClearIcon = false;
 
     if (_selectedPageIndexVoice == 1) {
@@ -149,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: DrawerAppbar(screenSizeheight: screenSizeheight),
+      drawer: const DrawerAppbar(),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -171,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: <Widget>[
           Container(
-            width: screenSizewidth,
+            width: 320.w,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
@@ -180,8 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             height: _inputtext == 1
-                ? screenSizeheightInputtextClose * 0.30
-                : screenSizeheightInputtextOpen * 0.59,
+                ? 196.h 
+                : 404.h,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
@@ -202,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Padding(
                         padding:
-                            EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+                            EdgeInsets.only(left: 25.w, right: 10.w, top: 20.h),
                         child: Column(
                           children: [
                             TextField(
@@ -329,8 +323,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               color: Colors.white,
               height: _inputtext == 1
-                  ? screenSizeheight * 0.50
-                  : screenSizeheight * 0.26,
+                  ? 261.h 
+                  : 261.h,
               child: Column(
                 children: [
                   InkWell(
@@ -344,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                     child: Container(
-                      height: screenSizeheight * 0.05.h,
+                      height: 40.h,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         border: Border.all(
@@ -398,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                     child: Container(
-                      height: screenSizeheight * 0.05.h,
+                      height: 40.h,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         border: Border.all(
@@ -445,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: buildVoiceHome(context),
                   ),
                   Container(
-                    height: screenSizeheight * 0.052.h,
+                    height: 54.h,
                     width: 320.w,
                     color: const Color(0xFF27282B),
                     child: InkWell(
@@ -469,20 +463,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildConfigurationBar(BuildContext context) {
-    //TODO: remove this variable
-    double screenSizeheight = MediaQuery.of(context).size.height;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: screenSizeheight * 0.05.h,
+          height: 65.h, // ระยะห่าง BOTTOM "เลือกเสียง" กับ TOP "Filtter" 
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
               Container(
                 color: Colors.white,
-                width: 450.w,
+                width: 480.w, // ระยะห่างระหว่าง Filter
                 child: Padding(
                   padding: EdgeInsets.only(right: 10.w, left: 10.w),
                   child: Row(
@@ -497,12 +488,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
-                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(4.r)),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Row(
@@ -510,12 +499,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Image.asset(
                                 _selectedLanguageImage,
-                                width: 14,
-                                height: 14,
+                                width: 14.w,
+                                height: 14.h,
                               ),
-                              const SizedBox(
-                                width: 3,
-                              ),
+                              SizedBox(width: 3.w),
                               Flexible(
                                 child: Text(
                                   _selectedLanguage,
@@ -527,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 _isLanguageOptionExpanded
                                     ? Icons.keyboard_arrow_up_sharp
                                     : Icons.keyboard_arrow_down_sharp,
-                                size: 20,
+                                size: 20.sp,
                                 color: const Color(0xFF323130),
                               ),
                             ],
@@ -554,7 +541,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -610,12 +597,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(4.r),
                             ),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Column(
@@ -624,7 +611,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(width: 3),
+                                  SizedBox(width: 3.w),
                                   if (_selectedGender == '')
                                     Text(
                                       'ช/ญ',
@@ -640,15 +627,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   changeIcon
-                                      ? const Icon(
+                                      ? Icon(
                                           Icons.keyboard_arrow_up_sharp,
-                                          size: 20,
-                                          color: Color(0xFF323130),
+                                          size: 20.sp,
+                                          color: const Color(0xFF323130),
                                         )
-                                      : const Icon(
+                                      : Icon(
                                           Icons.keyboard_arrow_down_sharp,
-                                          size: 20,
-                                          color: Color(0xFF323130),
+                                          size: 20.sp,
+                                          color: const Color(0xFF323130),
                                         ),
                                 ],
                               ),
@@ -683,12 +670,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return SizedBox(
                                     height: 220.h,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(25),
+                                      padding: EdgeInsets.all(25.w),
                                       child: Column(
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -1018,12 +1005,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(4.r),
                             ),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Column(
@@ -1032,8 +1019,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
-                                    width: 3,
+                                  SizedBox(
+                                    width: 3.w,
                                   ),
                                   Flexible(
                                     child: Text(
@@ -1047,7 +1034,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     selectStyle
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
-                                    size: 20,
+                                    size: 20.sp,
                                     color: const Color(0xFF323130),
                                   ),
                                 ],
@@ -1071,12 +1058,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return SizedBox(
                                     height: 230.h,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(25),
+                                      padding: EdgeInsets.all(25.r),
                                       child: Column(
                                         children: [
                                           Container(
                                             color: Colors.transparent,
-                                            width: 360,
+                                            width: 360.w,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -1306,12 +1293,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 26.h,
                           decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(4),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(4.r),
                             ),
                             border: Border.all(
                               color: const Color(0xFFE2E3E9),
-                              width: 1,
+                              width: 1.w,
                             ),
                           ),
                           child: Column(
@@ -1320,8 +1307,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
-                                    width: 3,
+                                  SizedBox(
+                                    width: 3.w,
                                   ),
                                   Flexible(
                                     child: Text(
@@ -1335,7 +1322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     selectCategory
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
-                                    size: 20,
+                                    size: 20.sp,
                                     color: const Color(0xFF323130),
                                   ),
                                 ],
@@ -1385,12 +1372,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(25),
+                    padding: EdgeInsets.all(25.r),
                     child: Column(
                       children: [
                         Container(
                           color: Colors.transparent,
-                          width: 360,
+                          width: 360.w,
                           child: Column(
                             children: [
                               Row(
@@ -1456,12 +1443,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 )
               : null,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
+          borderRadius: BorderRadius.all(
+            Radius.circular(4.r),
           ),
           border: Border.all(
             color: const Color(0xFFE2E3E9),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: Center(
@@ -1715,7 +1702,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(
                                       right: 5.w,
-                                      top: 5.w,
+                                      top: 5.h,
                                       left: 5.w,
                                     ),
                                     child: selectedIndex.contains(index)
@@ -1752,7 +1739,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Padding(
                                     padding:
-                                        EdgeInsets.only(right: 5.w, top: 5.w),
+                                        EdgeInsets.only(right: 5.w, top: 5.h),
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -1812,15 +1799,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           },
                                           child: SvgPicture.asset(
                                             'assets/logo/Vector.svg',
-                                            width: 16.h,
-                                            height: 16.w,
+                                            width: 16.w,
+                                            height: 16.h,
                                             // color: Colors.white, //// ไม่ได้ใช้
                                           ),
                                         )
                                       : SvgPicture.asset(
                                           'assets/logo/Vector (1).svg',
-                                          width: 16.h,
-                                          height: 16.w,
+                                          width: 16.w,
+                                          height: 16.h,
                                         ),
                                   SizedBox(
                                     width: 3.w,
@@ -1955,7 +1942,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Padding(
                               padding: EdgeInsets.only(
                                 right: 5.w,
-                                top: 5.w,
+                                top: 5.h,
                                 left: 5.w,
                               ),
                               child: selectedIndex.contains(index)
@@ -1990,7 +1977,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(right: 5.w, top: 5.w),
+                              padding: EdgeInsets.only(right: 5.w, top: 5.h),
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -2050,15 +2037,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                     },
                                     child: SvgPicture.asset(
                                       'assets/logo/Vector.svg',
-                                      width: 16.h,
-                                      height: 16.w,
+                                      width: 16.w,
+                                      height: 16.h,
                                       // color: Colors.white, //// ไม่ได้ใช้
                                     ),
                                   )
                                 : SvgPicture.asset(
                                     'assets/logo/Vector (1).svg',
-                                    width: 16.h,
-                                    height: 16.w,
+                                    width: 16.w,
+                                    height: 16.h,
                                   ),
                             SizedBox(
                               width: 3.w,
