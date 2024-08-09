@@ -31,19 +31,19 @@
           }
         },
         {
+          "client_id": "822010349951-lf2vv0i6rqsmenos22qtkdukjnn8tjvl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.botnoivoice",
+            "certificate_hash": "4a5ddebf6ba9db481193ad9b81333b0fdf5772ed"
+          }
+        },
+        {
           "client_id": "822010349951-qfhffqe8ojlfq8l3r03jekmrd74ggtin.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mobile.botnoivoice",
             "certificate_hash": "77cddcc76c63a9a08605a84087b5cea43a788acd"
-          }
-        },
-        {
-          "client_id": "822010349951-t088p3ds3s6reog9isbfs567b8tg6jgg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mobile.botnoivoice",
-            "certificate_hash": "d6bfeddfd1ac74e70cd820027131657dce48da08"
           }
         },
         {

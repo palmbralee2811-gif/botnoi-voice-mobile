@@ -31,8 +31,8 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
         const Text('Choice Voice'),
         if (data.isNotEmpty)
           SizedBox(
-            height: widget.screenSizeheight * 0.165.h,
-            width: widget.screenSizewidth * 0.95.w,
+            height: 103.h, //103
+            width: 81.w, //81
             child: GridView.builder(
               itemCount: widget.data.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

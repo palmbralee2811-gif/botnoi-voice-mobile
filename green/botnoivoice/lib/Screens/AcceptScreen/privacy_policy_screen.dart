@@ -1,4 +1,4 @@
-import 'package:botnoivoice/Screens/SignInScreen/sign_in_screen.dart';
+import 'package:botnoivoice/Screens/SignInScreen/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,7 +27,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const SignInScreen(),
+                  builder: (context) => const AuthScreen(),
                 ),
               );
               print('Back');

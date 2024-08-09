@@ -25,7 +25,7 @@ class _CategoryVoiceWidgetState extends State<CategoryVoiceWidget> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: screenSizeheight * 0.05.h,
+          height: 0.05.h,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
@@ -227,7 +227,6 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                               'assets/logo/heart (1).svg',
                                               width: 20.w,
                                               height: 20.h,
-                                              color: Colors.white,
                                             ),
                                           )
                                         : SvgPicture.asset(
@@ -260,7 +259,6 @@ class _VoiceWidgetState extends State<VoiceWidget> {
                                           'assets/logo/Vector.svg',
                                           width: 16.w,
                                           height: 16.h,
-                                          color: Colors.white,
                                         ),
                                       )
                                     : SvgPicture.asset(

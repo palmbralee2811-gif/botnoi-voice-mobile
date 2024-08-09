@@ -1,4 +1,5 @@
 // import 'package:botnoivoice/widgets/CategoryVoice.dart';
+import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,8 +31,8 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
         const Text('Choice Voice'),
         if (speakerMetadata.isNotEmpty)
           SizedBox(
-            height: widget.screenSizeheight * 0.165.h,
-            width: widget.screenSizewidth * 0.95.w,
+            height: 103.h, //103
+            width: 81.w, //81
             child: GridView.builder(
               itemCount: widget.speakerMetadata.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -161,7 +162,6 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                                                   'assets/logo/heart (1).svg',
                                                   width: 16.w,
                                                   height: 16.h,
-                                                  color: Colors.white,
                                                 ),
                                               )
                                             : SvgPicture.asset(
@@ -191,24 +191,16 @@ class _FavoriteVoiceWidgetState extends State<FavoriteVoiceWidget> {
                                               },
                                               child: SvgPicture.asset(
                                                 'assets/logo/Vector.svg',
-                                                width: widget.screenSizeheight *
-                                                    0.03.h,
-                                                height:
-                                                    widget.screenSizeheight *
-                                                        0.02.w,
-                                                color: Colors.white,
+                                                width: 16.w,
+                                                height: 16.h,
                                               ),
                                             )
                                           : SvgPicture.asset(
                                               'assets/logo/Vector (1).svg',
-                                              width: widget.screenSizeheight *
-                                                  0.01.h,
-                                              height: widget.screenSizeheight *
-                                                  0.02.w,
+                                              width: 16.w,
+                                              height: 16.h,
                                             ),
-                                      SizedBox(
-                                        width: 3.w,
-                                      ),
+                                      SizedBox(width: 3.w),
                                       Text(
                                         softWrap: true,
                                         overflow: TextOverflow.ellipsis,

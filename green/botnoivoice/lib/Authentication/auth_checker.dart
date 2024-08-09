@@ -1,6 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
-import 'package:botnoivoice/Screens/SignInScreen/sign_in_screen.dart';
+import 'package:botnoivoice/Screens/SignInScreen/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +40,7 @@ class _AuthCheckerState extends State<AuthChecker> {
     if (Provider.of<Authentication>(context).isAuthenticated != false) {
       return const HomeScreen();
     } else {
-      return const SignInScreen();
+      return const AuthScreen();
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
-import 'package:botnoivoice/Screens/SignInScreen/sign_in_screen.dart';
+import 'package:botnoivoice/Screens/SignInScreen/auth_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -87,7 +87,7 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SignInScreen(),
+                    builder: (context) => const AuthScreen(),
                   ),
                 );
               },

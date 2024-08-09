@@ -1,6 +1,7 @@
-import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
-import 'package:botnoi_voice_mobile/Screens/AuthScreen/gradient_text.dart';
-import 'package:botnoi_voice_mobile/Screens/AuthScreen/language_option_widget.dart';
+import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
+import 'package:botnoivoice/Screens/SignInScreen/gradient_text_sign_in_screen.dart';
+import 'package:botnoivoice/Screens/SignInScreen/language_option_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,23 +25,22 @@ class _AuthScreenState extends State<AuthScreen> {
             width: 320.w,
             height: 684.h,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
                   Color(0xFFB1E9FD),
                   Color(0xFFF9D8FD),
-                ],
-              ),
-            ),
+                ])),
           ),
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: Image.asset(
-              'assets/images/Rectangle10094.png',
+              'assets/AuthScreenIcon/background.png',
               width: 320.w,
+              height: 684.h,
               fit: BoxFit.cover,
             ),
           ),
@@ -108,7 +108,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 5.w, bottom: 10.h),
-                      child: GradientText(
+                      child: GradientTextSignInScreen(
                         'เปลี่ยนข้อความเป็นเสียง',
                         gradient: const LinearGradient(
                           colors: [
@@ -130,7 +130,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       left: 20.w,
                       bottom: 13.h,
                     ),
-                    child: GradientText(
+                    child: GradientTextSignInScreen(
                       'บอทน้อย',
                       gradient: const LinearGradient(
                         colors: [
@@ -149,7 +149,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       left: 20.w,
                       // bottom: 10.h,
                     ),
-                    child: GradientText(
+                    child: GradientTextSignInScreen(
                       'ว้อยส์',
                       gradient: const LinearGradient(
                         colors: [
@@ -177,7 +177,7 @@ class _AuthScreenState extends State<AuthScreen> {
       children: [
         Center(
           child: Padding(
-            padding: EdgeInsets.all(10.w),
+            padding: EdgeInsets.all(10.r),
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
@@ -215,16 +215,29 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget _buildLoginGoogleButton() {
+    final auth = Provider.of<Authentication>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
           child: Padding(
-            padding: EdgeInsets.all(10.w),
+            padding: EdgeInsets.all(10.r),
             child: ElevatedButton(
               onPressed: () async {
-                await Provider.of<Authentication>(context)
-                    .signInWithGoogle(context);
+                final user = await auth.signInWithGoogle(context);
+                if (!mounted) return; // ตรวจสอบว่าถ้ายัง mounted อยู่หรือไม่
+                if (user != null) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Failed to sign in. Please try again.')),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
