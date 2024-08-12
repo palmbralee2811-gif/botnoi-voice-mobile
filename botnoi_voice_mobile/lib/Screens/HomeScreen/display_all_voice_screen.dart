@@ -106,9 +106,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
         title: Padding(
           padding: EdgeInsets.only(left: 89.w),
           child:
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-              children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Image.asset(
               'assets/logo/Frame (1).png',
               width: 30.w,
@@ -445,7 +443,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       ),
                     ),
                   ),
-                  const RecommendedFilters(),
+                  const RecommendedFiltersButton(),
                   InkWell(
                     onTap: () {
                       setState(() {
@@ -1227,12 +1225,13 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
           const Spacer(),
           Container(
             height: 64.h,
-            width: 320.w, 
+            width: 320.w,
             decoration: const BoxDecoration(
                 // color: Colors.amber,
                 ),
             child: Padding(
-              padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
+              padding: EdgeInsets.only(
+                  left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
               child: SizedBox(
                 child: GradientButton(
                   text: 'ตกลง',
@@ -1404,7 +1403,6 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       (speechStyle == '' ||
                           item.speechStyle.contains(speechStyle)))
                   .length,
-
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 0,
@@ -1458,6 +1456,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                   });
                 }
               }
+
               await playAudio();
               speakerId = speakerMetadata.speakerId;
               setState(() {
@@ -1501,7 +1500,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        blurRadius: 10, 
+                        blurRadius: 10,
                         spreadRadius: 1,
                         color: selectedIndex.contains(index)
                             ? const Color(0xFF9340FF).withOpacity(0.6) //new

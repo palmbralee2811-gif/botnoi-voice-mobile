@@ -2,15 +2,15 @@ import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_mode
 
 List<GenderMetadataModel> embeddedGenderMetadata = [
   GenderMetadataModel(
-    gender: "ช/ญ",
+    genderName: "ช/ญ",
     imagePath: "assets/logo/Category.jpg",
   ),
   GenderMetadataModel(
-    gender: "ชาย",
+    genderName: "ชาย",
     imagePath: "assets/logo/Category (2).jpg",
   ),
   GenderMetadataModel(
-    gender: "หญิง",
+    genderName: "หญิง",
     imagePath: "assets/logo/Category (1).jpg",
   )
 ];

@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RecommendedFilters extends StatefulWidget {
-  const RecommendedFilters({
+class RecommendedFiltersButton extends StatefulWidget {
+  const RecommendedFiltersButton({
     super.key,
   });
 
   @override
-  State<RecommendedFilters> createState() => _RecommendedFiltersState();
+  State<RecommendedFiltersButton> createState() =>
+      _RecommendedFiltersButtonState();
 }
 
-class _RecommendedFiltersState extends State<RecommendedFilters> {
+class _RecommendedFiltersButtonState extends State<RecommendedFiltersButton> {
   bool _isSelected = false;
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class _RecommendedFiltersState extends State<RecommendedFilters> {
                         'แนะนำ',
                         style: GoogleFonts.prompt(
                           fontSize: 12.sp,
-                          color: const Color(0xFFFFFFFF),
+                          color: Colors.white,
                         ),
                       )
                     : Text(

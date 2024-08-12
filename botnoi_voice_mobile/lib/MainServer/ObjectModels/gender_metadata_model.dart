@@ -1,9 +1,9 @@
 class GenderMetadataModel {
-  String gender;
+  String genderName;
   String imagePath;
 
   GenderMetadataModel({
-    required this.gender,
+    required this.genderName,
     required this.imagePath,
   });
 }

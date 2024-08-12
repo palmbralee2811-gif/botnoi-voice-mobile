@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-//
 class CategorySettings extends StatefulWidget {
   const CategorySettings({super.key});
 
@@ -12,8 +11,8 @@ class CategorySettings extends StatefulWidget {
 }
 
 class _CategorySettingsState extends State<CategorySettings> {
-  double speedValue = 1.0; // ความเร็ว
-  double _volumevalue = 100; // ความดัง
+  double speedValue = 1.0;
+  double _volumevalue = 100;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;

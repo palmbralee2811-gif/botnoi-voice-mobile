@@ -38,18 +38,18 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController textController = TextEditingController();
 
   String _generatedAudioUrl = '';
-  String? _selectedSpeakerId;
   String _selectedLanguage = "TH";
   String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
   String _selectedGender = "";
-  final List<String> _selectedStyles = [];
-  final List<String> _selectedCategories = [];
+  final List<String> _selectedVoiceStyles = [];
+  final List<String> _selectedSpeechStyles = [];
 
   bool _isAudioPlaying = false;
   bool _isFavouriteSelected = false;
   bool _isSelectingGender = false;
-  bool _isSelectingCategory = false;
-  bool _isSelectingStyle = false;
+  bool _isSelectingSpeechStyle = false;
+  bool _isSelectingVoiceStyle = false;
+  bool _isSelectingLangauge = false;
   int _isTypingText = 0;
 
   Set<int> selectedIndex2 = {};
@@ -59,18 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
 
-  void _selectPageVoice(int index) {
-    setState(() {
-      _selectedPageIndexVoice = index;
-    });
-  }
-
-  void _selectPageSetting(int index) {
-    setState(() {
-      _selectedPageIndexSetting = index;
-    });
-  }
-
   @override
   void dispose() {
     textController.dispose();
@@ -79,10 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int currentIndex = 0;
+    bool showClearIcon = false;
     final maxLinesopen = (404.h / 65).floor();
     final maxLinesclose = (404.h / 180).floor();
-    bool showClearIcon = false;
 
     if (_selectedPageIndexVoice == 1) {
       _isTypingText = 1;
@@ -287,11 +274,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   InkWell(
                     onTap: () {
                       if (_selectedPageIndexVoice == 0) {
-                        _selectPageVoice(1);
+                        setState(() {
+                          _selectedPageIndexVoice = 1;
+                        });
                       } else if (_selectedPageIndexVoice == 1) {
-                        _selectPageVoice(2);
+                        setState(() {
+                          _selectedPageIndexVoice = 2;
+                        });
                       } else if (_selectedPageIndexVoice == 2) {
-                        _selectPageVoice(1);
+                        setState(() {
+                          _selectedPageIndexVoice = 1;
+                        });
                       }
                     },
                     child: Container(
@@ -341,11 +334,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   InkWell(
                     onTap: () {
                       if (_selectedPageIndexSetting == 0) {
-                        _selectPageSetting(1);
+                        setState(() {
+                          _selectedPageIndexSetting = 1;
+                        });
                       } else if (_selectedPageIndexSetting == 1) {
-                        _selectPageSetting(2);
+                        setState(() {
+                          _selectedPageIndexSetting = 2;
+                        });
                       } else if (_selectedPageIndexSetting == 2) {
-                        _selectPageSetting(1);
+                        setState(() {
+                          _selectedPageIndexSetting = 1;
+                        });
                       }
                     },
                     child: Container(
@@ -393,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const CategorySettings()
                   ],
                   Expanded(
-                    child: buildVoiceHome(context),
+                    child: _buildGenerateVoiceButton(context),
                   ),
                   Container(
                     height: 54.h,
@@ -401,17 +400,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: const Color(0xFF27282B),
                     child: InkWell(
                       onTap: () {},
-                      child: currentIndex == 1
-                          ? SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=deault (2).svg',
-                            )
-                          : SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=hover (1).svg',
-                            ),
+                      child: SvgPicture.asset(
+                        'assets/logo/Property 1=studio, Property 2=deault (2).svg',
+                      ),
                     ),
                   )
                 ],
-              ), // 40% of the screen height
+              ),
             ),
           ),
         ],
@@ -424,13 +419,13 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: 65.h, // ระยะห่าง BOTTOM "เลือกเสียง" กับ TOP "Filtter"
+          height: 65.h,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
               Container(
                 color: Colors.white,
-                width: 480.w, // ระยะห่างระหว่าง Filter
+                width: 480.w,
                 child: Padding(
                   padding: EdgeInsets.only(right: 10.w, left: 10.w),
                   child: Row(
@@ -438,7 +433,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       InkWell(
                         onTap: () {
-                          _showLanguageOptionModal(context);
+                          setState(() {
+                            _isSelectingLangauge = true;
+                          });
+                          _showLanguageSelectionModal(context);
                         },
                         child: Container(
                           width: 72.w,
@@ -469,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Icon(
-                                _isLanguageOptionExpanded
+                                _isSelectingLangauge
                                     ? Icons.keyboard_arrow_up_sharp
                                     : Icons.keyboard_arrow_down_sharp,
                                 size: 20.sp,
@@ -482,73 +480,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            _isSelectingGender = !_isSelectingGender;
+                            _isSelectingGender = true;
                           });
-                          showModalBottomSheet(
-                            backgroundColor: Colors.white,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                builder: (BuildContext context,
-                                    StateSetter setModalState) {
-                                  return SizedBox(
-                                    height: 220.h,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(25),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            color: Colors.transparent,
-                                            width: 360.w,
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      'เพศ',
-                                                      style: GoogleFonts.prompt(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        size: 24.sp,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 15.h,
-                                                ),
-                                                ...embeddedGenderMetadata.map(
-                                                    (GenderMetadataModel g) {
-                                                  return _buildGenderOption(
-                                                    g,
-                                                    context,
-                                                    setModalState,
-                                                  );
-                                                }),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
+                          _showGenderSelectionModal(context);
                         },
                         child: Container(
                           width: 62.w,
@@ -570,20 +504,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SizedBox(width: 3.w),
-                                  if (_selectedGender == '')
-                                    Text(
-                                      'ช/ญ',
-                                      style: GoogleFonts.prompt(
-                                        fontSize: 12.sp,
-                                      ),
+                                  Text(
+                                    _selectedGender,
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 12.sp,
                                     ),
-                                  if (_selectedGender.toString() != '')
-                                    Text(
-                                      _selectedGender,
-                                      style: GoogleFonts.prompt(
-                                        fontSize: 12.sp,
-                                      ),
-                                    ),
+                                  ),
                                   _isSelectingGender
                                       ? Icon(
                                           Icons.keyboard_arrow_up_sharp,
@@ -601,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const RecommendedFilters(),
+                      const RecommendedFiltersButton(),
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -616,87 +542,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            _isSelectingStyle = !_isSelectingStyle;
+                            _isSelectingVoiceStyle = true;
                           });
-                          showModalBottomSheet(
-                            backgroundColor: Colors.white,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                builder: (
-                                  BuildContext context,
-                                  StateSetter setModalState,
-                                ) {
-                                  return SizedBox(
-                                    height: 220.h,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(25.w),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            color: Colors.transparent,
-                                            width: 360.w,
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      'สไตล์',
-                                                      style: GoogleFonts.prompt(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        size: 24.sp,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 15.h,
-                                                ),
-                                                Wrap(
-                                                  alignment:
-                                                      WrapAlignment.start,
-                                                  spacing: 13.0,
-                                                  runSpacing: 13.0,
-                                                  children: embeddedStyleList
-                                                      .map((style) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          _selectedStyles
-                                                              .add(style);
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildFilterButton(
-                                                          style),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
+                          showVoiceSyleSelectionModal(context);
                         },
                         child: Container(
                           width: 62.w,
@@ -717,9 +565,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: 3.w,
-                                  ),
+                                  SizedBox(width: 3.w),
                                   Flexible(
                                     child: Text(
                                       'สไตล์',
@@ -729,7 +575,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Icon(
-                                    _isSelectingStyle
+                                    _isSelectingVoiceStyle
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
                                     size: 20.sp,
@@ -744,85 +590,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            _isSelectingCategory = !_isSelectingCategory;
+                            _isSelectingSpeechStyle = true;
                           });
-                          showModalBottomSheet(
-                            backgroundColor: Colors.white,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                builder: (BuildContext context,
-                                    StateSetter setModalState) {
-                                  return SizedBox(
-                                    height: 230.h,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(25.r),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            color: Colors.transparent,
-                                            width: 360.w,
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      'หมวดหมู่',
-                                                      style: GoogleFonts.prompt(
-                                                        fontSize: 16.sp,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        size: 24.sp,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 15.h,
-                                                ),
-                                                Wrap(
-                                                  alignment:
-                                                      WrapAlignment.start,
-                                                  spacing: 13.0,
-                                                  runSpacing: 13.0,
-                                                  children: embeddedCategoryList
-                                                      .map((category) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        setModalState(() {
-                                                          _selectedCategories
-                                                              .add(category);
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: _buildFilterButton(
-                                                          category),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
+                          showSpeechStyleSelectionModal(context);
                         },
                         child: Container(
                           width: 62.w,
@@ -843,9 +613,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: 3.w,
-                                  ),
+                                  SizedBox(width: 3.w),
                                   Flexible(
                                     child: Text(
                                       'หมวดหมู่',
@@ -855,7 +623,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Icon(
-                                    selectCategory
+                                    _isSelectingSpeechStyle
                                         ? Icons.keyboard_arrow_up_sharp
                                         : Icons.keyboard_arrow_down_sharp,
                                     size: 20.sp,
@@ -877,21 +645,244 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           color: Colors.white,
           height: 148.h,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _isFavouriteSelected
-                  ? _buildFavouriteSpeakerOption(context)
-                  : _buildSpeakerOption(context),
-            ],
+          child: Center(
+            child: _buildSpeakerTable(context),
           ),
         ),
       ],
     );
   }
 
-  Future<void> _showLanguageOptionModal(BuildContext context) {
-    return showModalBottomSheet(
+  void showSpeechStyleSelectionModal(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return SizedBox(
+              height: 230.h,
+              child: Padding(
+                padding: EdgeInsets.all(25.r),
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      width: 360.w,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'หมวดหมู่',
+                                style: GoogleFonts.prompt(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _isSelectingSpeechStyle = false;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: 24.sp,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          Wrap(
+                            alignment: WrapAlignment.start,
+                            spacing: 13.0,
+                            runSpacing: 13.0,
+                            children: embeddedCategoryList.map((speechStyle) {
+                              return InkWell(
+                                onTap: () {
+                                  setModalState(() {
+                                    _selectedSpeechStyles.add(speechStyle);
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: _buildStyleOption(
+                                  speechStyle,
+                                  _selectedSpeechStyles.contains(speechStyle),
+                                  context,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showVoiceSyleSelectionModal(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (
+            BuildContext context,
+            StateSetter setModalState,
+          ) {
+            return SizedBox(
+              height: 220.h,
+              child: Padding(
+                padding: EdgeInsets.all(25.w),
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      width: 360.w,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'สไตล์',
+                                style: GoogleFonts.prompt(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _isSelectingVoiceStyle = false;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: 24.sp,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          Wrap(
+                            alignment: WrapAlignment.start,
+                            spacing: 13.0,
+                            runSpacing: 13.0,
+                            children: embeddedStyleList.map((voiceStyle) {
+                              return InkWell(
+                                onTap: () {
+                                  setModalState(() {
+                                    _selectedVoiceStyles.add(voiceStyle);
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: _buildStyleOption(
+                                  voiceStyle,
+                                  _selectedVoiceStyles.contains(voiceStyle),
+                                  context,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showGenderSelectionModal(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return SizedBox(
+              height: 220.h,
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      width: 360.w,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'เพศ',
+                                style: GoogleFonts.prompt(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _isSelectingGender = false;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: 24.sp,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          ...embeddedGenderMetadata
+                              .map((GenderMetadataModel gender) {
+                            return _buildGenderOption(
+                              gender,
+                              context,
+                              setModalState,
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLanguageSelectionModal(BuildContext context) {
+    showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
       builder: (BuildContext context) {
@@ -925,6 +916,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      setState(() {
+                                        _isSelectingLangauge = false;
+                                      });
                                       Navigator.pop(context);
                                     },
                                     child: Icon(
@@ -939,9 +933,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 15.h,
                               ),
                               ...embeddedLanguageMetadata.map(
-                                (LanguageMetadataModel l) {
+                                (LanguageMetadataModel language) {
                                   return _buildLanguageOption(
-                                    l,
+                                    language,
                                     context,
                                     setModalState,
                                   );
@@ -962,12 +956,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFilterButton(String text) {
+  Widget _buildStyleOption(
+    String style,
+    bool isSelected,
+    BuildContext context,
+  ) {
     return IntrinsicWidth(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         decoration: BoxDecoration(
-          gradient: _selectedStyles.contains(text)
+          gradient: isSelected
               ? const LinearGradient(
                   colors: [
                     Color(0xFF9A96F5),
@@ -985,12 +983,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Center(
           child: Text(
-            text,
+            style,
             style: GoogleFonts.prompt(
               fontSize: 12.sp,
-              color: _selectedStyles.contains(text)
-                  ? Colors.white
-                  : const Color(0xFF323130),
+              color: isSelected ? Colors.white : const Color(0xFF323130),
             ),
           ),
         ),
@@ -1009,7 +1005,6 @@ class _HomeScreenState extends State<HomeScreen> {
           _selectedLanguage = languageModel.languageCode;
           _selectedLanguageImage = languageModel.imagePath;
         });
-        Navigator.pop(context);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
@@ -1048,20 +1043,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildGenderOption(
-    GenderMetadataModel genderModel,
+    GenderMetadataModel gender,
     BuildContext context,
-    StateSetter setState,
+    StateSetter setModalState,
   ) {
     return InkWell(
       onTap: () {
-        setState(() {
-          if (genderModel.gender == 'ช/ญ') {
-            _selectedGender = '';
-          } else {
-            _selectedGender = genderModel.gender;
-          }
+        setModalState(() {
+          _selectedGender = gender.genderName;
         });
-        Navigator.pop(context);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
@@ -1072,20 +1062,18 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              genderModel.imagePath,
+              gender.imagePath,
               width: 23.w,
               height: 23.h,
             ),
             SizedBox(width: 20.w),
             Text(
-              genderModel.gender,
+              gender.genderName,
               style: GoogleFonts.prompt(
                 fontSize: 14.sp,
-                fontWeight:
-                    (_selectedGender.isEmpty ? "ช/ญ" : _selectedGender) ==
-                            genderModel.gender
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+                fontWeight: _selectedGender == gender.genderName
+                    ? FontWeight.w600
+                    : FontWeight.normal,
               ),
             ),
           ],
@@ -1094,286 +1082,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSpeakerOption(BuildContext context) {
-    return SizedBox(
-      height: 127.h,
-      width: 320.w,
-      child: GridView.builder(
-        itemCount: embeddedSpeakerMetadata
-            .where(
-              (item) =>
-                  (_selectedGender == '' || item.gender == _selectedGender) &&
-                  (_selectedLanguage == '' ||
-                      item.language == _selectedLanguage) &&
-                  (_selectedVoiceStyle == '' ||
-                      item.voiceStyle == _selectedVoiceStyle) &&
-                  (_selectedSpeechStyle == '' ||
-                      item.speechStyle.contains(_selectedSpeechStyle)),
-            )
-            .length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          mainAxisExtent: 125,
-        ),
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final speaker = embeddedSpeakerMetadata
-              .where(
-                (item) =>
-                    (_selectedGender == '' || item.gender == _selectedGender) &&
-                    (_selectedLanguage == '' ||
-                        item.language == _selectedLanguage) &&
-                    (_selectedVoiceStyle == '' ||
-                        item.voiceStyle == _selectedVoiceStyle) &&
-                    (_selectedSpeechStyle == '' ||
-                        item.speechStyle.contains(_selectedSpeechStyle)),
-              )
-              .toList()[index]; ////new
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 15.w),
-                child: GestureDetector(
-                  onTap: () async {
-                    String audioURL = speaker.audio;
-                    Future<void> playAudio() async {
-                      if (audioURL.isNotEmpty) {
-                        if (_isAudioPlaying) {
-                          await _audioPlayer.stop();
-                        }
-                        await _audioPlayer.play(UrlSource(audioURL));
-                        setState(() {
-                          _isAudioPlaying = true;
-                        });
-                        _audioPlayer.onPlayerComplete.listen((event) {
-                          setState(() {
-                            _isAudioPlaying = false;
-                          });
-                        });
-                      } else {
-                        setState(() {
-                          _isAudioPlaying = false;
-                        });
-                      }
-                    }
-
-                    await playAudio();
-                    _selectedSpeakerId = speaker.speakerId;
-                    setState(() {
-                      if (selectedIndex.contains(index)) {
-                        selectedIndex.remove(index);
-                        if (_audioPlayer.state == PlayerState.playing) {
-                          _audioPlayer.stop();
-                        }
-                      } else {
-                        selectedIndex.clear();
-                        selectedIndex.add(index);
-                      }
-                    });
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 81.w,
-                        height: 103.h,
-                        decoration: BoxDecoration(
-                          border: GradientBoxBorder(
-                            width: 3.w,
-                            gradient: selectedIndex.contains(index)
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFF9A96F5),
-                                      Color(0xFF00E0FF)
-                                    ],
-                                  )
-                                : LinearGradient(
-                                    colors: [
-                                      Colors.black.withOpacity(0.9),
-                                      Colors.transparent,
-                                    ],
-                                    begin: const Alignment(1, 1), ////change new
-                                  ),
-                          ),
-                          borderRadius: BorderRadius.circular(8.r),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              speaker.squareImage,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                              color: selectedIndex.contains(index)
-                                  ? const Color(0xFF9340FF)
-                                      .withOpacity(0.6) //new
-                                  : Colors.transparent,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Container(
-                          width: 100.w,
-                          height: 113.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.r),
-                            gradient: LinearGradient(
-                              begin: const Alignment(1, 1),
-                              colors: [
-                                Colors.black.withOpacity(0.9),
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 5.w,
-                                      top: 5.h,
-                                      left: 5.w,
-                                    ),
-                                    child: selectedIndex.contains(index)
-                                        ? Container(
-                                            width: 31.w,
-                                            height: 17.h,
-                                            decoration: BoxDecoration(
-                                              gradient: const LinearGradient(
-                                                colors: [
-                                                  Color(0xFF9A96F5),
-                                                  Color(0xFF00E0FF)
-                                                ],
-                                              ),
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(8.r),
-                                            ),
-                                            child: Center(
-                                              child: Text('เลือก',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontStyle:
-                                                        GoogleFonts.prompt()
-                                                            .fontStyle,
-                                                    fontSize: 10.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                  )),
-                                            ),
-                                          )
-                                        : const Icon(
-                                            Icons.check,
-                                            color: Colors.transparent,
-                                          ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(right: 5.w, top: 5.h),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (selectedIndexFavorites
-                                              .contains(speaker.speakerId)) {
-                                            selectedIndexFavorites
-                                                .remove(speaker.speakerId);
-                                          } else {
-                                            selectedIndexFavorites
-                                                .add(speaker.speakerId);
-                                          }
-                                        });
-                                      },
-                                      child: selectedIndexFavorites
-                                              .contains(speaker.speakerId)
-                                          ? ShaderMask(
-                                              shaderCallback: (Rect bounds) {
-                                                return const LinearGradient(
-                                                  colors: [
-                                                    Color(0xFF9A96F5),
-                                                    Color(0xFF00E0FF),
-                                                  ],
-                                                ).createShader(bounds);
-                                              },
-                                              child: SvgPicture.asset(
-                                                'assets/logo/heart (1).svg',
-                                                width: 20.w,
-                                                height: 20.h,
-                                                // color: Colors.white, //// ไม่ได้ใช้
-                                              ),
-                                            )
-                                          : SvgPicture.asset(
-                                              'assets/logo/heart.svg',
-                                              width: 20.w,
-                                              height: 20.h,
-                                            ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 10.w,
-                                  ), //new
-                                  selectedIndex.contains(index)
-                                      ? ShaderMask(
-                                          shaderCallback: (Rect bounds) {
-                                            return const LinearGradient(
-                                              colors: [
-                                                Color(0xFF9A96F5),
-                                                Color(0xFF00E0FF),
-                                              ],
-                                            ).createShader(bounds);
-                                          },
-                                          child: SvgPicture.asset(
-                                            'assets/logo/Vector.svg',
-                                            width: 16.w,
-                                            height: 16.h,
-                                            // color: Colors.white, //// ไม่ได้ใช้
-                                          ),
-                                        )
-                                      : SvgPicture.asset(
-                                          'assets/logo/Vector (1).svg',
-                                          width: 16.w,
-                                          height: 16.h,
-                                        ),
-                                  SizedBox(
-                                    width: 3.w,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      speaker.thaiName,
-                                      style: GoogleFonts.prompt(
-                                        fontSize: 10.sp,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Column voicewidget(SpeakerMetadataModel speakerMetadata, int index) {
+  Widget _buildSpeakerCard(SpeakerMetadataModel speakerMetadata, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1381,30 +1090,24 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.only(left: 15.w),
           child: GestureDetector(
             onTap: () async {
-              String audioURL = speakerMetadata.audio;
-              Future<void> playAudio() async {
-                if (audioURL.isNotEmpty) {
-                  if (_isAudioPlaying) {
-                    await _audioPlayer.stop();
-                  }
-                  await _audioPlayer.play(UrlSource(audioURL));
-                  setState(() {
-                    _isAudioPlaying = true;
-                  });
-                  _audioPlayer.onPlayerComplete.listen((event) {
-                    setState(() {
-                      _isAudioPlaying = false;
-                    });
-                  });
-                } else {
+              if (speakerMetadata.audio.isNotEmpty) {
+                if (_isAudioPlaying) {
+                  await _audioPlayer.stop();
+                }
+                await _audioPlayer.play(UrlSource(speakerMetadata.audio));
+                setState(() {
+                  _isAudioPlaying = true;
+                });
+                _audioPlayer.onPlayerComplete.listen((event) {
                   setState(() {
                     _isAudioPlaying = false;
                   });
-                }
+                });
+              } else {
+                setState(() {
+                  _isAudioPlaying = false;
+                });
               }
-
-              await playAudio();
-              _selectedSpeakerId = speakerMetadata.speakerId;
               setState(() {
                 if (selectedIndex.contains(index)) {
                   selectedIndex.remove(index);
@@ -1606,35 +1309,38 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFavouriteSpeakerOption(BuildContext context) {
+  Widget _buildSpeakerTable(BuildContext context) {
+    List<SpeakerMetadataModel> speakersToShow = embeddedSpeakerMetadata;
+    if (_isFavouriteSelected) {
+      speakersToShow = embeddedSpeakerMetadata
+          .where(
+              (speaker) => selectedIndexFavorites.contains(speaker.speakerId))
+          .toList();
+    }
+    // TODO: Apply filters
+    if (_selectedGender != '') {}
+
     return SizedBox(
       height: 127.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: embeddedSpeakerMetadata
-            .where((item) =>
-                selectedIndexFavorites.isEmpty ||
-                selectedIndexFavorites.contains(item.speakerId))
-            .length,
+        itemCount: speakersToShow.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
           mainAxisExtent: 125,
         ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final data = embeddedSpeakerMetadata
-              .where((item) =>
-                  selectedIndexFavorites.isEmpty ||
-                  selectedIndexFavorites.contains(item.speakerId))
-              .toList()[index];
-
-          return voicewidget(data, index);
+          return _buildSpeakerCard(
+            speakersToShow[index],
+            index,
+          );
         },
       ),
     );
   }
 
-  Widget buildVoiceHome(BuildContext context) {
+  Widget _buildGenerateVoiceButton(BuildContext context) {
     return Column(
       children: [
         const Spacer(),
@@ -1656,8 +1362,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   await textSave(_generatedAudioUrl);
                 }
               }
-              await Future.delayed(const Duration(seconds: 2));
-              navigateToMyHomePage();
+              // TODO: Why tho
+              //await Future.delayed(const Duration(seconds: 2));
+              //if (mounted) {
+              //  Navigator.pushReplacement(
+              //    context,
+              //    MaterialPageRoute(
+              //      builder: (context) => const WorkspaceScreen(),
+              //    ),
+              //  );
+              //}
             },
           ),
         ),
@@ -1665,27 +1379,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void navigateToMyHomePage() {
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkspaceScreen()),
-      );
-    }
-  }
-
   Future<void> textSave(String audioUrl) async {
+    //TODO: Implement this method
     // Define the new WorkSpace object
-    TextBoxModel newTextBox = TextBoxModel(
-      text: textController.text,
-      speaker: int.parse(_selectedSpeakerId!),
-      audioId: '',
-      speed: '1',
-      statusDownload: true,
-      url: audioUrl,
-      volume: '1',
-    );
-
+    //TextBoxModel newTextBox = TextBoxModel(
+    //  text: textController.text,
+    //  speaker: int.parse(_selectedSpeakerId!),
+    //  audioId: '',
+    //  speed: '1',
+    //  statusDownload: true,
+    //  url: audioUrl,
+    //  volume: '1',
+    //);
     // Fetch existing workspaces for the project
     //await auth.getAllWorkspace();
     //if (auth.listProjects.isNotEmpty) {
