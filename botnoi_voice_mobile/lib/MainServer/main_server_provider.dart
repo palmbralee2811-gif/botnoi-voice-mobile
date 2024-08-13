@@ -244,11 +244,11 @@ class MainServerProvider extends ChangeNotifier {
   }
 
   /// Generate audio from text and return the audio URL
-  Future<String?> generateAudio(String text, int speaker) async {
+  Future<String?> generateAudio(String text, String speakerId) async {
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
-      "speaker": speaker,
+      "speaker": speakerId,
       "volume": 1,
       "speed": 1,
       "type_media": "wav",

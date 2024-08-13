@@ -7,7 +7,6 @@ import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_style_list.
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/language_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
-import 'package:botnoi_voice_mobile/MainServer/ObjectModels/text_box_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
@@ -17,7 +16,6 @@ import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/select_all_genre_
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/category_setting_widget.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
-import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/workspace_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,7 +23,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -35,33 +32,31 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final TextEditingController textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
 
-  String _generatedAudioUrl = '';
-  String _selectedLanguage = "TH";
-  String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
-  String _selectedGender = "";
   final List<String> _selectedVoiceStyles = [];
   final List<String> _selectedSpeechStyles = [];
+  final List<String> _favouriteSpeakerIds = [];
+  String? _generatedAudioUrl;
+  String _selectedLanguage = "TH";
+  String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
+  String _selectedGender = "ช/ญ";
+  String _selectedSpeakerId = embeddedSpeakerMetadata.first.speakerId;
 
-  bool _isAudioPlaying = false;
   bool _isFavouriteSelected = false;
   bool _isSelectingGender = false;
   bool _isSelectingSpeechStyle = false;
   bool _isSelectingVoiceStyle = false;
   bool _isSelectingLangauge = false;
-  int _isTypingText = 0;
 
-  Set<int> selectedIndex2 = {};
-  Set<int> selectedIndex = {};
-  List<String> selectedIndexFavorites = [];
-
+  // TODO: Refactor these
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
+  int _isTypingText = 0;
 
   @override
   void dispose() {
-    textController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -158,21 +153,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? maxLinesclose
                                   : maxLinesopen,
                               keyboardType: TextInputType.multiline,
-                              controller: textController,
+                              controller: _textController,
                               onChanged: (text) {
-                                if (textController.text.length > 1000) {
-                                  textController.text =
-                                      textController.text.substring(0, 1000);
-                                  textController.selection =
+                                if (_textController.text.length > 1000) {
+                                  _textController.text =
+                                      _textController.text.substring(0, 1000);
+                                  _textController.selection =
                                       TextSelection.fromPosition(
                                     TextPosition(
-                                      offset: textController.text.length,
+                                      offset: _textController.text.length,
                                     ),
                                   );
                                 }
                                 setState(() {
                                   showClearIcon =
-                                      textController.text.isNotEmpty;
+                                      _textController.text.isNotEmpty;
                                 });
                               },
                               decoration: InputDecoration(
@@ -232,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     children: [
                                       GradientText(
-                                        '${textController.text.length}',
+                                        '${_textController.text.length}',
                                         style: GoogleFonts.prompt(
                                           fontSize: 14.sp,
                                           color: const Color(0xFFA19F9D),
@@ -1082,7 +1077,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSpeakerCard(SpeakerMetadataModel speakerMetadata, int index) {
+  Widget _buildSpeakerCard(SpeakerMetadataModel speakerMetadata) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1090,34 +1085,15 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.only(left: 15.w),
           child: GestureDetector(
             onTap: () async {
+              if (_audioPlayer.state == PlayerState.playing) {
+                await _audioPlayer.stop();
+              }
               if (speakerMetadata.audio.isNotEmpty) {
-                if (_isAudioPlaying) {
-                  await _audioPlayer.stop();
-                }
                 await _audioPlayer.play(UrlSource(speakerMetadata.audio));
-                setState(() {
-                  _isAudioPlaying = true;
-                });
-                _audioPlayer.onPlayerComplete.listen((event) {
-                  setState(() {
-                    _isAudioPlaying = false;
-                  });
-                });
-              } else {
-                setState(() {
-                  _isAudioPlaying = false;
-                });
+                _audioPlayer.onPlayerComplete.listen((event) {});
               }
               setState(() {
-                if (selectedIndex.contains(index)) {
-                  selectedIndex.remove(index);
-                  if (_audioPlayer.state == PlayerState.playing) {
-                    _audioPlayer.stop();
-                  }
-                } else {
-                  selectedIndex.clear();
-                  selectedIndex.add(index);
-                }
+                _selectedSpeakerId = speakerMetadata.speakerId;
               });
             },
             child: Column(
@@ -1128,7 +1104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                     border: GradientBoxBorder(
                       width: 3.w,
-                      gradient: selectedIndex.contains(index)
+                      gradient: _selectedSpeakerId == speakerMetadata.speakerId
                           ? const LinearGradient(
                               colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                             )
@@ -1151,7 +1127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       BoxShadow(
                         blurRadius: 10,
                         spreadRadius: 1,
-                        color: selectedIndex.contains(index)
+                        color: _selectedSpeakerId == speakerMetadata.speakerId
                             ? const Color(0xFF9340FF).withOpacity(0.6) //new
                             : Colors.transparent,
                         offset: const Offset(0, 4),
@@ -1182,7 +1158,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 top: 5.h,
                                 left: 5.w,
                               ),
-                              child: selectedIndex.contains(index)
+                              child: _selectedSpeakerId ==
+                                      speakerMetadata.speakerId
                                   ? Container(
                                       width: 31.w,
                                       height: 17.h,
@@ -1198,14 +1175,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                             BorderRadius.circular(8.r),
                                       ),
                                       child: Center(
-                                        child: Text('เลือก',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontStyle: GoogleFonts.prompt()
-                                                  .fontStyle,
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.bold,
-                                            )),
+                                        child: Text(
+                                          'เลือก',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontStyle:
+                                                GoogleFonts.prompt().fontStyle,
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
                                     )
                                   : const Icon(
@@ -1218,17 +1197,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    if (selectedIndexFavorites
+                                    if (_favouriteSpeakerIds
                                         .contains(speakerMetadata.speakerId)) {
-                                      selectedIndexFavorites
+                                      _favouriteSpeakerIds
                                           .remove(speakerMetadata.speakerId);
                                     } else {
-                                      selectedIndexFavorites
+                                      _favouriteSpeakerIds
                                           .add(speakerMetadata.speakerId);
                                     }
                                   });
                                 },
-                                child: selectedIndexFavorites
+                                child: _favouriteSpeakerIds
                                         .contains(speakerMetadata.speakerId)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
@@ -1261,7 +1240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(
                               width: 10.w,
                             ),
-                            selectedIndex.contains(index)
+                            _selectedSpeakerId == speakerMetadata.speakerId
                                 ? ShaderMask(
                                     shaderCallback: (Rect bounds) {
                                       return const LinearGradient(
@@ -1310,15 +1289,41 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSpeakerTable(BuildContext context) {
-    List<SpeakerMetadataModel> speakersToShow = embeddedSpeakerMetadata;
+    List<SpeakerMetadataModel> speakersToShow =
+        List.from(embeddedSpeakerMetadata);
     if (_isFavouriteSelected) {
       speakersToShow = embeddedSpeakerMetadata
-          .where(
-              (speaker) => selectedIndexFavorites.contains(speaker.speakerId))
+          .where((speaker) => _favouriteSpeakerIds.contains(speaker.speakerId))
           .toList();
     }
-    // TODO: Apply filters
-    if (_selectedGender != '') {}
+    if (_selectedGender.isNotEmpty && _selectedGender != "ช/ญ") {
+      speakersToShow = speakersToShow
+          .where((speaker) => speaker.gender.contains(_selectedGender))
+          .toList();
+    }
+    if (_selectedVoiceStyles.isNotEmpty) {
+      speakersToShow = speakersToShow
+          .where(
+            (speaker) => _selectedVoiceStyles.contains(speaker.voiceStyle),
+          )
+          .toList();
+    }
+    if (_selectedSpeechStyles.isNotEmpty) {
+      speakersToShow = speakersToShow
+          .where(
+            (speaker) => speaker.speechStyle.any(
+              (speechStyle) => _selectedSpeechStyles.contains(speechStyle),
+            ),
+          )
+          .toList();
+    }
+    if (_selectedLanguage.isNotEmpty) {
+      speakersToShow = speakersToShow
+          .where(
+            (speaker) => speaker.language.contains(_selectedLanguage),
+          )
+          .toList();
+    }
 
     return SizedBox(
       height: 127.h,
@@ -1333,7 +1338,6 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (context, index) {
           return _buildSpeakerCard(
             speakersToShow[index],
-            index,
           );
         },
       ),
@@ -1349,18 +1353,27 @@ class _HomeScreenState extends State<HomeScreen> {
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {
-              if (textController.text.isNotEmpty) {
-                setState(() {
-                  _audioPlayer.stop();
-                });
+              setState(() {
+                _audioPlayer.stop();
+              });
+
+              if (_textController.text.isEmpty) {
+                // TODO: Show error message
+                return;
               }
-              if (textController.text.isNotEmpty) {
-                //TODO: Generate audio
-                //_audioUrl = await Provider.of<MainServerProvider>(context)
-                //    .generateAudio(textController.text);
-                if (_generatedAudioUrl.isNotEmpty && _generatedAudioUrl != '') {
-                  await textSave(_generatedAudioUrl);
-                }
+              if (_selectedSpeakerId.isEmpty) {
+                // TODO: Show error message
+                return;
+              }
+
+              _generatedAudioUrl =
+                  await Provider.of<MainServerProvider>(context).generateAudio(
+                _textController.text,
+                _selectedSpeakerId,
+              );
+
+              if (_generatedAudioUrl?.isNotEmpty ?? false) {
+                await textSave();
               }
               // TODO: Why tho
               //await Future.delayed(const Duration(seconds: 2));
@@ -1379,16 +1392,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> textSave(String audioUrl) async {
+  Future<void> textSave() async {
     //TODO: Implement this method
     // Define the new WorkSpace object
     //TextBoxModel newTextBox = TextBoxModel(
-    //  text: textController.text,
-    //  speaker: int.parse(_selectedSpeakerId!),
+    //  text: _textController.text,
+    //  speaker: int.parse(_selectedSpeakerId),
     //  audioId: '',
     //  speed: '1',
     //  statusDownload: true,
-    //  url: audioUrl,
+    //  url: _generatedAudioUrl ?? "",
     //  volume: '1',
     //);
     // Fetch existing workspaces for the project
