@@ -72,32 +72,3 @@ class _AllState extends State<All> {
     );
   }
 }
-
-class GradientButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  GradientButton({required this.text, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        onPressed: onPressed,
-        child: Text(text, style: TextStyle(color: Colors.white, fontSize: 16)),
-      ),
-    );
-  }
-}

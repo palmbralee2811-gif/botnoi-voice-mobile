@@ -75,34 +75,3 @@ class _SelectAllGenreButtonState extends State<SelectAllGenreButton> {
     );
   }
 }
-
-class GradientButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const GradientButton(
-      {super.key, required this.text, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        onPressed: onPressed,
-        child: Text(text,
-            style: const TextStyle(color: Colors.white, fontSize: 16)),
-      ),
-    );
-  }
-}

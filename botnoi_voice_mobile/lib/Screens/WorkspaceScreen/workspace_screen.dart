@@ -137,9 +137,7 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
         ),
       ),
 
-      drawer: DrawerAppbar(
-        screenSizeheight: MediaQuery.of(context).size.height,
-      ),
+      drawer: const DrawerAppbar(),
     );
   }
 }

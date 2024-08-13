@@ -9,6 +9,7 @@ import 'package:botnoivoice/Filters/recomman.dart';
 import 'package:botnoivoice/Function/randomString.dart';
 import 'package:botnoivoice/Model/models.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
+import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
 import 'package:botnoivoice/Screens/HomeScreen/select_voice_screen.dart';
@@ -413,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: buildVoiceHome(context),
                 ),
                 Container(
-                    height: 54.h, //screenSizeheight * 0.052.h,
+                    height: 45.h, //screenSizeheight * 0.052.h,
                     width: 320.w,
                     color: const Color(0xFF27282B),
                     child: InkWell(
@@ -1984,7 +1985,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Spacer(),
         Padding(
-          padding: EdgeInsets.only(bottom: 10.h),
+          padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {

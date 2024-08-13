@@ -16,13 +16,12 @@ class _CategorySettingWidgetState extends State<CategorySettingWidget> {
   double _volumevalue = 100; // ความดัง
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           color: Colors.transparent,
-          height: screenSize.height * 0.200.h,
+          height: 142.h,
           child: Padding(
             padding: EdgeInsets.only(
               top: 20.w,
@@ -67,7 +66,7 @@ class _CategorySettingWidgetState extends State<CategorySettingWidget> {
                       ),
                     ),
                     SizedBox(
-                        width: 55,
+                        width: 55.w,
                         child: Text('${_volumevalue.toStringAsFixed(1)}%',
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
@@ -108,7 +107,7 @@ class _CategorySettingWidgetState extends State<CategorySettingWidget> {
                       ),
                     ),
                     SizedBox(
-                        width: 55,
+                        width: 55.w,
                         child: Text(
                           '${speedValue.toStringAsFixed(1)} x',
                           style: GoogleFonts.prompt(fontSize: 12.sp),
@@ -146,7 +145,7 @@ class GradientThumbShape extends SliderComponentShape {
     required Size sizeWithOverflow,
   }) {
     final Rect thumbRect =
-        Rect.fromCenter(center: center, width: 20.0, height: 30.0);
+        Rect.fromCenter(center: center, width: 20.w, height: 30.h);
     final Paint paint = Paint()
       ..shader = const LinearGradient(
         colors: <Color>[Color(0xFF9340FF), Color(0xFF34BDFA)],

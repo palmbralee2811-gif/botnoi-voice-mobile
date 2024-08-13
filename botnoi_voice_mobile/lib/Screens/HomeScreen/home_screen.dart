@@ -15,6 +15,7 @@ import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/favourite_genre_f
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/recommended_filters.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/select_all_genre_button.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/category_setting_widget.dart';
+import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
 import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/workspace_screen.dart';
@@ -395,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: _buildGenerateVoiceButton(context),
                   ),
                   Container(
-                    height: 54.h,
+                    height: 45.h,
                     width: 320.w,
                     color: const Color(0xFF27282B),
                     child: InkWell(
@@ -1345,7 +1346,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Spacer(),
         Padding(
-          padding: EdgeInsets.only(bottom: 10.h),
+          padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {

@@ -15,18 +15,17 @@ class _CategorySettingsState extends State<CategorySettings> {
   double _volumevalue = 100;
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           color: Colors.transparent,
-          height: screenSize.height * 0.200.h,
+          height: 142.h,
           child: Padding(
             padding: EdgeInsets.only(
+              left: 20.w,
               top: 20.h,
               right: 10.w,
-              left: 20.w,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
