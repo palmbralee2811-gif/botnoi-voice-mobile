@@ -49,10 +49,10 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
   }
 
   Future<void> updateAudioUrl(int projectIndex, int workspaceIndex,
-      String updatedSentences, int speaker) async {
+      String updatedSentences, String speakerId) async {
     String? audioUrl =
         await Provider.of<MainServerProvider>(context, listen: false)
-            .generateAudio(updatedSentences, speaker);
+            .generateAudio(updatedSentences, speakerId);
     if (audioUrl != null) {
       setState(() {
         workSpaces[projectIndex].textBoxes[workspaceIndex].url = audioUrl;

@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CinematicGenreFilter extends StatefulWidget {
-  const CinematicGenreFilter({
+class ViewAllSpeakersButton extends StatefulWidget {
+  const ViewAllSpeakersButton({
     super.key,
   });
 
   @override
-  State<CinematicGenreFilter> createState() => _CinematicGenreFilterState();
+  State<ViewAllSpeakersButton> createState() => _ViewAllSpeakersButtonState();
 }
 
-class _CinematicGenreFilterState extends State<CinematicGenreFilter> {
+class _ViewAllSpeakersButtonState extends State<ViewAllSpeakersButton> {
   bool _isSelected = false;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         setState(() {
-          _isSelected = !_isSelected;
+          if (_isSelected == true) {
+            _isSelected = !_isSelected;
+          }
         });
+        // TODO: Display all
+        //Navigator.push(
+        //    context,
+        //    MaterialPageRoute(
+        //        builder: (context) => const DisplayAllVoiceScreen()));
       },
       child: Container(
         width: 63.w,
@@ -46,14 +54,14 @@ class _CinematicGenreFilterState extends State<CinematicGenreFilter> {
               children: [
                 _isSelected
                     ? Text(
-                        'พากย์หนัง',
+                        'ดูทั้งหมด',
                         style: GoogleFonts.prompt(
                           fontSize: 12.sp,
                           color: const Color(0xFFFFFFFF),
                         ),
                       )
                     : Text(
-                        'พากย์หนัง',
+                        'ดูทั้งหมด',
                         style: GoogleFonts.prompt(
                           fontSize: 12.sp,
                           color: const Color(0xFF323130),

@@ -2,26 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LanguageSelectingDrawer extends StatefulWidget {
-  const LanguageSelectingDrawer({super.key});
+class LanguageSelectionButton extends StatefulWidget {
+  const LanguageSelectionButton({super.key});
 
   @override
-  State<LanguageSelectingDrawer> createState() => _LanguageSelectingDrawerState();
+  State<LanguageSelectionButton> createState() =>
+      _LanguageSelectionButtonState();
 }
 
-class _LanguageSelectingDrawerState extends State<LanguageSelectingDrawer> {
-  String selectedLanguage = 'ไทย'; 
-
-  void _selectLanguage(String language) {
-    setState(() {
-      selectedLanguage = language;
-    });
-  }
+class _LanguageSelectionButtonState extends State<LanguageSelectionButton> {
+  String selectedLanguage = 'ไทย';
 
   @override
   Widget build(BuildContext context) {
-    /// Green: ถ้าใช้ GestureDetector แทน InkWell เวลาคลิกที่ช่องว่าง SizedBox จะไม่แสดง showModalBottomSheet
-    return InkWell( 
+    return InkWell(
       onTap: () {
         showModalBottomSheet(
           backgroundColor: Colors.white,
@@ -66,7 +60,9 @@ class _LanguageSelectingDrawerState extends State<LanguageSelectingDrawer> {
                             ),
                             InkWell(
                               onTap: () {
-                                _selectLanguage('ไทย');
+                                setState(() {
+                                  selectedLanguage = 'ไทย';
+                                });
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -75,7 +71,7 @@ class _LanguageSelectingDrawerState extends State<LanguageSelectingDrawer> {
                                 width: 320.w,
                                 color: selectedLanguage == 'ไทย'
                                     ? const Color(0xFFF7F8FA)
-                                    : Colors.white, 
+                                    : Colors.white,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -94,11 +90,11 @@ class _LanguageSelectingDrawerState extends State<LanguageSelectingDrawer> {
                                         Text(
                                           'Thai (Thailand) - ไทย',
                                           style: GoogleFonts.prompt(
-                                            fontSize: 14.sp,
-                                            fontWeight: selectedLanguage == 'ไทย'
-                                              ? FontWeight.w600
-                                              : FontWeight.normal
-                                          ),
+                                              fontSize: 14.sp,
+                                              fontWeight:
+                                                  selectedLanguage == 'ไทย'
+                                                      ? FontWeight.w600
+                                                      : FontWeight.normal),
                                         ),
                                       ],
                                     ),
@@ -108,7 +104,9 @@ class _LanguageSelectingDrawerState extends State<LanguageSelectingDrawer> {
                             ),
                             InkWell(
                               onTap: () {
-                                _selectLanguage('อังกฤษ');
+                                setState(() {
+                                  selectedLanguage = 'อังกฤษ';
+                                });
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -136,11 +134,11 @@ class _LanguageSelectingDrawerState extends State<LanguageSelectingDrawer> {
                                         Text(
                                           'English (UK) - อังกฤษ',
                                           style: GoogleFonts.prompt(
-                                            fontSize: 14.sp,
-                                            fontWeight: selectedLanguage == 'อังกฤษ'
-                                              ? FontWeight.w600
-                                              : FontWeight.normal
-                                          ),
+                                              fontSize: 14.sp,
+                                              fontWeight:
+                                                  selectedLanguage == 'อังกฤษ'
+                                                      ? FontWeight.w600
+                                                      : FontWeight.normal),
                                         ),
                                       ],
                                     ),

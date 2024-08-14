@@ -10,10 +10,9 @@ import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_mod
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/favourite_genre_filter.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/recommended_filters.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/select_all_genre_button.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/category_setting_widget.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/favourite_genre_filter.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/setting_bar.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/view_all_speakers_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
@@ -50,6 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSelectingVoiceStyle = false;
   bool _isSelectingLangauge = false;
 
+  bool _showTextClearButton = false;
+  int maxLinesopen = (404.h / 65).floor();
+  int maxLinesclose = (404.h / 180).floor();
+
   // TODO: Refactor these
   int _selectedPageIndexVoice = 0;
   int _selectedPageIndexSetting = 0;
@@ -63,9 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool showClearIcon = false;
-    final maxLinesopen = (404.h / 65).floor();
-    final maxLinesclose = (404.h / 180).floor();
+    //TODO: Refactor this
 
     if (_selectedPageIndexVoice == 1) {
       _isTypingText = 1;
@@ -107,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: WorkspaceAppBarWidget(context),
       ),
       body: Column(
-        children: <Widget>[
+        children: [
           Container(
             width: 320.w,
             decoration: const BoxDecoration(
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 }
                                 setState(() {
-                                  showClearIcon =
+                                  _showTextClearButton =
                                       _textController.text.isNotEmpty;
                                 });
                               },
@@ -192,13 +193,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      showClearIcon
+                                      _showTextClearButton
                                           ? Padding(
                                               padding:
                                                   EdgeInsets.only(right: 1.w),
                                               child: InkWell(
                                                 child: Icon(
-                                                  Icons.close_sharp,
+                                                  Icons.close,
                                                   size: 20.sp,
                                                   color: Colors.transparent,
                                                 ),
@@ -209,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   EdgeInsets.only(right: 1.w),
                                               child: InkWell(
                                                 child: GradientIcon(
-                                                  icon: Icons.close_sharp,
+                                                  icon: Icons.close,
                                                   size: 20.sp,
                                                   gradient:
                                                       const LinearGradient(
@@ -384,9 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  if (_selectedPageIndexSetting == 1) ...[
-                    const CategorySettings()
-                  ],
+                  if (_selectedPageIndexSetting == 1) const SettingsBar(),
                   Expanded(
                     child: _buildGenerateVoiceButton(context),
                   ),
@@ -523,7 +522,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const RecommendedFiltersButton(),
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -534,7 +532,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           isFavouriteSelected: _isFavouriteSelected,
                         ),
                       ),
-                      const SelectAllGenreButton(),
+                      const ViewAllSpeakersButton(),
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -638,13 +636,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        Container(
-          color: Colors.white,
-          height: 148.h,
-          child: Center(
-            child: _buildSpeakerTable(context),
-          ),
-        ),
+        _buildSpeakerTable(context),
       ],
     );
   }
@@ -1350,7 +1342,8 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Spacer(),
         Padding(
-          padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
+          padding:
+              EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {

@@ -24,7 +24,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => MainServerProvider()),
       ],
       child: ScreenUtilInit(
-        designSize: const Size(375, 684),
+        designSize: const Size(320, 684),
         minTextAdapt: true,
         splitScreenMode: true,
         child: MaterialApp(

@@ -1,16 +1,15 @@
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/language_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CategorySettings extends StatefulWidget {
-  const CategorySettings({super.key});
+class SettingsBar extends StatefulWidget {
+  const SettingsBar({super.key});
 
   @override
-  State<CategorySettings> createState() => _CategorySettingsState();
+  State<SettingsBar> createState() => _SettingsBarState();
 }
 
-class _CategorySettingsState extends State<CategorySettings> {
+class _SettingsBarState extends State<SettingsBar> {
   double speedValue = 1.0;
   double _volumevalue = 100;
   @override
@@ -30,7 +29,6 @@ class _CategorySettingsState extends State<CategorySettings> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const LanguageFilter(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
