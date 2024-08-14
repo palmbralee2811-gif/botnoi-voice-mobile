@@ -3,6 +3,7 @@ import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/about_us_screen.d
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/account_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/faq_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/review_screen.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/Filters/language_selecting_drawer.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_text.dart';
 import 'package:flutter/material.dart';
@@ -229,7 +230,7 @@ class DrawerAppbar extends StatelessWidget {
               color: Colors.transparent,
             ),
           ),
-          //TODO: const Languagedrawer(),
+          const LanguageSelectingDrawer(),
           SizedBox(height: 69.h),
         ],
       ),

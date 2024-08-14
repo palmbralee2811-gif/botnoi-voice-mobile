@@ -1,17 +1,27 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Languagedrawer extends StatelessWidget {
-  const Languagedrawer({super.key});
+class LanguageDrawer extends StatefulWidget {
+  const LanguageDrawer({super.key});
+
+  @override
+  State<LanguageDrawer> createState() => _LanguageDrawerState();
+}
+
+class _LanguageDrawerState extends State<LanguageDrawer> {
+  String selectedLanguage = 'ไทย'; 
+
+  void _selectLanguage(String language) {
+    setState(() {
+      selectedLanguage = language;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    /// Green: ถ้าใช้ GestureDetector แทน InkWell เวลาคลิกที่ช่องว่าง SizedBox จะไม่แสดง showModalBottomSheet
+    return InkWell( 
       onTap: () {
         showModalBottomSheet(
           backgroundColor: Colors.white,
@@ -21,7 +31,7 @@ class Languagedrawer extends StatelessWidget {
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.w),
                   child: Column(
                     children: [
                       Container(
@@ -54,12 +64,19 @@ class Languagedrawer extends StatelessWidget {
                             SizedBox(
                               height: 15.h,
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 10.w),
-                              height: 42.h,
-                              width: 320.w,
-                              color: const Color(0xFFF7F8FA),
-                              child: Column(
+                            InkWell(
+                              onTap: () {
+                                _selectLanguage('ไทย');
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10.w),
+                                height: 42.h,
+                                width: 320.w,
+                                color: selectedLanguage == 'ไทย'
+                                    ? const Color(0xFFF7F8FA)
+                                    : Colors.white, 
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Row(
@@ -75,22 +92,34 @@ class Languagedrawer extends StatelessWidget {
                                           width: 20.w,
                                         ),
                                         Text(
-                                          'ไทย',
+                                          'Thai (Thailand) - ไทย',
                                           style: GoogleFonts.prompt(
                                             fontSize: 14.sp,
-                                            fontWeight: FontWeight.w600,
+                                            // fontWeight: FontWeight.w600,
+                                            fontWeight: selectedLanguage == 'ไทย'
+                                              ? FontWeight.w600
+                                              : FontWeight.normal
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ]),
+                                  ],
+                                ),
+                              ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 10.w),
-                              height: 42.h,
-                              width: 320.w,
-                              color: const Color(0xFFFFFFFF),
-                              child: Column(
+                            InkWell(
+                              onTap: () {
+                                _selectLanguage('อังกฤษ');
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10.w),
+                                height: 42.h,
+                                width: 320.w,
+                                color: selectedLanguage == 'อังกฤษ'
+                                    ? const Color(0xFFF7F8FA)
+                                    : Colors.white,
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Row(
@@ -106,15 +135,20 @@ class Languagedrawer extends StatelessWidget {
                                           width: 20.w,
                                         ),
                                         Text(
-                                          'อังกฤษ',
+                                          'English (UK) - อังกฤษ',
                                           style: GoogleFonts.prompt(
                                             fontSize: 14.sp,
-                                            fontWeight: FontWeight.w600,
+                                            // fontWeight: FontWeight.w600,
+                                            fontWeight: selectedLanguage == 'อังกฤษ'
+                                              ? FontWeight.w600
+                                              : FontWeight.normal
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ]),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -127,6 +161,8 @@ class Languagedrawer extends StatelessWidget {
           ),
         );
       },
+
+      /// แสดงผลตามภาษาที่ผู้ใช้เลือก
       child: SizedBox(
         width: 62.w,
         height: 40.h,
@@ -137,21 +173,19 @@ class Languagedrawer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/logo/Ellipse 12.jpg',
+                  selectedLanguage == 'ไทย'
+                      ? 'assets/logo/Ellipse 12.jpg'
+                      : 'assets/logo/Ellipse 13.jpg',
                   width: 24.w,
                   height: 24.w,
                 ),
-                SizedBox(
-                  width: 10.w,
-                ),
+                SizedBox(width: 10.w),
                 Text(
-                  'ไทย',
+                  selectedLanguage,
                   style: GoogleFonts.prompt(
                       fontSize: 20.sp, fontWeight: FontWeight.w500),
                 ),
-                SizedBox(
-                  width: 80.w,
-                ),
+                SizedBox(width: 80.w), // ทำไม ต้อง คลิก ส่วนช่องวาง นี้ ถึงไม่แสดง showModalBottomSheet ต้องแก้ไขยังไง
                 Icon(
                   Icons.keyboard_arrow_down_sharp,
                   size: 24.sp,
