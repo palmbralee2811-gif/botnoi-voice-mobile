@@ -11,7 +11,7 @@ import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/favourite_genre_filter.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/setting_bar.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/gradient_shapes.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/view_all_speakers_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
@@ -42,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
   String _selectedGender = "ช/ญ";
   String _selectedSpeakerId = embeddedSpeakerMetadata.first.speakerId;
+  double _selectedVolume = 100;
+  double _selectedSpeed = 100;
 
   bool _isFavouriteSelected = false;
   bool _isSelectingGender = false;
@@ -50,13 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSelectingLangauge = false;
 
   bool _showTextClearButton = false;
-  int maxLinesopen = (404.h / 65).floor();
-  int maxLinesclose = (404.h / 180).floor();
 
-  // TODO: Refactor these
-  int _selectedPageIndexVoice = 0;
-  int _selectedPageIndexSetting = 0;
-  int _isTypingText = 0;
+  bool _isMainConfigOpen = false;
+  bool _isExtraConfigOpen = false;
 
   @override
   void dispose() {
@@ -66,26 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Refactor this
-
-    if (_selectedPageIndexVoice == 1) {
-      _isTypingText = 1;
-      if (_selectedPageIndexSetting == 1) {
-        _selectedPageIndexVoice = 0;
-        _selectedPageIndexSetting = 1;
-      }
-    }
-    if (_selectedPageIndexSetting == 2) {
-      _selectedPageIndexVoice = 1;
-      _selectedPageIndexSetting = 0;
-    }
-    if (_selectedPageIndexVoice == 2) {
-      _isTypingText = 0;
-    }
-    if (_selectedPageIndexSetting == 1) {
-      _isTypingText = 1;
-    }
-
+    final bool isSomeConfigOpen = _isMainConfigOpen || _isExtraConfigOpen;
+    final int maxLinesWhenOpen = (404.h / 65.h).floor();
+    final int maxLinesWhenClose = (404.h / 180.h).floor();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: const DrawerAppbar(),
@@ -118,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 end: Alignment.bottomCenter,
               ),
             ),
-            height: _isTypingText == 1 ? 196.h : 404.h,
+            height: isSomeConfigOpen ? 196.h : 404.h,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
@@ -148,12 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 14.sp,
                                 color: const Color(0xFF323130),
                               ),
-                              minLines: _isTypingText == 1
-                                  ? maxLinesclose
-                                  : maxLinesopen,
-                              maxLines: _isTypingText == 1
-                                  ? maxLinesclose
-                                  : maxLinesopen,
+                              minLines: isSomeConfigOpen
+                                  ? maxLinesWhenClose
+                                  : maxLinesWhenOpen,
+                              maxLines: isSomeConfigOpen
+                                  ? maxLinesWhenClose
+                                  : maxLinesWhenOpen,
                               keyboardType: TextInputType.multiline,
                               controller: _textController,
                               onChanged: (text) {
@@ -194,17 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       _showTextClearButton
-                                          ? Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 1.w),
-                                              child: InkWell(
-                                                child: Icon(
-                                                  Icons.close,
-                                                  size: 20.sp,
-                                                  color: Colors.transparent,
-                                                ),
-                                              ),
-                                            )
+                                          ? const SizedBox()
                                           : Padding(
                                               padding:
                                                   EdgeInsets.only(right: 1.w),
@@ -229,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     children: [
                                       GradientText(
-                                        '${_textController.text.length}',
+                                        _textController.text.length.toString(),
                                         style: GoogleFonts.prompt(
                                           fontSize: 14.sp,
                                           color: const Color(0xFFA19F9D),
@@ -265,24 +236,17 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: Container(
               color: Colors.white,
-              height: _isTypingText == 1 ? 261.h : 261.h,
+              height: 261.h,
               child: Column(
                 children: [
                   InkWell(
                     onTap: () {
-                      if (_selectedPageIndexVoice == 0) {
-                        setState(() {
-                          _selectedPageIndexVoice = 1;
-                        });
-                      } else if (_selectedPageIndexVoice == 1) {
-                        setState(() {
-                          _selectedPageIndexVoice = 2;
-                        });
-                      } else if (_selectedPageIndexVoice == 2) {
-                        setState(() {
-                          _selectedPageIndexVoice = 1;
-                        });
-                      }
+                      setState(() {
+                        _isMainConfigOpen = !_isMainConfigOpen;
+                        if (_isMainConfigOpen) {
+                          _isExtraConfigOpen = false;
+                        }
+                      });
                     },
                     child: Container(
                       height: 40.h,
@@ -309,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 20.w),
-                            child: _selectedPageIndexVoice == 1
+                            child: _isMainConfigOpen
                                 ? Icon(
                                     Icons.expand_less,
                                     color: const Color(0xFF323130),
@@ -325,24 +289,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  if (_selectedPageIndexVoice == 1) ...[
-                    _buildConfigurationBar(context)
-                  ],
+                  if (_isMainConfigOpen) _buildMainConfigBar(context),
                   InkWell(
                     onTap: () {
-                      if (_selectedPageIndexSetting == 0) {
-                        setState(() {
-                          _selectedPageIndexSetting = 1;
-                        });
-                      } else if (_selectedPageIndexSetting == 1) {
-                        setState(() {
-                          _selectedPageIndexSetting = 2;
-                        });
-                      } else if (_selectedPageIndexSetting == 2) {
-                        setState(() {
-                          _selectedPageIndexSetting = 1;
-                        });
-                      }
+                      setState(() {
+                        _isExtraConfigOpen = !_isExtraConfigOpen;
+                        if (_isExtraConfigOpen) {
+                          _isMainConfigOpen = false;
+                        }
+                      });
                     },
                     child: Container(
                       height: 40.h,
@@ -369,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 20.w),
-                            child: _selectedPageIndexSetting == 1
+                            child: _isExtraConfigOpen
                                 ? Icon(
                                     Icons.expand_less,
                                     color: const Color(0xFF323130),
@@ -385,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  if (_selectedPageIndexSetting == 1) const SettingsBar(),
+                  if (_isExtraConfigOpen) _buildExtraConfigBar(context),
                   Expanded(
                     child: _buildGenerateVoiceButton(context),
                   ),
@@ -409,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildConfigurationBar(BuildContext context) {
+  Widget _buildMainConfigBar(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -538,7 +493,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             _isSelectingVoiceStyle = true;
                           });
-                          showVoiceSyleSelectionModal(context);
+                          _showVoiceSyleSelectionModal(context);
                         },
                         child: Container(
                           width: 62.w,
@@ -586,7 +541,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {
                             _isSelectingSpeechStyle = true;
                           });
-                          showSpeechStyleSelectionModal(context);
+                          _showSpeechStyleSelectionModal(context);
                         },
                         child: Container(
                           width: 62.w,
@@ -641,7 +596,110 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void showSpeechStyleSelectionModal(BuildContext context) {
+  Widget _buildExtraConfigBar(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 142.h,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 20.w,
+              top: 20.h,
+              right: 10.w,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.volume_up,
+                        color: const Color(0xFF323130), size: 20.sp),
+                    SizedBox(width: 3.w),
+                    SizedBox(
+                        width: 46.w,
+                        child: Text(
+                          'ความดัง',
+                          style: GoogleFonts.prompt(fontSize: 12.sp),
+                        )),
+                    Expanded(
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                            thumbShape: GradientThumbShape(),
+                            thumbColor: Colors.transparent,
+                            trackShape:
+                                const GradeintRoundedRectSliderTrackShape(),
+                            activeTrackColor: Colors.white,
+                            inactiveTrackColor: const Color(0xFFF7F8FA)),
+                        child: Slider(
+                          value: _selectedVolume,
+                          min: 0,
+                          max: 100,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedVolume = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        width: 55.w,
+                        child: Text('${_selectedVolume.toStringAsFixed(1)}%',
+                            style: GoogleFonts.prompt(
+                              fontSize: 12.sp,
+                            )))
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.speed,
+                        color: const Color(0xFF323130), size: 20.sp),
+                    SizedBox(width: 3.w),
+                    SizedBox(
+                        width: 46.w,
+                        child: Text(
+                          'ความเร็ว', //speed
+                          style: GoogleFonts.prompt(fontSize: 12.sp),
+                        )),
+                    Expanded(
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                            thumbShape: GradientThumbShape(),
+                            thumbColor: Colors.transparent,
+                            trackShape:
+                                const GradeintRoundedRectSliderTrackShape(),
+                            activeTrackColor: Colors.white,
+                            inactiveTrackColor: const Color(0xFFF7F8FA)),
+                        child: Slider(
+                          value: _selectedSpeed,
+                          min: 0.2,
+                          max: 2.0,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedSpeed = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '${_selectedSpeed.toStringAsFixed(1)} x',
+                      style: GoogleFonts.prompt(fontSize: 12.sp),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showSpeechStyleSelectionModal(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
@@ -654,8 +712,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.all(25.r),
                 child: Column(
                   children: [
-                    Container(
-                      color: Colors.transparent,
+                    SizedBox(
                       width: 360.w,
                       child: Column(
                         children: [
@@ -720,7 +777,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void showVoiceSyleSelectionModal(BuildContext context) {
+  void _showVoiceSyleSelectionModal(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
@@ -736,8 +793,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.all(25.w),
                 child: Column(
                   children: [
-                    Container(
-                      color: Colors.transparent,
+                    SizedBox(
                       width: 360.w,
                       child: Column(
                         children: [
@@ -815,8 +871,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(25),
                 child: Column(
                   children: [
-                    Container(
-                      color: Colors.transparent,
+                    SizedBox(
                       width: 360.w,
                       child: Column(
                         children: [
@@ -886,8 +941,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.all(25.r),
                     child: Column(
                       children: [
-                        Container(
-                          color: Colors.transparent,
+                        SizedBox(
                           width: 360.w,
                           child: Column(
                             children: [
@@ -1180,10 +1234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                     )
-                                  : const Icon(
-                                      Icons.check,
-                                      color: Colors.transparent,
-                                    ),
+                                  : null,
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 5.w, top: 5.h),
@@ -1369,16 +1420,15 @@ class _HomeScreenState extends State<HomeScreen> {
               if (_generatedAudioUrl?.isNotEmpty ?? false) {
                 await textSave();
               }
-              // TODO: Why tho
-              //await Future.delayed(const Duration(seconds: 2));
-              //if (mounted) {
-              //  Navigator.pushReplacement(
-              //    context,
-              //    MaterialPageRoute(
-              //      builder: (context) => const WorkspaceScreen(),
-              //    ),
-              //  );
-              //}
+              if (mounted) {
+                //TODO: Go to the work space screen
+                //Navigator.pushReplacement(
+                //  context,
+                //  MaterialPageRoute(
+                //    builder: (context) => const WorkspaceScreen(),
+                //  ),
+                //);
+              }
             },
           ),
         ),
@@ -1405,17 +1455,14 @@ class _HomeScreenState extends State<HomeScreen> {
     //  ListProject project = auth.listProjects[0];
     //  print('Project ID: ${project.workspaceId}');
     //  print('Existing WorkSpaces: ${project.workSpaces.length}');
-    //
     //  // Create a new list from existing workspaces
     //  List<WorkSpace> existingWorkSpaces =
     //      List<WorkSpace>.from(project.workSpaces);
     //  print('Existing WorkSpaces (copied): ${existingWorkSpaces.length}');
-    //
     //  // Add the new workspace to the existing workspaces
     //  existingWorkSpaces.add(newTextBox);
     //  print(
     //      'New WorkSpace added. Total WorkSpaces: ${existingWorkSpaces.length}');
-    //
     //  // Update the workspaces with the new list
     //  await auth.updateWorkSpaces(project.workspaceId, existingWorkSpaces);
     //} else {
