@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
-    // brightness: Brightness.dark,
     brightness: Brightness.light,
     seedColor: const Color.fromARGB(255, 253, 196, 153),
   ),

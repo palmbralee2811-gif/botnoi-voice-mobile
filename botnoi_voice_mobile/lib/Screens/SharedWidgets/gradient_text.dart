@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class GradientText extends StatelessWidget {
   final String text;
-
   final TextStyle style;
   final Gradient gradient;
 

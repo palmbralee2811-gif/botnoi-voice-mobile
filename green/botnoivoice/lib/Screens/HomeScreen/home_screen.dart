@@ -28,6 +28,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
+import 'bottom_navbar.dart';
+
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -413,21 +415,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: buildVoiceHome(context),
                 ),
-                Container(
-                    height: 45.h, //screenSizeheight * 0.052.h,
-                    width: 320.w,
-                    color: const Color(0xFF27282B),
-                    child: InkWell(
-                      onTap: () {
-                        debugPrint('on tapped Studio !!!');
-                      },
-                      child: currentIndex == 1
-                          ? SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=deault (2).svg')
-                          : SvgPicture.asset(
-                              'assets/logo/Property 1=studio, Property 2=hover (1).svg'),
-                    ))
-              ]), // 40% of the screen height
+                const BottomNavbar(),
+              ]),
             ),
           ),
         ],
@@ -1545,7 +1534,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return IntrinsicWidth(
       child: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: 8.w, vertical: 4.h), // ปรับ padding ให้เล็กลง
+            horizontal: 8.w, vertical: 4.h),
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(

@@ -10,6 +10,7 @@ import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_mod
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/bottom_navbar.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/favourite_genre_filter.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/gradient_shapes.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/view_all_speakers_button.dart';
@@ -344,17 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: _buildGenerateVoiceButton(context),
                   ),
-                  Container(
-                    height: 45.h,
-                    width: 320.w,
-                    color: const Color(0xFF27282B),
-                    child: InkWell(
-                      onTap: () {},
-                      child: SvgPicture.asset(
-                        'assets/logo/Property 1=studio, Property 2=deault (2).svg',
-                      ),
-                    ),
-                  )
+                  const BottomNavbar(),
                 ],
               ),
             ),

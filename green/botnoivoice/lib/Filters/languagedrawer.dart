@@ -12,15 +12,8 @@ class LanguageDrawer extends StatefulWidget {
 class _LanguageDrawerState extends State<LanguageDrawer> {
   String selectedLanguage = 'ไทย'; 
 
-  void _selectLanguage(String language) {
-    setState(() {
-      selectedLanguage = language;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    /// Green: ถ้าใช้ GestureDetector แทน InkWell เวลาคลิกที่ช่องว่าง SizedBox จะไม่แสดง showModalBottomSheet
     return InkWell( 
       onTap: () {
         showModalBottomSheet(
@@ -66,7 +59,9 @@ class _LanguageDrawerState extends State<LanguageDrawer> {
                             ),
                             InkWell(
                               onTap: () {
-                                _selectLanguage('ไทย');
+                                setState(() {
+                                  selectedLanguage = 'ไทย';
+                                });
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -95,7 +90,6 @@ class _LanguageDrawerState extends State<LanguageDrawer> {
                                           'Thai (Thailand) - ไทย',
                                           style: GoogleFonts.prompt(
                                             fontSize: 14.sp,
-                                            // fontWeight: FontWeight.w600,
                                             fontWeight: selectedLanguage == 'ไทย'
                                               ? FontWeight.w600
                                               : FontWeight.normal
@@ -109,7 +103,9 @@ class _LanguageDrawerState extends State<LanguageDrawer> {
                             ),
                             InkWell(
                               onTap: () {
-                                _selectLanguage('อังกฤษ');
+                                setState(() {
+                                  selectedLanguage = 'อังกฤษ';
+                                });
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -138,7 +134,6 @@ class _LanguageDrawerState extends State<LanguageDrawer> {
                                           'English (UK) - อังกฤษ',
                                           style: GoogleFonts.prompt(
                                             fontSize: 14.sp,
-                                            // fontWeight: FontWeight.w600,
                                             fontWeight: selectedLanguage == 'อังกฤษ'
                                               ? FontWeight.w600
                                               : FontWeight.normal
@@ -161,8 +156,6 @@ class _LanguageDrawerState extends State<LanguageDrawer> {
           ),
         );
       },
-
-      /// แสดงผลตามภาษาที่ผู้ใช้เลือก
       child: SizedBox(
         width: 62.w,
         height: 40.h,
@@ -185,7 +178,7 @@ class _LanguageDrawerState extends State<LanguageDrawer> {
                   style: GoogleFonts.prompt(
                       fontSize: 20.sp, fontWeight: FontWeight.w500),
                 ),
-                SizedBox(width: 80.w), // ทำไม ต้อง คลิก ส่วนช่องวาง นี้ ถึงไม่แสดง showModalBottomSheet ต้องแก้ไขยังไง
+                SizedBox(width: 80.w),
                 Icon(
                   Icons.keyboard_arrow_down_sharp,
                   size: 24.sp,

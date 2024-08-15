@@ -72,6 +72,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/icons/
     - assets/logo/
     - assets/icons/
     - assets/square_image/

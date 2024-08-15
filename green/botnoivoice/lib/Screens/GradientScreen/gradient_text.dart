@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 class GradientText extends StatelessWidget {
   final String text;
-
   final TextStyle style;
   final Gradient gradient;
 
@@ -23,7 +22,7 @@ class GradientText extends StatelessWidget {
       },
       child: Text(
         text,
-        style: style.copyWith(color: Colors.white), // text color จะไม่ถูกใช้
+        style: style.copyWith(color: Colors.white),
       ),
     );
   }
