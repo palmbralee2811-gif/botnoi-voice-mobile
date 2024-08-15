@@ -1,5 +1,6 @@
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/home_screen.dart';
+import 'package:botnoi_voice_mobile/Screens/InitScreen/bottom_navbar.dart';
 import 'package:botnoi_voice_mobile/Screens/SplashScreen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,10 +35,30 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
+  final PageController _pageController = PageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     if (_initialized) {
-      return const HomeScreen();
+      return Scaffold(
+        bottomNavigationBar: BottomNavBar(
+          onButtonTapped: (buttonIndex) {
+            _pageController.animateToPage(
+              buttonIndex,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          },
+        ),
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: const [
+            HomeScreen(),
+            Scaffold(),
+          ],
+        ),
+      );
     } else {
       return const SplashScreen();
     }

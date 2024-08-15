@@ -4,8 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BottomNavbar extends StatelessWidget {
-  const BottomNavbar({ super.key, });
+class BottomNavBar extends StatelessWidget {
+  const BottomNavBar({
+    super.key,
+    required this.onButtonTapped,
+  });
+
+  final void Function(int buttonIndex) onButtonTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class BottomNavbar extends StatelessWidget {
                   ),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-                  ), 
+                  ),
                 ),
               ],
             ),
@@ -68,7 +73,7 @@ class BottomNavbar extends StatelessWidget {
                   ),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-                  ), 
+                  ),
                 ),
               ],
             ),
