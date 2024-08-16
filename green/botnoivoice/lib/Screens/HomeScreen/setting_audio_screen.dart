@@ -7,17 +7,15 @@ import 'package:google_fonts/google_fonts.dart';
 class SettingAudioScreen extends StatelessWidget {
   const SettingAudioScreen({
     super.key,
-    required this.screenSizeheight,
     required int selectedPageIndexSetting,
   }) : _selectedPageIndexSetting = selectedPageIndexSetting;
 
-  final double screenSizeheight;
   final int _selectedPageIndexSetting;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 40.h, //screenSizeheight * 0.05.h,
+        height: 40.h,
         decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(

@@ -1,5 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
+import 'package:botnoivoice/Screens/AllWorkspaceScreen/all_workspace_screen.dart';
 import 'package:botnoivoice/Screens/SignInScreen/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,8 @@ class _AuthCheckerState extends State<AuthChecker> {
       );
     }
     if (Provider.of<Authentication>(context).isAuthenticated != false) {
-      return const HomeScreen();
+      // return const HomeScreen();
+      return const AllWorkspaceScreen();
     } else {
       return const AuthScreen();
     }
