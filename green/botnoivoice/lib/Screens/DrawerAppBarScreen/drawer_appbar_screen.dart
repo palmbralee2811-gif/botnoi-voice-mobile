@@ -7,24 +7,23 @@ import 'package:botnoivoice/Widgets/DrawerAppBarWidget/about_us_widget.dart';
 import 'package:botnoivoice/Widgets/DrawerAppBarWidget/faq_widget.dart';
 import 'package:botnoivoice/Widgets/DrawerAppBarWidget/my_account_widget.dart';
 import 'package:botnoivoice/Widgets/DrawerAppBarWidget/review_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class DrawerAppbarScreen extends StatelessWidget {
   const DrawerAppbarScreen({
     super.key,
-    required this.auth,
-    required this.email,
-    required this.screenSizeheight,
   });
-
-  final Authentication auth;
-  final String? email;
-  final double screenSizeheight;
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Authentication>(context, listen: false);
+    User? user = FirebaseAuth.instance.currentUser;
+    String? email = auth.getUserEmail(user);
+
     return Drawer(
       elevation: 16,
       backgroundColor: Colors.white,
@@ -42,11 +41,6 @@ class DrawerAppbarScreen extends StatelessWidget {
                       backgroundImage: NetworkImage(auth.user!.photoURL!),
                       backgroundColor: Colors.black,
                       radius: 20.0.r,
-                      // child: SvgPicture.asset(
-                      //   ' ${auth.user!.photoURL}',
-                      //   width: 40.0.w,
-                      //   height: 40.0.h,
-                      // ),
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -217,7 +211,7 @@ class DrawerAppbarScreen extends StatelessWidget {
             opacity: 0.5, // 50% opacity
             child: Container(
               width: 200.w,
-              height: screenSizeheight * 0.05.h,
+              height: 10.h,
               color: Colors.transparent,
             ),
           ),

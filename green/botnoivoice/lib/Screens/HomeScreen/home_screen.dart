@@ -17,7 +17,6 @@ import 'package:botnoivoice/Screens/HomeScreen/setting_audio_screen.dart';
 import 'package:botnoivoice/Screens/WorkspaceScreen/workspace_screen.dart';
 import 'package:botnoivoice/Widgets/HomeWidget/category_setting_widget.dart';
 import 'package:botnoivoice/Widgets/WorkspaceWidget/workspace_appbar_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController textController = TextEditingController();
 
   // Generate Audio
-  String _response = '';
+  String response = '';
   String _audioUrl = '';
   String? speakerId;
   String? language; // เลือกภาษา   new
@@ -144,18 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Authentication>(context, listen: false);
-    User? user = FirebaseAuth.instance.currentUser;
-    String? email = auth.getUserEmail(user);
-
-    double screenSizeheight = MediaQuery.of(context).size.height;
-    // double screenSizeheightInputtextOpen = MediaQuery.of(context).size.height;
-
-    int currentIndex = 0;
-    final screenHeightOpen = 404.h; //screenSizeheightInputtextOpen;
-    final maxLinesopen = (screenHeightOpen / 65).floor();
-    final screenHeightClose = 404.h; //screenSizeheightInputtextOpen;
-    final maxLinesclose = (screenHeightClose / 180).floor();
+    final maxLinesopen = ( 404.h / 65).floor();
+    final maxLinesclose = ( 404.h / 180).floor();
     bool showClearIcon = false;
 
     if (_selectedPageIndexVoice == 1) {
@@ -178,8 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      drawer: DrawerAppbarScreen(
-          auth: auth, email: email, screenSizeheight: screenSizeheight),
+      drawer: const DrawerAppbarScreen(),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -210,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             height: _inputtext == 1
-                ? 196.h //screenSizeheightInputtextClose * 0.30
-                : 404.h, //screenSizeheightInputtextOpen * 0.59,
+                ? 196.h
+                : 404.h,
             child: Padding(
               padding: EdgeInsets.all(10.w),
               child: Column(
@@ -376,8 +364,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               color: const Color(0xFFFFFFFF),
               height: _inputtext == 1
-                  ? 261.h //screenSizeheight * 0.50
-                  : 261.h, //screenSizeheight * 0.26,
+                  ? 261.h 
+                  : 261.h,
               child: Column(children: [
                 InkWell(
                     onTap: () {
@@ -389,11 +377,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         _selectPageVoice(1);
                       }
                     },
-                    child: SelectVoiceScreen(
-                        screenSizeheight: screenSizeheight,
-                        selectedPageIndexVoice: _selectedPageIndexVoice)),
-                if (_selectedPageIndexVoice == 1) ...[
-                  categoryVoiceHome(context)
+                    child: SelectVoiceScreen(selectedPageIndexVoice: _selectedPageIndexVoice)),
+                if (_selectedPageIndexVoice == 1) ...[categoryVoiceHome(context)
                 ],
                 InkWell(
                   onTap: () {
@@ -405,9 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _selectPageSetting(1);
                     }
                   },
-                  child: SettingAudioScreen(
-                      screenSizeheight: screenSizeheight,
-                      selectedPageIndexSetting: _selectedPageIndexSetting),
+                  child: SettingAudioScreen(selectedPageIndexSetting: _selectedPageIndexSetting),
                 ),
                 if (_selectedPageIndexSetting == 1) ...[
                   const CategorySettingWidget()
@@ -430,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(
-          height: 65.h, //screenSizeheight * 0.05.h,
+          height: 65.h,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
