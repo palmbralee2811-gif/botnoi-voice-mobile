@@ -1,18 +1,13 @@
+import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_category_list.dart';
-import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_gender_metadata.dart';
-import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_language_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
-import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_style_list.dart';
-import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
-import 'package:botnoi_voice_mobile/MainServer/ObjectModels/language_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
+import 'package:botnoi_voice_mobile/MainServer/ObjectModels/text_box_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
 import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/favourite_genre_filter.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/filter_section.dart';
 import 'package:botnoi_voice_mobile/Screens/HomeScreen/gradient_shapes.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/view_all_speakers_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
@@ -24,7 +19,26 @@ import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.selectedLanguage = "TH",
+    this.selectedLanguageImage = "assets/logo/Ellipse 12.jpg",
+    this.selectedGender = "ช/ญ",
+    this.selectedSpeakerId = "1",
+    this.selectedVolume = 100,
+    this.selectedSpeed = 100,
+    this.workspaceId,
+    this.textBoxIndex,
+  });
+
+  final String? workspaceId;
+  final int? textBoxIndex;
+  final String selectedLanguage;
+  final String selectedLanguageImage;
+  final String selectedGender;
+  final String selectedSpeakerId;
+  final double selectedVolume;
+  final double selectedSpeed;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -34,27 +48,31 @@ class _HomeScreenState extends State<HomeScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final TextEditingController _textController = TextEditingController();
 
+  final List<String> _favouriteSpeakerIds = [];
   final List<String> _selectedVoiceStyles = [];
   final List<String> _selectedSpeechStyles = [];
-  final List<String> _favouriteSpeakerIds = [];
-  String? _generatedAudioUrl;
   String _selectedLanguage = "TH";
-  String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
   String _selectedGender = "ช/ญ";
   String _selectedSpeakerId = embeddedSpeakerMetadata.first.speakerId;
   double _selectedVolume = 100;
   double _selectedSpeed = 100;
 
   bool _isFavouriteSelected = false;
-  bool _isSelectingGender = false;
-  bool _isSelectingSpeechStyle = false;
-  bool _isSelectingVoiceStyle = false;
-  bool _isSelectingLangauge = false;
-
-  bool _showTextClearButton = false;
 
   bool _isMainConfigOpen = false;
   bool _isExtraConfigOpen = false;
+
+  bool _isTextEmpty = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLanguage = widget.selectedLanguage;
+    _selectedGender = widget.selectedGender;
+    _selectedSpeakerId = widget.selectedSpeakerId;
+    _selectedVolume = widget.selectedVolume;
+    _selectedSpeed = widget.selectedSpeed;
+  }
 
   @override
   void dispose() {
@@ -149,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 }
                                 setState(() {
-                                  _showTextClearButton =
+                                  _isTextEmpty =
                                       _textController.text.isNotEmpty;
                                 });
                               },
@@ -174,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      _showTextClearButton
+                                      _isTextEmpty
                                           ? const SizedBox()
                                           : Padding(
                                               padding:
@@ -357,230 +375,47 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-          height: 65.h,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              Container(
-                color: Colors.white,
-                width: 480.w,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 10.w, left: 10.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isSelectingLangauge = true;
-                          });
-                          _showLanguageSelectionModal(context);
-                        },
-                        child: Container(
-                          width: 72.w,
-                          height: 26.h,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(4.r)),
-                            border: Border.all(
-                              color: const Color(0xFFE2E3E9),
-                              width: 1.w,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                _selectedLanguageImage,
-                                width: 14.w,
-                                height: 14.h,
-                              ),
-                              SizedBox(width: 3.w),
-                              Flexible(
-                                child: Text(
-                                  _selectedLanguage,
-                                  style: GoogleFonts.prompt(fontSize: 12.sp),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Icon(
-                                _isSelectingLangauge
-                                    ? Icons.keyboard_arrow_up_sharp
-                                    : Icons.keyboard_arrow_down_sharp,
-                                size: 20.sp,
-                                color: const Color(0xFF323130),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isSelectingGender = true;
-                          });
-                          _showGenderSelectionModal(context);
-                        },
-                        child: Container(
-                          width: 62.w,
-                          height: 26.h,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(4.r),
-                            ),
-                            border: Border.all(
-                              color: const Color(0xFFE2E3E9),
-                              width: 1.w,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 3.w),
-                                  Text(
-                                    _selectedGender,
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                  _isSelectingGender
-                                      ? Icon(
-                                          Icons.keyboard_arrow_up_sharp,
-                                          size: 20.sp,
-                                          color: const Color(0xFF323130),
-                                        )
-                                      : Icon(
-                                          Icons.keyboard_arrow_down_sharp,
-                                          size: 20.sp,
-                                          color: const Color(0xFF323130),
-                                        ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isFavouriteSelected = !_isFavouriteSelected;
-                          });
-                        },
-                        child: FavouriteFilterButton(
-                          isFavouriteSelected: _isFavouriteSelected,
-                        ),
-                      ),
-                      const ViewAllSpeakersButton(),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isSelectingVoiceStyle = true;
-                          });
-                          _showVoiceSyleSelectionModal(context);
-                        },
-                        child: Container(
-                          width: 62.w,
-                          height: 26.h,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(4.r),
-                            ),
-                            border: Border.all(
-                              color: const Color(0xFFE2E3E9),
-                              width: 1.w,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 3.w),
-                                  Flexible(
-                                    child: Text(
-                                      'สไตล์',
-                                      style:
-                                          GoogleFonts.prompt(fontSize: 12.sp),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Icon(
-                                    _isSelectingVoiceStyle
-                                        ? Icons.keyboard_arrow_up_sharp
-                                        : Icons.keyboard_arrow_down_sharp,
-                                    size: 20.sp,
-                                    color: const Color(0xFF323130),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isSelectingSpeechStyle = true;
-                          });
-                          _showSpeechStyleSelectionModal(context);
-                        },
-                        child: Container(
-                          width: 62.w,
-                          height: 26.h,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(4.r),
-                            ),
-                            border: Border.all(
-                              color: const Color(0xFFE2E3E9),
-                              width: 1.w,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 3.w),
-                                  Flexible(
-                                    child: Text(
-                                      'หมวดหมู่',
-                                      style:
-                                          GoogleFonts.prompt(fontSize: 12.sp),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Icon(
-                                    _isSelectingSpeechStyle
-                                        ? Icons.keyboard_arrow_up_sharp
-                                        : Icons.keyboard_arrow_down_sharp,
-                                    size: 20.sp,
-                                    color: const Color(0xFF323130),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        FilterSection(
+          selectedGender: _selectedGender,
+          selectedLanguage: _selectedLanguage,
+          selectedVoiceStyles: _selectedVoiceStyles,
+          selectedSpeechStyles: _selectedSpeechStyles,
+          isFavouriteSelected: _isFavouriteSelected,
+          onGenderSelected: (value) {
+            setState(() {
+              _selectedGender = value;
+            });
+          },
+          onLanguageSelected: (value) {
+            setState(() {
+              _selectedLanguage = value;
+            });
+          },
+          onVoiceStyleSelected: (value) {
+            setState(() {
+              if (_selectedVoiceStyles.contains(value)) {
+                _selectedVoiceStyles.remove(value);
+              } else {
+                _selectedVoiceStyles.add(value);
+              }
+            });
+          },
+          onSpeechStyleSelected: (value) {
+            setState(() {
+              if (_selectedSpeechStyles.contains(value)) {
+                _selectedSpeechStyles.remove(value);
+              } else {
+                _selectedSpeechStyles.add(value);
+              }
+            });
+          },
+          onFavouriteSelected: (value) {
+            setState(() {
+              _isFavouriteSelected = value;
+            });
+          },
         ),
-        _buildSpeakerTable(context),
+        _buildSpeakerRow(context),
       ],
     );
   }
@@ -607,20 +442,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: const Color(0xFF323130), size: 20.sp),
                     SizedBox(width: 3.w),
                     SizedBox(
-                        width: 46.w,
-                        child: Text(
-                          'ความดัง',
-                          style: GoogleFonts.prompt(fontSize: 12.sp),
-                        )),
+                      width: 46.w,
+                      child: Text(
+                        'ความดัง',
+                        style: GoogleFonts.prompt(fontSize: 12.sp),
+                      ),
+                    ),
                     Expanded(
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                            thumbShape: GradientThumbShape(),
-                            thumbColor: Colors.transparent,
-                            trackShape:
-                                const GradeintRoundedRectSliderTrackShape(),
-                            activeTrackColor: Colors.white,
-                            inactiveTrackColor: const Color(0xFFF7F8FA)),
+                          thumbShape: GradientSliderShape(),
+                          thumbColor: Colors.transparent,
+                          trackShape:
+                              const GradeintRoundedRectSliderTrackShape(),
+                          activeTrackColor: Colors.white,
+                          inactiveTrackColor: const Color(0xFFF7F8FA),
+                        ),
                         child: Slider(
                           value: _selectedVolume,
                           min: 0,
@@ -634,11 +471,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     SizedBox(
-                        width: 55.w,
-                        child: Text('${_selectedVolume.toStringAsFixed(1)}%',
-                            style: GoogleFonts.prompt(
-                              fontSize: 12.sp,
-                            )))
+                      width: 55.w,
+                      child: Text(
+                        '${_selectedVolume.toStringAsFixed(1)}%',
+                        style: GoogleFonts.prompt(
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 Row(
@@ -648,20 +488,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: const Color(0xFF323130), size: 20.sp),
                     SizedBox(width: 3.w),
                     SizedBox(
-                        width: 46.w,
-                        child: Text(
-                          'ความเร็ว', //speed
-                          style: GoogleFonts.prompt(fontSize: 12.sp),
-                        )),
+                      width: 46.w,
+                      child: Text(
+                        'ความเร็ว', //speed
+                        style: GoogleFonts.prompt(fontSize: 12.sp),
+                      ),
+                    ),
                     Expanded(
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                            thumbShape: GradientThumbShape(),
-                            thumbColor: Colors.transparent,
-                            trackShape:
-                                const GradeintRoundedRectSliderTrackShape(),
-                            activeTrackColor: Colors.white,
-                            inactiveTrackColor: const Color(0xFFF7F8FA)),
+                          thumbShape: GradientSliderShape(),
+                          thumbColor: Colors.transparent,
+                          trackShape:
+                              const GradeintRoundedRectSliderTrackShape(),
+                          activeTrackColor: Colors.white,
+                          inactiveTrackColor: const Color(0xFFF7F8FA),
+                        ),
                         child: Slider(
                           value: _selectedSpeed,
                           min: 0.2,
@@ -688,640 +530,196 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showSpeechStyleSelectionModal(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            return SizedBox(
-              height: 230.h,
-              child: Padding(
-                padding: EdgeInsets.all(25.r),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 360.w,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'หมวดหมู่',
-                                style: GoogleFonts.prompt(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _isSelectingSpeechStyle = false;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: 24.sp,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 15.h,
-                          ),
-                          Wrap(
-                            alignment: WrapAlignment.start,
-                            spacing: 13.0,
-                            runSpacing: 13.0,
-                            children: embeddedCategoryList.map((speechStyle) {
-                              return InkWell(
-                                onTap: () {
-                                  setModalState(() {
-                                    _selectedSpeechStyles.add(speechStyle);
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: _buildStyleOption(
-                                  speechStyle,
-                                  _selectedSpeechStyles.contains(speechStyle),
-                                  context,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
+  Widget _buildSpeakerCard(SpeakerMetadataModel speakerMetadata) {
+    return GestureDetector(
+      onTap: () async {
+        if (_audioPlayer.state == PlayerState.playing) {
+          await _audioPlayer.stop();
+        }
+        if (speakerMetadata.audio.isNotEmpty) {
+          await _audioPlayer.play(UrlSource(speakerMetadata.audio));
+          _audioPlayer.onPlayerComplete.listen((event) {});
+        }
+        setState(() {
+          _selectedSpeakerId = speakerMetadata.speakerId;
+        });
       },
-    );
-  }
-
-  void _showVoiceSyleSelectionModal(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (
-            BuildContext context,
-            StateSetter setModalState,
-          ) {
-            return SizedBox(
-              height: 220.h,
-              child: Padding(
-                padding: EdgeInsets.all(25.w),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 360.w,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'สไตล์',
-                                style: GoogleFonts.prompt(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _isSelectingVoiceStyle = false;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: 24.sp,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 15.h,
-                          ),
-                          Wrap(
-                            alignment: WrapAlignment.start,
-                            spacing: 13.0,
-                            runSpacing: 13.0,
-                            children: embeddedStyleList.map((voiceStyle) {
-                              return InkWell(
-                                onTap: () {
-                                  setModalState(() {
-                                    _selectedVoiceStyles.add(voiceStyle);
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: _buildStyleOption(
-                                  voiceStyle,
-                                  _selectedVoiceStyles.contains(voiceStyle),
-                                  context,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showGenderSelectionModal(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            return SizedBox(
-              height: 220.h,
-              child: Padding(
-                padding: const EdgeInsets.all(25),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 360.w,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'เพศ',
-                                style: GoogleFonts.prompt(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _isSelectingGender = false;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: 24.sp,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 15.h,
-                          ),
-                          ...embeddedGenderMetadata
-                              .map((GenderMetadataModel gender) {
-                            return _buildGenderOption(
-                              gender,
-                              context,
-                              setModalState,
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showLanguageSelectionModal(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (
-            context,
-            setModalState,
-          ) {
-            return SingleChildScrollView(
-              child: Row(
+      child: Container(
+        width: 81.w,
+        height: 103.h,
+        decoration: BoxDecoration(
+          border: GradientBoxBorder(
+            width: 3.w,
+            gradient: _selectedSpeakerId == speakerMetadata.speakerId
+                ? const LinearGradient(
+                    colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
+                  )
+                : LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.9),
+                      Colors.transparent,
+                    ],
+                    begin: const Alignment(1, 1),
+                  ),
+          ),
+          borderRadius: BorderRadius.circular(8.r),
+          image: DecorationImage(
+            image: NetworkImage(
+              speakerMetadata.squareImage,
+            ),
+            fit: BoxFit.cover,
+          ),
+          boxShadow: _selectedSpeakerId == speakerMetadata.speakerId
+              ? [
+                  BoxShadow(
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    color: const Color(0xFF9340FF).withOpacity(0.6),
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Container(
+          width: 100.w,
+          height: 113.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.r),
+            gradient: LinearGradient(
+              begin: const Alignment(1, 1),
+              colors: [
+                Colors.black.withOpacity(0.9),
+                Colors.transparent,
+              ],
+            ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(25.r),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: 360.w,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'ภาษา',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _isSelectingLangauge = false;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 24.sp,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
+                    padding: EdgeInsets.only(
+                      right: 5.w,
+                      top: 5.h,
+                      left: 5.w,
+                    ),
+                    child: _selectedSpeakerId == speakerMetadata.speakerId
+                        ? Container(
+                            width: 31.w,
+                            height: 17.h,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                               ),
-                              SizedBox(
-                                height: 15.h,
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'เลือก',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontStyle: GoogleFonts.prompt().fontStyle,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              ...embeddedLanguageMetadata.map(
-                                (LanguageMetadataModel language) {
-                                  return _buildLanguageOption(
-                                    language,
-                                    context,
-                                    setModalState,
-                                  );
-                                },
+                            ),
+                          )
+                        : null,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 5.w, top: 5.h),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (_favouriteSpeakerIds
+                              .contains(speakerMetadata.speakerId)) {
+                            _favouriteSpeakerIds
+                                .remove(speakerMetadata.speakerId);
+                          } else {
+                            _favouriteSpeakerIds.add(speakerMetadata.speakerId);
+                          }
+                        });
+                      },
+                      child: _favouriteSpeakerIds
+                              .contains(speakerMetadata.speakerId)
+                          ? ShaderMask(
+                              shaderCallback: (Rect bounds) {
+                                return const LinearGradient(
+                                  colors: [
+                                    Color(0xFF9A96F5),
+                                    Color(0xFF00E0FF),
+                                  ],
+                                ).createShader(bounds);
+                              },
+                              child: SvgPicture.asset(
+                                'assets/logo/heart (1).svg',
+                                width: 20.w,
+                                height: 20.h,
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
+                            )
+                          : SvgPicture.asset(
+                              'assets/logo/heart.svg',
+                              width: 20.w,
+                              height: 20.h,
+                            ),
                     ),
                   )
                 ],
               ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildStyleOption(
-    String style,
-    bool isSelected,
-    BuildContext context,
-  ) {
-    return IntrinsicWidth(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-        decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [
-                    Color(0xFF9A96F5),
-                    Color(0xFF00E0FF),
-                  ],
-                )
-              : null,
-          borderRadius: BorderRadius.all(
-            Radius.circular(4.r),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1.w,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            style,
-            style: GoogleFonts.prompt(
-              fontSize: 12.sp,
-              color: isSelected ? Colors.white : const Color(0xFF323130),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageOption(
-    LanguageMetadataModel languageModel,
-    BuildContext context,
-    StateSetter setModalState,
-  ) {
-    return InkWell(
-      onTap: () {
-        setModalState(() {
-          _selectedLanguage = languageModel.languageCode;
-          _selectedLanguageImage = languageModel.imagePath;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
-        width: 320.w,
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset(
-                  languageModel.imagePath,
-                  width: 23.w,
-                  height: 23.h,
-                ),
-                SizedBox(
-                  width: 20.w,
-                ),
-                Text(
-                  languageModel.languageName,
-                  style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
-                    fontWeight: _selectedLanguage == languageModel.languageCode
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 10.w,
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGenderOption(
-    GenderMetadataModel gender,
-    BuildContext context,
-    StateSetter setModalState,
-  ) {
-    return InkWell(
-      onTap: () {
-        setModalState(() {
-          _selectedGender = gender.genderName;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
-        width: 320.w,
-        color: Colors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset(
-              gender.imagePath,
-              width: 23.w,
-              height: 23.h,
-            ),
-            SizedBox(width: 20.w),
-            Text(
-              gender.genderName,
-              style: GoogleFonts.prompt(
-                fontSize: 14.sp,
-                fontWeight: _selectedGender == gender.genderName
-                    ? FontWeight.w600
-                    : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSpeakerCard(SpeakerMetadataModel speakerMetadata) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 15.w),
-          child: GestureDetector(
-            onTap: () async {
-              if (_audioPlayer.state == PlayerState.playing) {
-                await _audioPlayer.stop();
-              }
-              if (speakerMetadata.audio.isNotEmpty) {
-                await _audioPlayer.play(UrlSource(speakerMetadata.audio));
-                _audioPlayer.onPlayerComplete.listen((event) {});
-              }
-              setState(() {
-                _selectedSpeakerId = speakerMetadata.speakerId;
-              });
-            },
-            child: Column(
-              children: [
-                Container(
-                  width: 81.w,
-                  height: 103.h,
-                  decoration: BoxDecoration(
-                    border: GradientBoxBorder(
-                      width: 3.w,
-                      gradient: _selectedSpeakerId == speakerMetadata.speakerId
-                          ? const LinearGradient(
-                              colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
-                            )
-                          : LinearGradient(
+                  _selectedSpeakerId == speakerMetadata.speakerId
+                      ? ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
                               colors: [
-                                Colors.black.withOpacity(0.9),
-                                Colors.transparent,
+                                Color(0xFF9A96F5),
+                                Color(0xFF00E0FF),
                               ],
-                              begin: const Alignment(1, 1), ////change new
-                            ),
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        speakerMetadata.squareImage,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                        color: _selectedSpeakerId == speakerMetadata.speakerId
-                            ? const Color(0xFF9340FF).withOpacity(0.6) //new
-                            : Colors.transparent,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                            ).createShader(bounds);
+                          },
+                          child: SvgPicture.asset(
+                            'assets/logo/Vector.svg',
+                            width: 16.w,
+                            height: 16.h,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          'assets/logo/Vector (1).svg',
+                          width: 16.w,
+                          height: 16.h,
+                        ),
+                  SizedBox(
+                    width: 3.w,
                   ),
-                  child: Container(
-                    width: 100.w,
-                    height: 113.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.r),
-                      gradient: LinearGradient(
-                        begin: const Alignment(1, 1),
-                        colors: [
-                          Colors.black.withOpacity(0.9),
-                          Colors.transparent,
-                        ],
+                  Expanded(
+                    child: Text(
+                      speakerMetadata.thaiName,
+                      style: GoogleFonts.prompt(
+                        fontSize: 10.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                right: 5.w,
-                                top: 5.h,
-                                left: 5.w,
-                              ),
-                              child: _selectedSpeakerId ==
-                                      speakerMetadata.speakerId
-                                  ? Container(
-                                      width: 31.w,
-                                      height: 17.h,
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF9A96F5),
-                                            Color(0xFF00E0FF)
-                                          ],
-                                        ),
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'เลือก',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontStyle:
-                                                GoogleFonts.prompt().fontStyle,
-                                            fontSize: 10.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 5.w, top: 5.h),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (_favouriteSpeakerIds
-                                        .contains(speakerMetadata.speakerId)) {
-                                      _favouriteSpeakerIds
-                                          .remove(speakerMetadata.speakerId);
-                                    } else {
-                                      _favouriteSpeakerIds
-                                          .add(speakerMetadata.speakerId);
-                                    }
-                                  });
-                                },
-                                child: _favouriteSpeakerIds
-                                        .contains(speakerMetadata.speakerId)
-                                    ? ShaderMask(
-                                        shaderCallback: (Rect bounds) {
-                                          return const LinearGradient(
-                                            colors: [
-                                              Color(0xFF9A96F5),
-                                              Color(0xFF00E0FF),
-                                            ],
-                                          ).createShader(bounds);
-                                        },
-                                        child: SvgPicture.asset(
-                                          'assets/logo/heart (1).svg',
-                                          width: 20.w,
-                                          height: 20.h,
-                                        ),
-                                      )
-                                    : SvgPicture.asset(
-                                        'assets/logo/heart.svg',
-                                        width: 20.w,
-                                        height: 20.h,
-                                      ),
-                              ),
-                            )
-                          ],
-                        ),
-                        const Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            _selectedSpeakerId == speakerMetadata.speakerId
-                                ? ShaderMask(
-                                    shaderCallback: (Rect bounds) {
-                                      return const LinearGradient(
-                                        colors: [
-                                          Color(0xFF9A96F5),
-                                          Color(0xFF00E0FF),
-                                        ],
-                                      ).createShader(bounds);
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/logo/Vector.svg',
-                                      width: 16.w,
-                                      height: 16.h,
-                                    ),
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/logo/Vector (1).svg',
-                                    width: 16.w,
-                                    height: 16.h,
-                                  ),
-                            SizedBox(
-                              width: 3.w,
-                            ),
-                            Expanded(
-                              child: Text(
-                                speakerMetadata.thaiName,
-                                style: GoogleFonts.prompt(
-                                  fontSize: 10.sp,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildSpeakerTable(BuildContext context) {
+  Widget _buildSpeakerRow(BuildContext context) {
     List<SpeakerMetadataModel> speakersToShow =
         List.from(embeddedSpeakerMetadata);
     if (_isFavouriteSelected) {
@@ -1361,16 +759,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return SizedBox(
       height: 127.h,
       width: 320.w,
-      child: GridView.builder(
+      child: ListView.builder(
         itemCount: speakersToShow.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          mainAxisExtent: 125,
-        ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return _buildSpeakerCard(
-            speakersToShow[index],
+          return Padding(
+            padding: EdgeInsets.only(left: 15.w),
+            child: _buildSpeakerCard(
+              speakersToShow[index],
+            ),
           );
         },
       ),
@@ -1400,23 +797,73 @@ class _HomeScreenState extends State<HomeScreen> {
                 return;
               }
 
-              _generatedAudioUrl =
-                  await Provider.of<MainServerProvider>(context).generateAudio(
+              String? generatedAudioUrl = await Provider.of<MainServerProvider>(
+                context,
+                listen: false,
+              ).generateAudio(
                 _textController.text,
                 _selectedSpeakerId,
+                _selectedVolume.toInt(),
+                _selectedSpeed.toInt(),
               );
 
-              if (_generatedAudioUrl?.isNotEmpty ?? false) {
-                await textSave();
-              }
-              if (mounted) {
-                //TODO: Go to the work space screen
-                //Navigator.pushReplacement(
-                //  context,
-                //  MaterialPageRoute(
-                //    builder: (context) => const WorkspaceScreen(),
-                //  ),
-                //);
+              if (generatedAudioUrl?.isNotEmpty ?? false) {
+                TextBoxModel textBox = TextBoxModel(
+                  text: _textController.text,
+                  speaker: int.tryParse(_selectedSpeakerId) ?? 1,
+                  audioId: _randomString(5),
+                  speed: _selectedSpeed.toString(),
+                  statusDownload: true,
+                  url: generatedAudioUrl!,
+                  volume: _selectedVolume.toString(),
+                );
+
+                if (widget.workspaceId == null) {
+                  String? workspaceId = await Provider.of<MainServerProvider>(
+                    context,
+                    listen: false,
+                  ).createWorkspace(
+                    name: "New Workspace",
+                  );
+                  if (workspaceId != null) {
+                    await Provider.of<MainServerProvider>(
+                      context,
+                      listen: false,
+                    ).createTextBox(
+                      workspaceId: workspaceId,
+                      textBox: textBox,
+                    );
+                  }
+                } else if (widget.workspaceId != null &&
+                    widget.textBoxIndex == null) {
+                  await Provider.of<MainServerProvider>(
+                    context,
+                    listen: false,
+                  ).createTextBox(
+                    workspaceId: widget.workspaceId!,
+                    textBox: textBox,
+                  );
+                } else {
+                  await Provider.of<MainServerProvider>(
+                    context,
+                    listen: false,
+                  ).updateTextBox(
+                    workspaceId: widget.workspaceId!,
+                    textBoxIndex: widget.textBoxIndex!,
+                    updatedTextBox: textBox,
+                  );
+                }
+                if (mounted) {
+                  //TODO: Go to the work space screen
+                  //Navigator.pushReplacement(
+                  //  context,
+                  //  MaterialPageRoute(
+                  //    builder: (context) => const WorkspaceScreen(),
+                  //  ),
+                  //);
+                }
+              } else {
+                //TODO: Show error message
               }
             },
           ),
@@ -1425,37 +872,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> textSave() async {
-    //TODO: Implement this method
-    // Define the new WorkSpace object
-    //TextBoxModel newTextBox = TextBoxModel(
-    //  text: _textController.text,
-    //  speaker: int.parse(_selectedSpeakerId),
-    //  audioId: '',
-    //  speed: '1',
-    //  statusDownload: true,
-    //  url: _generatedAudioUrl ?? "",
-    //  volume: '1',
-    //);
-    // Fetch existing workspaces for the project
-    //await auth.getAllWorkspace();
-    //if (auth.listProjects.isNotEmpty) {
-    //  // Assuming you are working with the first project (adjust index as needed)
-    //  ListProject project = auth.listProjects[0];
-    //  print('Project ID: ${project.workspaceId}');
-    //  print('Existing WorkSpaces: ${project.workSpaces.length}');
-    //  // Create a new list from existing workspaces
-    //  List<WorkSpace> existingWorkSpaces =
-    //      List<WorkSpace>.from(project.workSpaces);
-    //  print('Existing WorkSpaces (copied): ${existingWorkSpaces.length}');
-    //  // Add the new workspace to the existing workspaces
-    //  existingWorkSpaces.add(newTextBox);
-    //  print(
-    //      'New WorkSpace added. Total WorkSpaces: ${existingWorkSpaces.length}');
-    //  // Update the workspaces with the new list
-    //  await auth.updateWorkSpaces(project.workspaceId, existingWorkSpaces);
-    //} else {
-    //  print('No projects found.');
-    //}
+  /// Generate a random string
+  String _randomString(int length) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    final random = Random();
+    return String.fromCharCodes(
+      Iterable.generate(
+        length,
+        (_) => characters.codeUnitAt(
+          random.nextInt(characters.length),
+        ),
+      ),
+    );
   }
 }

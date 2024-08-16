@@ -3,19 +3,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GradientButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const GradientButton({super.key, 
-    required this.text, 
-    required this.onPressed
+  const GradientButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
   });
+
+  final String text;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       height: 50.h,
+      width: 320.w,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
@@ -28,11 +29,14 @@ class GradientButton extends StatelessWidget {
           shadowColor: Colors.transparent,
         ),
         onPressed: onPressed,
-        child: Text(text,
-            style: GoogleFonts.prompt(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600)),
+        child: Text(
+          text,
+          style: GoogleFonts.prompt(
+            color: Colors.white,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/text_box_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/workspace_model.dart';
@@ -14,7 +15,7 @@ class MainServerProvider extends ChangeNotifier {
   List<WorkspaceModel> allWorkspaces = [];
 
   /// Get the jwtToken from Firebase
-  Future<void> getJwtToken(BuildContext context) async {
+  Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
     String? idToken =
         Provider.of<Authentication>(context, listen: false).idToken;
@@ -51,7 +52,7 @@ class MainServerProvider extends ChangeNotifier {
   }
 
   /// Get the remaining credits using jwtToken
-  Future<void> getRemainingCredits() async {
+  Future<void> loadRemainingCredits() async {
     // Check if jwtToken exists
     if (jwtToken == null) return;
 
@@ -77,7 +78,7 @@ class MainServerProvider extends ChangeNotifier {
   }
 
   // Get the credentials token using jwtToken
-  Future<void> getCredentials() async {
+  Future<void> loadCredentials() async {
     // Check if jwtToken exists
     if (jwtToken == null) return;
 
@@ -107,26 +108,22 @@ class MainServerProvider extends ChangeNotifier {
   }
 
   /// Load all workspaces of this user
-  Future<void> getAllWorkspace() async {
+  Future<void> loadAllWorkspace() async {
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json',
     };
     try {
-      String url = 'api-voice.botnoi.ai/api/workspace/get_all_workspace';
-      final response = await http.get(Uri.https(url), headers: headers);
+      String url = "api-voice.botnoi.ai";
+      String path = "/api/workspace/get_all_workspace";
+      final response = await http.get(Uri.https(url, path), headers: headers);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(utf8.decode(response.bodyBytes));
-        final data = responseData['data'] as Map<String, dynamic>;
-        // Set the workspaces
-        allWorkspaces = (data['list_project'] as List)
-            .map((e) => WorkspaceModel.fromJson(e))
-            .toList();
-
-        // Get the details of each workspace
-        for (WorkspaceModel workspace in allWorkspaces) {
-          await getWorkspaceDetails(workspace.workspaceId);
-        }
+        allWorkspaces =
+            (responseData['data']['list_project'] as List<Map<String, dynamic>>)
+                .map((e) => WorkspaceModel.fromJson(e))
+                .toList();
+        notifyListeners();
       } else {
         debugPrint('Failed to fetch projects: ${response.statusCode}');
       }
@@ -136,8 +133,7 @@ class MainServerProvider extends ChangeNotifier {
   }
 
   /// Get the workspace details by workspaceId
-  Future<void> getWorkspaceDetails(String workspaceId) async {
-    String path = '/api/workspace/get_workspace';
+  Future<void> loadWorkspaceDetails(String workspaceId) async {
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json',
@@ -146,22 +142,24 @@ class MainServerProvider extends ChangeNotifier {
       'workspace_id': workspaceId,
     };
     try {
-      String url = 'api-voice.botnoi.ai';
-      final response =
-          await http.get(Uri.https(url, path, params), headers: headers);
+      String url = "api-voice.botnoi.ai";
+      String path = "/api/workspace/get_workspace";
+      final response = await http.get(
+          Uri.https(
+            url,
+            path,
+            params,
+          ),
+          headers: headers);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(utf8.decode(response.bodyBytes));
-        final data = responseData['data'];
-        final textBoxList = (data['text_list'] as List<dynamic>)
+        final textBoxList = (responseData['data']['text_list'] as List<dynamic>)
             .cast<Map<String, dynamic>>()
             .map((e) => TextBoxModel.fromJson(e))
             .toList();
-
-        for (var workspace in allWorkspaces) {
-          if (workspace.workspaceId == workspaceId) {
-            workspace.textBoxes = textBoxList;
-          }
-        }
+        allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .textBoxes = textBoxList;
         notifyListeners();
       } else {
         debugPrint('Failed to load workspace details: ${response.statusCode}');
@@ -171,31 +169,132 @@ class MainServerProvider extends ChangeNotifier {
     }
   }
 
+  /// Add a new text box to a workspace
+  Future<void> createTextBox({
+    required String workspaceId,
+    required TextBoxModel textBox,
+  }) async {
+    allWorkspaces
+        .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+        .textBoxes
+        .add(textBox);
+    allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .speakerList =
+        allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .textBoxes
+            .map((textBox) => textBox.speaker)
+            .toList();
+
+    await _updateWorkSpace(
+      workspaceId,
+      allWorkspaces
+          .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+          .textBoxes,
+    );
+    notifyListeners();
+  }
+
   /// Change the text of a text box in a workspace
   Future<void> updateTextBox({
-    required int workspaceIndex,
+    required String workspaceId,
     required int textBoxIndex,
-    required String newText,
+    required TextBoxModel updatedTextBox,
   }) async {
-    allWorkspaces[workspaceIndex].textBoxes[textBoxIndex].text = newText;
+    allWorkspaces
+        .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+        .textBoxes[textBoxIndex] = updatedTextBox;
+    allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .speakerList =
+        allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .textBoxes
+            .map((textBox) => textBox.speaker)
+            .toList();
     await _updateWorkSpace(
-      allWorkspaces[workspaceIndex].workspaceId,
-      allWorkspaces[workspaceIndex].textBoxes,
+      workspaceId,
+      allWorkspaces
+          .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+          .textBoxes,
     );
     notifyListeners();
   }
 
   /// Delete a text box from a workspace
   Future<void> deleteTextBox({
-    required int workspaceIndex,
+    required String workspaceId,
     required int textBoxIndex,
   }) async {
-    allWorkspaces[workspaceIndex].textBoxes.removeAt(textBoxIndex);
+    allWorkspaces
+        .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+        .textBoxes
+        .removeAt(textBoxIndex);
+    allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .speakerList =
+        allWorkspaces
+            .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+            .textBoxes
+            .map((textBox) => textBox.speaker)
+            .toList();
     await _updateWorkSpace(
-      allWorkspaces[workspaceIndex].workspaceId,
-      allWorkspaces[workspaceIndex].textBoxes,
+      workspaceId,
+      allWorkspaces
+          .firstWhere((workspace) => workspace.workspaceId == workspaceId)
+          .textBoxes,
     );
     notifyListeners();
+  }
+
+  /// Create a new workspace
+  Future<String?> createWorkspace({
+    required String name,
+  }) async {
+    final String workspaceId = _randomString(5);
+    WorkspaceModel workspace = WorkspaceModel(
+      name: "New Workspace",
+      workspaceId: workspaceId,
+      picture: "",
+      textBoxes: [],
+      recentUse: "",
+      typeWorkspace: "conversation",
+      speakerList: [],
+    );
+    allWorkspaces.add(workspace);
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $jwtToken',
+      'Content-Type': 'application/json'
+    };
+    try {
+      // Construct the request body
+      Map<String, dynamic> requestBody = {
+        "workspace_id": workspace.workspaceId,
+        "workspace": workspace.name,
+        "type_workspace": workspace.typeWorkspace,
+      };
+
+      // Make the request
+      String url = "api-voice.botnoi.ai";
+      String path = "/api/workspace/insert_workspace";
+      final response = await http.post(
+        Uri.https(url, path),
+        headers: headers,
+        body: jsonEncode(requestBody),
+      );
+
+      // Check if the request was successful
+      if (response.statusCode != 200) {
+        debugPrint(
+            "createWorkspace -> Failed to post data: ${response.statusCode}");
+        return null;
+      }
+      return workspaceId;
+    } catch (e) {
+      debugPrint("createWorkspace -> Error: $e");
+      return null;
+    }
   }
 
   /// Update the workspace with new textboxes
@@ -203,7 +302,6 @@ class MainServerProvider extends ChangeNotifier {
     String workspaceId,
     List<TextBoxModel> textBoxes,
   ) async {
-    String path = '/api/workspace/workspace_text_save';
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
       'Content-Type': 'application/json'
@@ -226,7 +324,8 @@ class MainServerProvider extends ChangeNotifier {
       };
 
       // Make the request
-      String url = 'api-voice.botnoi.ai';
+      String url = "api-voice.botnoi.ai";
+      String path = "/api/workspace/workspace_text_save";
       final response = await http.post(
         Uri.https(url, path),
         headers: headers,
@@ -244,13 +343,17 @@ class MainServerProvider extends ChangeNotifier {
   }
 
   /// Generate audio from text and return the audio URL
-  Future<String?> generateAudio(String text, String speakerId) async {
-    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+  Future<String?> generateAudio(
+    String text,
+    String speakerId,
+    int volume,
+    int speed,
+  ) async {
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
-      "volume": 1,
-      "speed": 1,
+      "volume": volume,
+      "speed": speed,
       "type_media": "wav",
       "save_file": true,
     };
@@ -259,8 +362,10 @@ class MainServerProvider extends ChangeNotifier {
       'Content-Type': 'application/json',
     };
     try {
+      String url = "api-voice.botnoi.ai";
+      String path = "/openapi/v1/generate_audio";
       final response = await http.post(
-        Uri.parse(url),
+        Uri.https(url, path),
         headers: headers,
         body: jsonEncode(payload),
       );
@@ -279,37 +384,17 @@ class MainServerProvider extends ChangeNotifier {
     }
   }
 
-  //final _storage = const FlutterSecureStorage();
-  //Future<void> loadAuthStatus() async {
-  //  await Future.wait([
-  //    loadJwtToken(),
-  //    loadCredentialsToken(),
-  //  ]);
-  //}
-  //
-  //Future<void> loadJwtToken() async {
-  //  jwtToken = await _storage.read(key: 'jwtToken');
-  //  notifyListeners();
-  //}
-  //
-  //Future<void> saveJwtToken(String token) async {
-  //  await _storage.write(key: 'jwtToken', value: token);
-  //}
-  //
-  //Future<void> deleteJwtToken() async {
-  //  await _storage.delete(key: "jwtToken");
-  //}
-  //
-  //Future<void> loadCredentialsToken() async {
-  //  credentialsToken = await _storage.read(key: 'credentialsToken');
-  //  notifyListeners();
-  //}
-  //
-  //Future<void> saveCredentialsToken(String token) async {
-  //  await _storage.write(key: 'credentialsToken', value: credentialsToken);
-  //}
-  //
-  //Future<void> deleteCredentialsToken() async {
-  //  await _storage.delete(key: "credentialsToken");
-  //}
+  /// Generate a random string
+  String _randomString(int length) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    final random = Random();
+    return String.fromCharCodes(
+      Iterable.generate(
+        length,
+        (_) => characters.codeUnitAt(
+          random.nextInt(characters.length),
+        ),
+      ),
+    );
+  }
 }

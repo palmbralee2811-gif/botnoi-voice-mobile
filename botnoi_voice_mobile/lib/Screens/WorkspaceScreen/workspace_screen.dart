@@ -19,51 +19,13 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
   @override
   void initState() {
     super.initState();
-    fetchDataFromBackend();
-  }
-
-  Future<void> fetchDataFromBackend() async {
-    await Provider.of<MainServerProvider>(context, listen: false)
-        .getAllWorkspace();
-
-    //if (workSpaces.isNotEmpty) {
-    //  // Update imageUrlList with fetched data
-    //  for (int i = 0; i < firstProject.textBoxes.length; i++) {
-    //    workSpaces[0].textBoxes[i].faceImageUrl =
-    //        speakerDetails[i]['face_image']!;
-    //    workSpaces[0].textBoxes[i].engName = speakerDetails[i]['eng_name']!;
-    //  }
-    //  setState(() {});
-    //}
-  }
-
-  Future<void> updateTextBox(
-      int workspaceIndex, int textBoxIndex, String newText) async {
-    var speaker = workSpaces[workspaceIndex].textBoxes[textBoxIndex].speaker;
-    await updateAudioUrl(workspaceIndex, textBoxIndex, newText, speaker);
-    Provider.of<MainServerProvider>(context, listen: false).updateTextBox(
-      workspaceIndex: workspaceIndex,
-      textBoxIndex: textBoxIndex,
-      newText: newText,
-    );
-  }
-
-  Future<void> updateAudioUrl(int projectIndex, int workspaceIndex,
-      String updatedSentences, String speakerId) async {
-    String? audioUrl =
-        await Provider.of<MainServerProvider>(context, listen: false)
-            .generateAudio(updatedSentences, speakerId);
-    if (audioUrl != null) {
-      setState(() {
-        workSpaces[projectIndex].textBoxes[workspaceIndex].url = audioUrl;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 242, 219, 241),
+      drawer: const DrawerAppbar(),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -136,8 +98,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
           ),
         ),
       ),
-
-      drawer: const DrawerAppbar(),
     );
   }
 }

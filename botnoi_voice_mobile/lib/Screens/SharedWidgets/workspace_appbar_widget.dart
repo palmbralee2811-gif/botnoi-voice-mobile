@@ -18,7 +18,7 @@ class _WorkspaceAppBarWidgetState extends State<WorkspaceAppBarWidget> {
   @override
   void initState() {
     Provider.of<MainServerProvider>(context, listen: false)
-        .getRemainingCredits();
+        .loadRemainingCredits();
     super.initState();
   }
 

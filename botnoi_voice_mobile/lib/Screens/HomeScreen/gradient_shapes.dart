@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class GradientThumbShape extends SliderComponentShape {
+class GradientSliderShape extends SliderComponentShape {
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size(16.w, 16.h); // Size of the thumb
+    return Size(16.w, 16.h);
   }
 
   @override

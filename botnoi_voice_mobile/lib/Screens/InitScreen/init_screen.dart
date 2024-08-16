@@ -25,11 +25,11 @@ class _InitScreenState extends State<InitScreen> {
   /// Initialize the app
   Future<void> initApp() async {
     await Provider.of<MainServerProvider>(context, listen: false)
-        .getJwtToken(context);
+        .loadJwtToken(context);
     await Provider.of<MainServerProvider>(context, listen: false)
-        .getCredentials();
+        .loadCredentials();
     await Provider.of<MainServerProvider>(context, listen: false)
-        .getRemainingCredits();
+        .loadRemainingCredits();
     setState(() {
       _initialized = true;
     });

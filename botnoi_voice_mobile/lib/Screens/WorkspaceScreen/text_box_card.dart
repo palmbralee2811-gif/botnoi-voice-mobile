@@ -1,6 +1,5 @@
 import 'package:botnoi_voice_mobile/Modals/Delete/delete_modal.dart';
 import 'package:botnoi_voice_mobile/Modals/Download/download_modal.dart';
-import 'package:botnoi_voice_mobile/Screens/EditWorkspaceScreen/edit_workspace_screen.dart';
 import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/audio_player_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -43,16 +42,17 @@ class _TextBoxCardState extends State<TextBoxCard> {
   }
 
   void _editCard(BuildContext context) async {
-    final updatedSentences = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => EditWorkspaceScreen(text: widget.text),
-      ),
-    );
-    if (updatedSentences != null) {
-      setState(() {
-        widget.onTextChanged!(updatedSentences);
-      });
-    }
+    //TODO: Just jump to home screen
+    //final updatedSentences = await Navigator.of(context).push(
+    //  MaterialPageRoute(
+    //    builder: (ctx) => EditWorkspaceScreen(text: widget.text),
+    //  ),
+    //);
+    //if (updatedSentences != null) {
+    //  setState(() {
+    //    widget.onTextChanged!(updatedSentences);
+    //  });
+    //}
   }
 
   @override
