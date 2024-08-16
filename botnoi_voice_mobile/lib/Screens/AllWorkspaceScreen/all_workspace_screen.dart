@@ -7,10 +7,11 @@ class AllWorkspaceScreen extends StatefulWidget {
   const AllWorkspaceScreen({super.key});
 
   @override
-  _AllWorkspaceScreenState createState() => _AllWorkspaceScreenState();
+  AllWorkspaceScreenState createState() => AllWorkspaceScreenState();
 }
 
-class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
+class AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
+  //TODO: Query All Workspaces From API
   List<String> items = [];
 
   @override
@@ -57,7 +58,7 @@ class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
                   crossAxisSpacing: 10.w,
                   mainAxisSpacing: 10.h,
                 ),
-                itemCount: items.length + 1,
+                itemCount: items.length + 1, 
                 itemBuilder: (context, index) {
                   if (index == 0) {
                     return GestureDetector(
@@ -91,29 +92,55 @@ class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
                     );
                   } else {
                     return GestureDetector(
-                      onLongPress: () {
-                        //TODO: Remove on select workspace
-                        setState(() {
-                          items.removeAt(index - 1);
-                          debugPrint(items.toString());
-                        });
-                      },
                       child: Card(
                         elevation: 2,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.folder,
-                                size: 40.sp, color: Colors.blue),
-                              SizedBox(height: 10.h),
-                              Text(
-                                items[index - 1],
-                                style: TextStyle(fontSize: 16.sp),
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.folder,
+                                    size: 40.sp,
+                                    color: Colors.blue,
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  Text(
+                                    items[index - 1],
+                                    style: TextStyle(fontSize: 16.sp),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Positioned(
+                              top: 8.h,
+                              right: 8.w,
+                              child: PopupMenuButton<String>(
+                                //TODO: Remove on select workspace
+                                onSelected: (value) {
+                                  if (value == 'delete') {
+                                    setState(() {
+                                      items.removeAt(index - 1);
+                                    });
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    const PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Text('ลบโปรเจค'),
+                                    ),
+                                  ];
+                                },
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  size: 20.sp,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );

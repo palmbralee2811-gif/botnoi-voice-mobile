@@ -7,11 +7,12 @@ class AllWorkspaceScreen extends StatefulWidget {
   const AllWorkspaceScreen({super.key});
 
   @override
-  _AllWorkspaceScreenState createState() => _AllWorkspaceScreenState();
+  AllWorkspaceScreenState createState() => AllWorkspaceScreenState();
 }
 
-class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
-  List<String> items = []; // รายการสำหรับเก็บข้อมูลของไอเทมที่เพิ่มเข้ามา
+class AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
+  //TODO: Query All Workspaces From API
+  List<String> items = [];
 
   @override
   Widget build(BuildContext context) {
@@ -49,25 +50,22 @@ class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 10.h), // เพิ่มระยะห่างระหว่างข้อความและ GridView
+            SizedBox(height: 10.h),
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // จำนวนคอลัมน์ของกริด
-                  crossAxisSpacing: 10.w, // ระยะห่างระหว่างคอลัมน์
-                  mainAxisSpacing: 10.h, // ระยะห่างระหว่างแถว
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.w,
+                  mainAxisSpacing: 10.h,
                 ),
-                itemCount: items.length +
-                    1, // จำนวนไอเทมที่ต้องการแสดงในกริด เพิ่ม +1 สำหรับปุ่มเพิ่มโปรเจค
+                itemCount: items.length + 1, 
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    // ปุ่มแรก ให้เป็น ปุ่ม เพิ่มไอเทม
                     return GestureDetector(
                       onTap: () {
-                        // เมื่อคลิกให้เพิ่มไอเทมใหม่
+                        //TODO: Add new workspace
                         setState(() {
-                          items.add(
-                              'โปรเจค ${items.length + 1}'); // เพิ่มไอเทมใหม่ในรายการ
+                          items.add('โปรเจค ${items.length + 1}');
                           debugPrint(items.toString());
                         });
                       },
@@ -77,7 +75,11 @@ class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add, size: 40.sp, color: Colors.grey),
+                              Icon(
+                                Icons.add, 
+                                size: 40.sp, 
+                                color: Colors.grey
+                              ),
                               SizedBox(height: 10.h),
                               Text(
                                 'สร้างโปรเจคใหม่',
@@ -89,31 +91,56 @@ class _AllWorkspaceScreenState extends State<AllWorkspaceScreen> {
                       ),
                     );
                   } else {
-                    // ส่วนนี้แสดงโปรเจคที่ถูกสร้างขึ้นมา
                     return GestureDetector(
-                      onLongPress: () {
-                        setState(() {
-                          items.removeAt(
-                              index - 1); // ลบไอเทมออกจากรายการตาม index
-                          debugPrint(items.toString());
-                        });
-                      },
                       child: Card(
                         elevation: 2,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.folder,
-                                  size: 40.sp, color: Colors.blue),
-                              SizedBox(height: 10.h),
-                              Text(
-                                items[index -
-                                    1], // index - 1 เพื่อไม่ให้ชนกับปุ่มเพิ่มโปรเจค
-                                style: TextStyle(fontSize: 16.sp),
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.folder,
+                                    size: 40.sp,
+                                    color: Colors.blue,
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  Text(
+                                    items[index - 1],
+                                    style: TextStyle(fontSize: 16.sp),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Positioned(
+                              top: 8.h,
+                              right: 8.w,
+                              child: PopupMenuButton<String>(
+                                //TODO: Remove on select workspace
+                                onSelected: (value) {
+                                  if (value == 'delete') {
+                                    setState(() {
+                                      items.removeAt(index - 1);
+                                    });
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    const PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Text('ลบโปรเจค'),
+                                    ),
+                                  ];
+                                },
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  size: 20.sp,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
