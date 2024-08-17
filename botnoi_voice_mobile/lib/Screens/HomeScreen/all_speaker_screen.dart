@@ -1,38 +1,46 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/filter_section.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/voice_config_provider.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:provider/provider.dart';
 
-class DisplayAllVoiceScreen extends StatefulWidget {
-  const DisplayAllVoiceScreen({
+class AllSpeakerScreen extends StatefulWidget {
+  const AllSpeakerScreen({
     super.key,
-    required this.buildFilterSection,
-    required this.onSpeakerSelected,
-    required this.selectedSpeakerId,
   });
 
-  final Widget Function(BuildContext contxt) buildFilterSection;
-  final void Function(String speakerId) onSpeakerSelected;
-  final String selectedSpeakerId;
-
   @override
-  State<DisplayAllVoiceScreen> createState() => _DisplayAllVoiceScreenState();
+  State<AllSpeakerScreen> createState() => _AllSpeakerScreenState();
 }
 
-class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
+class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  String _selectedSpeakerId = "";
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedSpeakerId = widget.selectedSpeakerId;
-  }
+  String get selectedGender =>
+      Provider.of<VoiceConfigProvider>(context).selectedGender;
+  String get selectedLanguage =>
+      Provider.of<VoiceConfigProvider>(context).selectedLanguage;
+  String get selectedSpeakerId =>
+      Provider.of<VoiceConfigProvider>(context).selectedSpeakerId;
+  double get selectedVolume =>
+      Provider.of<VoiceConfigProvider>(context).selectedVolume;
+  double get selectedSpeed =>
+      Provider.of<VoiceConfigProvider>(context).selectedSpeed;
+  List<String> get selectedVoiceStyles =>
+      Provider.of<VoiceConfigProvider>(context).selectedVoiceStyles;
+  List<String> get selectedSpeechStyles =>
+      Provider.of<VoiceConfigProvider>(context).selectedSpeechStyles;
+  List<String> get favouriteSpeakerIds =>
+      Provider.of<VoiceConfigProvider>(context).favouriteSpeakerIds;
+  bool get isFavouriteSelected =>
+      Provider.of<VoiceConfigProvider>(context).isFavouriteSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +68,13 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
       ),
       body: Column(
         children: [
-          widget.buildFilterSection(context),
+          const FilterSection(),
           const Spacer(),
+          _buildSpeakerTable(context),
           GradientButton(
             text: 'ตกลง',
             onPressed: () {
-              widget.onSpeakerSelected(_selectedSpeakerId);
+              Navigator.pop(context);
             },
           ),
         ],
@@ -76,36 +85,36 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
   Widget _buildSpeakerTable(BuildContext context) {
     List<SpeakerMetadataModel> speakersToShow =
         List.from(embeddedSpeakerMetadata);
-    if (_isFavouriteSelected) {
+    if (isFavouriteSelected) {
       speakersToShow = embeddedSpeakerMetadata
-          .where((speaker) => _favouriteSpeakerIds.contains(speaker.speakerId))
+          .where((speaker) => favouriteSpeakerIds.contains(speaker.speakerId))
           .toList();
     }
-    if (_selectedGender.isNotEmpty && _selectedGender != "ช/ญ") {
+    if (selectedGender.isNotEmpty && selectedGender != "ช/ญ") {
       speakersToShow = speakersToShow
-          .where((speaker) => speaker.gender.contains(_selectedGender))
+          .where((speaker) => speaker.gender.contains(selectedGender))
           .toList();
     }
-    if (_selectedVoiceStyles.isNotEmpty) {
+    if (selectedVoiceStyles.isNotEmpty) {
       speakersToShow = speakersToShow
           .where(
-            (speaker) => _selectedVoiceStyles.contains(speaker.voiceStyle),
+            (speaker) => selectedVoiceStyles.contains(speaker.voiceStyle),
           )
           .toList();
     }
-    if (_selectedSpeechStyles.isNotEmpty) {
+    if (selectedSpeechStyles.isNotEmpty) {
       speakersToShow = speakersToShow
           .where(
             (speaker) => speaker.speechStyle.any(
-              (speechStyle) => _selectedSpeechStyles.contains(speechStyle),
+              (speechStyle) => selectedSpeechStyles.contains(speechStyle),
             ),
           )
           .toList();
     }
-    if (_selectedLanguage.isNotEmpty) {
+    if (selectedLanguage.isNotEmpty) {
       speakersToShow = speakersToShow
           .where(
-            (speaker) => speaker.language.contains(_selectedLanguage),
+            (speaker) => speaker.language.contains(selectedLanguage),
           )
           .toList();
     }
@@ -117,6 +126,8 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           childAspectRatio: 81.w / 103.h,
+          mainAxisSpacing: 10.h,
+          crossAxisSpacing: 10.w,
         ),
         itemBuilder: (context, index) {
           return _buildSpeakerCard(
@@ -135,11 +146,9 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
         }
         if (speakerMetadata.audio.isNotEmpty) {
           await _audioPlayer.play(UrlSource(speakerMetadata.audio));
-          _audioPlayer.onPlayerComplete.listen((event) {});
         }
-        setState(() {
-          _selectedSpeakerId = speakerMetadata.speakerId;
-        });
+        Provider.of<VoiceConfigProvider>(context, listen: false)
+            .setSpeakerId(speakerMetadata.speakerId);
       },
       child: Container(
         width: 81.w,
@@ -147,7 +156,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
         decoration: BoxDecoration(
           border: GradientBoxBorder(
             width: 3.w,
-            gradient: _selectedSpeakerId == speakerMetadata.speakerId
+            gradient: selectedSpeakerId == speakerMetadata.speakerId
                 ? const LinearGradient(
                     colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
                   )
@@ -166,7 +175,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
             ),
             fit: BoxFit.cover,
           ),
-          boxShadow: _selectedSpeakerId == speakerMetadata.speakerId
+          boxShadow: selectedSpeakerId == speakerMetadata.speakerId
               ? [
                   BoxShadow(
                     blurRadius: 10,
@@ -200,7 +209,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                       top: 5.h,
                       left: 5.w,
                     ),
-                    child: _selectedSpeakerId == speakerMetadata.speakerId
+                    child: selectedSpeakerId == speakerMetadata.speakerId
                         ? Container(
                             width: 31.w,
                             height: 17.h,
@@ -229,17 +238,10 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                     padding: EdgeInsets.only(right: 5.w, top: 5.h),
                     child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          if (_favouriteSpeakerIds
-                              .contains(speakerMetadata.speakerId)) {
-                            _favouriteSpeakerIds
-                                .remove(speakerMetadata.speakerId);
-                          } else {
-                            _favouriteSpeakerIds.add(speakerMetadata.speakerId);
-                          }
-                        });
+                        Provider.of<VoiceConfigProvider>(context, listen: false)
+                            .toggleFavouriteSpeaker(speakerMetadata.speakerId);
                       },
-                      child: _favouriteSpeakerIds
+                      child: favouriteSpeakerIds
                               .contains(speakerMetadata.speakerId)
                           ? ShaderMask(
                               shaderCallback: (Rect bounds) {
@@ -270,7 +272,7 @@ class _DisplayAllVoiceScreenState extends State<DisplayAllVoiceScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(width: 10.w),
-                  _selectedSpeakerId == speakerMetadata.speakerId
+                  selectedSpeakerId == speakerMetadata.speakerId
                       ? ShaderMask(
                           shaderCallback: (Rect bounds) {
                             return const LinearGradient(

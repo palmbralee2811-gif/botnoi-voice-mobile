@@ -4,70 +4,50 @@ import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_language_me
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_style_list.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/language_metadata_model.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/favourite_genre_filter.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/all_speaker_screen.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/toggle_favourite_button.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/voice_config_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class FilterSection extends StatefulWidget {
   const FilterSection({
     super.key,
-    required this.selectedLanguage,
-    required this.selectedGender,
-    required this.isFavouriteSelected,
-    required this.selectedVoiceStyles,
-    required this.selectedSpeechStyles,
-    required this.onLanguageSelected,
-    required this.onGenderSelected,
-    required this.onFavouriteSelected,
-    required this.onVoiceStyleSelected,
-    required this.onSpeechStyleSelected,
   });
-
-  // Initial values
-  final String selectedLanguage;
-  final String selectedGender;
-  final bool isFavouriteSelected;
-  final List<String> selectedVoiceStyles;
-  final List<String> selectedSpeechStyles;
-
-  // Setters
-  final Function(String) onLanguageSelected;
-  final Function(String) onGenderSelected;
-  final Function(bool) onFavouriteSelected;
-  final Function(String) onVoiceStyleSelected;
-  final Function(String) onSpeechStyleSelected;
 
   @override
   State<FilterSection> createState() => _FilterSectionState();
 }
 
 class _FilterSectionState extends State<FilterSection> {
-  List<String> _selectedVoiceStyles = [];
-  List<String> _selectedSpeechStyles = [];
-  String _selectedLanguage = "TH";
-  String _selectedLanguageImage = 'assets/logo/Ellipse 12.jpg';
-  String _selectedGender = "ช/ญ";
-
-  bool _isFavouriteSelected = false;
-
   bool _isSelectingGender = false;
   bool _isSelectingSpeechStyle = false;
   bool _isSelectingVoiceStyle = false;
   bool _isSelectingLangauge = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedLanguage = widget.selectedLanguage;
-    _selectedLanguageImage = embeddedLanguageMetadata
-        .firstWhere((element) => element.languageCode == _selectedLanguage)
-        .imagePath;
-    _selectedGender = widget.selectedGender;
-    _isFavouriteSelected = widget.isFavouriteSelected;
-    _selectedVoiceStyles = widget.selectedVoiceStyles;
-    _selectedSpeechStyles = widget.selectedSpeechStyles;
-  }
+  String get selectedGender =>
+      Provider.of<VoiceConfigProvider>(context).selectedGender;
+  String get selectedLanguage =>
+      Provider.of<VoiceConfigProvider>(context).selectedLanguage;
+  String get selectedLanguageImage => embeddedLanguageMetadata
+      .firstWhere(
+        (language) => language.languageCode == selectedLanguage,
+      )
+      .imagePath;
+  String get selectedSpeakerId =>
+      Provider.of<VoiceConfigProvider>(context).selectedSpeakerId;
+  double get selectedVolume =>
+      Provider.of<VoiceConfigProvider>(context).selectedVolume;
+  double get selectedSpeed =>
+      Provider.of<VoiceConfigProvider>(context).selectedSpeed;
+  List<String> get selectedVoiceStyles =>
+      Provider.of<VoiceConfigProvider>(context).selectedVoiceStyles;
+  List<String> get selectedSpeechStyles =>
+      Provider.of<VoiceConfigProvider>(context).selectedSpeechStyles;
+  bool get isFavouriteSelected =>
+      Provider.of<VoiceConfigProvider>(context).isFavouriteSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -103,14 +83,14 @@ class _FilterSectionState extends State<FilterSection> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          _selectedLanguageImage,
+                          selectedLanguageImage,
                           width: 14.w,
                           height: 14.h,
                         ),
                         SizedBox(width: 3.w),
                         Flexible(
                           child: Text(
-                            _selectedLanguage,
+                            selectedLanguage,
                             style: GoogleFonts.prompt(fontSize: 12.sp),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -154,7 +134,7 @@ class _FilterSectionState extends State<FilterSection> {
                           children: [
                             SizedBox(width: 3.w),
                             Text(
-                              _selectedGender,
+                              selectedGender,
                               style: GoogleFonts.prompt(
                                 fontSize: 12.sp,
                               ),
@@ -176,24 +156,15 @@ class _FilterSectionState extends State<FilterSection> {
                     ),
                   ),
                 ),
+                const ToggleFavouriteButton(),
                 InkWell(
                   onTap: () {
-                    widget.onFavouriteSelected(!_isFavouriteSelected);
-                    setState(() {
-                      _isFavouriteSelected = !_isFavouriteSelected;
-                    });
-                  },
-                  child: FavouriteFilterButton(
-                    isFavouriteSelected: _isFavouriteSelected,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // TODO: Push to all speakers screen
-                    //Navigator.push(
-                    //    context,
-                    //    MaterialPageRoute(
-                    //        builder: (context) => const DisplayAllVoiceScreen()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AllSpeakerScreen(),
+                      ),
+                    );
                   },
                   child: Container(
                     width: 63.w,
@@ -385,20 +356,13 @@ class _FilterSectionState extends State<FilterSection> {
                             children: embeddedCategoryList.map((speechStyle) {
                               return InkWell(
                                 onTap: () {
-                                  widget.onSpeechStyleSelected(speechStyle);
-                                  setModalState(() {
-                                    if (_selectedSpeechStyles
-                                        .contains(speechStyle)) {
-                                      _selectedSpeechStyles.remove(speechStyle);
-                                    } else {
-                                      _selectedSpeechStyles.add(speechStyle);
-                                    }
-                                  });
-                                  setState(() {});
+                                  Provider.of<VoiceConfigProvider>(context,
+                                          listen: false)
+                                      .toggleSpeechStyle(speechStyle);
                                 },
                                 child: _buildStyleOption(
                                   speechStyle,
-                                  _selectedSpeechStyles.contains(speechStyle),
+                                  selectedSpeechStyles.contains(speechStyle),
                                   context,
                                 ),
                               );
@@ -472,20 +436,13 @@ class _FilterSectionState extends State<FilterSection> {
                             children: embeddedStyleList.map((voiceStyle) {
                               return InkWell(
                                 onTap: () {
-                                  widget.onVoiceStyleSelected(voiceStyle);
-                                  setModalState(() {
-                                    if (_selectedVoiceStyles
-                                        .contains(voiceStyle)) {
-                                      _selectedVoiceStyles.remove(voiceStyle);
-                                    } else {
-                                      _selectedVoiceStyles.add(voiceStyle);
-                                    }
-                                  });
-                                  setState(() {});
+                                  Provider.of<VoiceConfigProvider>(context,
+                                          listen: false)
+                                      .toggleVoiceStyle(voiceStyle);
                                 },
                                 child: _buildStyleOption(
                                   voiceStyle,
-                                  _selectedVoiceStyles.contains(voiceStyle),
+                                  selectedVoiceStyles.contains(voiceStyle),
                                   context,
                                 ),
                               );
@@ -689,12 +646,8 @@ class _FilterSectionState extends State<FilterSection> {
   ) {
     return InkWell(
       onTap: () {
-        widget.onLanguageSelected(languageModel.languageCode);
-        setModalState(() {
-          _selectedLanguage = languageModel.languageCode;
-          _selectedLanguageImage = languageModel.imagePath;
-        });
-        setState(() {});
+        Provider.of<VoiceConfigProvider>(context, listen: false)
+            .setLanguage(languageModel.languageCode);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
@@ -719,7 +672,7 @@ class _FilterSectionState extends State<FilterSection> {
                   languageModel.languageName,
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
-                    fontWeight: _selectedLanguage == languageModel.languageCode
+                    fontWeight: selectedLanguage == languageModel.languageCode
                         ? FontWeight.w600
                         : FontWeight.normal,
                   ),
@@ -739,11 +692,8 @@ class _FilterSectionState extends State<FilterSection> {
   ) {
     return InkWell(
       onTap: () {
-        widget.onGenderSelected(gender.genderName);
-        setModalState(() {
-          _selectedGender = gender.genderName;
-        });
-        setState(() {});
+        Provider.of<VoiceConfigProvider>(context, listen: false)
+            .setGender(gender.genderName);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w),
@@ -763,7 +713,7 @@ class _FilterSectionState extends State<FilterSection> {
               gender.genderName,
               style: GoogleFonts.prompt(
                 fontSize: 14.sp,
-                fontWeight: _selectedGender == gender.genderName
+                fontWeight: selectedGender == gender.genderName
                     ? FontWeight.w600
                     : FontWeight.normal,
               ),
