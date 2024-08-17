@@ -12,6 +12,7 @@ import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
 import 'package:botnoi_voice_mobile/Utils/RandomString/random_string.dart';
+import 'package:botnoi_voice_mobile/Utils/Toast/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -734,11 +735,13 @@ class _HomeScreenState extends State<HomeScreen> {
               });
 
               if (_textController.text.isEmpty) {
-                // TODO: Show error message
+                Toast(context: context, text: "กรุณาพิมพ์ข้อความ")
+                    .showAsError();
                 return;
               }
               if (selectedSpeakerId.isEmpty) {
-                // TODO: Show error message
+                Toast(context: context, text: "กรุณาเลือกเสียงพูด")
+                    .showAsError();
                 return;
               }
 
@@ -808,7 +811,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //);
                 }
               } else {
-                //TODO: Show error message
+                Toast(context: context, text: "เกิดข้อผิดพลาด").showAsError();
               }
             },
           ),
