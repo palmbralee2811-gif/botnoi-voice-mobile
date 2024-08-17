@@ -1,7 +1,7 @@
 import 'package:botnoi_voice_mobile/Authentication/auth_checker.dart';
 import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
 import 'package:botnoi_voice_mobile/MainServer/main_server_provider.dart';
-import 'package:botnoi_voice_mobile/Screens/HomeScreen/filter_provider.dart';
+import 'package:botnoi_voice_mobile/Screens/HomeScreen/voice_config_provider.dart';
 import 'package:botnoi_voice_mobile/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoi_voice_mobile/MainServer/EmbeddedData/embedded_speaker_metadata.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/speaker_metadata_model.dart';
@@ -12,6 +11,7 @@ import 'package:botnoi_voice_mobile/Screens/HomeScreen/voice_config_provider.dar
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_button.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/gradient_icon.dart';
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
+import 'package:botnoi_voice_mobile/Utils/RandomString/random_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -756,7 +756,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextBoxModel textBox = TextBoxModel(
                   text: _textController.text,
                   speaker: int.tryParse(selectedSpeakerId) ?? 1,
-                  audioId: _randomString(5),
+                  audioId: randomStringOfCapitals(5),
                   speed: selectedSpeed.toString(),
                   statusDownload: true,
                   url: generatedAudioUrl!,
@@ -814,20 +814,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  /// Generate a random string
-  String _randomString(int length) {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    final random = Random();
-    return String.fromCharCodes(
-      Iterable.generate(
-        length,
-        (_) => characters.codeUnitAt(
-          random.nextInt(characters.length),
-        ),
-      ),
     );
   }
 }

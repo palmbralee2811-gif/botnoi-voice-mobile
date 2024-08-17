@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:botnoi_voice_mobile/Authentication/authentication_provider.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/text_box_model.dart';
 import 'package:botnoi_voice_mobile/MainServer/ObjectModels/workspace_model.dart';
+import 'package:botnoi_voice_mobile/Utils/RandomString/random_string.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -252,7 +252,7 @@ class MainServerProvider extends ChangeNotifier {
   Future<String?> createWorkspace({
     required String name,
   }) async {
-    final String workspaceId = _randomString(5);
+    final String workspaceId = randomStringOfCapitals(5);
     WorkspaceModel workspace = WorkspaceModel(
       name: "New Workspace",
       workspaceId: workspaceId,
@@ -382,19 +382,5 @@ class MainServerProvider extends ChangeNotifier {
       debugPrint('generateAudio -> Error: $e');
       return null;
     }
-  }
-
-  /// Generate a random string
-  String _randomString(int length) {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    final random = Random();
-    return String.fromCharCodes(
-      Iterable.generate(
-        length,
-        (_) => characters.codeUnitAt(
-          random.nextInt(characters.length),
-        ),
-      ),
-    );
   }
 }

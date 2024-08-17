@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:botnoi_voice_mobile/Modals/Download/download_popup.dart';
+import 'package:botnoi_voice_mobile/Utils/RandomString/random_string.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
@@ -158,7 +158,7 @@ class _DownlaodModalState extends State<DownlaodModal> {
     try {
       var response = await http.get(Uri.parse(audioUrl));
       if (response.statusCode == 200) {
-        String filename = "BotnoiVoice${randomString(6)}.mp3";
+        String filename = "BotnoiVoice${randomStringOfNumbers(6)}.mp3";
         var tempDir = await getTemporaryDirectory();
         var path = '${tempDir.path}/$filename';
         var file = File(path);
@@ -177,7 +177,7 @@ class _DownlaodModalState extends State<DownlaodModal> {
 
   Future<void> _androidDownloadFunction(String audioUrl) async {
     try {
-      var filename = "BotnoiVoice${randomString(6)}.mp3";
+      var filename = "BotnoiVoice${randomStringOfNumbers(6)}.mp3";
       List<Directory>? directories =
           await getExternalStorageDirectories(type: StorageDirectory.downloads);
       if (directories == null || directories.isEmpty) {
@@ -202,19 +202,4 @@ class _DownlaodModalState extends State<DownlaodModal> {
       debugPrint('Error android downloading file: $e');
     }
   }
-}
-
-/// Generate a random string of numbers
-String randomString(int length) {
-  const characters = '0123456789';
-
-  final random = Random();
-  return String.fromCharCodes(
-    Iterable.generate(
-      length,
-      (_) => characters.codeUnitAt(
-        random.nextInt(characters.length),
-      ),
-    ),
-  );
 }
