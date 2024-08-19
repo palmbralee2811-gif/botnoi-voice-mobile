@@ -125,7 +125,7 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () async {
-                            //TODO: Download Function
+                            //TODO: Download file after open download modal
                             _openDownloadModal();
                             final auth = Provider.of<Authentication>(context,
                                 listen: false);
@@ -138,9 +138,9 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
-                          // onTap: buttomsheetPressed,
                           child: const Icon(Icons.edit),
                           onTap: () {
+                            //TODO: Edit workspace
                             _editCard(context);
                           },
                         ),
@@ -149,7 +149,7 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () {
-                            //TODO: Delete Function
+                            //TODO: Delete workspace after open delete modal
                             if (widget.onDelete != null) {
                               _openDeleteModal();
                               widget.onDelete!();
@@ -183,13 +183,6 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                       maxLines: 3,
                     ),
                   ),
-                  // IconButton(
-                  //   icon: const Icon(Icons.edit),
-                  //   onPressed: () {
-                  //     _editCard(context);
-                  //   },
-                  // ),
-                  // const SizedBox(width: 5),
                 ],
               ),
             ],
