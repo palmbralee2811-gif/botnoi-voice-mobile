@@ -4,6 +4,7 @@ import 'package:botnoi_voice_mobile/Screens/DrawerAppBarScreen/drawer_appbar_scr
 import 'package:botnoi_voice_mobile/Screens/SharedWidgets/workspace_appbar_widget.dart';
 import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/text_box_card.dart';
 import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/workspace_add_button_widget.dart';
+import 'package:botnoi_voice_mobile/Screens/WorkspaceScreen/workspace_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -42,11 +43,12 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
           },
         ),
         backgroundColor: Colors.white,
-        // backgroundColor: Colors.black,
         title: WorkspaceAppBarWidget(context),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50.h),
+          child: const WorkspaceNavbar(),
+        ),
       ),
-
-      // List of card (Body)
       body: RefreshIndicator(
         onRefresh: fetchDataFromBackend,
         child: Container(

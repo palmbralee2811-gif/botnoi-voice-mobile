@@ -115,7 +115,7 @@ class _TextBoxCardState extends State<TextBoxCard> {
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () async {
-                            // Your download logic here
+                            //TODO: Download file after open download modal
                             _openDownloadModal();
                           },
                           child:
@@ -125,14 +125,18 @@ class _TextBoxCardState extends State<TextBoxCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
-                          // onTap: buttomsheetPressed,
-                          child: const Icon(Icons.settings),
+                          //TODO: Edit workspace
+                          child: const Icon(Icons.edit),
+                          onTap: () {
+                            _editCard(context);
+                          },
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () {
+                            //TODO: Delete workspace after open delete modal
                             if (widget.onDelete != null) {
                               _openDeleteModal();
                               widget.onDelete!();
@@ -166,13 +170,6 @@ class _TextBoxCardState extends State<TextBoxCard> {
                       maxLines: 3,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      _editCard(context);
-                    },
-                  ),
-                  const SizedBox(width: 5),
                 ],
               ),
             ],

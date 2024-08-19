@@ -1,13 +1,15 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Model/models.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
+import 'package:botnoivoice/Screens/HomeScreen/bottom_navbar.dart';
 import 'package:botnoivoice/Widgets/WorkspaceWidget/workspace_appbar_widget.dart';
 import 'package:botnoivoice/Widgets/WorkspaceWidget/workspace_add_button_widget.dart';
 import 'package:botnoivoice/Widgets/WorkspaceWidget/workspace_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+
+import 'workspace_navbar.dart';
 
 class WorkspaceScreen extends StatefulWidget {
   const WorkspaceScreen({super.key});
@@ -108,16 +110,8 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Authentication>(context, listen: false);
-
-    // แสดง email ผู้ใช้งาน ปัจจุบัน
-    firebase_auth.User? user = firebase_auth.FirebaseAuth.instance.currentUser;
-    String? email = auth.getUserEmail(user);
     return Scaffold(
-      //background color of whole screen
       backgroundColor: const Color.fromARGB(255, 242, 219, 241),
-
-      //App Bar
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -134,56 +128,59 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
           },
         ),
         backgroundColor: const Color(0xFFFFFFFF),
-        // backgroundColor: Colors.black,
         title: WorkspaceAppBarWidget(context),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50.h),
+          child: const WorkspaceNavbar(),
+        ),
       ),
-
-      // List of card (Body)
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: Container(
           decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 242, 219, 241),
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFB1E9FD),
-                    Color(0xFFF9D8FD),
-                  ])),
+            color: Color.fromARGB(255, 242, 219, 241),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFB1E9FD),
+                Color(0xFFF9D8FD),
+              ],
+            ),
+          ),
           child: Column(
             children: [
               Expanded(
                 child: ListView.builder(
-                    itemCount: listProjects.isNotEmpty
-                        ? listProjects[0].workSpaces.length + 1
-                        : 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == listProjects[0].workSpaces.length) {
-                        return const WorkspaceAddButtonWidget();
-                      } else {
-                        return WorkspaceCardWidget(
-                          sentences: listProjects[0].workSpaces[index].text,
-                          audioUrl: listProjects[0].workSpaces[index].url,
-                          speakerName:
-                              listProjects[0].workSpaces[index].engName,
-                          imageUrlList:
-                              listProjects[0].workSpaces[index].faceImageUrl,
-                          changedValue: (value) {
-                            updateCardSentences(0, index, value);
-                          },
-                          onDelete: () {
-                            deleteCard(0, index);
-                          },
-                        );
-                      }
-                    }),
+                  itemCount: listProjects.isNotEmpty
+                      ? listProjects[0].workSpaces.length + 1
+                      : 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == listProjects[0].workSpaces.length) {
+                      return const WorkspaceAddButtonWidget();
+                    } else {
+                      return WorkspaceCardWidget(
+                        sentences: listProjects[0].workSpaces[index].text,
+                        audioUrl: listProjects[0].workSpaces[index].url,
+                        speakerName: listProjects[0].workSpaces[index].engName,
+                        imageUrlList:
+                            listProjects[0].workSpaces[index].faceImageUrl,
+                        changedValue: (value) {
+                          updateCardSentences(0, index, value);
+                        },
+                        onDelete: () {
+                          deleteCard(0, index);
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
+              const BottomNavbar(),
             ],
           ),
         ),
       ),
-
       drawer: const DrawerAppbarScreen(),
     );
   }

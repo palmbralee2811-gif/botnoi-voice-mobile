@@ -1,4 +1,6 @@
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
+import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
+import 'package:botnoivoice/Screens/WorkspaceScreen/workspace_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,7 +20,12 @@ class BottomNavbar extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              debugPrint('on tapped Studio Button 01 !!!');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +54,12 @@ class BottomNavbar extends StatelessWidget {
           SizedBox(width: 40.w),
           InkWell(
             onTap: () {
-              debugPrint('on tapped Studio Button 02 !!!');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WorkspaceScreen(),
+                ),
+              );
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

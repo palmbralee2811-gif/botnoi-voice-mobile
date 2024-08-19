@@ -125,7 +125,7 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () async {
-                            // Your download logic here
+                            //TODO: Download Function
                             _openDownloadModal();
                             final auth = Provider.of<Authentication>(context,
                                 listen: false);
@@ -139,13 +139,17 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           // onTap: buttomsheetPressed,
-                          child: const Icon(Icons.settings),
+                          child: const Icon(Icons.edit),
+                          onTap: () {
+                            _editCard(context);
+                          },
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () {
+                            //TODO: Delete Function
                             if (widget.onDelete != null) {
                               _openDeleteModal();
                               widget.onDelete!();
@@ -179,13 +183,13 @@ class _WorkspaceCardWidgetState extends State<WorkspaceCardWidget> {
                       maxLines: 3,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      _editCard(context);
-                    },
-                  ),
-                  const SizedBox(width: 5),
+                  // IconButton(
+                  //   icon: const Icon(Icons.edit),
+                  //   onPressed: () {
+                  //     _editCard(context);
+                  //   },
+                  // ),
+                  // const SizedBox(width: 5),
                 ],
               ),
             ],

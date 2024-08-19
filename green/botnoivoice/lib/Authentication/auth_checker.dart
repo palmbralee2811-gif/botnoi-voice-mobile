@@ -39,8 +39,8 @@ class _AuthCheckerState extends State<AuthChecker> {
       );
     }
     if (Provider.of<Authentication>(context).isAuthenticated != false) {
-      // return const HomeScreen();
-      return const AllWorkspaceScreen();
+      return const HomeScreen();
+      // return const AllWorkspaceScreen();
     } else {
       return const AuthScreen();
     }
