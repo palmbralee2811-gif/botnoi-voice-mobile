@@ -4,13 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppbarBottomNavbar extends StatelessWidget {
   const AppbarBottomNavbar({
     super.key,
-    required this.imageUrl,
-    required this.languageIconUrl,
+    required this.imagePath,
+    required this.languageIconPath,
     required this.onChangePressed,
   });
 
-  final String imageUrl;
-  final String languageIconUrl;
+  final String imagePath;
+  final String languageIconPath;
   final VoidCallback onChangePressed;
 
   @override
@@ -33,12 +33,12 @@ class AppbarBottomNavbar extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               CircleAvatar(
-                radius: 14.r, 
-                backgroundImage: NetworkImage(imageUrl),
+                radius: 14.r,
+                backgroundImage: AssetImage(imagePath),
               ),
               SizedBox(width: 4.w),
               Text(
-                'Mitchell',
+                'เอวา',
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
@@ -58,7 +58,7 @@ class AppbarBottomNavbar extends StatelessWidget {
               SizedBox(width: 8.w),
               CircleAvatar(
                 radius: 7.r,
-                backgroundImage: NetworkImage(languageIconUrl),
+                backgroundImage: AssetImage(languageIconPath),
               ),
               SizedBox(width: 8.w),
               Text(

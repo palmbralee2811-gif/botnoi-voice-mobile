@@ -138,10 +138,8 @@ class _HomeScreenState extends State<HomeScreen> {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
           child: AppbarBottomNavbar(
-            imageUrl:
-                'https://samplelib.com/lib/preview/png/sample-boat-400x300.png',
-            languageIconUrl:
-                'https://samplelib.com/lib/preview/png/sample-boat-400x300.png',
+            imagePath: 'assets/square_image/square_ava.webp',
+            languageIconPath: 'assets/images/national_flag/thai.png',
             onChangePressed: () {
               Navigator.push(
                   context,

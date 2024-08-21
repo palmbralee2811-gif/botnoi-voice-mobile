@@ -133,7 +133,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                               child: Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(25),
+                                    padding: EdgeInsets.all(20.w),
                                     child: Column(
                                       children: [
                                         Container(
@@ -1156,8 +1156,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           ),
         ),
         Container(
-          //////////////พื้นหลัง widget voice
-          // color: Colors.amber,
           color: const Color(0xFFFFFFFF),
           height: 420.h,
           child: Column(
@@ -1166,12 +1164,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               ishover
                   ? buildFavoriteFilter(
                       context,
-
-                      /// เลือกเสียงที่ชอบ
                     )
                   : buildMultipleSpeaker(context),
-
-              /// หน้าเลือกเสียงหลัก
             ],
           ),
         ),
@@ -1179,9 +1173,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         Container(
           height: 56.h,
           width: 320.w,
-          decoration: const BoxDecoration(
-              // color: Colors.amber,
-              ),
+          decoration: const BoxDecoration(),
           child: Padding(
             padding: EdgeInsets.only(
                 left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
