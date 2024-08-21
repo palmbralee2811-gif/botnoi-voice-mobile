@@ -1,22 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/newdata.dart';
-import 'package:botnoivoice/Filters/all.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
-import 'package:botnoivoice/Filters/recomman.dart';
-import 'package:botnoivoice/Function/randomString.dart';
-import 'package:botnoivoice/Model/models.dart';
+import 'package:botnoivoice/Screens/AppBarScreen/appbar_bottom_navbar.dart';
+import 'package:botnoivoice/Screens/AppBarScreen/appbar_screen.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
-import 'package:botnoivoice/Screens/HomeScreen/select_voice_screen.dart';
-import 'package:botnoivoice/Screens/HomeScreen/setting_audio_screen.dart';
-import 'package:botnoivoice/Screens/WorkspaceScreen/workspace_screen.dart';
-import 'package:botnoivoice/Widgets/HomeWidget/category_setting_widget.dart';
-import 'package:botnoivoice/Widgets/WorkspaceWidget/workspace_appbar_widget.dart';
+import 'package:botnoivoice/Screens/HomeScreen/speaker_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,9 +22,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-import 'bottom_navbar.dart';
-
-// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -43,39 +35,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Generate Audio
   String response = '';
-  String _audioUrl = '';
+  String audioUrl = '';
   String? speakerId;
-  String? language; // เลือกภาษา   new
-  String? gender; ////เลือกเพศ
-  String? speechStyle; /////เลือกสไตล์
-  String? voiceStyle; /////เลือกหมวดหมู่
-  ///new
-  List<String>? availableLanguage;
-  String? credits;
+  String? language;
+  String? gender;
+  String? speechStyle; // เลือกสไตล์
+  String? voiceStyle; //เลือกหมวดหมู่
 
   // Download File
-  String progress = '';
-  bool isLoading = false;
   AudioPlayer audioPlayer = AudioPlayer();
 
   // Player Audio
-  bool isAudioPlaying = false;
-  List<NewData>? data;
+  List<NewAppDataBase>? data;
 
   // Download Audio
   String selectedTypeMedia = 'mp3';
 
-  Set<int> selectedIndex2 = <int>{};
+  // เลือกเสียงที่ชอบ
   Set<int> selectedIndex = <int>{};
-  List<String> selectedIndexFavorites = []; // เลือกเสียงที่ชอบ
+  List<String> selectedIndexFavorites = [];
+
+  bool showClearIcon = false;
+  bool isSelectedFilter = false;
+
+  String selectedLanguage = 'ไทย'; // ค่าเริ่มต้น ภาษา
+  String selectedLanguageImage =
+      'assets/images/national_flag/thai.png'; // ค่าเริ่มต้นรูป
+  bool isExpanded = false;
+
+  String selectedGender = 'ช/ญ'; //ค่าเริ่มต้น เพศ
+  String selectedGenderImage =
+      'assets/images/gender/all.svg'; // ค่าเริ่มต้น ไอเพศ
+  bool changeIcon = false; // เลือกเพศ
+
+  // เลือกสไตล์
+  bool selectStyle = false;
+  bool selectStyle1 = false;
+  bool selectStyle2 = false;
+  bool selectStyle3 = false;
+  bool selectStyle4 = false;
+  bool selectStyle5 = false;
+  bool selectStyle6 = false;
+  bool selectStyle7 = false;
+  bool selectStyle8 = false;
+  bool selectStyle9 = false;
+  bool selectStyle10 = false;
+  bool selectStyle11 = false;
+  bool selectStyle12 = false;
+  bool selectStyle13 = false;
+  bool selectStyle14 = false;
+  bool selectStyle15 = false;
+  bool selectStyle16 = false;
+
+  // เลือกหมวดหมู่
+  bool selectCategory = false;
+  bool selectCategory1 = false;
+  bool selectCategory2 = false;
+  bool selectCategory3 = false;
+  bool selectCategory4 = false;
+  bool selectCategory5 = false;
+  bool selectCategory6 = false;
+  bool selectCategory7 = false;
+  bool selectCategory8 = false;
+  bool selectCategory9 = false;
+  bool selectCategory10 = false;
 
   @override
   void initState() {
     super.initState();
-    language = 'TH'; // หรือภาษาที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น   new
-    gender = ''; ///////////////////////// กำนดค่าเริ่มต้น  new
-    speechStyle = ''; // สไตล์ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
-    voiceStyle = ''; // หมวดหมู่ที่คุณต้องการให้แสดงเป็นค่าเริ่มต้น  new
+    speakerId = '1';
+    language = 'TH'; // ค่าเริ่มต้น ภาษา
+    gender = ''; // ค่าเริ่มต้น เพศ
+    speechStyle = ''; // ค่าเริ่มต้น สไตล์
+    voiceStyle = ''; // ค่าเริ่มต้น หมวดหมู่
   }
 
   @override
@@ -84,89 +116,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  int _selectedPageIndexVoice = 0;
-  int _selectedPageIndexSetting = 0;
-  int _inputtext = 0;
-
-  void _selectPageVoice(int index) {
-    setState(() {
-      _selectedPageIndexVoice = index;
-    });
-  }
-
-  void _selectPageSetting(int index) {
-    setState(() {
-      _selectedPageIndexSetting = index;
-    });
-  }
-
-  ///เลือกภาษา
-  String selectedLanguage = 'ไทย'; ///// กำหนดค่าเริ่มต้น  new
-  String selectedLanguageImage =
-      'assets/logo/Ellipse 12.jpg'; ///// กำหนดรูปค่าเริ่มต้น new
-  bool isExpanded = false;
-
-  ///เลือกเพศ
-  String selectedGender = 'ช/ญ'; ///// กำหนดค่าเริ่มต้น  new
-  String selectedGenderImage =
-      'assets/logo/Category.jpg'; ///// กำหนดรูปค่าเริ่มต้น  new
-  bool changeIcon = false; /////////////เลือกเพศ
-  bool selectStyle = false; /////////////เลือกสไตล์
-  bool selectStyle1 = false; /////////////เลือกสไตล์
-  bool selectStyle2 = false; /////////////เลือกสไตล์
-  bool selectStyle3 = false; /////////////เลือกสไตล์
-  bool selectStyle4 = false; /////////////เลือกสไตล์
-  bool selectStyle5 = false; /////////////เลือกสไตล์
-  bool selectStyle6 = false; /////////////เลือกสไตล์
-  bool selectStyle7 = false; /////////////เลือกสไตล์
-  bool selectStyle8 = false; /////////////เลือกสไตล์
-  bool selectStyle9 = false; /////////////เลือกสไตล์
-  bool selectStyle10 = false; /////////////เลือกสไตล์
-  bool selectStyle11 = false; /////////////เลือกสไตล์
-  bool selectStyle12 = false; /////////////เลือกสไตล์
-  bool selectStyle13 = false; /////////////เลือกสไตล์
-  bool selectStyle14 = false; /////////////เลือกสไตล์
-  bool selectStyle15 = false; /////////////เลือกสไตล์
-  bool selectStyle16 = false; /////////////เลือกสไตล์
-
-  bool selectCategory = false; /////////////เลือกหมวดหมู่
-  bool selectCategory1 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory2 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory3 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory4 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory5 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory6 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory7 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory8 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory9 = false; /////////////เลือกหมวดหมู่
-  bool selectCategory10 = false; /////////////เลือกหมวดหมู่
-
   @override
   Widget build(BuildContext context) {
-    final maxLinesopen = ( 404.h / 65).floor();
-    final maxLinesclose = ( 404.h / 180).floor();
-    bool showClearIcon = false;
-
-    if (_selectedPageIndexVoice == 1) {
-      _inputtext = 1;
-      if (_selectedPageIndexSetting == 1) {
-        _selectedPageIndexVoice = 0;
-        _selectedPageIndexSetting = 1;
-      }
-    }
-    if (_selectedPageIndexSetting == 2) {
-      _selectedPageIndexVoice = 1;
-      _selectedPageIndexSetting = 0;
-    }
-    if (_selectedPageIndexVoice == 2) {
-      _inputtext = 0;
-    }
-    if (_selectedPageIndexSetting == 1) {
-      _inputtext = 1;
-    }
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       drawer: const DrawerAppbarScreen(),
       appBar: AppBar(
         leading: Builder(
@@ -184,222 +137,216 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         backgroundColor: const Color(0xFFFFFFFF),
-        title: WorkspaceAppBarWidget(context),
+        title: AppbarScreen(context),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50.h),
+          child: AppbarBottomNavbar(
+            imageUrl:
+                'https://samplelib.com/lib/preview/png/sample-boat-400x300.png',
+            languageIconUrl:
+                'https://samplelib.com/lib/preview/png/sample-boat-400x300.png',
+            onChangePressed: () {
+              // TODO: Go to all_speaker_screen
+            },
+          ),
+        ),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            width: 320.w,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            height: _inputtext == 1
-                ? 196.h
-                : 404.h,
-            child: Padding(
-              padding: EdgeInsets.all(10.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Container(
-                      width: 288.w,
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 5.0,
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              Container(
+                width: 320.w,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                height: 250.h,
+                child: Padding(
+                  padding: EdgeInsets.all(10.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          width: 288.w,
+                          decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 5.0,
+                              ),
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14.r),
                           ),
-                        ],
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14.r),
-                      ),
-                      child: Padding(
-                        padding:
-                            EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
-                        child: Column(
-                          children: [
-                            TextField(
-                              cursorColor: const Color(0xFF000000),
-                              style: GoogleFonts.prompt(
-                                fontSize: 14.sp,
-                                color: const Color(0xFF323130),
-                              ),
-                              minLines: _inputtext == 1
-                                  ? maxLinesclose
-                                  : maxLinesopen,
-                              maxLines: _inputtext == 1
-                                  ? maxLinesclose
-                                  : maxLinesopen,
-                              keyboardType: TextInputType.multiline,
-                              controller: textController,
-                              onChanged: (text) {
-                                if (textController.text.length >
-                                    widget.maxLength) {
-                                  textController.text = textController.text
-                                      .substring(0, widget.maxLength);
-                                  textController.selection =
-                                      TextSelection.fromPosition(
-                                    TextPosition(
-                                        offset: textController.text.length),
-                                  );
-                                }
-                                setState(() {
-                                  showClearIcon =
-                                      textController.text.isNotEmpty;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText:
-                                    'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
-                                hintStyle: TextStyle(
-                                  color: const Color(0xFFA19F9D),
-                                  fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
-                                      .fontStyle,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 25.w, right: 10.w, top: 20.w),
+                            child: Column(
+                              children: [
+                                TextField(
+                                  cursorColor: const Color(0xFF000000),
+                                  style: GoogleFonts.prompt(
+                                    fontSize: 14.sp,
+                                    color: const Color(0xFF323130),
+                                  ),
+                                  maxLines: 5,
+                                  keyboardType: TextInputType.multiline,
+                                  controller: textController,
+                                  onChanged: (text) {
+                                    if (textController.text.length >
+                                        widget.maxLength) {
+                                      textController.text = textController.text
+                                          .substring(0, widget.maxLength);
+                                      textController.selection =
+                                          TextSelection.fromPosition(
+                                        TextPosition(
+                                            offset: textController.text.length),
+                                      );
+                                    }
+                                    setState(() {
+                                      showClearIcon =
+                                          textController.text.isNotEmpty;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText:
+                                        'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
+                                    hintStyle: TextStyle(
+                                      color: const Color(0xFFA19F9D),
+                                      fontStyle:
+                                          GoogleFonts.prompt(fontSize: 14.sp)
+                                              .fontStyle,
+                                    ),
+                                    hintMaxLines: 1,
+                                  ),
                                 ),
-                                hintMaxLines: 1,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 25.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
+                                Padding(
+                                  padding: EdgeInsets.only(right: 25.w),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      showClearIcon
-                                          ? Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 1.w),
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                    textStyle: TextStyle(
-                                                        fontSize: 10.sp)),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    // _showClearIcon = false; // To update the counter
-                                                  });
-                                                },
-                                                child: Icon(
-                                                  Icons.close_sharp,
-                                                  size: 20.sp,
-                                                  color: Colors.transparent,
-                                                ),
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 1.w),
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                    textStyle: TextStyle(
-                                                        fontSize: 10.sp)),
-                                                onPressed: () {
-                                                  textController.clear();
-                                                  setState(() {
-                                                    // _showClearIcon = false; // To update the counter
-                                                  });
-                                                },
-                                                child: GradientIcon(
-                                                  icon: Icons.close_sharp,
-                                                  size: 20.sp,
-                                                  gradient:
-                                                      const LinearGradient(
-                                                    colors: [
-                                                      Color(0xFF9340FF),
-                                                      Color(0xFF34BDFA)
-                                                    ],
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          showClearIcon
+                                              ? Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 1.w),
+                                                  child: TextButton(
+                                                    style: TextButton.styleFrom(
+                                                        textStyle: TextStyle(
+                                                            fontSize: 10.sp)),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        textController.clear();
+                                                        showClearIcon = false;
+                                                      });
+                                                    },
+                                                    child: GradientIcon(
+                                                      icon: Icons.close_sharp,
+                                                      size: 20.sp,
+                                                      gradient:
+                                                          const LinearGradient(
+                                                        colors: [
+                                                          Color(0xFF9340FF),
+                                                          Color(0xFF34BDFA)
+                                                        ],
+                                                        begin:
+                                                            Alignment.topLeft,
+                                                        end: Alignment
+                                                            .bottomRight,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            )
+                                                )
+                                              : Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 1.w),
+                                                  child: TextButton(
+                                                    style: TextButton.styleFrom(
+                                                        textStyle: TextStyle(
+                                                            fontSize: 10.sp)),
+                                                    onPressed: () {},
+                                                    child: Icon(
+                                                      Icons.close_sharp,
+                                                      size: 20.sp,
+                                                      color: Colors.transparent,
+                                                    ),
+                                                  ),
+                                                )
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          GradientText(
+                                            text:
+                                                '${textController.text.length}',
+                                            style: GoogleFonts.prompt(
+                                              fontSize: 14.sp,
+                                              color: const Color(0xFFA19F9D),
+                                            ),
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFF9340FF),
+                                                Color(0xFF34BDFA)
+                                              ],
+                                            ),
+                                          ),
+                                          Text(
+                                            ' / ${widget.maxLength}',
+                                            style: GoogleFonts.prompt(
+                                              fontSize: 14.sp,
+                                              color: const Color(0xFFA19F9D),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      GradientText(
-                                        text: '${textController.text.length}',
-                                        style: GoogleFonts.prompt(
-                                          fontSize: 14.sp,
-                                          color: const Color(0xFFA19F9D),
-                                        ),
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF9340FF),
-                                            Color(0xFF34BDFA)
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        ' / ${widget.maxLength}',
-                                        style: GoogleFonts.prompt(
-                                          fontSize: 14.sp,
-                                          color: const Color(0xFFA19F9D),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      const SpeakerNavbar(),
+                      buildFilterNavbar(context),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.white,
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                      offset: Offset(0, 3)),
                 ],
               ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              color: const Color(0xFFFFFFFF),
-              height: _inputtext == 1
-                  ? 261.h 
-                  : 261.h,
-              child: Column(children: [
-                InkWell(
-                    onTap: () {
-                      if (_selectedPageIndexVoice == 0) {
-                        _selectPageVoice(1);
-                      } else if (_selectedPageIndexVoice == 1) {
-                        _selectPageVoice(2);
-                      } else if (_selectedPageIndexVoice == 2) {
-                        _selectPageVoice(1);
-                      }
-                    },
-                    child: SelectVoiceScreen(selectedPageIndexVoice: _selectedPageIndexVoice)),
-                if (_selectedPageIndexVoice == 1) ...[categoryVoiceHome(context)
-                ],
-                InkWell(
-                  onTap: () {
-                    if (_selectedPageIndexSetting == 0) {
-                      _selectPageSetting(1);
-                    } else if (_selectedPageIndexSetting == 1) {
-                      _selectPageSetting(2);
-                    } else if (_selectedPageIndexSetting == 2) {
-                      _selectPageSetting(1);
-                    }
-                  },
-                  child: SettingAudioScreen(selectedPageIndexSetting: _selectedPageIndexSetting),
-                ),
-                if (_selectedPageIndexSetting == 1) ...[
-                  const CategorySettingWidget()
-                ],
-                Expanded(
-                  child: buildVoiceHome(context),
-                ),
-                const BottomNavbar(),
-              ]),
+              child: buildGenerateButton(context),
             ),
           ),
         ],
@@ -407,8 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool ishover = false;
-  Widget categoryVoiceHome(BuildContext context) {
+  Widget buildFilterNavbar(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -419,9 +365,9 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               Container(
                 color: const Color(0xFFFFFFFF),
-                width: 480.w, // ระยะห่างเวลา Filter
+                width: 350.w, // ระยะห่างเวลา Filter
                 child: Padding(
-                  padding: EdgeInsets.only(right: 10.w, left: 10.w),
+                  padding: EdgeInsets.only(left: 20.w, right: 20.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -446,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: Column(
                                             children: [
                                               Container(
-                                                color: Colors.transparent,
+                                                color: Colors.blue,
                                                 width: 280.w,
                                                 child: Column(
                                                   children: [
@@ -481,68 +427,68 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       height: 15.h,
                                                     ),
                                                     _buildLanguageOption(
-                                                        'All(AllLanguages) - ทั้งหมด',
-                                                        'assets/logo/13766953.png',
+                                                        'All - ทั้งหมด',
+                                                        'assets/images/national_flag/all.png',
                                                         '',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
-                                                        'Thai(Thailand) - ไทย',
-                                                        'assets/logo/Ellipse 12.jpg',
+                                                        'Thai (Thailand) - ไทย',
+                                                        'assets/images/national_flag/thai.png',
                                                         'TH',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'English (UK) - อังกฤษ',
-                                                        'assets/logo/Ellipse 13.jpg',
+                                                        'assets/images/national_flag/english.png',
                                                         'EN',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Indonesia - อินโดนีเซีย',
-                                                        'assets/logo/Ellipse 13 (2).jpg',
+                                                        'assets/images/national_flag/indonesia.png',
                                                         'ID',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Japanese - ญี่ปุ่น',
-                                                        'assets/logo/Ellipse 14.jpg',
+                                                        'assets/images/national_flag/japanese.png',
                                                         'JA',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Laos - ลาว',
-                                                        'assets/logo/Ellipse 15.jpg',
+                                                        'assets/images/national_flag/laos.png',
                                                         'LO',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
-                                                        'Myanmar - เมียนมาร์',
-                                                        'assets/logo/Ellipse 11.jpg',
+                                                        'Burmese - เมียนมาร์',
+                                                        'assets/images/national_flag/burmese.png',
                                                         'MY',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
-                                                        'Vietnam - เวียดนาม',
-                                                        'assets/logo/Ellipse 19.jpg',
+                                                        'Vietnamese - เวียดนาม',
+                                                        'assets/images/national_flag/vietnamese.png',
                                                         'VI',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Chinese (Simplified) - จีน',
-                                                        'assets/logo/Ellipse 18.jpg',
+                                                        'assets/images/national_flag/chinese.png',
                                                         'ZH',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
                                                         'Cambodia - กัมพูชา',
-                                                        'assets/logo/images (1).png',
+                                                        'assets/images/national_flag/cambodia.png',
                                                         'KM',
                                                         context,
                                                         setState),
                                                     _buildLanguageOption(
-                                                        'Phillippines - ฟิลิปปินส์',
-                                                        'assets/logo/Flag_of_the_Philippines.svg.png',
+                                                        'Filipino - ฟิลิปปินส์',
+                                                        'assets/images/national_flag/filipino.png',
                                                         'FIL',
                                                         context,
                                                         setState),
@@ -659,19 +605,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                                 _buildGenderOption(
                                                     'ช/ญ',
-                                                    'assets/logo/Category.jpg',
+                                                    'assets/images/gender/all.svg',
                                                     '',
                                                     context,
                                                     setState),
                                                 _buildGenderOption(
                                                     'หญิง',
-                                                    'assets/logo/Category (1).jpg',
+                                                    'assets/images/gender/woman.svg',
                                                     'ผู้หญิง',
                                                     context,
                                                     setState),
                                                 _buildGenderOption(
                                                     'ชาย',
-                                                    'assets/logo/Category (2).jpg',
+                                                    'assets/images/gender/man.svg',
                                                     'ผู้ชาย',
                                                     context,
                                                     setState)
@@ -710,8 +656,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SizedBox(width: 3.w),
-                                  if (gender ==
-                                      '') //////////////////// text แสดงในปุ่มกด
+                                  if (gender == '') // text แสดงในปุ่มกด
                                     Text(
                                       'ช/ญ',
                                       style: GoogleFonts.prompt(
@@ -725,7 +670,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       style: GoogleFonts.prompt(
                                         fontSize: 12.sp,
                                       ),
-                                    ), //////////////////// text แสดงในปุ่มกด
+                                    ), // text แสดงในปุ่มกด
                                   changeIcon
                                       ? Icon(
                                           Icons.keyboard_arrow_up_sharp,
@@ -743,26 +688,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-
-                      /// ปุ่มแนะนำ
-                      const Recommand(),
-
-                      /// ปุ่มหัวใจ
                       InkWell(
                         onTap: () {
                           setState(() {
-                            ishover = !ishover;
+                            isSelectedFilter = !isSelectedFilter;
                           });
                         },
                         child: Favorite(
-                          ishover: ishover,
+                          ishover: isSelectedFilter,
                         ),
                       ),
-
-                      /// ปุ่มทั้งหมด
-                      const All(),
-
-                      /// ปุ่มสไตล์
                       InkWell(
                         onTap: () {
                           setState(() {
@@ -776,7 +711,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 builder: (BuildContext context,
                                     StateSetter setModalState) {
                                   return SizedBox(
-                                    height: 220.h,
+                                    height: 280.h,
                                     child: Padding(
                                       padding: EdgeInsets.all(25.r),
                                       child: Column(
@@ -1482,10 +1417,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      // const New(), ////ยังไม่ใช้
-                      // const Voice(),
-                      // const Advert(),
-                      // const Podcast(),
                     ],
                   ),
                 ),
@@ -1494,18 +1425,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Container(
-          //////////////พื้นหลัง widget voice
-          // color: Colors.amber,
           color: const Color(0xFFFFFFFF),
           height: 148.h,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ishover
-                  ? voiceWidgetFavorite(
-                      context, ///// เลือกเสียงที่ชอบ
+              isSelectedFilter
+                  ? buildFavoriteFilter(
+                      context, // เลือกเสียงที่ชอบ
                     )
-                  : voiceWidGetHome(context), ///// หน้าเลือกเสียงหลัก
+                  : buildMultipleSpeaker(context), // หน้าเลือกเสียงหลัก
             ],
           ),
         ),
@@ -1516,8 +1445,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget filterStyle(String text, bool isSelected) {
     return IntrinsicWidth(
       child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: 8.w, vertical: 4.h),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
@@ -1551,7 +1479,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         setState(() {
           if (text == 'ทั้งหมด') {
-            language = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+            language = ''; //แสดงทุกเพศ
           } else {
             List<String> parts = text.split(' - ');
             if (parts.length > 1) {
@@ -1560,11 +1488,10 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedLanguage = text; // กรณีที่ไม่มีตัวแบ่งให้ใช้ค่าเดิม
             }
             selectedLanguageImage = imagePath;
-            language = lang; // Update the language variable
+            language = lang;
           }
         });
-        print(
-            'Selected Language: $selectedLanguage, language: $language'); // Print to debug console
+        debugPrint('Selected Language: $selectedLanguage, language: $language');
         Navigator.pop(context);
       },
       child: Container(
@@ -1609,23 +1536,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildGenderOption(
       String text,
       String imagePath,
-      String gen, ///// เลือกเพศ
+      String gen, // เลือกเพศ
       BuildContext context,
       StateSetter setState) {
     return InkWell(
       onTap: () {
         setState(() {
           if (text == 'ช/ญ') {
-            gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+            gender = ''; // แสดงทุกเพศ
           } else {
             selectedGender = text;
             selectedGenderImage = imagePath;
             gender = gen;
           }
         });
-
-        print(
-            'Selected Gender: $selectedGender Gender: $gender'); // Print to debug console
+        debugPrint('Selected Gender: $selectedGender Gender: $gender');
         Navigator.pop(context);
       },
       child: Container(
@@ -1636,7 +1561,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Image.asset(
+            SvgPicture.asset(
               imagePath,
               width: 23.w,
               height: 23.h,
@@ -1657,7 +1582,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget voiceWidGetHome(BuildContext context) {
+  Widget buildMultipleSpeaker(BuildContext context) {
     return SizedBox(
       height: 127.h,
       width: 320.w,
@@ -1682,13 +1607,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
                   (speechStyle == '' || item.speechStyle == speechStyle))
               .toList()[index];
-          return voicewidget(data, index);
+          return buildSingleSpeaker(data, index);
         },
       ),
     );
   }
 
-  Column voicewidget(NewData data, int index) {
+  Column buildSingleSpeaker(NewData data, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1699,25 +1624,10 @@ class _HomeScreenState extends State<HomeScreen> {
               String audioURL = data.audio;
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
-                  if (isAudioPlaying) {
-                    await audioPlayer
-                        .stop(); // ถ้ามีการเล่นเสียงอยู่ ให้หยุดก่อน
+                  if (audioPlayer.state == PlayerState.playing) {
+                    await audioPlayer.stop();
                   }
                   await audioPlayer.play(UrlSource(audioURL));
-                  setState(() {
-                    isAudioPlaying = true;
-                  });
-                  audioPlayer.onPlayerComplete.listen((event) {
-                    print("#### Play Audio's Complete");
-                    setState(() {
-                      isAudioPlaying = false;
-                    });
-                  });
-                } else {
-                  setState(() {
-                    isAudioPlaying = false;
-                  });
-                  print("Audio URL is empty, cannot play audio");
                 }
               }
 
@@ -1830,9 +1740,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.only(right: 5.w, top: 5.h),
                               child: GestureDetector(
                                 onTap: () {
-                                  debugPrint(
-                                      '// 1874 -> speakerId ' '$speakerId');
-
+                                  debugPrint('speakerId ' '$speakerId');
                                   setState(() {
                                     if (selectedIndexFavorites
                                         .contains(data.speakerId)) {
@@ -1858,13 +1766,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ).createShader(bounds);
                                         },
                                         child: SvgPicture.asset(
-                                          'assets/logo/heart (1).svg',
+                                          'assets/images/icon/heart-on.svg',
                                           width: 20.w,
                                           height: 20.h,
                                         ),
                                       )
                                     : SvgPicture.asset(
-                                        'assets/logo/heart.svg',
+                                        'assets/images/icon/heart-off.svg',
                                         width: 20.w,
                                         height: 20.h,
                                       ),
@@ -1890,13 +1798,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ).createShader(bounds);
                                     },
                                     child: SvgPicture.asset(
-                                      'assets/logo/Vector.svg',
+                                      'assets/images/icon/play-on.svg',
                                       width: 16.w,
                                       height: 16.h,
                                     ),
                                   )
                                 : SvgPicture.asset(
-                                    'assets/logo/Vector (1).svg',
+                                    'assets/images/icon/play-off.svg',
                                     width: 16.w,
                                     height: 16.h,
                                   ),
@@ -1924,7 +1832,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget voiceWidgetFavorite(BuildContext context) {
+  Widget buildFavoriteFilter(BuildContext context) {
     return SizedBox(
       height: 127.h,
       width: 320.w,
@@ -1946,41 +1854,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   selectedIndexFavorites.contains(item.speakerId))
               .toList()[index];
 
-          return voicewidget(data, index);
+          return buildSingleSpeaker(data, index);
         },
       ),
     );
   }
 
-  Widget buildVoiceHome(BuildContext context) {
+  Widget buildGenerateButton(BuildContext context) {
     return Column(
       children: [
-        const Spacer(),
         Padding(
-          padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
+          padding:
+              EdgeInsets.only(left: 20.w, top: 0, right: 20.w, bottom: 30.h),
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {
-              debugPrint('START DO สร้างเสียง');
-              if (textController.text.isNotEmpty) {
-                setState(() {
-                  audioPlayer.stop();
-                  isLoading = true;
-                });
-              }
-              if (textController.text.isNotEmpty) {
-                _audioUrl = await generateAudio(textController.text);
-                print('printing audiourl $_audioUrl');
-                var tempText = textController.text;
-                print('printing audiourl $tempText');
-                if (_audioUrl.isNotEmpty && _audioUrl != '') {
-                  print("In the loops $tempText");
-                  await textSave(textController.text, _audioUrl);
+              try {
+                if (textController.text.isNotEmpty) {
+                  setState(() {
+                    audioPlayer.stop();
+                  });
+                  await generateAudio(textController.text).then((_) {
+                    if (audioUrl.isNotEmpty) {
+                      downloadFile();
+                    }
+                  });
                 }
+              } catch (e) {
+                debugPrint("Error: $e");
               }
-              print('END DO สร้างเสียง');
-              await Future.delayed(const Duration(seconds: 2));
-              navigateToMyHomePage();
             },
           ),
         ),
@@ -1988,19 +1890,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void navigateToMyHomePage() {
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const WorkspaceScreen()),
-      );
-    }
-  }
-
   Future<String> generateAudio(String text) async {
     setState(() {
-      isLoading = true;
-      _audioUrl = '';
+      audioUrl = '';
     });
 
     final auth = Provider.of<Authentication>(context, listen: false);
@@ -2030,78 +1922,21 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
         setState(() {
-          _audioUrl = jsonData['audio_url'];
-          print("generateAudio -> _audioUrl: $_audioUrl");
-
-          isLoading = false;
-        });
-      } else if (response.statusCode == 403) {
-        print("generateAudio -> response:${response.statusCode}");
-        setState(() {
-          isLoading = false;
-        });
-      } else if (response.statusCode == 404) {
-        print("generateAudio -> response:${response.statusCode}");
-        print("not enough credits");
-      } else {
-        setState(() {
-          isLoading = false;
-          auth.signOut();
+          audioUrl = jsonData['audio_url'];
         });
       }
     } catch (e) {
-      setState(() {
-        print("generateAudio -> response:$e");
-        isLoading = false;
-      });
+      debugPrint("Error:$e");
     }
-    return _audioUrl;
+    return audioUrl;
   }
 
-  Future<void> textSave(String text, String audioUrl) async {
-    final auth = Provider.of<Authentication>(context, listen: false);
-    print('Printing auth when generating ${auth.credentialsToken}');
+  String randomString(int length) {
+    const characters = '0123456789';
 
-    // Define the new WorkSpace object
-    WorkSpace newWorkSpace = WorkSpace(
-      text: textController.text,
-      speaker: int.parse(speakerId!),
-      audioId: '',
-      speed: '1',
-      statusDownload: true,
-      url: audioUrl,
-      volume: '1',
-    );
-
-    // Fetch existing workspaces for the project
-    await auth.getAllWorkspace();
-    if (auth.listProjects.isNotEmpty) {
-      // Assuming you are working with the first project (adjust index as needed)
-      ListProject project = auth.listProjects[0];
-      print('Project ID: ${project.workspaceId}');
-      print('Existing WorkSpaces: ${project.workSpaces.length}');
-
-      // Create a new list from existing workspaces
-      List<WorkSpace> existingWorkSpaces =
-          List<WorkSpace>.from(project.workSpaces);
-      print('Existing WorkSpaces (copied): ${existingWorkSpaces.length}');
-
-      // Add the new workspace to the existing workspaces
-      existingWorkSpaces.add(newWorkSpace);
-      print(
-          'New WorkSpace added. Total WorkSpaces: ${existingWorkSpaces.length}');
-
-      // Update the workspaces with the new list
-      await auth.updateWorkSpaces(project.workspaceId, existingWorkSpaces);
-    } else {
-      print('No projects found.');
-    }
-
-    if (mounted) {
-      setState(() {
-        print('New workspace added.');
-      });
-    }
+    final random = Random();
+    return String.fromCharCodes(Iterable.generate(length,
+        (_) => characters.codeUnitAt(random.nextInt(characters.length))));
   }
 
   Future<void> downloadFile() async {
@@ -2114,85 +1949,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _iOSDownloadFunction() async {
     try {
-      String url = _audioUrl;
-
+      String url = audioUrl;
       var response = await http.get(Uri.parse(url));
-
       if (response.statusCode == 200) {
         String filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
         var tempDir = await getTemporaryDirectory();
         var path = '${tempDir.path}/$filename';
         var file = File(path);
         await file.writeAsBytes(response.bodyBytes);
-
-        setState(() {
-          progress = 'Download complete';
-        });
-        print("Printing Path: ");
-        print(tempDir);
-        print(path);
-        print(file);
-
-        // OpenFile.open(path);
-
-        /*
-          WARNING!!! น้องภัทร ช่วย ทดสอบ OpenAppFile บน iOS ให้ด้วยนะ
-        */
         OpenAppFile.open(path);
-      } else {
-        setState(() {
-          progress = 'Failed to download file';
-        });
       }
     } catch (e) {
-      setState(() {
-        progress = 'Error: $e';
-      });
+      debugPrint("Error: $e");
     }
   }
 
   Future<void> _androidDownloadFunction() async {
     try {
       var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
-
-      // Get the download directory
       List<Directory>? directories =
           await getExternalStorageDirectories(type: StorageDirectory.downloads);
       if (directories == null || directories.isEmpty) {
         throw Exception('No external storage directories found');
       }
-
-      // Create the full path by appending the filename to the directory path
       String directoryPath = directories.first.path;
       String filePath = "$directoryPath/$filename";
-
-      // Create the file object
       var file = File(filePath);
-
-      // Download the file from the URL
-      String url = _audioUrl;
+      String url = audioUrl;
       var res = await http.get(Uri.parse(url));
-
-      // Check if the request was successful
       if (res.statusCode == 200) {
-        // Write the downloaded bytes to the file
         await file.writeAsBytes(res.bodyBytes);
-        print('Download successful: $filename');
-
-        setState(() {
-          progress = 'Download complete';
-        });
-
-        print("Printing Path: ");
-        print(filename);
-        print(filePath);
-        print(file);
         OpenAppFile.open(filePath);
-      } else {
-        print('Failed to download file: ${res.statusCode}');
       }
     } catch (e) {
-      print('An error occurred: $e');
+      debugPrint('Error: $e');
     }
   }
 }

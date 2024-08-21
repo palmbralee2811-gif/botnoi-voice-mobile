@@ -1,12 +1,4 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Filters/languagedrawer.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
-import 'package:botnoivoice/Screens/PackageScreen/package_screen.dart';
-import 'package:botnoivoice/Widgets/DrawerAppBarWidget/about_us_widget.dart';
-import 'package:botnoivoice/Widgets/DrawerAppBarWidget/faq_widget.dart';
-import 'package:botnoivoice/Widgets/DrawerAppBarWidget/my_account_widget.dart';
-import 'package:botnoivoice/Widgets/DrawerAppBarWidget/review_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -84,47 +76,16 @@ class DrawerAppbarScreen extends StatelessWidget {
                 ),
               ],
             ),
-            onTap: () {},
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 30.w),
-            leading: GradientIcon(
-              icon: Icons.account_circle_outlined,
-              size: 24.sp,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            title: GradientText(
-              text: 'ข้อมูลส่วนตัว',
-              style: GoogleFonts.prompt(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFFA19F9D),
-              ),
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyAccountWidget()));
-              print("My Account");
-            },
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
             leading: Icon(
-              Icons.credit_card_rounded,
+              Icons.logout,
               size: 24.sp,
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'แพ็คเกจ',
+              'ออกจากระบบ',
               style: GoogleFonts.prompt(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -132,91 +93,9 @@ class DrawerAppbarScreen extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PackageScreen()));
-              print("Package");
+              auth.signOut();
             },
           ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-            leading: Icon(
-              Icons.question_mark_outlined,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'FAQ',
-              style: GoogleFonts.prompt(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const FaqWidget()));
-              print("FAQ");
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-            leading: Icon(
-              Icons.email_outlined,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'ข้อเสนอแนะ',
-              style: GoogleFonts.prompt(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ReviewWidget()));
-              print("Suggestions");
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
-            leading: Icon(
-              Icons.credit_card_sharp,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'เกี่ยวกับเรา',
-              style: GoogleFonts.prompt(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AboutUsWidget()));
-              print("About Us");
-            },
-          ),
-          SizedBox(height: 10.h),
-          Opacity(
-            opacity: 0.5, // 50% opacity
-            child: Container(
-              width: 200.w,
-              height: 10.h,
-              color: Colors.transparent,
-            ),
-          ),
-          const LanguageDrawer(),
-          SizedBox(height: 69.h),
         ],
       ),
     );

@@ -43,7 +43,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
               child: Padding(
                 padding: EdgeInsets.all(8.w),
                 child: Image.asset(
-                  'assets/logo/botnoivoice.png',
+                  'assets/images/logo/botnoivoice.png',
                   width: 54.71.w,
                   height: 62.h,
                   fit: BoxFit.fill,

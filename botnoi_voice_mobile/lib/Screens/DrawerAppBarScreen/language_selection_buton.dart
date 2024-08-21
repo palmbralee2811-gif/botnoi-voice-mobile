@@ -80,7 +80,7 @@ class _LanguageSelectionButtonState extends State<LanguageSelectionButton> {
                                           MainAxisAlignment.start,
                                       children: [
                                         Image.asset(
-                                          'assets/logo/Ellipse 12.jpg',
+                                          'assets/images/national_flag/thai.jpg',
                                           width: 23.w,
                                           height: 23.h,
                                         ),
@@ -124,7 +124,7 @@ class _LanguageSelectionButtonState extends State<LanguageSelectionButton> {
                                           MainAxisAlignment.start,
                                       children: [
                                         Image.asset(
-                                          'assets/logo/Ellipse 13.jpg',
+                                          'assets/images/national_flag/english.jpg',
                                           width: 23.w,
                                           height: 23.h,
                                         ),
@@ -168,8 +168,8 @@ class _LanguageSelectionButtonState extends State<LanguageSelectionButton> {
               children: [
                 Image.asset(
                   selectedLanguage == 'ไทย'
-                      ? 'assets/logo/Ellipse 12.jpg'
-                      : 'assets/logo/Ellipse 13.jpg',
+                      ? 'assets/images/national_flag/thai.jpg'
+                      : 'assets/images/national_flag/english.jpg',
                   width: 24.w,
                   height: 24.w,
                 ),

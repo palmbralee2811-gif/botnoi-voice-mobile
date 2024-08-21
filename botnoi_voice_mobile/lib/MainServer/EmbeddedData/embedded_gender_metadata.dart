@@ -3,14 +3,14 @@ import 'package:botnoi_voice_mobile/MainServer/ObjectModels/gender_metadata_mode
 List<GenderMetadataModel> embeddedGenderMetadata = [
   GenderMetadataModel(
     genderName: "ช/ญ",
-    imagePath: "assets/logo/Category.jpg",
+    imagePath: "assets/images/gender/all.jpg",
   ),
   GenderMetadataModel(
     genderName: "ชาย",
-    imagePath: "assets/logo/Category (2).jpg",
+    imagePath: "assets/images/gender/man.jpg",
   ),
   GenderMetadataModel(
     genderName: "หญิง",
-    imagePath: "assets/logo/Category (1).jpg",
+    imagePath: "assets/images/gender/woman.jpg",
   )
 ];

@@ -63,7 +63,7 @@ class LanguageOptionWidget extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         Image.asset(
-                                          'assets/logo/Ellipse 12.jpg',
+                                          'assets/images/national_flag/thai.jpg',
                                           width: 23.w,
                                           height: 23.h,
                                         ),
@@ -94,7 +94,7 @@ class LanguageOptionWidget extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         Image.asset(
-                                          'assets/logo/Ellipse 13.jpg',
+                                          'assets/images/national_flag/english.jpg',
                                           width: 23.w,
                                           height: 23.h,
                                         ),
@@ -133,7 +133,7 @@ class LanguageOptionWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/AuthScreenIcon/flag-thai.png',
+                  'assets/images/national_flag/thai.jpg',
                   width: 24.w,
                   height: 24.w,
                 ),

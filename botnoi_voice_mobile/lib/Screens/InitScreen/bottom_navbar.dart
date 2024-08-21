@@ -30,7 +30,7 @@ class BottomNavBar extends StatelessWidget {
               children: [
                 SizedBox(height: 2.h),
                 SvgPicture.asset(
-                  'assets/images/icons/linear-icon.svg',
+                  'assets/images/icons/bottom-navbar-icon.svg',
                   width: 17.25.w,
                   height: 20.25.h,
                 ),
@@ -59,7 +59,7 @@ class BottomNavBar extends StatelessWidget {
               children: [
                 SizedBox(height: 2.h),
                 SvgPicture.asset(
-                  'assets/images/icons/linear-icon.svg',
+                  'assets/images/icons/bottom-navbar-icon.svg',
                   width: 17.25.w,
                   height: 20.25.h,
                 ),

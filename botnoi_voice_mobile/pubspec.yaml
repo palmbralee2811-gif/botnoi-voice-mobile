@@ -28,16 +28,31 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.13.1" #TODO: flutter pub run flutter_launcher_icons:main
   flutter_lints: ^4.0.0
+
+flutter_launcher_icons:
+  image_path_android: "assets/app_icon/icon-710x599-android.png"
+  image_path_ios: "assets/app_icon/icon-1024x1024-ios.png"
+  android: true
+  ios: true
+  adaptive_icon_background: "assets/app_icon/background-620x420.png"
+  adaptive_icon_foreground: "assets/app_icon/icon-foreground-432x432.png"
+  adaptive_icon_monochrome: "assets/app_icon/icon-foreground-432x432.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  background_color_ios: "#ffffff"
 
 flutter:
   uses-material-design: true
 
   assets:
+    - assets/app_icon/
     - assets/images/
-    - assets/images/icons/
+    - assets/images/auth_screen/
+    - assets/images/gender/
+    - assets/images/icon/
+    - assets/images/logo/
+    - assets/images/national_flag/
     - assets/logo/
-    - assets/icons/
     - assets/square_image/
-    - assets/AuthScreenIcon/
-
