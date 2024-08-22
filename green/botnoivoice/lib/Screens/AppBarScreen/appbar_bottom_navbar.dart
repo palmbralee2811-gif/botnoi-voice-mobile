@@ -1,17 +1,18 @@
+import 'package:botnoivoice/Screens/AllSpeakerScreen/all_speaker_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppbarBottomNavbar extends StatelessWidget {
+class AppbarBottomNavbar extends StatefulWidget {
   const AppbarBottomNavbar({
     super.key,
-    required this.imagePath,
-    required this.languageIconPath,
-    required this.onChangePressed,
   });
 
-  final String imagePath;
-  final String languageIconPath;
-  final VoidCallback onChangePressed;
+  @override
+  State<AppbarBottomNavbar> createState() => _AppbarBottomNavbarState();
+}
+
+class _AppbarBottomNavbarState extends State<AppbarBottomNavbar> {
+  //TODO: Update selected speaker
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +35,12 @@ class AppbarBottomNavbar extends StatelessWidget {
               SizedBox(width: 8.w),
               CircleAvatar(
                 radius: 14.r,
-                backgroundImage: AssetImage(imagePath),
+                //TODO: Update image
+                backgroundImage: const AssetImage('assets/square_image/square_ava.webp',
+            ),
               ),
               SizedBox(width: 4.w),
+              //TODO: Update name
               Text(
                 'เอวา',
                 style: TextStyle(
@@ -58,9 +62,11 @@ class AppbarBottomNavbar extends StatelessWidget {
               SizedBox(width: 8.w),
               CircleAvatar(
                 radius: 7.r,
-                backgroundImage: AssetImage(languageIconPath),
+                //TODO: Update national flag
+                backgroundImage: const AssetImage('assets/images/national_flag/thai.png'),
               ),
               SizedBox(width: 8.w),
+              //TODO: Update national flag name
               Text(
                 'ไทย',
                 style: TextStyle(
@@ -72,7 +78,12 @@ class AppbarBottomNavbar extends StatelessWidget {
             ],
           ),
           GestureDetector(
-            onTap: onChangePressed,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllSpeakerScreen()));
+            },
             child: Text(
               'เปลี่ยน',
               style: TextStyle(

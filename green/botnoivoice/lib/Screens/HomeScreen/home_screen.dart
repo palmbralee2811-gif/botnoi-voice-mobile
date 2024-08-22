@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Database/newdata.dart';
-import 'package:botnoivoice/Screens/AllSpeakerScreen/all_speaker_screen.dart';
+import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/appbar_bottom_navbar.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/appbar_screen.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
@@ -22,7 +22,6 @@ import 'package:http/http.dart' as http;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  final int maxLength = 1000;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -34,77 +33,24 @@ class _HomeScreenState extends State<HomeScreen> {
   String response = '';
   String audioUrl = '';
   String? speakerId;
-  String? language;
-  String? gender;
-  String? speechStyle; // เลือกสไตล์
-  String? voiceStyle; //เลือกหมวดหมู่
 
-  // Download File
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(); // Play Example Audio
+  List<NewAppDataBase>? data; // Player Audio
+  bool isShowClearIcon = false; // Show Clear Icon
 
-  // Player Audio
-  List<NewAppDataBase>? data;
-
-  // Download Audio
-  String selectedTypeMedia = 'mp3';
-
-  // เลือกเสียงที่ชอบ
-  Set<int> selectedIndex = <int>{};
-  List<String> selectedIndexFavorites = [];
-
-  bool showClearIcon = false;
-  bool isSelectedFilter = false;
-
-  String selectedLanguage = 'ไทย'; // ค่าเริ่มต้น ภาษา
-  String selectedLanguageImage =
-      'assets/images/national_flag/thai.png'; // ค่าเริ่มต้นรูป
-  bool isExpanded = false;
-
-  String selectedGender = 'ช/ญ'; //ค่าเริ่มต้น เพศ
-  String selectedGenderImage =
-      'assets/images/gender/all.svg'; // ค่าเริ่มต้น ไอเพศ
-  bool changeIcon = false; // เลือกเพศ
-
-  // เลือกสไตล์
-  bool selectStyle = false;
-  bool selectStyle1 = false;
-  bool selectStyle2 = false;
-  bool selectStyle3 = false;
-  bool selectStyle4 = false;
-  bool selectStyle5 = false;
-  bool selectStyle6 = false;
-  bool selectStyle7 = false;
-  bool selectStyle8 = false;
-  bool selectStyle9 = false;
-  bool selectStyle10 = false;
-  bool selectStyle11 = false;
-  bool selectStyle12 = false;
-  bool selectStyle13 = false;
-  bool selectStyle14 = false;
-  bool selectStyle15 = false;
-  bool selectStyle16 = false;
-
-  // เลือกหมวดหมู่
-  bool selectCategory = false;
-  bool selectCategory1 = false;
-  bool selectCategory2 = false;
-  bool selectCategory3 = false;
-  bool selectCategory4 = false;
-  bool selectCategory5 = false;
-  bool selectCategory6 = false;
-  bool selectCategory7 = false;
-  bool selectCategory8 = false;
-  bool selectCategory9 = false;
-  bool selectCategory10 = false;
-
+  //TODO: setter & getter
+  //TODO: update speaker id when slected new id on all_speaker_screen.dart
   @override
   void initState() {
     super.initState();
     speakerId = '1';
-    language = 'TH'; // ค่าเริ่มต้น ภาษา
-    gender = ''; // ค่าเริ่มต้น เพศ
-    speechStyle = ''; // ค่าเริ่มต้น สไตล์
-    voiceStyle = ''; // ค่าเริ่มต้น หมวดหมู่
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    speakerId = Provider.of<SpeakerProvider>(context).speakerId;
+    debugPrint("generateAudio -> speakerId: $speakerId");
   }
 
   @override
@@ -137,189 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
         title: AppbarScreen(context),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
-          child: AppbarBottomNavbar(
-            imagePath: 'assets/square_image/square_ava.webp',
-            languageIconPath: 'assets/images/national_flag/thai.png',
-            onChangePressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AllSpeakerScreen()));
-            },
-          ),
+          child: const AppbarBottomNavbar(),
         ),
       ),
       body: Stack(
         children: [
-          Column(
-            children: <Widget>[
-              Container(
-                width: 320.w,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                height: 450.h,
-                child: Padding(
-                  padding: EdgeInsets.all(10.w),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: 288.w,
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 5.0,
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14.r),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 25.w, right: 10.w, top: 20.w),
-                            child: Column(
-                              children: [
-                                TextField(
-                                  cursorColor: const Color(0xFF000000),
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 14.sp,
-                                    color: const Color(0xFF323130),
-                                  ),
-                                  maxLines: 15,
-                                  keyboardType: TextInputType.multiline,
-                                  controller: textController,
-                                  onChanged: (text) {
-                                    if (textController.text.length >
-                                        widget.maxLength) {
-                                      textController.text = textController.text
-                                          .substring(0, widget.maxLength);
-                                      textController.selection =
-                                          TextSelection.fromPosition(
-                                        TextPosition(
-                                            offset: textController.text.length),
-                                      );
-                                    }
-                                    setState(() {
-                                      showClearIcon =
-                                          textController.text.isNotEmpty;
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText:
-                                        'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
-                                    hintStyle: TextStyle(
-                                      color: const Color(0xFFA19F9D),
-                                      fontStyle:
-                                          GoogleFonts.prompt(fontSize: 14.sp)
-                                              .fontStyle,
-                                    ),
-                                    hintMaxLines: 1,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(right: 25.w),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          showClearIcon
-                                              ? Padding(
-                                                  padding: EdgeInsets.only(
-                                                      right: 1.w),
-                                                  child: TextButton(
-                                                    style: TextButton.styleFrom(
-                                                        textStyle: TextStyle(
-                                                            fontSize: 10.sp)),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        textController.clear();
-                                                        showClearIcon = false;
-                                                      });
-                                                    },
-                                                    child: GradientIcon(
-                                                      icon: Icons.close_sharp,
-                                                      size: 20.sp,
-                                                      gradient:
-                                                          const LinearGradient(
-                                                        colors: [
-                                                          Color(0xFF9340FF),
-                                                          Color(0xFF34BDFA)
-                                                        ],
-                                                        begin:
-                                                            Alignment.topLeft,
-                                                        end: Alignment
-                                                            .bottomRight,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : Padding(
-                                                  padding: EdgeInsets.only(
-                                                      right: 1.w),
-                                                  child: TextButton(
-                                                    style: TextButton.styleFrom(
-                                                        textStyle: TextStyle(
-                                                            fontSize: 10.sp)),
-                                                    onPressed: () {},
-                                                    child: Icon(
-                                                      Icons.close_sharp,
-                                                      size: 20.sp,
-                                                      color: Colors.transparent,
-                                                    ),
-                                                  ),
-                                                )
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          GradientText(
-                                            text:
-                                                '${textController.text.length}',
-                                            style: GoogleFonts.prompt(
-                                              fontSize: 14.sp,
-                                              color: const Color(0xFFA19F9D),
-                                            ),
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                Color(0xFF9340FF),
-                                                Color(0xFF34BDFA)
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            ' / ${widget.maxLength}',
-                                            style: GoogleFonts.prompt(
-                                              fontSize: 14.sp,
-                                              color: const Color(0xFFA19F9D),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          buildTextBox(),
           Positioned(
             bottom: 0,
             left: 0,
@@ -336,6 +105,165 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: buildGenerateButton(context),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildTextBox() {
+    return Column(
+      children: <Widget>[
+        Container(
+          width: 320.w,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          height: 450.h,
+          child: Padding(
+            padding: EdgeInsets.all(10.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 288.w,
+                    decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 5.0,
+                        ),
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+                      child: Column(
+                        children: [
+                          TextField(
+                            cursorColor: const Color(0xFF000000),
+                            style: GoogleFonts.prompt(
+                              fontSize: 14.sp,
+                              color: const Color(0xFF323130),
+                            ),
+                            maxLines: 15,
+                            keyboardType: TextInputType.multiline,
+                            controller: textController,
+                            onChanged: (text) {
+                              if (textController.text.length > 1000) {
+                                textController.text =
+                                    textController.text.substring(0, 1000);
+                                textController.selection =
+                                    TextSelection.fromPosition(
+                                  TextPosition(
+                                      offset: textController.text.length),
+                                );
+                              }
+                              setState(() {
+                                isShowClearIcon =
+                                    textController.text.isNotEmpty;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText:
+                                  'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
+                              hintStyle: TextStyle(
+                                color: const Color(0xFFA19F9D),
+                                fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
+                                    .fontStyle,
+                              ),
+                              hintMaxLines: 1,
+                            ),
+                          ),
+                          buildBottomTextBox(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildBottomTextBox() {
+    return Padding(
+      padding: EdgeInsets.only(right: 25.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              isShowClearIcon
+                  ? Padding(
+                      padding: EdgeInsets.only(right: 1.w),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 10.sp)),
+                        onPressed: () {
+                          setState(() {
+                            textController.clear();
+                            isShowClearIcon = false;
+                          });
+                        },
+                        child: GradientIcon(
+                          icon: Icons.close_sharp,
+                          size: 20.sp,
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(right: 1.w),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 10.sp)),
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.close_sharp,
+                          size: 20.sp,
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    )
+            ],
+          ),
+          Row(
+            children: [
+              GradientText(
+                text: '${textController.text.length}',
+                style: GoogleFonts.prompt(
+                  fontSize: 14.sp,
+                  color: const Color(0xFFA19F9D),
+                ),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                ),
+              ),
+              Text(
+                ' / 1000',
+                style: GoogleFonts.prompt(
+                  fontSize: 14.sp,
+                  color: const Color(0xFFA19F9D),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -373,11 +301,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> generateAudio(String text) async {
-    setState(() {
-      audioUrl = '';
-    });
-
     final auth = Provider.of<Authentication>(context, listen: false);
+    speakerId = Provider.of<SpeakerProvider>(context, listen: false).speakerId;
+    debugPrint("generateAudio -> speakerId: $speakerId");
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
@@ -385,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "speaker": speakerId,
       "volume": 1,
       "speed": 1,
-      "type_media": selectedTypeMedia,
+      "type_media": "mp3",
       "save_file": true,
     };
 
@@ -434,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
       String url = audioUrl;
       var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        String filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+        String filename = "BotnoiVoice${randomString(6)}.mp3";
         var tempDir = await getTemporaryDirectory();
         var path = '${tempDir.path}/$filename';
         var file = File(path);
@@ -448,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _androidDownloadFunction() async {
     try {
-      var filename = "BotnoiVoice${randomString(6)}.$selectedTypeMedia";
+      var filename = "BotnoiVoice${randomString(6)}.mp3";
       List<Directory>? directories =
           await getExternalStorageDirectories(type: StorageDirectory.downloads);
       if (directories == null || directories.isEmpty) {

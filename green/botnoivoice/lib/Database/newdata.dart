@@ -835,13 +835,12 @@ class NewAppDataBase {
     NewData(
       speakerId: '31',
       speakerName: 'johny',
-      engName: 'นายเบรด',
-      thaiName:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/bread.webp',
+      engName: 'Mr.Bread',
+      thaiName: 'นายเบรด',
       image:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/face_bread.webp',
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/bread.webp',
       faceImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/horizontal_face_bread.webp',
+          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/face_bread.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/horizontal_face_bread.webp',
       squareImage:

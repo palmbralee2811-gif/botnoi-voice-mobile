@@ -15,8 +15,8 @@ class _AuthCheckerState extends State<AuthChecker> {
   var _isLoading = true;
   late Authentication auth;
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     auth = Provider.of<Authentication>(context, listen: false);
     _checkAuthStatus();
   }
