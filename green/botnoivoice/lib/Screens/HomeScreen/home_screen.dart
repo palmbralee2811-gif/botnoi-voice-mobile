@@ -43,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    speakerId = '1';
   }
 
   @override
@@ -94,17 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 0,
             right: 0,
             child: Container(
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.white,
-                      spreadRadius: 5,
-                      blurRadius: 10,
-                      offset: Offset(0, 3)),
-                ],
-              ),
-              child: buildGenerateButton(context),
-            ),
+              width: 320.w,
+              color: Colors.white,
+              child: buildGenerateButton(context)),
           ),
         ],
       ),
@@ -112,25 +103,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildTextBox() {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: 320.w,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+    return SizedBox(
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: 320.w,
+            height: 480.h,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-          ),
-          height: 450.h,
-          child: Padding(
-            padding: EdgeInsets.all(10.w),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Container(
+            child: Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
                     width: 288.w,
                     decoration: BoxDecoration(
                       boxShadow: const [
@@ -188,12 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -274,8 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Padding(
-          padding:
-              EdgeInsets.only(left: 20.w, top: 0, right: 20.w, bottom: 30.h),
+          padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {
@@ -302,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<String> generateAudio(String text) async {
     final auth = Provider.of<Authentication>(context, listen: false);
-    speakerId = Provider.of<SpeakerProvider>(context, listen: false).speakerId;
+    speakerId = Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
     debugPrint("generateAudio -> speakerId: $speakerId");
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";

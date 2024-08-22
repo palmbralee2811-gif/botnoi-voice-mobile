@@ -1154,16 +1154,18 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       onTap: () {
         setState(() {
           if (text == 'ทั้งหมด') {
-            language = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+            language = '';
           } else {
             List<String> parts = text.split(' - ');
             if (parts.length > 1) {
               selectedLanguage = parts[1];
             } else {
-              selectedLanguage = text; // กรณีที่ไม่มีตัวแบ่งให้ใช้ค่าเดิม
+              selectedLanguage = text;
             }
+            //TODO: setter to appbar_bottom_navbar.dart
+            //TODO: 1. image path 2. language name
             selectedLanguageImage = imagePath;
-            language = lang; // Update the language variable
+            language = lang;
           }
         });
         Navigator.pop(context);
@@ -1272,8 +1274,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                       (language == '' || item.language == language) &&
                       (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
                       (speechStyle == '' || item.speechStyle == speechStyle))
-                  .length, //new
-
+                  .length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 0,
@@ -1314,26 +1315,28 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                   await audioPlayer.play(UrlSource(audioURL));
                 }
               }
+
               await playAudio();
-              speakerId = data.speakerId;
+
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerId(speakerId!);
+                  .setSpeakerId(data.speakerId);
+              Provider.of<SpeakerProvider>(context, listen: false)
+                  .setSpeakerName(data.thaiName);
+              Provider.of<SpeakerProvider>(context, listen: false)
+                  .setSpeakerAudio(data.audio);
+              Provider.of<SpeakerProvider>(context, listen: false)
+                  .setSpeakerImagePath(data.squareImage);
+              Provider.of<SpeakerProvider>(context, listen: false)
+                  .setNationalFlagPath(selectedLanguageImage);
+              Provider.of<SpeakerProvider>(context, listen: false)
+                  .setNationalFlagName(selectedLanguage);
 
-              //TODO: speaker image path
-
-              //TODO: speaker image name
-
-              //TODO: national flag icon path
-
-              //TODO: national flag name
-
-              //TODO: setter & getter value to the all_speaker_screen.dart
               setState(() {
                 if (selectedIndex.contains(index)) {
-                  selectedIndex.remove(index);
                   if (audioPlayer.state == PlayerState.playing) {
                     audioPlayer.stop();
                   }
+                  selectedIndex.remove(index);
                 } else {
                   selectedIndex.clear();
                   selectedIndex.add(index);
@@ -1504,6 +1507,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                             ),
                             Expanded(
                                 child: Text(
+                              //TODO: setter to appbar_bottom_navbar.dart
                               data.thaiName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,

@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AppbarScreen extends StatefulWidget {
   const AppbarScreen(
@@ -69,41 +73,48 @@ class _AppbarScreenState extends State<AppbarScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(width: 5.w),
-                              SizedBox(
-                                height: 25.h,
-                                width: 20.h,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/images/logo/credit-icon.svg',
-                                        width: 20.w,
-                                        height: 20.h,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    ' ${credits ?? " N/A"}',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF323130),
+                          child: InkWell(
+                            onTap: () async {
+                              const url = 'https://voice.botnoi.ai/payment';
+                              launchUrlString(url, mode: LaunchMode.platformDefault);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(width: 5.w),
+                                SizedBox(
+                                  height: 25.h,
+                                  width: 20.h,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/logo/credit-icon.svg',
+                                          width: 20.w,
+                                          height: 20.h,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                              SizedBox(width: 5.w),
-                            ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      ' ${credits ?? " N/A"}',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF323130),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(width: 5.w),
+                              ],
+                            ),
                           ),
                         ),
                       ],
