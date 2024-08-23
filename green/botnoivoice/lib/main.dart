@@ -1,6 +1,7 @@
 import 'package:botnoivoice/Authentication/auth_checker.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
+import 'package:botnoivoice/Screens/AppBarScreen/credits_provider.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,8 @@ class BotnoiVoiceApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => Authentication()),
-        ChangeNotifierProvider(create: (context) => SpeakerProvider())
+        ChangeNotifierProvider(create: (context) => SpeakerProvider()),
+        ChangeNotifierProvider(create: (context) => CreditsProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

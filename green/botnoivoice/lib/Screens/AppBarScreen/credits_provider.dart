@@ -1,0 +1,18 @@
+import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:flutter/material.dart';
+
+class CreditsProvider with ChangeNotifier {
+  String? _credits;
+
+  String? get credits => _credits;
+
+  void setCredits(String? newCredits) {
+    _credits = newCredits;
+    notifyListeners(); // แจ้งให้ผู้ฟังที่เชื่อมโยงกันทราบถึงการเปลี่ยนแปลง
+  }
+
+  Future<void> fetchCredits(Authentication auth) async {
+    final fetchedCredits = await auth.getProfileWithToken(auth.jwtToken);
+    setCredits(fetchedCredits);
+  }
+}

@@ -30,7 +30,10 @@ class DrawerAppbarScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(auth.user!.photoURL!),
+                      backgroundImage: user?.photoURL != null
+                          ? NetworkImage(user!.photoURL!)
+                          : const AssetImage(
+                              'assets/app_icon/icon-foreground-432x432.png'),
                       backgroundColor: Colors.black,
                       radius: 20.0.r,
                     ),
@@ -50,7 +53,7 @@ class DrawerAppbarScreen extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  ' ${auth.user!.displayName}',
+                  user?.displayName ?? 'No Name',
                   style: GoogleFonts.prompt(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -65,7 +68,7 @@ class DrawerAppbarScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        ' ${email ?? ' No email found'}',
+                        email ?? 'No email found',
                         style: GoogleFonts.prompt(
                           fontSize: 14.sp,
                           color: const Color(0xFF323130),

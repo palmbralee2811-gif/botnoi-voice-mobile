@@ -7,6 +7,7 @@ import 'package:botnoivoice/Database/newdata.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/appbar_bottom_navbar.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/appbar_screen.dart';
+import 'package:botnoivoice/Screens/AppBarScreen/credits_provider.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
@@ -38,8 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<NewAppDataBase>? data; // Player Audio
   bool isShowClearIcon = false; // Show Clear Icon
 
-  //TODO: setter & getter
-  //TODO: update speaker id when slected new id on all_speaker_screen.dart
   @override
   void initState() {
     super.initState();
@@ -277,6 +276,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   await generateAudio(textController.text).then((_) {
                     if (audioUrl.isNotEmpty) {
                       downloadFile();
+                      final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+                      final auth = Provider.of<Authentication>(context, listen: false);
+                      creditsProvider.fetchCredits(auth);
                     }
                   });
                 }

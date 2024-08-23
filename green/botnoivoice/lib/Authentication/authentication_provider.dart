@@ -76,17 +76,19 @@ class Authentication extends ChangeNotifier {
           if (jwtToken != null) {
             await _saveJwtToken(jwtToken!);
             credentialsToken = await getCredentialsToken(jwtToken);
-            await _saveCredentialsToken(credentialsToken!);
-            await getProfileWithToken(jwtToken);
-            notifyListeners();
+            if (credentialsToken != null) {
+              await _saveCredentialsToken(credentialsToken!);
+              await getProfileWithToken(jwtToken);
+              notifyListeners();
+            }
           }
-        } 
+        }
       }
       return user;
     } catch (e) {
       debugPrint('Error: $e');
+      return null;
     }
-    return null;
   }
 
   String? getUserEmail(User? user) {
@@ -103,6 +105,7 @@ class Authentication extends ChangeNotifier {
   }
 
   Future<String?> getIdTokenWithFirebase(String? idToken) async {
+    if (idToken == null) return null;
     String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
@@ -119,8 +122,8 @@ class Authentication extends ChangeNotifier {
           jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
           return jwtToken;
-        } 
-      } 
+        }
+      }
     } catch (e) {
       debugPrint('Error: $e');
     }
@@ -140,7 +143,7 @@ class Authentication extends ChangeNotifier {
         credits = data['data']['credits'].toString();
         notifyListeners();
         return credits;
-      } 
+      }
     } catch (e) {
       debugPrint('Error: $e');
     }
@@ -165,7 +168,7 @@ class Authentication extends ChangeNotifier {
         credentialsToken = data['data'][0]['token'].toString();
         notifyListeners();
         return credentialsToken;
-      } 
+      }
     } catch (e) {
       debugPrint('Error: $e');
     }
@@ -173,14 +176,21 @@ class Authentication extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-    await GoogleSignIn().signOut();
+    try {
+      await FirebaseAuth.instance.signOut();
+      await GoogleSignIn().signOut();
+    } catch (e) {
+      debugPrint('Error signing out: $e');
+    }
+
     user = null;
     jwtToken = null;
     credentialsToken = null;
     credits = null;
+
     await _storage.delete(key: 'jwtToken');
     await _storage.delete(key: 'credentialsToken');
+
     notifyListeners();
   }
 }

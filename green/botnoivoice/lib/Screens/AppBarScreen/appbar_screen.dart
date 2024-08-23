@@ -1,12 +1,10 @@
-import 'dart:math';
-
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/AppBarScreen/credits_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class AppbarScreen extends StatefulWidget {
@@ -24,20 +22,16 @@ class _AppbarScreenState extends State<AppbarScreen> {
 
   @override
   void initState() {
-    fetchCredits();
     super.initState();
-  }
-
-  Future<void> fetchCredits() async {
+    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
     final auth = Provider.of<Authentication>(context, listen: false);
-    final fetchedCredits = await auth.getProfileWithToken(auth.jwtToken);
-    setState(() {
-      credits = fetchedCredits;
-    });
+    creditsProvider.fetchCredits(auth);
   }
 
   @override
   Widget build(BuildContext context) {
+    final credits = Provider.of<CreditsProvider>(context).credits;
+    
     return SafeArea(
       child: Column(
         children: [
@@ -50,8 +44,8 @@ class _AppbarScreenState extends State<AppbarScreen> {
                   backgroundColor: Colors.white,
                   child: SvgPicture.asset(
                     'assets/images/logo/appbar-icon.svg',
-                    width: 25.w,
-                    height: 25.h,
+                    width: 30.w,
+                    height: 34.h,
                     fit: BoxFit.cover,
                   ),
                 ),

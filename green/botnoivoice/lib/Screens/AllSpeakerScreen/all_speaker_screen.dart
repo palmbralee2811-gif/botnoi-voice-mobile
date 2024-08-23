@@ -1162,8 +1162,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             } else {
               selectedLanguage = text;
             }
-            //TODO: setter to appbar_bottom_navbar.dart
-            //TODO: 1. image path 2. language name
             selectedLanguageImage = imagePath;
             language = lang;
           }
@@ -1507,7 +1505,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                             ),
                             Expanded(
                                 child: Text(
-                              //TODO: setter to appbar_bottom_navbar.dart
                               data.thaiName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,
