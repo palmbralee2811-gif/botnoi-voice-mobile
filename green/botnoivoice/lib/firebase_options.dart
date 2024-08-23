@@ -4,16 +4,6 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -54,7 +44,8 @@ class DefaultFirebaseOptions {
     appId: '1:822010349951:android:ad447efc423ef64a9db24a',
     messagingSenderId: '822010349951',
     projectId: 'botnoivoice-1ff7a',
-    databaseURL: 'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'botnoivoice-1ff7a.appspot.com',
   );
 
@@ -63,10 +54,13 @@ class DefaultFirebaseOptions {
     appId: '1:822010349951:ios:7f408b3078242adf9db24a',
     messagingSenderId: '822010349951',
     projectId: 'botnoivoice-1ff7a',
-    databaseURL: 'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'botnoivoice-1ff7a.appspot.com',
-    androidClientId: '822010349951-d53h9tglao4n2mij5rdoi4oja0kfs8o2.apps.googleusercontent.com',
-    iosClientId: '822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin.apps.googleusercontent.com',
+    androidClientId:
+        '822010349951-d53h9tglao4n2mij5rdoi4oja0kfs8o2.apps.googleusercontent.com',
+    iosClientId:
+        '822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin.apps.googleusercontent.com',
     iosBundleId: 'com.mobile.botnoivoice',
   );
 }
