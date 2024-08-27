@@ -1,5 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Database/newdata.dart';
+import 'package:botnoivoice/Database/speaker_data.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
@@ -19,16 +19,16 @@ class AllSpeakerScreen extends StatefulWidget {
 }
 
 class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
-  bool ishover = false;
+  bool ishover = false; // ต้องการให้ข้อมูล ishover เก็บไว้ใน cache ของเครื่อง
   String? speakerId;
   String? language; // เลือกภาษา
   String? gender; // เลือกเพศ
-  String? speechStyle; // เลือกสไตล์
-  String? voiceStyle; // เลือกหมวดหมู่
 
   Set<int> selectedIndex = <int>{};
   AudioPlayer audioPlayer = AudioPlayer();
-  List<NewData>? data;
+
+  List<SpeakerData>? mySpeakerData;
+
   List<String> selectedIndexFavorites = [];
 
   String selectedLanguage = 'ไทย';
@@ -41,44 +41,12 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
 
   /// เลือกเพศ
   bool changeIcon = false;
-  // เลือกสไตล์
-  bool isSelectedVoiceStyle = false;
-  bool isSelectedVoiceStyle1 = false;
-  bool isSelectedVoiceStyle2 = false;
-  bool isSelectedVoiceStyle3 = false;
-  bool isSelectedVoiceStyle4 = false;
-  bool isSelectedVoiceStyle5 = false;
-  bool isSelectedVoiceStyle6 = false;
-  bool isSelectedVoiceStyle7 = false;
-  bool isSelectedVoiceStyle8 = false;
-  bool isSelectedVoiceStyle9 = false;
-  bool isSelectedVoiceStyle10 = false;
-  bool isSelectedVoiceStyle11 = false;
-  bool isSelectedVoiceStyle12 = false;
-  bool isSelectedVoiceStyle13 = false;
-  bool isSelectedVoiceStyle14 = false;
-  bool isSelectedVoiceStyle15 = false;
-  bool isSelectedVoiceStyle16 = false;
-  // เลือกหมวดหมู่
-  bool isSelectedSpeechStyle = false;
-  bool isSelectedSpeechStyle1 = false;
-  bool isSelectedSpeechStyle2 = false;
-  bool isSelectedSpeechStyle3 = false;
-  bool isSelectedSpeechStyle4 = false;
-  bool isSelectedSpeechStyle5 = false;
-  bool isSelectedSpeechStyle6 = false;
-  bool isSelectedSpeechStyle7 = false;
-  bool isSelectedSpeechStyle8 = false;
-  bool isSelectedSpeechStyle9 = false;
-  bool isSelectedSpeechStyle10 = false;
 
   @override
   void initState() {
     super.initState();
-    language = '';
+    language = 'TH';
     gender = '';
-    speechStyle = '';
-    voiceStyle = '';
   }
 
   @override
@@ -89,18 +57,20 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         title: Padding(
           padding: EdgeInsets.only(left: 89.w),
           child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            SvgPicture.asset(
-              'assets/images/logo/appbar-icon.svg',
-              width: 30.w,
-              height: 34.h,
-            ),
-            Icon(
-              Icons.search_rounded,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            )
-          ]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+            children: [
+              SvgPicture.asset(
+                'assets/images/logo/appbar-icon.svg',
+                width: 30.w,
+                height: 34.h,
+              ),
+              Icon(
+                Icons.search_rounded,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+            ]
+          ),
         ),
       ),
       body: buildFilterNavbar(context),
@@ -111,7 +81,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
     return Column(
       children: [
         Container(
-          height: 50.h,
+          height: 100.h,
           width: 320.w,
           color: Colors.white,
           child: Padding(
@@ -148,8 +118,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     });
                   },
                   child: Container(
-                    width: 72.w,
-                    height: 26.h,
+                    width: 100.w,
+                    height: 35.h,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: const BorderRadius.all(
@@ -165,18 +135,18 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                       children: [
                         Image.asset(
                           selectedLanguageImage,
-                          width: 14.w,
-                          height: 14.h,
+                          width: 28.w,
+                          height: 28.h,
                         ),
                         SizedBox(
-                          width: 3.w,
+                          width: 6.w,
                         ),
                         Flexible(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
                               selectedLanguage,
-                              style: GoogleFonts.prompt(fontSize: 12.sp),
+                              style: GoogleFonts.prompt(fontSize: 16.sp),
                             ),
                           ),
                         ),
@@ -224,8 +194,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     });
                   },
                   child: Container(
-                    width: 62.w,
-                    height: 26.h,
+                    width: 100.w,
+                    height: 35.h,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: const BorderRadius.all(
@@ -242,12 +212,18 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const SizedBox(width: 3),
+                            SizedBox(width: 3.w),
+                            SvgPicture.asset(
+                              selectedGenderImage,
+                              width: 28.w,
+                              height: 28.h,
+                            ),
+                            SizedBox(width: 6.w),
                             if (gender == '')
                               Text(
                                 'ช/ญ',
                                 style: GoogleFonts.prompt(
-                                  fontSize: 12.sp,
+                                  fontSize: 16.sp,
                                 ),
                               ),
                             if (gender.toString() != '')
@@ -280,22 +256,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           ),
         ),
         Container(
-          height: 76.h,
-          width: 320.w,
-          color: Colors.white,
-          child: Padding(
-            padding: EdgeInsets.only(right: 13.w, left: 13.w, top: 8.w),
-            child: Wrap(
-                alignment: WrapAlignment.start,
-                spacing: 13.0,
-                runSpacing: 13.0,
-                children: [
-                  buildVoiceStyleButton(context),
-                  buildSpeechStyleButton(context),
-                ]),
-          ),
-        ),
-        Container(
           color: const Color(0xFFFFFFFF),
           height: 420.h,
           child: Column(
@@ -309,6 +269,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             ],
           ),
         ),
+        SizedBox(height: 10.h,),
         buildBottomNavbarButton()
       ],
     );
@@ -321,7 +282,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         children: [
           Container(
             color: Colors.transparent,
-            width: 280.w,
+            width: 280.w, 
             child: Column(
               children: [
                 Row(
@@ -349,12 +310,12 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                 SizedBox(
                   height: 15.h,
                 ),
-                _buildLanguageFilter(
-                    'All - ทั้งหมด',
-                    'assets/images/national_flag/all.png',
-                    '',
-                    context,
-                    setState),
+                // _buildLanguageFilter(
+                //     'All - ทั้งหมด',
+                //     'assets/images/national_flag/all.png',
+                //     '',
+                //     context,
+                //     setState),
                 _buildLanguageFilter(
                     'Thai (Thailand) - ไทย',
                     'assets/images/national_flag/thai.png',
@@ -476,624 +437,12 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
     );
   }
 
-  Widget buildVoiceStyleButton(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          isSelectedVoiceStyle = !isSelectedVoiceStyle;
-        });
-        showModalBottomSheet(
-          backgroundColor: Colors.white,
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-                return SizedBox(
-                  height: 220.h,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      children: [
-                        Container(
-                          color: Colors.transparent,
-                          width: 360,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'สไตล์',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 24.sp,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 15.h,
-                              ),
-                              Wrap(
-                                alignment: WrapAlignment.start,
-                                spacing: 13.0,
-                                runSpacing: 13.0,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle1 =
-                                            !isSelectedVoiceStyle1;
-                                        voiceStyle = isSelectedVoiceStyle1
-                                            ? 'เสียงน่ารัก'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'น่ารัก', isSelectedVoiceStyle1),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle2 =
-                                            !isSelectedVoiceStyle2;
-                                        voiceStyle = isSelectedVoiceStyle2
-                                            ? 'เสียงมั่นใจ'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'มั่นใจ', isSelectedVoiceStyle2),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle3 =
-                                            !isSelectedVoiceStyle3;
-                                        voiceStyle = isSelectedVoiceStyle3
-                                            ? 'เสียงน่าเชื่อถือ'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'น่าเชื่อถือ', isSelectedVoiceStyle3),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle4 =
-                                            !isSelectedVoiceStyle4;
-                                        voiceStyle = isSelectedVoiceStyle4
-                                            ? 'เสียงตื่นเต้น'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ตื่นเต้น', isSelectedVoiceStyle4),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle5 =
-                                            !isSelectedVoiceStyle5;
-                                        voiceStyle = isSelectedVoiceStyle5
-                                            ? 'เสียงจริงจัง'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'จริงจัง', isSelectedVoiceStyle5),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle6 =
-                                            !isSelectedVoiceStyle6;
-                                        voiceStyle = isSelectedVoiceStyle6
-                                            ? 'เสียงหวาน'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'หวาน', isSelectedVoiceStyle6),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle7 =
-                                            !isSelectedVoiceStyle7;
-                                        voiceStyle = isSelectedVoiceStyle7
-                                            ? 'เสียงอบอุ่น'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'อบอุ่น', isSelectedVoiceStyle7),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle8 =
-                                            !isSelectedVoiceStyle8;
-                                        voiceStyle = isSelectedVoiceStyle8
-                                            ? 'เสียงขี้เล่น'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ขี้เล่น', isSelectedVoiceStyle8),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle9 =
-                                            !isSelectedVoiceStyle9;
-                                        voiceStyle = isSelectedVoiceStyle9
-                                            ? 'เสียงทุ้ม'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ทุ้ม', isSelectedVoiceStyle9),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle10 =
-                                            !isSelectedVoiceStyle10;
-                                        voiceStyle = isSelectedVoiceStyle10
-                                            ? 'เสียงนุ่มนวล'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'นุ่มนวล', isSelectedVoiceStyle10),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle11 =
-                                            !isSelectedVoiceStyle11;
-                                        voiceStyle = isSelectedVoiceStyle11
-                                            ? 'เสียงท้องถิ่น'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ท้องถิ่น', isSelectedVoiceStyle11),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle12 =
-                                            !isSelectedVoiceStyle12;
-                                        voiceStyle = isSelectedVoiceStyle12
-                                            ? 'เสียงใจเย็น'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ใจเย็น', isSelectedVoiceStyle12),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle13 =
-                                            !isSelectedVoiceStyle13;
-                                        voiceStyle = isSelectedVoiceStyle13
-                                            ? 'เสียงนิ่มนวล'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'นิ่มนวล', isSelectedVoiceStyle13),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle14 =
-                                            !isSelectedVoiceStyle14;
-                                        voiceStyle = isSelectedVoiceStyle14
-                                            ? 'เสียงชัดเจน'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ชัดเจน', isSelectedVoiceStyle14),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle15 =
-                                            !isSelectedVoiceStyle15;
-                                        voiceStyle = isSelectedVoiceStyle15
-                                            ? 'เสียงเหนือ'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'เหนือ', isSelectedVoiceStyle15),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedVoiceStyle16 =
-                                            !isSelectedVoiceStyle16;
-                                        voiceStyle = isSelectedVoiceStyle16
-                                            ? 'เสียงอีสาน'
-                                            : '';
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'อีสาน', isSelectedVoiceStyle16),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ).whenComplete(() {
-          setState(() {
-            isSelectedVoiceStyle = false;
-          });
-        });
-      },
-      child: Container(
-        width: 62.w,
-        height: 26.h,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 3,
-                ),
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      'สไตล์',
-                      style: GoogleFonts.prompt(fontSize: 12.sp),
-                    ),
-                  ),
-                ),
-                Icon(
-                  isSelectedVoiceStyle
-                      ? Icons.keyboard_arrow_up_sharp
-                      : Icons.keyboard_arrow_down_sharp,
-                  size: 20,
-                  color: const Color(0xFF323130),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildSpeechStyleButton(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          isSelectedSpeechStyle = !isSelectedSpeechStyle;
-        });
-        showModalBottomSheet(
-          backgroundColor: Colors.white,
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-                return SizedBox(
-                  height: 200.h,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      children: [
-                        Container(
-                          color: Colors.transparent,
-                          width: 360,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'หมวดหมู่',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 24.sp,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 15.h,
-                              ),
-                              Wrap(
-                                alignment: WrapAlignment.start,
-                                spacing: 13.0,
-                                runSpacing: 13.0,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle1 =
-                                            !isSelectedSpeechStyle1;
-                                        speechStyle = isSelectedSpeechStyle1
-                                            ? 'สไตล์เล่าเรื่อง'
-                                                'สไตล์อ่านข่าว'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'เล่าเรื่อง', isSelectedSpeechStyle1),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle2 =
-                                            !isSelectedSpeechStyle2;
-                                        speechStyle = isSelectedSpeechStyle2
-                                            ? 'สไตล์อ่านข่าว'
-                                                'สไตล์เล่าเรื่อง'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'อ่านข่าว', isSelectedSpeechStyle2),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle3 =
-                                            !isSelectedSpeechStyle3;
-                                        speechStyle = isSelectedSpeechStyle3
-                                            ? 'สไตล์เล่าเรื่อง'
-                                                'สไตล์ตัวละคร'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ตัวละคร', isSelectedSpeechStyle3),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle4 =
-                                            !isSelectedSpeechStyle4;
-                                        speechStyle = isSelectedSpeechStyle4
-                                            ? 'สไตล์บรรยาย'
-                                                'สไตล์ตัวละคร'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'บรรยาย', isSelectedSpeechStyle4),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle5 =
-                                            !isSelectedSpeechStyle5;
-                                        speechStyle = isSelectedSpeechStyle5
-                                            ? 'สไตล์อ่านข่าว'
-                                                'สไตล์สปอตโฆษณา'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'สปอตโฆษณา', isSelectedSpeechStyle5),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle6 =
-                                            !isSelectedSpeechStyle6;
-                                        speechStyle = isSelectedSpeechStyle6
-                                            ? 'สไตล์สารคดี'
-                                                'สไตล์บรรยาย'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'สารคดี', isSelectedSpeechStyle6),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle7 =
-                                            !isSelectedSpeechStyle7;
-                                        speechStyle = isSelectedSpeechStyle7
-                                            ? 'สไตล์ตัวละคร'
-                                                'สไตล์อนิเมะ'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'อนิเมะ', isSelectedSpeechStyle7),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle8 =
-                                            !isSelectedSpeechStyle8;
-                                        speechStyle = isSelectedSpeechStyle8
-                                            ? 'สไตล์บรรยาย'
-                                                'สไตล์อาจารย์'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'อาจารย์', isSelectedSpeechStyle8),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle9 =
-                                            !isSelectedSpeechStyle9;
-                                        speechStyle = isSelectedSpeechStyle9
-                                            ? 'สไตล์เล่าเรื่อง'
-                                                'สไตล์ท้องถิ่น'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'ท้องถิ่น', isSelectedSpeechStyle9),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setModalState(() {
-                                        isSelectedSpeechStyle10 =
-                                            !isSelectedSpeechStyle10;
-                                        speechStyle = isSelectedSpeechStyle10
-                                            ? 'สไตล์อ่านข่าว'
-                                                'สไตล์เสียงต่างประเทศ'
-                                            : '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: buildSpeechStyleFilter(
-                                        'เสียงต่างประเทศ',
-                                        isSelectedSpeechStyle10),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ).whenComplete(() {
-          setState(() {
-            isSelectedSpeechStyle = false;
-          });
-        });
-      },
-      child: Container(
-        width: 62.w,
-        height: 26.h,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 3,
-                ),
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      'หมวดหมู่',
-                      style: GoogleFonts.prompt(fontSize: 12.sp),
-                    ),
-                  ),
-                ),
-                Icon(
-                  isSelectedSpeechStyle
-                      ? Icons.keyboard_arrow_up_sharp
-                      : Icons.keyboard_arrow_down_sharp,
-                  size: 20,
-                  color: const Color(0xFF323130),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget buildBottomNavbarButton() {
     return SizedBox(
-      height: 56.h,
+      height: 60.h,
       width: 320.w,
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
+        padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
         child: SizedBox(
           child: GradientButton(
             text: 'ตกลง',
@@ -1153,8 +502,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
     return InkWell(
       onTap: () {
         setState(() {
-          if (text == 'ทั้งหมด') {
-            language = '';
+          if (text == 'ไทย') {
+            language = 'TH';
           } else {
             List<String> parts = text.split(' - ');
             if (parts.length > 1) {
@@ -1266,12 +615,10 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             height: 420.h,
             width: 320.w,
             child: GridView.builder(
-              itemCount: NewAppDataBase.data
+              itemCount: SpeakerDataList.mySpeakerData //NewAppDataBase.data
                   .where((item) =>
-                      (gender == '' || item.gender == gender) &&
-                      (language == '' || item.language == language) &&
-                      (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
-                      (speechStyle == '' || item.speechStyle == speechStyle))
+                      item.language == language &&
+                      (gender == '' || item.gender == gender))
                   .length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -1280,12 +627,10 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               ),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                final data = NewAppDataBase.data
+                final data = SpeakerDataList.mySpeakerData //NewAppDataBase.data
                     .where((item) =>
-                        (gender == '' || item.gender == gender) &&
-                        (language == '' || item.language == language) &&
-                        (voiceStyle == '' || item.voiceStyle == voiceStyle) &&
-                        (speechStyle == '' || item.speechStyle == speechStyle))
+                        item.language == language &&
+                        (gender == '' || item.gender == gender))
                     .toList()[index];
                 return buildSingleSpeaker(data, index);
               },
@@ -1296,7 +641,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
     );
   }
 
-  Widget buildSingleSpeaker(NewData data, int index) {
+  Widget buildSingleSpeaker(SpeakerData mySpeakerData /*NewData data*/, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1304,7 +649,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 7.h),
           child: GestureDetector(
             onTap: () async {
-              String audioURL = data.audio;
+              String audioURL = mySpeakerData.audio;
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (audioPlayer.state == PlayerState.playing) {
@@ -1317,13 +662,13 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               await playAudio();
 
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerId(data.speakerId);
+                  .setSpeakerId(mySpeakerData.speakerId);
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerName(data.thaiName);
+                  .setSpeakerName(mySpeakerData.thaiName);
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerAudio(data.audio);
+                  .setSpeakerAudio(mySpeakerData.audio);
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerImagePath(data.squareImage);
+                  .setSpeakerImagePath(mySpeakerData.squareImage);
               Provider.of<SpeakerProvider>(context, listen: false)
                   .setNationalFlagPath(selectedLanguageImage);
               Provider.of<SpeakerProvider>(context, listen: false)
@@ -1363,8 +708,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      image: NetworkImage(
-                        data.squareImage,
+                      image: AssetImage(
+                        mySpeakerData.squareImage,
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -1437,17 +782,17 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                                 onTap: () {
                                   setState(() {
                                     if (selectedIndexFavorites
-                                        .contains(data.speakerId)) {
+                                        .contains(mySpeakerData.speakerId)) {
                                       selectedIndexFavorites
-                                          .remove(data.speakerId);
+                                          .remove(mySpeakerData.speakerId);
                                     } else {
                                       selectedIndexFavorites
-                                          .add(data.speakerId);
+                                          .add(mySpeakerData.speakerId);
                                     }
                                   });
                                 },
                                 child: selectedIndexFavorites
-                                        .contains(data.speakerId)
+                                        .contains(mySpeakerData.speakerId)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
                                           return const LinearGradient(
@@ -1505,7 +850,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                             ),
                             Expanded(
                                 child: Text(
-                              data.thaiName,
+                              mySpeakerData.thaiName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,
                                 color: Colors.white,
@@ -1531,7 +876,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       height: 420.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: NewAppDataBase.data
+        itemCount: SpeakerDataList.mySpeakerData //NewAppDataBase.data
             .where((item) =>
                 selectedIndexFavorites.isEmpty ||
                 selectedIndexFavorites.contains(item.speakerId))
@@ -1543,7 +888,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         ),
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
-          final data = NewAppDataBase.data
+          final data = SpeakerDataList.mySpeakerData //NewAppDataBase.data
               .where((item) =>
                   selectedIndexFavorites.isEmpty ||
                   selectedIndexFavorites.contains(item.speakerId))

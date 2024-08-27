@@ -1,4 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -96,7 +97,16 @@ class DrawerAppbarScreen extends StatelessWidget {
               ),
             ),
             onTap: () {
-              auth.signOut();
+              try {
+                auth.signOut().whenComplete(() => 
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AuthScreen(),
+                )));
+              } catch (e) {
+                throw Exception("Failed to Sign out: $e");
+              }
             },
           ),
         ],

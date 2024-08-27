@@ -45,8 +45,8 @@ class _AppbarScreenState extends State<AppbarScreen> {
                   child: SvgPicture.asset(
                     'assets/images/logo/appbar-icon.svg',
                     width: 30.w,
-                    height: 34.h,
-                    fit: BoxFit.cover,
+                    height: 30.h,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -77,8 +77,8 @@ class _AppbarScreenState extends State<AppbarScreen> {
                               children: [
                                 SizedBox(width: 5.w),
                                 SizedBox(
-                                  height: 25.h,
-                                  width: 20.h,
+                                  height: 30.h,
+                                  width: 30.h,
                                   child: Padding(
                                     padding: const EdgeInsets.all(2),
                                     child: Column(
@@ -87,8 +87,8 @@ class _AppbarScreenState extends State<AppbarScreen> {
                                       children: [
                                         SvgPicture.asset(
                                           'assets/images/logo/credit-icon.svg',
-                                          width: 20.w,
-                                          height: 20.h,
+                                          width: 25.w,
+                                          height: 25.h,
                                         ),
                                       ],
                                     ),

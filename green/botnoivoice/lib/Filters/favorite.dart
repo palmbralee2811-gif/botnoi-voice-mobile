@@ -12,8 +12,8 @@ class Favorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 25.w,
-      height: 25.h,
+      width: 35.w,
+      height: 35.h,
       decoration: BoxDecoration(
         gradient: ishover
             ? const LinearGradient(
@@ -23,12 +23,12 @@ class Favorite extends StatelessWidget {
                 ],
               )
             : null,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(4),
+        borderRadius: BorderRadius.all(
+          Radius.circular(4.r),
         ),
         border: Border.all(
           color: const Color(0xFFE2E3E9),
-          width: 1,
+          width: 1.w,
         ),
       ),
       child: Column(
@@ -40,12 +40,12 @@ class Favorite extends StatelessWidget {
               ishover
                   ? Icon(
                       Icons.favorite,
-                      size: 16.sp,
+                      size: 28.sp,
                       color: Colors.white,
                     )
                   : Icon(
                       Icons.favorite_border,
-                      size: 16.sp,
+                      size: 28.sp,
                       color: Colors.black,
                     ),
             ],

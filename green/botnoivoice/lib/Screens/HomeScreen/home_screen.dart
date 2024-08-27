@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Database/newdata.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/appbar_bottom_navbar.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/appbar_screen.dart';
@@ -12,13 +10,18 @@ import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
+import 'package:botnoivoice/Screens/HomeScreen/audio_player_dialog.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_app_file/open_app_file.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:just_audio/just_audio.dart';
+import 'package:path/path.dart' as p;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,14 +33,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController textController = TextEditingController();
 
-  // Generate Audio
+  /// Generate Audio
   String response = '';
   String audioUrl = '';
   String? speakerId;
 
+  /// Player Audio
+  bool isShowClearIcon = false;
+
+  /// Show Clear Icon
   AudioPlayer audioPlayer = AudioPlayer(); // Play Example Audio
-  List<NewAppDataBase>? data; // Player Audio
-  bool isShowClearIcon = false; // Show Clear Icon
+
+  /// Show Audio Player
+  Duration duration = Duration.zero;
+  Duration currentPosition = Duration.zero;
 
   @override
   void initState() {
@@ -48,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     speakerId = Provider.of<SpeakerProvider>(context).speakerId;
-    debugPrint("generateAudio -> speakerId: $speakerId");
   }
 
   @override
@@ -92,9 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 0,
             right: 0,
             child: Container(
-              width: 320.w,
-              color: Colors.white,
-              child: buildGenerateButton(context)),
+                width: 320.w,
+                color: Colors.white,
+                child: buildGenerateButton(context)),
           ),
         ],
       ),
@@ -264,26 +272,36 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+          padding:
+              EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
           child: GradientButton(
             text: 'สร้างเสียง',
             onPressed: () async {
-              try {
-                if (textController.text.isNotEmpty) {
+              if (textController.text.isNotEmpty) {
+                setState(() {
+                  audioPlayer.stop();
+                  // Show loading indicator here
+                });
+                try {
+                  final audioUrl = await generateAudio(textController.text);
+                  if (audioUrl.isNotEmpty) {
+                    await openFile(
+                        url: audioUrl,
+                        fileName: "BotnoiVoice${randomString(6)}.mp3");
+
+                    final creditsProvider =
+                        Provider.of<CreditsProvider>(context, listen: false);
+                    final auth =
+                        Provider.of<Authentication>(context, listen: false);
+                    creditsProvider.fetchCredits(auth);
+                  }
+                } catch (e) {
+                  debugPrint("Error: $e");
+                } finally {
                   setState(() {
-                    audioPlayer.stop();
-                  });
-                  await generateAudio(textController.text).then((_) {
-                    if (audioUrl.isNotEmpty) {
-                      downloadFile();
-                      final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
-                      final auth = Provider.of<Authentication>(context, listen: false);
-                      creditsProvider.fetchCredits(auth);
-                    }
+                    // Hide loading indicator here
                   });
                 }
-              } catch (e) {
-                debugPrint("Error: $e");
               }
             },
           ),
@@ -294,8 +312,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<String> generateAudio(String text) async {
     final auth = Provider.of<Authentication>(context, listen: false);
-    speakerId = Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
-    debugPrint("generateAudio -> speakerId: $speakerId");
+    speakerId =
+        Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
@@ -323,10 +341,13 @@ class _HomeScreenState extends State<HomeScreen> {
         final jsonData = jsonDecode(response.body);
         setState(() {
           audioUrl = jsonData['audio_url'];
+          debugPrint("generateAudio -> $audioUrl");
         });
+      } else {
+        throw Exception("Failed to generate audio: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("Error:$e");
+      throw Exception("Failed to generate audio: $e");
     }
     return audioUrl;
   }
@@ -339,50 +360,76 @@ class _HomeScreenState extends State<HomeScreen> {
         (_) => characters.codeUnitAt(random.nextInt(characters.length))));
   }
 
-  Future<void> downloadFile() async {
-    if (Platform.isAndroid) {
-      await _androidDownloadFunction();
-    } else if (Platform.isIOS) {
-      await _iOSDownloadFunction();
+  Future openFile({required String url, String? fileName}) async {
+    try {
+      final name = fileName ?? url.split("/").last;
+      final file = await downloadFile(url, name);
+      if (file == null) return;
+      debugPrint("Path: ${file.path}");
+      await showDialog(
+        context: context,
+        builder: (context) => AudioPlayerDialog(filePath: file.path),
+      );
+    } catch (e) {
+      throw Exception("Failed to open file: $e");
     }
   }
 
-  Future<void> _iOSDownloadFunction() async {
+  Future<File?> downloadFile(String url, String name) async {
     try {
-      String url = audioUrl;
-      var response = await http.get(Uri.parse(url));
+      String? downloadDirectory;
+      if (Platform.isAndroid) {
+        final externalStorageFolder = await getExternalStorageDirectory();
+        if (externalStorageFolder != null) {
+          downloadDirectory = p.join(externalStorageFolder.path, "Downloads");
+
+          // Ensure the directory exists
+          final directory = Directory(downloadDirectory);
+          if (!await directory.exists()) {
+            await directory.create(recursive: true);
+          }
+        } else {
+          // Fallback to common Download directory
+          downloadDirectory = "/storage/emulated/0/Download";
+        }
+      } else if (Platform.isIOS) {
+        final downloadFolder = await getDownloadsDirectory();
+        if (downloadFolder != null) {
+          downloadDirectory = downloadFolder.path;
+        }
+      }
+
+      if (downloadDirectory == null) {
+        throw Exception("Download directory not found.");
+      }
+
+      final file = File("$downloadDirectory/$name");
+
+      final response = await Dio().get(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          receiveTimeout: const Duration(seconds: 60),
+        ),
+      );
+
       if (response.statusCode == 200) {
-        String filename = "BotnoiVoice${randomString(6)}.mp3";
-        var tempDir = await getTemporaryDirectory();
-        var path = '${tempDir.path}/$filename';
-        var file = File(path);
-        await file.writeAsBytes(response.bodyBytes);
-        OpenAppFile.open(path);
-      }
-    } catch (e) {
-      debugPrint("Error: $e");
-    }
-  }
+        final raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
 
-  Future<void> _androidDownloadFunction() async {
-    try {
-      var filename = "BotnoiVoice${randomString(6)}.mp3";
-      List<Directory>? directories =
-          await getExternalStorageDirectories(type: StorageDirectory.downloads);
-      if (directories == null || directories.isEmpty) {
-        throw Exception('No external storage directories found');
-      }
-      String directoryPath = directories.first.path;
-      String filePath = "$directoryPath/$filename";
-      var file = File(filePath);
-      String url = audioUrl;
-      var res = await http.get(Uri.parse(url));
-      if (res.statusCode == 200) {
-        await file.writeAsBytes(res.bodyBytes);
-        OpenAppFile.open(filePath);
+        if (await file.exists() && await file.length() > 0) {
+          return file;
+        } else {
+          throw Exception("File download failed, file is empty.");
+        }
+      } else {
+        throw Exception("Failed to download file: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint("Download file error: $e");
+      return null;
     }
   }
 }
