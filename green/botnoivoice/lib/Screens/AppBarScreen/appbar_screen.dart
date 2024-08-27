@@ -70,7 +70,7 @@ class _AppbarScreenState extends State<AppbarScreen> {
                           child: InkWell(
                             onTap: () async {
                               const url = 'https://voice.botnoi.ai/payment';
-                              launchUrlString(url, mode: LaunchMode.platformDefault);
+                              await launchUrlString(url, mode: LaunchMode.platformDefault);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

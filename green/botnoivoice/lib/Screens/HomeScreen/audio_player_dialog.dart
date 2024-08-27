@@ -79,13 +79,6 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     super.dispose();
   }
 
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -127,14 +120,17 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                       IconButton(
                         iconSize: 30.sp,
                         icon: Icon(
-                          isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                          isPlaying
+                              ? Icons.pause_circle_outline
+                              : Icons.play_circle_outline,
                           color: Colors.blue,
                         ),
                         onPressed: () async {
                           if (isPlaying) {
                             await audioPlayer.pause();
                           } else {
-                            await audioPlayer.play(DeviceFileSource(widget.filePath));
+                            await audioPlayer
+                                .play(DeviceFileSource(widget.filePath));
                           }
                         },
                       ),
@@ -149,9 +145,12 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                               inactiveColor: Colors.grey[300],
                               min: 0,
                               max: duration.inMilliseconds.toDouble(),
-                              value: position.inMilliseconds.toDouble().clamp(0, duration.inMilliseconds.toDouble()),
+                              value: position.inMilliseconds
+                                  .toDouble()
+                                  .clamp(0, duration.inMilliseconds.toDouble()),
                               onChanged: (value) async {
-                                final newPosition = Duration(milliseconds: value.toInt());
+                                final newPosition =
+                                    Duration(milliseconds: value.toInt());
                                 await audioPlayer.seek(newPosition);
                               },
                             );
@@ -177,7 +176,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 20.w),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -191,19 +191,20 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 20.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                        side: const BorderSide(color: Colors.blue),
+                      ),
+                    ),
                     child: Text(
                       'ปิด',
                       style: GoogleFonts.prompt(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.blue,
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        side: BorderSide(color: Colors.blue),
                       ),
                     ),
                   ),

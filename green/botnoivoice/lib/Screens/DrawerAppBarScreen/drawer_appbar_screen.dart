@@ -1,10 +1,14 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
+import 'package:botnoivoice/Screens/DrawerAppBarScreen/account_screen.dart';
+import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
+import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DrawerAppbarScreen extends StatelessWidget {
   const DrawerAppbarScreen({
@@ -53,27 +57,36 @@ class DrawerAppbarScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(
-                  user?.displayName ?? 'No Name',
-                  style: GoogleFonts.prompt(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF323130),
-                  ),
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                  maxLines: 3,
-                ),
+                SizedBox(height: 10.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Text(
-                        email ?? 'No email found',
-                        style: GoogleFonts.prompt(
-                          fontSize: 14.sp,
-                          color: const Color(0xFF323130),
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            user?.displayName ?? 'No Name',
+                            style: GoogleFonts.prompt(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF323130),
+                            ),
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            email ?? 'No email found',
+                            style: GoogleFonts.prompt(
+                              fontSize: 14.sp,
+                              color: const Color(0xFF323130),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -82,31 +95,54 @@ class DrawerAppbarScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w),
+            contentPadding: EdgeInsets.only(left: 30.w, top: 30.h),
+            leading: GradientIcon(
+              icon: Icons.account_circle_outlined,
+              size: 24.sp,
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            title: GradientText(
+              text: 'ข้อมูลส่วนตัว',
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFA19F9D),
+              ),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AccountScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
             leading: Icon(
-              Icons.logout,
+              Icons.credit_card_rounded,
               size: 24.sp,
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'ออกจากระบบ',
+              'แพ็คเกจ',
               style: GoogleFonts.prompt(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF323130),
               ),
             ),
-            onTap: () {
-              try {
-                auth.signOut().whenComplete(() => 
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AuthScreen(),
-                )));
-              } catch (e) {
-                throw Exception("Failed to Sign out: $e");
-              }
+            onTap: () async {
+              const url = 'https://voice.botnoi.ai/payment';
+              await launchUrlString(url, mode: LaunchMode.platformDefault);
             },
           ),
         ],
