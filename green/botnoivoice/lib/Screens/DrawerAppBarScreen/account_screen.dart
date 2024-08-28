@@ -16,6 +16,8 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<Authentication>(context).user;
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -46,14 +48,12 @@ class _AccountScreenState extends State<AccountScreen> {
           children: [
             UserInfoRow(
               title: 'ชื่อผู้ใช้',
-              value:
-                  '${Provider.of<Authentication>(context).user!.displayName}',
+              value: user?.displayName ?? 'No Name',
             ),
             const UserInfoRow(title: 'UID', value: ' UID'),
             UserInfoRow(
                 title: 'อีเมล',
-                value:
-                    ' ${Provider.of<Authentication>(context).getUserEmail(Provider.of<Authentication>(context).user) ?? ' No email found'}'),
+                value: Provider.of<Authentication>(context).getUserEmail(user) ?? 'No email found'),
             const Spacer(),
             GradientButton(
               text: 'ออกจากระบบ',

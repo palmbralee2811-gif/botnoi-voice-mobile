@@ -37,7 +37,7 @@ class DrawerAppbarScreen extends StatelessWidget {
                       backgroundImage: user?.photoURL != null
                           ? NetworkImage(user!.photoURL!)
                           : const AssetImage(
-                              'assets/app_icon/icon-foreground-432x432.png'),
+                              'assets/app_icon/icon-foreground-432x432.png') as ImageProvider<Object>,
                       backgroundColor: Colors.black,
                       radius: 20.0.r,
                     ),

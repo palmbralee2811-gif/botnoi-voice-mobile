@@ -57,8 +57,8 @@ class _AuthScreenState extends State<AuthScreen> {
         children: [
           SizedBox(height: 167.h),
           _buildCenter(),
-          SizedBox(height: 100.h),
-          googleLoginButton(),
+          SizedBox(height: 120.h),
+          buildGoogleSignInButton(),
           SizedBox(height: 40.h),
         ],
       ),
@@ -148,7 +148,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget googleLoginButton() {
+  Widget buildGoogleSignInButton() {
     final auth = Provider.of<Authentication>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
