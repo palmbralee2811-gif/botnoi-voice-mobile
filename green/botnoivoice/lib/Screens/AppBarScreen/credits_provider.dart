@@ -8,7 +8,7 @@ class CreditsProvider with ChangeNotifier {
 
   void setCredits(String? newCredits) {
     _credits = newCredits;
-    notifyListeners(); // แจ้งให้ผู้ฟังที่เชื่อมโยงกันทราบถึงการเปลี่ยนแปลง
+    notifyListeners();
   }
 
   Future<void> fetchCredits(Authentication auth) async {

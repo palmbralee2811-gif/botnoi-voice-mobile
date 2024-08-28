@@ -1,5 +1,4 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/account_screen.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';

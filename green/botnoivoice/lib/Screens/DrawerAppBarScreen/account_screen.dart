@@ -1,4 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -57,7 +58,17 @@ class _AccountScreenState extends State<AccountScreen> {
             GradientButton(
               text: 'ออกจากระบบ',
               onPressed: () async {
-                await Provider.of<Authentication>(context).signOut();
+                await Provider.of<Authentication>(context, listen: false)
+                    .signOut()
+                    .whenComplete(() {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AuthScreen(),
+                    ),
+                    (route) => false,
+                  );
+                });
               },
             ),
             SizedBox(height: 16.h),

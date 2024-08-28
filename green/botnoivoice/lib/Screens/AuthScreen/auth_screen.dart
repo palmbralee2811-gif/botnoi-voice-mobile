@@ -161,16 +161,19 @@ class _AuthScreenState extends State<AuthScreen> {
                 final user = await auth.signInWithGoogle(context);
                 if (!mounted) return;
                 if (user != null) {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (context) => const HomeScreen(),
                     ),
+                    (Route<dynamic> route) =>
+                        false,
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content:
-                            Text('เข้าสู่ระบบไม่สำเร็จ. กรุณาลองใหม่อีกครั้ง')),
+                      content:
+                          Text('เข้าสู่ระบบไม่สำเร็จ. กรุณาลองใหม่อีกครั้ง'),
+                    ),
                   );
                 }
               },

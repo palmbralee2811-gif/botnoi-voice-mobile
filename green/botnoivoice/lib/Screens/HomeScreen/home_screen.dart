@@ -15,7 +15,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -86,23 +85,21 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         backgroundColor: const Color(0xFFFFFFFF),
-        title: AppbarScreen(context),
+        title: const AppbarScreen(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
           child: const AppbarBottomNavbar(),
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          buildTextBox(),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-                width: 320.w,
-                color: Colors.white,
-                child: buildGenerateButton(context)),
+          Expanded(
+            child: buildTextBox(),
+          ),
+          Container(
+            width: double.infinity,
+            color: Colors.white,
+            child: buildGenerateButton(context),
           ),
         ],
       ),
@@ -110,87 +107,72 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildTextBox() {
-    return SizedBox(
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: 320.w,
-            height: 480.h,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+    return Container(
+      width: 320.w,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(10.w),
+        child: Center(
+          child: Container(
+            width: 288.w,
+            decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 5.0,
+                ),
+              ],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14.r),
             ),
             child: Padding(
-              padding: EdgeInsets.all(10.w),
+              padding: EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 288.w,
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 5.0,
+                  Expanded(
+                    child: TextField(
+                      cursorColor: const Color(0xFF000000),
+                      style: GoogleFonts.prompt(
+                        fontSize: 14.sp,
+                        color: const Color(0xFF323130),
+                      ),
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                      controller: textController,
+                      onChanged: (text) {
+                        if (textController.text.length > 1000) {
+                          textController.text = textController.text.substring(0, 1000);
+                          textController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: textController.text.length),
+                          );
+                        }
+                        setState(() {
+                          isShowClearIcon = textController.text.isNotEmpty;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
+                        hintStyle: TextStyle(
+                          color: const Color(0xFFA19F9D),
+                          fontStyle: GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
                         ),
-                      ],
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
-                      child: Column(
-                        children: [
-                          TextField(
-                            cursorColor: const Color(0xFF000000),
-                            style: GoogleFonts.prompt(
-                              fontSize: 14.sp,
-                              color: const Color(0xFF323130),
-                            ),
-                            maxLines: 15,
-                            keyboardType: TextInputType.multiline,
-                            controller: textController,
-                            onChanged: (text) {
-                              if (textController.text.length > 1000) {
-                                textController.text =
-                                    textController.text.substring(0, 1000);
-                                textController.selection =
-                                    TextSelection.fromPosition(
-                                  TextPosition(
-                                      offset: textController.text.length),
-                                );
-                              }
-                              setState(() {
-                                isShowClearIcon =
-                                    textController.text.isNotEmpty;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText:
-                                  'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
-                              hintStyle: TextStyle(
-                                color: const Color(0xFFA19F9D),
-                                fontStyle: GoogleFonts.prompt(fontSize: 14.sp)
-                                    .fontStyle,
-                              ),
-                              hintMaxLines: 1,
-                            ),
-                          ),
-                          buildBottomTextBox(),
-                        ],
+                        hintMaxLines: 1,
                       ),
                     ),
                   ),
+                  buildBottomTextBox(),
                 ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -208,8 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {
                           setState(() {
                             textController.clear();
@@ -230,8 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
@@ -269,51 +249,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildGenerateButton(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding:
-              EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
-          child: GradientButton(
-            text: 'สร้างเสียง',
-            onPressed: () async {
-              if (textController.text.isNotEmpty) {
-                setState(() {
-                  audioPlayer.stop();
-                  // Show loading indicator here
-                });
-                try {
-                  final audioUrl = await generateAudio(textController.text);
-                  if (audioUrl.isNotEmpty) {
-                    await openFile(
-                        url: audioUrl,
-                        fileName: "BotnoiVoice${randomString(6)}.mp3");
+    return Padding(
+      padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+      child: GradientButton(
+        text: 'สร้างเสียง',
+        onPressed: () async {
+          if (textController.text.isNotEmpty) {
+            setState(() {
+              audioPlayer.stop();
+            });
+            try {
+              final audioUrl = await generateAudio(textController.text);
+              if (audioUrl.isNotEmpty) {
+                await openFile(url: audioUrl, fileName: "BotnoiVoice${randomString(6)}.mp3");
 
-                    final creditsProvider =
-                        Provider.of<CreditsProvider>(context, listen: false);
-                    final auth =
-                        Provider.of<Authentication>(context, listen: false);
-                    creditsProvider.fetchCredits(auth);
-                  }
-                } catch (e) {
-                  debugPrint("Error: $e");
-                } finally {
-                  setState(() {
-                    // Hide loading indicator here
-                  });
-                }
+                final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+                final auth = Provider.of<Authentication>(context, listen: false);
+                creditsProvider.fetchCredits(auth);
               }
-            },
-          ),
-        ),
-      ],
+            } catch (e) {
+              debugPrint("Error: $e");
+            } finally {
+              setState(() {
+                // Hide loading indicator here
+              });
+            }
+          }
+        },
+      ),
     );
   }
 
   Future<String> generateAudio(String text) async {
     final auth = Provider.of<Authentication>(context, listen: false);
-    speakerId =
-        Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
+    speakerId = Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
@@ -356,8 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const characters = '0123456789';
 
     final random = Random();
-    return String.fromCharCodes(Iterable.generate(length,
-        (_) => characters.codeUnitAt(random.nextInt(characters.length))));
+    return String.fromCharCodes(Iterable.generate(length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
   }
 
   Future openFile({required String url, String? fileName}) async {
@@ -383,13 +351,11 @@ class _HomeScreenState extends State<HomeScreen> {
         if (externalStorageFolder != null) {
           downloadDirectory = p.join(externalStorageFolder.path, "Downloads");
 
-          // Ensure the directory exists
           final directory = Directory(downloadDirectory);
           if (!await directory.exists()) {
             await directory.create(recursive: true);
           }
         } else {
-          // Fallback to common Download directory
           downloadDirectory = "/storage/emulated/0/Download";
         }
       } else if (Platform.isIOS) {
@@ -398,13 +364,10 @@ class _HomeScreenState extends State<HomeScreen> {
           downloadDirectory = downloadFolder.path;
         }
       }
-
       if (downloadDirectory == null) {
         throw Exception("Download directory not found.");
       }
-
       final file = File("$downloadDirectory/$name");
-
       final response = await Dio().get(
         url,
         options: Options(
@@ -413,12 +376,10 @@ class _HomeScreenState extends State<HomeScreen> {
           receiveTimeout: const Duration(seconds: 60),
         ),
       );
-
       if (response.statusCode == 200) {
         final raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         await raf.close();
-
         if (await file.exists() && await file.length() > 0) {
           return file;
         } else {

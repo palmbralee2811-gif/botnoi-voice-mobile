@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 }
 
 def localProperties = new Properties()
@@ -30,7 +31,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.mobile.botnoivoice"
-    compileSdk = 34 //flutter.compileSdkVersion
+    // compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -45,8 +47,8 @@ android {
     defaultConfig {
         applicationId = "com.mobile.botnoivoice"
         minSdkVersion = 23
+        // targetSdkVersion = flutter.targetSdkVersion
 		targetSdkVersion = 34
-        targetSdkVersion = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -69,4 +71,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+  implementation platform('com.google.firebase:firebase-bom:33.2.0')
+  implementation 'com.google.firebase:firebase-analytics'
 }
