@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/Screens/GradientScreen/gradient_custom_button.dart';
+import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
+import 'package:botnoivoice/Screens/GradientScreen/gradient_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,7 +112,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     'File: ${widget.filePath.split('/').last}',
                     style: GoogleFonts.prompt(
                       fontSize: 14.sp,
-                      color: Colors.grey[600],
+                      color: Colors.black,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -119,11 +122,16 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     children: [
                       IconButton(
                         iconSize: 30.sp,
-                        icon: Icon(
-                          isPlaying
+                        icon: GradientIcon(
+                          icon: isPlaying
                               ? Icons.pause_circle_outline
                               : Icons.play_circle_outline,
-                          color: Colors.blue,
+                          size: 30.sp,
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                         ),
                         onPressed: () async {
                           if (isPlaying) {
@@ -160,54 +168,39 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  ElevatedButton.icon(
-                    icon: Icon(
-                      Icons.download_for_offline,
-                      size: 24.sp,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      'ดาวน์โหลด',
-                      style: GoogleFonts.prompt(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: EdgeInsets.symmetric(
-                          vertical: 10.h, horizontal: 20.w),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                    ),
+                  GradientRow(
                     onPressed: () async {
                       await OpenFile.open(widget.filePath);
                     },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.file_download_outlined,
+                          size: 25.sp,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                            width: 8.w), // เว้นระยะห่างระหว่างไอคอนและข้อความ
+                        Text(
+                          "ดาวน์โหลด",
+                          style: GoogleFonts.prompt(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 10.h),
-                  TextButton(
+                  GradientCustomButton(
+                    text: "ปิด", 
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 10.h, horizontal: 20.w),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        side: const BorderSide(color: Colors.blue),
-                      ),
-                    ),
-                    child: Text(
-                      'ปิด',
-                      style: GoogleFonts.prompt(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
+                  )
                 ],
               ),
       ),

@@ -1,5 +1,3 @@
-// import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class GradientIcon extends StatelessWidget {
@@ -23,7 +21,7 @@ class GradientIcon extends StatelessWidget {
       child: Icon(
         icon,
         size: size,
-        color: Colors.white, // icon color จะไม่ถูกใช้
+        color: Colors.white,
       ),
     );
   }

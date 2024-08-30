@@ -9,8 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class DrawerAppbarScreen extends StatelessWidget {
-  const DrawerAppbarScreen({
+class DrawerAppbar extends StatelessWidget {
+  const DrawerAppbar({
     super.key,
   });
 
@@ -37,7 +37,8 @@ class DrawerAppbarScreen extends StatelessWidget {
                       backgroundImage: user?.photoURL != null
                           ? NetworkImage(user!.photoURL!)
                           : const AssetImage(
-                              'assets/app_icon/icon-foreground-432x432.png') as ImageProvider<Object>,
+                                  'assets/app_icon/icon-foreground-432x432.png')
+                              as ImageProvider<Object>,
                       backgroundColor: Colors.black,
                       radius: 20.0.r,
                     ),

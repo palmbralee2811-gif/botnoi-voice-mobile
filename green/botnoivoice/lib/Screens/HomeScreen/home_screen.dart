@@ -3,10 +3,9 @@ import 'dart:io';
 import 'dart:math';
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
-import 'package:botnoivoice/Screens/AppBarScreen/appbar_bottom_navbar.dart';
-import 'package:botnoivoice/Screens/AppBarScreen/appbar_screen.dart';
+import 'package:botnoivoice/Screens/AppBarScreen/appbar_widget.dart';
 import 'package:botnoivoice/Screens/AppBarScreen/credits_provider.dart';
-import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar_screen.dart';
+import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
@@ -68,29 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      drawer: const DrawerAppbarScreen(),
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              padding: EdgeInsets.only(left: 15.w),
-              icon: Icon(
-                Icons.menu_rounded,
-                size: 32.sp,
-                color: const Color(0xFF323130),
-              ),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
-        ),
-        backgroundColor: const Color(0xFFFFFFFF),
-        title: const AppbarScreen(),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50.h),
-          child: const AppbarBottomNavbar(),
-        ),
-      ),
+      drawer: const DrawerAppbar(),
+      appBar: const AppbarWidget(),
       body: Column(
         children: [
           Expanded(
@@ -147,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: textController,
                       onChanged: (text) {
                         if (textController.text.length > 1000) {
-                          textController.text = textController.text.substring(0, 1000);
+                          textController.text =
+                              textController.text.substring(0, 1000);
                           textController.selection = TextSelection.fromPosition(
                             TextPosition(offset: textController.text.length),
                           );
@@ -161,7 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: 'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
-                          fontStyle: GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
+                          fontStyle:
+                              GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
                         ),
                         hintMaxLines: 1,
                       ),
@@ -190,7 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {
                           setState(() {
                             textController.clear();
@@ -211,7 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
@@ -250,7 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildGenerateButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+      padding:
+          EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
       child: GradientButton(
         text: 'สร้างเสียง',
         onPressed: () async {
@@ -261,10 +244,14 @@ class _HomeScreenState extends State<HomeScreen> {
             try {
               final audioUrl = await generateAudio(textController.text);
               if (audioUrl.isNotEmpty) {
-                await openFile(url: audioUrl, fileName: "BotnoiVoice${randomString(6)}.mp3");
+                await openFile(
+                    url: audioUrl,
+                    fileName: "BotnoiVoice${randomString(6)}.mp3");
 
-                final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
-                final auth = Provider.of<Authentication>(context, listen: false);
+                final creditsProvider =
+                    Provider.of<CreditsProvider>(context, listen: false);
+                final auth =
+                    Provider.of<Authentication>(context, listen: false);
                 creditsProvider.fetchCredits(auth);
               }
             } catch (e) {
@@ -282,7 +269,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<String> generateAudio(String text) async {
     final auth = Provider.of<Authentication>(context, listen: false);
-    speakerId = Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
+    speakerId =
+        Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
 
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
@@ -325,7 +313,8 @@ class _HomeScreenState extends State<HomeScreen> {
     const characters = '0123456789';
 
     final random = Random();
-    return String.fromCharCodes(Iterable.generate(length, (_) => characters.codeUnitAt(random.nextInt(characters.length))));
+    return String.fromCharCodes(Iterable.generate(length,
+        (_) => characters.codeUnitAt(random.nextInt(characters.length))));
   }
 
   Future openFile({required String url, String? fileName}) async {
