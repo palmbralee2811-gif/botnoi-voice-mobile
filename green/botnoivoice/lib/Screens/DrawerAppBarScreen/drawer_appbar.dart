@@ -1,7 +1,6 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/account_screen.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,15 +104,12 @@ class DrawerAppbar extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
             ),
-            title: GradientText(
-              text: 'ข้อมูลส่วนตัว',
+            title: Text(
+              'ข้อมูลส่วนตัว',
               style: GoogleFonts.prompt(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFFA19F9D),
-              ),
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                color: const Color(0xFF323130),
               ),
             ),
             onTap: () {

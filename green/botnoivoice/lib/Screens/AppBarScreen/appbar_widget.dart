@@ -34,7 +34,7 @@ class _AppbarWidgetState extends State<AppbarWidget> {
     final credits = Provider.of<CreditsProvider>(context).credits;
 
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFFFFFFF),
       elevation: 4.0,
       leading: SizedBox(
         width: double.infinity,
@@ -53,14 +53,11 @@ class _AppbarWidgetState extends State<AppbarWidget> {
       title: SizedBox(
         height: 140.h, // กำหนดความสูง
         child: Center(
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: SvgPicture.asset(
-              'assets/images/logo/appbar-icon.svg',
-              width: 30.w,
-              height: 30.h,
-              fit: BoxFit.contain,
-            ),
+          child: SvgPicture.asset(
+            'assets/images/logo/appbar-icon.svg',
+            width: 30.w,
+            height: 30.h,
+            fit: BoxFit.contain,
           ),
         ),
       ),

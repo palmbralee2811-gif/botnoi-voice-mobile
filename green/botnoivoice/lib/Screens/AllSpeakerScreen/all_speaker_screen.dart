@@ -64,11 +64,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                 width: 30.w,
                 height: 34.h,
               ),
-              Icon(
-                Icons.search_rounded,
-                size: 24.sp,
-                color: const Color(0xFF323130),
-              ),
             ]
           ),
         ),
