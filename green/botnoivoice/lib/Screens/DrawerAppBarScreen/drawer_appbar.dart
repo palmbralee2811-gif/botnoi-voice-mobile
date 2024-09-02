@@ -95,14 +95,10 @@ class DrawerAppbar extends StatelessWidget {
           ),
           ListTile(
             contentPadding: EdgeInsets.only(left: 30.w, top: 30.h),
-            leading: GradientIcon(
-              icon: Icons.account_circle_outlined,
+            leading: Icon(
+              Icons.account_circle_outlined,
               size: 24.sp,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: const Color(0xFF323130),
             ),
             title: Text(
               'ข้อมูลส่วนตัว',

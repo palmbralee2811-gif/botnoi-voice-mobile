@@ -242,6 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
               audioPlayer.stop();
             });
             try {
+              //TODO: สร้างเสร็จแล้ว กดปุ่มเล่นเสียงซ้ำ แล้ว point โดยครั้งทุกครั้งที่เล่นเสียง
               final audioUrl = await generateAudio(textController.text);
               if (audioUrl.isNotEmpty) {
                 await openFile(
@@ -323,10 +324,13 @@ class _HomeScreenState extends State<HomeScreen> {
       final file = await downloadFile(url, name);
       if (file == null) return;
       debugPrint("Path: ${file.path}");
+
+      //TODO: สร้างเสร็จแล้ว กดปุ่มเล่นเสียงซ้ำ แล้ว point โดยครั้งทุกครั้งที่เล่นเสียง
       await showDialog(
         context: context,
         builder: (context) => AudioPlayerDialog(filePath: file.path),
       );
+
     } catch (e) {
       throw Exception("Failed to open file: $e");
     }

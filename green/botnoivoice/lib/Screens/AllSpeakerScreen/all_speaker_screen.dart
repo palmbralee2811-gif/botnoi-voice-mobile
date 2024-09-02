@@ -57,15 +57,13 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         title: Padding(
           padding: EdgeInsets.only(left: 89.w),
           child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-            children: [
-              SvgPicture.asset(
-                'assets/images/logo/appbar-icon.svg',
-                width: 30.w,
-                height: 34.h,
-              ),
-            ]
-          ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            SvgPicture.asset(
+              'assets/images/logo/appbar-icon.svg',
+              width: 30.w,
+              height: 34.h,
+            ),
+          ]),
         ),
       ),
       body: buildFilterNavbar(context),
@@ -264,7 +262,9 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             ],
           ),
         ),
-        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 10.h,
+        ),
         buildBottomNavbarButton()
       ],
     );
@@ -277,7 +277,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         children: [
           Container(
             color: Colors.transparent,
-            width: 280.w, 
+            width: 280.w,
             child: Column(
               children: [
                 Row(
@@ -437,7 +437,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       height: 60.h,
       width: 320.w,
       child: Padding(
-        padding: EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
+        padding:
+            EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
         child: SizedBox(
           child: GradientButton(
             text: 'ตกลง',
@@ -561,7 +562,10 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       onTap: () {
         setState(() {
           if (text == 'ช/ญ') {
+            selectedGender = 'ช/ญ';
+            selectedGenderImage = 'assets/images/gender/all.svg';
             gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+            debugPrint("selectedGenderImage: $selectedGenderImage");
           } else {
             selectedGender = text;
             selectedGenderImage = imagePath;
@@ -636,7 +640,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
     );
   }
 
-  Widget buildSingleSpeaker(SpeakerData mySpeakerData /*NewData data*/, int index) {
+  Widget buildSingleSpeaker(
+      SpeakerData mySpeakerData /*NewData data*/, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
