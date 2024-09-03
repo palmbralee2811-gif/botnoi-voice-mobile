@@ -1,6 +1,5 @@
 import 'package:botnoivoice/Authentication/authentication_provider.dart';
 import 'package:botnoivoice/Screens/DrawerAppBarScreen/account_screen.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

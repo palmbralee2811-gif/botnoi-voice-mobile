@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Database/speaker_data_model.dart';
-import 'package:botnoivoice/Database/speaker_data_list.dart';
+import 'package:botnoivoice/Database/speaker_data.dart';
+import 'package:botnoivoice/Database/speaker_model.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
@@ -28,7 +28,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   Set<int> selectedIndex = <int>{};
   AudioPlayer audioPlayer = AudioPlayer();
 
-  List<SpeakerDataModel>? mySpeakerData;
+  List<SpeakerModel>? speakerData;
 
   List<String> selectedIndexFavorites = [];
 
@@ -615,7 +615,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             height: 420.h,
             width: 320.w,
             child: GridView.builder(
-              itemCount: SpeakerDataList.mySpeakerData //NewAppDataBase.data
+              itemCount: SpeakerModelData.speakerData //NewAppDataBase.data
                   .where((item) =>
                       item.language == language &&
                       (gender == '' || item.gender == gender))
@@ -627,7 +627,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               ),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                final data = SpeakerDataList.mySpeakerData //NewAppDataBase.data
+                final data = SpeakerModelData.speakerData //NewAppDataBase.data
                     .where((item) =>
                         item.language == language &&
                         (gender == '' || item.gender == gender))
@@ -642,7 +642,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   }
 
   Widget buildSingleSpeaker(
-      SpeakerDataModel mySpeakerData /*NewData data*/, int index) {
+      SpeakerModel speakerData /*NewData data*/, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -650,7 +650,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 7.h),
           child: GestureDetector(
             onTap: () async {
-              String audioURL = mySpeakerData.audio;
+              String audioURL = speakerData.audio;
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (audioPlayer.state == PlayerState.playing) {
@@ -663,13 +663,13 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               await playAudio();
 
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerId(mySpeakerData.speakerId);
+                  .setSpeakerId(speakerData.speakerId);
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerName(mySpeakerData.thaiName);
+                  .setSpeakerName(speakerData.thaiName);
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerAudio(mySpeakerData.audio);
+                  .setSpeakerAudio(speakerData.audio);
               Provider.of<SpeakerProvider>(context, listen: false)
-                  .setSpeakerImagePath(mySpeakerData.squareImage);
+                  .setSpeakerImagePath(speakerData.squareImage);
               Provider.of<SpeakerProvider>(context, listen: false)
                   .setNationalFlagPath(selectedLanguageImage);
               Provider.of<SpeakerProvider>(context, listen: false)
@@ -709,8 +709,9 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      image: AssetImage(
-                        mySpeakerData.squareImage,
+                      //TODO: เก็บรูปภาพที่โหลดจาก URL ไว้ใน Cache ของแอปพลิเคชัน
+                      image: NetworkImage(
+                        speakerData.squareImage,
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -783,17 +784,17 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                                 onTap: () {
                                   setState(() {
                                     if (selectedIndexFavorites
-                                        .contains(mySpeakerData.speakerId)) {
+                                        .contains(speakerData.speakerId)) {
                                       selectedIndexFavorites
-                                          .remove(mySpeakerData.speakerId);
+                                          .remove(speakerData.speakerId);
                                     } else {
                                       selectedIndexFavorites
-                                          .add(mySpeakerData.speakerId);
+                                          .add(speakerData.speakerId);
                                     }
                                   });
                                 },
                                 child: selectedIndexFavorites
-                                        .contains(mySpeakerData.speakerId)
+                                        .contains(speakerData.speakerId)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
                                           return const LinearGradient(
@@ -851,7 +852,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                             ),
                             Expanded(
                                 child: Text(
-                              mySpeakerData.thaiName,
+                              speakerData.thaiName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,
                                 color: Colors.white,
@@ -877,7 +878,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       height: 420.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: SpeakerDataList.mySpeakerData //NewAppDataBase.data
+        itemCount: SpeakerModelData.speakerData //NewAppDataBase.data
             .where((item) =>
                 selectedIndexFavorites.isEmpty ||
                 selectedIndexFavorites.contains(item.speakerId))
@@ -889,7 +890,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         ),
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
-          final data = SpeakerDataList.mySpeakerData //NewAppDataBase.data
+          final data = SpeakerModelData.speakerData //NewAppDataBase.data
               .where((item) =>
                   selectedIndexFavorites.isEmpty ||
                   selectedIndexFavorites.contains(item.speakerId))
