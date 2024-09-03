@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Database/speaker_data.dart';
+import 'package:botnoivoice/Database/speaker_data_model.dart';
+import 'package:botnoivoice/Database/speaker_data_list.dart';
 import 'package:botnoivoice/Filters/favorite.dart';
 import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
 import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
@@ -27,7 +28,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   Set<int> selectedIndex = <int>{};
   AudioPlayer audioPlayer = AudioPlayer();
 
-  List<SpeakerData>? mySpeakerData;
+  List<SpeakerDataModel>? mySpeakerData;
 
   List<String> selectedIndexFavorites = [];
 
@@ -641,7 +642,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   }
 
   Widget buildSingleSpeaker(
-      SpeakerData mySpeakerData /*NewData data*/, int index) {
+      SpeakerDataModel mySpeakerData /*NewData data*/, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

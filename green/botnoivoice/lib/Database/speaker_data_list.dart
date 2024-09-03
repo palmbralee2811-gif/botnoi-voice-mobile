@@ -1,68 +1,8 @@
-class SpeakerData {
-  final String speakerId;
-  final String speakerName;
-  final String engName;
-  final String thaiName;
-  final String image;
-  final String faceImage;
-  final String horizontalFaceImage;
-  final String squareImage;
-  final String audio;
-  final String voiceStyle;
-  final String engVoiceStyle;
-  final String ageStyle;
-  final String engAgeStyle;
-  final List<String> speechStyle;
-  final String engSpeechStyle;
-  final String speed;
-  final String engSpeed;
-  final String popularity;
-  final String engPopularity;
-  final String type;
-  final bool status;
-  final String gender;
-  final String engGender;
-  final String private;
-  final String allowUid;
-  final String language;
-  final List<String> availableLanguage;
-  final bool premier;
-
-  SpeakerData({
-    required this.speakerId,
-    required this.speakerName,
-    required this.engName,
-    required this.thaiName,
-    required this.image,
-    required this.faceImage,
-    required this.horizontalFaceImage,
-    required this.squareImage,
-    required this.audio,
-    required this.voiceStyle,
-    required this.engVoiceStyle,
-    required this.ageStyle,
-    required this.engAgeStyle,
-    required this.speechStyle,
-    required this.engSpeechStyle,
-    required this.speed,
-    required this.engSpeed,
-    required this.popularity,
-    required this.engPopularity,
-    required this.type,
-    required this.language,
-    required this.status,
-    required this.gender,
-    required this.engGender,
-    required this.private,
-    required this.allowUid,
-    required this.availableLanguage,
-    required this.premier,
-  });
-}
+import 'package:botnoivoice/Database/speaker_data_model.dart';
 
 class SpeakerDataList {
-  static List<SpeakerData> mySpeakerData = [
-    SpeakerData(
+  static List<SpeakerDataModel> mySpeakerData = [
+    SpeakerDataModel(
       speakerId: '1',
       speakerName: 'tonkhaow',
       engName: 'Ava',
@@ -96,7 +36,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '2',
       speakerName: 'meena',
       engName: 'Bow',
@@ -130,7 +70,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '3',
       speakerName: 'ngam',
       engName: 'Ngam',
@@ -164,7 +104,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '4',
       speakerName: 'jaonai',
       engName: 'Max',
@@ -198,7 +138,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '5',
       speakerName: 'nopchai',
       engName: 'Alan',
@@ -232,7 +172,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '6',
       speakerName: 'pla',
       engName: 'Siren',
@@ -266,7 +206,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '7',
       speakerName: 'ati',
       engName: 'Alisa',
@@ -300,7 +240,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '8',
       speakerName: 'max',
       engName: 'Leo',
@@ -334,7 +274,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '9',
       speakerName: 'helen',
       engName: 'Nadia',
@@ -368,7 +308,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '11',
       speakerName: 'kook',
       engName: 'Vanilla',
@@ -402,7 +342,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '13',
       speakerName: 'radar',
       engName: 'Ananda',
@@ -436,7 +376,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '14',
       speakerName: 'leen',
       engName: 'Ileen',
@@ -470,7 +410,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '15',
       speakerName: 'fern',
       engName: 'Hiro',
@@ -504,7 +444,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '16',
       speakerName: 'care',
       engName: 'Kru D Dee',
@@ -538,7 +478,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '17',
       speakerName: 'ming',
       engName: 'Jao Nerd',
@@ -572,7 +512,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '18',
       speakerName: 'bung',
       engName: 'Oto',
@@ -606,7 +546,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '19',
       speakerName: 'tanong',
       engName: 'Uncle Warm',
@@ -640,7 +580,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '26',
       speakerName: 'ying',
       engName: 'YingAiko',
@@ -674,7 +614,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '27',
       speakerName: 'ple',
       engName: 'Grace',
@@ -708,7 +648,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '28',
       speakerName: 'lee',
       engName: 'Ajarn Lin',
@@ -742,7 +682,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '29',
       speakerName: 'kong',
       engName: 'Smoke',
@@ -776,7 +716,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '30',
       speakerName: 'to',
       engName: 'Toto',
@@ -810,7 +750,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '31',
       speakerName: 'johny',
       engName: 'Mr.Bread',
@@ -844,7 +784,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '32',
       speakerName: 'naototok',
       engName: 'Neo',
@@ -878,7 +818,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '33',
       speakerName: 'gift',
       engName: 'Sali',
@@ -912,7 +852,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '34',
       speakerName: 'boo',
       engName: 'Bamboo',
@@ -946,7 +886,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '37',
       speakerName: 'chet',
       engName: 'Poo-Yai Lee',
@@ -980,7 +920,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '38',
       speakerName: 'natthapong',
       engName: 'Teddy',
@@ -1014,7 +954,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '39',
       speakerName: 'terapat',
       engName: 'tee',
@@ -1048,7 +988,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '40',
       speakerName: 'corey2',
       engName: 'Matt',
@@ -1082,7 +1022,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '41',
       speakerName: 'belle2',
       engName: 'Ellie',
@@ -1116,7 +1056,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '42',
       speakerName: 'milk',
       engName: 'meow',
@@ -1150,7 +1090,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '45',
       speakerName: 'puri',
       engName: 'Touch',
@@ -1184,7 +1124,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '46',
       speakerName: 'flower',
       engName: 'Ben',
@@ -1218,7 +1158,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '47',
       speakerName: 'ro',
       engName: 'Know',
@@ -1252,7 +1192,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '48',
       speakerName: 'perce',
       engName: 'Top',
@@ -1286,7 +1226,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '52',
       speakerName: 'ploy',
       engName: 'Mani',
@@ -1320,7 +1260,7 @@ class SpeakerDataList {
       availableLanguage: ['th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '56',
       speakerName: 'nid',
       engName: 'Nick',
@@ -1354,7 +1294,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '59',
       speakerName: 'zh_atchariyadaman95',
       engName: 'Juan',
@@ -1388,7 +1328,7 @@ class SpeakerDataList {
       availableLanguage: ['zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '60',
       speakerName: 'zh_jidapaamarangkul',
       engName: 'Xin',
@@ -1422,7 +1362,7 @@ class SpeakerDataList {
       availableLanguage: ['zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '61',
       speakerName: 'zh_tiger',
       engName: 'Jie',
@@ -1456,7 +1396,7 @@ class SpeakerDataList {
       availableLanguage: ['zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '62',
       speakerName: 'zh_yupadee.hua',
       engName: 'Qing',
@@ -1490,7 +1430,7 @@ class SpeakerDataList {
       availableLanguage: ['zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '63',
       speakerName: 'ja_c0tty.changg',
       engName: 'Kanna',
@@ -1524,7 +1464,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '64',
       speakerName: 'ja_parichat.yotsalae',
       engName: 'Sae',
@@ -1558,7 +1498,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '65',
       speakerName: 'id_anggidhea22',
       engName: 'Dia',
@@ -1592,7 +1532,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '66',
       speakerName: 'id_chandra.irawan1889',
       engName: 'Taufik',
@@ -1626,7 +1566,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '67',
       speakerName: 'id_prasetyo.pamungkas11',
       engName: 'Tedi',
@@ -1660,7 +1600,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '68',
       speakerName: 'id_sarahzafiraa',
       engName: 'Zamira',
@@ -1694,7 +1634,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '69',
       speakerName: 'vi_minhcuong211001',
       engName: 'Dang',
@@ -1728,7 +1668,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '70',
       speakerName: 'vi_phungvantienc7dubi',
       engName: 'Hung',
@@ -1762,7 +1702,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '71',
       speakerName: 'vi_thuhaa2172002',
       engName: 'Thanh',
@@ -1796,7 +1736,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '72',
       speakerName: 'vi_thuthuy333222',
       engName: 'Diep',
@@ -1830,7 +1770,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '73',
       speakerName: 'vi_tranthiminhthu040802',
       engName: 'Phuong',
@@ -1864,7 +1804,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '74',
       speakerName: 'vi_tunganhle2704',
       engName: 'Johnny',
@@ -1898,7 +1838,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '77',
       speakerName: 'lo_sounyyy1717',
       engName: 'Phorn',
@@ -1932,7 +1872,7 @@ class SpeakerDataList {
       availableLanguage: ['lo'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '78',
       speakerName: 'lo_bbb560576',
       engName: 'Sorn',
@@ -1966,7 +1906,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '79',
       speakerName: 'lo_menubandasack',
       engName: 'Waris',
@@ -2000,7 +1940,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '80',
       speakerName: 'o_padidpiyakoun',
       engName: 'BunYang',
@@ -2034,7 +1974,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '81',
       speakerName: 'my_aurad3011',
       engName: 'Yati',
@@ -2068,7 +2008,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '82',
       speakerName: 'my_meaowdum123',
       engName: 'Heyma',
@@ -2102,7 +2042,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '83',
       speakerName: 'my_oislppymnj_far',
       engName: 'Gawa',
@@ -2136,7 +2076,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '84',
       speakerName: 'my_somchaijanthon10',
       engName: 'Cetan',
@@ -2170,7 +2110,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '85',
       speakerName: 'bo',
       engName: 'Nora',
@@ -2204,7 +2144,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '86',
       speakerName: 'getty',
       engName: 'Khaotok',
@@ -2238,7 +2178,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '87',
       speakerName: 'phoochana',
       engName: 'AiThoen',
@@ -2272,7 +2212,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '88',
       speakerName: 'rungthida',
       engName: 'Fommy',
@@ -2306,7 +2246,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '89',
       speakerName: 'somsamai',
       engName: 'Kaew',
@@ -2340,7 +2280,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '94',
       speakerName: 'km_kantola',
       engName: 'Tola',
@@ -2374,7 +2314,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '95',
       speakerName: 'km_chhunna',
       engName: 'Mala',
@@ -2408,7 +2348,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '96',
       speakerName: 'blend0',
       engName: 'Olivia',
@@ -2442,7 +2382,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '97',
       speakerName: 'blend5',
       engName: 'shawn',
@@ -2476,7 +2416,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '98',
       speakerName: 'blend6',
       engName: 'Bobby',
@@ -2510,7 +2450,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '99',
       speakerName: 'blend7',
       engName: 'Polly',
@@ -2544,7 +2484,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '100',
       speakerName: 'blend8',
       engName: 'Irene',
@@ -2578,7 +2518,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '101',
       speakerName: 'blend9',
       engName: 'Nelson',
@@ -2612,7 +2552,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '102',
       speakerName: 'blend10',
       engName: 'Paul',
@@ -2646,7 +2586,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '103',
       speakerName: 'blend11',
       engName: 'Alvin',
@@ -2680,7 +2620,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '104',
       speakerName: 'blend12',
       engName: 'Judy',
@@ -2714,7 +2654,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '107',
       speakerName: 'blend14',
       engName: 'Kara',
@@ -2748,7 +2688,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '114',
       speakerName: 'blend21',
       engName: 'Janice',
@@ -2782,7 +2722,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '115',
       speakerName: 'tiffani',
       engName: 'Ruby',
@@ -2816,7 +2756,7 @@ class SpeakerDataList {
       availableLanguage: ['en'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '119',
       speakerName: 'ja_takeru',
       engName: 'Kubo',
@@ -2850,7 +2790,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'id', 'ja', 'km', 'lo', 'my', 'th', 'vi', 'zh'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '134',
       speakerName: 'aon',
       engName: 'Oun',
@@ -2884,7 +2824,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '139',
       speakerName: 'km_hakkong',
       engName: 'Sreymum',
@@ -2935,7 +2875,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '140',
       speakerName: 'km_kimchhoeurn_khy',
       engName: 'Chai',
@@ -2986,7 +2926,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '141',
       speakerName: 'km_longzz',
       engName: 'Samai',
@@ -3037,7 +2977,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '142',
       speakerName: 'km_pech_sophana',
       engName: 'Kosal',
@@ -3088,7 +3028,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '143',
       speakerName: 'km_phanii',
       engName: 'Sopheap',
@@ -3139,7 +3079,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '144',
       speakerName: 'km_seng_sieng',
       engName: 'Sokhim',
@@ -3190,7 +3130,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '145',
       speakerName: 'km_thanika_thorng',
       engName: 'Ratha',
@@ -3241,7 +3181,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '146',
       speakerName: 'fil_kriza',
       engName: 'Kriza',
@@ -3292,7 +3232,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '147',
       speakerName: 'fil_mickyla',
       engName: 'Mickyla',
@@ -3343,7 +3283,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '148',
       speakerName: 'fil_shuncey',
       engName: 'Shuncey',
@@ -3394,7 +3334,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '154',
       speakerName: 'tiffani_prao',
       engName: 'Tiffani',
@@ -3428,7 +3368,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '160',
       speakerName: 'krubamm',
       engName: 'Lynn',
@@ -3462,7 +3402,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '162',
       speakerName: 'penchan',
       engName: 'Daonapha',
@@ -3496,7 +3436,7 @@ class SpeakerDataList {
       availableLanguage: ['en', 'th'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '163',
       speakerName: 'id_ari',
       engName: 'Ari',
@@ -3543,7 +3483,7 @@ class SpeakerDataList {
       ],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '208',
       speakerName: 'en_amith',
       engName: 'Andy',
@@ -3577,7 +3517,7 @@ class SpeakerDataList {
       availableLanguage: ['en'],
       premier: false,
     ),
-    SpeakerData(
+    SpeakerDataModel(
       speakerId: '209',
       speakerName: 'en_michi',
       engName: 'Lara Reed',

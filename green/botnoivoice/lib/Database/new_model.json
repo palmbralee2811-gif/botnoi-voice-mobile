@@ -1,0 +1,5235 @@
+{
+    "message": "success",
+    "data": [
+        {
+            "speaker_id": "1",
+            "speaker_name": "tonkhaow",
+            "eng_name": "Ava",
+            "thai_name": "เอวา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/ava.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/face_ava.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/horizontal_face_ava.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/square_ava.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_ava.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "ยอดนิยม",
+            "type": 0,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "News Reading"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "2",
+            "speaker_name": "meena",
+            "eng_name": "Bow",
+            "thai_name": "โบ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/bow.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/face_bow.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/horizontal_face_bow.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/square_bow.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bow/sound_bow.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยเด็ก",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "ยอดนิยม",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Child",
+            "eng_gender": "Female",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "3",
+            "speaker_name": "ngam",
+            "eng_name": "Ngam",
+            "thai_name": "คุณงาม",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/ngam.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/face_ngam.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/horizontal_face_ngam.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/square_ngam.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ngam/sound_ngam.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "ยอดนิยม",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "4",
+            "speaker_name": "jaonai",
+            "eng_name": "Max",
+            "thai_name": "แม็กซ์",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/max.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/face_max.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/horizontal_face_max.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/square_max.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/max/sound_max.wav",
+            "voice_style": [
+                "เสียงน่าเชื่อถือ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "ยอดนิยม",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "News Reading"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Trustworthy"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "5",
+            "speaker_name": "nopchai",
+            "eng_name": "Alan",
+            "thai_name": "อลัน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/alan.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/face_alan.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/horizontal_face_alan.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/square_alan.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/alan/sound_alan.wav",
+            "voice_style": [
+                "เสียงตื่นเต้น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "ยอดนิยม",
+            "type": 0,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "News Reading"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Exciting"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "6",
+            "speaker_name": "pla",
+            "eng_name": "Siren",
+            "thai_name": "ไซเรน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/siren.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/face_siren.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/horizontal_face_siren.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/square_siren.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/siren/sound_siren.wav",
+            "voice_style": [
+                "เสียงตื่นเต้น"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "ยอดนิยม",
+            "type": 0,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Exciting"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "7",
+            "speaker_name": "ati",
+            "eng_name": "Alisa",
+            "thai_name": "อลิสา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/alisa.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/face_alisa.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/horizontal_face_alisa.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/square_alisa.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/alisa/sound_alisa.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "ยอดนิยม",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "8",
+            "speaker_name": "max",
+            "eng_name": "Leo",
+            "thai_name": "เลโอ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/leo.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/face_leo.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/horizontal_face_leo.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/square_leo.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/leo/sound_leo.wav",
+            "voice_style": [
+                "เสียงตื่นเต้น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์สปอตโฆษณา"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "ยอดนิยม",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "News Reading",
+                "Advertising Spot"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Exciting"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "9",
+            "speaker_name": "helen",
+            "eng_name": "Nadia",
+            "thai_name": "นาเดียร์",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/nadia.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/face_nadia.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/horizontal_face_nadia.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/square_nadia.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nadia/sound_nadia.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "ยอดนิยม",
+            "type": 4,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "Popular",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "11",
+            "speaker_name": "kook",
+            "eng_name": "Vanilla",
+            "thai_name": "วนิลา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/vanilla.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/face_vanilla.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/horizontal_face_vanilla.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/square_vanilla.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/vanilla/sound_vanilla.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์สารคดี"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Documentary"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "13",
+            "speaker_name": "radar",
+            "eng_name": "Ananda",
+            "thai_name": "อนันดา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/ananda.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/face_ananda.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/horizontal_face_ananda.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/square_ananda.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ananda/sound_ananda.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยเด็ก",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Child",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "14",
+            "speaker_name": "leen",
+            "eng_name": "Ileen",
+            "thai_name": "ไอลีน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/ileen.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/face_ileen.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/horizontal_face_ileen.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/square_ileen.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ileen/sound_ileen.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์บรรยาย",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Narrating",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "15",
+            "speaker_name": "fern",
+            "eng_name": "Hiro",
+            "thai_name": "ฮิโระ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/hiro.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/face_hiro.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/horizontal_face_hiro.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/square_hiro.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/hiro/sound_hiro.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 3,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "16",
+            "speaker_name": "care",
+            "eng_name": "Kru D Dee",
+            "thai_name": "ครูดีดี๊",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/kruddee.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/face_kruddee.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/horizontal_face_kruddee.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/square_kruddee.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kru d dee/sound_kru d dee.wav",
+            "voice_style": [
+                "เสียงน่าเชื่อถือ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Trustworthy"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "17",
+            "speaker_name": "ming",
+            "eng_name": "Jao Nerd",
+            "thai_name": "เจ้าเนิร์ด",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/jaonerd.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/face_jaonerd.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/horizontal_face_jaonerd.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/square_jaonerd.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/jao nerd/sound_jao nerd.wav",
+            "voice_style": [
+                "เสียงจริงจัง"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Serious"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "18",
+            "speaker_name": "bung",
+            "eng_name": "Oto",
+            "thai_name": "โอโตะ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/oto.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/face_oto.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/horizontal_face_oto.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/square_oto.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/oto/sound_oto.wav",
+            "voice_style": [
+                "เสียงหวาน"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 2,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Sweet"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "19",
+            "speaker_name": "tanong",
+            "eng_name": "Uncle Warm",
+            "thai_name": "อาวอร์ม",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/warm.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/face_warm.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/horizontal_face_warm.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/square_warm.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/uncle warm/sound_uncle warm.wav",
+            "voice_style": [
+                "เสียงอบอุ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Warm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "26",
+            "speaker_name": "ying",
+            "eng_name": "YingAiko",
+            "thai_name": "หญิงไอโกะ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/yingaiko.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/face_yingaiko.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/horizontal_face_yingaiko.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/square_yingaiko.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/sound_yingaiko.wav",
+            "voice_style": [
+                "เสียงหวาน"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์ตัวละคร",
+                "สไตล์อนิเมะ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 3,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Character",
+                "Anime"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Sweet"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "27",
+            "speaker_name": "ple",
+            "eng_name": "Aunty Grace",
+            "thai_name": "น้าเกรซ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/grace.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/face_grace.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/horizontal_face_grace.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/square_grace.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/aunty grace/sound_aunty grace.wav",
+            "voice_style": [
+                "เสียงอบอุ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Warm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "28",
+            "speaker_name": "lee",
+            "eng_name": "Ajarn Lin",
+            "thai_name": "อาจารย์หลิน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/lin.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/face_lin.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/horizontal_face_lin.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/square_lin.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ajarn lin/sound_ajarn lin.wav",
+            "voice_style": [
+                "เสียงอบอุ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์บรรยาย",
+                "สไตล์อาจารย์"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Narrating",
+                "Teaching"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Warm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "29",
+            "speaker_name": "kong",
+            "eng_name": "Smoke ",
+            "thai_name": "สโม๊ค",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/smoke.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/face_smoke.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/horizontal_face_smoke.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/square_smoke.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/smoke /sound_smoke .wav",
+            "voice_style": [
+                "เสียงขี้เล่น"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์ตัวละคร",
+                "สไตล์อนิเมะ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 3,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Character",
+                "Anime"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Playful"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "30",
+            "speaker_name": "to",
+            "eng_name": "Toto",
+            "thai_name": "โตโต้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/toto.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/face_toto.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/horizontal_face_toto.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/square_toto.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/toto/sound_toto.wav",
+            "voice_style": [
+                "เสียงทุ้ม"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Deep"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "31",
+            "speaker_name": "johny",
+            "eng_name": "Mr.Bread",
+            "thai_name": "นายเบรด",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/bread.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/face_bread.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/horizontal_face_bread.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/square_bread.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mr.bread/sound_mr.bread.wav",
+            "voice_style": [
+                "เสียงขี้เล่น"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์ตัวละคร",
+                "สไตล์อนิเมะ"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 2,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Character",
+                "Anime"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Playful"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "32",
+            "speaker_name": "naototok",
+            "eng_name": "Neo",
+            "thai_name": "เนโอ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/neo.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/face_neo.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/horizontal_face_neo.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/square_neo.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/neo/sound_neo.wav",
+            "voice_style": [
+                "เสียงนุ่มนวล"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "33",
+            "speaker_name": "gift",
+            "eng_name": "Sali",
+            "thai_name": "สาลี",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/sali.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/face_sali.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/horizontal_face_sali.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/square_sali.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sali/sound_sali.wav",
+            "voice_style": [
+                "เสียงนุ่มนวล"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "34",
+            "speaker_name": "boo",
+            "eng_name": "Bamboo",
+            "thai_name": "แบมบู",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/bamboo.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/face_bamboo.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/horizontal_face_bamboo.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/square_bamboo.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bamboo/sound_bamboo.wav",
+            "voice_style": [
+                "เสียงทุ้ม"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Deep"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "37",
+            "speaker_name": "chet",
+            "eng_name": "Poo-Yai Lee",
+            "thai_name": "ผู้ใหญ่ลี",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/lee.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/face_lee.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/horizontal_face_lee.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/square_lee.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/poo-yai lee/sound_poo-yai lee.wav",
+            "voice_style": [
+                "เสียงท้องถิ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ท้องถิ่น"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 4,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Local"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Regional accent"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "38",
+            "speaker_name": "natthapong",
+            "eng_name": "Teddy",
+            "thai_name": "เท็ดดี้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/teddy.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/face_teddy.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/horizontal_face_teddy.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/square_teddy.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/teddy/sound_teddy.wav",
+            "voice_style": [
+                "เสียงนุ่มนวล"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 1,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "39",
+            "speaker_name": "terapat",
+            "eng_name": "tee",
+            "thai_name": "ตี๋",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/tee.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/face_tee.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/horizontal_face_tee.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/square_tee.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tee/sound_tee.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "40",
+            "speaker_name": "corey2",
+            "eng_name": "Matt",
+            "thai_name": "แม็ท",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/matt.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/face_matt.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/horizontal_face_matt.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/square_matt.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/matt/sound_matt.wav",
+            "voice_style": [
+                "เสียงหวาน"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เสียงต่างประเทศ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Foreign Voice"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Sweet"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "41",
+            "speaker_name": "belle2",
+            "eng_name": "Ellie",
+            "thai_name": "เอลลี่",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/ellie.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/face_ellie.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/horizontal_face_ellie.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/square_ellie.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ellie/sound_ellie.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์เสียงต่างประเทศ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Foreign Voice"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "42",
+            "speaker_name": "milk",
+            "eng_name": "meow",
+            "thai_name": "เหมียว",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/meow.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/face_meow.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/horizontal_face_meow.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/square_meow.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/meow/sound_meow.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "45",
+            "speaker_name": "puri",
+            "eng_name": "Touch",
+            "thai_name": "ทัช",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/touch.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/face_touch.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/horizontal_face_touch.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/square_touch.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/touch/sound_touch.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "46",
+            "speaker_name": "flower",
+            "eng_name": "Ben",
+            "thai_name": "เบน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/ben.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/face_ben.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/horizontal_face_ben.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/square_ben.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ben/sound_ben.wav",
+            "voice_style": [
+                "เสียงทุ้ม"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Deep"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "47",
+            "speaker_name": "ro",
+            "eng_name": "Know",
+            "thai_name": "น้องโนว์",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/know.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/face_know.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/horizontal_face_know.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/square_know.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/know/sound_know.wav",
+            "voice_style": [
+                "เสียงนุ่มนวล"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "48",
+            "speaker_name": "perce",
+            "eng_name": "Top",
+            "thai_name": "ท็อป",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/top.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/face_top.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/horizontal_face_top.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/square_top.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/top/sound_top.wav",
+            "voice_style": [
+                "เสียงทุ้ม"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Deep"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "52",
+            "speaker_name": "ploy",
+            "eng_name": "Mani",
+            "thai_name": "มานี",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/mani.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/face_mani.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/horizontal_face_mani.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/square_mani.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mani/sound_mani.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "56",
+            "speaker_name": "nid",
+            "eng_name": "Nick",
+            "thai_name": "นิค",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/nick.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/face_nick.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/horizontal_face_nick.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/square_nick.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nick/sound_nick.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "59",
+            "speaker_name": "zh_atchariyadaman95",
+            "eng_name": "Juan",
+            "thai_name": "เจวียน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/juan.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/face_juan.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/horizontal_face_juan.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/square_juan.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/juan/sound_juan.wav",
+            "voice_style": [
+                "เสียงหวาน"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "ZH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Sweet"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "60",
+            "speaker_name": "zh_jidapaamarangkul",
+            "eng_name": "Xin",
+            "thai_name": "ซิน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/xin.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/face_xin.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/horizontal_face_xin.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/square_xin.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/xin/sound_xin.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เสียงต่างประเทศ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "ZH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Foreign Voice"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "61",
+            "speaker_name": "zh_tiger",
+            "eng_name": "Jie",
+            "thai_name": "หวัง",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/jie.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/face_jie.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/horizontal_face_jie.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/square_jie.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/jie/sound_jie.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "ZH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "62",
+            "speaker_name": "zh_yupadee.hua",
+            "eng_name": "Qing",
+            "thai_name": "ชิง",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/qing.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/face_qing.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/horizontal_face_qing.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/square_qing.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/qing/sound_qing.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "ZH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "63",
+            "speaker_name": "ja_c0tty.changg",
+            "eng_name": "Kanna",
+            "thai_name": "คันนะ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/kanna.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/face_kanna.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/horizontal_face_kanna.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/square_kanna.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kanna/sound_kanna.wav",
+            "voice_style": [
+                "เสียงน่ารัก"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์บรรยาย",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "JA",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Narrating,Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Cute"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "64",
+            "speaker_name": "ja_parichat.yotsalae",
+            "eng_name": "Sae",
+            "thai_name": "ซาเอะ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/sae.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/face_sae.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/horizontal_face_sae.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/square_sae.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sae/sound_sae.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เล่าเรื่อง"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "JA",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Storytelling"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "65",
+            "speaker_name": "id_anggidhea22",
+            "eng_name": "Dia",
+            "thai_name": "เดีย",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/dia.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/face_dia.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/horizontal_face_dia.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/square_dia.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/dia/sound_dia.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "ID",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "66",
+            "speaker_name": "id_chandra.irawan1889",
+            "eng_name": "Taufik",
+            "thai_name": "เทาฟิก",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/taufik.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/face_taufik.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/horizontal_face_taufik.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/square_taufik.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/taufik/sound_taufik.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 5,
+            "language": "ID",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "News Reading"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "67",
+            "speaker_name": "id_prasetyo.pamungkas11",
+            "eng_name": "Tedi",
+            "thai_name": "เทดี้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/tedi.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/face_tedi.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/horizontal_face_tedi.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/square_tedi.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tedi/sound_tedi.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 5,
+            "language": "ID",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Character"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "68",
+            "speaker_name": "id_sarahzafiraa",
+            "eng_name": "Zamira",
+            "thai_name": "ซามีระ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/zamira.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/face_zamira.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/horizontal_face_zamira.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/square_zamira.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/zamira/sound_zamira.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 5,
+            "language": "ID",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "69",
+            "speaker_name": "vi_minhcuong211001",
+            "eng_name": "Dang",
+            "thai_name": "ดั่ง",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/dang.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/face_dang.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/horizontal_face_dang.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/square_dang.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/dang/sound_dang.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "VI",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "70",
+            "speaker_name": "vi_phungvantienc7dubi",
+            "eng_name": "Hung",
+            "thai_name": "ฮง",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/hung.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/face_hung.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/horizontal_face_hung.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/square_hung.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/hung/sound_hung.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เล่าเรื่อง"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "VI",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Storytelling"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "71",
+            "speaker_name": "vi_thuhaa2172002",
+            "eng_name": "Thanh",
+            "thai_name": "ถั่ญ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/thanh.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/face_thanh.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/horizontal_face_thanh.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/square_thanh.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/thanh/sound_thanh.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 5,
+            "language": "VI",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "72",
+            "speaker_name": "vi_thuthuy333222",
+            "eng_name": "Diep",
+            "thai_name": "เซียบ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/diep.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/face_diep.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/horizontal_face_diep.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/square_diep.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/diep/sound_diep.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 5,
+            "language": "VI",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "News Reading"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "73",
+            "speaker_name": "vi_tranthiminhthu040802",
+            "eng_name": "Phuong",
+            "thai_name": "เฟื่อง",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/phuong.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/face_phuong.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/horizontal_face_phuong.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/square_phuong.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/phuong/sound_phuong.wav",
+            "voice_style": [
+                "เสียงอบอุ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์สารคดี",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "VI",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Documentary",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Warm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "74",
+            "speaker_name": "vi_tunganhle2704",
+            "eng_name": "Johnny",
+            "thai_name": "จอห์นนี่",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/johnny.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/face_johnny.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/horizontal_face_johnny.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/square_johnny.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/johnny/sound_johnny.wav",
+            "voice_style": [
+                "เสียงนิ่มนวล"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์บรรยาย",
+                "สไตล์ตัวละคร"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "VI",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Narrating",
+                "Character"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "77",
+            "speaker_name": "lo_sounyyy1717",
+            "eng_name": "Phorn",
+            "thai_name": "พร",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/phorn.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/face_phorn.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/horizontal_face_phorn.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/square_phorn.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/phorn/sound_phorn.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดช้า",
+            "popularity": "-",
+            "type": 5,
+            "language": "LO",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "lo"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Slow",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "78",
+            "speaker_name": "lo_bbb560576",
+            "eng_name": "Sorn",
+            "thai_name": "ศร",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/sorn.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/face_sorn.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/horizontal_face_sorn.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/square_sorn.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sorn/sound_sorn.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "LO",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "79",
+            "speaker_name": "lo_menubandasack",
+            "eng_name": "Waris",
+            "thai_name": "วริศ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/waris.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/face_waris.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/horizontal_face_waris.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/square_waris.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/waris/sound_waris.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "LO",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "80",
+            "speaker_name": "lo_padidpiyakoun",
+            "eng_name": "BunYang",
+            "thai_name": "บุนยัง",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/bunyang.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/face_bunyang.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/horizontal_face_bunyang.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/square_bunyang.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bunyang/sound_bunyang.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "LO",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "81",
+            "speaker_name": "my_aurad3011",
+            "eng_name": "Yati",
+            "thai_name": "ยาตี",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/yati.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/face_yati.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/horizontal_face_yati.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/square_yati.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/yati/sound_yati.wav",
+            "voice_style": [
+                "เสียงนุ่มนวล"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "MY",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "82",
+            "speaker_name": "my_meaowdum123",
+            "eng_name": "Heyma",
+            "thai_name": "เฮย์มา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/heyma.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/face_heyma.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/horizontal_face_heyma.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/square_heyma.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/heyma/sound_heyma.wav",
+            "voice_style": [
+                "เสียงนุ่มนวล"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "MY",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "83",
+            "speaker_name": "my_oislppymnj_far",
+            "eng_name": "Gawa",
+            "thai_name": "กาว่า",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/gawa.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/face_gawa.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/horizontal_face_gawa.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/square_gawa.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/gawa/sound_gawa.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 5,
+            "language": "MY",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "84",
+            "speaker_name": "my_somchaijanthon10",
+            "eng_name": "Cetan",
+            "thai_name": "ซีตาน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/cetan.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/face_cetan.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/horizontal_face_cetan.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/square_cetan.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/cetan/sound_cetan.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "MY",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "85",
+            "speaker_name": "bo",
+            "eng_name": "Nora",
+            "thai_name": "โนรา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/nora.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/face_nora.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/horizontal_face_nora.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/square_nora.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nora/sound_nora.wav",
+            "voice_style": [
+                "เสียงชัดเจน"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ท้องถิ่น"
+            ],
+            "speed": "พูดเร็ว",
+            "popularity": "-",
+            "type": 4,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Local"
+            ],
+            "eng_speed": "Fast",
+            "eng_voice_style": [
+                "Clear"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "86",
+            "speaker_name": "getty",
+            "eng_name": "Khaotok",
+            "thai_name": "ข้าวตอก",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/khaotok.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/face_khaotok.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/horizontal_face_khaotok.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/square_khaotok.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/khaotok/sound_khaotok.wav",
+            "voice_style": [
+                "เสียงเหนือ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ท้องถิ่น"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Local"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Northern accent"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "87",
+            "speaker_name": "phoochana",
+            "eng_name": "AiThoen",
+            "thai_name": "อ้ายเถิน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/aithoen.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/face_aithoen.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/horizontal_face_aithoen.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/square_aithoen.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/aithoen/sound_aithoen.wav",
+            "voice_style": [
+                "เสียงเหนือ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ท้องถิ่น"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Local"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Northern accent"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "88",
+            "speaker_name": "rungthida",
+            "eng_name": "Fommy",
+            "thai_name": "ฟอมมี่",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/fommy.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/face_fommy.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/horizontal_face_fommy.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/square_fommy.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/fommy/sound_fommy.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "89",
+            "speaker_name": "somsamai",
+            "eng_name": "Kaew",
+            "thai_name": "คำแก้ว",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/kaew.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/face_kaew.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/horizontal_face_kaew.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/square_kaew.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kaew/sound_kaew.wav",
+            "voice_style": [
+                "เสียงอีสาน"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์ท้องถิ่น"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Local"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Northeastern accent"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "94",
+            "speaker_name": "km_kantola",
+            "eng_name": "Tola",
+            "thai_name": "โทลา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/thanaw.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/face_thanaw.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/horizontal_face_thanaw.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/square_thanaw.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tola/sound_tola.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "95",
+            "speaker_name": "km_chhunna",
+            "eng_name": "Mala",
+            "thai_name": "มาลา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/mala.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/face_mala.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/horizontal_face_mala.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/square_mala.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mala/sound_mala.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยรุ่น",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Teens",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "96",
+            "speaker_name": "blend0",
+            "eng_name": "Olivia",
+            "thai_name": "โอลิเวีย",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/olivia.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/face_olivia.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/horizontal_face_olivia.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/square_olivia.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/olivia/sound_olivia.wav",
+            "voice_style": [
+                "เสียงนิ่มนวล"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เสียงต่างประเทศ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Foreign Voice"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "97",
+            "speaker_name": "blend5",
+            "eng_name": "shawn",
+            "thai_name": "ฌอน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/shawn.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/face_shawn.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/horizontal_face_shawn.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/square_shawn.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/shawn/sound_shawn.wav",
+            "voice_style": [
+                "เสียงน่าเชื่อถือ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์อ่านข่าว"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "News Reading"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Trustworthy"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "98",
+            "speaker_name": "blend6",
+            "eng_name": "Bobby",
+            "thai_name": "บ็อบบี้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/bobby.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/face_bobby.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/horizontal_face_bobby.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/square_bobby.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bobby/sound_bobby.wav",
+            "voice_style": [
+                "เสียงอบอุ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์เสียงต่างประเทศ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Foreign Voice"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Warm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "99",
+            "speaker_name": "blend7",
+            "eng_name": "Polly",
+            "thai_name": "พอลลี่",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/polly.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/face_polly.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/horizontal_face_polly.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/square_polly.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/polly/sound_polly.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เล่าเรื่อง"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Storytelling"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "100",
+            "speaker_name": "blend8",
+            "eng_name": "Irene",
+            "thai_name": "ไอรีน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/irene.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/face_irene.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/horizontal_face_irene.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/square_irene.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/irene/sound_irene.wav",
+            "voice_style": [
+                "เสียงชัดเจน"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เสียงต่างประเทศ"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Foreign Voice"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Clear"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "102",
+            "speaker_name": "blend10",
+            "eng_name": "Paul",
+            "thai_name": "พอล",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/paul.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/face_paul.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/horizontal_face_paul.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/square_paul.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/paul/sound_paul.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "101",
+            "speaker_name": "blend9",
+            "eng_name": "Nelson",
+            "thai_name": "เนลสัน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/nelson.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/face_nelson.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/horizontal_face_nelson.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/square_nelson.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nelson/sound_nelson.wav",
+            "voice_style": [
+                "เสียงนิ่มนวล"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์สารคดี"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Documentary"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Gentle"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "103",
+            "speaker_name": "blend11",
+            "eng_name": "Alvin",
+            "thai_name": "เอลวิน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/alvin.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/face_alvin.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/horizontal_face_alvin.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/square_alvin.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/alvin/sound_alvin.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์สปอตโฆษณา"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Advertising Spot"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "104",
+            "speaker_name": "blend12",
+            "eng_name": "Judy",
+            "thai_name": "จูดี้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/judy.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/face_judy.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/horizontal_face_judy.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/square_judy.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/judy/sound_judy.wav",
+            "voice_style": [
+                "เสียงอบอุ่น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์อ่านข่าว",
+                "สไตล์เล่าเรื่อง"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "News Reading",
+                "Storytelling"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Warm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "107",
+            "speaker_name": "blend14",
+            "eng_name": "Kara",
+            "thai_name": "คาร่า",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/kara.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/face_kara.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/horizontal_face_kara.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/square_kara.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kara/sound_kara.wav",
+            "voice_style": [
+                "เสียงหวาน"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Sweet"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "114",
+            "speaker_name": "blend21",
+            "eng_name": "Janice",
+            "thai_name": "เจนิส",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/janice.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/face_janice.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/horizontal_face_janice.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/square_janice.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/janice/sound_janice.wav",
+            "voice_style": [
+                "เสียงใจเย็น"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์สารคดี"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Documentary"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Calm"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "115",
+            "speaker_name": "tiffani",
+            "eng_name": "Ruby",
+            "thai_name": "รูบี้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/ruby.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/face_ruby.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/horizontal_face_ruby.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/square_ruby.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ruby/sound_ruby.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "119",
+            "speaker_name": "ja_takeru",
+            "eng_name": "Kubo",
+            "thai_name": "คุโบ",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/kubo.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/face_kubo.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/horizontal_face_kubo.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/square_kubo.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kubo/sound_kubo.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "JA",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "id",
+                "ja",
+                "km",
+                "lo",
+                "my",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "134",
+            "speaker_name": "aon",
+            "eng_name": "Oun",
+            "thai_name": "อ้วน",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/oun.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/face_oun.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/horizontal_face_oun.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/square_oun.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/oun/sound_oun.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "139",
+            "speaker_name": "km_hakkong",
+            "eng_name": "Sreymum",
+            "thai_name": "ศรีมัม",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/sreymum.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/face_sreymum.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/horizontal_face_sreymum.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/square_sreymum.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sreymum/sound_sreymum.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "140",
+            "speaker_name": "km_kimchhoeurn_khy",
+            "eng_name": "Chai",
+            "thai_name": "ชัย",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/chai.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/face_chai.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/horizontal_face_chai.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/square_chai.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/chai/sound_chai.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "141",
+            "speaker_name": "km_longzz",
+            "eng_name": "Samai",
+            "thai_name": "สมัย",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/samai.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/face_samai.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/horizontal_face_samai.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/square_samai.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/samai/sound_samai.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "142",
+            "speaker_name": "km_pech_sophana",
+            "eng_name": "Kosal",
+            "thai_name": "โกศล",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/kosal.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/face_kosal.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/horizontal_face_kosal.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/square_kosal.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kosal/sound_kosal.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "143",
+            "speaker_name": "km_phanii",
+            "eng_name": "Sopheap",
+            "thai_name": "โซฟีป",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/sopheap.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/face_sopheap.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/horizontal_face_sopheap.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/square_sopheap.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sopheap/sound_sopheap.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "144",
+            "speaker_name": "km_seng_sieng",
+            "eng_name": "Sokhim",
+            "thai_name": "โสคิม",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/sokhim.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/face_sokhim.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/horizontal_face_sokhim.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/square_sokhim.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sokhim/sound_sokhim.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "145",
+            "speaker_name": "km_thanika_thorng",
+            "eng_name": "Ratha",
+            "thai_name": "รฐา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/ratha.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/face_ratha.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/horizontal_face_ratha.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/square_ratha.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ratha/sound_ratha.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "KM",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "146",
+            "speaker_name": "fil_kriza",
+            "eng_name": "Kriza",
+            "thai_name": "กรีซ่า",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/kriza.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/face_kriza.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/horizontal_face_kriza.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/square_kriza.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kriza/sound_kriza.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "FIL",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "147",
+            "speaker_name": "fil_mickyla",
+            "eng_name": "Mickyla",
+            "thai_name": "มิคเคล่า",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/mickyla.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/face_mickyla.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/horizontal_face_mickyla.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/square_mickyla.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mickyla/sound_mickyla.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "FIL",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "148",
+            "speaker_name": "fil_shuncey",
+            "eng_name": "Shuncey",
+            "thai_name": "ชานซี",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/shuncey.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/face_shuncey.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/horizontal_face_shuncey.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/square_shuncey.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/shuncey/sound_shuncey.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "FIL",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fil",
+                "fr",
+                "id",
+                "ja",
+                "km",
+                "ko",
+                "lo",
+                "my",
+                "nl",
+                "th",
+                "vi",
+                "zh"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "154",
+            "speaker_name": "tiffani_prao",
+            "eng_name": "Tiffani",
+            "thai_name": "ทิฟฟานี่",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/tiffani.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/face_tiffani.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/horizontal_face_tiffani.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/square_tiffani.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tiffani/sound_tiffani.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "160",
+            "speaker_name": "krubamm",
+            "eng_name": "Lynn",
+            "thai_name": "ริณณ์",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/lynn.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/face_lynn.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/horizontal_face_lynn.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/square_lynn.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/lynn/sound_lynn.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "162",
+            "speaker_name": "penchan",
+            "eng_name": "Daonapha",
+            "thai_name": "ดาวนภา",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/daonapha.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/face_daonapha.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/horizontal_face_daonapha.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/square_daonapha.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/daonapha/sound_daonapha.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "TH",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "163",
+            "speaker_name": "id_ari",
+            "eng_name": "Bagus",
+            "thai_name": "บากุส",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/ari.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/face_ari.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/horizontal_face_ari.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/square_ari.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bagus/sound_bagus.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "ID",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "ar",
+                "de",
+                "en",
+                "es",
+                "fr",
+                "id",
+                "",
+                "ms",
+                "nl",
+                "pt-br",
+                "ru",
+                "th"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "208",
+            "speaker_name": "en_amith",
+            "eng_name": "Andy",
+            "thai_name": "แอนดี้",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/andy.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/face_andy.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/horizontal_face_andy.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/square_andy.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/andy/sound_andy.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้ชาย",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Male",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        },
+        {
+            "speaker_id": "209",
+            "speaker_name": "en_michi",
+            "eng_name": "Lara Reed",
+            "thai_name": "ลาร่า รีด",
+            "image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/lara.webp",
+            "face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/face_lara.webp",
+            "horizontal_face_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/horizontal_face_lara.webp",
+            "square_image": "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/square_lara.webp",
+            "audio": "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/lara reed/sound_lara reed.wav",
+            "voice_style": [
+                "เสียงมั่นใจ"
+            ],
+            "age_style": "วัยผู้ใหญ่",
+            "speech_style": [
+                "สไตล์เล่าเรื่อง",
+                "สไตล์บรรยาย"
+            ],
+            "speed": "พูดกลาง",
+            "popularity": "-",
+            "type": 5,
+            "language": "EN",
+            "status": true,
+            "gender": "ผู้หญิง",
+            "private": false,
+            "allow_uid": [],
+            "available_language": [
+                "en"
+            ],
+            "premier": false,
+            "eng_age_style": "Adult",
+            "eng_gender": "Female",
+            "eng_popularity": "-",
+            "eng_speech_style": [
+                "Storytelling",
+                "Narrating"
+            ],
+            "eng_speed": "Normal",
+            "eng_voice_style": [
+                "Confident"
+            ],
+            "can_sold": false,
+            "price_thb": 0,
+            "price_usd": 0,
+            "user_id": ""
+        }
+    ]
+}
