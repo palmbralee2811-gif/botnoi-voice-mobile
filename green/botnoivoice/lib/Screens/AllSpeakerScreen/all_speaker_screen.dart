@@ -306,12 +306,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                 SizedBox(
                   height: 15.h,
                 ),
-                // _buildLanguageFilter(
-                //     'All - ทั้งหมด',
-                //     'assets/images/national_flag/all.png',
-                //     '',
-                //     context,
-                //     setState),
                 _buildLanguageFilter(
                     'Thai (Thailand) - ไทย',
                     'assets/images/national_flag/thai.png',
@@ -370,6 +364,60 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'Filipino - ฟิลิปปินส์',
                     'assets/images/national_flag/filipino.png',
                     'FIL',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Arabic - อาหรับ',
+                    'assets/images/national_flag/arabic.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'German - เยอรมัน',
+                    'assets/images/national_flag/german.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Spanish - สเปน',
+                    'assets/images/national_flag/spanish.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'French - ฝรั่งเศส',
+                    'assets/images/national_flag/french.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Dutch - ดัตช์',
+                    'assets/images/national_flag/dutch.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Korea - เกาหลี',
+                    'assets/images/national_flag/korea.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Malaysia - มาเลเซีย',
+                    'assets/images/national_flag/malaysia.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Portuguese - โปรตุเกส',
+                    'assets/images/national_flag/portuguese.png',
+                    '',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Russia - รัสเซีย',
+                    'assets/images/national_flag/russia.png',
+                    '',
                     context,
                     setState),
               ],
@@ -710,7 +758,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
                       //TODO: เก็บรูปภาพที่โหลดจาก URL ไว้ใน Cache ของแอปพลิเคชัน
-                      image: NetworkImage(
+                      image: AssetImage(
                         speakerData.squareImage,
                       ),
                       fit: BoxFit.cover,

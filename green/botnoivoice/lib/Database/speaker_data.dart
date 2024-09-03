@@ -13,8 +13,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/face_ava.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/horizontal_face_ava.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/square_ava.webp',
+      squareImage: 'assets/square_image/square_ava.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_ava.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -52,8 +51,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/face_bow.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/horizontal_face_bow.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bow/square_bow.webp',
+      squareImage: 'assets/square_image/square_bow.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bow/sound_bow.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -91,8 +89,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/face_ngam.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/horizontal_face_ngam.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ngam/square_ngam.webp',
+      squareImage: 'assets/square_image/square_ngam.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ngam/sound_ngam.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -130,8 +127,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/face_max.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/horizontal_face_max.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/max/square_max.webp',
+      squareImage: 'assets/square_image/square_max.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/max/sound_max.wav',
       voiceStyle: ['เสียงน่าเชื่อถือ'],
@@ -169,8 +165,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/face_alan.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/horizontal_face_alan.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alan/square_alan.webp',
+      squareImage: 'assets/square_image/square_alan.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/alan/sound_alan.wav',
       voiceStyle: ['เสียงตื่นเต้น'],
@@ -208,8 +203,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/face_siren.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/horizontal_face_siren.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/siren/square_siren.webp',
+      squareImage: 'assets/square_image/square_siren.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/siren/sound_siren.wav',
       voiceStyle: ['เสียงตื่นเต้น'],
@@ -247,8 +241,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/face_alisa.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/horizontal_face_alisa.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alisa/square_alisa.webp',
+      squareImage: 'assets/square_image/square_alisa.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/alisa/sound_alisa.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -286,8 +279,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/face_leo.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/horizontal_face_leo.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/leo/square_leo.webp',
+      squareImage: 'assets/square_image/square_leo.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/leo/sound_leo.wav',
       voiceStyle: ['เสียงตื่นเต้น'],
@@ -325,8 +317,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/face_nadia.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/horizontal_face_nadia.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nadia/square_nadia.webp',
+      squareImage: 'assets/square_image/square_nadia.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nadia/sound_nadia.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -364,8 +355,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/face_vanilla.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/horizontal_face_vanilla.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/vanilla/square_vanilla.webp',
+      squareImage: 'assets/square_image/square_vanilla.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/vanilla/sound_vanilla.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -403,8 +393,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/face_ananda.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/horizontal_face_ananda.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ananda/square_ananda.webp',
+      squareImage: 'assets/square_image/square_ananda.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ananda/sound_ananda.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -442,8 +431,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/face_ileen.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/horizontal_face_ileen.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ileen/square_ileen.webp',
+      squareImage: 'assets/square_image/square_ileen.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ileen/sound_ileen.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -481,8 +469,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/face_hiro.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/horizontal_face_hiro.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hiro/square_hiro.webp',
+      squareImage: 'assets/square_image/square_hiro.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/hiro/sound_hiro.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -520,8 +507,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/face_kruddee.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/horizontal_face_kruddee.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kruddee/square_kruddee.webp',
+      squareImage: 'assets/square_image/square_kruddee.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kru d dee/sound_kru d dee.wav',
       voiceStyle: ['เสียงน่าเชื่อถือ'],
@@ -559,8 +545,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/face_jaonerd.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/horizontal_face_jaonerd.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jaonerd/square_jaonerd.webp',
+      squareImage: 'assets/square_image/square_jaonerd.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/jao nerd/sound_jao nerd.wav',
       voiceStyle: ['เสียงจริงจัง'],
@@ -598,8 +583,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/face_oto.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/horizontal_face_oto.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oto/square_oto.webp',
+      squareImage: 'assets/square_image/square_oto.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/oto/sound_oto.wav',
       voiceStyle: ['เสียงหวาน'],
@@ -637,8 +621,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/face_warm.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/horizontal_face_warm.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/warm/square_warm.webp',
+      squareImage: 'assets/square_image/square_warm.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/uncle warm/sound_uncle warm.wav',
       voiceStyle: ['เสียงอบอุ่น'],
@@ -676,8 +659,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/face_yingaiko.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/horizontal_face_yingaiko.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/square_yingaiko.webp',
+      squareImage: 'assets/square_image/square_yingaiko.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/yingaiko/sound_yingaiko.wav',
       voiceStyle: ['เสียงหวาน'],
@@ -715,8 +697,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/face_grace.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/horizontal_face_grace.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/grace/square_grace.webp',
+      squareImage: 'assets/square_image/square_grace.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/aunty grace/sound_aunty grace.wav',
       voiceStyle: ['เสียงอบอุ่น'],
@@ -754,8 +735,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/face_lin.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/horizontal_face_lin.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lin/square_lin.webp',
+      squareImage: 'assets/square_image/square_lin.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ajarn lin/sound_ajarn lin.wav',
       voiceStyle: ['เสียงอบอุ่น'],
@@ -793,8 +773,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/face_smoke.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/horizontal_face_smoke.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/smoke/square_smoke.webp',
+      squareImage: 'assets/square_image/square_smoke.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/smoke /sound_smoke .wav',
       voiceStyle: ['เสียงขี้เล่น'],
@@ -832,8 +811,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/face_toto.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/horizontal_face_toto.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/toto/square_toto.webp',
+      squareImage: 'assets/square_image/square_toto.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/toto/sound_toto.wav',
       voiceStyle: ['เสียงทุ้ม'],
@@ -871,8 +849,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/face_bread.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/horizontal_face_bread.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bread/square_bread.webp',
+      squareImage: 'assets/square_image/square_bread.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mr.bread/sound_mr.bread.wav',
       voiceStyle: ['เสียงขี้เล่น'],
@@ -910,8 +887,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/face_neo.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/horizontal_face_neo.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/neo/square_neo.webp',
+      squareImage: 'assets/square_image/square_neo.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/neo/sound_neo.wav',
       voiceStyle: ['เสียงนุ่มนวล'],
@@ -949,8 +925,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/face_sali.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/horizontal_face_sali.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sali/square_sali.webp',
+      squareImage: 'assets/square_image/square_sali.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sali/sound_sali.wav',
       voiceStyle: ['เสียงนุ่มนวล'],
@@ -988,8 +963,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/face_bamboo.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/horizontal_face_bamboo.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bamboo/square_bamboo.webp',
+      squareImage: 'assets/square_image/square_bamboo.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bamboo/sound_bamboo.wav',
       voiceStyle: ['เสียงทุ้ม'],
@@ -1027,8 +1001,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/face_lee.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/horizontal_face_lee.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lee/square_lee.webp',
+      squareImage: 'assets/square_image/square_lee.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/poo-yai lee/sound_poo-yai lee.wav',
       voiceStyle: ['เสียงท้องถิ่น'],
@@ -1066,8 +1039,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/face_teddy.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/horizontal_face_teddy.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/teddy/square_teddy.webp',
+      squareImage: 'assets/square_image/square_teddy.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/teddy/sound_teddy.wav',
       voiceStyle: ['เสียงนุ่มนวล'],
@@ -1105,8 +1077,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/face_tee.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/horizontal_face_tee.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tee/square_tee.webp',
+      squareImage: 'assets/square_image/square_tee.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tee/sound_tee.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1144,8 +1115,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/face_matt.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/horizontal_face_matt.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/matt/square_matt.webp',
+      squareImage: 'assets/square_image/square_matt.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/matt/sound_matt.wav',
       voiceStyle: ['เสียงหวาน'],
@@ -1183,8 +1153,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/face_ellie.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/horizontal_face_ellie.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ellie/square_ellie.webp',
+      squareImage: 'assets/square_image/square_ellie.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ellie/sound_ellie.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1222,8 +1191,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/face_meow.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/horizontal_face_meow.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/meow/square_meow.webp',
+      squareImage: 'assets/square_image/square_meow.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/meow/sound_meow.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1261,8 +1229,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/face_touch.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/horizontal_face_touch.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/touch/square_touch.webp',
+      squareImage: 'assets/square_image/square_touch.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/touch/sound_touch.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1300,8 +1267,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/face_ben.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/horizontal_face_ben.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ben/square_ben.webp',
+      squareImage: 'assets/square_image/square_ben.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ben/sound_ben.wav',
       voiceStyle: ['เสียงทุ้ม'],
@@ -1339,8 +1305,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/face_know.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/horizontal_face_know.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/know/square_know.webp',
+      squareImage: 'assets/square_image/square_know.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/know/sound_know.wav',
       voiceStyle: ['เสียงนุ่มนวล'],
@@ -1378,8 +1343,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/face_top.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/horizontal_face_top.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/top/square_top.webp',
+      squareImage: 'assets/square_image/square_top.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/top/sound_top.wav',
       voiceStyle: ['เสียงทุ้ม'],
@@ -1417,8 +1381,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/face_mani.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/horizontal_face_mani.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mani/square_mani.webp',
+      squareImage: 'assets/square_image/square_mani.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mani/sound_mani.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1456,8 +1419,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/face_nick.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/horizontal_face_nick.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nick/square_nick.webp',
+      squareImage: 'assets/square_image/square_nick.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nick/sound_nick.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1495,8 +1457,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/face_juan.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/horizontal_face_juan.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/juan/square_juan.webp',
+      squareImage: 'assets/square_image/square_juan.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/juan/sound_juan.wav',
       voiceStyle: ['เสียงหวาน'],
@@ -1534,8 +1495,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/face_xin.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/horizontal_face_xin.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/xin/square_xin.webp',
+      squareImage: 'assets/square_image/square_xin.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/xin/sound_xin.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1573,8 +1533,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/face_jie.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/horizontal_face_jie.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/jie/square_jie.webp',
+      squareImage: 'assets/square_image/square_jie.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/jie/sound_jie.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1612,8 +1571,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/face_qing.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/horizontal_face_qing.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/qing/square_qing.webp',
+      squareImage: 'assets/square_image/square_qing.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/qing/sound_qing.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -1651,8 +1609,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/face_kanna.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/horizontal_face_kanna.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kanna/square_kanna.webp',
+      squareImage: 'assets/square_image/square_kanna.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kanna/sound_kanna.wav',
       voiceStyle: ['เสียงน่ารัก'],
@@ -1690,8 +1647,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/face_sae.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/horizontal_face_sae.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sae/square_sae.webp',
+      squareImage: 'assets/square_image/square_sae.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sae/sound_sae.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -1729,8 +1685,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/face_dia.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/horizontal_face_dia.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dia/square_dia.webp',
+      squareImage: 'assets/square_image/square_dia.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/dia/sound_dia.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1768,8 +1723,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/face_taufik.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/horizontal_face_taufik.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/taufik/square_taufik.webp',
+      squareImage: 'assets/square_image/square_taufik.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/taufik/sound_taufik.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1807,8 +1761,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/face_tedi.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/horizontal_face_tedi.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tedi/square_tedi.webp',
+      squareImage: 'assets/square_image/square_tedi.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tedi/sound_tedi.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -1846,8 +1799,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/face_zamira.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/horizontal_face_zamira.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/zamira/square_zamira.webp',
+      squareImage: 'assets/square_image/square_zamira.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/zamira/sound_zamira.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -1885,8 +1837,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/face_dang.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/horizontal_face_dang.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/dang/square_dang.webp',
+      squareImage: 'assets/square_image/square_dang.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/dang/sound_dang.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -1924,8 +1875,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/face_hung.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/horizontal_face_hung.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/hung/square_hung.webp',
+      squareImage: 'assets/square_image/square_hung.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/hung/sound_hung.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -1963,8 +1913,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/face_thanh.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/horizontal_face_thanh.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanh/square_thanh.webp',
+      squareImage: 'assets/square_image/square_thanh.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/thanh/sound_thanh.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2002,8 +1951,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/face_diep.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/horizontal_face_diep.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/diep/square_diep.webp',
+      squareImage: 'assets/square_image/square_diep.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/diep/sound_diep.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2041,8 +1989,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/face_phuong.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/horizontal_face_phuong.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phuong/square_phuong.webp',
+      squareImage: 'assets/square_image/square_phuong.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/phuong/sound_phuong.wav',
       voiceStyle: ['เสียงอบอุ่น'],
@@ -2080,8 +2027,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/face_johnny.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/horizontal_face_johnny.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/johnny/square_johnny.webp',
+      squareImage: 'assets/square_image/square_johnny.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/johnny/sound_johnny.wav',
       voiceStyle: ['เสียงนิ่มนวล'],
@@ -2119,8 +2065,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/face_phorn.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/horizontal_face_phorn.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/phorn/square_phorn.webp',
+      squareImage: 'assets/square_image/square_phorn.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/phorn/sound_phorn.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -2158,8 +2103,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/face_sorn.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/horizontal_face_sorn.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sorn/square_sorn.webp',
+      squareImage: 'assets/square_image/square_sorn.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sorn/sound_sorn.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -2197,8 +2141,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/face_waris.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/horizontal_face_waris.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/waris/square_waris.webp',
+      squareImage: 'assets/square_image/square_waris.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/waris/sound_waris.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -2236,8 +2179,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/face_bunyang.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/horizontal_face_bunyang.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bunyang/square_bunyang.webp',
+      squareImage: 'assets/square_image/square_bunyang.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bunyang/sound_bunyang.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -2275,8 +2217,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/face_yati.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/horizontal_face_yati.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/yati/square_yati.webp',
+      squareImage: 'assets/square_image/square_yati.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/yati/sound_yati.wav',
       voiceStyle: ['เสียงนุ่มนวล'],
@@ -2314,8 +2255,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/face_heyma.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/horizontal_face_heyma.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/heyma/square_heyma.webp',
+      squareImage: 'assets/square_image/square_heyma.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/heyma/sound_heyma.wav',
       voiceStyle: ['เสียงนุ่มนวล'],
@@ -2353,8 +2293,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/face_gawa.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/horizontal_face_gawa.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/gawa/square_gawa.webp',
+      squareImage: 'assets/square_image/square_gawa.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/gawa/sound_gawa.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2392,8 +2331,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/face_cetan.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/horizontal_face_cetan.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/cetan/square_cetan.webp',
+      squareImage: 'assets/square_image/square_cetan.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/cetan/sound_cetan.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2431,8 +2369,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/face_nora.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/horizontal_face_nora.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nora/square_nora.webp',
+      squareImage: 'assets/square_image/square_nora.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nora/sound_nora.wav',
       voiceStyle: ['เสียงชัดเจน'],
@@ -2470,8 +2407,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/face_khaotok.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/horizontal_face_khaotok.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/khaotok/square_khaotok.webp',
+      squareImage: 'assets/square_image/square_khaotok.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/khaotok/sound_khaotok.wav',
       voiceStyle: ['เสียงเหนือ'],
@@ -2509,8 +2445,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/face_aithoen.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/horizontal_face_aithoen.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/aithoen/square_aithoen.webp',
+      squareImage: 'assets/square_image/square_aithoen.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/aithoen/sound_aithoen.wav',
       voiceStyle: ['เสียงเหนือ'],
@@ -2548,8 +2483,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/face_fommy.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/horizontal_face_fommy.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/fommy/square_fommy.webp',
+      squareImage: 'assets/square_image/square_fommy.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/fommy/sound_fommy.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2587,8 +2521,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/face_kaew.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/horizontal_face_kaew.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kaew/square_kaew.webp',
+      squareImage: 'assets/square_image/square_kaew.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kaew/sound_kaew.wav',
       voiceStyle: ['เสียงอีสาน'],
@@ -2626,8 +2559,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/face_thanaw.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/horizontal_face_thanaw.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/thanaw/square_thanaw.webp',
+      squareImage: 'assets/square_image/square_thanaw.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tola/sound_tola.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2665,8 +2597,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/face_mala.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/horizontal_face_mala.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mala/square_mala.webp',
+      squareImage: 'assets/square_image/square_mala.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mala/sound_mala.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2704,8 +2635,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/face_olivia.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/horizontal_face_olivia.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/olivia/square_olivia.webp',
+      squareImage: 'assets/square_image/square_olivia.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/olivia/sound_olivia.wav',
       voiceStyle: ['เสียงนิ่มนวล'],
@@ -2743,8 +2673,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/face_shawn.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/horizontal_face_shawn.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shawn/square_shawn.webp',
+      squareImage: 'assets/square_image/square_shawn.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/shawn/sound_shawn.wav',
       voiceStyle: ['เสียงน่าเชื่อถือ'],
@@ -2782,8 +2711,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/face_bobby.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/horizontal_face_bobby.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/bobby/square_bobby.webp',
+      squareImage: 'assets/square_image/square_bobby.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bobby/sound_bobby.wav',
       voiceStyle: ['เสียงอบอุ่น'],
@@ -2821,8 +2749,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/face_polly.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/horizontal_face_polly.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/polly/square_polly.webp',
+      squareImage: 'assets/square_image/square_polly.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/polly/sound_polly.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2860,8 +2787,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/face_irene.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/horizontal_face_irene.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/irene/square_irene.webp',
+      squareImage: 'assets/square_image/square_irene.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/irene/sound_irene.wav',
       voiceStyle: ['เสียงชัดเจน'],
@@ -2899,8 +2825,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/face_paul.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/horizontal_face_paul.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/paul/square_paul.webp',
+      squareImage: 'assets/square_image/square_paul.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/paul/sound_paul.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -2938,8 +2863,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/face_nelson.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/horizontal_face_nelson.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/nelson/square_nelson.webp',
+      squareImage: 'assets/square_image/square_nelson.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/nelson/sound_nelson.wav',
       voiceStyle: ['เสียงนิ่มนวล'],
@@ -2977,8 +2901,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/face_alvin.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/horizontal_face_alvin.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/alvin/square_alvin.webp',
+      squareImage: 'assets/square_image/square_alvin.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/alvin/sound_alvin.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3016,8 +2939,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/face_judy.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/horizontal_face_judy.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/judy/square_judy.webp',
+      squareImage: 'assets/square_image/square_judy.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/judy/sound_judy.wav',
       voiceStyle: ['เสียงอบอุ่น'],
@@ -3055,8 +2977,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/face_kara.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/horizontal_face_kara.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kara/square_kara.webp',
+      squareImage: 'assets/square_image/square_kara.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kara/sound_kara.wav',
       voiceStyle: ['เสียงหวาน'],
@@ -3094,8 +3015,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/face_janice.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/horizontal_face_janice.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/janice/square_janice.webp',
+      squareImage: 'assets/square_image/square_janice.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/janice/sound_janice.wav',
       voiceStyle: ['เสียงใจเย็น'],
@@ -3133,8 +3053,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/face_ruby.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/horizontal_face_ruby.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ruby/square_ruby.webp',
+      squareImage: 'assets/square_image/square_ruby.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ruby/sound_ruby.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3172,8 +3091,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/face_kubo.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/horizontal_face_kubo.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kubo/square_kubo.webp',
+      squareImage: 'assets/square_image/square_kubo.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kubo/sound_kubo.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3211,8 +3129,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/face_oun.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/horizontal_face_oun.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/oun/square_oun.webp',
+      squareImage: 'assets/square_image/square_oun.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/oun/sound_oun.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3250,8 +3167,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/face_sreymum.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/horizontal_face_sreymum.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sreymum/square_sreymum.webp',
+      squareImage: 'assets/square_image/square_sreymum.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sreymum/sound_sreymum.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3306,8 +3222,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/face_chai.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/horizontal_face_chai.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/chai/square_chai.webp',
+      squareImage: 'assets/square_image/square_chai.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/chai/sound_chai.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3362,8 +3277,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/face_samai.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/horizontal_face_samai.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/samai/square_samai.webp',
+      squareImage: 'assets/square_image/square_samai.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/samai/sound_samai.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3418,8 +3332,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/face_kosal.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/horizontal_face_kosal.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kosal/square_kosal.webp',
+      squareImage: 'assets/square_image/square_kosal.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kosal/sound_kosal.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3474,8 +3387,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/face_sopheap.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/horizontal_face_sopheap.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sopheap/square_sopheap.webp',
+      squareImage: 'assets/square_image/square_sopheap.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sopheap/sound_sopheap.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3530,8 +3442,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/face_sokhim.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/horizontal_face_sokhim.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/sokhim/square_sokhim.webp',
+      squareImage: 'assets/square_image/square_sokhim.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/sokhim/sound_sokhim.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3586,8 +3497,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/face_ratha.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/horizontal_face_ratha.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ratha/square_ratha.webp',
+      squareImage: 'assets/square_image/square_ratha.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ratha/sound_ratha.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3642,8 +3552,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/face_kriza.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/horizontal_face_kriza.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/kriza/square_kriza.webp',
+      squareImage: 'assets/square_image/square_kriza.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/kriza/sound_kriza.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3698,8 +3607,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/face_mickyla.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/horizontal_face_mickyla.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/mickyla/square_mickyla.webp',
+      squareImage: 'assets/square_image/square_mickyla.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/mickyla/sound_mickyla.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3754,8 +3662,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/face_shuncey.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/horizontal_face_shuncey.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/shuncey/square_shuncey.webp',
+      squareImage: 'assets/square_image/square_shuncey.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/shuncey/sound_shuncey.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3810,8 +3717,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/face_tiffani.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/horizontal_face_tiffani.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/tiffani/square_tiffani.webp',
+      squareImage: 'assets/square_image/square_tiffani.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/tiffani/sound_tiffani.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3849,8 +3755,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/face_lynn.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/horizontal_face_lynn.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lynn/square_lynn.webp',
+      squareImage: 'assets/square_image/square_lynn.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/lynn/sound_lynn.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3888,8 +3793,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/face_daonapha.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/horizontal_face_daonapha.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/daonapha/square_daonapha.webp',
+      squareImage: 'assets/square_image/square_daonapha.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/daonapha/sound_daonapha.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3927,8 +3831,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/face_ari.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/horizontal_face_ari.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ari/square_ari.webp',
+      squareImage: 'assets/square_image/square_ari.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/bagus/sound_bagus.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -3979,8 +3882,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/face_andy.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/horizontal_face_andy.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/andy/square_andy.webp',
+      squareImage: 'assets/square_image/square_andy.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/andy/sound_andy.wav',
       voiceStyle: ['เสียงมั่นใจ'],
@@ -4018,8 +3920,7 @@ class SpeakerModelData {
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/face_lara.webp',
       horizontalFaceImage:
           'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/horizontal_face_lara.webp',
-      squareImage:
-          'https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/lara/square_lara.webp',
+      squareImage: 'assets/square_image/square_lara.webp',
       audio:
           'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/lara reed/sound_lara reed.wav',
       voiceStyle: ['เสียงมั่นใจ'],
