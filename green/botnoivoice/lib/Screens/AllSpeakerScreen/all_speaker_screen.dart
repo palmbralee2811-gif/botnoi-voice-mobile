@@ -366,10 +366,11 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'FIL',
                     context,
                     setState),
+                //TODO: Upgrade function to support availableLanguage: ['ar','de'],
                 _buildLanguageFilter(
                     'Arabic - อาหรับ',
                     'assets/images/national_flag/arabic.png',
-                    '',
+                    '', //TODO: Do something
                     context,
                     setState),
                 _buildLanguageFilter(
@@ -663,7 +664,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             height: 420.h,
             width: 320.w,
             child: GridView.builder(
-              itemCount: SpeakerModelData.speakerData //NewAppDataBase.data
+              itemCount: SpeakerData.speakerItem
                   .where((item) =>
                       item.language == language &&
                       (gender == '' || item.gender == gender))
@@ -675,7 +676,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               ),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                final data = SpeakerModelData.speakerData //NewAppDataBase.data
+                final data = SpeakerData.speakerItem
                     .where((item) =>
                         item.language == language &&
                         (gender == '' || item.gender == gender))
@@ -926,7 +927,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       height: 420.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: SpeakerModelData.speakerData //NewAppDataBase.data
+        itemCount: SpeakerData.speakerItem
             .where((item) =>
                 selectedIndexFavorites.isEmpty ||
                 selectedIndexFavorites.contains(item.speakerId))
@@ -938,7 +939,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         ),
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
-          final data = SpeakerModelData.speakerData //NewAppDataBase.data
+          final data = SpeakerData.speakerItem
               .where((item) =>
                   selectedIndexFavorites.isEmpty ||
                   selectedIndexFavorites.contains(item.speakerId))

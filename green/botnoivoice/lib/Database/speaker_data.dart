@@ -1,7 +1,7 @@
 import 'package:botnoivoice/Database/speaker_model.dart';
 
-class SpeakerModelData {
-  static const List<SpeakerModel> speakerData = [
+class SpeakerData {
+  static const List<SpeakerModel> speakerItem = [
     SpeakerModel(
       speakerId: '1',
       speakerName: 'tonkhaow',
