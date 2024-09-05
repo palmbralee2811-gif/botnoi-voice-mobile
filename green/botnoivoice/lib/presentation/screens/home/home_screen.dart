@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/token_manager.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
-import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
-import 'package:botnoivoice/presentation/widgets/gradient/gradient_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/error_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -235,26 +235,44 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding:
           EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
-      child: GradientButton(
-        text: 'สร้างเสียง',
+      child: GradientRow(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'สร้างเสียง',
+              style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600)
+            ),
+            SizedBox(width: 10.w),
+            SvgPicture.asset(
+              'assets/images/logo/credit-icon.svg',
+              height: 20.h,
+              width: 20.w,
+            ),
+            SizedBox(width: 5.w),
+            Text(
+              '${textController.text.length}',
+              style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600)
+            ),
+          ],
+        ),
         onPressed: () async {
           if (textController.text.isNotEmpty) {
             setState(() {
               audioPlayer.stop();
             });
             try {
-              //TODO: สร้างเสร็จแล้ว กดปุ่มเล่นเสียงซ้ำ แล้ว point โดยครั้งทุกครั้งที่เล่นเสียง
               final audioUrl = await generateAudio(textController.text);
               if (audioUrl.isNotEmpty) {
                 await openFile(
                     url: audioUrl,
                     fileName: "BotnoiVoice${randomString(6)}.mp3");
-
-                final creditsProvider =
-                    Provider.of<CreditsRepositoryImpl>(context, listen: false);
-                final auth = Provider.of<AuthenticationRepositoryImpl>(context,
-                    listen: false);
-                creditsProvider.fetchCredits(auth);
               }
             } catch (e) {
               debugPrint("Error: $e");
@@ -270,8 +288,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> generateAudio(String text) async {
-    final auth =
-        Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
     speakerId =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
             '1';
@@ -281,9 +297,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
             'th';
 
-    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
-    String url =
-        "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -292,12 +307,13 @@ class _HomeScreenState extends State<HomeScreen> {
       "type_media": "mp3",
       "save_file": true,
       //TODO: Get language from selected language
-      "language": language,
-      "page": "mobile app"
+      // "language": language,
+      // "page": "mobile app"
     };
 
     Map<String, String> headers = {
-      'Botnoi-Token': '${auth.credentialsToken}',
+      'Botnoi-Token':
+          '${Provider.of<TokenManager>(context, listen: false).credentialsToken}',
       'Content-Type': 'application/json'
     };
 

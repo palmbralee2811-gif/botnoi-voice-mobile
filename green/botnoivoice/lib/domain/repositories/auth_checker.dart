@@ -1,6 +1,8 @@
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+
+import 'package:botnoivoice/data/repositories/sign_in_out.dart';
+import 'package:botnoivoice/data/repositories/token_manager.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
-import 'package:botnoivoice/presentation/screens/login/auth_screen.dart';
+import 'package:botnoivoice/presentation/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,19 +15,24 @@ class AuthChecker extends StatefulWidget {
 
 class _AuthCheckerState extends State<AuthChecker> {
   var _isLoading = true;
-  late AuthenticationRepositoryImpl auth;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    auth = Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
     _checkAuthStatus();
   }
 
   Future<void> _checkAuthStatus() async {
-    await auth.loadAuthStatus();
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      debugPrint("Checking authentication status...");
+      await Provider.of<TokenManager>(context, listen: false).loadAuthStatus();
+    } catch (e) {
+      debugPrint("Error loading auth status: $e");
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -37,11 +44,16 @@ class _AuthCheckerState extends State<AuthChecker> {
         ),
       );
     }
-    if (Provider.of<AuthenticationRepositoryImpl>(context).isAuthenticated !=
-        false) {
+
+    // Ensure isAuthenticated is properly checked
+    bool isAuthenticated = Provider.of<SignInOut>(context).isAuthenticated;
+
+    if (isAuthenticated) {
+      debugPrint("User is authenticated. Navigating to HomeScreen.");
       return const HomeScreen();
     } else {
-      return const AuthScreen();
+      debugPrint("User is not authenticated. Navigating to LoginScreen.");
+      return const LoginScreen();
     }
   }
 }

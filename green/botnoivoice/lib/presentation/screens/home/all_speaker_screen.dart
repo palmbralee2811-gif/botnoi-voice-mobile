@@ -3,7 +3,7 @@ import 'package:botnoivoice/data/repositories/speaker_data.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/presentation/widgets/gradient/gradient_button.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -507,7 +507,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         padding:
             EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
         child: SizedBox(
-          child: GradientButton(
+          child: GradientTextButton(
             text: 'ตกลง',
             onPressed: () {
               if (audioPlayer.state == PlayerState.playing) {

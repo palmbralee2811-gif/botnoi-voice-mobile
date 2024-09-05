@@ -1,6 +1,8 @@
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
-import 'package:botnoivoice/presentation/screens/login/auth_screen.dart';
-import 'package:botnoivoice/presentation/widgets/gradient/gradient_button.dart';
+import 'package:botnoivoice/data/repositories/get_user_email.dart';
+import 'package:botnoivoice/data/repositories/sign_in_out.dart';
+import 'package:botnoivoice/presentation/screens/login/login_screen.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,7 +18,7 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthenticationRepositoryImpl>(context).user;
+    User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,22 +54,18 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             const UserInfoRow(title: 'UID', value: ' UID'),
             UserInfoRow(
-                title: 'อีเมล',
-                value: Provider.of<AuthenticationRepositoryImpl>(context)
-                        .getUserEmail(user) ??
-                    'No email found'),
+                title: 'อีเมล', value: getUserEmail(user) ?? 'No email found'),
             const Spacer(),
-            GradientButton(
+            GradientTextButton(
               text: 'ออกจากระบบ',
               onPressed: () async {
-                await Provider.of<AuthenticationRepositoryImpl>(context,
-                        listen: false)
+                await Provider.of<SignInOut>(context, listen: false)
                     .signOut()
                     .whenComplete(() {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const AuthScreen(),
+                      builder: (context) => const LoginScreen(),
                     ),
                     (route) => false,
                   );

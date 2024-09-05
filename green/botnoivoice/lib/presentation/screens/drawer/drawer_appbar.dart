@@ -1,10 +1,9 @@
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/get_user_email.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class DrawerAppbar extends StatelessWidget {
@@ -14,10 +13,7 @@ class DrawerAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth =
-        Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
     User? user = FirebaseAuth.instance.currentUser;
-    String? email = auth.getUserEmail(user);
 
     return Drawer(
       elevation: 16,
@@ -77,7 +73,7 @@ class DrawerAppbar extends StatelessWidget {
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            email ?? 'No email found',
+                            getUserEmail(user) ?? 'No email found',
                             style: GoogleFonts.prompt(
                               fontSize: 14.sp,
                               color: const Color(0xFF323130),

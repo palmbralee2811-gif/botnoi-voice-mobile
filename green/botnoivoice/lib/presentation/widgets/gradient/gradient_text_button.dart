@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class GradientButton extends StatelessWidget {
+class GradientTextButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const GradientButton({super.key, 
-    required this.text, 
-    required this.onPressed
-  });
+  const GradientTextButton(
+      {super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

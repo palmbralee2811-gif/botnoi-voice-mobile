@@ -6,14 +6,14 @@ class ErrorDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('ข้อผิดพลาด'),
+          title: const Text('ข้อผิดพลาด'),
           content: Text(errorMessage),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // ปิด dialog
               },
-              child: Text('ตกลง'),
+              child: const Text('ตกลง'),
             ),
           ],
         );

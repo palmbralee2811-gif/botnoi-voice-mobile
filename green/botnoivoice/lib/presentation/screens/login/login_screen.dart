@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/sign_in_out.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +7,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,7 +149,6 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget buildGoogleSignInButton() {
-    final auth = Provider.of<AuthenticationRepositoryImpl>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -158,9 +157,14 @@ class _AuthScreenState extends State<AuthScreen> {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () async {
-                final user = await auth.signInWithGoogle(context);
+                final user =
+                    await Provider.of<SignInOut>(context, listen: false)
+                        .signInWithGoogle(context);
+
                 if (!mounted) return;
+
                 if (user != null) {
+                  debugPrint('User signed in: ${user.email}');
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (context) => const HomeScreen(),
@@ -168,6 +172,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     (Route<dynamic> route) => false,
                   );
                 } else {
+                  debugPrint('Sign-in failed: user is null');
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content:

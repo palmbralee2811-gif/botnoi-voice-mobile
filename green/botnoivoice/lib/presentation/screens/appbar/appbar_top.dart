@@ -1,5 +1,6 @@
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,15 +20,11 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppBarTopState extends State<AppBarTop> {
-  String? credits;
-
   @override
-  void initState() {
-    super.initState();
-    final creditsProvider =
-        Provider.of<CreditsRepositoryImpl>(context, listen: false);
-    final auth =
-        Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final creditsProvider = Provider.of<CreditsRepositoryImpl>(context, listen: false);
+    final auth = Provider.of<TokenManager>(context, listen: false);
     creditsProvider.fetchCredits(auth);
   }
 
@@ -40,7 +37,7 @@ class _AppBarTopState extends State<AppBarTop> {
       elevation: 4.0,
       leading: SizedBox(
         width: double.infinity,
-        height: 140.h, // กำหนดความสูง
+        height: 140.h,
         child: IconButton(
           icon: Icon(
             Icons.menu_rounded,
@@ -51,9 +48,9 @@ class _AppBarTopState extends State<AppBarTop> {
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
       ),
-      leadingWidth: 60.w, // กำหนดความกว้างสำหรับ leading เพื่อไม่ให้เบียด title
+      leadingWidth: 60.w,
       title: SizedBox(
-        height: 140.h, // กำหนดความสูง
+        height: 140.h,
         child: Center(
           child: SvgPicture.asset(
             'assets/images/logo/appbar-icon.svg',
@@ -65,7 +62,7 @@ class _AppBarTopState extends State<AppBarTop> {
       ),
       actions: [
         Container(
-          height: 30.h, // ลดขนาดความสูงของ Container ให้เล็กลง
+          height: 30.h,
           decoration: BoxDecoration(
             boxShadow: const [
               BoxShadow(
@@ -74,8 +71,7 @@ class _AppBarTopState extends State<AppBarTop> {
               ),
             ],
             color: Colors.white,
-            borderRadius:
-                BorderRadius.circular(15.r), // ปรับขนาด BorderRadius ให้เล็กลง
+            borderRadius: BorderRadius.circular(15.r),
           ),
           margin: EdgeInsets.only(right: 10.w),
           child: InkWell(
@@ -88,13 +84,13 @@ class _AppBarTopState extends State<AppBarTop> {
               children: [
                 SizedBox(width: 5.w),
                 SizedBox(
-                  height: 20.h, // ลดขนาดของไอคอน
+                  height: 20.h,
                   width: 20.h,
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: SvgPicture.asset(
                       'assets/images/logo/credit-icon.svg',
-                      width: 20.w, // ลดขนาดของไอคอน
+                      width: 20.w,
                       height: 20.h,
                     ),
                   ),
@@ -102,8 +98,7 @@ class _AppBarTopState extends State<AppBarTop> {
                 Text(
                   ' ${credits ?? "N/A"}',
                   style: GoogleFonts.prompt(
-                    fontSize:
-                        12.sp, // ลดขนาดของข้อความให้สมดุลกับ Container ใหม่
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF323130),
                   ),
@@ -115,8 +110,8 @@ class _AppBarTopState extends State<AppBarTop> {
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(30.h), // กำหนดความสูงของ bottom
-        child: const BottomAppBar(),
+        preferredSize: Size.fromHeight(30.h),
+        child: const AppBarBottom(),
       ),
     );
   }

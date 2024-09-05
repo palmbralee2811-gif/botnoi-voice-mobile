@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class GradientCustomButton extends StatelessWidget {
+class GradientCloseButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const GradientCustomButton({
+  const GradientCloseButton({
     super.key,
     required this.text,
     required this.onPressed,

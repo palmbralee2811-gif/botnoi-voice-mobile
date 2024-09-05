@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/token_manager.dart';
 import 'package:flutter/material.dart';
 
 class CreditsRepositoryImpl with ChangeNotifier {
@@ -11,8 +11,10 @@ class CreditsRepositoryImpl with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchCredits(AuthenticationRepositoryImpl auth) async {
-    final fetchedCredits = await auth.getProfileWithToken(auth.jwtToken);
-    setCredits(fetchedCredits);
+  Future<void> fetchCredits(TokenManager auth) async {
+    if (auth.jwtToken != null) {
+      final fetchedCredits = await auth.getProfileWithToken(auth.jwtToken);
+      setCredits(fetchedCredits);
+    }
   }
 }

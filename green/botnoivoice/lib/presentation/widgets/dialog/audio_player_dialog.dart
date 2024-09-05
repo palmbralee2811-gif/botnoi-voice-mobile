@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/presentation/widgets/gradient/gradient_custom_button.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:flutter/material.dart';
@@ -41,38 +41,50 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       await audioPlayer.setSourceDeviceFile(widget.filePath);
 
       audioPlayer.onDurationChanged.listen((d) {
-        setState(() {
-          duration = d;
-        });
+        if (mounted) {
+          setState(() {
+            duration = d;
+          });
+        }
       });
 
       audioPlayer.onPositionChanged.listen((p) {
-        setState(() {
-          position = p;
-        });
+        if (mounted) {
+          setState(() {
+            position = p;
+          });
+        }
       });
 
       audioPlayer.onPlayerStateChanged.listen((state) {
-        setState(() {
-          isPlaying = state == PlayerState.playing;
-        });
+        if (mounted) {
+          setState(() {
+            isPlaying = state == PlayerState.playing;
+          });
+        }
       });
 
       audioPlayer.onPlayerComplete.listen((event) {
-        setState(() {
-          position = Duration.zero;
-          isPlaying = false;
-        });
+        if (mounted) {
+          setState(() {
+            position = Duration.zero;
+            isPlaying = false;
+          });
+        }
       });
 
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } catch (e) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("เกิดข้อผิดพลาดในการเล่นไฟล์เสียง: $e")),
-      );
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("เกิดข้อผิดพลาดในการเล่นไฟล์เสียง: $e")),
+        );
+      }
     }
   }
 
@@ -182,7 +194,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           color: Colors.white,
                         ),
                         SizedBox(
-                            width: 8.w), // เว้นระยะห่างระหว่างไอคอนและข้อความ
+                            width: 8.w),
                         Text(
                           "ดาวน์โหลด",
                           style: GoogleFonts.prompt(
@@ -195,8 +207,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  GradientCustomButton(
-                    text: "ปิด", 
+                  GradientCloseButton(
+                    text: "ปิด",
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

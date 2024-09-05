@@ -1,5 +1,6 @@
+import 'package:botnoivoice/data/repositories/sign_in_out.dart';
+import 'package:botnoivoice/data/repositories/token_manager.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
-import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
@@ -21,8 +22,8 @@ class BotnoiVoiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (context) => AuthenticationRepositoryImpl()),
+        ChangeNotifierProvider(create: (_) => SignInOut()),
+        ChangeNotifierProvider(create: (_) => TokenManager()),
         ChangeNotifierProvider(create: (context) => SpeakerRepositoryImpl()),
         ChangeNotifierProvider(create: (context) => CreditsRepositoryImpl()),
       ],
