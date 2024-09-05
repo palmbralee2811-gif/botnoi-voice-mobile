@@ -1,4 +1,4 @@
-import 'package:botnoivoice/Database/speaker_model.dart';
+import 'package:botnoivoice/data/models/speaker_model.dart';
 
 class SpeakerData {
   static const List<SpeakerModel> speakerItem = [

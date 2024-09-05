@@ -1,7 +1,7 @@
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
 import 'package:flutter/material.dart';
 
-class CreditsProvider with ChangeNotifier {
+class CreditsRepositoryImpl with ChangeNotifier {
   String? _credits;
 
   String? get credits => _credits;
@@ -11,7 +11,7 @@ class CreditsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchCredits(Authentication auth) async {
+  Future<void> fetchCredits(AuthenticationRepositoryImpl auth) async {
     final fetchedCredits = await auth.getProfileWithToken(auth.jwtToken);
     setCredits(fetchedCredits);
   }

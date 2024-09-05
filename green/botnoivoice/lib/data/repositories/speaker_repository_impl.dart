@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SpeakerProvider with ChangeNotifier {
+class SpeakerRepositoryImpl with ChangeNotifier {
   String? _speakerId;
   String? _speakerName;
   String? _speakerAudio;
   String? _speakerImagePath;
   String? _nationalFlagName;
   String? _nationalFlagPath;
+  String? _language;
 
   String? get speakerId => _speakerId;
   String? get speakerName => _speakerName;
@@ -14,6 +15,7 @@ class SpeakerProvider with ChangeNotifier {
   String? get speakerImagePath => _speakerImagePath;
   String? get nationalFlagName => _nationalFlagName;
   String? get nationalFlagPath => _nationalFlagPath;
+  String? get language => _language;
 
   void setSpeakerId(String id) {
     _speakerId = id;
@@ -48,6 +50,12 @@ class SpeakerProvider with ChangeNotifier {
   void setNationalFlagPath(String path) {
     _nationalFlagPath = path;
     debugPrint("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
+    notifyListeners();
+  }
+
+  void setLanguage(String language) {
+    _language = language;
+    debugPrint("SpeakerProvider -> setLanguage: $language");
     notifyListeners();
   }
 }

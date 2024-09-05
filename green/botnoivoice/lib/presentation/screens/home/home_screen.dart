@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
-import 'package:botnoivoice/Screens/AppBarScreen/appbar_widget.dart';
-import 'package:botnoivoice/Screens/AppBarScreen/credits_provider.dart';
-import 'package:botnoivoice/Screens/DrawerAppBarScreen/drawer_appbar.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_text.dart';
-import 'package:botnoivoice/Screens/HomeScreen/audio_player_dialog.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
+import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_button.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/audio_player_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/error_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    speakerId = Provider.of<SpeakerProvider>(context).speakerId;
+    speakerId = Provider.of<SpeakerRepositoryImpl>(context).speakerId;
   }
 
   @override
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: const DrawerAppbar(),
-      appBar: const AppbarWidget(),
+      appBar: const AppBarTop(),
       body: Column(
         children: [
           Expanded(
@@ -250,9 +251,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     fileName: "BotnoiVoice${randomString(6)}.mp3");
 
                 final creditsProvider =
-                    Provider.of<CreditsProvider>(context, listen: false);
-                final auth =
-                    Provider.of<Authentication>(context, listen: false);
+                    Provider.of<CreditsRepositoryImpl>(context, listen: false);
+                final auth = Provider.of<AuthenticationRepositoryImpl>(context,
+                    listen: false);
                 creditsProvider.fetchCredits(auth);
               }
             } catch (e) {
@@ -269,11 +270,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> generateAudio(String text) async {
-    final auth = Provider.of<Authentication>(context, listen: false);
+    final auth =
+        Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
     speakerId =
-        Provider.of<SpeakerProvider>(context, listen: false).speakerId ?? '1';
+        Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
+            '1';
 
-    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    //TODO:// Set new SpeakerProvider for language value
+    String language =
+        Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
+            'th';
+
+    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    String url =
+        "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -281,6 +291,9 @@ class _HomeScreenState extends State<HomeScreen> {
       "speed": 1,
       "type_media": "mp3",
       "save_file": true,
+      //TODO: Get language from selected language
+      "language": language,
+      "page": "mobile app"
     };
 
     Map<String, String> headers = {
@@ -302,10 +315,12 @@ class _HomeScreenState extends State<HomeScreen> {
           debugPrint("generateAudio -> $audioUrl");
         });
       } else {
-        throw Exception("Failed to generate audio: ${response.statusCode}");
+        debugPrint("Failed to generate audio: ${response.statusCode}");
+        ErrorDialog.showErrorDialog(
+            context, 'กรุณาพิมพ์ข้อความตรงกับภาษาที่ท่านเลือกด้วยครับ');
       }
     } catch (e) {
-      throw Exception("Failed to generate audio: $e");
+      debugPrint("Error: $e");
     }
     return audioUrl;
   }
@@ -330,7 +345,6 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (context) => AudioPlayerDialog(filePath: file.path),
       );
-
     } catch (e) {
       throw Exception("Failed to open file: $e");
     }

@@ -1,6 +1,6 @@
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/login/auth_screen.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,8 +16,8 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<Authentication>(context).user;
-    
+    final user = Provider.of<AuthenticationRepositoryImpl>(context).user;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -53,12 +53,15 @@ class _AccountScreenState extends State<AccountScreen> {
             const UserInfoRow(title: 'UID', value: ' UID'),
             UserInfoRow(
                 title: 'อีเมล',
-                value: Provider.of<Authentication>(context).getUserEmail(user) ?? 'No email found'),
+                value: Provider.of<AuthenticationRepositoryImpl>(context)
+                        .getUserEmail(user) ??
+                    'No email found'),
             const Spacer(),
             GradientButton(
               text: 'ออกจากระบบ',
               onPressed: () async {
-                await Provider.of<Authentication>(context, listen: false)
+                await Provider.of<AuthenticationRepositoryImpl>(context,
+                        listen: false)
                     .signOut()
                     .whenComplete(() {
                   Navigator.pushAndRemoveUntil(

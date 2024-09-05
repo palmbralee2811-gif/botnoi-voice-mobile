@@ -1,5 +1,5 @@
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/DrawerAppBarScreen/account_screen.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +14,8 @@ class DrawerAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Authentication>(context, listen: false);
+    final auth =
+        Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
     User? user = FirebaseAuth.instance.currentUser;
     String? email = auth.getUserEmail(user);
 

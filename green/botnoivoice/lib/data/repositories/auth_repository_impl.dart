@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
-class Authentication extends ChangeNotifier {
+class AuthenticationRepositoryImpl extends ChangeNotifier {
   User? user;
   String? credits;
   String? response;
@@ -18,7 +18,7 @@ class Authentication extends ChangeNotifier {
     return user != null && jwtToken != null && credentialsToken != null;
   }
 
-  Authentication() {
+  AuthenticationRepositoryImpl() {
     FirebaseAuth.instance.authStateChanges().listen((
       User? user,
     ) {

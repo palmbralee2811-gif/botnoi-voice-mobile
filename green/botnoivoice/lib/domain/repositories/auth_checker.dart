@@ -1,6 +1,6 @@
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
-import 'package:botnoivoice/Screens/AuthScreen/auth_screen.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
+import 'package:botnoivoice/presentation/screens/login/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +13,11 @@ class AuthChecker extends StatefulWidget {
 
 class _AuthCheckerState extends State<AuthChecker> {
   var _isLoading = true;
-  late Authentication auth;
+  late AuthenticationRepositoryImpl auth;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    auth = Provider.of<Authentication>(context, listen: false);
+    auth = Provider.of<AuthenticationRepositoryImpl>(context, listen: false);
     _checkAuthStatus();
   }
 
@@ -37,7 +37,8 @@ class _AuthCheckerState extends State<AuthChecker> {
         ),
       );
     }
-    if (Provider.of<Authentication>(context).isAuthenticated != false) {
+    if (Provider.of<AuthenticationRepositoryImpl>(context).isAuthenticated !=
+        false) {
       return const HomeScreen();
     } else {
       return const AuthScreen();

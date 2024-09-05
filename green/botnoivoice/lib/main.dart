@@ -1,7 +1,7 @@
-import 'package:botnoivoice/Authentication/auth_checker.dart';
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
-import 'package:botnoivoice/Screens/AppBarScreen/credits_provider.dart';
+import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +21,10 @@ class BotnoiVoiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => Authentication()),
-        ChangeNotifierProvider(create: (context) => SpeakerProvider()),
-        ChangeNotifierProvider(create: (context) => CreditsProvider()),
+        ChangeNotifierProvider(
+            create: (context) => AuthenticationRepositoryImpl()),
+        ChangeNotifierProvider(create: (context) => SpeakerRepositoryImpl()),
+        ChangeNotifierProvider(create: (context) => CreditsRepositoryImpl()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
@@ -33,9 +34,9 @@ class BotnoiVoiceApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "Botnoi Voice",
             theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-            useMaterial3: true,
-          ),
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              useMaterial3: true,
+            ),
             home: const AuthChecker(),
           );
         },

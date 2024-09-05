@@ -1,22 +1,22 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
-import 'package:botnoivoice/Screens/AllSpeakerScreen/all_speaker_screen.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_icon.dart';
+import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/home/all_speaker_screen.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class AppbarBottom extends StatefulWidget {
-  const AppbarBottom({
+class AppBarBottom extends StatefulWidget {
+  const AppBarBottom({
     super.key,
   });
 
   @override
-  State<AppbarBottom> createState() => _AppbarBottomState();
+  State<AppBarBottom> createState() => _AppBarBottomState();
 }
 
-class _AppbarBottomState extends State<AppbarBottom> {
+class _AppBarBottomState extends State<AppBarBottom> {
   AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
 
@@ -32,7 +32,7 @@ class _AppbarBottomState extends State<AppbarBottom> {
 
   @override
   Widget build(BuildContext context) {
-    final speakerProvider = Provider.of<SpeakerProvider>(context);
+    final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
 
     return SizedBox(
       width: double.infinity,

@@ -1,10 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/Database/speaker_data.dart';
-import 'package:botnoivoice/Database/speaker_model.dart';
-import 'package:botnoivoice/Filters/favorite.dart';
-import 'package:botnoivoice/Screens/AllSpeakerScreen/speaker_provider.dart';
-import 'package:botnoivoice/Screens/GradientScreen/gradient_button.dart';
-import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
+import 'package:botnoivoice/data/repositories/speaker_data.dart';
+import 'package:botnoivoice/data/models/speaker_model.dart';
+import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
+import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_button.dart';
+import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,6 +23,24 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   bool ishover = false; // ต้องการให้ข้อมูล ishover เก็บไว้ใน cache ของเครื่อง
   String? speakerId;
   String? language; // เลือกภาษา
+  List<String> availableLanguage = [
+    'ar',
+    'de',
+    'en',
+    'es',
+    'fil',
+    'fr',
+    'id',
+    'ja',
+    'km',
+    'ko',
+    'lo',
+    'my',
+    'nl',
+    'th',
+    'vi',
+    'zh'
+  ];
   String? gender; // เลือกเพศ
 
   Set<int> selectedIndex = <int>{};
@@ -366,47 +384,46 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'FIL',
                     context,
                     setState),
-                //TODO: Upgrade function to support availableLanguage: ['ar','de'],
                 _buildLanguageFilter(
                     'Arabic - อาหรับ',
                     'assets/images/national_flag/arabic.png',
-                    '', //TODO: Do something
+                    'ar',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'German - เยอรมัน',
                     'assets/images/national_flag/german.png',
-                    '',
+                    'de',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Spanish - สเปน',
                     'assets/images/national_flag/spanish.png',
-                    '',
+                    'es',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'French - ฝรั่งเศส',
                     'assets/images/national_flag/french.png',
-                    '',
+                    'fr',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Dutch - ดัตช์',
                     'assets/images/national_flag/dutch.png',
-                    '',
+                    'nl',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Korea - เกาหลี',
                     'assets/images/national_flag/korea.png',
-                    '',
+                    'ko',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Malaysia - มาเลเซีย',
                     'assets/images/national_flag/malaysia.png',
-                    '',
+                    'my',
                     context,
                     setState),
                 _buildLanguageFilter(
@@ -548,18 +565,18 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
     return InkWell(
       onTap: () {
         setState(() {
-          if (text == 'ไทย') {
-            language = 'TH';
-          } else {
-            List<String> parts = text.split(' - ');
-            if (parts.length > 1) {
-              selectedLanguage = parts[1];
-            } else {
-              selectedLanguage = text;
-            }
-            selectedLanguageImage = imagePath;
+          List<String> parts = text.split(' - ');
+          selectedLanguage = parts.length > 1 ? parts[1] : text;
+          selectedLanguageImage = imagePath;
+
+          // เช็คว่าภาษาที่เลือกอยู่ใน availableLanguage หรือไม่
+          if (availableLanguage.contains(lang.toLowerCase())) {
             language = lang;
+          } else {
+            language = ''; // กรณีไม่พบภาษาใน availableLanguage
           }
+          Provider.of<SpeakerRepositoryImpl>(context, listen: false)
+              .setLanguage(language.toString().toLowerCase());
         });
         Navigator.pop(context);
       },
@@ -615,7 +632,6 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             selectedGender = 'ช/ญ';
             selectedGenderImage = 'assets/images/gender/all.svg';
             gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
-            debugPrint("selectedGenderImage: $selectedGenderImage");
           } else {
             selectedGender = text;
             selectedGenderImage = imagePath;
@@ -666,7 +682,11 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             child: GridView.builder(
               itemCount: SpeakerData.speakerItem
                   .where((item) =>
-                      item.language == language &&
+                      // เช็คว่าภาษาที่เลือก (language) อยู่ใน availableLanguage ของลำโพง
+                      (item.language.toLowerCase() == language?.toLowerCase() ||
+                          (item.availableLanguage.isNotEmpty &&
+                              item.availableLanguage
+                                  .contains(language?.toLowerCase()))) &&
                       (gender == '' || item.gender == gender))
                   .length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -678,7 +698,11 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               itemBuilder: (context, index) {
                 final data = SpeakerData.speakerItem
                     .where((item) =>
-                        item.language == language &&
+                        (item.language.toLowerCase() ==
+                                language?.toLowerCase() ||
+                            (item.availableLanguage.isNotEmpty &&
+                                item.availableLanguage
+                                    .contains(language?.toLowerCase()))) &&
                         (gender == '' || item.gender == gender))
                     .toList()[index];
                 return buildSingleSpeaker(data, index);
@@ -711,17 +735,17 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
 
               await playAudio();
 
-              Provider.of<SpeakerProvider>(context, listen: false)
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerId(speakerData.speakerId);
-              Provider.of<SpeakerProvider>(context, listen: false)
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerName(speakerData.thaiName);
-              Provider.of<SpeakerProvider>(context, listen: false)
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerAudio(speakerData.audio);
-              Provider.of<SpeakerProvider>(context, listen: false)
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerImagePath(speakerData.squareImage);
-              Provider.of<SpeakerProvider>(context, listen: false)
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagPath(selectedLanguageImage);
-              Provider.of<SpeakerProvider>(context, listen: false)
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
 
               setState(() {

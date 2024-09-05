@@ -1,6 +1,6 @@
-import 'package:botnoivoice/Authentication/authentication_provider.dart';
-import 'package:botnoivoice/Screens/HomeScreen/home_screen.dart';
-import 'package:botnoivoice/Screens/AuthScreen/gradient_text_sign_in_screen.dart';
+import 'package:botnoivoice/data/repositories/auth_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -149,7 +149,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget buildGoogleSignInButton() {
-    final auth = Provider.of<Authentication>(context);
+    final auth = Provider.of<AuthenticationRepositoryImpl>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -165,8 +165,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     MaterialPageRoute(
                       builder: (context) => const HomeScreen(),
                     ),
-                    (Route<dynamic> route) =>
-                        false,
+                    (Route<dynamic> route) => false,
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
