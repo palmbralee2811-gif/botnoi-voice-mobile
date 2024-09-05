@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/data/managers/token_manager.dart';
 import 'package:flutter/material.dart';
 
 class CreditsRepositoryImpl with ChangeNotifier {

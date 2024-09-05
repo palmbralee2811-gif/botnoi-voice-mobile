@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/data/managers/token_manager.dart';
 
 class SignInOut extends ChangeNotifier {
   User? user;

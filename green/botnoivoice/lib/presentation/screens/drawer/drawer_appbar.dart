@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/repositories/get_user_email.dart';
+import 'package:botnoivoice/domain/usecases/get_user_email.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
-import 'package:botnoivoice/data/repositories/sign_in_out.dart';
-import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
+import 'package:botnoivoice/data/managers/token_manager.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';

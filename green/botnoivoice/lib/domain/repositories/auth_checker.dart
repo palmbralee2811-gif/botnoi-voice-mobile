@@ -1,6 +1,6 @@
 
-import 'package:botnoivoice/data/repositories/sign_in_out.dart';
-import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
+import 'package:botnoivoice/data/managers/token_manager.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';

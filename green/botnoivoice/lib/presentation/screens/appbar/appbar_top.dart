@@ -1,5 +1,5 @@
 import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
-import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/data/managers/token_manager.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

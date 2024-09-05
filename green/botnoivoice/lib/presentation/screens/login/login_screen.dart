@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/repositories/sign_in_out.dart';
+import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
 import 'package:flutter/material.dart';
