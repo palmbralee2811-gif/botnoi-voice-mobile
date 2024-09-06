@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/data/repositories/speaker_data.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
+import 'package:botnoivoice/domain/entities/speaker_entity.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -46,7 +46,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   Set<int> selectedIndex = <int>{};
   AudioPlayer audioPlayer = AudioPlayer();
 
-  List<SpeakerModel>? speakerData;
+  List<SpeakerEntity>? speakerItem;
 
   List<String> selectedIndexFavorites = [];
 
@@ -384,12 +384,12 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'FIL',
                     context,
                     setState),
-                _buildLanguageFilter(
-                    'Arabic - อาหรับ',
-                    'assets/images/national_flag/arabic.png',
-                    'ar',
-                    context,
-                    setState),
+                // _buildLanguageFilter(
+                //     'Arabic - อาหรับ',
+                //     'assets/images/national_flag/arabic.png',
+                //     'ar',
+                //     context,
+                //     setState),
                 _buildLanguageFilter(
                     'German - เยอรมัน',
                     'assets/images/national_flag/german.png',
@@ -420,24 +420,24 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'ko',
                     context,
                     setState),
-                _buildLanguageFilter(
-                    'Malaysia - มาเลเซีย',
-                    'assets/images/national_flag/malaysia.png',
-                    'my',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Portuguese - โปรตุเกส',
-                    'assets/images/national_flag/portuguese.png',
-                    '',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Russia - รัสเซีย',
-                    'assets/images/national_flag/russia.png',
-                    '',
-                    context,
-                    setState),
+                // _buildLanguageFilter(
+                //     'Malaysia - มาเลเซีย',
+                //     'assets/images/national_flag/malaysia.png',
+                //     'ms',
+                //     context,
+                //     setState),
+                // _buildLanguageFilter(
+                //     'Portuguese - โปรตุเกส',
+                //     'assets/images/national_flag/portuguese.png',
+                //     'pt-br',
+                //     context,
+                //     setState),
+                // _buildLanguageFilter(
+                //     'Russia - รัสเซีย',
+                //     'assets/images/national_flag/russia.png',
+                //     'ru',
+                //     context,
+                //     setState),
               ],
             ),
           ),
@@ -575,8 +575,9 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           } else {
             language = ''; // กรณีไม่พบภาษาใน availableLanguage
           }
-          Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-              .setLanguage(language.toString().toLowerCase());
+
+          Provider.of<SpeakerRepositoryImpl>(context, listen: false).setLanguage(language.toString().toLowerCase());
+
         });
         Navigator.pop(context);
       },
@@ -680,7 +681,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             height: 420.h,
             width: 320.w,
             child: GridView.builder(
-              itemCount: SpeakerData.speakerItem
+              itemCount: SpeakerModel.speakerItem
                   .where((item) =>
                       // เช็คว่าภาษาที่เลือก (language) อยู่ใน availableLanguage ของลำโพง
                       (item.language.toLowerCase() == language?.toLowerCase() ||
@@ -696,7 +697,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               ),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                final data = SpeakerData.speakerItem
+                final data = SpeakerModel.speakerItem
                     .where((item) =>
                         (item.language.toLowerCase() ==
                                 language?.toLowerCase() ||
@@ -715,7 +716,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
   }
 
   Widget buildSingleSpeaker(
-      SpeakerModel speakerData /*NewData data*/, int index) {
+      SpeakerEntity speakerItem /*NewData data*/, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -723,7 +724,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 7.h),
           child: GestureDetector(
             onTap: () async {
-              String audioURL = speakerData.audio;
+              String audioURL = speakerItem.audio;
               Future<void> playAudio() async {
                 if (audioURL.isNotEmpty) {
                   if (audioPlayer.state == PlayerState.playing) {
@@ -736,13 +737,13 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               await playAudio();
 
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-                  .setSpeakerId(speakerData.speakerId);
+                  .setSpeakerId(speakerItem.speakerId);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-                  .setSpeakerName(speakerData.thaiName);
+                  .setSpeakerName(speakerItem.thaiName);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-                  .setSpeakerAudio(speakerData.audio);
+                  .setSpeakerAudio(speakerItem.audio);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-                  .setSpeakerImagePath(speakerData.squareImage);
+                  .setSpeakerImagePath(speakerItem.squareImage);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagPath(selectedLanguageImage);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
@@ -784,7 +785,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     image: DecorationImage(
                       //TODO: เก็บรูปภาพที่โหลดจาก URL ไว้ใน Cache ของแอปพลิเคชัน
                       image: AssetImage(
-                        speakerData.squareImage,
+                        speakerItem.squareImage,
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -857,17 +858,17 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                                 onTap: () {
                                   setState(() {
                                     if (selectedIndexFavorites
-                                        .contains(speakerData.speakerId)) {
+                                        .contains(speakerItem.speakerId)) {
                                       selectedIndexFavorites
-                                          .remove(speakerData.speakerId);
+                                          .remove(speakerItem.speakerId);
                                     } else {
                                       selectedIndexFavorites
-                                          .add(speakerData.speakerId);
+                                          .add(speakerItem.speakerId);
                                     }
                                   });
                                 },
                                 child: selectedIndexFavorites
-                                        .contains(speakerData.speakerId)
+                                        .contains(speakerItem.speakerId)
                                     ? ShaderMask(
                                         shaderCallback: (Rect bounds) {
                                           return const LinearGradient(
@@ -925,7 +926,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                             ),
                             Expanded(
                                 child: Text(
-                              speakerData.thaiName,
+                              speakerItem.thaiName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,
                                 color: Colors.white,
@@ -951,7 +952,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
       height: 420.h,
       width: 320.w,
       child: GridView.builder(
-        itemCount: SpeakerData.speakerItem
+        itemCount: SpeakerModel.speakerItem
             .where((item) =>
                 selectedIndexFavorites.isEmpty ||
                 selectedIndexFavorites.contains(item.speakerId))
@@ -963,7 +964,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
         ),
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
-          final data = SpeakerData.speakerItem
+          final data = SpeakerModel.speakerItem
               .where((item) =>
                   selectedIndexFavorites.isEmpty ||
                   selectedIndexFavorites.contains(item.speakerId))

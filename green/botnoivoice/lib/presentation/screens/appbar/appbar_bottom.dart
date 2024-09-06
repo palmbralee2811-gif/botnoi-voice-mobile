@@ -42,8 +42,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
         children: [
           InkWell(
             onTap: () async {
-              String? audioURL = speakerProvider.speakerAudio ??
-                  "https://bn-voice-pics.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_1_ava.wav";
+              String? audioURL = speakerProvider.speakerAudio ?? "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_ava.wav";
               if (isPlaying) {
                 await audioPlayer.stop();
                 setState(() {

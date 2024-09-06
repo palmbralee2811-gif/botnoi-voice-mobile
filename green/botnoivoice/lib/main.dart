@@ -1,8 +1,7 @@
-import 'package:botnoivoice/data/repositories/sign_in_out.dart';
-import 'package:botnoivoice/data/repositories/token_manager.dart';
+import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
+import 'package:botnoivoice/data/managers/token_manager.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SignInOut()),
         ChangeNotifierProvider(create: (_) => TokenManager()),
         ChangeNotifierProvider(create: (context) => SpeakerRepositoryImpl()),
-        ChangeNotifierProvider(create: (context) => CreditsRepositoryImpl()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
