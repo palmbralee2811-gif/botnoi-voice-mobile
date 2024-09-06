@@ -384,12 +384,12 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'FIL',
                     context,
                     setState),
-                _buildLanguageFilter(
-                    'Arabic - อาหรับ',
-                    'assets/images/national_flag/arabic.png',
-                    'ar',
-                    context,
-                    setState),
+                // _buildLanguageFilter(
+                //     'Arabic - อาหรับ',
+                //     'assets/images/national_flag/arabic.png',
+                //     'ar',
+                //     context,
+                //     setState),
                 _buildLanguageFilter(
                     'German - เยอรมัน',
                     'assets/images/national_flag/german.png',
@@ -420,24 +420,24 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
                     'ko',
                     context,
                     setState),
-                _buildLanguageFilter(
-                    'Malaysia - มาเลเซีย',
-                    'assets/images/national_flag/malaysia.png',
-                    'my',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Portuguese - โปรตุเกส',
-                    'assets/images/national_flag/portuguese.png',
-                    '',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Russia - รัสเซีย',
-                    'assets/images/national_flag/russia.png',
-                    '',
-                    context,
-                    setState),
+                // _buildLanguageFilter(
+                //     'Malaysia - มาเลเซีย',
+                //     'assets/images/national_flag/malaysia.png',
+                //     'ms',
+                //     context,
+                //     setState),
+                // _buildLanguageFilter(
+                //     'Portuguese - โปรตุเกส',
+                //     'assets/images/national_flag/portuguese.png',
+                //     'pt-br',
+                //     context,
+                //     setState),
+                // _buildLanguageFilter(
+                //     'Russia - รัสเซีย',
+                //     'assets/images/national_flag/russia.png',
+                //     'ru',
+                //     context,
+                //     setState),
               ],
             ),
           ),
@@ -575,8 +575,9 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
           } else {
             language = ''; // กรณีไม่พบภาษาใน availableLanguage
           }
-          Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-              .setLanguage(language.toString().toLowerCase());
+
+          Provider.of<SpeakerRepositoryImpl>(context, listen: false).setLanguage(language.toString().toLowerCase());
+
         });
         Navigator.pop(context);
       },

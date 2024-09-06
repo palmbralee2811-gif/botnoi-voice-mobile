@@ -1,54 +1,22 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
+/// Provider and interface to the main server
 class TokenManager extends ChangeNotifier {
-  String? credits;
   String? jwtToken;
+  String? remainingCredits;
   String? credentialsToken;
-  final _storage = const FlutterSecureStorage();
 
-  Future<void> loadAuthStatus() async {
-    debugPrint('Loading auth status...');
-    await Future.wait([
-      _loadJwtToken(),
-      _loadCredentialsToken(),
-    ]);
-    debugPrint(
-        'Auth status loaded: jwtToken=$jwtToken, credentialsToken=$credentialsToken');
-  }
+  /// Get the jwtToken from Firebase
+  Future<void> loadJwtToken(BuildContext context) async {
+    // Get the idToken from the Authentication provider
+    String? idToken = Provider.of<SignInOut>(context, listen: false).idToken;
+    if (idToken == null) return;
 
-  Future<void> _loadJwtToken() async {
-    jwtToken = await _storage.read(key: 'jwtToken');
-    debugPrint('JWT Token loaded: $jwtToken');
-    notifyListeners();
-  }
-
-  Future<void> _saveJwtToken(String token) async {
-    await _storage.write(key: 'jwtToken', value: token);
-    jwtToken = token;
-    debugPrint('JWT Token saved: $jwtToken');
-    notifyListeners();
-  }
-
-  Future<void> _loadCredentialsToken() async {
-    credentialsToken = await _storage.read(key: 'credentialsToken');
-    debugPrint('Credentials token loaded: $credentialsToken');
-    notifyListeners();
-  }
-
-  Future<void> _saveCredentialsToken(String token) async {
-    await _storage.write(key: 'credentialsToken', value: token);
-    credentialsToken = token;
-    debugPrint('Credentials token saved: $credentialsToken');
-  }
-
-  Future<String?> getIdTokenWithFirebase(String? idToken) async {
-    if (idToken == null) {
-      debugPrint('No idToken provided');
-      return null;
-    }
+    // Get the jwtToken from the Firebase API
     String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
@@ -60,27 +28,30 @@ class TokenManager extends ChangeNotifier {
         var data = json.decode(response.body);
         var message = data['message'];
         var tokenIndex = message.indexOf('token=');
+
+        // Check if the token was found
         if (tokenIndex != -1) {
           var tokenStartIndex = tokenIndex + 'token='.length;
           jwtToken = message.substring(tokenStartIndex);
-          debugPrint('Received JWT Token: $jwtToken');
-          await _saveJwtToken(jwtToken!);
-          return jwtToken;
+          notifyListeners();
+        } else {
+          debugPrint('getIdTokenWithFirebase -> Token not found: $message');
         }
+      } else {
+        debugPrint(
+            'getIdTokenWithFirebase -> Failed to load data: ${response.statusCode}');
       }
-      debugPrint(
-          'Error fetching token from Firebase, status code: ${response.statusCode}');
     } catch (e) {
-      debugPrint('Error in getIdTokenWithFirebase: $e');
+      debugPrint('getIdTokenWithFirebase -> Error: $e');
     }
-    return null;
   }
 
-  Future<String?> getProfileWithToken(String? jwtToken) async {
-    if (jwtToken == null) {
-      debugPrint('No JWT token provided for profile fetch');
-      return null;
-    }
+  /// Get the remaining credits using jwtToken
+  Future<void> loadRemainingCredits() async {
+    // Check if jwtToken exists
+    if (jwtToken == null) return;
+
+    // Make the request
     String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
@@ -90,24 +61,23 @@ class TokenManager extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        credits = data['data']['credits'].toString();
-        debugPrint('Profile credits fetched: $credits');
+        remainingCredits = data['data']['credits'].toString();
         notifyListeners();
-        return credits;
+      } else {
+        debugPrint(
+            "getRemainingCredits -> Failed to retrieve data: ${response.statusCode}");
       }
-      debugPrint(
-          'Error fetching profile, status code: ${response.statusCode}, body: ${response.body}');
     } catch (e) {
-      debugPrint('Error in getProfileWithToken: $e');
+      debugPrint('getRemainingCredits -> Error: $e');
     }
-    return null;
   }
 
-  Future<String?> getCredentialsToken(String? jwtToken) async {
-    if (jwtToken == null) {
-      debugPrint('No JWT token provided for credentials token fetch');
-      return null;
-    }
+  // Get the credentials token using jwtToken
+  Future<void> loadCredentials() async {
+    // Check if jwtToken exists
+    if (jwtToken == null) return;
+
+    // Make the request
     String url = 'https://api-voice.botnoi.ai/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
@@ -123,15 +93,54 @@ class TokenManager extends ChangeNotifier {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         credentialsToken = data['data'][0]['token'].toString();
-        debugPrint('Credentials token fetched: $credentialsToken');
-        await _saveCredentialsToken(credentialsToken!);
-        return credentialsToken;
+        notifyListeners();
+      } else {
+        debugPrint('Failed to load Credentials-Token: ${response.statusCode}');
       }
-      debugPrint(
-          'Error fetching credentials token, status code: ${response.statusCode}');
     } catch (e) {
-      debugPrint('Error in getCredentialsToken: $e');
+      debugPrint('Error fetching Credentials-Token: $e');
     }
-    return null;
+  }
+
+  /// Generate audio from text and return the audio URL
+  Future<String?> generateAudio(
+    String text,
+    String speakerId,
+    int volume,
+    int speed,
+  ) async {
+    Map<String, dynamic> payload = {
+      "text": text,
+      "speaker": speakerId,
+      "volume": volume,
+      "speed": speed,
+      "type_media": "wav",
+      "save_file": true,
+    };
+    Map<String, String> headers = {
+      'Botnoi-Token': '$credentialsToken',
+      'Content-Type': 'application/json',
+    };
+    try {
+      String url = "api-voice.botnoi.ai";
+      String path = "/openapi/v1/generate_audio";
+      final response = await http.post(
+        Uri.https(url, path),
+        headers: headers,
+        body: jsonEncode(payload),
+      );
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        debugPrint('Json data = $jsonData');
+        return jsonData['audio_url'];
+      } else {
+        debugPrint(
+            'generateAudio -> Failed to post data: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('generateAudio -> Error: $e');
+      return null;
+    }
   }
 }

@@ -157,12 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () async {
-                final user =
-                    await Provider.of<SignInOut>(context, listen: false)
-                        .signInWithGoogle(context);
-
+                final user = await Provider.of<SignInOut>(context, listen: false).signInWithGoogle(context);
                 if (!mounted) return;
-
                 if (user != null) {
                   debugPrint('User signed in: ${user.email}');
                   Navigator.of(context).pushAndRemoveUntil(

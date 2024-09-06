@@ -1,73 +1,54 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
-import 'package:botnoivoice/data/managers/token_manager.dart';
 
+/// Provider and interface for authentication
 class SignInOut extends ChangeNotifier {
   User? user;
+  String? idToken;
 
   bool get isAuthenticated {
-    debugPrint('isAuthenticated: ${user != null}');
-    return user != null;
+    return user != null && idToken != null;
   }
 
+  SignInOut() {
+    FirebaseAuth.instance.authStateChanges().listen((
+      User? user,
+    ) async {
+      this.user = user;
+      idToken = await user?.getIdToken();
+      notifyListeners();
+    });
+  }
+
+  /// Sign in with Google
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        debugPrint('Google sign-in was canceled');
-        return null;
-      }
+      if (googleUser == null) return null; // Return null if sign-in fails.
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-      debugPrint(
-          'Google Auth: idToken=${googleAuth.idToken}, accessToken=${googleAuth.accessToken}');
-
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        debugPrint('User signed in: ${user.email}');
-        // บังคับดึง idToken ใหม่
-        final String? freshIdToken = await user.getIdToken();
-        debugPrint('Fresh idToken: $freshIdToken');
-
-        if (freshIdToken != null) {
-          final tokenManager =
-              Provider.of<TokenManager>(context, listen: false);
-          await tokenManager.getIdTokenWithFirebase(freshIdToken);
-          return user;
-        } else {
-          debugPrint('Failed to retrieve fresh idToken');
-        }
-      } else {
-        debugPrint('Failed to sign in: User is null');
-      }
-
-      return user;
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      return userCredential.user; // Return the user after sign-in.
     } catch (e) {
-      debugPrint('Error in signInWithGoogle: $e');
-      return null;
+      debugPrint('Error signing in with Google: $e');
+      return null; // Return null if there is an error.
     }
   }
 
-  Future<void> signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      await GoogleSignIn().signOut();
-      debugPrint('User signed out');
-    } catch (e) {
-      debugPrint('Error signing out: $e');
-    }
-
+  /// Sign out
+  Future<void> signOut(BuildContext context) async {
     user = null;
+    //await Provider.of<DataProvider>(context).deleteJwtToken();
+    //await Provider.of<DataProvider>(context).deleteCredentialsToken();
+    await FirebaseAuth.instance.signOut();
+    await GoogleSignIn().signOut();
     notifyListeners();
   }
 }

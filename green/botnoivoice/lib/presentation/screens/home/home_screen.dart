@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/data/managers/token_manager.dart';
+import 'package:botnoivoice/domain/usecases/random_string.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
@@ -18,7 +18,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as p;
 
@@ -30,7 +29,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
 
   /// Generate Audio
   String response = '';
@@ -60,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    textController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -123,17 +122,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
-                      controller: textController,
+                      controller: _textController,
                       onChanged: (text) {
-                        if (textController.text.length > 1000) {
-                          textController.text =
-                              textController.text.substring(0, 1000);
-                          textController.selection = TextSelection.fromPosition(
-                            TextPosition(offset: textController.text.length),
+                        if (_textController.text.length > 1000) {
+                          _textController.text =
+                              _textController.text.substring(0, 1000);
+                          _textController.selection =
+                              TextSelection.fromPosition(
+                            TextPosition(offset: _textController.text.length),
                           );
                         }
                         setState(() {
-                          isShowClearIcon = textController.text.isNotEmpty;
+                          isShowClearIcon = _textController.text.isNotEmpty;
                         });
                       },
                       decoration: InputDecoration(
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {
                           setState(() {
-                            textController.clear();
+                            _textController.clear();
                             isShowClearIcon = false;
                           });
                         },
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               GradientText(
-                text: '${textController.text.length}',
+                text: '${_textController.text.length}',
                 style: GoogleFonts.prompt(
                   fontSize: 14.sp,
                   color: const Color(0xFFA19F9D),
@@ -239,13 +239,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'สร้างเสียง',
-              style: GoogleFonts.prompt(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600)
-            ),
+            Text('สร้างเสียง',
+                style: GoogleFonts.prompt(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600)),
             SizedBox(width: 10.w),
             SvgPicture.asset(
               'assets/images/logo/credit-icon.svg',
@@ -253,26 +251,34 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 20.w,
             ),
             SizedBox(width: 5.w),
-            Text(
-              '${textController.text.length}',
-              style: GoogleFonts.prompt(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600)
-            ),
+            Text('${_textController.text.length}',
+                style: GoogleFonts.prompt(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600)),
           ],
         ),
         onPressed: () async {
-          if (textController.text.isNotEmpty) {
-            setState(() {
-              audioPlayer.stop();
-            });
+          setState(() {
+            audioPlayer.stop();
+          });
+          if (_textController.text.isEmpty) {
+            ErrorDialog(context: context, text: "กรุณาพิมพ์ข้อความ")
+                .showAsError();
+            return;
+          } else if (_textController.text.isNotEmpty) {
             try {
-              final audioUrl = await generateAudio(textController.text);
+              final audioUrl =
+                  await generateAudio(_textController.text).whenComplete(() {
+                setState(() {
+                  Provider.of<TokenManager>(context, listen: false)
+                      .loadRemainingCredits();
+                });
+              });
               if (audioUrl.isNotEmpty) {
                 await openFile(
                     url: audioUrl,
-                    fileName: "BotnoiVoice${randomString(6)}.mp3");
+                    fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
               }
             } catch (e) {
               debugPrint("Error: $e");
@@ -291,14 +297,14 @@ class _HomeScreenState extends State<HomeScreen> {
     speakerId =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
             '1';
-
-    //TODO:// Set new SpeakerProvider for language value
     String language =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
             'th';
 
-    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
-    String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+    debugPrint("K9 -> speakerId: $speakerId");
+    debugPrint("K9 -> language: $language");
+
+    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -306,9 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "speed": 1,
       "type_media": "mp3",
       "save_file": true,
-      //TODO: Get language from selected language
       "language": language,
-      "page": "mobile app"
     };
 
     Map<String, String> headers = {
@@ -332,21 +336,19 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       } else {
         debugPrint("Failed to generate audio: ${response.statusCode}");
-        ErrorDialog.showErrorDialog(
-            context, 'กรุณาพิมพ์ข้อความตรงกับภาษาที่ท่านเลือกด้วยครับ');
+        if (mounted) {
+          ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
+              .showAsError();
+        }
       }
     } catch (e) {
       debugPrint("Error: $e");
+      if (mounted) {
+        ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
+            .showAsError();
+      }
     }
     return audioUrl;
-  }
-
-  String randomString(int length) {
-    const characters = '0123456789';
-
-    final random = Random();
-    return String.fromCharCodes(Iterable.generate(length,
-        (_) => characters.codeUnitAt(random.nextInt(characters.length))));
   }
 
   Future openFile({required String url, String? fileName}) async {

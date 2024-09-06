@@ -41,26 +41,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCPbJ5D41zoyRTZNbkh49T2Gjn47HLXNWc',
-    appId: '1:822010349951:android:ad447efc423ef64a9db24a',
+    appId: '1:822010349951:android:fe882cd33040dfaa9db24a',
     messagingSenderId: '822010349951',
     projectId: 'botnoivoice-1ff7a',
-    databaseURL:
-        'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'botnoivoice-1ff7a.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyApGk4ulnwN_-arMKBbBGhfccjwGwY18pM',
-    appId: '1:822010349951:ios:7f408b3078242adf9db24a',
+    appId: '1:822010349951:ios:f573f764b8bb47569db24a',
     messagingSenderId: '822010349951',
     projectId: 'botnoivoice-1ff7a',
-    databaseURL:
-        'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'botnoivoice-1ff7a.appspot.com',
-    androidClientId:
-        '822010349951-d53h9tglao4n2mij5rdoi4oja0kfs8o2.apps.googleusercontent.com',
-    iosClientId:
-        '822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin.apps.googleusercontent.com',
-    iosBundleId: 'com.mobile.botnoivoice',
+    androidClientId: '822010349951-4d7ekr9mbjo5p06fkbalpgmerkfnl7rg.apps.googleusercontent.com',
+    iosClientId: '822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn.apps.googleusercontent.com',
+    iosBundleId: 'com.botnoimobile.botnoivoice',
   );
+
 }

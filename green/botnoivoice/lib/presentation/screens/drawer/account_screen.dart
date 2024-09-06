@@ -60,7 +60,7 @@ class _AccountScreenState extends State<AccountScreen> {
               text: 'ออกจากระบบ',
               onPressed: () async {
                 await Provider.of<SignInOut>(context, listen: false)
-                    .signOut()
+                    .signOut(context)
                     .whenComplete(() {
                   Navigator.pushAndRemoveUntil(
                     context,

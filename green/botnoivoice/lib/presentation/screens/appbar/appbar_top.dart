@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
+// import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
 import 'package:botnoivoice/data/managers/token_manager.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +21,13 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
 
 class _AppBarTopState extends State<AppBarTop> {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final creditsProvider = Provider.of<CreditsRepositoryImpl>(context, listen: false);
-    final auth = Provider.of<TokenManager>(context, listen: false);
-    creditsProvider.fetchCredits(auth);
+  void initState() {
+    Provider.of<TokenManager>(context, listen: false).loadRemainingCredits();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final credits = Provider.of<CreditsRepositoryImpl>(context).credits;
 
     return AppBar(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -96,7 +93,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  ' ${credits ?? "N/A"}',
+                  ' ${Provider.of<TokenManager>(context).remainingCredits ?? "N/A"}',
                   style: GoogleFonts.prompt(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
