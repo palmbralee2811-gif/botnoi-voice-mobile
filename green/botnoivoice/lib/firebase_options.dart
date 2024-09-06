@@ -61,6 +61,6 @@ class DefaultFirebaseOptions {
         '822010349951-d53h9tglao4n2mij5rdoi4oja0kfs8o2.apps.googleusercontent.com',
     iosClientId:
         '822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin.apps.googleusercontent.com',
-    iosBundleId: 'com.mobile.botnoivoice',
+    iosBundleId: 'com.botnoimobile.botnoivoice',
   );
 }
