@@ -10,9 +10,17 @@
         <string>com.botnoimobile.botnoivoice</string>
       </array>
     </dict>
+    <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn</string>
+        </array>
+    </dict>
   </array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>GIDClientID</key>
+	<string>822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn.apps.googleusercontent.com</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

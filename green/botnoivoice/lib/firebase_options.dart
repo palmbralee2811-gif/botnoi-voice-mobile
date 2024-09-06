@@ -44,7 +44,8 @@ class DefaultFirebaseOptions {
     appId: '1:822010349951:android:fe882cd33040dfaa9db24a',
     messagingSenderId: '822010349951',
     projectId: 'botnoivoice-1ff7a',
-    databaseURL: 'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'botnoivoice-1ff7a.appspot.com',
   );
 
@@ -53,18 +54,13 @@ class DefaultFirebaseOptions {
     appId: '1:822010349951:ios:f573f764b8bb47569db24a',
     messagingSenderId: '822010349951',
     projectId: 'botnoivoice-1ff7a',
-    databaseURL: 'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://botnoivoice-1ff7a-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'botnoivoice-1ff7a.appspot.com',
-<<<<<<< HEAD
     androidClientId:
-        '822010349951-d53h9tglao4n2mij5rdoi4oja0kfs8o2.apps.googleusercontent.com',
+        '822010349951-4d7ekr9mbjo5p06fkbalpgmerkfnl7rg.apps.googleusercontent.com',
     iosClientId:
-        '822010349951-8v2b23ke3o9gfjh9dbj5qmnk1umhfsin.apps.googleusercontent.com',
-=======
-    androidClientId: '822010349951-4d7ekr9mbjo5p06fkbalpgmerkfnl7rg.apps.googleusercontent.com',
-    iosClientId: '822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn.apps.googleusercontent.com',
->>>>>>> 8fd5fc31da05b0c30303d5e6e45d57b0cc46cd68
+        '822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn.apps.googleusercontent.com',
     iosBundleId: 'com.botnoimobile.botnoivoice',
   );
-
 }
