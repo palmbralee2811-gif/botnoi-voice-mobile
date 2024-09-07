@@ -337,7 +337,8 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         debugPrint("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
+          ErrorDialog(
+                  context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
               .showAsError();
         }
       }
@@ -358,7 +359,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (file == null) return;
       debugPrint("Path: ${file.path}");
 
-      //TODO: สร้างเสร็จแล้ว กดปุ่มเล่นเสียงซ้ำ แล้ว point โดยครั้งทุกครั้งที่เล่นเสียง
       await showDialog(
         context: context,
         builder: (context) => AudioPlayerDialog(filePath: file.path),
@@ -375,7 +375,6 @@ class _HomeScreenState extends State<HomeScreen> {
         final externalStorageFolder = await getExternalStorageDirectory();
         if (externalStorageFolder != null) {
           downloadDirectory = p.join(externalStorageFolder.path, "Downloads");
-
           final directory = Directory(downloadDirectory);
           if (!await directory.exists()) {
             await directory.create(recursive: true);
