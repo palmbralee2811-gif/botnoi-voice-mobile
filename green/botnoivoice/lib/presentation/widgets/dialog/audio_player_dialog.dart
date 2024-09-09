@@ -14,7 +14,7 @@ class AudioPlayerDialog extends StatefulWidget {
   const AudioPlayerDialog({required this.filePath, super.key});
 
   @override
-  _AudioPlayerDialogState createState() => _AudioPlayerDialogState();
+  State<AudioPlayerDialog> createState() => _AudioPlayerDialogState();
 }
 
 class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
@@ -186,7 +186,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                         debugPrint("Opening file at: ${widget.filePath}");
                         final result = await OpenFile.open(widget.filePath);
 
-                        if (result.type != ResultType.done) {
+                        if (result.type.name == "done") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text("ไม่สามารถเปิดไฟล์ได้")),

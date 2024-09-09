@@ -1,5 +1,4 @@
 import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
-import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -157,17 +156,11 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () async {
-                final user = await Provider.of<SignInOut>(context, listen: false).signInWithGoogle(context);
+                final user =
+                    await Provider.of<SignInOut>(context, listen: false)
+                        .signInWithGoogle(context);
                 if (!mounted) return;
-                if (user != null) {
-                  debugPrint('User signed in: ${user.email}');
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                    (Route<dynamic> route) => false,
-                  );
-                } else {
+                if (user == null) {
                   debugPrint('Sign-in failed: user is null');
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

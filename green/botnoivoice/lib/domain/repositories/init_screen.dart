@@ -17,7 +17,7 @@ class _InitScreenState extends State<InitScreen> {
 
   @override
   void initState() {
-    initApp();
+    WidgetsBinding.instance.addPostFrameCallback((_) => initApp());
     super.initState();
   }
 
@@ -25,8 +25,7 @@ class _InitScreenState extends State<InitScreen> {
   Future<void> initApp() async {
     await Provider.of<TokenManager>(context, listen: false)
         .loadJwtToken(context);
-    await Provider.of<TokenManager>(context, listen: false)
-        .loadCredentials();
+    await Provider.of<TokenManager>(context, listen: false).loadCredentials();
     await Provider.of<TokenManager>(context, listen: false)
         .loadRemainingCredits();
     setState(() {
@@ -34,12 +33,12 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
-  final PageController _pageController = PageController(initialPage: 0);
+  //final PageController _pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
     if (_initialized) {
-      return Scaffold(
+      return const Scaffold(
         // bottomNavigationBar: BottomNavBar(
         //   onButtonTapped: (buttonIndex) {
         //     _pageController.animateToPage(
@@ -49,14 +48,15 @@ class _InitScreenState extends State<InitScreen> {
         //     );
         //   },
         // ),
-        body: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            HomeScreen(),
-            // Scaffold(),
-          ],
-        ),
+        //body: PageView(
+        //  controller: _pageController,
+        //  physics: const NeverScrollableScrollPhysics(),
+        //  children: const [
+        //    HomeScreen(),
+        //    // Scaffold(),
+        //  ],
+        //),
+        body: HomeScreen(),
       );
     } else {
       return const SplashScreen();

@@ -4,7 +4,6 @@ import 'package:botnoivoice/domain/entities/speaker_entity.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -513,12 +512,7 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
               if (audioPlayer.state == PlayerState.playing) {
                 audioPlayer.stop();
               }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomeScreen(),
-                ),
-              );
+              Navigator.pop(context);
             },
           ),
         ),
@@ -576,8 +570,8 @@ class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
             language = ''; // กรณีไม่พบภาษาใน availableLanguage
           }
 
-          Provider.of<SpeakerRepositoryImpl>(context, listen: false).setLanguage(language.toString().toLowerCase());
-
+          Provider.of<SpeakerRepositoryImpl>(context, listen: false)
+              .setLanguage(language.toString().toLowerCase());
         });
         Navigator.pop(context);
       },
