@@ -19,7 +19,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:path/path.dart' as p;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -125,10 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: _textController,
                       onChanged: (text) {
                         if (_textController.text.length > 1000) {
-                          _textController.text =
-                              _textController.text.substring(0, 1000);
-                          _textController.selection =
-                              TextSelection.fromPosition(
+                          _textController.text = _textController.text.substring(0, 1000);
+                          _textController.selection = TextSelection.fromPosition(
                             TextPosition(offset: _textController.text.length),
                           );
                         }
@@ -141,8 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: 'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
-                          fontStyle:
-                              GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
+                          fontStyle: GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
                         ),
                         hintMaxLines: 1,
                       ),
@@ -171,8 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {
                           setState(() {
                             _textController.clear();
@@ -193,8 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
@@ -233,17 +227,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildGenerateButton(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+      padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
       child: GradientRow(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('สร้างเสียง',
-                style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600)),
+                style: GoogleFonts.prompt(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600)),
             SizedBox(width: 10.w),
             SvgPicture.asset(
               'assets/images/logo/credit-icon.svg',
@@ -252,10 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(width: 5.w),
             Text('${_textController.text.length}',
-                style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600)),
+                style: GoogleFonts.prompt(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600)),
           ],
         ),
         onPressed: () async {
@@ -263,22 +250,17 @@ class _HomeScreenState extends State<HomeScreen> {
             audioPlayer.stop();
           });
           if (_textController.text.isEmpty) {
-            ErrorDialog(context: context, text: "กรุณาพิมพ์ข้อความ")
-                .showAsError();
+            ErrorDialog(context: context, text: "กรุณาพิมพ์ข้อความ").showAsError();
             return;
           } else if (_textController.text.isNotEmpty) {
             try {
-              final audioUrl =
-                  await generateAudio(_textController.text).whenComplete(() {
+              final audioUrl = await generateAudio(_textController.text).whenComplete(() {
                 setState(() {
-                  Provider.of<TokenManager>(context, listen: false)
-                      .loadRemainingCredits();
+                  Provider.of<TokenManager>(context, listen: false).loadRemainingCredits();
                 });
               });
               if (audioUrl.isNotEmpty) {
-                await openFile(
-                    url: audioUrl,
-                    fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
+                await openFile(url: audioUrl, fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
               }
             } catch (e) {
               debugPrint("Error: $e");
@@ -294,12 +276,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> generateAudio(String text) async {
-    speakerId =
-        Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
-            '1';
-    String language =
-        Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
-            'th';
+    speakerId = Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ?? '1';
+    String language = Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ?? 'th';
 
     debugPrint("K9 -> speakerId: $speakerId");
     debugPrint("K9 -> language: $language");
@@ -316,8 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
     };
 
     Map<String, String> headers = {
-      'Botnoi-Token':
-          '${Provider.of<TokenManager>(context, listen: false).credentialsToken}',
+      'Botnoi-Token': '${Provider.of<TokenManager>(context, listen: false).credentialsToken}',
       'Content-Type': 'application/json'
     };
 
@@ -337,16 +314,13 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         debugPrint("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          ErrorDialog(
-                  context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
-              .showAsError();
+          ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง').showAsError();
         }
       }
     } catch (e) {
       debugPrint("Error: $e");
       if (mounted) {
-        ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
-            .showAsError();
+        ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง').showAsError();
       }
     }
     return audioUrl;
@@ -370,27 +344,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<File?> downloadFile(String url, String name) async {
     try {
-      String? downloadDirectory;
-      if (Platform.isAndroid) {
-        final externalStorageFolder = await getExternalStorageDirectory();
-        if (externalStorageFolder != null) {
-          downloadDirectory = p.join(externalStorageFolder.path, "Downloads");
-          final directory = Directory(downloadDirectory);
-          if (!await directory.exists()) {
-            await directory.create(recursive: true);
-          }
-        } else {
-          downloadDirectory = "/storage/emulated/0/Download";
-        }
-      } else if (Platform.isIOS) {
-        final downloadFolder = await getDownloadsDirectory();
-        if (downloadFolder != null) {
-          downloadDirectory = downloadFolder.path;
-        }
-      }
-      if (downloadDirectory == null) {
-        throw Exception("Download directory not found.");
-      }
+      final downloadFolder = await getTemporaryDirectory();
+      final String downloadDirectory = downloadFolder.path;
       final file = File("$downloadDirectory/$name");
       final response = await Dio().get(
         url,
