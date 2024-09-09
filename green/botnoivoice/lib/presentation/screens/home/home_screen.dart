@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,24 +31,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
 
-  /// Generate Audio
   String response = '';
   String audioUrl = '';
   String? speakerId;
-
-  /// Player Audio
   bool isShowClearIcon = false;
-
-  /// Show Clear Icon
-  AudioPlayer audioPlayer = AudioPlayer(); // Play Example Audio
-
-  /// Show Audio Player
+  AudioPlayer audioPlayer = AudioPlayer();
   Duration duration = Duration.zero;
   Duration currentPosition = Duration.zero;
 
   @override
   void initState() {
     super.initState();
+    requestAudioPermission();
   }
 
   @override
@@ -60,6 +55,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _textController.dispose();
     super.dispose();
+  }
+
+  Future<bool> requestAudioPermission() async {
+    PermissionStatus status = await Permission.audio.request();
+    return status.isGranted;
   }
 
   @override
@@ -281,8 +281,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     debugPrint("K9 -> speakerId: $speakerId");
     debugPrint("K9 -> language: $language");
-
     String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -291,6 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "type_media": "mp3",
       "save_file": true,
       "language": language,
+      // "page": "mobile app"
     };
 
     Map<String, String> headers = {
@@ -327,18 +329,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future openFile({required String url, String? fileName}) async {
+    bool hasPermission = await requestAudioPermission();
+    if (!hasPermission) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("ไม่ได้รับสิทธิ์เข้าถึงไฟล์")),
+      );
+      return;
+    }
+
     try {
       final name = fileName ?? url.split("/").last;
       final file = await downloadFile(url, name);
-      if (file == null) return;
-      debugPrint("Path: ${file.path}");
+
+      if (file == null || !(await file.exists())) {
+        debugPrint("File download failed or file does not exist");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("ไม่สามารถดาวน์โหลดไฟล์ได้")),
+        );
+        return;
+      }
+
+      debugPrint("Downloaded file path: ${file.path}");
 
       await showDialog(
         context: context,
         builder: (context) => AudioPlayerDialog(filePath: file.path),
       );
     } catch (e) {
-      throw Exception("Failed to open file: $e");
+      debugPrint("Failed to open file: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("เกิดข้อผิดพลาดในการเปิดไฟล์: $e")),
+      );
     }
   }
 
@@ -355,10 +376,12 @@ class _HomeScreenState extends State<HomeScreen> {
           receiveTimeout: const Duration(seconds: 60),
         ),
       );
+
       if (response.statusCode == 200) {
         final raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         await raf.close();
+
         if (await file.exists() && await file.length() > 0) {
           return file;
         } else {
