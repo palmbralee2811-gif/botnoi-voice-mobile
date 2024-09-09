@@ -182,7 +182,23 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   SizedBox(height: 20.h),
                   GradientRow(
                     onPressed: () async {
-                      await OpenFile.open(widget.filePath);
+                      if (widget.filePath.isNotEmpty) {
+                        debugPrint("Opening file at: ${widget.filePath}");
+                        final result = await OpenFile.open(widget.filePath);
+
+                        if (result.type != ResultType.done) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("ไม่สามารถเปิดไฟล์ได้")),
+                          );
+                        }
+                      } else {
+                        debugPrint("File path is empty");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("ไม่พบไฟล์ที่ต้องการเปิด")),
+                        );
+                      }
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -193,8 +209,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           size: 25.sp,
                           color: Colors.white,
                         ),
-                        SizedBox(
-                            width: 8.w),
+                        SizedBox(width: 8.w),
                         Text(
                           "ดาวน์โหลด",
                           style: GoogleFonts.prompt(
