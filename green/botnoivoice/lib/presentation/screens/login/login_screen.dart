@@ -155,20 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
-              onPressed: () async {
-                final user =
-                    await Provider.of<SignInOut>(context, listen: false)
-                        .signInWithGoogle(context);
-                if (!mounted) return;
-                if (user == null) {
-                  debugPrint('Sign-in failed: user is null');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('เข้าสู่ระบบไม่สำเร็จ. กรุณาลองใหม่อีกครั้ง'),
-                    ),
-                  );
-                }
+              onPressed: () {
+                Provider.of<SignInOut>(context, listen: false)
+                    .signInWithGoogle(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

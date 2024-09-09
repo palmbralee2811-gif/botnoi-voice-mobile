@@ -1,6 +1,5 @@
 import 'package:botnoivoice/domain/usecases/get_user_email.dart';
 import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
-import 'package:botnoivoice/presentation/screens/login/login_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,18 +57,9 @@ class _AccountScreenState extends State<AccountScreen> {
             const Spacer(),
             GradientTextButton(
               text: 'ออกจากระบบ',
-              onPressed: () async {
-                await Provider.of<SignInOut>(context, listen: false)
-                    .signOut(context)
-                    .whenComplete(() {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                    (route) => false,
-                  );
-                });
+              onPressed: () {
+                Provider.of<SignInOut>(context, listen: false).signOut(context);
+                Navigator.popUntil(context, (r) => r.isFirst);
               },
             ),
             SizedBox(height: 16.h),

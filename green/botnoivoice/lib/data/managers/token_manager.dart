@@ -10,10 +10,19 @@ class TokenManager extends ChangeNotifier {
   String? remainingCredits;
   String? credentialsToken;
 
+  /// Clear all the tokens
+  void clearTokens() {
+    jwtToken = null;
+    remainingCredits = null;
+    credentialsToken = null;
+    notifyListeners();
+  }
+
   /// Get the jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
-    String? idToken = Provider.of<SignInOut>(context, listen: false).idToken;
+    String? idToken =
+        await Provider.of<SignInOut>(context, listen: false).user?.getIdToken();
     if (idToken == null) return;
 
     // Get the jwtToken from the Firebase API
