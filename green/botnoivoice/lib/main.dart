@@ -23,7 +23,7 @@ class BotnoiVoiceApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SignInOut()),
         ChangeNotifierProvider(create: (_) => TokenManager()),
-        ChangeNotifierProvider(create: (context) => SpeakerRepositoryImpl()),
+        ChangeNotifierProvider(create: (_) => SpeakerRepositoryImpl()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

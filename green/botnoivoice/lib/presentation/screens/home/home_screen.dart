@@ -281,10 +281,6 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             } catch (e) {
               debugPrint("Error: $e");
-            } finally {
-              setState(() {
-                // Hide loading indicator here
-              });
             }
           }
         },
@@ -292,6 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// generate audio from text
   Future<String> generateAudio(String text) async {
     speakerId =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
@@ -352,6 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return audioUrl;
   }
 
+  /// call download function, open audio player, and open audio file
   Future openFile({required String url, String? fileName}) async {
     try {
       final name = fileName ?? url.split("/").last;
@@ -361,13 +359,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
       await showDialog(
         context: context,
-        builder: (context) => AudioPlayerDialog(filePath: file.path),
+        builder: (context) => AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl,),
       );
     } catch (e) {
       throw Exception("Failed to open file: $e");
     }
   }
 
+  /// Download file
   Future<File?> downloadFile(String url, String name) async {
     try {
       final downloadFolder = await getTemporaryDirectory();
@@ -386,6 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
         raf.writeFromSync(response.data);
         await raf.close();
         if (await file.exists() && await file.length() > 0) {
+          debugPrint("File downloaded successfully: ${file.path}");
           return file;
         } else {
           throw Exception("File download failed, file is empty.");
