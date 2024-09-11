@@ -11,14 +11,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:provider/provider.dart';
 
-class AllSpeakerScreen extends StatefulWidget {
-  const AllSpeakerScreen({super.key});
+class SpeakerScreen extends StatefulWidget {
+  const SpeakerScreen({super.key});
 
   @override
-  State<AllSpeakerScreen> createState() => _AllSpeakerScreenState();
+  State<SpeakerScreen> createState() => _SpeakerScreenState();
 }
 
-class _AllSpeakerScreenState extends State<AllSpeakerScreen> {
+class _SpeakerScreenState extends State<SpeakerScreen> {
   bool ishover = false; // ต้องการให้ข้อมูล ishover เก็บไว้ใน cache ของเครื่อง
   String? speakerId;
   String? language; // เลือกภาษา

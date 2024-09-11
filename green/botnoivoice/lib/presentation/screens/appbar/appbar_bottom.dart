@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/presentation/screens/home/all_speaker_screen.dart';
+import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,7 +42,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
         children: [
           InkWell(
             onTap: () async {
-              String? audioURL = speakerProvider.speakerAudio ?? "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_ava.wav";
+              String? audioURL = speakerProvider.speakerAudio ??
+                  "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_ava.wav";
               if (isPlaying) {
                 await audioPlayer.stop();
                 setState(() {
@@ -78,7 +79,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AllSpeakerScreen()),
+                      builder: (context) => const SpeakerScreen()),
                 );
               },
               child: Padding(

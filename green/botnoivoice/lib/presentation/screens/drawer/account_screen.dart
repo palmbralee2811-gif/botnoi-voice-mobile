@@ -1,5 +1,5 @@
 import 'package:botnoivoice/domain/usecases/get_user_email.dart';
-import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +58,8 @@ class _AccountScreenState extends State<AccountScreen> {
             GradientTextButton(
               text: 'ออกจากระบบ',
               onPressed: () {
-                Provider.of<SignInOut>(context, listen: false).signOut(context);
+                Provider.of<GoogleLoginProvider>(context, listen: false)
+                    .signOut(context);
                 Navigator.popUntil(context, (r) => r.isFirst);
               },
             ),

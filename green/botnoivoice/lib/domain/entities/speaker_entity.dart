@@ -1,3 +1,4 @@
+/// Speaker Entity class for Speaker Model in Database
 class SpeakerEntity {
   final String speakerId;
   final String speakerName;

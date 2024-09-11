@@ -1,9 +1,10 @@
-import 'package:botnoivoice/data/managers/token_manager.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Check if the app is initialized
 class InitScreen extends StatefulWidget {
   const InitScreen({super.key});
 
@@ -12,7 +13,6 @@ class InitScreen extends StatefulWidget {
 }
 
 class _InitScreenState extends State<InitScreen> {
-  /// Check if the app is initialized
   bool _initialized = false;
 
   @override
@@ -23,10 +23,11 @@ class _InitScreenState extends State<InitScreen> {
 
   /// Initialize the app
   Future<void> initApp() async {
-    await Provider.of<TokenManager>(context, listen: false)
+    await Provider.of<GoogleTokenProvider>(context, listen: false)
         .loadJwtToken(context);
-    await Provider.of<TokenManager>(context, listen: false).loadCredentials();
-    await Provider.of<TokenManager>(context, listen: false)
+    await Provider.of<GoogleTokenProvider>(context, listen: false)
+        .loadCredentials();
+    await Provider.of<GoogleTokenProvider>(context, listen: false)
         .loadRemainingCredits();
     setState(() {
       _initialized = true;

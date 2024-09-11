@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/data/managers/token_manager.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/usecases/random_string.dart';
+import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/error_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,24 +31,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
 
-  /// Generate Audio
+  // Generate Audio
   String response = '';
   String audioUrl = '';
   String? speakerId;
 
-  /// Player Audio
+  // Show Clear Icon
   bool isShowClearIcon = false;
 
-  /// Show Clear Icon
-  AudioPlayer audioPlayer = AudioPlayer(); // Play Example Audio
+  // Play Example Audio
+  AudioPlayer audioPlayer = AudioPlayer();
 
-  /// Show Audio Player
+  // Show Audio Player
   Duration duration = Duration.zero;
   Duration currentPosition = Duration.zero;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _checkAndRequestPermissions();
+    });
   }
 
   @override
@@ -59,7 +63,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _textController.dispose();
+    audioPlayer.dispose();
     super.dispose();
+  }
+
+  // ฟังก์ชันตรวจสอบและขอสิทธิ์
+  Future<void> _checkAndRequestPermissions() async {
+    bool hasPermission =
+        await Provider.of<PermissionProvider>(context, listen: false)
+            .requestAndroidPermission();
+
+    // ตรวจสอบว่าทุกสิทธิ์ได้รับอนุญาตแล้วหรือไม่
+    if (!hasPermission) {
+      AlertNotificationDialog(
+              context: context, text: "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า")
+          .showPermissionDeniedDialog();
+    }
   }
 
   @override
@@ -262,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
             audioPlayer.stop();
           });
           if (_textController.text.isEmpty) {
-            ErrorDialog(context: context, text: "กรุณาพิมพ์ข้อความ")
+            AlertNotificationDialog(context: context, text: "กรุณาพิมพ์ข้อความ")
                 .showAsError();
             return;
           } else if (_textController.text.isNotEmpty) {
@@ -270,12 +289,12 @@ class _HomeScreenState extends State<HomeScreen> {
               final audioUrl =
                   await generateAudio(_textController.text).whenComplete(() {
                 setState(() {
-                  Provider.of<TokenManager>(context, listen: false)
+                  Provider.of<GoogleTokenProvider>(context, listen: false)
                       .loadRemainingCredits();
                 });
               });
               if (audioUrl.isNotEmpty) {
-                await openFile(
+                await openAudioPlayerDialog(
                     url: audioUrl,
                     fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
               }
@@ -288,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// generate audio from text
+  /// Generate audio from text
   Future<String> generateAudio(String text) async {
     speakerId =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
@@ -297,7 +316,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
             'th';
     String? credentialsToken =
-        Provider.of<TokenManager>(context, listen: false).credentialsToken;
+        Provider.of<GoogleTokenProvider>(context, listen: false)
+            .credentialsToken;
 
     debugPrint("K9 -> speakerId: $speakerId");
     debugPrint("K9 -> language: $language");
@@ -312,11 +332,12 @@ class _HomeScreenState extends State<HomeScreen> {
       "type_media": "mp3",
       "save_file": true,
       "language": language,
+      "page": "mobile"
     };
 
     Map<String, String> headers = {
       'Botnoi-Token':
-          '${Provider.of<TokenManager>(context, listen: false).credentialsToken}',
+          '${Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken}',
       'Content-Type': 'application/json'
     };
 
@@ -334,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         debugPrint("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          ErrorDialog(
+          AlertNotificationDialog(
                   context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
               .showAsError();
         }
@@ -342,32 +363,34 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       debugPrint("Error: $e");
       if (mounted) {
-        ErrorDialog(context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
+        AlertNotificationDialog(
+                context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
             .showAsError();
       }
     }
     return audioUrl;
   }
 
-  /// call download function, open audio player, and open audio file
-  Future openFile({required String url, String? fileName}) async {
+  /// Request Permission, Call download function, Open audio player, and open audio file
+  Future openAudioPlayerDialog({required String url, String? fileName}) async {
     try {
       final name = fileName ?? url.split("/").last;
-      final file = await downloadFile(url, name);
+      final file = await downloadFileToTemporaryDirectory(url, name);
       if (file == null) return;
       debugPrint("Path: ${file.path}");
 
       await showDialog(
         context: context,
-        builder: (context) => AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl,),
+        builder: (context) =>
+            AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
       );
     } catch (e) {
       throw Exception("Failed to open file: $e");
     }
   }
 
-  /// Download file
-  Future<File?> downloadFile(String url, String name) async {
+  /// Download file and save to temporary directory
+  Future<File?> downloadFileToTemporaryDirectory(String url, String name) async {
     try {
       final downloadFolder = await getTemporaryDirectory();
       final String downloadDirectory = downloadFolder.path;

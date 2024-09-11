@@ -1,4 +1,4 @@
-import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -156,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () {
-                Provider.of<SignInOut>(context, listen: false)
+                Provider.of<GoogleLoginProvider>(context, listen: false)
                     .signInWithGoogle(context);
               },
               style: ElevatedButton.styleFrom(

@@ -1,8 +1,9 @@
-import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
-import 'package:botnoivoice/data/managers/token_manager.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
+import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,9 +22,10 @@ class BotnoiVoiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SignInOut()),
-        ChangeNotifierProvider(create: (_) => TokenManager()),
+        ChangeNotifierProvider(create: (_) => GoogleLoginProvider()),
+        ChangeNotifierProvider(create: (_) => GoogleTokenProvider()),
         ChangeNotifierProvider(create: (_) => SpeakerRepositoryImpl()),
+        ChangeNotifierProvider(create: (_) => PermissionProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

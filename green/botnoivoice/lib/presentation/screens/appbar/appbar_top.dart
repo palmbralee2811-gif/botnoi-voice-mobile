@@ -1,5 +1,5 @@
 // import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
-import 'package:botnoivoice/data/managers/token_manager.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,13 +22,13 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
 class _AppBarTopState extends State<AppBarTop> {
   @override
   void initState() {
-    Provider.of<TokenManager>(context, listen: false).loadRemainingCredits();
+    Provider.of<GoogleTokenProvider>(context, listen: false)
+        .loadRemainingCredits();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return AppBar(
       backgroundColor: const Color(0xFFFFFFFF),
       elevation: 4.0,
@@ -93,7 +93,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  ' ${Provider.of<TokenManager>(context).remainingCredits ?? "N/A"}',
+                  ' ${Provider.of<GoogleTokenProvider>(context).remainingCredits ?? "N/A"}',
                   style: GoogleFonts.prompt(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,

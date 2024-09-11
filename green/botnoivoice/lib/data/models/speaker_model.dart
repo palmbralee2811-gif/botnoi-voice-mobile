@@ -1,5 +1,6 @@
 import 'package:botnoivoice/domain/entities/speaker_entity.dart';
 
+/// Model for Speaker Entity class for Speaker Model in Database
 class SpeakerModel {
   static const List<SpeakerEntity> speakerItem = [
     SpeakerEntity(

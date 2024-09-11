@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:botnoivoice/domain/usecases/sign_in_out.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
-class TokenManager extends ChangeNotifier {
+class GoogleTokenProvider extends ChangeNotifier {
   String? jwtToken;
   String? remainingCredits;
   String? credentialsToken;
@@ -22,7 +22,9 @@ class TokenManager extends ChangeNotifier {
   Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
     String? idToken =
-        await Provider.of<SignInOut>(context, listen: false).user?.getIdToken();
+        await Provider.of<GoogleLoginProvider>(context, listen: false)
+            .user
+            ?.getIdToken();
     if (idToken == null) return;
 
     // Get the jwtToken from the Firebase API

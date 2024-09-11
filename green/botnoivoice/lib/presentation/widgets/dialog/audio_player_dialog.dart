@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
@@ -9,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:open_file/open_file.dart';
 
 class AudioPlayerDialog extends StatefulWidget {
   final String filePath;
@@ -39,9 +38,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     audioPlayer = AudioPlayer();
     _initAudioPlayer();
     _initializeDownloader();
-    _requestPermissions();
   }
 
+  /// Initialize AudioPlayer and check if the file exists
   Future<void> _initAudioPlayer() async {
     try {
       final file = File(widget.filePath);
@@ -93,6 +92,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     }
   }
 
+  /// Initialize the downloader using FlutterDownloader
   Future<void> _initializeDownloader() async {
     await FlutterDownloader.initialize(
       debug: true,
@@ -101,6 +101,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     _initDownloader();
   }
 
+  /// Initialize the downloader using FlutterDownloader
   Future<void> _initDownloader() async {
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
@@ -109,15 +110,11 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       int status = data[1];
       int progress = data[2];
       debugPrint('Task ID: $id, Status: $status, Progress: $progress%');
-      if (id == taskId && status == DownloadTaskStatus.complete.index) {
-        _openDownloadedFile().whenComplete(() {
-          debugPrint("_openDownloadedFile is DONE!!!");
-        });
-      }
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
 
+  /// Callback function used to download the file using FlutterDownloader
   static void downloadCallback(String id, int status, int progress) {
     final SendPort? send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
@@ -126,63 +123,26 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     }
   }
 
+  /// Start downloading the file using FlutterDownloader
   Future<void> _startDownload() async {
     taskId = await FlutterDownloader.enqueue(
       url: widget.audioUrl,
-      savedDir: '/storage/emulated/0/Download',
+      savedDir: '/storage/emulated/0/Download', //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
       fileName: widget.filePath.split('/').last,
       showNotification: true,
       openFileFromNotification: true,
     );
-    debugPrint('Task ID: $taskId');
+    debugPrint('K9 -> _startDownload:Task ID: $taskId');
   }
 
-  Future<void> _openDownloadedFile() async {
-    final filePath =
-        '/storage/emulated/0/Download/${widget.filePath.split('/').last}';
-    debugPrint('K9 -> File Path: $filePath');
-    final result = await OpenFile.open(filePath);
-    if (result.type.name != "done") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ไม่สามารถเปิดไฟล์ได้')),
-      );
-    }
-  }
-
-  Future<void> _requestPermissions() async {
-    if (Platform.isAndroid) {
-      int androidVersion =
-          int.parse(Platform.operatingSystemVersion.split(" ")[0]);
-
-      if (androidVersion >= 23 && androidVersion <= 29) {
-        if (await Permission.storage.request().isGranted) {
-          _startDownload();
-        } else {
-          print('Permission denied');
-        }
-      } else if (androidVersion >= 30 && androidVersion <= 32) {
-        if (await Permission.manageExternalStorage.request().isGranted) {
-          _startDownload();
-        } else {
-          print('Permission denied');
-        }
-      } else if (androidVersion >= 33) {
-        var permissions = await [
-          Permission.audio,
-          Permission.videos,
-          Permission.photos
-        ].request();
-
-        if (permissions[Permission.audio]!.isGranted &&
-            permissions[Permission.videos]!.isGranted &&
-            permissions[Permission.photos]!.isGranted) {
-          _startDownload();
-        } else {
-          print('Permission denied');
-        }
-      }
+  /// Save file to Documents and Open File
+  Future<void> _downloadFileToCustomPathAndOpenFile() async {
+    FileRepositoryImpl fileRepository = FileRepositoryImpl();
+    bool isSaved = await fileRepository.saveFileToDocuments(widget.filePath);
+    if (isSaved) {
+      debugPrint("K9 -> _downloadFileToCustomPath: ไฟล์ถูกบันทึกลงใน Documents");
     } else {
-      _startDownload();
+      debugPrint("K9 -> _downloadFileToCustomPath: ไม่สามารถบันทึกไฟล์ลงใน Documents ได้");
     }
   }
 
@@ -281,7 +241,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   SizedBox(height: 20.h),
                   GradientRow(
                     onPressed: () {
-                      _startDownload();
+                      _startDownload().whenComplete(() {
+                        debugPrint("K9 -> _startDownload: Complete");
+                        _downloadFileToCustomPathAndOpenFile();
+                      });
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

@@ -1,18 +1,18 @@
-import 'package:botnoivoice/data/managers/token_manager.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 /// Provider and interface for authentication
-class SignInOut extends ChangeNotifier {
+class GoogleLoginProvider extends ChangeNotifier {
   User? user;
 
   bool get isAuthenticated {
     return user != null;
   }
 
-  SignInOut() {
+  GoogleLoginProvider() {
     FirebaseAuth.instance.authStateChanges().listen((
       User? user,
     ) async {
@@ -42,7 +42,7 @@ class SignInOut extends ChangeNotifier {
 
   /// Sign out
   Future<void> signOut(BuildContext context) async {
-    Provider.of<TokenManager>(context, listen: false).clearTokens();
+    Provider.of<GoogleTokenProvider>(context, listen: false).clearTokens();
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
   }

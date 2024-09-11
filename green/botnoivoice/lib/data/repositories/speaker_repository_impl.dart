@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Repository for Speaker operations
 class SpeakerRepositoryImpl with ChangeNotifier {
   String? _speakerId;
   String? _speakerName;
