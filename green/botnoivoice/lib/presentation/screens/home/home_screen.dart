@@ -309,39 +309,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Generate audio from text
   Future<String> generateAudio(String text) async {
-    speakerId =
-        Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
-            '1';
-    String language =
-        Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
-            'th';
-    String? credentialsToken =
-        Provider.of<GoogleTokenProvider>(context, listen: false)
-            .credentialsToken;
-
-    debugPrint("K9 -> speakerId: $speakerId");
-    debugPrint("K9 -> language: $language");
-    debugPrint("K9 -> credentialsToken: $credentialsToken");
-
-    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
-    Map<String, dynamic> payload = {
-      "text": text,
-      "speaker": speakerId,
-      "volume": 1,
-      "speed": 1,
-      "type_media": "mp3",
-      "save_file": true,
-      "language": language,
-      "page": "mobile"
-    };
-
-    Map<String, String> headers = {
-      'Botnoi-Token':
-          '${Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken}',
-      'Content-Type': 'application/json'
-    };
-
     try {
+      speakerId =
+          Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
+              '1';
+      String language =
+          Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
+              'th';
+      String? credentialsToken =
+          Provider.of<GoogleTokenProvider>(context, listen: false)
+              .credentialsToken;
+
+      debugPrint("K9 -> speakerId: $speakerId");
+      debugPrint("K9 -> language: $language");
+      debugPrint("K9 -> credentialsToken: $credentialsToken");
+
+      // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+      String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Testing
+
+      Map<String, dynamic> payload = {
+        "text": text,
+        "speaker": speakerId,
+        "volume": 1,
+        "speed": 1,
+        "type_media": "mp3",
+        "save_file": true,
+        "language": language,
+        "page": "mobile"
+      };
+
+      Map<String, String> headers = {
+        'Botnoi-Token':
+            '${Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken}',
+        'Content-Type': 'application/json'
+      };
+
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
@@ -352,21 +354,17 @@ class _HomeScreenState extends State<HomeScreen> {
         final jsonData = jsonDecode(response.body);
         audioUrl = jsonData['audio_url'];
         debugPrint("generateAudio -> $audioUrl");
-      } else {
+      } 
+      else {
         debugPrint("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
           AlertNotificationDialog(
-                  context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
+                  context: context, text: 'ไม่สามารสร้างเสียงได้')
               .showAsError();
         }
       }
     } catch (e) {
-      debugPrint("Error: $e");
-      if (mounted) {
-        AlertNotificationDialog(
-                context: context, text: 'เกิดข้อผิดพลาดไม่สามารสร้างเสียง')
-            .showAsError();
-      }
+      debugPrint("Error on generateAudio: $e");
     }
     return audioUrl;
   }

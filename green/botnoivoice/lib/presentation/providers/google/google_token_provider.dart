@@ -29,6 +29,7 @@ class GoogleTokenProvider extends ChangeNotifier {
 
     // Get the jwtToken from the Firebase API
     String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
+    
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
       'Content-Type': 'application/json'

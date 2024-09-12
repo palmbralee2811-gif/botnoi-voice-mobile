@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
+// Play Audio on Temporary Directory, Download File, and Open Audio File
 class AudioPlayerDialog extends StatefulWidget {
   final String filePath;
   final String audioUrl;
@@ -109,7 +111,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       String id = data[0];
       int status = data[1];
       int progress = data[2];
-      debugPrint('Task ID: $id, Status: $status, Progress: $progress%');
+      debugPrint("Task ID: $id, Status: $status, Progress: $progress%");
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
@@ -127,22 +129,21 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
   Future<void> _startDownload() async {
     taskId = await FlutterDownloader.enqueue(
       url: widget.audioUrl,
-      savedDir: '/storage/emulated/0/Download', //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
+      savedDir:
+          '/storage/emulated/0/Download', //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
       fileName: widget.filePath.split('/').last,
       showNotification: true,
       openFileFromNotification: true,
     );
-    debugPrint('K9 -> _startDownload:Task ID: $taskId');
   }
 
-  /// Save file to Documents and Open File
+  /// Save file to Local Path and Open File
   Future<void> _downloadFileToCustomPathAndOpenFile() async {
     FileRepositoryImpl fileRepository = FileRepositoryImpl();
-    bool isSaved = await fileRepository.saveFileToDocuments(widget.filePath);
-    if (isSaved) {
-      debugPrint("K9 -> _downloadFileToCustomPath: ไฟล์ถูกบันทึกลงใน Documents");
-    } else {
-      debugPrint("K9 -> _downloadFileToCustomPath: ไม่สามารถบันทึกไฟล์ลงใน Documents ได้");
+    bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
+    if (isSaved == false) {
+      AlertNotificationDialog(context: context, text: "ไม่สามารถบันทึกไฟล์ได้")
+          .showAsError();
     }
   }
 

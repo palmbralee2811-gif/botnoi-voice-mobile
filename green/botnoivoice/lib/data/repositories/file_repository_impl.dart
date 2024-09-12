@@ -7,19 +7,18 @@ import 'package:botnoivoice/domain/repositories/file_repository.dart';
 /// Save File to Documents Directory
 class FileRepositoryImpl implements FileRepository {
   @override
-  Future<bool> saveFileToDocuments(String sourceFilePath) async {
+  Future<bool> saveFileCustomPath(String sourceFilePath) async {
     try {
       // ตรวจสอบไฟล์ต้นทาง
       File sourceFile = File(sourceFilePath);
       if (!await sourceFile.exists()) {
-        print("ไม่พบไฟล์ต้นทาง");
+        print("Source File Does't Exist: $sourceFilePath");
         return false;
       }
 
       // กำหนดโฟลเดอร์ปลายทางบน Android (Downloads)
       Directory? destinationDirectory;
       if (Platform.isAndroid) {
-        // destinationDirectory = await getDownloadsDirectory();
         destinationDirectory = Directory('/storage/emulated/0/Download/bnv');
       } else if (Platform.isIOS) {
         destinationDirectory = await getApplicationDocumentsDirectory();
@@ -47,7 +46,7 @@ class FileRepositoryImpl implements FileRepository {
         print("ไม่สามารถรับพาธของโฟลเดอร์ดาวน์โหลดได้");
       }
     } catch (e) {
-      print("Error saving file: $e");
+      print("Error on saveFileToDocuments(): $e");
     }
     return false;
   }
