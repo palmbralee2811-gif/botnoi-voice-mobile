@@ -16,6 +16,12 @@
             <string>com.googleusercontent.apps.822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn</string>
         </array>
     </dict>
+	<dict>
+   	 	<key>CFBundleURLSchemes</key>
+		<array>
+			<string>line3rdp.2006310000</string>
+		</array>
+  	</dict>
   </array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
@@ -59,6 +65,10 @@
       <string>UIInterfaceOrientationPortraitUpsideDown</string>
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>lineauth2</string>
   </array>
 </dict>
 </plist>
