@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
 // Play Audio on Temporary Directory, Download File, and Open Audio File
 class AudioPlayerDialog extends StatefulWidget {
@@ -125,20 +126,20 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     }
   }
 
-  /// Start downloading the file using FlutterDownloader
+  /// Start downloading the file using FlutterDownloader (Don't working on Android 10)
   Future<void> _startDownload() async {
     taskId = await FlutterDownloader.enqueue(
       url: widget.audioUrl,
-      savedDir:
-          '/storage/emulated/0/Download', //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
+      //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
+      savedDir: '/storage/emulated/0/Download',
       fileName: widget.filePath.split('/').last,
       showNotification: true,
       openFileFromNotification: true,
     );
   }
 
-  /// Save file to Local Path and Open File
-  Future<void> _downloadFileToCustomPathAndOpenFile() async {
+  /// Save file to Local Path (Don't working on Android 10, 11, 12)
+  Future<void> _downloadFileToCustomPath() async {
     FileRepositoryImpl fileRepository = FileRepositoryImpl();
     bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
     if (isSaved == false) {
@@ -243,8 +244,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   GradientRow(
                     onPressed: () {
                       _startDownload().whenComplete(() {
-                        debugPrint("K9 -> _startDownload: Complete");
-                        _downloadFileToCustomPathAndOpenFile();
+                        _downloadFileToCustomPath().whenComplete(() {
+                          OpenFile.open(widget.filePath);
+                        });
                       });
                     },
                     child: Row(

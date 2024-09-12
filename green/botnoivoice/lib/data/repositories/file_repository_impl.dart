@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:botnoivoice/domain/repositories/file_repository.dart';
@@ -40,7 +39,6 @@ class FileRepositoryImpl implements FileRepository {
         await destinationFile.writeAsBytes(await sourceFile.readAsBytes());
 
         print("ไฟล์ถูกบันทึกลงใน: $destinationFilePath");
-        await OpenFile.open(destinationFilePath);
         return true;
       } else {
         print("ไม่สามารถรับพาธของโฟลเดอร์ดาวน์โหลดได้");
