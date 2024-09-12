@@ -50,7 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _checkAndRequestPermissions();
+      if (Platform.isAndroid) {
+        await _checkAndroidRequestPermissions();
+      }
     });
   }
 
@@ -68,15 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ฟังก์ชันตรวจสอบและขอสิทธิ์
-  Future<void> _checkAndRequestPermissions() async {
+  Future<void> _checkAndroidRequestPermissions() async {
     bool hasPermission =
-        await Provider.of<PermissionProvider>(context, listen: false)
-            .requestAndroidPermission();
+        await Provider.of<PermissionProvider>(context, listen: false).requestAndroidPermission();
 
     // ตรวจสอบว่าทุกสิทธิ์ได้รับอนุญาตแล้วหรือไม่
     if (!hasPermission) {
-      AlertNotificationDialog(
-              context: context, text: "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า")
+      AlertNotificationDialog(context: context, text: "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า")
           .showPermissionDeniedDialog();
     }
   }
@@ -143,10 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: _textController,
                       onChanged: (text) {
                         if (_textController.text.length > 1000) {
-                          _textController.text =
-                              _textController.text.substring(0, 1000);
-                          _textController.selection =
-                              TextSelection.fromPosition(
+                          _textController.text = _textController.text.substring(0, 1000);
+                          _textController.selection = TextSelection.fromPosition(
                             TextPosition(offset: _textController.text.length),
                           );
                         }
@@ -159,8 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: 'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .',
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
-                          fontStyle:
-                              GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
+                          fontStyle: GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
                         ),
                         hintMaxLines: 1,
                       ),
@@ -189,8 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {
                           setState(() {
                             _textController.clear();
@@ -211,8 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                        style: TextButton.styleFrom(textStyle: TextStyle(fontSize: 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
@@ -251,17 +246,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildGenerateButton(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+      padding: EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
       child: GradientRow(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('สร้างเสียง',
-                style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600)),
+                style: GoogleFonts.prompt(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600)),
             SizedBox(width: 10.w),
             SvgPicture.asset(
               'assets/images/logo/credit-icon.svg',
@@ -270,10 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(width: 5.w),
             Text('${_textController.text.length}',
-                style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600)),
+                style: GoogleFonts.prompt(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600)),
           ],
         ),
         onPressed: () async {
@@ -281,22 +269,18 @@ class _HomeScreenState extends State<HomeScreen> {
             audioPlayer.stop();
           });
           if (_textController.text.isEmpty) {
-            AlertNotificationDialog(context: context, text: "กรุณาพิมพ์ข้อความ")
-                .showAsError();
+            AlertNotificationDialog(context: context, text: "กรุณาพิมพ์ข้อความ").showAsError();
             return;
           } else if (_textController.text.isNotEmpty) {
             try {
-              final audioUrl =
-                  await generateAudio(_textController.text).whenComplete(() {
+              final audioUrl = await generateAudio(_textController.text).whenComplete(() {
                 setState(() {
-                  Provider.of<GoogleTokenProvider>(context, listen: false)
-                      .loadRemainingCredits();
+                  Provider.of<GoogleTokenProvider>(context, listen: false).loadRemainingCredits();
                 });
               });
               if (audioUrl.isNotEmpty) {
                 await openAudioPlayerDialog(
-                    url: audioUrl,
-                    fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
+                    url: audioUrl, fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
               }
             } catch (e) {
               debugPrint("Error: $e");
@@ -310,22 +294,16 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Generate audio from text
   Future<String> generateAudio(String text) async {
     try {
-      speakerId =
-          Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
-              '1';
-      String language =
-          Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
-              'th';
-      String? credentialsToken =
-          Provider.of<GoogleTokenProvider>(context, listen: false)
-              .credentialsToken;
+      speakerId = Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ?? '1';
+      String language = Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ?? 'th';
+      String? credentialsToken = Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken;
 
       debugPrint("K9 -> speakerId: $speakerId");
       debugPrint("K9 -> language: $language");
       debugPrint("K9 -> credentialsToken: $credentialsToken");
 
-      // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
-      String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Testing
+      String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+      // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Testing
 
       Map<String, dynamic> payload = {
         "text": text,
@@ -339,8 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
       };
 
       Map<String, String> headers = {
-        'Botnoi-Token':
-            '${Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken}',
+        'Botnoi-Token': '${Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken}',
         'Content-Type': 'application/json'
       };
 
@@ -354,13 +331,10 @@ class _HomeScreenState extends State<HomeScreen> {
         final jsonData = jsonDecode(response.body);
         audioUrl = jsonData['audio_url'];
         debugPrint("generateAudio -> $audioUrl");
-      } 
-      else {
+      } else {
         debugPrint("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          AlertNotificationDialog(
-                  context: context, text: 'ไม่สามารสร้างเสียงได้')
-              .showAsError();
+          AlertNotificationDialog(context: context, text: 'ไม่สามารสร้างเสียงได้').showAsError();
         }
       }
     } catch (e) {
@@ -379,8 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       await showDialog(
         context: context,
-        builder: (context) =>
-            AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
+        builder: (context) => AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
       );
     } catch (e) {
       throw Exception("Failed to open file: $e");

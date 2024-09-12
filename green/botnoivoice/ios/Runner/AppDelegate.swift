@@ -16,7 +16,7 @@ import UIKit
 import Flutter
 import flutter_downloader
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
