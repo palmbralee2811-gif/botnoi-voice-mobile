@@ -1,4 +1,4 @@
-package com.botnoimobile.botnoivoice
+package com.mobile.botnoivoice
 
 import io.flutter.embedding.android.FlutterActivity
 

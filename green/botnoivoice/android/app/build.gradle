@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.botnoimobile.botnoivoice"
+    namespace = "com.mobile.botnoivoice"
     compileSdk = 34 // compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.botnoimobile.botnoivoice"
+        applicationId = "com.mobile.botnoivoice"
         minSdkVersion = 24 // Version 24 For Support LINE Login
 		targetSdkVersion = 34 // targetSdkVersion = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()

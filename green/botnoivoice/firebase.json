@@ -4,7 +4,7 @@
       "android": {
         "default": {
           "projectId": "botnoivoice-1ff7a",
-          "appId": "1:822010349951:android:fe882cd33040dfaa9db24a",
+          "appId": "1:822010349951:android:086a1f307dc9a6c29db24a",
           "fileOutput": "android/app/google-services.json"
         }
       },
@@ -12,7 +12,7 @@
         "lib/firebase_options.dart": {
           "projectId": "botnoivoice-1ff7a",
           "configurations": {
-            "android": "1:822010349951:android:fe882cd33040dfaa9db24a",
+            "android": "1:822010349951:android:086a1f307dc9a6c29db24a",
             "ios": "1:822010349951:ios:f573f764b8bb47569db24a"
           }
         }
