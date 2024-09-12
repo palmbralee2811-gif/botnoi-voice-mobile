@@ -95,7 +95,8 @@
             android:name="jp.line.android.sdk.activity.LineAuthActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:launchMode="singleTask"
-            android:configChanges="keyboardHidden|orientation">
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>

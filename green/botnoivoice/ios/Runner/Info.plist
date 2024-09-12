@@ -19,7 +19,7 @@
 	<dict>
    	 	<key>CFBundleURLSchemes</key>
 		<array>
-			<string>line3rdp.2006310000</string>
+			<string>line3rdp.$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 		</array>
   	</dict>
   </array>
