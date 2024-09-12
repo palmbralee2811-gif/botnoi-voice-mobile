@@ -243,11 +243,15 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   SizedBox(height: 20.h),
                   GradientRow(
                     onPressed: () {
-                      _startDownload().whenComplete(() {
-                        _downloadFileToCustomPath().whenComplete(() {
-                          OpenFile.open(widget.filePath);
+                      if (Platform.isIOS) {
+                        OpenFile.open(widget.filePath);
+                      } else if (Platform.isAndroid) {
+                        _startDownload().whenComplete(() {
+                          _downloadFileToCustomPath().whenComplete(() {
+                            OpenFile.open(widget.filePath);
+                          });
                         });
-                      });
+                      }
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
