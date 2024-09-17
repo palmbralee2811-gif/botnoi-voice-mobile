@@ -3,6 +3,7 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 
 /// Provider and interface to the main server
 class GoogleTokenProvider extends ChangeNotifier {
@@ -20,6 +21,8 @@ class GoogleTokenProvider extends ChangeNotifier {
 
   /// Get the jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     // Get the idToken from the Authentication provider
     String? idToken =
         await Provider.of<GoogleLoginProvider>(context, listen: false)
@@ -46,20 +49,22 @@ class GoogleTokenProvider extends ChangeNotifier {
           var tokenStartIndex = tokenIndex + 'token='.length;
           jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
+          logger.i('JWT Token successfully loaded.');
         } else {
-          debugPrint('getIdTokenWithFirebase -> Token not found: $message');
+          logger.w('Token not found in response message: $message');
         }
       } else {
-        debugPrint(
-            'getIdTokenWithFirebase -> Failed to load data: ${response.statusCode}');
+        logger.e('Failed to load data: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('getIdTokenWithFirebase -> Error: $e');
+      logger.e('Error fetching JWT Token: $e');
     }
   }
 
   /// Get the remaining credits using jwtToken
-  Future<void> loadRemainingCredits() async {
+  Future<void> loadRemainingCredits(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     // Check if jwtToken exists
     if (jwtToken == null) return;
 
@@ -75,17 +80,19 @@ class GoogleTokenProvider extends ChangeNotifier {
         var data = json.decode(response.body);
         remainingCredits = data['data']['credits'].toString();
         notifyListeners();
+        logger.i('Remaining credits successfully loaded.');
       } else {
-        debugPrint(
-            "getRemainingCredits -> Failed to retrieve data: ${response.statusCode}");
+        logger.e("Failed to retrieve remaining credits: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint('getRemainingCredits -> Error: $e');
+      logger.e('Error fetching remaining credits: $e');
     }
   }
 
   // Get the credentials token using jwtToken
-  Future<void> loadCredentials() async {
+  Future<void> loadCredentials(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     // Check if jwtToken exists
     if (jwtToken == null) return;
 
@@ -106,21 +113,25 @@ class GoogleTokenProvider extends ChangeNotifier {
         var data = json.decode(response.body);
         credentialsToken = data['data'][0]['token'].toString();
         notifyListeners();
+        logger.i('Credentials token successfully loaded.');
       } else {
-        debugPrint('Failed to load Credentials-Token: ${response.statusCode}');
+        logger.e('Failed to load Credentials-Token: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error fetching Credentials-Token: $e');
+      logger.e('Error fetching Credentials-Token: $e');
     }
   }
 
   /// Generate audio from text and return the audio URL
   Future<String?> generateAudio(
+    BuildContext context,
     String text,
     String speakerId,
     int volume,
     int speed,
   ) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -143,15 +154,14 @@ class GoogleTokenProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        debugPrint('Json data = $jsonData');
+        logger.i('Audio generated successfully: ${jsonData['audio_url']}');
         return jsonData['audio_url'];
       } else {
-        debugPrint(
-            'generateAudio -> Failed to post data: ${response.statusCode}');
+        logger.e('Failed to generate audio: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      debugPrint('generateAudio -> Error: $e');
+      logger.e('Error generating audio: $e');
       return null;
     }
   }

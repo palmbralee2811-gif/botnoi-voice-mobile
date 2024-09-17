@@ -3,6 +3,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
+import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 // import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,6 +18,7 @@ void main() async {
   // await LineSDK.instance.setup("2006310000").then((_) {
   //   print("LineSDK Prepared");
   // });
+
   runApp(const BotnoiVoiceApp());
 }
 
@@ -32,6 +34,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SpeakerRepositoryImpl()),
         ChangeNotifierProvider(create: (_) => PermissionProvider()),
         // ChangeNotifierProvider(create: (_) => LineLoginProvider()),
+        ChangeNotifierProvider(create: (_) => LoggerProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

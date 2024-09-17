@@ -26,9 +26,9 @@ class _InitScreenState extends State<InitScreen> {
     await Provider.of<GoogleTokenProvider>(context, listen: false)
         .loadJwtToken(context);
     await Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadCredentials();
+        .loadCredentials(context);
     await Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadRemainingCredits();
+        .loadRemainingCredits(context);
     setState(() {
       _initialized = true;
     });

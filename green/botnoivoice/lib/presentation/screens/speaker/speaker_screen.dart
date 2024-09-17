@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/domain/entities/speaker_entity.dart';
+import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -22,24 +23,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   bool ishover = false; // ต้องการให้ข้อมูล ishover เก็บไว้ใน cache ของเครื่อง
   String? speakerId;
   String? language; // เลือกภาษา
-  List<String> availableLanguage = [
-    'ar',
-    'de',
-    'en',
-    'es',
-    'fil',
-    'fr',
-    'id',
-    'ja',
-    'km',
-    'ko',
-    'lo',
-    'my',
-    'nl',
-    'th',
-    'vi',
-    'zh'
-  ];
+
   String? gender; // เลือกเพศ
 
   Set<int> selectedIndex = <int>{};
@@ -556,22 +540,24 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   Widget _buildLanguageFilter(String text, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     return InkWell(
       onTap: () {
         setState(() {
+          // เซ็ตค่า language ตาม lang ที่ส่งเข้ามา
+          language = lang;
+          logger.w("Selected Language: $language");
+
           List<String> parts = text.split(' - ');
           selectedLanguage = parts.length > 1 ? parts[1] : text;
           selectedLanguageImage = imagePath;
 
-          // เช็คว่าภาษาที่เลือกอยู่ใน availableLanguage หรือไม่
-          if (availableLanguage.contains(lang.toLowerCase())) {
-            language = lang;
-          } else {
-            language = ''; // กรณีไม่พบภาษาใน availableLanguage
-          }
+          logger.w("Selected Language: $selectedLanguage");
 
+          // ส่งค่า language ไปที่ repository
           Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-              .setLanguage(language.toString().toLowerCase());
+              .setLanguage(language!.toLowerCase());
         });
         Navigator.pop(context);
       },
@@ -675,15 +661,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             height: 420.h,
             width: 320.w,
             child: GridView.builder(
-              itemCount: SpeakerModel.speakerItem
-                  .where((item) =>
-                      // เช็คว่าภาษาที่เลือก (language) อยู่ใน availableLanguage ของลำโพง
-                      (item.language.toLowerCase() == language?.toLowerCase() ||
-                          (item.availableLanguage.isNotEmpty &&
-                              item.availableLanguage
-                                  .contains(language?.toLowerCase()))) &&
-                      (gender == '' || item.gender == gender))
-                  .length,
+              itemCount: _filterSpeakers().length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 0,
@@ -691,15 +669,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               ),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
-                final data = SpeakerModel.speakerItem
-                    .where((item) =>
-                        (item.language.toLowerCase() ==
-                                language?.toLowerCase() ||
-                            (item.availableLanguage.isNotEmpty &&
-                                item.availableLanguage
-                                    .contains(language?.toLowerCase()))) &&
-                        (gender == '' || item.gender == gender))
-                    .toList()[index];
+                final filteredItems = _filterSpeakers();
+                final data = filteredItems[index];
                 return buildSingleSpeaker(data, index);
               },
             ),
@@ -707,6 +678,32 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         ],
       ),
     );
+  }
+
+  List<SpeakerEntity> _filterSpeakers() {
+    List<SpeakerEntity> filteredSpeakers = [];
+
+    // ขั้นแรก: ค้นหาผู้พูดที่มีภาษาในฟิลด์ language ตรงกับที่เลือก
+    filteredSpeakers = SpeakerModel.speakerItem.where((item) {
+      return item.language == language;
+    }).toList();
+
+    // ถ้าไม่พบผู้พูดที่มีภาษาในฟิลด์ language ตรงกับที่เลือก
+    // ค้นหาผู้พูดที่มีภาษาใน availableLanguage แทน
+    if (filteredSpeakers.isEmpty) {
+      filteredSpeakers = SpeakerModel.speakerItem.where((item) {
+        return item.availableLanguage.contains(language?.toLowerCase()) &&
+            item.language != language; // อย่าแสดงถ้ามีใน language ตรงๆ
+      }).toList();
+    }
+
+    // เพิ่มการกรองเพศถ้ามีการเลือกเพศ
+    if (gender != null && gender!.isNotEmpty) {
+      filteredSpeakers =
+          filteredSpeakers.where((item) => item.gender == gender).toList();
+    }
+
+    return filteredSpeakers;
   }
 
   Widget buildSingleSpeaker(

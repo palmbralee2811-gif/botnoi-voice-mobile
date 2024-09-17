@@ -8,42 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:822010349951:android:086a1f307dc9a6c29db24a",
-        "android_client_info": {
-          "package_name": "com.mobile.botnoi"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "822010349951-qmqtd49474c26tnee82tj1hiu59vf65t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCPbJ5D41zoyRTZNbkh49T2Gjn47HLXNWc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "822010349951-qmqtd49474c26tnee82tj1hiu59vf65t.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.botnoimobile.botnoivoice"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:822010349951:android:247f6d9a593845889db24a",
         "android_client_info": {
           "package_name": "com.mobile.botnoivoice"
@@ -51,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "822010349951-hoh0lro2vtddd6oa28d9c2rni5p2glu4.apps.googleusercontent.com",
+          "client_id": "822010349951-6f71nb5fbs1s4qptsvknenj1qckq30ks.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mobile.botnoivoice",
-            "certificate_hash": "7cbd8561ba9f6414653e160612e365484fff882a"
+            "certificate_hash": "1ed0dc28dc932d74d550955613d18cb1955c670b"
+          }
+        },
+        {
+          "client_id": "822010349951-gdk7aagggj4a0s13sjkrfhhvbkhpjlj4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.botnoivoice",
+            "certificate_hash": "b10510cda4df49a6f6f6fcfc01a99b981bf26347"
           }
         },
         {
@@ -64,14 +36,6 @@
           "android_info": {
             "package_name": "com.mobile.botnoivoice",
             "certificate_hash": "37083199887917fcb22afa4b8aef45591c23c34e"
-          }
-        },
-        {
-          "client_id": "822010349951-tlkjc45p2iivr447nm95d6okv9veh90c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mobile.botnoivoice",
-            "certificate_hash": "4a4319332e5e8824fc146e57d6c70b24c6a7da8d"
           }
         },
         {

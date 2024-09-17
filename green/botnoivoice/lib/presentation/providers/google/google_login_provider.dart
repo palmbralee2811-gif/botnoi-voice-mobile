@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart'; // Import LoggerProvider
 
 /// Provider and interface for authentication
 class GoogleLoginProvider extends ChangeNotifier {
@@ -23,9 +24,14 @@ class GoogleLoginProvider extends ChangeNotifier {
 
   /// Sign in with Google and update the user
   Future<void> signInWithGoogle(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) {
+        logger.w("User canceled Google sign-in.");
+        return;
+      }
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -35,15 +41,23 @@ class GoogleLoginProvider extends ChangeNotifier {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+      logger.i("User signed in with Google successfully.");
     } catch (e) {
-      debugPrint('Error signing in with Google: $e');
+      logger.e('Error signing in with Google: $e');
     }
   }
 
   /// Sign out
   Future<void> signOut(BuildContext context) async {
-    Provider.of<GoogleTokenProvider>(context, listen: false).clearTokens();
-    await GoogleSignIn().signOut();
-    await FirebaseAuth.instance.signOut();
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+    
+    try {
+      Provider.of<GoogleTokenProvider>(context, listen: false).clearTokens();
+      await GoogleSignIn().signOut();
+      await FirebaseAuth.instance.signOut();
+      logger.i("User signed out successfully.");
+    } catch (e) {
+      logger.e("Error signing out: $e");
+    }
   }
 }

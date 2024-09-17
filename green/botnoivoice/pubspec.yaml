@@ -43,6 +43,12 @@ dependencies:
   path: ^1.9.0
   permission_handler: ^11.3.1
   flutter_downloader: ^1.11.8
+
+  # Debugging Logger
+  logger: ^2.4.0
+  
+  # Check OS Device Version
+  device_info_plus: ^10.1.2
   
 dev_dependencies:
   flutter_test:

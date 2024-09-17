@@ -23,7 +23,7 @@ class _AppBarTopState extends State<AppBarTop> {
   @override
   void initState() {
     Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadRemainingCredits();
+        .loadRemainingCredits(context);
     super.initState();
   }
 

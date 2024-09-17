@@ -3,6 +3,8 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
+import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
+import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_file_plus/open_file_plus.dart';
+import 'package:provider/provider.dart';
 
 // Play Audio on Temporary Directory, Download File, and Open Audio File
 class AudioPlayerDialog extends StatefulWidget {
@@ -41,6 +44,26 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     audioPlayer = AudioPlayer();
     _initAudioPlayer();
     _initializeDownloader();
+  }
+
+  /// Check Android Request Permission
+  Future<void> _checkAndroidRequestPermissions() async {
+    bool hasPermission =
+        await Provider.of<PermissionProvider>(context, listen: false)
+            .requestAndroidPermission(context);
+
+    // Show Alert if Permission Denied
+    if (!hasPermission) {
+      AlertNotificationDialog(
+              context: context, text: "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า")
+          .showPermissionDeniedDialog();
+    } else {
+      _startDownload().whenComplete(() {
+        _downloadFileToCustomPath().whenComplete(() {
+          OpenFile.open(widget.filePath);
+        });
+      });
+    }
   }
 
   /// Initialize AudioPlayer and check if the file exists
@@ -106,13 +129,15 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
   /// Initialize the downloader using FlutterDownloader
   Future<void> _initDownloader() async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
       String id = data[0];
       int status = data[1];
       int progress = data[2];
-      debugPrint("Task ID: $id, Status: $status, Progress: $progress%");
+      logger.i("Task ID: $id, Status: $status, Progress: $progress%");
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
@@ -242,15 +267,11 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   ),
                   SizedBox(height: 20.h),
                   GradientRow(
-                    onPressed: () {
+                    onPressed: () async {
                       if (Platform.isIOS) {
                         OpenFile.open(widget.filePath);
                       } else if (Platform.isAndroid) {
-                        _startDownload().whenComplete(() {
-                          _downloadFileToCustomPath().whenComplete(() {
-                            OpenFile.open(widget.filePath);
-                          });
-                        });
+                        await _checkAndroidRequestPermissions();
                       }
                     },
                     child: Row(

@@ -1,26 +1,42 @@
 import 'dart:io';
+import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 /// Provider Permission For Android
 class PermissionProvider with ChangeNotifier {
-  Future<bool> requestAndroidPermission() async {
+  Future<bool> requestAndroidPermission(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     try {
       if (Platform.isAndroid) {
-        if (Platform.isAndroid && Platform.version.compareTo("13") >= 0) {
-          return await _requestPermissionsForAndroid13Plus();
+        // Get Android OS Version Info
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        int androidVersion = androidInfo.version.sdkInt; // Check API level
+
+        logger.d("Android version: $androidVersion");
+
+        if (androidVersion >= 33) { // Android 13 is API level 33
+          logger.d("Requesting permissions for Android 13+");
+          return await _requestPermissionsForAndroid13Plus(context);
         } else {
-          return await _requestPermissionsForOlderVersions();
+          logger.d("Requesting permissions for older Android versions");
+          return await _requestPermissionsForOlderVersions(context);
         }
       }
-    } catch (e) {
-      debugPrint("Error requesting permissions: $e");
+    } catch (e, stackTrace) {
+      logger.e("Error requesting permissions", error: e, stackTrace: stackTrace);
     }
     return false; // Permissions were not granted
   }
 
   /// Android 13 (API 33) and higher
-  Future<bool> _requestPermissionsForAndroid13Plus() async {
+  Future<bool> _requestPermissionsForAndroid13Plus(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     Map<Permission, PermissionStatus> statuses = await [
       Permission.audio,
       Permission.notification,
@@ -29,15 +45,18 @@ class PermissionProvider with ChangeNotifier {
     bool allPermissionsGranted = statuses.values.every((status) => status.isGranted);
 
     if (!allPermissionsGranted) {
-      debugPrint("Not all permissions were granted for Android 13+");
+      logger.w("Not all permissions were granted for Android 13+");
       return false;
     }
 
+    logger.i("All permissions granted for Android 13+");
     return true;
   }
 
-  /// Blower than Android 13 (API 33)
-  Future<bool> _requestPermissionsForOlderVersions() async {
+  /// Below Android 13 (API 33)
+  Future<bool> _requestPermissionsForOlderVersions(BuildContext context) async {
+    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
     ].request();
@@ -45,10 +64,11 @@ class PermissionProvider with ChangeNotifier {
     bool allPermissionsGranted = statuses.values.every((status) => status.isGranted);
 
     if (!allPermissionsGranted) {
-      debugPrint("Not all permissions were granted for older Android versions");
+      logger.w("Not all permissions were granted for older Android versions");
       return false;
     }
 
+    logger.i("All permissions granted for older Android versions");
     return true;
   }
 }

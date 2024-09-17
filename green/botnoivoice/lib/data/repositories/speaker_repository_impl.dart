@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 /// Repository for Speaker operations
 class SpeakerRepositoryImpl with ChangeNotifier {
@@ -20,43 +21,53 @@ class SpeakerRepositoryImpl with ChangeNotifier {
 
   void setSpeakerId(String id) {
     _speakerId = id;
-    debugPrint("SpeakerProvider -> setSpeakerId: $speakerId");
+    logger.d("SpeakerProvider -> setSpeakerId: $speakerId");
     notifyListeners();
   }
 
   void setSpeakerName(String name) {
     _speakerName = name;
-    debugPrint("SpeakerProvider -> setSpeakerName: $speakerName");
+    logger.d("SpeakerProvider -> setSpeakerName: $speakerName");
     notifyListeners();
   }
 
   void setSpeakerAudio(String audio) {
     _speakerAudio = audio;
-    debugPrint("SpeakerProvider -> setSpeakerAudio: $speakerAudio");
+    logger.d("SpeakerProvider -> setSpeakerAudio: $speakerAudio");
     notifyListeners();
   }
 
   void setSpeakerImagePath(String path) {
     _speakerImagePath = path;
-    debugPrint("SpeakerProvider -> setSpeakerImagePath: $speakerImagePath");
+    logger.d("SpeakerProvider -> setSpeakerImagePath: $speakerImagePath");
     notifyListeners();
   }
 
   void setNationalFlagName(String name) {
     _nationalFlagName = name;
-    debugPrint("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
+    logger.d("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
     notifyListeners();
   }
 
   void setNationalFlagPath(String path) {
     _nationalFlagPath = path;
-    debugPrint("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
+    logger.d("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
     notifyListeners();
   }
 
   void setLanguage(String language) {
     _language = language;
-    debugPrint("SpeakerProvider -> setLanguage: $language");
+    logger.d("SpeakerProvider -> setLanguage: $language");
     notifyListeners();
   }
+
+  final Logger logger = Logger(
+    printer: PrettyPrinter(
+      methodCount: 1,
+      errorMethodCount: 8,
+      lineLength: 120,
+      colors: true,
+      printEmojis: true,
+    ),
+  );
 }
