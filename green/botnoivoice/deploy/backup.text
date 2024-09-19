@@ -1,6 +1,0 @@
-                      // เช็คว่าภาษาที่เลือก (language) อยู่ใน availableLanguage ของลำโพง
-                      (item.language.toLowerCase() == language?.toLowerCase() ||
-                          (item.availableLanguage.isNotEmpty &&
-                              item.availableLanguage
-                                  .contains(language?.toLowerCase()))) &&
-                      (gender == '' || item.gender == gender))
