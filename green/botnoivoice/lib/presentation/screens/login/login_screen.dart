@@ -1,5 +1,5 @@
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
-// import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
           _buildCenter(),
           SizedBox(height: 120.h),
           buildGoogleSignInButton(),
-          // SizedBox(height: 20.h),
-          // buildLineSignInButton(),
+          SizedBox(height: 20.h),
+          buildLineSignInButton(),
           SizedBox(height: 40.h),
         ],
       ),
@@ -202,7 +202,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  /*
   Widget buildLineSignInButton() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -212,7 +211,17 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () {
-                Provider.of<LineLoginProvider>(context, listen: false).signIn(context);
+                Provider.of<LineLoginProvider>(context, listen: false)
+                    .signIn(context)
+                    .then((_) {
+                  // LINE Login
+                  Provider.of<LineLoginProvider>(context, listen: false)
+                      .getProfile()
+                      .then((_) {
+                    Provider.of<LineLoginProvider>(context, listen: false)
+                        .getAccessToken();
+                  });
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -251,5 +260,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     );
   }
-  */
 }

@@ -28,7 +28,7 @@ dependencies:
   google_sign_in: ^6.2.1
 
   # LINE Login
-  # flutter_line_sdk: ^2.3.8
+  flutter_line_sdk: ^2.3.8
 
   # Audio Player
   http: ^1.2.1

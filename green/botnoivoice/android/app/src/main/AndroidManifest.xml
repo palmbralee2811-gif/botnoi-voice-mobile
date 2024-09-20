@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- For .APK File ONLY! -->
-    <!-- <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     
     <!-- External Storage Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -91,7 +91,7 @@
             </intent-filter>
         </activity>
 
-        <!-- <activity
+        <activity
             android:name="jp.line.android.sdk.activity.LineAuthActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:launchMode="singleTask"
@@ -101,9 +101,11 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="lineauth-2006310000" android:host="com.mobile.botnoivoice"/>
+                <data android:scheme="lineauth-1656375389" android:host="com.mobile.botnoivoice"/>
+                <!-- Personal Account: "lineauth-2006310000"  -->
+
             </intent-filter>
-        </activity> -->
+        </activity>
 
         <meta-data
             android:name="flutterEmbedding"
