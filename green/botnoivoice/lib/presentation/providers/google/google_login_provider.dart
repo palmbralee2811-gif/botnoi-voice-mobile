@@ -2,12 +2,13 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart'; // Import LoggerProvider
 
 /// Provider and interface for authentication
 class GoogleLoginProvider extends ChangeNotifier {
   User? user;
+  final Logger logger = Logger();
 
   bool get isAuthenticated {
     return user != null;
@@ -23,9 +24,7 @@ class GoogleLoginProvider extends ChangeNotifier {
   }
 
   /// Sign in with Google and update the user
-  Future<void> signInWithGoogle(BuildContext context) async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-
+  Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
@@ -48,9 +47,7 @@ class GoogleLoginProvider extends ChangeNotifier {
   }
 
   /// Sign out
-  Future<void> signOut(BuildContext context) async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-    
+  Future<void> signOut(BuildContext context) async {    
     try {
       Provider.of<GoogleTokenProvider>(context, listen: false).clearTokens();
       await GoogleSignIn().signOut();

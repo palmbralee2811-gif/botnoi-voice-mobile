@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
-class GoogleTokenProvider extends ChangeNotifier {
+class LineTokenProvider extends ChangeNotifier {
   String? jwtToken;
   String? remainingCredits;
   String? credentialsToken;
@@ -21,18 +21,14 @@ class GoogleTokenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Get the jwtToken from Firebase
+  //TODO: Refactor this function for LINE API
   Future<void> loadJwtToken(BuildContext context) async {
-    // Get the idToken from the Authentication provider
     String? idToken =
-        await Provider.of<GoogleLoginProvider>(context, listen: false)
-            .user
-            ?.getIdToken();
+        await Provider.of<LineLoginProvider>(context, listen: false).signIn();
     if (idToken == null) return;
 
-    // Get the jwtToken from the Firebase API
-    String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
-    
+    String url = 'https://api-voice.botnoi.ai/api/dashboard/liff';
+
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
       'Content-Type': 'application/json'
@@ -63,10 +59,8 @@ class GoogleTokenProvider extends ChangeNotifier {
 
   /// Get the remaining credits using jwtToken
   Future<void> loadRemainingCredits() async {
-    // Check if jwtToken exists
     if (jwtToken == null) return;
 
-    // Make the request
     String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $jwtToken',
@@ -80,19 +74,18 @@ class GoogleTokenProvider extends ChangeNotifier {
         notifyListeners();
         logger.i('Remaining credits successfully loaded.');
       } else {
-        logger.e("Failed to retrieve remaining credits: ${response.statusCode}");
+        logger
+            .e("Failed to retrieve remaining credits: ${response.statusCode}");
       }
     } catch (e) {
       logger.e('Error fetching remaining credits: $e');
     }
   }
 
-  // Get the credentials token using jwtToken
+  /// Get the credentials token using jwtToken
   Future<void> loadCredentials() async {
-    // Check if jwtToken exists
     if (jwtToken == null) return;
 
-    // Make the request
     String url = 'https://api-voice.botnoi.ai/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
@@ -115,48 +108,6 @@ class GoogleTokenProvider extends ChangeNotifier {
       }
     } catch (e) {
       logger.e('Error fetching Credentials-Token: $e');
-    }
-  }
-
-  /// Generate audio from text and return the audio URL
-  Future<String?> generateAudio(
-    String text,
-    String speakerId,
-    int volume,
-    int speed,
-  ) async {
-
-    Map<String, dynamic> payload = {
-      "text": text,
-      "speaker": speakerId,
-      "volume": volume,
-      "speed": speed,
-      "type_media": "wav",
-      "save_file": true,
-    };
-    Map<String, String> headers = {
-      'Botnoi-Token': '$credentialsToken',
-      'Content-Type': 'application/json',
-    };
-    try {
-      String url = "api-voice.botnoi.ai";
-      String path = "/openapi/v1/generate_audio";
-      final response = await http.post(
-        Uri.https(url, path),
-        headers: headers,
-        body: jsonEncode(payload),
-      );
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        logger.i('Audio generated successfully: ${jsonData['audio_url']}');
-        return jsonData['audio_url'];
-      } else {
-        logger.e('Failed to generate audio: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      logger.e('Error generating audio: $e');
-      return null;
     }
   }
 }

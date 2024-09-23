@@ -1,5 +1,6 @@
 import 'package:botnoivoice/domain/usecases/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class _AccountScreenState extends State<AccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //TODO: Get LINE Profile, Name, Email, Image
             UserInfoRow(
               title: 'ชื่อผู้ใช้',
               value: user?.displayName ?? 'No Name',
@@ -60,6 +62,11 @@ class _AccountScreenState extends State<AccountScreen> {
               onPressed: () {
                 Provider.of<GoogleLoginProvider>(context, listen: false)
                     .signOut(context);
+
+                //TODO: Call Line SignOut
+                Provider.of<LineLoginProvider>(context, listen: false)
+                    .signOut(context);
+
                 Navigator.popUntil(context, (r) => r.isFirst);
               },
             ),

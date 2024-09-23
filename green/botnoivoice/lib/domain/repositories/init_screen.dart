@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +23,22 @@ class _InitScreenState extends State<InitScreen> {
 
   /// Initialize the app
   Future<void> initApp() async {
-    await Provider.of<GoogleTokenProvider>(context, listen: false)
+
+    //TODO: Create new provider to check what's User Login with? (Google or LINE ???)
+
+    // await Provider.of<GoogleTokenProvider>(context, listen: false)
+    //     .loadJwtToken(context);
+    // await Provider.of<GoogleTokenProvider>(context, listen: false)
+    //     .loadCredentials();
+    // await Provider.of<GoogleTokenProvider>(context, listen: false)
+    //     .loadRemainingCredits();
+
+    await Provider.of<LineTokenProvider>(context, listen: false)
         .loadJwtToken(context);
-    await Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadCredentials(context);
-    await Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadRemainingCredits(context);
+    await Provider.of<LineTokenProvider>(context, listen: false)
+        .loadCredentials();
+    await Provider.of<LineTokenProvider>(context, listen: false)
+        .loadRemainingCredits();
     setState(() {
       _initialized = true;
     });

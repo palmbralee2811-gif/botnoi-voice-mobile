@@ -1,35 +1,53 @@
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:flutter/services.dart';
-import 'package:logger/logger.dart'; // Import Logger
+import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
-/// Provider and interface for authentication
 class LineLoginProvider with ChangeNotifier {
   String? userId;
   String? displayName;
   String? profilePictureUrl;
+  String? idTokenRaw;
 
-  final Logger logger = Logger(); // สร้าง Logger instance
+  final Logger logger = Logger();
 
-  /// Sign in with Line and update the user
-  Future<void> signIn(BuildContext context) async {
+  bool get isAuthenticated {
+    return userId != null;
+  }
+
+  /// Sign in with LINE Provider
+  Future<String?> signIn() async {
     try {
-      final result = await LineSDK.instance.login();
-      logger.i("Login result: $result");
+      final result =
+          await LineSDK.instance.login(scopes: ["profile", "openid", "email"]);
+
+      final accessToken = result.accessToken.value;
+      //TODO: เก็บ idTokenRaw เป็น getter เพราะ ถ้า เรียกใช้ ฟังก์ชัน signIn 2 ครั้ง จะทำการเข้าสู่ระบบ ซ้ำซ้อน
+      idTokenRaw = result.accessToken.idTokenRaw;
+      logger.i("Access Token: $accessToken");
+      logger.i("ID Token Raw: $idTokenRaw");
+
+      await getProfile();
       notifyListeners(); // แจ้งให้ UI ทราบว่ามีการเปลี่ยนแปลงข้อมูล
+      return idTokenRaw;
     } on PlatformException catch (e, stackTrace) {
       logger.e('Login Error: $e', error: e, stackTrace: stackTrace);
       notifyListeners();
+      return null;
     }
   }
 
-  /// Sign out
-  Future<void> signOut() async {
+  /// LINE Sign out
+  Future<void> signOut(BuildContext context) async {
     try {
+      Provider.of<LineTokenProvider>(context, listen: false).clearTokens();
       await LineSDK.instance.logout();
       userId = null;
       displayName = null;
       profilePictureUrl = null;
+      idTokenRaw = null;
       logger.i("User signed out successfully.");
       notifyListeners();
     } on PlatformException catch (e, stackTrace) {
@@ -37,6 +55,7 @@ class LineLoginProvider with ChangeNotifier {
     }
   }
 
+  /// LINE Get user profile
   Future<void> getProfile() async {
     try {
       final result = await LineSDK.instance.getProfile();
@@ -53,6 +72,7 @@ class LineLoginProvider with ChangeNotifier {
     }
   }
 
+  /// LINE Get access token and verify
   Future<String?> getAccessToken() async {
     try {
       final result = await LineSDK.instance.currentAccessToken;
@@ -62,15 +82,6 @@ class LineLoginProvider with ChangeNotifier {
       logger.e('Error fetching access token: $e',
           error: e, stackTrace: stackTrace);
       return null;
-    }
-  }
-
-  Future<void> getVerifyAccessToken() async {
-    try {
-      final result = await LineSDK.instance.verifyAccessToken();
-      logger.d('Token is valid: ${result.data}');
-    } on PlatformException catch (e, stackTrace) {
-      logger.e('Invalid Token: $e', error: e, stackTrace: stackTrace);
     }
   }
 }

@@ -4,7 +4,7 @@ import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SpeakerRepositoryImpl()),
         ChangeNotifierProvider(create: (_) => PermissionProvider()),
         ChangeNotifierProvider(create: (_) => LineLoginProvider()),
-        ChangeNotifierProvider(create: (_) => LoggerProvider()),
+        ChangeNotifierProvider(create: (_) => LineTokenProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

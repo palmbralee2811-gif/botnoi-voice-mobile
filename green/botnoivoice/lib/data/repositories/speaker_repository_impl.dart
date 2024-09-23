@@ -3,6 +3,8 @@ import 'package:logger/logger.dart';
 
 /// Repository for Speaker operations
 class SpeakerRepositoryImpl with ChangeNotifier {
+  final Logger logger = Logger(); // Logger for Debugging mode
+
   String? _speakerId;
   String? _speakerName;
   String? _speakerAudio;
@@ -60,14 +62,4 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     logger.d("SpeakerProvider -> setLanguage: $language");
     notifyListeners();
   }
-
-  final Logger logger = Logger(
-    printer: PrettyPrinter(
-      methodCount: 1,
-      errorMethodCount: 8,
-      lineLength: 120,
-      colors: true,
-      printEmojis: true,
-    ),
-  );
 }

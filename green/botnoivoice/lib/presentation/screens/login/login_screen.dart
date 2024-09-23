@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 //TODO: Check on production if don't login show alert notification
                 Provider.of<GoogleLoginProvider>(context, listen: false)
-                    .signInWithGoogle(context);
+                    .signInWithGoogle();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -212,16 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ElevatedButton(
               onPressed: () {
                 Provider.of<LineLoginProvider>(context, listen: false)
-                    .signIn(context)
-                    .then((_) {
-                  // LINE Login
-                  Provider.of<LineLoginProvider>(context, listen: false)
-                      .getProfile()
-                      .then((_) {
-                    Provider.of<LineLoginProvider>(context, listen: false)
-                        .getAccessToken();
-                  });
-                });
+                    .signIn();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,

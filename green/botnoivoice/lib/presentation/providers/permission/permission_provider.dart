@@ -1,15 +1,14 @@
 import 'dart:io';
-import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 /// Provider Permission For Android
 class PermissionProvider with ChangeNotifier {
-  Future<bool> requestAndroidPermission(BuildContext context) async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+  final Logger logger = Logger();
 
+  Future<bool> requestAndroidPermission() async {
     try {
       if (Platform.isAndroid) {
         // Get Android OS Version Info
@@ -21,10 +20,10 @@ class PermissionProvider with ChangeNotifier {
 
         if (androidVersion >= 33) { // Android 13 is API level 33
           logger.d("Requesting permissions for Android 13+");
-          return await _requestPermissionsForAndroid13Plus(context);
+          return await _requestPermissionsForAndroid13Plus();
         } else {
           logger.d("Requesting permissions for older Android versions");
-          return await _requestPermissionsForOlderVersions(context);
+          return await _requestPermissionsForOlderVersions();
         }
       }
     } catch (e, stackTrace) {
@@ -34,9 +33,7 @@ class PermissionProvider with ChangeNotifier {
   }
 
   /// Android 13 (API 33) and higher
-  Future<bool> _requestPermissionsForAndroid13Plus(BuildContext context) async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-
+  Future<bool> _requestPermissionsForAndroid13Plus() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.audio,
       Permission.notification,
@@ -54,9 +51,7 @@ class PermissionProvider with ChangeNotifier {
   }
 
   /// Below Android 13 (API 33)
-  Future<bool> _requestPermissionsForOlderVersions(BuildContext context) async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-
+  Future<bool> _requestPermissionsForOlderVersions() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
     ].request();

@@ -23,7 +23,7 @@ class _AppBarTopState extends State<AppBarTop> {
   @override
   void initState() {
     Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadRemainingCredits(context);
+        .loadRemainingCredits();
     super.initState();
   }
 
@@ -94,6 +94,7 @@ class _AppBarTopState extends State<AppBarTop> {
                 ),
                 Text(
                   ' ${Provider.of<GoogleTokenProvider>(context).remainingCredits ?? "N/A"}',
+                  //TODO: Get Credits from LineTokenProvider Class
                   style: GoogleFonts.prompt(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,

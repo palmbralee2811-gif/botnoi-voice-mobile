@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/usecases/random_string.dart';
-import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +30,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
+  final Logger logger = Logger();
 
   // Generate Audio
   String response = '';
@@ -233,8 +234,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildGenerateButton(BuildContext context) {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-
     return Padding(
       padding:
           EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
@@ -275,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   await generateAudio(_textController.text).whenComplete(() {
                 setState(() {
                   Provider.of<GoogleTokenProvider>(context, listen: false)
-                      .loadRemainingCredits(context);
+                      .loadRemainingCredits();
                 });
               });
               if (audioUrl.isNotEmpty) {
@@ -304,7 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<GoogleTokenProvider>(context, listen: false)
             .credentialsToken;
 
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
+    //TODO: Get LINE credentialsToken from LineTokenProvider
+
     logger.i("K9 -> speakerId: $speakerId");
     logger.i("K9 -> language: $language");
     logger.i("K9 -> credentialsToken: $credentialsToken");
@@ -356,8 +356,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Request Permission, Call download function, Open audio player, and open audio file
   Future openAudioPlayerDialog({required String url, String? fileName}) async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-
     try {
       final name = fileName ?? url.split("/").last;
       final file = await downloadFileToTemporaryDirectory(url, name);
@@ -375,11 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Download file and save to temporary directory
-  Future<File?> downloadFileToTemporaryDirectory(
-      String url, String name) async {
-    
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-    
+  Future<File?> downloadFileToTemporaryDirectory(String url, String name) async {
     try {
       final downloadFolder = await getTemporaryDirectory();
       final String downloadDirectory = downloadFolder.path;

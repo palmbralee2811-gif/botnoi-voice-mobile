@@ -3,7 +3,6 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
-import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:logger/logger.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +29,7 @@ class AudioPlayerDialog extends StatefulWidget {
 }
 
 class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
+  final Logger logger = Logger(); // Logger for Debugging mode
   late AudioPlayer audioPlayer;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
@@ -50,7 +51,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
   Future<void> _checkAndroidRequestPermissions() async {
     bool hasPermission =
         await Provider.of<PermissionProvider>(context, listen: false)
-            .requestAndroidPermission(context);
+            .requestAndroidPermission();
 
     // Show Alert if Permission Denied
     if (!hasPermission) {
@@ -129,8 +130,6 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
   /// Initialize the downloader using FlutterDownloader
   Future<void> _initDownloader() async {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
-
     IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {

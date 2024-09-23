@@ -1,24 +1,15 @@
 import 'dart:io';
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:botnoivoice/domain/repositories/file_repository.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Save File to Documents Directory
 class FileRepositoryImpl implements FileRepository {
+  final Logger logger = Logger();
+
   @override
-  Future<bool> saveFileCustomPath(
-    String sourceFilePath,
-  ) async {
-    final Logger logger = Logger(
-      printer: PrettyPrinter(
-        methodCount: 1,
-        errorMethodCount: 8,
-        lineLength: 120,
-        colors: true,
-        printEmojis: true,
-      ),
-    );
+  Future<bool> saveFileCustomPath(String sourceFilePath) async {
 
     try {
       // ตรวจสอบไฟล์ต้นทาง

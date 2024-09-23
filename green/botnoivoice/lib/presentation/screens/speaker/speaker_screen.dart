@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/domain/entities/speaker_entity.dart';
-import 'package:botnoivoice/presentation/providers/logger/logger_provider.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class SpeakerScreen extends StatefulWidget {
@@ -20,6 +20,7 @@ class SpeakerScreen extends StatefulWidget {
 }
 
 class _SpeakerScreenState extends State<SpeakerScreen> {
+  final Logger logger = Logger(); // Logger for Debugging mode
   bool ishover = false; // ต้องการให้ข้อมูล ishover เก็บไว้ใน cache ของเครื่อง
   String? speakerId;
   String? language; // เลือกภาษา
@@ -540,7 +541,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   Widget _buildLanguageFilter(String text, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
-    final logger = Provider.of<LoggerProvider>(context, listen: false).logger;
 
     return InkWell(
       onTap: () {
