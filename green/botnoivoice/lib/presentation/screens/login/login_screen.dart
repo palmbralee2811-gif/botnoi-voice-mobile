@@ -212,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ElevatedButton(
               onPressed: () {
                 Provider.of<LineLoginProvider>(context, listen: false)
-                    .signIn();
+                    .signInWithLine();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,

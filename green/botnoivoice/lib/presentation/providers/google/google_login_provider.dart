@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-/// Provider and interface for authentication
+/// Google Provider and interface for authentication
 class GoogleLoginProvider extends ChangeNotifier {
   User? user;
   final Logger logger = Logger();

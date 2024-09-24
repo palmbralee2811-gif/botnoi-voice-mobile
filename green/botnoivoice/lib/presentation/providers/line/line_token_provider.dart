@@ -24,7 +24,7 @@ class LineTokenProvider extends ChangeNotifier {
   //TODO: Refactor this function for LINE API
   Future<void> loadJwtToken(BuildContext context) async {
     String? idToken =
-        await Provider.of<LineLoginProvider>(context, listen: false).signIn();
+        await Provider.of<LineLoginProvider>(context, listen: false).getIdTokenRaw();
     if (idToken == null) return;
 
     String url = 'https://api-voice.botnoi.ai/api/dashboard/liff';
@@ -45,7 +45,7 @@ class LineTokenProvider extends ChangeNotifier {
           var tokenStartIndex = tokenIndex + 'token='.length;
           jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
-          logger.i('JWT Token successfully loaded.');
+          logger.i('JWT Token successfully loaded: $jwtToken');
         } else {
           logger.w('Token not found in response message: $message');
         }
@@ -72,7 +72,7 @@ class LineTokenProvider extends ChangeNotifier {
         var data = json.decode(response.body);
         remainingCredits = data['data']['credits'].toString();
         notifyListeners();
-        logger.i('Remaining credits successfully loaded.');
+        logger.i('Remaining credits successfully loaded: $remainingCredits');
       } else {
         logger
             .e("Failed to retrieve remaining credits: ${response.statusCode}");
@@ -102,7 +102,7 @@ class LineTokenProvider extends ChangeNotifier {
         var data = json.decode(response.body);
         credentialsToken = data['data'][0]['token'].toString();
         notifyListeners();
-        logger.i('Credentials token successfully loaded.');
+        logger.i('Credentials token successfully loaded: $credentialsToken');
       } else {
         logger.e('Failed to load Credentials-Token: ${response.statusCode}');
       }

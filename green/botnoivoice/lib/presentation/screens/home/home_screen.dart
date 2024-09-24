@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/usecases/random_string.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
@@ -275,6 +276,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 setState(() {
                   Provider.of<GoogleTokenProvider>(context, listen: false)
                       .loadRemainingCredits();
+                  Provider.of<LineTokenProvider>(context, listen: false)
+                      .loadRemainingCredits();
                 });
               });
               if (audioUrl.isNotEmpty) {
@@ -303,14 +306,17 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<GoogleTokenProvider>(context, listen: false)
             .credentialsToken;
 
-    //TODO: Get LINE credentialsToken from LineTokenProvider
+    String? credentialsToken2 =
+        Provider.of<LineTokenProvider>(context, listen: false).credentialsToken;
 
     logger.i("K9 -> speakerId: $speakerId");
     logger.i("K9 -> language: $language");
-    logger.i("K9 -> credentialsToken: $credentialsToken");
+    logger.i("K9 -> Google-credentialsToken: $credentialsToken");
+    logger.i("K9 -> LINE-credentialsToken: $credentialsToken2");
 
-    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio"; // For Production
-    String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Testing
+    String url =
+        "https://api-voice.botnoi.ai/openapi/v1/generate_audio"; // For Production
+    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Testing
 
     Map<String, dynamic> payload = {
       "text": text,
@@ -325,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Map<String, String> headers = {
       'Botnoi-Token':
-          '${Provider.of<GoogleTokenProvider>(context, listen: false).credentialsToken}',
+          '${Provider.of<LineTokenProvider>(context, listen: false).credentialsToken}',
       'Content-Type': 'application/json'
     };
 
@@ -341,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
         audioUrl = jsonData['audio_url'];
         logger.i("generateAudio -> $audioUrl");
       } else {
-        debugPrint("Failed to generate audio: ${response.statusCode}");
+        logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
           AlertNotificationDialog(
                   context: context, text: 'ไม่สามารสร้างเสียงได้')
@@ -373,7 +379,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Download file and save to temporary directory
-  Future<File?> downloadFileToTemporaryDirectory(String url, String name) async {
+  Future<File?> downloadFileToTemporaryDirectory(
+      String url, String name) async {
     try {
       final downloadFolder = await getTemporaryDirectory();
       final String downloadDirectory = downloadFolder.path;

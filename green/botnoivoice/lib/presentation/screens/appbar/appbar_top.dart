@@ -1,5 +1,6 @@
 // import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -93,7 +94,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  ' ${Provider.of<GoogleTokenProvider>(context).remainingCredits ?? "N/A"}',
+                  ' ${Provider.of<LineTokenProvider>(context).remainingCredits ?? "N/A"}',
                   //TODO: Get Credits from LineTokenProvider Class
                   style: GoogleFonts.prompt(
                     fontSize: 12.sp,

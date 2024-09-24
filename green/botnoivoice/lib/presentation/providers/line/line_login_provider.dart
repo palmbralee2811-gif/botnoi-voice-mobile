@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+/// LINE Provider and interface for authentication
 class LineLoginProvider with ChangeNotifier {
   String? userId;
   String? displayName;
@@ -18,25 +19,28 @@ class LineLoginProvider with ChangeNotifier {
   }
 
   /// Sign in with LINE Provider
-  Future<String?> signIn() async {
+  Future<void> signInWithLine() async {
     try {
       final result =
           await LineSDK.instance.login(scopes: ["profile", "openid", "email"]);
 
       final accessToken = result.accessToken.value;
-      //TODO: เก็บ idTokenRaw เป็น getter เพราะ ถ้า เรียกใช้ ฟังก์ชัน signIn 2 ครั้ง จะทำการเข้าสู่ระบบ ซ้ำซ้อน
       idTokenRaw = result.accessToken.idTokenRaw;
       logger.i("Access Token: $accessToken");
       logger.i("ID Token Raw: $idTokenRaw");
 
       await getProfile();
       notifyListeners(); // แจ้งให้ UI ทราบว่ามีการเปลี่ยนแปลงข้อมูล
-      return idTokenRaw;
     } on PlatformException catch (e, stackTrace) {
       logger.e('Login Error: $e', error: e, stackTrace: stackTrace);
       notifyListeners();
-      return null;
     }
+  }
+
+  /// LINE Get ID Token Raw
+  Future<String?> getIdTokenRaw() async {
+    if (idTokenRaw == null) return null;
+    return idTokenRaw;
   }
 
   /// LINE Sign out
