@@ -16,8 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LineSDK.instance.setup("1656375389").then((_) {
-    /// Personal Account: 2006310000
-    /// Botnoi Voice Account: 1656375389
     print("LineSDK Prepared");
   });
 

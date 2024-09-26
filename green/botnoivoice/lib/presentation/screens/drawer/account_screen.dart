@@ -1,4 +1,4 @@
-import 'package:botnoivoice/domain/usecases/get_user_email.dart';
+import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -16,9 +16,39 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  User? googleUser = FirebaseAuth.instance.currentUser;
+  String displayName = "Loading...";
+  String userId = "Loading...";
+  String email = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async => await _loadUserInfo());
+  }
+
+  Future<void> _loadUserInfo() async {
+    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+
+    if (lineProvider.isLoggedIn) {
+      displayName = await lineProvider.getDisplayName() ?? "No Name";
+      userId = await lineProvider.getUserId() ?? "No UID";
+      email = await lineProvider.getLineEmail() ?? "No email found";
+    } else if (googleProvider.isLoggedIn) {
+      displayName = googleUser?.displayName ?? 'No Name';
+      userId = googleUser?.uid ?? 'No UID';
+      email = getUserEmail(googleUser) ?? 'No email found';
+    }
+
+    setState(() {}); // Update UI
+  }
+
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
+    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -48,24 +78,20 @@ class _AccountScreenState extends State<AccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //TODO: Get LINE Profile, Name, Email, Image
-            UserInfoRow(
-              title: 'ชื่อผู้ใช้',
-              value: user?.displayName ?? 'No Name',
-            ),
-            const UserInfoRow(title: 'UID', value: ' UID'),
-            UserInfoRow(
-                title: 'อีเมล', value: getUserEmail(user) ?? 'No email found'),
+            UserInfoRow(title: 'ชื่อผู้ใช้', value: displayName),
+            UserInfoRow(title: 'UID', value: userId),
+            UserInfoRow(title: 'อีเมล', value: email),
             const Spacer(),
             GradientTextButton(
               text: 'ออกจากระบบ',
               onPressed: () {
-                Provider.of<GoogleLoginProvider>(context, listen: false)
-                    .signOut(context);
+                if (lineProvider.isLoggedIn) {
+                  lineProvider.signOutWithLine(context);
+                }
 
-                //TODO: Call Line SignOut
-                Provider.of<LineLoginProvider>(context, listen: false)
-                    .signOut(context);
+                if (googleProvider.isLoggedIn) {
+                  googleProvider.signOut(context);
+                }
 
                 Navigator.popUntil(context, (r) => r.isFirst);
               },
@@ -99,11 +125,16 @@ class UserInfoRow extends StatelessWidget {
               color: const Color(0xFF323130),
             ),
           ),
-          Text(
-            value,
-            style: GoogleFonts.prompt(
-              fontSize: 14.sp,
-              color: const Color(0xFFBBBFC4),
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.prompt(
+                fontSize: 14.sp,
+                color: const Color(0xFFBBBFC4),
+              ),
+              overflow: TextOverflow.ellipsis, // จัดการข้อความยาว
+              maxLines: 1, // แสดงแค่ 1 บรรทัด
+              textAlign: TextAlign.right, // จัดเรียงให้ชิดขวา
             ),
           ),
         ],

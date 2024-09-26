@@ -7,24 +7,25 @@ import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
 class LineTokenProvider extends ChangeNotifier {
-  String? jwtToken;
-  String? remainingCredits;
-  String? credentialsToken;
+  String? _jwtToken;
+  String? _remainingCredits;
+  String? _credentialsToken;
 
-  final Logger logger = Logger();
+  final Logger _logger = Logger();
 
   /// Clear all the tokens
   void clearTokens() {
-    jwtToken = null;
-    remainingCredits = null;
-    credentialsToken = null;
+    _jwtToken = null;
+    _remainingCredits = null;
+    _credentialsToken = null;
     notifyListeners();
   }
 
-  //TODO: Refactor this function for LINE API
+  /// Loading LINE JWT Token from API
   Future<void> loadJwtToken(BuildContext context) async {
     String? idToken =
-        await Provider.of<LineLoginProvider>(context, listen: false).getIdTokenRaw();
+        await Provider.of<LineLoginProvider>(context, listen: false)
+            .getIdTokenRaw();
     if (idToken == null) return;
 
     String url = 'https://api-voice.botnoi.ai/api/dashboard/liff';
@@ -43,53 +44,53 @@ class LineTokenProvider extends ChangeNotifier {
         // Check if the token was found
         if (tokenIndex != -1) {
           var tokenStartIndex = tokenIndex + 'token='.length;
-          jwtToken = message.substring(tokenStartIndex);
+          _jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
-          logger.i('JWT Token successfully loaded: $jwtToken');
+          _logger.i('JWT Token successfully loaded: $_jwtToken');
         } else {
-          logger.w('Token not found in response message: $message');
+          _logger.w('Token not found in response message: $message');
         }
       } else {
-        logger.e('Failed to load data: ${response.statusCode}');
+        _logger.e('Failed to load data: ${response.statusCode}');
       }
     } catch (e) {
-      logger.e('Error fetching JWT Token: $e');
+      _logger.e('Error fetching JWT Token: $e');
     }
   }
 
-  /// Get the remaining credits using jwtToken
+  /// Loading the remaining credits from API
   Future<void> loadRemainingCredits() async {
-    if (jwtToken == null) return;
+    if (_jwtToken == null) return;
 
     String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
     Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
+      'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
     };
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        remainingCredits = data['data']['credits'].toString();
+        _remainingCredits = data['data']['credits'].toString();
         notifyListeners();
-        logger.i('Remaining credits successfully loaded: $remainingCredits');
+        _logger.i('Remaining credits successfully loaded: $_remainingCredits');
       } else {
-        logger
+        _logger
             .e("Failed to retrieve remaining credits: ${response.statusCode}");
       }
     } catch (e) {
-      logger.e('Error fetching remaining credits: $e');
+      _logger.e('Error fetching remaining credits: $e');
     }
   }
 
-  /// Get the credentials token using jwtToken
+  /// Loading the credentials token from API
   Future<void> loadCredentials() async {
-    if (jwtToken == null) return;
+    if (_jwtToken == null) return;
 
     String url = 'https://api-voice.botnoi.ai/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
+      'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
     };
     try {
@@ -100,14 +101,20 @@ class LineTokenProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        credentialsToken = data['data'][0]['token'].toString();
+        _credentialsToken = data['data'][0]['token'].toString();
         notifyListeners();
-        logger.i('Credentials token successfully loaded: $credentialsToken');
+        _logger.i('Credentials token successfully loaded: $_credentialsToken');
       } else {
-        logger.e('Failed to load Credentials-Token: ${response.statusCode}');
+        _logger.e('Failed to load Credentials-Token: ${response.statusCode}');
       }
     } catch (e) {
-      logger.e('Error fetching Credentials-Token: $e');
+      _logger.e('Error fetching Credentials-Token: $e');
     }
   }
+
+  /// Get the remaining credits
+  Future<String?> getRemainingCredits() async => _remainingCredits;
+
+  /// Get the credentials token
+  Future<String?> getCredentialsToken() async => _credentialsToken;
 }

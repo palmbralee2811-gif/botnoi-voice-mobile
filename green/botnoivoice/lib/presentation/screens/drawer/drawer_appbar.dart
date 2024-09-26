@@ -1,20 +1,58 @@
-import 'package:botnoivoice/domain/usecases/get_user_email.dart';
+import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class DrawerAppbar extends StatelessWidget {
-  const DrawerAppbar({
-    super.key,
-  });
+class DrawerAppbar extends StatefulWidget {
+  const DrawerAppbar({super.key});
+
+  @override
+  State<DrawerAppbar> createState() => _DrawerAppbarState();
+}
+
+class _DrawerAppbarState extends State<DrawerAppbar> {
+  User? googleUser = FirebaseAuth.instance.currentUser;
+  String displayName = "Loading...";
+  String email = "Loading...";
+  String profilePictureUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) async => await _loadUserInfo());
+  }
+
+  Future<void> _loadUserInfo() async {
+    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+
+    if (lineProvider.isLoggedIn) {
+      String? lineDisplayName = await lineProvider.getDisplayName();
+      String? lineEmail = await lineProvider.getLineEmail();
+      String? lineProfilePictureUrl = await lineProvider.getProfilePictureUrl();
+
+      setState(() {
+        displayName = lineDisplayName ?? 'No Name';
+        email = lineEmail ?? 'No email found';
+        profilePictureUrl = lineProfilePictureUrl ?? '';
+      });
+    } else if (googleUser != null) {
+      setState(() {
+        displayName = googleUser?.displayName ?? 'No Name';
+        email = getUserEmail(googleUser) ?? 'No email found';
+        profilePictureUrl = googleUser?.photoURL ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
-
     return Drawer(
       elevation: 16,
       backgroundColor: Colors.white,
@@ -29,8 +67,8 @@ class DrawerAppbar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
-                      backgroundImage: user?.photoURL != null
-                          ? NetworkImage(user!.photoURL!)
+                      backgroundImage: profilePictureUrl.isNotEmpty
+                          ? NetworkImage(profilePictureUrl)
                           : const AssetImage(
                                   'assets/app_icon/icon-foreground-432x432.png')
                               as ImageProvider<Object>,
@@ -61,7 +99,7 @@ class DrawerAppbar extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user?.displayName ?? 'No Name',
+                            displayName,
                             style: GoogleFonts.prompt(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
@@ -73,7 +111,7 @@ class DrawerAppbar extends StatelessWidget {
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            getUserEmail(user) ?? 'No email found',
+                            email,
                             style: GoogleFonts.prompt(
                               fontSize: 14.sp,
                               color: const Color(0xFF323130),
@@ -129,8 +167,8 @@ class DrawerAppbar extends StatelessWidget {
               ),
             ),
             onTap: () async {
-              const url = 'https://voice.botnoi.ai/payment';
-              await launchUrlString(url, mode: LaunchMode.platformDefault);
+              await launchUrlString('https://voice.botnoi.ai/payment',
+                  mode: LaunchMode.platformDefault);
             },
           ),
         ],

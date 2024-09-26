@@ -102,8 +102,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="lineauth-1656375389" android:host="com.mobile.botnoivoice"/>
-                <!-- Personal Account: "lineauth-2006310000"  -->
-
             </intent-filter>
         </activity>
 

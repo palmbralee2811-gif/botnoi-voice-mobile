@@ -1,91 +1,97 @@
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 /// LINE Provider and interface for authentication
 class LineLoginProvider with ChangeNotifier {
-  String? userId;
-  String? displayName;
-  String? profilePictureUrl;
-  String? idTokenRaw;
+  String? _userId;
+  String? _displayName;
+  String? _profilePictureUrl;
+  String? _idTokenRaw;
+  String? _lineEmail;
 
-  final Logger logger = Logger();
+  final Logger _logger = Logger(); // For debugging
 
-  bool get isAuthenticated {
-    return userId != null;
-  }
+  // Check if the user is logged in
+  bool _isLoggedIn = false;
+  bool get isLoggedIn => _isLoggedIn;
+  bool get isAuthenticated => _userId != null;
 
-  /// Sign in with LINE Provider
+  /// Sign in with LINE Service
   Future<void> signInWithLine() async {
     try {
-      final result =
+      final loginResult =
           await LineSDK.instance.login(scopes: ["profile", "openid", "email"]);
 
-      final accessToken = result.accessToken.value;
-      idTokenRaw = result.accessToken.idTokenRaw;
-      logger.i("Access Token: $accessToken");
-      logger.i("ID Token Raw: $idTokenRaw");
+      _idTokenRaw = loginResult.accessToken.idTokenRaw;
+      _lineEmail = loginResult.accessToken.email;
+      _logger.i("ID Token Raw: $_idTokenRaw");
+      _logger.i("LINE Email: $_lineEmail");
 
-      await getProfile();
-      notifyListeners(); // แจ้งให้ UI ทราบว่ามีการเปลี่ยนแปลงข้อมูล
+      _isLoggedIn = true;
+      await _getProfile();
+      notifyListeners(); // Notify listeners only once when login state changes
     } on PlatformException catch (e, stackTrace) {
-      logger.e('Login Error: $e', error: e, stackTrace: stackTrace);
-      notifyListeners();
+      _logger.e('Login Error: ${e.message}', error: e, stackTrace: stackTrace);
     }
   }
 
-  /// LINE Get ID Token Raw
-  Future<String?> getIdTokenRaw() async {
-    if (idTokenRaw == null) return null;
-    return idTokenRaw;
-  }
-
-  /// LINE Sign out
-  Future<void> signOut(BuildContext context) async {
+  /// Sign out with LINE Service
+  Future<void> signOutWithLine(BuildContext context) async {
     try {
       Provider.of<LineTokenProvider>(context, listen: false).clearTokens();
       await LineSDK.instance.logout();
-      userId = null;
-      displayName = null;
-      profilePictureUrl = null;
-      idTokenRaw = null;
-      logger.i("User signed out successfully.");
-      notifyListeners();
+      _resetUserData();
+      _logger.i("User signed out successfully.");
     } on PlatformException catch (e, stackTrace) {
-      logger.e('Logout failed: $e', error: e, stackTrace: stackTrace);
-    }
-  }
-
-  /// LINE Get user profile
-  Future<void> getProfile() async {
-    try {
-      final result = await LineSDK.instance.getProfile();
-      userId = result.userId;
-      displayName = result.displayName;
-      profilePictureUrl = result.pictureUrl;
-      logger.d('userId: $userId');
-      logger.d('displayName: $displayName');
-      logger.d('profilePictureUrl: $profilePictureUrl');
-      notifyListeners();
-    } on PlatformException catch (e, stackTrace) {
-      logger.e('getProfile failed: $e', error: e, stackTrace: stackTrace);
-      notifyListeners();
-    }
-  }
-
-  /// LINE Get access token and verify
-  Future<String?> getAccessToken() async {
-    try {
-      final result = await LineSDK.instance.currentAccessToken;
-      logger.d("Access Token: ${result?.value}");
-      return result?.value;
-    } on PlatformException catch (e, stackTrace) {
-      logger.e('Error fetching access token: $e',
+      _logger.e('Logout failed: ${e.message}',
           error: e, stackTrace: stackTrace);
-      return null;
     }
   }
+
+  /// Reset user data and notify listeners
+  void _resetUserData() {
+    _userId = null;
+    _displayName = null;
+    _profilePictureUrl = null;
+    _idTokenRaw = null;
+    _lineEmail = null;
+    _isLoggedIn = false;
+    notifyListeners();
+  }
+
+  /// Get LINE user profile
+  Future<void> _getProfile() async {
+    try {
+      final profileResult = await LineSDK.instance.getProfile();
+      _userId = profileResult.userId;
+      _displayName = profileResult.displayName;
+      _profilePictureUrl = profileResult.pictureUrl;
+      _logger.d('User ID: $_userId');
+      _logger.d('Display Name: $_displayName');
+      _logger.d('Profile Picture URL: $_profilePictureUrl');
+      notifyListeners();
+    } on PlatformException catch (e, stackTrace) {
+      _logger.e('getProfile failed: ${e.message}',
+          error: e, stackTrace: stackTrace);
+    }
+  }
+
+  /// Get LINE ID Token Raw
+  Future<String?> getIdTokenRaw() async => _idTokenRaw;
+
+  /// Get LINE user id from Get Profile Function
+  Future<String?> getUserId() async => _userId;
+
+  /// Get LINE user display name from Get Profile Function
+  Future<String?> getDisplayName() async => _displayName;
+
+  /// Get LINE user profile picture url from Get Profile Function
+  Future<String?> getProfilePictureUrl() async => _profilePictureUrl;
+
+  /// Get LINE user email from Get Profile Function
+  Future<String?> getLineEmail() async => _lineEmail;
 }

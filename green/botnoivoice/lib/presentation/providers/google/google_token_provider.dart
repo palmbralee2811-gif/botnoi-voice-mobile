@@ -7,21 +7,21 @@ import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
 class GoogleTokenProvider extends ChangeNotifier {
-  String? jwtToken;
-  String? remainingCredits;
-  String? credentialsToken;
+  String? _jwtToken;
+  String? _remainingCredits;
+  String? _credentialsToken;
 
   final Logger logger = Logger();
 
   /// Clear all the tokens
   void clearTokens() {
-    jwtToken = null;
-    remainingCredits = null;
-    credentialsToken = null;
+    _jwtToken = null;
+    _remainingCredits = null;
+    _credentialsToken = null;
     notifyListeners();
   }
 
-  /// Get the jwtToken from Firebase
+  /// Get the _jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
     String? idToken =
@@ -30,7 +30,7 @@ class GoogleTokenProvider extends ChangeNotifier {
             ?.getIdToken();
     if (idToken == null) return;
 
-    // Get the jwtToken from the Firebase API
+    // Get the _jwtToken from the Firebase API
     String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
     
     Map<String, String> headers = {
@@ -47,7 +47,7 @@ class GoogleTokenProvider extends ChangeNotifier {
         // Check if the token was found
         if (tokenIndex != -1) {
           var tokenStartIndex = tokenIndex + 'token='.length;
-          jwtToken = message.substring(tokenStartIndex);
+          _jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
           logger.i('JWT Token successfully loaded.');
         } else {
@@ -61,22 +61,22 @@ class GoogleTokenProvider extends ChangeNotifier {
     }
   }
 
-  /// Get the remaining credits using jwtToken
+  /// Get the remaining credits using _jwtToken
   Future<void> loadRemainingCredits() async {
-    // Check if jwtToken exists
-    if (jwtToken == null) return;
+    // Check if _jwtToken exists
+    if (_jwtToken == null) return;
 
     // Make the request
     String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
     Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
+      'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
     };
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        remainingCredits = data['data']['credits'].toString();
+        _remainingCredits = data['data']['credits'].toString();
         notifyListeners();
         logger.i('Remaining credits successfully loaded.');
       } else {
@@ -87,16 +87,16 @@ class GoogleTokenProvider extends ChangeNotifier {
     }
   }
 
-  // Get the credentials token using jwtToken
+  // Get the credentials token using _jwtToken
   Future<void> loadCredentials() async {
-    // Check if jwtToken exists
-    if (jwtToken == null) return;
+    // Check if _jwtToken exists
+    if (_jwtToken == null) return;
 
     // Make the request
     String url = 'https://api-voice.botnoi.ai/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
-      'Authorization': 'Bearer $jwtToken',
+      'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
     };
     try {
@@ -107,7 +107,7 @@ class GoogleTokenProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        credentialsToken = data['data'][0]['token'].toString();
+        _credentialsToken = data['data'][0]['token'].toString();
         notifyListeners();
         logger.i('Credentials token successfully loaded.');
       } else {
@@ -118,45 +118,9 @@ class GoogleTokenProvider extends ChangeNotifier {
     }
   }
 
-  /// Generate audio from text and return the audio URL
-  Future<String?> generateAudio(
-    String text,
-    String speakerId,
-    int volume,
-    int speed,
-  ) async {
+  /// Get the remaining credits
+  Future<String?> getRemainingCredits() async => _remainingCredits;
 
-    Map<String, dynamic> payload = {
-      "text": text,
-      "speaker": speakerId,
-      "volume": volume,
-      "speed": speed,
-      "type_media": "wav",
-      "save_file": true,
-    };
-    Map<String, String> headers = {
-      'Botnoi-Token': '$credentialsToken',
-      'Content-Type': 'application/json',
-    };
-    try {
-      String url = "api-voice.botnoi.ai";
-      String path = "/openapi/v1/generate_audio";
-      final response = await http.post(
-        Uri.https(url, path),
-        headers: headers,
-        body: jsonEncode(payload),
-      );
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        logger.i('Audio generated successfully: ${jsonData['audio_url']}');
-        return jsonData['audio_url'];
-      } else {
-        logger.e('Failed to generate audio: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      logger.e('Error generating audio: $e');
-      return null;
-    }
-  }
+  /// Get the credentials token
+  Future<String?> getCredentialsToken() async => _credentialsToken;
 }

@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/usecases/random_string.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
@@ -274,10 +276,16 @@ class _HomeScreenState extends State<HomeScreen> {
               final audioUrl =
                   await generateAudio(_textController.text).whenComplete(() {
                 setState(() {
-                  Provider.of<GoogleTokenProvider>(context, listen: false)
-                      .loadRemainingCredits();
-                  Provider.of<LineTokenProvider>(context, listen: false)
-                      .loadRemainingCredits();
+                  if (Provider.of<LineLoginProvider>(context, listen: false)
+                      .isLoggedIn) {
+                    Provider.of<LineTokenProvider>(context, listen: false)
+                        .loadRemainingCredits();
+                  } else if (Provider.of<GoogleLoginProvider>(context,
+                          listen: false)
+                      .isLoggedIn) {
+                    Provider.of<GoogleTokenProvider>(context, listen: false)
+                        .loadRemainingCredits();
+                  }
                 });
               });
               if (audioUrl.isNotEmpty) {
@@ -302,21 +310,23 @@ class _HomeScreenState extends State<HomeScreen> {
     String language =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
             'th';
-    String? credentialsToken =
-        Provider.of<GoogleTokenProvider>(context, listen: false)
-            .credentialsToken;
 
-    String? credentialsToken2 =
-        Provider.of<LineTokenProvider>(context, listen: false).credentialsToken;
+    String? googleCredentialsToken =
+        await Provider.of<GoogleTokenProvider>(context, listen: false)
+            .getCredentialsToken();
 
-    logger.i("K9 -> speakerId: $speakerId");
-    logger.i("K9 -> language: $language");
-    logger.i("K9 -> Google-credentialsToken: $credentialsToken");
-    logger.i("K9 -> LINE-credentialsToken: $credentialsToken2");
+    String? lineCredentialsToken =
+        await Provider.of<LineTokenProvider>(context, listen: false)
+            .getCredentialsToken();
 
+    logger.i("speakerId: $speakerId");
+    logger.i("language: $language");
+    logger.i("Google-credentialsToken: $googleCredentialsToken");
+    logger.i("LINE-credentialsToken: $lineCredentialsToken");
+
+    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Debugging
     String url =
         "https://api-voice.botnoi.ai/openapi/v1/generate_audio"; // For Production
-    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Testing
 
     Map<String, dynamic> payload = {
       "text": text,
@@ -331,7 +341,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Map<String, String> headers = {
       'Botnoi-Token':
-          '${Provider.of<LineTokenProvider>(context, listen: false).credentialsToken}',
+          Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn
+              ? lineCredentialsToken ?? ''
+              : googleCredentialsToken ?? '',
       'Content-Type': 'application/json'
     };
 

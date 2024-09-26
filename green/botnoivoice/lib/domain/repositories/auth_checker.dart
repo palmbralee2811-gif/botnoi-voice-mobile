@@ -11,10 +11,18 @@ class AuthChecker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<GoogleLoginProvider>(context).isAuthenticated || Provider.of<LineLoginProvider>(context).isAuthenticated) {
-      return const InitScreen();
-    } else {
-      return const LoginScreen();
-    }
+    return Consumer2<GoogleLoginProvider, LineLoginProvider>(
+      builder: (context, googleProvider, lineProvider, child) {
+        bool isGoogleLogin = googleProvider.isAuthenticated;
+        bool isLineLogin = lineProvider.isAuthenticated;
+
+        if (isLineLogin || isGoogleLogin) {
+          return const InitScreen();
+        } else {
+          return const LoginScreen();
+        }
+      },
+    );
   }
 }
+

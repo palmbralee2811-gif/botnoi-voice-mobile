@@ -1,3 +1,6 @@
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
@@ -23,22 +26,24 @@ class _InitScreenState extends State<InitScreen> {
 
   /// Initialize the app
   Future<void> initApp() async {
+    if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadJwtToken(context);
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadCredentials();
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
-    //TODO: Create new provider to check what's User Login with? (Google or LINE ???)
+    if (Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn) {
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadJwtToken(context);
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadCredentials();
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
-    // await Provider.of<GoogleTokenProvider>(context, listen: false)
-    //     .loadJwtToken(context);
-    // await Provider.of<GoogleTokenProvider>(context, listen: false)
-    //     .loadCredentials();
-    // await Provider.of<GoogleTokenProvider>(context, listen: false)
-    //     .loadRemainingCredits();
-
-    await Provider.of<LineTokenProvider>(context, listen: false)
-        .loadJwtToken(context);
-    await Provider.of<LineTokenProvider>(context, listen: false)
-        .loadCredentials();
-    await Provider.of<LineTokenProvider>(context, listen: false)
-        .loadRemainingCredits();
     setState(() {
       _initialized = true;
     });

@@ -1,5 +1,6 @@
-// import 'package:botnoivoice/data/repositories/credits_repository_impl.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
@@ -16,16 +17,33 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
   State<AppBarTop> createState() => _AppBarTopState();
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(100.h); // ย้ายการกำหนด preferredSize มาที่นี่
+  Size get preferredSize => Size.fromHeight(100.h);
 }
 
 class _AppBarTopState extends State<AppBarTop> {
+  String _remainingCredits = "Loading...";
+
   @override
   void initState() {
-    Provider.of<GoogleTokenProvider>(context, listen: false)
-        .loadRemainingCredits();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async => await _loadRemainingCredits());
+  }
+
+  Future<void> _loadRemainingCredits() async {
+    String? credits;
+    if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
+      credits = await Provider.of<LineTokenProvider>(context, listen: false)
+          .getRemainingCredits();
+    } else if (Provider.of<GoogleLoginProvider>(context, listen: false)
+        .isLoggedIn) {
+      credits = await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .getRemainingCredits();
+    }
+
+    setState(() {
+      _remainingCredits = credits ?? "No Credits";
+    });
   }
 
   @override
@@ -94,8 +112,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  ' ${Provider.of<LineTokenProvider>(context).remainingCredits ?? "N/A"}',
-                  //TODO: Get Credits from LineTokenProvider Class
+                  _remainingCredits,
                   style: GoogleFonts.prompt(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
