@@ -707,7 +707,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   Widget buildSingleSpeaker(
-      SpeakerEntity speakerItem /*NewData data*/, int index) {
+      SpeakerEntity speakerItem, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

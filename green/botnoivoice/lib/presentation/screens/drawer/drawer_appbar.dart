@@ -33,9 +33,9 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
-      String? lineDisplayName = await lineProvider.getDisplayName();
-      String? lineEmail = await lineProvider.getLineEmail();
-      String? lineProfilePictureUrl = await lineProvider.getProfilePictureUrl();
+      String? lineDisplayName = lineProvider.getDisplayName;
+      String? lineEmail = lineProvider.getLineEmail;
+      String? lineProfilePictureUrl = lineProvider.getProfilePictureUrl;
 
       setState(() {
         displayName = lineDisplayName ?? 'No Name';

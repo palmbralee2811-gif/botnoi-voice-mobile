@@ -68,6 +68,17 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  Future<void> _loadRemainingCredits() async {
+    if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
+    if (Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn) {
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -241,92 +252,62 @@ class _HomeScreenState extends State<HomeScreen> {
       padding:
           EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
       child: GradientRow(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('สร้างเสียง',
-                style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600)),
-            SizedBox(width: 10.w),
-            SvgPicture.asset(
-              'assets/images/logo/credit-icon.svg',
-              height: 20.h,
-              width: 20.w,
-            ),
-            SizedBox(width: 5.w),
-            Text('${_textController.text.length}',
-                style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600)),
-          ],
-        ),
-        onPressed: () async {
-          setState(() {
-            audioPlayer.stop();
-          });
-          if (_textController.text.isEmpty) {
-            AlertNotificationDialog(context: context, text: "กรุณาพิมพ์ข้อความ")
-                .showAsError();
-            return;
-          } else if (_textController.text.isNotEmpty) {
-            try {
-              final audioUrl =
-                  await generateAudio(_textController.text).whenComplete(() {
-                setState(() {
-                  if (Provider.of<LineLoginProvider>(context, listen: false)
-                      .isLoggedIn) {
-                    Provider.of<LineTokenProvider>(context, listen: false)
-                        .loadRemainingCredits();
-                  } else if (Provider.of<GoogleLoginProvider>(context,
-                          listen: false)
-                      .isLoggedIn) {
-                    Provider.of<GoogleTokenProvider>(context, listen: false)
-                        .loadRemainingCredits();
-                  }
-                });
-              });
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('สร้างเสียง',
+                  style: GoogleFonts.prompt(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600)),
+              SizedBox(width: 10.w),
+              SvgPicture.asset(
+                'assets/images/logo/credit-icon.svg',
+                height: 20.h,
+                width: 20.w,
+              ),
+              SizedBox(width: 5.w),
+              Text('${_textController.text.length}',
+                  style: GoogleFonts.prompt(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
+          onPressed: () async {
+            await audioPlayer.stop();
+            if (_textController.text.isEmpty) {
+              AlertNotificationDialog(
+                      context: context, text: "กรุณาพิมพ์ข้อความ")
+                  .showAsError();
+            }
+            if (_textController.text.isNotEmpty) {
+              final audioUrl = await generateAudio(_textController.text);
+              await _loadRemainingCredits();
               if (audioUrl.isNotEmpty) {
                 await openAudioPlayerDialog(
                     url: audioUrl,
                     fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
               }
-            } catch (e) {
-              logger.e("Error on buildGenerateButton: $e");
             }
-          }
-        },
-      ),
+          }),
     );
   }
 
   /// Generate audio from text
   Future<String> generateAudio(String text) async {
-    speakerId =
-        Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
-            '1';
-    String language =
-        Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
-            'th';
-
-    String? googleCredentialsToken =
-        await Provider.of<GoogleTokenProvider>(context, listen: false)
-            .getCredentialsToken();
-
-    String? lineCredentialsToken =
-        await Provider.of<LineTokenProvider>(context, listen: false)
-            .getCredentialsToken();
+    speakerId = Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ?? '1';
+    String language = Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ?? 'th';
+    String? googleCredentialsToken = Provider.of<GoogleTokenProvider>(context, listen: false).getCredentialsToken;
+    String? lineCredentialsToken = Provider.of<LineTokenProvider>(context, listen: false).getCredentialsToken;
 
     logger.i("speakerId: $speakerId");
     logger.i("language: $language");
     logger.i("Google-credentialsToken: $googleCredentialsToken");
     logger.i("LINE-credentialsToken: $lineCredentialsToken");
 
-    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Debugging
-    String url =
-        "https://api-voice.botnoi.ai/openapi/v1/generate_audio"; // For Production
+    String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Debugging
+    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio"; // For Production
 
     Map<String, dynamic> payload = {
       "text": text,

@@ -28,9 +28,6 @@ class LineLoginProvider with ChangeNotifier {
 
       _idTokenRaw = loginResult.accessToken.idTokenRaw;
       _lineEmail = loginResult.accessToken.email;
-      _logger.i("ID Token Raw: $_idTokenRaw");
-      _logger.i("LINE Email: $_lineEmail");
-
       _isLoggedIn = true;
       await _getProfile();
       notifyListeners(); // Notify listeners only once when login state changes
@@ -70,9 +67,6 @@ class LineLoginProvider with ChangeNotifier {
       _userId = profileResult.userId;
       _displayName = profileResult.displayName;
       _profilePictureUrl = profileResult.pictureUrl;
-      _logger.d('User ID: $_userId');
-      _logger.d('Display Name: $_displayName');
-      _logger.d('Profile Picture URL: $_profilePictureUrl');
       notifyListeners();
     } on PlatformException catch (e, stackTrace) {
       _logger.e('getProfile failed: ${e.message}',
@@ -81,17 +75,17 @@ class LineLoginProvider with ChangeNotifier {
   }
 
   /// Get LINE ID Token Raw
-  Future<String?> getIdTokenRaw() async => _idTokenRaw;
+  String? get getIdTokenRaw => _idTokenRaw;
 
   /// Get LINE user id from Get Profile Function
-  Future<String?> getUserId() async => _userId;
+  String? get getUserId => _userId;
 
   /// Get LINE user display name from Get Profile Function
-  Future<String?> getDisplayName() async => _displayName;
+  String? get getDisplayName => _displayName;
 
   /// Get LINE user profile picture url from Get Profile Function
-  Future<String?> getProfilePictureUrl() async => _profilePictureUrl;
+  String? get getProfilePictureUrl => _profilePictureUrl;
 
   /// Get LINE user email from Get Profile Function
-  Future<String?> getLineEmail() async => _lineEmail;
+  String? get getLineEmail => _lineEmail;
 }

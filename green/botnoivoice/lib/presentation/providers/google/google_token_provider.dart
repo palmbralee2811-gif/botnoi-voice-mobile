@@ -78,7 +78,7 @@ class GoogleTokenProvider extends ChangeNotifier {
         var data = json.decode(response.body);
         _remainingCredits = data['data']['credits'].toString();
         notifyListeners();
-        logger.i('Remaining credits successfully loaded.');
+        logger.i('Remaining credits successfully loaded: $_remainingCredits');
       } else {
         logger.e("Failed to retrieve remaining credits: ${response.statusCode}");
       }
@@ -119,8 +119,8 @@ class GoogleTokenProvider extends ChangeNotifier {
   }
 
   /// Get the remaining credits
-  Future<String?> getRemainingCredits() async => _remainingCredits;
+  String? get getRemainingCredits => _remainingCredits;
 
   /// Get the credentials token
-  Future<String?> getCredentialsToken() async => _credentialsToken;
+  String? get getCredentialsToken => _credentialsToken;
 }

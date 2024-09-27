@@ -215,13 +215,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     .signInWithLine();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: const Color(0xFF3ACE01),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
-                  side: BorderSide(
-                    color: Colors.grey.shade400,
-                    width: 1.0,
-                  ),
                 ),
                 padding: EdgeInsets.zero,
                 minimumSize: Size(256.w, 44.h),
@@ -231,12 +227,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Image.asset(
                     'assets/images/auth_screen/line-512x512.png',
-                    height: 32.h,
-                    width: 32.w,
+                    height: 36.h,
+                    width: 36.w,
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    'เข้าสู่ระบบด้วย LINE',
+                    'เข้าสู่ระบบด้วย Line',
                     style: GoogleFonts.prompt(
                       fontSize: 12.sp,
                       color: Colors.white,

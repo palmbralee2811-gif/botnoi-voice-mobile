@@ -1,6 +1,4 @@
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:flutter/material.dart';
@@ -21,29 +19,9 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppBarTopState extends State<AppBarTop> {
-  String _remainingCredits = "Loading...";
-
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async => await _loadRemainingCredits());
-  }
-
-  Future<void> _loadRemainingCredits() async {
-    String? credits;
-    if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
-      credits = await Provider.of<LineTokenProvider>(context, listen: false)
-          .getRemainingCredits();
-    } else if (Provider.of<GoogleLoginProvider>(context, listen: false)
-        .isLoggedIn) {
-      credits = await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .getRemainingCredits();
-    }
-
-    setState(() {
-      _remainingCredits = credits ?? "No Credits";
-    });
   }
 
   @override
@@ -112,7 +90,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  _remainingCredits,
+                  " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? " N/A"}",
                   style: GoogleFonts.prompt(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,

@@ -33,9 +33,9 @@ class _AccountScreenState extends State<AccountScreen> {
     var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
-      displayName = await lineProvider.getDisplayName() ?? "No Name";
-      userId = await lineProvider.getUserId() ?? "No UID";
-      email = await lineProvider.getLineEmail() ?? "No email found";
+      displayName = lineProvider.getDisplayName ?? "No Name";
+      userId = lineProvider.getUserId ?? "No UID";
+      email = lineProvider.getLineEmail ?? "No email found";
     } else if (googleProvider.isLoggedIn) {
       displayName = googleUser?.displayName ?? 'No Name';
       userId = googleUser?.uid ?? 'No UID';
