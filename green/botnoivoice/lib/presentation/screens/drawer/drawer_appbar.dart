@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
@@ -167,8 +169,10 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () async {
-              await launchUrlString('https://voice.botnoi.ai/payment',
-                  mode: LaunchMode.platformDefault);
+              if (Platform.isAndroid) {
+                await launchUrlString('https://voice.botnoi.ai/payment',
+                    mode: LaunchMode.platformDefault);
+              }
             },
           ),
         ],

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
@@ -70,8 +72,10 @@ class _AppBarTopState extends State<AppBarTop> {
           margin: EdgeInsets.only(right: 10.w),
           child: InkWell(
             onTap: () async {
-              const url = 'https://voice.botnoi.ai/payment';
-              await launchUrlString(url, mode: LaunchMode.platformDefault);
+              if (Platform.isAndroid) {
+                await launchUrlString('https://voice.botnoi.ai/payment',
+                    mode: LaunchMode.platformDefault);
+              }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

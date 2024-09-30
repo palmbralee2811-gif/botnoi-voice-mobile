@@ -30,6 +30,7 @@ class LineLoginProvider with ChangeNotifier {
       _lineEmail = loginResult.accessToken.email;
       _isLoggedIn = true;
       await _getProfile();
+      _logger.i("User signed in with LINE successfully.");
       notifyListeners(); // Notify listeners only once when login state changes
     } on PlatformException catch (e, stackTrace) {
       _logger.e('Login Error: ${e.message}', error: e, stackTrace: stackTrace);
