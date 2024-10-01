@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
@@ -35,6 +36,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PermissionProvider()),
         ChangeNotifierProvider(create: (_) => LineLoginProvider()),
         ChangeNotifierProvider(create: (_) => LineTokenProvider()),
+        ChangeNotifierProvider(create: (_) => EmailLoginProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

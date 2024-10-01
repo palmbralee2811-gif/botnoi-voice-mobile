@@ -44,6 +44,9 @@ class _InitScreenState extends State<InitScreen> {
           .loadRemainingCredits();
     }
 
+    //TODO: Check if the user is logged in
+    //TODO: Load Tokens
+
     setState(() {
       _initialized = true;
     });

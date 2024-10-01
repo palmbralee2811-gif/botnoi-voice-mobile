@@ -305,9 +305,12 @@ class _HomeScreenState extends State<HomeScreen> {
     logger.i("language: $language");
     logger.i("Google-credentialsToken: $googleCredentialsToken");
     logger.i("LINE-credentialsToken: $lineCredentialsToken");
-
-    String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio"; // For Debugging
-    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio"; // For Production
+    
+    // For Debugging
+    String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+    
+    // For Production
+    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
 
     Map<String, dynamic> payload = {
       "text": text,

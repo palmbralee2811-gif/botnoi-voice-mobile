@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
-class GoogleTokenProvider extends ChangeNotifier {
+class EmailTokenProvider extends ChangeNotifier {
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
@@ -24,10 +24,7 @@ class GoogleTokenProvider extends ChangeNotifier {
   /// Get the _jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
-    String? idToken =
-        await Provider.of<GoogleLoginProvider>(context, listen: false)
-            .user
-            ?.getIdToken();
+    String? idToken = Provider.of<EmailLoginProvider>(context, listen: false).idToken;
     if (idToken == null) return;
 
     // Get the _jwtToken from the Firebase API
@@ -87,7 +84,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     }
   }
 
-  // Get the credentials token using _jwtToken
+  /// Get the credentials token using _jwtToken
   Future<void> loadCredentials() async {
     // Check if _jwtToken exists
     if (_jwtToken == null) return;
