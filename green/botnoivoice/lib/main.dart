@@ -10,6 +10,7 @@ import 'package:botnoivoice/presentation/providers/permission/permission_provide
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 
@@ -48,6 +49,9 @@ class BotnoiVoiceApp extends StatelessWidget {
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
               useMaterial3: true,
+              textTheme: GoogleFonts.promptTextTheme(
+                Theme.of(context).textTheme,
+              ),
             ),
             home: const AuthChecker(),
           );

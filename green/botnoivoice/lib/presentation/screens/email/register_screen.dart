@@ -1,7 +1,8 @@
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
+import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,100 +15,215 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  // State variables for showing/hiding passwords
+  // State variable for showing/hiding the password for both fields
   bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    final emailLoginProvider = Provider.of<EmailLoginProvider>(context);
+    // ตั้งค่า Status Bar ให้เป็นสีโปร่งใส
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('สมัครสมาชิก')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'อีเมล *'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) => value!.isEmpty ? 'โปรดใส่อีเมลของคุณ' : null,
-              ),
-              const SizedBox(height: 16.0),
-              // TextFormField for password with show/hide button
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'รหัสผ่าน *',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+      extendBodyBehindAppBar: true, // ทำให้ AppBar ขยายตัวไปอยู่ด้านบนสุด
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, // โปร่งใส
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context); // กลับไปที่หน้าจอก่อนหน้า
+          },
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFFB1E9FD),
+              Color(0xFFF9D8FD)
+            ], // สีพื้นหลังแบบ gradient
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding:
+                  EdgeInsets.all(24.w), // ใช้ screenutil เพื่อปรับขนาดตามหน้าจอ
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //TODO: Change This Text
+                    Text(
+                      'สมัครใช้งาน',
+                      style: TextStyle(
+                        fontSize: 24.sp, // ขนาดฟอนต์ที่ปรับให้รองรับทุกหน้าจอ
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF00796B),
+                      ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                  ),
-                ),
-                obscureText: !_isPasswordVisible,
-                validator: (value) => value!.length < 6 ? 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' : null,
-              ),
-              const SizedBox(height: 16.0),
-              // TextFormField for confirm password with show/hide button
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'ยืนยันรหัสผ่าน *',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    SizedBox(height: 8.h),
+                    //TODO: Change This Text
+                    Text(
+                      'กรุณากรอกข้อมูลของคุณเพื่อสมัครใช้งาน',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.grey,
+                      ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                      });
-                    },
-                  ),
+                    SizedBox(height: 32.h),
+                    // Email input field
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'อีเมล',
+                        prefixIcon: Icon(Icons.email,
+                            size: 24.w), // ขนาดไอคอนที่ปรับตามหน้าจอ
+                        filled: true,
+                        fillColor: Colors.white, // ปรับสีพื้นหลังเป็นสีขาว
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) =>
+                          value!.isEmpty ? 'โปรดใส่อีเมลของคุณ' : null,
+                    ),
+                    SizedBox(height: 16.h),
+                    // Password input field
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'รหัสผ่าน',
+                        prefixIcon: Icon(Icons.lock, size: 24.w),
+                        filled: true,
+                        fillColor: Colors.white, // ปรับสีพื้นหลังเป็นสีขาว
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            size: 24.w,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      obscureText: !_isPasswordVisible,
+                      validator: (value) =>
+                          value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
+                    ),
+                    SizedBox(height: 16.h),
+                    // Confirm password input field
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: InputDecoration(
+                        labelText: 'ยืนยันรหัสผ่าน',
+                        prefixIcon: Icon(Icons.lock, size: 24.w),
+                        filled: true,
+                        fillColor: Colors.white, // ปรับสีพื้นหลังเป็นสีขาว
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            size: 24.w,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                      obscureText: !_isPasswordVisible,
+                      validator: (value) => value != _passwordController.text
+                          ? 'รหัสผ่านไม่ตรงกัน'
+                          : null,
+                    ),
+                    SizedBox(height: 16.h),
+                    //TODO: Change This Button UI
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 60.w, vertical: 15.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          // TODO: Implement register logic
+                        }
+                      },
+                      child: Text(
+                        'สมัครใช้งาน',
+                        style: TextStyle(fontSize: 18.sp),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context); // กลับไปที่หน้าจอเข้าสู่ระบบ
+                      },
+                      child: Text(
+                        'กลับไปที่เข้าสู่ระบบ',
+                        style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Divider(
+                            thickness: 1.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          child:
+                              Text('หรือ', style: TextStyle(fontSize: 14.sp)),
+                        ),
+                        const Expanded(
+                          child: Divider(
+                            thickness: 1.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+                    const LineLoginButton(),
+                    SizedBox(height: 16.h),
+                    const GoogleLoginButton(),
+                  ],
                 ),
-                obscureText: !_isConfirmPasswordVisible,
-                validator: (value) => value != _passwordController.text ? 'รหัสผ่านไม่ตรงกัน' : null,
               ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    emailLoginProvider.registerWithEmailPassword(
-                      _emailController.text.trim(),
-                      _passwordController.text.trim(),
-                      _confirmPasswordController.text.trim(),
-                    );
-                  }
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailLoginScreen()));
-                },
-                child: const Text('สมัครสมาชิก'),
-              ),
-              const SizedBox(height: 16.0),
-              if (emailLoginProvider.errorMessage != null) ...[
-                Text(
-                  emailLoginProvider.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ],
-              const SizedBox(height: 16.0),
-              TextButton(
-                onPressed: () {
-                  // กลับไปหน้าเข้าสู่ระบบ
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailLoginScreen()));
-                },
-                child: const Text('มีบัญชีผู้ใช้อยู่แล้ว? เข้าสู่ระบบ'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
