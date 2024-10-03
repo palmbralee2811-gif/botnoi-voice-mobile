@@ -25,12 +25,14 @@ class _AccountScreenState extends State<AccountScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async => await _loadUserInfo());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) async => await _loadUserInfo());
   }
 
   Future<void> _loadUserInfo() async {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "No Name";
@@ -48,7 +50,8 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,

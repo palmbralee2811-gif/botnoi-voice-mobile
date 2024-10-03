@@ -1,20 +1,15 @@
 import 'package:botnoivoice/presentation/screens/login/email_login_button.dart';
 import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
 import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
-import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_sign_in_screen.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 5.w, bottom: 10.h),
-                      child: GradientTextSignInScreen(
+                      child: GradientTextStyle(
                         'เปลี่ยนข้อความเป็นเสียง',
                         gradient: const LinearGradient(
                           colors: [
@@ -113,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     left: 20.w,
                     bottom: 13.h,
                   ),
-                  child: GradientTextSignInScreen(
+                  child: GradientTextStyle(
                     'บอทน้อย',
                     gradient: const LinearGradient(
                       colors: [
@@ -130,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 20.w),
-                  child: GradientTextSignInScreen(
+                  child: GradientTextStyle(
                     'ว้อยส์',
                     gradient: const LinearGradient(
                       colors: [

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class GradientTextSignInScreen extends StatelessWidget {
-  const GradientTextSignInScreen(
+class GradientTextAlign extends StatelessWidget {
+  const GradientTextAlign(
     this.text, {
     super.key,
     required this.gradient,
-    required this.style,
+    required this.style, required TextAlign textAlign,
   });
 
   final String text;

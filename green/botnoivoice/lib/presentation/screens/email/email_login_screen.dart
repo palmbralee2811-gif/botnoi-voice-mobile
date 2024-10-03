@@ -1,4 +1,6 @@
 import 'package:botnoivoice/presentation/widgets/checkbox/custom_checkbox_widget.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +43,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         backgroundColor: Colors.transparent, // โปร่งใส
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -62,25 +64,38 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start, // ชิดขอบซ้าย
                   children: [
-                    //TODO: Change This Text
-                    Text(
+                    GradientTextAlign(
                       'เข้าสู่ระบบ',
-                      style: TextStyle(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF00796B),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF9340FF),
+                          Color(0xFF34BDFA),
+                        ],
                       ),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20.sp,
+                        decoration: TextDecoration.none,
+                      ),
+                      textAlign: TextAlign.left, // ชิดซ้าย
                     ),
                     SizedBox(height: 8.h),
-                    //TODO: Change This Text
-                    Text(
+                    GradientTextAlign(
                       'สวัสดี, Botnoi Voice ยินดีต้อนรับ',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.grey,
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF9340FF),
+                          Color(0xFF34BDFA),
+                        ],
                       ),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                        decoration: TextDecoration.none,
+                      ),
+                      textAlign: TextAlign.left, // ชิดซ้าย
                     ),
                     SizedBox(height: 32.h),
                     TextFormField(
@@ -129,18 +144,12 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       validator: (value) =>
                           value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
                     ),
-                    SizedBox(height: 8.h),
-                    const CustomCheckboxWidget(),
+                    // ห้ามลบส่วนนี้
+                    // SizedBox(height: 8.h),
+                    // const CustomCheckboxWidget(),
                     SizedBox(height: 16.h),
-                    //TODO: Change This Button UI
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 60.w, vertical: 15.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
+                    GradientTextButton(
+                      text: 'เข้าสู่ระบบ',
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           emailLoginProvider
@@ -152,46 +161,74 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             if (emailLoginProvider.currentUser != null) {
                               // TODO: Navigate to home screen or auth checker
                             }
+                            //TODO AlertNotificationDialog When Login Successfuly or Error
                           });
                         }
                       },
-                      child: Text(
-                        'เข้าสู่ระบบ',
-                        style: TextStyle(fontSize: 18.sp),
-                      ),
                     ),
                     SizedBox(height: 16.h),
+
+                    // ห้ามลืมส่วนนี้
+                    // TextButton(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => const RegisterScreen()),
+                    //     );
+                    //     // Navigator.push(
+                    //     //   context,
+                    //     //   MaterialPageRoute(
+                    //     //       builder: (context) => ResetPasswordScreen()),
+                    //     // );
+                    //     // 'ลืมรหัสผ่าน?'
+                    //   },
+                    //   child: Text(
+                    //     'สมัครใช้งาน',
+                    //     style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                    //   ),
+                    // ),
+
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ResetPasswordScreen()),
+                              builder: (context) => const RegisterScreen()),
                         );
                       },
-                      child: Text(
-                        'ลืมรหัสผ่าน?',
-                        style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                      child: Align(
+                        alignment: Alignment.center, // จัดตำแหน่งให้ตรงกลาง
+                        child: Text(
+                          'สมัครใช้งาน',
+                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                        ),
                       ),
                     ),
+
                     SizedBox(height: 16.h),
                     Row(
                       children: [
                         const Expanded(
                           child: Divider(
                             thickness: 1.0,
-                            color: Colors.grey,
+                            color: Color(0xFF34BDFA),
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
-                          child:
-                              Text('หรือ', style: TextStyle(fontSize: 14.sp)),
+                          child: Text(
+                            'หรือ',
+                            style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey.shade600),
+                          ),
                         ),
                         const Expanded(
                           child: Divider(
                             thickness: 1.0,
-                            color: Colors.grey,
+                            color: Color(0xFF34BDFA),
                           ),
                         ),
                       ],
@@ -201,17 +238,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     SizedBox(height: 16.h),
                     const GoogleLoginButton(),
                     SizedBox(height: 16.h),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterScreen()),
-                        );
-                      },
-                      child: Text('สมัครใช้งาน',
-                          style: TextStyle(fontSize: 14.sp)),
-                    ),
                   ],
                 ),
               ),

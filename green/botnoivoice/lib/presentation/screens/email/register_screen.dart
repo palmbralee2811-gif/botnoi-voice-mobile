@@ -1,3 +1,5 @@
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,7 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.transparent, // โปร่งใส
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () {
             Navigator.pop(context); // กลับไปที่หน้าจอก่อนหน้า
           },
@@ -63,23 +65,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // ชิดซ้ายทั้งหมด
                   children: [
-                    //TODO: Change This Text
-                    Text(
-                      'สมัครใช้งาน',
-                      style: TextStyle(
-                        fontSize: 24.sp, // ขนาดฟอนต์ที่ปรับให้รองรับทุกหน้าจอ
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF00796B),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GradientTextStyle(
+                        'สมัครใช้งาน',
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF9340FF),
+                            Color(0xFF34BDFA),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.sp,
+                          decoration: TextDecoration.none,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8.h),
-                    //TODO: Change This Text
-                    Text(
-                      'กรุณากรอกข้อมูลของคุณเพื่อสมัครใช้งาน',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.grey,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GradientTextStyle(
+                        'กรุณากรอกข้อมูลของคุณเพื่อสมัครใช้งาน',
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF9340FF),
+                            Color(0xFF34BDFA),
+                          ],
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                          decoration: TextDecoration.none,
+                        ),
                       ),
                     ),
                     SizedBox(height: 32.h),
@@ -165,33 +186,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : null,
                     ),
                     SizedBox(height: 16.h),
-                    //TODO: Change This Button UI
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 60.w, vertical: 15.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
+                    GradientTextButton(
+                      text: 'สมัครใช้งาน',
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // TODO: Implement register logic
                         }
+                        //TODO: AlertNotificationDialog When Register Successfuly or Error, Green & Red
                       },
-                      child: Text(
-                        'สมัครใช้งาน',
-                        style: TextStyle(fontSize: 18.sp),
-                      ),
                     ),
                     SizedBox(height: 16.h),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context); // กลับไปที่หน้าจอเข้าสู่ระบบ
                       },
-                      child: Text(
-                        'กลับไปที่เข้าสู่ระบบ',
-                        style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                      child: Align(
+                        alignment: Alignment.center, // จัดตำแหน่งให้ตรงกลาง
+                        child: Text(
+                          'กลับไปที่เข้าสู่ระบบ',
+                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                        ),
                       ),
                     ),
                     SizedBox(height: 16.h),
@@ -200,18 +214,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const Expanded(
                           child: Divider(
                             thickness: 1.0,
-                            color: Colors.grey,
+                            color: Color(0xFF34BDFA),
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.w),
-                          child:
-                              Text('หรือ', style: TextStyle(fontSize: 14.sp)),
+                          child: Text('หรือ',
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade600)),
                         ),
                         const Expanded(
                           child: Divider(
                             thickness: 1.0,
-                            color: Colors.grey,
+                            color: Color(0xFF34BDFA),
                           ),
                         ),
                       ],
