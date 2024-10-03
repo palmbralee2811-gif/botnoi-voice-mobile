@@ -1,3 +1,5 @@
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -44,8 +46,14 @@ class _InitScreenState extends State<InitScreen> {
           .loadRemainingCredits();
     }
 
-    //TODO: Check if the user is logged in
-    //TODO: Load Tokens
+    if (Provider.of<EmailLoginProvider>(context, listen: false).isLoggedIn) {
+      await Provider.of<EmailTokenProvider>(context, listen: false)
+          .loadJwtToken(context);
+      await Provider.of<EmailTokenProvider>(context, listen: false)
+          .loadCredentials();
+      await Provider.of<EmailTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
     setState(() {
       _initialized = true;

@@ -28,10 +28,10 @@ class EmailTokenProvider extends ChangeNotifier {
     if (idToken == null) return;
 
     // Get the _jwtToken from the Firebase API
-    String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
+    String url = 'https://api-voice.botnoi.ai/api/dashboard/sign_in';
     
     Map<String, String> headers = {
-      'Botnoi-Token': 'Bearer $idToken',
+      'firebase-token': 'Bearer $idToken',
       'Content-Type': 'application/json'
     };
     try {

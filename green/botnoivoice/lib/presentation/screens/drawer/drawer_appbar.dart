@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
@@ -33,6 +34,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
 
   Future<void> _loadUserInfo() async {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       String? lineDisplayName = lineProvider.getDisplayName;
@@ -49,6 +51,12 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
         displayName = googleUser?.displayName ?? 'No Name';
         email = getUserEmail(googleUser) ?? 'No email found';
         profilePictureUrl = googleUser?.photoURL ?? '';
+      });
+    } else if (emailProvider.isLoggedIn) {
+      setState(() {
+        displayName = emailProvider.currentUser?.displayName ?? 'No Name';
+        email = emailProvider.currentUser?.email ?? 'No email found';
+        profilePictureUrl = emailProvider.currentUser?.photoURL ?? '';
       });
     }
   }

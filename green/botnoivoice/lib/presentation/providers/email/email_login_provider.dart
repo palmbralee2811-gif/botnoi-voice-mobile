@@ -12,7 +12,11 @@ class EmailLoginProvider with ChangeNotifier {
   String? _idToken;
   bool _isLoggedIn = false;
 
-  /// Register user with email and password
+  bool get isAuthenticated {
+    return _auth.currentUser != null;
+  }
+
+  /// Register user with email and password, and send verification email
   Future<void> registerWithEmailPassword(
       String email, String password, String confirmPassword) async {
     if (password != confirmPassword) {
@@ -23,17 +27,22 @@ class EmailLoginProvider with ChangeNotifier {
     }
 
     try {
-      await _auth.createUserWithEmailAndPassword(
+      // Register user
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       _errorMessage = null;
       _logger.i("User registered successfully with email: $email");
+
+      // Send verification email
+      await userCredential.user?.sendEmailVerification();
+      _logger.i("Verification email sent to: $email");
+
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger
-          .e("Error registering user with email: $email, Error: ${e.message}");
+      _logger.e("Error registering user with email: $email, Error: ${e.message}");
       notifyListeners();
     }
   }
@@ -45,6 +54,14 @@ class EmailLoginProvider with ChangeNotifier {
           email: email, password: password);
       _errorMessage = null;
 
+      // Check if email is verified
+      if (!userCredential.user!.emailVerified) {
+        _errorMessage = "Please verify your email before logging in.";
+        _logger.w("User email is not verified: $email");
+        notifyListeners();
+        return;
+      }
+
       // Get ID Token from user
       String? token = await userCredential.user?.getIdToken();
       _idToken = token;
@@ -54,13 +71,12 @@ class EmailLoginProvider with ChangeNotifier {
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger
-          .e("Error logging in user with email: $email, Error: ${e.message}");
+      _logger.e("Error logging in user with email: $email, Error: ${e.message}");
       notifyListeners();
     }
   }
 
-  /// Reset password by sending a password reset email
+  /// Send password reset email
   Future<void> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -77,15 +93,13 @@ class EmailLoginProvider with ChangeNotifier {
   /// Confirm password reset with the code from the email
   Future<void> confirmPasswordReset(String code, String newPassword) async {
     try {
-      // Confirm the password reset with the provided code and new password
       await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
       _errorMessage = null;
       _logger.i("Password has been reset successfully.");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger
-          .e("Error resetting password with code: $code, Error: ${e.message}");
+      _logger.e("Error resetting password with code: $code, Error: ${e.message}");
       notifyListeners();
     }
   }

@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -31,8 +32,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> _loadUserInfo() async {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "No Name";
@@ -42,6 +43,10 @@ class _AccountScreenState extends State<AccountScreen> {
       displayName = googleUser?.displayName ?? 'No Name';
       userId = googleUser?.uid ?? 'No UID';
       email = getUserEmail(googleUser) ?? 'No email found';
+    } else if (emailProvider.isLoggedIn) {
+      displayName = emailProvider.currentUser?.displayName ?? "No Name";
+      userId = emailProvider.currentUser?.uid ?? "No UID";
+      email = emailProvider.currentUser?.email ?? "No email found";
     }
 
     setState(() {}); // Update UI
@@ -50,8 +55,8 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -94,6 +99,10 @@ class _AccountScreenState extends State<AccountScreen> {
 
                 if (googleProvider.isLoggedIn) {
                   googleProvider.signOut(context);
+                }
+
+                if (emailProvider.isLoggedIn) {
+                  emailProvider.signOut(context);
                 }
 
                 Navigator.popUntil(context, (r) => r.isFirst);

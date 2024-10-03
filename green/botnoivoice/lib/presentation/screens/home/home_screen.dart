@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/usecases/random_string.dart';
@@ -296,19 +297,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Generate audio from text
   Future<String> generateAudio(String text) async {
-    speakerId = Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ?? '1';
-    String language = Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ?? 'th';
-    String? googleCredentialsToken = Provider.of<GoogleTokenProvider>(context, listen: false).getCredentialsToken;
-    String? lineCredentialsToken = Provider.of<LineTokenProvider>(context, listen: false).getCredentialsToken;
+    speakerId =
+        Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
+            '1';
+    String language =
+        Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
+            'th';
+    String? googleCredentialsToken =
+        Provider.of<GoogleTokenProvider>(context, listen: false)
+            .getCredentialsToken;
+    String? lineCredentialsToken =
+        Provider.of<LineTokenProvider>(context, listen: false)
+            .getCredentialsToken;
+    String? emailCredentialsToken =
+        Provider.of<EmailTokenProvider>(context, listen: false)
+            .getCredentialsToken;
 
     logger.i("speakerId: $speakerId");
     logger.i("language: $language");
     logger.i("Google-credentialsToken: $googleCredentialsToken");
     logger.i("LINE-credentialsToken: $lineCredentialsToken");
-    
+    logger.i("Email-credentialsToken: $emailCredentialsToken");
+
     // For Debugging
-    String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
-    
+    String url =
+        "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+
     // For Production
     // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
 
@@ -323,11 +337,22 @@ class _HomeScreenState extends State<HomeScreen> {
       "page": "mobile"
     };
 
+    // Determine which token to use in the headers
+    String? selectedToken;
+    if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
+      selectedToken = lineCredentialsToken;
+    } else if (googleCredentialsToken != null &&
+        googleCredentialsToken.isNotEmpty) {
+      selectedToken = googleCredentialsToken;
+    } else if (emailCredentialsToken != null &&
+        emailCredentialsToken.isNotEmpty) {
+      selectedToken = emailCredentialsToken;
+    } else {
+      selectedToken = ''; // Default or fallback if no token is found
+    }
+
     Map<String, String> headers = {
-      'Botnoi-Token':
-          Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn
-              ? lineCredentialsToken ?? ''
-              : googleCredentialsToken ?? '',
+      'Botnoi-Token': selectedToken ?? '',
       'Content-Type': 'application/json'
     };
 
