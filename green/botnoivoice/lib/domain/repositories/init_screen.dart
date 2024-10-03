@@ -28,23 +28,23 @@ class _InitScreenState extends State<InitScreen> {
 
   /// Initialize the app
   Future<void> initApp() async {
-    if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadJwtToken(context);
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadCredentials();
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
-    }
+    // if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
+    //   await Provider.of<LineTokenProvider>(context, listen: false)
+    //       .loadJwtToken(context);
+    //   await Provider.of<LineTokenProvider>(context, listen: false)
+    //       .loadCredentials();
+    //   await Provider.of<LineTokenProvider>(context, listen: false)
+    //       .loadRemainingCredits();
+    // }
 
-    if (Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn) {
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadJwtToken(context);
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadCredentials();
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
-    }
+    // if (Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn) {
+    //   await Provider.of<GoogleTokenProvider>(context, listen: false)
+    //       .loadJwtToken(context);
+    //   await Provider.of<GoogleTokenProvider>(context, listen: false)
+    //       .loadCredentials();
+    //   await Provider.of<GoogleTokenProvider>(context, listen: false)
+    //       .loadRemainingCredits();
+    // }
 
     if (Provider.of<EmailLoginProvider>(context, listen: false).isLoggedIn) {
       await Provider.of<EmailTokenProvider>(context, listen: false)

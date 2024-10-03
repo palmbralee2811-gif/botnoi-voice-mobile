@@ -1,4 +1,6 @@
+import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/widgets/checkbox/custom_checkbox_widget.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +27,39 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
   bool _isPasswordVisible = false;
 
+  void _loginUser() {
+    final emailLoginProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      emailLoginProvider
+          .loginWithEmailPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      )
+          .then((_) {
+        final errorMessage =
+            Provider.of<EmailLoginProvider>(context, listen: false)
+                .errorMessage;
+        if (errorMessage != null && errorMessage.isNotEmpty) {
+          AlertNotificationDialog(
+            context: context,
+            text: errorMessage,
+          ).showAsError();
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AuthChecker(),
+            ),
+          );
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final emailLoginProvider = Provider.of<EmailLoginProvider>(context);
+    // final emailLoginProvider = Provider.of<EmailLoginProvider>(context);
 
     // ทำให้แถบสถานะเป็นสีโปร่งใส
     SystemChrome.setSystemUIOverlayStyle(
@@ -151,23 +183,10 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     GradientTextButton(
                       text: 'เข้าสู่ระบบ',
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          emailLoginProvider
-                              .loginWithEmailPassword(
-                            _emailController.text.trim(),
-                            _passwordController.text.trim(),
-                          )
-                              .then((_) {
-                            if (emailLoginProvider.currentUser != null) {
-                              // TODO: Navigate to home screen or auth checker
-                            }
-                            //TODO AlertNotificationDialog When Login Successfuly or Error
-                          });
-                        }
+                        _loginUser();
                       },
                     ),
                     SizedBox(height: 16.h),
-
                     // ห้ามลืมส่วนนี้
                     // TextButton(
                     //   onPressed: () {

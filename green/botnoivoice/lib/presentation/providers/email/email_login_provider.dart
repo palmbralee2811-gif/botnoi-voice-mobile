@@ -28,7 +28,8 @@ class EmailLoginProvider with ChangeNotifier {
 
     try {
       // Register user
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -38,11 +39,13 @@ class EmailLoginProvider with ChangeNotifier {
       // Send verification email
       await userCredential.user?.sendEmailVerification();
       _logger.i("Verification email sent to: $email");
+      _errorMessage = "Verification email sent to: $email";
 
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger.e("Error registering user with email: $email, Error: ${e.message}");
+      _logger
+          .e("Error registering user with email: $email, Error: ${e.message}");
       notifyListeners();
     }
   }
@@ -56,8 +59,12 @@ class EmailLoginProvider with ChangeNotifier {
 
       // Check if email is verified
       if (!userCredential.user!.emailVerified) {
-        _errorMessage = "Please verify your email before logging in.";
+        _errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ.";
         _logger.w("User email is not verified: $email");
+        // Send verification email
+        //TODO: ถ้ายังไม่ยืนยันอีเมล แล้ว Login จะส่งจดหมายให้ยืนยันก่อน
+        //TODO: คลิกปุ่ม Login ครั้งแรก จะส่งจดหมาย แต่ถ้า คลิกปุ่มครั้งที่สอง ติดต่อกัน จะโดนบล็อค
+        await userCredential.user?.sendEmailVerification();
         notifyListeners();
         return;
       }
@@ -71,7 +78,8 @@ class EmailLoginProvider with ChangeNotifier {
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger.e("Error logging in user with email: $email, Error: ${e.message}");
+      _logger
+          .e("Error logging in user with email: $email, Error: ${e.message}");
       notifyListeners();
     }
   }
@@ -99,7 +107,8 @@ class EmailLoginProvider with ChangeNotifier {
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger.e("Error resetting password with code: $code, Error: ${e.message}");
+      _logger
+          .e("Error resetting password with code: $code, Error: ${e.message}");
       notifyListeners();
     }
   }

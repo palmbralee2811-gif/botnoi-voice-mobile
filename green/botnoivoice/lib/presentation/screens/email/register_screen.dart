@@ -1,3 +1,5 @@
+import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart'; // Import the EmailLoginScreen
+import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
 import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
+import 'package:provider/provider.dart'; // Import for using Provider
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart'; // Import EmailLoginProvider
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,23 +24,83 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  // State variable for showing/hiding the password for both fields
   bool _isPasswordVisible = false;
+
+  // Function to show confirmation dialog
+  Future<void> _showConfirmationDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('ยืนยันการสมัครสมาชิก'),
+          content: const Text('คุณต้องการสมัครสมาชิกใช่หรือไม่?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('ยกเลิก'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: const Text('ยืนยัน'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Close the dialog
+                _registerUser(); // Call the function to register the user
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to handle user registration
+  void _registerUser() {
+    final emailLoginProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      emailLoginProvider
+          .registerWithEmailPassword(
+              _emailController.text.trim(),
+              _passwordController.text.trim(),
+              _confirmPasswordController.text.trim())
+          .then((_) {
+        final errorMessage =
+            Provider.of<EmailLoginProvider>(context, listen: false)
+                .errorMessage;
+
+        if (errorMessage != null && errorMessage.isNotEmpty) {
+          // ถ้ามี error ให้แสดง AlertNotificationDialog
+          AlertNotificationDialog(
+            context: context,
+            text: errorMessage,
+          ).showAsError();
+        } else {
+          // ถ้าไม่มี error ให้ Navigate ไปที่ EmailLoginScreen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const EmailLoginScreen(),
+            ),
+          );
+        }
+      }).catchError((error) {
+        // กรณีที่เกิดข้อผิดพลาดในขั้นตอนการสมัคร
+        AlertNotificationDialog(
+          context: context,
+          text: "เกิดข้อผิดพลาด! กรุณาลองใหม่อีกครั้ง",
+        ).showAsError();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // ตั้งค่า Status Bar ให้เป็นสีโปร่งใส
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
-
     return Scaffold(
-      extendBodyBehindAppBar: true, // ทำให้ AppBar ขยายตัวไปอยู่ด้านบนสุด
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // โปร่งใส
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
@@ -48,10 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFFB1E9FD),
-              Color(0xFFF9D8FD)
-            ], // สีพื้นหลังแบบ gradient
+            colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -59,24 +120,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding:
-                  EdgeInsets.all(24.w), // ใช้ screenutil เพื่อปรับขนาดตามหน้าจอ
+              padding: EdgeInsets.all(24.w),
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // ชิดซ้ายทั้งหมด
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GradientTextStyle(
                         'สมัครใช้งาน',
                         gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF9340FF),
-                            Color(0xFF34BDFA),
-                          ],
+                          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -91,10 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: GradientTextStyle(
                         'กรุณากรอกข้อมูลของคุณเพื่อสมัครใช้งาน',
                         gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF9340FF),
-                            Color(0xFF34BDFA),
-                          ],
+                          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -104,18 +156,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     SizedBox(height: 32.h),
-                    // Email input field
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'อีเมล',
-                        prefixIcon: Icon(Icons.email,
-                            size: 24.w), // ขนาดไอคอนที่ปรับตามหน้าจอ
+                        prefixIcon: Icon(Icons.email, size: 24.w),
                         filled: true,
-                        fillColor: Colors.white, // ปรับสีพื้นหลังเป็นสีขาว
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                          borderSide: BorderSide.none,
                         ),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -123,17 +173,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           value!.isEmpty ? 'โปรดใส่อีเมลของคุณ' : null,
                     ),
                     SizedBox(height: 16.h),
-                    // Password input field
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: 'รหัสผ่าน',
                         prefixIcon: Icon(Icons.lock, size: 24.w),
                         filled: true,
-                        fillColor: Colors.white, // ปรับสีพื้นหลังเป็นสีขาว
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                          borderSide: BorderSide.none,
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -154,17 +203,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
                     ),
                     SizedBox(height: 16.h),
-                    // Confirm password input field
                     TextFormField(
                       controller: _confirmPasswordController,
                       decoration: InputDecoration(
                         labelText: 'ยืนยันรหัสผ่าน',
                         prefixIcon: Icon(Icons.lock, size: 24.w),
                         filled: true,
-                        fillColor: Colors.white, // ปรับสีพื้นหลังเป็นสีขาว
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                          borderSide: BorderSide.none,
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -190,18 +238,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       text: 'สมัครใช้งาน',
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // TODO: Implement register logic
+                          // Show confirmation dialog before registering
+                          _showConfirmationDialog(context);
                         }
-                        //TODO: AlertNotificationDialog When Register Successfuly or Error, Green & Red
                       },
                     ),
                     SizedBox(height: 16.h),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context); // กลับไปที่หน้าจอเข้าสู่ระบบ
+                        Navigator.pop(context);
                       },
                       child: Align(
-                        alignment: Alignment.center, // จัดตำแหน่งให้ตรงกลาง
+                        alignment: Alignment.center,
                         child: Text(
                           'กลับไปที่เข้าสู่ระบบ',
                           style: TextStyle(color: Colors.grey, fontSize: 14.sp),

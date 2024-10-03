@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
@@ -76,6 +77,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn) {
       await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
+    if (Provider.of<EmailLoginProvider>(context, listen: false).isLoggedIn) {
+      await Provider.of<EmailTokenProvider>(context, listen: false)
           .loadRemainingCredits();
     }
   }
@@ -320,11 +325,10 @@ class _HomeScreenState extends State<HomeScreen> {
     logger.i("Email-credentialsToken: $emailCredentialsToken");
 
     // For Debugging
-    String url =
-        "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
+    // String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
 
     // For Production
-    // String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
+    String url = "https://api-voice.botnoi.ai/openapi/v1/generate_audio";
 
     Map<String, dynamic> payload = {
       "text": text,
