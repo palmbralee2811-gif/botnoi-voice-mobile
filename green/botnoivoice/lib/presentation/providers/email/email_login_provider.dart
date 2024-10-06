@@ -12,10 +12,6 @@ class EmailLoginProvider with ChangeNotifier {
   String? _idToken;
   bool _isLoggedIn = false;
 
-  bool get isAuthenticated {
-    return _auth.currentUser != null;
-  }
-
   /// Register user with email and password, and send verification email
   Future<void> registerWithEmailPassword(
       String email, String password, String confirmPassword) async {
@@ -65,11 +61,12 @@ class EmailLoginProvider with ChangeNotifier {
         //TODO: ถ้ายังไม่ยืนยันอีเมล แล้ว Login จะส่งจดหมายให้ยืนยันก่อน
         //TODO: คลิกปุ่ม Login ครั้งแรก จะส่งจดหมาย แต่ถ้า คลิกปุ่มครั้งที่สอง ติดต่อกัน จะโดนบล็อค
         await userCredential.user?.sendEmailVerification();
+        _errorMessage = "ส่งอีเมลยืนยันไปที่: $email";
+        _logger.i("Verification email sent to: $email");
         notifyListeners();
         return;
       }
 
-      // Get ID Token from user
       String? token = await userCredential.user?.getIdToken();
       _idToken = token;
 
@@ -113,12 +110,6 @@ class EmailLoginProvider with ChangeNotifier {
     }
   }
 
-  /// Check if user is currently signed in
-  User? get currentUser {
-    _logger.d("Checking current user: ${_auth.currentUser?.email}");
-    return _auth.currentUser;
-  }
-
   /// Sign out
   Future<void> signOut(BuildContext context) async {
     try {
@@ -131,6 +122,17 @@ class EmailLoginProvider with ChangeNotifier {
     }
     notifyListeners(); // Update UI
   }
+
+  //TODO: Test this function on Monday
+  /// Check if user is currently signed in
+  String? get _currentUser {
+    _logger.d("Checking current user: ${_auth.currentUser?.email}");
+    return _auth.currentUser?.email;
+  }
+
+  //TODO: Test this function on Monday
+  /// Getter for current user is signed in
+  bool get isAuthenticated => _currentUser != null;
 
   /// Getter for error message
   String? get errorMessage => _errorMessage;

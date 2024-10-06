@@ -109,9 +109,9 @@ class LineTokenProvider extends ChangeNotifier {
     }
   }
 
-  /// Get the remaining credits
+  /// Getter for the remaining credits
   String? get getRemainingCredits => _remainingCredits;
 
-  /// Get the credentials token
+  /// Getter for the credentials token
   String? get getCredentialsToken => _credentialsToken;
 }

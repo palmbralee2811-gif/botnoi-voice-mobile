@@ -75,18 +75,18 @@ class LineLoginProvider with ChangeNotifier {
     }
   }
 
-  /// Get LINE ID Token Raw
+  /// Getter for LINE ID Token Raw
   String? get getIdTokenRaw => _idTokenRaw;
 
-  /// Get LINE user id from Get Profile Function
+  /// Getter for LINE user id from Get Profile Function
   String? get getUserId => _userId;
 
-  /// Get LINE user display name from Get Profile Function
+  /// Getter for LINE user display name from Get Profile Function
   String? get getDisplayName => _displayName;
 
-  /// Get LINE user profile picture url from Get Profile Function
+  /// Getter for LINE user profile picture url from Get Profile Function
   String? get getProfilePictureUrl => _profilePictureUrl;
 
-  /// Get LINE user email from Get Profile Function
+  /// Getter for LINE user email from Get Profile Function
   String? get getLineEmail => _lineEmail;
 }

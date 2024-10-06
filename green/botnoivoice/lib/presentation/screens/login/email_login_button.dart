@@ -16,7 +16,10 @@ class EmailLoginButton extends StatelessWidget {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailLoginScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EmailLoginScreen()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -55,5 +58,4 @@ class EmailLoginButton extends StatelessWidget {
       ],
     );
   }
-
 }

@@ -25,14 +25,15 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance
         .addPostFrameCallback((_) async => await _loadUserInfo());
   }
 
+  /// แยกฟังก์ชันสำหรับโหลดข้อมูลผู้ใช้
   Future<void> _loadUserInfo() async {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
@@ -49,15 +50,33 @@ class _AccountScreenState extends State<AccountScreen> {
       email = emailProvider.currentUser?.email ?? "No email found";
     }
 
-    setState(() {}); // Update UI
+    setState(() {}); // อัพเดต UI เมื่อข้อมูลถูกโหลดเสร็จสิ้น
+  }
+
+  /// ฟังก์ชันสำหรับการออกจากระบบ
+  Future<void> _signOut(BuildContext context) async {
+    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
+    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+
+    if (lineProvider.isLoggedIn) {
+      await lineProvider.signOutWithLine(context);
+    }
+
+    if (googleProvider.isLoggedIn) {
+      await googleProvider.signOut(context);
+    }
+
+    if (emailProvider.isLoggedIn) {
+      await emailProvider.signOut(context);
+    }
+
+    Navigator.popUntil(context, (r) => r.isFirst);
   }
 
   @override
   Widget build(BuildContext context) {
-    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
-    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -92,20 +111,8 @@ class _AccountScreenState extends State<AccountScreen> {
             const Spacer(),
             GradientTextButton(
               text: 'ออกจากระบบ',
-              onPressed: () {
-                if (lineProvider.isLoggedIn) {
-                  lineProvider.signOutWithLine(context);
-                }
-
-                if (googleProvider.isLoggedIn) {
-                  googleProvider.signOut(context);
-                }
-
-                if (emailProvider.isLoggedIn) {
-                  emailProvider.signOut(context);
-                }
-
-                Navigator.popUntil(context, (r) => r.isFirst);
+              onPressed: () async {
+                await _signOut(context); // เรียกใช้ฟังก์ชันออกจากระบบ
               },
             ),
             SizedBox(height: 16.h),

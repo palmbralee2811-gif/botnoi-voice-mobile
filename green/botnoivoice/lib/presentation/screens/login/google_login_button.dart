@@ -58,5 +58,4 @@ class GoogleLoginButton extends StatelessWidget {
       ],
     );
   }
-
 }

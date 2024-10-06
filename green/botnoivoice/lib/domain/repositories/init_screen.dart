@@ -9,7 +9,7 @@ import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// Check if the app is initialized
+/// ตรวจสอบว่าผู้ใช้เข้าสู่ระบบด้วยวิธีไหน (Google, LINE หรือ Email)
 class InitScreen extends StatefulWidget {
   const InitScreen({super.key});
 
@@ -26,27 +26,33 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
   }
 
-  /// Initialize the app
+  /// ฟังก์ชันสำหรับการเช็คว่า ผู้ใช้เข้าสู่ระบบด้วยวิธีไหน และโหลดข้อมูลที่จำเป็น
   Future<void> initApp() async {
-    // if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
-    //   await Provider.of<LineTokenProvider>(context, listen: false)
-    //       .loadJwtToken(context);
-    //   await Provider.of<LineTokenProvider>(context, listen: false)
-    //       .loadCredentials();
-    //   await Provider.of<LineTokenProvider>(context, listen: false)
-    //       .loadRemainingCredits();
-    // }
+    // ตรวจสอบการเข้าสู่ระบบด้วย LINE
+    final isLineLogin = Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn;
+    if (isLineLogin) {
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadJwtToken(context);
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadCredentials();
+      await Provider.of<LineTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
-    // if (Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn) {
-    //   await Provider.of<GoogleTokenProvider>(context, listen: false)
-    //       .loadJwtToken(context);
-    //   await Provider.of<GoogleTokenProvider>(context, listen: false)
-    //       .loadCredentials();
-    //   await Provider.of<GoogleTokenProvider>(context, listen: false)
-    //       .loadRemainingCredits();
-    // }
+    // ตรวจสอบการเข้าสู่ระบบด้วย Google
+    final isGoogleLogin = Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn;
+    if (isGoogleLogin) {
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadJwtToken(context);
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadCredentials();
+      await Provider.of<GoogleTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
-    if (Provider.of<EmailLoginProvider>(context, listen: false).isLoggedIn) {
+    // ตรวจสอบการเข้าสู่ระบบด้วย Email
+    final isEmailLogin = Provider.of<EmailLoginProvider>(context, listen: false).isLoggedIn;
+    if (isEmailLogin) {
       await Provider.of<EmailTokenProvider>(context, listen: false)
           .loadJwtToken(context);
       await Provider.of<EmailTokenProvider>(context, listen: false)
@@ -60,33 +66,14 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
-  //final PageController _pageController = PageController(initialPage: 0);
-
   @override
   Widget build(BuildContext context) {
     if (_initialized) {
       return const Scaffold(
-        // bottomNavigationBar: BottomNavBar(
-        //   onButtonTapped: (buttonIndex) {
-        //     _pageController.animateToPage(
-        //       buttonIndex,
-        //       duration: const Duration(milliseconds: 500),
-        //       curve: Curves.easeInOut,
-        //     );
-        //   },
-        // ),
-        //body: PageView(
-        //  controller: _pageController,
-        //  physics: const NeverScrollableScrollPhysics(),
-        //  children: const [
-        //    HomeScreen(),
-        //    // Scaffold(),
-        //  ],
-        //),
-        body: HomeScreen(),
+        body: HomeScreen(), // ไปยังหน้าหลักเมื่อข้อมูลโหลดเสร็จแล้ว
       );
     } else {
-      return const SplashScreen();
+      return const SplashScreen(); // แสดงหน้ารอโหลดข้อมูลก่อน
     }
   }
 }

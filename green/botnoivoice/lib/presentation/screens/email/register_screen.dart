@@ -3,7 +3,6 @@ import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialo
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
 import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
@@ -66,6 +65,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               _passwordController.text.trim(),
               _confirmPasswordController.text.trim())
           .then((_) {
+        
+        //TODO: Open Email App on Deveice when need to verify email after registration
+        //TODO: Alert Notification display for 10 seconds
+        //TODO: When registration is successful, clear vlue input form and Navigate to EmailLoginScreen
+        //TODO: Loading animation when processing registration
+
         final errorMessage =
             Provider.of<EmailLoginProvider>(context, listen: false)
                 .errorMessage;
@@ -252,7 +257,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         alignment: Alignment.center,
                         child: Text(
                           'กลับไปที่เข้าสู่ระบบ',
-                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                          style: TextStyle(color: Colors.grey.shade600, fontSize: 14.sp),
                         ),
                       ),
                     ),

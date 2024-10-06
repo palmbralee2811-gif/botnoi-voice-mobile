@@ -53,5 +53,4 @@ class LineLoginButton extends StatelessWidget {
       ],
     );
   }
-
 }

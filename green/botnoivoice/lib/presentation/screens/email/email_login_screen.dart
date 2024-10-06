@@ -1,5 +1,4 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
-import 'package:botnoivoice/presentation/widgets/checkbox/custom_checkbox_widget.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/register_screen.dart';
-import 'package:botnoivoice/presentation/screens/email/reset_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
 import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,53 +24,76 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
+  bool _isLoading = false; // สำหรับแสดงสถานะการประมวลผล
 
-  void _loginUser() {
+  void _loginUser() async {
     final emailLoginProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
+
     if (_formKey.currentState!.validate()) {
-      emailLoginProvider
-          .loginWithEmailPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      )
-          .then((_) {
-        final errorMessage =
-            Provider.of<EmailLoginProvider>(context, listen: false)
-                .errorMessage;
+      setState(() {
+        _isLoading = true; // เริ่มต้นการแสดงสถานะการโหลด
+      });
+
+      try {
+        await emailLoginProvider.loginWithEmailPassword(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+
+        final errorMessage = emailLoginProvider.errorMessage;
+
         if (errorMessage != null && errorMessage.isNotEmpty) {
           AlertNotificationDialog(
             context: context,
             text: errorMessage,
           ).showAsError();
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AuthChecker(),
-            ),
-          );
+          // ตรวจสอบว่าไม่มีข้อผิดพลาดก่อนเปลี่ยนหน้า
+
+
+          //TODO: Test this function on Monday
+          //TODO: Remove this when login is successfuly
+          if (emailLoginProvider.isLoggedIn) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AuthChecker()),
+            );
+          } else {
+            AlertNotificationDialog(
+              context: context,
+              text: 'Failed to load credentials. Please try again.',
+            ).showAsError();
+          }
+
+
         }
-      });
+      } catch (e) {
+        AlertNotificationDialog(
+          context: context,
+          text: 'An unexpected error occurred. Please try again.',
+        ).showAsError();
+      } finally {
+        setState(() {
+          _isLoading = false; // สิ้นสุดการแสดงสถานะการโหลด
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final emailLoginProvider = Provider.of<EmailLoginProvider>(context);
-
-    // ทำให้แถบสถานะเป็นสีโปร่งใส
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // โปร่งใส
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
       ),
     );
 
     return Scaffold(
-      extendBodyBehindAppBar: true, // ทำให้ AppBar เป็นส่วนของหน้าจอทั้งหมด
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // โปร่งใส
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
@@ -96,7 +117,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // ชิดขอบซ้าย
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GradientTextAlign(
                       'เข้าสู่ระบบ',
@@ -111,7 +132,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         fontSize: 20.sp,
                         decoration: TextDecoration.none,
                       ),
-                      textAlign: TextAlign.left, // ชิดซ้าย
+                      textAlign: TextAlign.left,
                     ),
                     SizedBox(height: 8.h),
                     GradientTextAlign(
@@ -127,7 +148,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         fontSize: 14.sp,
                         decoration: TextDecoration.none,
                       ),
-                      textAlign: TextAlign.left, // ชิดซ้าย
+                      textAlign: TextAlign.left,
                     ),
                     SizedBox(height: 32.h),
                     TextFormField(
@@ -135,11 +156,11 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       decoration: InputDecoration(
                         labelText: 'อีเมล',
                         prefixIcon: Icon(Icons.email, size: 24.w),
-                        fillColor: Colors.white, // พื้นหลังสีขาว
-                        filled: true, // เปิดการเติมสีพื้นหลัง
+                        fillColor: Colors.white,
+                        filled: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                          borderSide: BorderSide.none,
                         ),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -152,11 +173,11 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       decoration: InputDecoration(
                         labelText: 'รหัสผ่าน',
                         prefixIcon: Icon(Icons.lock, size: 24.w),
-                        fillColor: Colors.white, // พื้นหลังสีขาว
-                        filled: true, // เปิดการเติมสีพื้นหลัง
+                        fillColor: Colors.white,
+                        filled: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none, // ไม่แสดงเส้นขอบ
+                          borderSide: BorderSide.none,
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -176,38 +197,16 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       validator: (value) =>
                           value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
                     ),
-                    // ห้ามลบส่วนนี้
-                    // SizedBox(height: 8.h),
-                    // const CustomCheckboxWidget(),
                     SizedBox(height: 16.h),
-                    GradientTextButton(
-                      text: 'เข้าสู่ระบบ',
-                      onPressed: () {
-                        _loginUser();
-                      },
-                    ),
+                    _isLoading
+                        ? const Center(
+                            child:
+                                CircularProgressIndicator()) // แสดงสถานะการโหลด
+                        : GradientTextButton(
+                            text: 'เข้าสู่ระบบ',
+                            onPressed: _loginUser,
+                          ),
                     SizedBox(height: 16.h),
-                    // ห้ามลืมส่วนนี้
-                    // TextButton(
-                    //   onPressed: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //           builder: (context) => const RegisterScreen()),
-                    //     );
-                    //     // Navigator.push(
-                    //     //   context,
-                    //     //   MaterialPageRoute(
-                    //     //       builder: (context) => ResetPasswordScreen()),
-                    //     // );
-                    //     // 'ลืมรหัสผ่าน?'
-                    //   },
-                    //   child: Text(
-                    //     'สมัครใช้งาน',
-                    //     style: TextStyle(color: Colors.grey, fontSize: 14.sp),
-                    //   ),
-                    // ),
-
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -217,14 +216,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         );
                       },
                       child: Align(
-                        alignment: Alignment.center, // จัดตำแหน่งให้ตรงกลาง
+                        alignment: Alignment.center,
                         child: Text(
                           'สมัครใช้งาน',
-                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 14.sp),
                         ),
                       ),
                     ),
-
                     SizedBox(height: 16.h),
                     Row(
                       children: [
