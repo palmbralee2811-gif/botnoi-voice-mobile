@@ -85,6 +85,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// When Sign in with Email and Email Token is empty, Sign out to Login Screen
+  Future<void> _signOutWhenEmailTokenIsEmpty() async {
+    final emailCredits = Provider.of<EmailTokenProvider>(context, listen: false).getRemainingCredits;
+    final emailCredentials = Provider.of<EmailTokenProvider>(context, listen: false).getCredentialsToken;
+
+    if (emailCredits == null || emailCredentials == null || emailCredits.isEmpty || emailCredentials.isEmpty) {
+      logger.d("emailCredits: $emailCredits");
+      logger.d("emailCredentials: $emailCredentials");
+      logger.i("Sign out to Login Screen");
+      await Provider.of<EmailLoginProvider>(context, listen: false).signOut(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -378,17 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context: context, text: 'ไม่สามารสร้างเสียงได้')
               .showAsError();
         }
-        // /* When Sign in with Email and Email Token is empty, Sign out to Login Screen */
-        final emailCredits = Provider.of<EmailTokenProvider>(context, listen: false).getRemainingCredits;
-        final emailCredentials = Provider.of<EmailTokenProvider>(context, listen: false).getCredentialsToken;
-
-        if (emailCredits == null || emailCredentials == null || emailCredits.isEmpty || emailCredentials.isEmpty) {
-          logger.d("emailCredits: $emailCredits");
-          logger.d("emailCredentials: $emailCredentials");
-          logger.i("Sign out to Login Screen");
-          //TODO: Testing this when reopen the app
-          await Provider.of<EmailLoginProvider>(context, listen: false).signOut(context);
-        }
+        await _signOutWhenEmailTokenIsEmpty();
       }
     } catch (e) {
       logger.e("Error on generateAudio: $e");
