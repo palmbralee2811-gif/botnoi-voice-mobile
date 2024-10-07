@@ -28,15 +28,20 @@ class GoogleTokenProvider extends ChangeNotifier {
         await Provider.of<GoogleLoginProvider>(context, listen: false)
             .user
             ?.getIdToken();
-    if (idToken == null) return;
+    _logger.d("Google ID Token: $idToken");
+    if (idToken == null) {
+      _logger.e("Error: Google idToken is null");
+      return;
+    }
 
     // Get the _jwtToken from the Firebase API
     String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
-    
+
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
       'Content-Type': 'application/json'
     };
+
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
@@ -80,7 +85,8 @@ class GoogleTokenProvider extends ChangeNotifier {
         notifyListeners();
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');
       } else {
-        _logger.e("Failed to retrieve remaining credits: ${response.statusCode}");
+        _logger
+            .e("Failed to retrieve remaining credits: ${response.statusCode}");
       }
     } catch (e) {
       _logger.e('Error fetching remaining credits: $e');

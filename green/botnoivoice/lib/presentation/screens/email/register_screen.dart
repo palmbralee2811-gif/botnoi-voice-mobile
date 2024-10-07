@@ -63,6 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .registerWithEmailPassword(
               _emailController.text.trim(),
               _passwordController.text.trim(),
+              //TODO: ตั้งเงื่อนไข การสร้างรหัสผ่าน ตอนสมัครสมาชิก
               _confirmPasswordController.text.trim())
           .then((_) {
         //TODO: Open Email App on Deveice when need to verify email after registration

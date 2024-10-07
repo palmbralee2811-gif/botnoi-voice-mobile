@@ -16,9 +16,9 @@ class LineLoginButton extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // /* When Sign in with LINE is Successfuly and close Email Login Screen */
-                Provider.of<LineLoginProvider>(context, listen: false)
+                await Provider.of<LineLoginProvider>(context, listen: false)
                     .signInWithLine()
                     .whenComplete(() {
                   Navigator.pop(context);

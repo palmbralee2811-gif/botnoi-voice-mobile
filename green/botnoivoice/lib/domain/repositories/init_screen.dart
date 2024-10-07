@@ -32,9 +32,9 @@ class _InitScreenState extends State<InitScreen> {
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
-    // ตรวจสอบการเข้าสู่ระบบโดย Email ก่อน
-    if (emailProvider.isLoggedIn) {
-      await _loadEmailCredentials();
+    // ตรวจสอบการเข้าสู่ระบบโดย Google ก่อน
+    if (googleProvider.isLoggedIn && googleProvider.user?.providerData[0].providerId == 'google.com') {
+      await _loadGoogleCredentials();
       return;
     }
 
@@ -44,9 +44,9 @@ class _InitScreenState extends State<InitScreen> {
       return;
     }
 
-    // ตรวจสอบการเข้าสู่ระบบด้วย Google
-    if (googleProvider.isLoggedIn) {
-      await _loadGoogleCredentials();
+    // ตรวจสอบการเข้าสู่ระบบด้วย Email
+    if (emailProvider.isLoggedIn && emailProvider.userEmail?.providerData[0].providerId == 'password') {
+      await _loadEmailCredentials();
       return;
     }
 
@@ -56,14 +56,13 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
-  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Email
-  Future<void> _loadEmailCredentials() async {
-    final emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
-    await emailTokenProvider.loadJwtToken(context);
-    await emailTokenProvider.loadCredentials();
-    await emailTokenProvider.loadRemainingCredits();
+  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Google
+  Future<void> _loadGoogleCredentials() async {
+    final googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
+    await googleTokenProvider.loadJwtToken(context);
+    await googleTokenProvider.loadCredentials();
+    await googleTokenProvider.loadRemainingCredits();
 
-    // เมื่อโหลดข้อมูลของ Email เสร็จ ให้ตั้งค่าเป็น true และไม่ไปเช็ค provider อื่น
     setState(() {
       _initialized = true;
     });
@@ -81,12 +80,12 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
-  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Google
-  Future<void> _loadGoogleCredentials() async {
-    final googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
-    await googleTokenProvider.loadJwtToken(context);
-    await googleTokenProvider.loadCredentials();
-    await googleTokenProvider.loadRemainingCredits();
+  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Email
+  Future<void> _loadEmailCredentials() async {
+    final emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
+    await emailTokenProvider.loadJwtToken(context);
+    await emailTokenProvider.loadCredentials();
+    await emailTokenProvider.loadRemainingCredits();
 
     setState(() {
       _initialized = true;

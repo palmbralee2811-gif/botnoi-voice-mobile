@@ -20,11 +20,11 @@ class AuthChecker extends StatelessWidget {
         // ตรวจสอบ provider ที่ล็อกอิน
         String? loginProvider;
 
-        if (emailProvider.isAuthenticated) {
+        if (emailProvider.isAuthenticated && emailProvider.userEmail?.providerData[0].providerId == 'password') {
           loginProvider = 'email';
         } else if (lineProvider.isAuthenticated) {
           loginProvider = 'line';
-        } else if (googleProvider.isAuthenticated) {
+        } else if (googleProvider.isAuthenticated && googleProvider.user?.providerData[0].providerId == 'google.com') {
           loginProvider = 'google';
         }
 

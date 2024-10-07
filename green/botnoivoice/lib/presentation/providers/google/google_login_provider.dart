@@ -8,20 +8,22 @@ import 'package:provider/provider.dart';
 /// Google Provider and interface for authentication
 class GoogleLoginProvider extends ChangeNotifier {
   User? user;
-  final Logger _logger = Logger(); // For debugging 
+  final Logger _logger = Logger(); // For debugging
 
   // Check if the user is logged in
   bool _isLoggedIn = false;
-  bool get isLoggedIn => _isLoggedIn; 
+  bool get isLoggedIn => _isLoggedIn;
 
   bool get isAuthenticated {
-    return user != null;
+    return user != null && user?.providerData[0].providerId == 'google.com';
   }
 
   GoogleLoginProvider() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       this.user = user;
-      _isLoggedIn = user != null; // Set's true if a user is logged in, or false if not.
+      _logger.d("User: $user");
+      _isLoggedIn =
+          user != null; // Set's true if a user is logged in, or false if not.
       notifyListeners(); // Update UI
     });
   }
@@ -42,8 +44,16 @@ class GoogleLoginProvider extends ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
+      _logger.d(
+          "AccessToken: ${googleAuth.accessToken}, IDToken: ${googleAuth.idToken}");
+
       await FirebaseAuth.instance.signInWithCredential(credential);
-      _isLoggedIn = true; // User's sign in
+
+      if (FirebaseAuth.instance.currentUser?.providerData[0].providerId ==
+          'google.com') {
+        _isLoggedIn = true; // ตรวจสอบว่าเป็น Google user
+      }
+
       _logger.i("User signed in with Google successfully.");
       notifyListeners(); // Update UI
     } catch (e) {
@@ -52,7 +62,7 @@ class GoogleLoginProvider extends ChangeNotifier {
   }
 
   /// Sign out and Check if the user is signed out
-  Future<void> signOut(BuildContext context) async {    
+  Future<void> signOut(BuildContext context) async {
     try {
       Provider.of<GoogleTokenProvider>(context, listen: false).clearTokens();
       await GoogleSignIn().signOut();

@@ -24,12 +24,19 @@ class EmailTokenProvider extends ChangeNotifier {
   /// Get the _jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
-    String? idToken = Provider.of<EmailLoginProvider>(context, listen: false).idToken;
-    if (idToken == null) return;
+    String? idToken =
+        await Provider.of<EmailLoginProvider>(context, listen: false)
+            .userEmail
+            ?.getIdToken();
+    _logger.d("Email ID Token: $idToken");
+    if (idToken == null) {
+      _logger.e("Error: Email idToken is null");
+      return; // หยุดการทำงานถ้าไม่มี idToken
+    }
 
     // Get the _jwtToken from the Firebase API
     String url = 'https://api-voice.botnoi.ai/api/dashboard/sign_in';
-    
+
     Map<String, String> headers = {
       'firebase-token': 'Bearer $idToken',
       'Content-Type': 'application/json'
@@ -77,7 +84,8 @@ class EmailTokenProvider extends ChangeNotifier {
         notifyListeners();
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');
       } else {
-        _logger.e("Failed to retrieve remaining credits: ${response.statusCode}");
+        _logger
+            .e("Failed to retrieve remaining credits: ${response.statusCode}");
       }
     } catch (e) {
       _logger.e('Error fetching remaining credits: $e');

@@ -16,9 +16,9 @@ class GoogleLoginButton extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // /* When Sign in with Google is Successfuly and close Email Login Screen */
-                Provider.of<GoogleLoginProvider>(context, listen: false)
+                await Provider.of<GoogleLoginProvider>(context, listen: false)
                     .signInWithGoogle()
                     .whenComplete(() {
                   Navigator.pop(context);

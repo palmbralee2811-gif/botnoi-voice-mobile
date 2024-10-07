@@ -1,16 +1,66 @@
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 /// Email & Password Provider and interface for authentication
 class EmailLoginProvider with ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Logger _logger = Logger(); // For debugging
+  User? userEmail;
   String? _errorMessage;
-  String? _idToken;
+  final Logger _logger = Logger(); // For debugging
+
+  /// Check if the user is logged in
   bool _isLoggedIn = false;
+  bool get isLoggedIn => _isLoggedIn;
+
+  bool get isAuthenticated {
+    return currentUser?.uid != null && userEmail?.providerData[0].providerId == 'password';
+  }
+
+  EmailLoginProvider() {
+    FirebaseAuth.instance.authStateChanges().listen((User? userEmail) async {
+      this.userEmail = userEmail;
+      _logger.i("User email: $userEmail");
+      _isLoggedIn = userEmail !=
+          null; // Set's true if a user is logged in, or false if not.
+      notifyListeners(); // Update UI
+    });
+  }
+
+  /// Login user with email and password
+  Future<void> loginWithEmailPassword(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      _errorMessage = null;
+
+      // Check if email is verified
+      if (!userCredential.user!.emailVerified) {
+        _errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ.";
+        _logger.w("User email is not verified: $email");
+        // Send verification email
+        //TODO: ถ้ายังไม่ยืนยันอีเมล แล้ว Login จะส่งจดหมายให้ยืนยันก่อน
+        //TODO: คลิกปุ่ม Login ครั้งแรก จะส่งจดหมาย แต่ถ้า คลิกปุ่มครั้งที่สอง ติดต่อกัน จะโดนบล็อค
+        await userCredential.user?.sendEmailVerification();
+        _errorMessage = "ส่งอีเมลยืนยันไปที่: $email";
+        _logger.i("Verification email sent to: $email");
+        notifyListeners();
+        return;
+      }
+
+      // ตั้งค่า user หลังจาก login สำเร็จ
+      userEmail = userCredential.user;
+      _logger.i("User logged in successfully with email: $email");
+      _isLoggedIn = true;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message;
+      _logger
+          .e("Error logging in user with email: $email, Error: ${e.message}");
+      notifyListeners();
+    }
+  }
 
   /// Register user with email and password, and send verification email
   Future<void> registerWithEmailPassword(
@@ -25,7 +75,7 @@ class EmailLoginProvider with ChangeNotifier {
     try {
       // Register user
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -46,45 +96,10 @@ class EmailLoginProvider with ChangeNotifier {
     }
   }
 
-  /// Login user with email and password
-  Future<void> loginWithEmailPassword(String email, String password) async {
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      _errorMessage = null;
-
-      // Check if email is verified
-      if (!userCredential.user!.emailVerified) {
-        _errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ.";
-        _logger.w("User email is not verified: $email");
-        // Send verification email
-        //TODO: ถ้ายังไม่ยืนยันอีเมล แล้ว Login จะส่งจดหมายให้ยืนยันก่อน
-        //TODO: คลิกปุ่ม Login ครั้งแรก จะส่งจดหมาย แต่ถ้า คลิกปุ่มครั้งที่สอง ติดต่อกัน จะโดนบล็อค
-        await userCredential.user?.sendEmailVerification();
-        _errorMessage = "ส่งอีเมลยืนยันไปที่: $email";
-        _logger.i("Verification email sent to: $email");
-        notifyListeners();
-        return;
-      }
-
-      String? token = await userCredential.user?.getIdToken();
-      _idToken = token;
-
-      _logger.i("User logged in successfully with email: $email");
-      _isLoggedIn = true;
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message;
-      _logger
-          .e("Error logging in user with email: $email, Error: ${e.message}");
-      notifyListeners();
-    }
-  }
-
   /// Send password reset email
   Future<void> resetPassword(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       _errorMessage = null;
       _logger.i("Password reset email sent to: $email");
       notifyListeners();
@@ -98,7 +113,8 @@ class EmailLoginProvider with ChangeNotifier {
   /// Confirm password reset with the code from the email
   Future<void> confirmPasswordReset(String code, String newPassword) async {
     try {
-      await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
+      await FirebaseAuth.instance
+          .confirmPasswordReset(code: code, newPassword: newPassword);
       _errorMessage = null;
       _logger.i("Password has been reset successfully.");
       notifyListeners();
@@ -114,7 +130,7 @@ class EmailLoginProvider with ChangeNotifier {
   Future<void> signOut(BuildContext context) async {
     try {
       Provider.of<EmailTokenProvider>(context, listen: false).clearTokens();
-      await _auth.signOut();
+      await FirebaseAuth.instance.signOut();
       _isLoggedIn = false;
       _logger.i("User signed out successfully");
     } catch (e) {
@@ -123,21 +139,9 @@ class EmailLoginProvider with ChangeNotifier {
     notifyListeners(); // Update UI
   }
 
-  /// Check if user is currently signed in
-  User? get currentUser {
-    _logger.d("Checking current user: ${_auth.currentUser?.email}");
-    return _auth.currentUser;
-  }
-
-  /// Getter for current user is signed in
-  bool get isAuthenticated =>  _auth.currentUser?.email != null;
+  /// Getter for current user
+  User? get currentUser => FirebaseAuth.instance.currentUser;
 
   /// Getter for error message
   String? get errorMessage => _errorMessage;
-
-  /// Getter for ID Token
-  String? get idToken => _idToken;
-
-  /// Check if the user is logged in
-  bool get isLoggedIn => _isLoggedIn;
 }
