@@ -17,7 +17,6 @@ class GoogleLoginButton extends StatelessWidget {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () {
-                //TODO: Check on production if don't login show alert notification
                 Provider.of<GoogleLoginProvider>(context, listen: false)
                     .signInWithGoogle();
               },

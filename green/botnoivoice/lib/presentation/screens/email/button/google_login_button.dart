@@ -1,10 +1,11 @@
-import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class EmailLoginButton extends StatelessWidget {
-  const EmailLoginButton({super.key});
+class GoogleLoginButton extends StatelessWidget {
+  const GoogleLoginButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +17,12 @@ class EmailLoginButton extends StatelessWidget {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EmailLoginScreen()));
+                // /* When Sign in with Google is Successfuly and close Email Login Screen */
+                Provider.of<GoogleLoginProvider>(context, listen: false)
+                    .signInWithGoogle()
+                    .whenComplete(() {
+                  Navigator.pop(context);
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -37,13 +40,13 @@ class EmailLoginButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/auth_screen/email-512x512.png',
+                    'assets/images/auth_screen/google-512x512.png',
                     height: 32.h,
                     width: 32.w,
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    'เข้าสู่ระบบด้วย Email',
+                    'เข้าสู่ระบบด้วย Google',
                     style: GoogleFonts.prompt(
                       fontSize: 12.sp,
                       color: Colors.black,

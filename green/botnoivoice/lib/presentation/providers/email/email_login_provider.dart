@@ -123,16 +123,14 @@ class EmailLoginProvider with ChangeNotifier {
     notifyListeners(); // Update UI
   }
 
-  //TODO: Test this function on Monday
   /// Check if user is currently signed in
-  String? get _currentUser {
+  User? get currentUser {
     _logger.d("Checking current user: ${_auth.currentUser?.email}");
-    return _auth.currentUser?.email;
+    return _auth.currentUser;
   }
 
-  //TODO: Test this function on Monday
   /// Getter for current user is signed in
-  bool get isAuthenticated => _currentUser != null;
+  bool get isAuthenticated =>  _auth.currentUser?.email != null;
 
   /// Getter for error message
   String? get errorMessage => _errorMessage;

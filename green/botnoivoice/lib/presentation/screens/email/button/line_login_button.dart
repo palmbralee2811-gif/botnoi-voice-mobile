@@ -17,8 +17,12 @@ class LineLoginButton extends StatelessWidget {
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
               onPressed: () {
+                // /* When Sign in with LINE is Successfuly and close Email Login Screen */
                 Provider.of<LineLoginProvider>(context, listen: false)
-                    .signInWithLine();
+                    .signInWithLine()
+                    .whenComplete(() {
+                  Navigator.pop(context);
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3ACE01),

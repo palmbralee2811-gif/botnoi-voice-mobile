@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/register_screen.dart';
-import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
-import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
+import 'package:botnoivoice/presentation/screens/email/button/google_login_button.dart';
+import 'package:botnoivoice/presentation/screens/email/button/line_login_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailLoginScreen extends StatefulWidget {
@@ -24,15 +24,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
-  bool _isLoading = false; // สำหรับแสดงสถานะการประมวลผล
+  bool _isLoading = false;
 
   void _loginUser() async {
-    final emailLoginProvider =
-        Provider.of<EmailLoginProvider>(context, listen: false);
+    final emailLoginProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = true; // เริ่มต้นการแสดงสถานะการโหลด
+        _isLoading = true;
       });
 
       try {
@@ -49,24 +48,12 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
             text: errorMessage,
           ).showAsError();
         } else {
-          // ตรวจสอบว่าไม่มีข้อผิดพลาดก่อนเปลี่ยนหน้า
-
-
-          //TODO: Test this function on Monday
-          //TODO: Remove this when login is successfuly
-          if (emailLoginProvider.isLoggedIn) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const AuthChecker()),
-            );
-          } else {
-            AlertNotificationDialog(
-              context: context,
-              text: 'Failed to load credentials. Please try again.',
-            ).showAsError();
-          }
-
-
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AuthChecker(),
+            ),
+          );
         }
       } catch (e) {
         AlertNotificationDialog(
@@ -75,7 +62,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         ).showAsError();
       } finally {
         setState(() {
-          _isLoading = false; // สิ้นสุดการแสดงสถานะการโหลด
+          _isLoading = false;
         });
       }
     }

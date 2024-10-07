@@ -55,7 +55,7 @@ class BotnoiVoiceApp extends StatelessWidget {
                 Theme.of(context).textTheme,
               ),
             ),
-            home: const AuthChecker(),
+            home: AuthChecker(),
           );
         },
       ),

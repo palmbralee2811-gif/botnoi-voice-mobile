@@ -4,8 +4,8 @@ import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.d
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:botnoivoice/presentation/screens/login/google_login_button.dart';
-import 'package:botnoivoice/presentation/screens/login/line_login_button.dart';
+import 'package:botnoivoice/presentation/screens/email/button/google_login_button.dart';
+import 'package:botnoivoice/presentation/screens/email/button/line_login_button.dart';
 import 'package:provider/provider.dart'; // Import for using Provider
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart'; // Import EmailLoginProvider
 
@@ -65,7 +65,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               _passwordController.text.trim(),
               _confirmPasswordController.text.trim())
           .then((_) {
-        
         //TODO: Open Email App on Deveice when need to verify email after registration
         //TODO: Alert Notification display for 10 seconds
         //TODO: When registration is successful, clear vlue input form and Navigate to EmailLoginScreen
@@ -82,12 +81,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             text: errorMessage,
           ).showAsError();
         } else {
-          // ถ้าไม่มี error ให้ Navigate ไปที่ EmailLoginScreen
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const EmailLoginScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
           );
         }
       }).catchError((error) {
@@ -257,7 +253,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         alignment: Alignment.center,
                         child: Text(
                           'กลับไปที่เข้าสู่ระบบ',
-                          style: TextStyle(color: Colors.grey.shade600, fontSize: 14.sp),
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 14.sp),
                         ),
                       ),
                     ),

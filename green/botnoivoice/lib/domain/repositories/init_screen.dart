@@ -28,38 +28,65 @@ class _InitScreenState extends State<InitScreen> {
 
   /// ฟังก์ชันสำหรับการเช็คว่า ผู้ใช้เข้าสู่ระบบด้วยวิธีไหน และโหลดข้อมูลที่จำเป็น
   Future<void> initApp() async {
+    final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+
+    // ตรวจสอบการเข้าสู่ระบบโดย Email ก่อน
+    if (emailProvider.isLoggedIn) {
+      await _loadEmailCredentials();
+      return;
+    }
+
     // ตรวจสอบการเข้าสู่ระบบด้วย LINE
-    final isLineLogin = Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn;
-    if (isLineLogin) {
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadJwtToken(context);
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadCredentials();
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
+    if (lineProvider.isLoggedIn) {
+      await _loadLineCredentials();
+      return;
     }
 
     // ตรวจสอบการเข้าสู่ระบบด้วย Google
-    final isGoogleLogin = Provider.of<GoogleLoginProvider>(context, listen: false).isLoggedIn;
-    if (isGoogleLogin) {
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadJwtToken(context);
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadCredentials();
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
+    if (googleProvider.isLoggedIn) {
+      await _loadGoogleCredentials();
+      return;
     }
 
-    // ตรวจสอบการเข้าสู่ระบบด้วย Email
-    final isEmailLogin = Provider.of<EmailLoginProvider>(context, listen: false).isLoggedIn;
-    if (isEmailLogin) {
-      await Provider.of<EmailTokenProvider>(context, listen: false)
-          .loadJwtToken(context);
-      await Provider.of<EmailTokenProvider>(context, listen: false)
-          .loadCredentials();
-      await Provider.of<EmailTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
-    }
+    // ถ้าไม่พบการล็อกอินจาก provider ใด ๆ
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Email
+  Future<void> _loadEmailCredentials() async {
+    final emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
+    await emailTokenProvider.loadJwtToken(context);
+    await emailTokenProvider.loadCredentials();
+    await emailTokenProvider.loadRemainingCredits();
+
+    // เมื่อโหลดข้อมูลของ Email เสร็จ ให้ตั้งค่าเป็น true และไม่ไปเช็ค provider อื่น
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย LINE
+  Future<void> _loadLineCredentials() async {
+    final lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
+    await lineTokenProvider.loadJwtToken(context);
+    await lineTokenProvider.loadCredentials();
+    await lineTokenProvider.loadRemainingCredits();
+
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Google
+  Future<void> _loadGoogleCredentials() async {
+    final googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
+    await googleTokenProvider.loadJwtToken(context);
+    await googleTokenProvider.loadCredentials();
+    await googleTokenProvider.loadRemainingCredits();
 
     setState(() {
       _initialized = true;
@@ -69,9 +96,7 @@ class _InitScreenState extends State<InitScreen> {
   @override
   Widget build(BuildContext context) {
     if (_initialized) {
-      return const Scaffold(
-        body: HomeScreen(), // ไปยังหน้าหลักเมื่อข้อมูลโหลดเสร็จแล้ว
-      );
+      return const HomeScreen(); // ไปยังหน้าหลักเมื่อข้อมูลโหลดเสร็จแล้ว
     } else {
       return const SplashScreen(); // แสดงหน้ารอโหลดข้อมูลก่อน
     }

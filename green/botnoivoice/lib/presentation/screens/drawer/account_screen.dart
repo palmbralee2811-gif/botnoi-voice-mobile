@@ -56,8 +56,7 @@ class _AccountScreenState extends State<AccountScreen> {
   /// ฟังก์ชันสำหรับการออกจากระบบ
   Future<void> _signOut(BuildContext context) async {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
