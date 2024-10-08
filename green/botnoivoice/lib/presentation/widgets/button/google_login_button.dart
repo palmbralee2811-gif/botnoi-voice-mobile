@@ -1,13 +1,11 @@
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class GoogleLoginButton extends StatelessWidget {
-  const GoogleLoginButton({super.key});
+  final VoidCallback onPressed;
+  const GoogleLoginButton({super.key, required this.onPressed});
 
-  @override
+  @override  
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -16,10 +14,7 @@ class GoogleLoginButton extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
-              onPressed: () {
-                Provider.of<GoogleLoginProvider>(context, listen: false)
-                    .signInWithGoogle();
-              },
+              onPressed: onPressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -43,7 +38,7 @@ class GoogleLoginButton extends StatelessWidget {
                   SizedBox(width: 8.w),
                   Text(
                     'เข้าสู่ระบบด้วย Google',
-                    style: GoogleFonts.prompt(
+                    style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.black,
                       decoration: TextDecoration.none,

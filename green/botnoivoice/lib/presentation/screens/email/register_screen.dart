@@ -1,13 +1,16 @@
+import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart'; // Import the EmailLoginScreen
+import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
+import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:botnoivoice/presentation/screens/email/button/google_login_button.dart';
-import 'package:botnoivoice/presentation/screens/email/button/line_login_button.dart';
-import 'package:provider/provider.dart'; // Import for using Provider
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart'; // Import EmailLoginProvider
+import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -95,6 +98,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ).showAsError();
       });
     }
+  }
+
+  /// Open Google Login and Close Register Screen
+  void _openGoogleLogin() async {
+    await Provider.of<GoogleLoginProvider>(context, listen: false)
+        .signInWithGoogle()
+        .whenComplete(() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AuthChecker(),
+        ),
+      );
+    });
+  }
+
+  /// Open Line Login and Close Register Screen
+  void _openLineLogin() async {
+    await Provider.of<LineLoginProvider>(context, listen: false)
+        .signInWithLine()
+        .whenComplete(() {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AuthChecker(),
+        ),
+      );
+    });
   }
 
   @override
@@ -285,9 +316,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ],
                     ),
                     SizedBox(height: 16.h),
-                    const LineLoginButton(),
+                    LineLoginButton(onPressed: () {
+                      _openLineLogin();
+                    }),
                     SizedBox(height: 16.h),
-                    const GoogleLoginButton(),
+                    GoogleLoginButton(onPressed: () {
+                      _openGoogleLogin();
+                    }),
                   ],
                 ),
               ),

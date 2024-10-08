@@ -1,4 +1,8 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
+import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -7,8 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/register_screen.dart';
-import 'package:botnoivoice/presentation/screens/email/button/google_login_button.dart';
-import 'package:botnoivoice/presentation/screens/email/button/line_login_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailLoginScreen extends StatefulWidget {
@@ -27,7 +29,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   bool _isLoading = false;
 
   void _loginUser() async {
-    final emailLoginProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    final emailLoginProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -66,6 +69,24 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         });
       }
     }
+  }
+
+  /// Open Google Login and Close Email Login Screen
+  void _openGoogleLogin() async {
+    await Provider.of<GoogleLoginProvider>(context, listen: false)
+        .signInWithGoogle()
+        .whenComplete(() {
+      Navigator.pop(context);
+    });
+  }
+
+  /// Open Line Login and Close Email Login Screen
+  void _openLineLogin() async {
+    await Provider.of<LineLoginProvider>(context, listen: false)
+        .signInWithLine()
+        .whenComplete(() {
+      Navigator.pop(context);
+    });
   }
 
   @override
@@ -239,9 +260,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       ],
                     ),
                     SizedBox(height: 16.h),
-                    const LineLoginButton(),
+                    LineLoginButton(onPressed: () {
+                      _openLineLogin();
+                    }),
                     SizedBox(height: 16.h),
-                    const GoogleLoginButton(),
+                    GoogleLoginButton(onPressed: () {
+                      _openGoogleLogin();
+                    }),
                     SizedBox(height: 16.h),
                   ],
                 ),

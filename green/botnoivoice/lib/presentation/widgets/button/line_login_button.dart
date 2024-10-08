@@ -1,11 +1,9 @@
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-class GoogleLoginButton extends StatelessWidget {
-  const GoogleLoginButton({super.key});
+class LineLoginButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  const LineLoginButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +14,11 @@ class GoogleLoginButton extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
             child: ElevatedButton(
-              onPressed: () async {
-                // /* When Sign in with Google is Successfuly and close Email Login Screen */
-                await Provider.of<GoogleLoginProvider>(context, listen: false)
-                    .signInWithGoogle()
-                    .whenComplete(() {
-                  Navigator.pop(context);
-                });
-              },
+              onPressed: onPressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: const Color(0xFF3ACE01),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
-                  side: BorderSide(
-                    color: Colors.grey.shade400,
-                    width: 1.0,
-                  ),
                 ),
                 padding: EdgeInsets.zero,
                 minimumSize: Size(256.w, 44.h),
@@ -40,16 +27,16 @@ class GoogleLoginButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/auth_screen/google-512x512.png',
-                    height: 32.h,
-                    width: 32.w,
+                    'assets/images/auth_screen/line-512x512.png',
+                    height: 36.h,
+                    width: 36.w,
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    'เข้าสู่ระบบด้วย Google',
-                    style: GoogleFonts.prompt(
+                    'เข้าสู่ระบบด้วย LINE',
+                    style: TextStyle(
                       fontSize: 12.sp,
-                      color: Colors.black,
+                      color: Colors.white,
                       decoration: TextDecoration.none,
                     ),
                   ),
