@@ -46,6 +46,10 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         final errorMessage = emailLoginProvider.errorMessage;
 
         if (errorMessage != null && errorMessage.isNotEmpty) {
+          //TODO: /* 
+          // ตอนสร้างบัญชีใหม่ด้วยอีเมล มันขึ้นว่า verification sent แต่มาในรูปแบบของ Toast สีแดง 
+          // ที่มาแปปเดียวแล้วหายไป ผมว่าทำเป็นป๊อปอัพดีกว่าเค้าจะได้อ่านง่ายๆ
+          // พอผู้ใช้อ่านเสร็จแล้ว กดตกลง ก็ให้เด้งไปหน้า เข้าสู่ระบบ เลย ผู้ใช้จะได้ไม่กดสร้างบัญชีซ้ำ */
           AlertNotificationDialog(
             context: context,
             text: errorMessage,
@@ -260,13 +264,19 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       ],
                     ),
                     SizedBox(height: 16.h),
-                    LineLoginButton(onPressed: () {
-                      _openLineLogin();
-                    }),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                      child: LineLoginButton(onPressed: () {
+                        _openLineLogin();
+                      }),
+                    ),
                     SizedBox(height: 16.h),
-                    GoogleLoginButton(onPressed: () {
-                      _openGoogleLogin();
-                    }),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                      child: GoogleLoginButton(onPressed: () {
+                        _openGoogleLogin();
+                      }),
+                    ),
                     SizedBox(height: 16.h),
                   ],
                 ),

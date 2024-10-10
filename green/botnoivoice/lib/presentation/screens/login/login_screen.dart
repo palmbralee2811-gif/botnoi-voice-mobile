@@ -69,21 +69,27 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 167.h),
+          SizedBox(height: 107.h),
           _buildCenter(),
           SizedBox(height: 120.h),
           EmailLoginButton(onPressed: () {
             _openEmailLogin(context);
           }),
           SizedBox(height: 20.h),
-          LineLoginButton(onPressed: () {
-            _openLineLogin(context);
-          }),
+          Padding(
+            padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            child: LineLoginButton(onPressed: () {
+              _openLineLogin(context);
+            }),
+          ),
           SizedBox(height: 20.h),
-          GoogleLoginButton(onPressed: () {
-            _openGoogleLogin(context);
-          }),
-          SizedBox(height: 60.h),
+          Padding(
+            padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            child: GoogleLoginButton(onPressed: () {
+              _openGoogleLogin(context);
+            }),
+          ),
+          // SizedBox(height: 60.h),
         ],
       ),
     );

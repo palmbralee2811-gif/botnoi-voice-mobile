@@ -316,13 +316,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ],
                     ),
                     SizedBox(height: 16.h),
-                    LineLoginButton(onPressed: () {
-                      _openLineLogin();
-                    }),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                      child: LineLoginButton(onPressed: () {
+                        _openLineLogin();
+                      }),
+                    ),
                     SizedBox(height: 16.h),
-                    GoogleLoginButton(onPressed: () {
-                      _openGoogleLogin();
-                    }),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                      child: GoogleLoginButton(onPressed: () {
+                        _openGoogleLogin();
+                      }),
+                    ),
                   ],
                 ),
               ),

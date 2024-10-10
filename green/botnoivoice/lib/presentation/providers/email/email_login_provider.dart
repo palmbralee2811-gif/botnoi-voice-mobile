@@ -31,6 +31,12 @@ class EmailLoginProvider with ChangeNotifier {
   /// Login user with email and password
   Future<void> loginWithEmailPassword(String email, String password) async {
     try {
+
+      //TODO: query email from api
+      //TODO: call email from backend
+      //TODO: username from backend
+      //TODO: change username with call api
+
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       _errorMessage = null;

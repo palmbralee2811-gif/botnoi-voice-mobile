@@ -1,5 +1,7 @@
+import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LineLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -12,26 +14,27 @@ class LineLoginButton extends StatelessWidget {
       children: [
         Center(
           child: Padding(
-            padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            // padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            padding: EdgeInsets.zero,
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF3ACE01),
+                backgroundColor: kGreen,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(256.w, 44.h),
+                minimumSize: Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/auth_screen/line-512x512.png',
-                    height: 36.h,
-                    width: 36.w,
+                  SvgPicture.asset(
+                    'assets/images/auth_screen/line-icon.svg',
+                    height: 32.h,
+                    width: 32.w,
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 16.w),
                   Text(
                     'เข้าสู่ระบบด้วย LINE',
                     style: TextStyle(
