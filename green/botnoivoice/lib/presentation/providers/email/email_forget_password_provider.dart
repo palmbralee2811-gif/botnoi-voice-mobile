@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
-class EmailResetPasswordProvider with ChangeNotifier {
+class EmailForgetPasswordProvider with ChangeNotifier {
   String? _errorMessage;
   final Logger _logger = Logger(); // For debugging
 
@@ -10,7 +10,7 @@ class EmailResetPasswordProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   /// Send password reset email
-  Future<void> resetPassword(String email) async {
+  Future<void> sendPasswordResetEmail(String email) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       _errorMessage = null;

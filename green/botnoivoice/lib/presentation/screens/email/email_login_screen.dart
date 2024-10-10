@@ -1,6 +1,7 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
@@ -46,8 +47,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         final errorMessage = emailLoginProvider.errorMessage;
 
         if (errorMessage != null && errorMessage.isNotEmpty) {
-          //TODO: /* 
-          // ตอนสร้างบัญชีใหม่ด้วยอีเมล มันขึ้นว่า verification sent แต่มาในรูปแบบของ Toast สีแดง 
+          //TODO: /*
+          // ตอนสร้างบัญชีใหม่ด้วยอีเมล มันขึ้นว่า verification sent แต่มาในรูปแบบของ Toast สีแดง
           // ที่มาแปปเดียวแล้วหายไป ผมว่าทำเป็นป๊อปอัพดีกว่าเค้าจะได้อ่านง่ายๆ
           // พอผู้ใช้อ่านเสร็จแล้ว กดตกลง ก็ให้เด้งไปหน้า เข้าสู่ระบบ เลย ผู้ใช้จะได้ไม่กดสร้างบัญชีซ้ำ */
           AlertNotificationDialog(
@@ -209,7 +210,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       validator: (value) =>
                           value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
                     ),
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 12.h),
                     _isLoading
                         ? const Center(
                             child:
@@ -219,22 +220,47 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             onPressed: _loginUser,
                           ),
                     SizedBox(height: 16.h),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterScreen()),
-                        );
-                      },
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'สมัครใช้งาน',
-                          style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 14.sp),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .spaceBetween, // จัดตำแหน่งปุ่มในแนวนอน
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const RegisterScreen(), // Push ไปหน้า สมัครใช้งาน
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'สมัครใช้งาน',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgetPasswordScreen(), // Push ไปยัง ForgetPasswordScreen
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'ลืมรหัสผ่าน?',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 16.h),
                     Row(

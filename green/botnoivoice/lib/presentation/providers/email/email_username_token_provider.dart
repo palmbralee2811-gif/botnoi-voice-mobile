@@ -11,6 +11,114 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
   String get result => _result;
 
   /*
+  เพิ่ม api /api/dashboard/get_email_mobile สำหรับดึง email (mobile)
+
+  GET /api/dashboard/get_email_mobile?username=<username>
+  # header
+  X-API-BOTNOI : Ym90b25vaQ
+  https://api-voice-staging.botnoi.ai/
+  มันจะมี header ที่พี่เพิ่มเข้ามานะ
+  import requests
+
+  url = "https://api-voice-staging.botnoi.ai/api/dashboard/get_email_mobile"
+
+  querystring = {"username":"ttest1"}
+
+  headers = {
+      "X-API-BOTNOI": "Ym90b25vaQ",
+      "Content-Type": "application/json"
+  }
+
+  response = requests.request("GET", url, headers=headers, params=querystring)
+
+  print(response.text)
+  */
+  Future<void> getEmailMobile() async {
+    //TODO: ทดสอบ URL ว่าถูกต้องไหม และทดสอบ ว่า API ทำงานถูกต้องไหม
+    String url = '$urlDomain/api/dashboard/get_email_mobile';
+
+    // สร้าง query parameters หลายตัว
+    Map<String, String> queryParams = {
+      'username': 'ttest',
+      'username2': 'ttest2',
+      'username3': 'ttest3'
+    };
+
+    // สร้าง Uri โดยการเพิ่ม query parameters เข้าไปใน Uri
+    Uri uri = Uri.parse(url).replace(queryParameters: queryParams);
+
+    Map<String, String> headers = {
+      'X-API-BOTNOI': 'Ym90b25vaQ',
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      // ทำการส่งคำขอ GET พร้อม Uri ที่มี query string
+      final response = await http.get(uri, headers: headers);
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        _result = data.toString(); // เก็บผลลัพธ์ไว้ในตัวแปร
+        _logger.d('Response Data: $_result');
+        notifyListeners();
+      } else {
+        _result = 'Failed to get email. Status Code: ${response.statusCode}';
+        _logger.e('Failed with status code: ${response.statusCode}');
+        notifyListeners();
+      }
+    } catch (e) {
+      _result = 'Error: $e';
+      _logger.e('Error: $e');
+      notifyListeners();
+    }
+  }
+
+  /*
+  เพิ่ม api /api/dashboard/update_username_id ใช้เพื่ออัพเดทเอา username ตาม user_id เพื่อเก็บไว้ใน database
+
+  POST /api/dashboard/update_username_id
+  # header
+  X-API-BOTNOI : Ym90b25vaQ
+
+  # payload json 
+  {
+    "user_id": uid_firebase,
+    "username": username_new
+  }
+
+  */
+  Future<void> postUpdateUsernameByFirebaseUid(
+      String? uid, String? usernameId, String? usernameNew) async {
+    String url = '$urlDomain/api/dashboard/update_$usernameId';
+    Map<String, dynamic> payload = {
+      'user_id': '$uid',
+      'username': '$usernameNew'
+    };
+    Map<String, String> headers = {
+      'X-API-BOTNOI': 'Ym90b25vaQ',
+      'Content-Type': 'application/json'
+    };
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(payload));
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        _result = data.toString();
+        _logger.d('Response Data: $_result');
+        notifyListeners();
+      } else {
+        _result = 'Failed to get email. Status Code: ${response.statusCode}';
+        _logger.e('Failed with status code: ${response.statusCode}');
+        notifyListeners();
+      }
+    } catch (e) {
+      _result = 'Error: $e';
+      _logger.e('Error: $e');
+      notifyListeners();
+    }
+  }
+
+  /*
   เพิ่ม api เพื่อรับ email จาก username /api/dashboard/get_email ใช้เพื่อเอา username 
   ออกมาโดยใช้ email ในการค้นหาข้อมูล
 
@@ -19,9 +127,10 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
   /api/dashboard/get_email?username=nah_i_win
 
   */
-  Future<void> getEmailByUsername(String? username) async {
+  Future<void> getEmailByUsername(String? usernameId) async {
     // Make the request
-    String url = '$urlDomain/api/dashboard/get_email?username=$username';
+    //TODO: ทดสอบ URL ว่าถูกต้องไหม
+    String url = '$urlDomain/api/dashboard/get_email?username_id=$usernameId';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
@@ -50,11 +159,12 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
   ใช้เพื่อเอา username ออกมาโดยใช้ email ในการค้นหาข้อมูล
 
   GET /api/dashboard/get_username?email=<email>
+  https://api-voice-staging.botnoi.ai/api/dashboard/get_username_id?email=porton555@gmail.com
 
   */
   Future<void> getUsernameByEmail(String? email) async {
     // Make the request
-    String url = '$urlDomain/api/dashboard/get_username?email=$email';
+    String url = '$urlDomain/api/dashboard/get_username_id?email=$email';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'

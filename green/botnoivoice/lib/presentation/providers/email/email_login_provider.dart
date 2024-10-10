@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 /// Email & Password Provider and interface for authentication
 class EmailLoginProvider with ChangeNotifier {
   User? _userEmail;
-
   String? _errorMessage;
   final Logger _logger = Logger(); // For debugging
   bool _isLoggedIn = false; // Check if the user is logged in
