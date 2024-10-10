@@ -14,7 +14,6 @@ class LineLoginButton extends StatelessWidget {
       children: [
         Center(
           child: Padding(
-            // padding: EdgeInsets.only(left: 30.w, right: 30.w),
             padding: EdgeInsets.zero,
             child: ElevatedButton(
               onPressed: onPressed,

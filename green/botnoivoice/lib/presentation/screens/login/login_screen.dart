@@ -69,7 +69,7 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 107.h),
+          SizedBox(height: 127.h),
           _buildCenter(),
           SizedBox(height: 120.h),
           EmailLoginButton(onPressed: () {
@@ -89,7 +89,6 @@ class LoginScreen extends StatelessWidget {
               _openGoogleLogin(context);
             }),
           ),
-          // SizedBox(height: 60.h),
         ],
       ),
     );

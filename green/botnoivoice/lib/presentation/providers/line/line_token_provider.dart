@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,8 +11,13 @@ class LineTokenProvider extends ChangeNotifier {
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
+  final Logger _logger = Logger(); // For debugging
 
-  final Logger _logger = Logger();
+  /// Getter for the remaining credits
+  String? get getRemainingCredits => _remainingCredits;
+
+  /// Getter for the credentials token
+  String? get getCredentialsToken => _credentialsToken;
 
   /// Clear all the tokens
   void clearTokens() {
@@ -23,10 +29,11 @@ class LineTokenProvider extends ChangeNotifier {
 
   /// Loading LINE JWT Token from API
   Future<void> loadJwtToken(BuildContext context) async {
-    String? idToken = Provider.of<LineLoginProvider>(context, listen: false).getIdTokenRaw;
+    String? idToken =
+        Provider.of<LineLoginProvider>(context, listen: false).getIdTokenRaw;
     if (idToken == null) return;
 
-    String url = 'https://api-voice.botnoi.ai/api/dashboard/liff';
+    String url = '$urlDomain/api/dashboard/liff';
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
       'Content-Type': 'application/json'
@@ -59,7 +66,7 @@ class LineTokenProvider extends ChangeNotifier {
   Future<void> loadRemainingCredits() async {
     if (_jwtToken == null) return;
 
-    String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
+    String url = '$urlDomain/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
@@ -84,7 +91,7 @@ class LineTokenProvider extends ChangeNotifier {
   Future<void> loadCredentials() async {
     if (_jwtToken == null) return;
 
-    String url = 'https://api-voice.botnoi.ai/api/service/get_token';
+    String url = '$urlDomain/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
@@ -108,10 +115,4 @@ class LineTokenProvider extends ChangeNotifier {
       _logger.e('Error fetching Credentials-Token: $e');
     }
   }
-
-  /// Getter for the remaining credits
-  String? get getRemainingCredits => _remainingCredits;
-
-  /// Getter for the credentials token
-  String? get getCredentialsToken => _credentialsToken;
 }

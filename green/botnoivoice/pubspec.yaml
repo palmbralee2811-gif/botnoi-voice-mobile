@@ -79,4 +79,5 @@ flutter:
     - assets/images/icon/
     - assets/images/logo/
     - assets/images/national_flag/
+    - assets/images/splash_screen/
     - assets/square_image/

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,8 +11,13 @@ class GoogleTokenProvider extends ChangeNotifier {
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
+  final Logger _logger = Logger(); // For debugging
 
-  final Logger _logger = Logger();
+  /// Getter for the remaining credits
+  String? get getRemainingCredits => _remainingCredits;
+
+  /// Getter for the credentials token
+  String? get getCredentialsToken => _credentialsToken;
 
   /// Clear all the tokens
   void clearTokens() {
@@ -35,7 +41,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     }
 
     // Get the _jwtToken from the Firebase API
-    String url = 'https://api-voice.botnoi.ai/api/dashboard/firebase_auth';
+    String url = '$urlDomain/api/dashboard/firebase_auth';
 
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
@@ -72,7 +78,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     if (_jwtToken == null) return;
 
     // Make the request
-    String url = 'https://api-voice.botnoi.ai/api/dashboard/get_profile';
+    String url = '$urlDomain/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
@@ -99,7 +105,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     if (_jwtToken == null) return;
 
     // Make the request
-    String url = 'https://api-voice.botnoi.ai/api/service/get_token';
+    String url = '$urlDomain/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
@@ -123,10 +129,4 @@ class GoogleTokenProvider extends ChangeNotifier {
       _logger.e('Error fetching Credentials-Token: $e');
     }
   }
-
-  /// Getter for the remaining credits
-  String? get getRemainingCredits => _remainingCredits;
-
-  /// Getter for the credentials token
-  String? get getCredentialsToken => _credentialsToken;
 }

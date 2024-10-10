@@ -9,11 +9,12 @@ import 'package:provider/provider.dart';
 class GoogleLoginProvider extends ChangeNotifier {
   User? user;
   final Logger _logger = Logger(); // For debugging
+  bool _isLoggedIn = false; // Check if the user is logged in
 
-  // Check if the user is logged in
-  bool _isLoggedIn = false;
+  /// Getter for logged in status
   bool get isLoggedIn => _isLoggedIn;
 
+  /// Getter for authenticated status
   bool get isAuthenticated {
     return user != null && user?.providerData[0].providerId == 'google.com';
   }

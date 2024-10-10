@@ -1,7 +1,8 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
-import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart'; // Import the EmailLoginScreen
+import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
@@ -27,6 +28,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
 
   bool _isPasswordVisible = false;
+
+  //TODO: ใช้งานยังไง
+  //TODO: Check if username is valid when registering
+  bool isValidUsername(String username) {
+    // ตรวจสอบความยาวของ username อย่างน้อย 3 ตัวอักษร
+    if (username.length < 3) {
+      return false;
+    }
+
+    // ตรวจสอบว่าประกอบไปด้วยตัวอักษรภาษาอังกฤษ a-z, A-Z, ตัวเลข 0-9, เครื่องหมาย _ และ -
+    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
+
+    return usernameRegex.hasMatch(username);
+  }
 
   // Function to show confirmation dialog
   Future<void> _showConfirmationDialog(BuildContext context) async {
@@ -60,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Function to handle user registration
   void _registerUser() {
     final emailLoginProvider =
-        Provider.of<EmailLoginProvider>(context, listen: false);
+        Provider.of<EmailRegisterProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       emailLoginProvider
           .registerWithEmailPassword(
@@ -173,22 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 8.h),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GradientTextStyle(
-                        'กรุณากรอกข้อมูลของคุณเพื่อสมัครใช้งาน',
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                        ),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 32.h),
+                    SizedBox(height: 40.h),
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(

@@ -1,5 +1,8 @@
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_reset_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
@@ -8,6 +11,7 @@ import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
+import 'package:botnoivoice/presentation/screens/email/test/test_email_by_username_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +43,10 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LineLoginProvider()),
         ChangeNotifierProvider(create: (_) => LineTokenProvider()),
         ChangeNotifierProvider(create: (_) => EmailLoginProvider()),
+        ChangeNotifierProvider(create: (_) => EmailRegisterProvider()),
+        ChangeNotifierProvider(create: (_) => EmailResetPasswordProvider()),
         ChangeNotifierProvider(create: (_) => EmailTokenProvider()),
+        ChangeNotifierProvider(create: (_) => EmailUsernameTokenProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
@@ -55,7 +62,8 @@ class BotnoiVoiceApp extends StatelessWidget {
                 Theme.of(context).textTheme,
               ),
             ),
-            home: AuthChecker(),
+            // home: AuthChecker(),
+            home: const TestEmailByUsernameScreen(),
           );
         },
       ),

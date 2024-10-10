@@ -12,13 +12,54 @@ class LineLoginProvider with ChangeNotifier {
   String? _profilePictureUrl;
   String? _idTokenRaw;
   String? _lineEmail;
-
   final Logger _logger = Logger(); // For debugging
+  bool _isLoggedIn = false; // Check if the user is logged in
 
-  // Check if the user is logged in
-  bool _isLoggedIn = false;
+  /// Getter for logged in status
   bool get isLoggedIn => _isLoggedIn;
+
+  /// Getter for authenticated status
   bool get isAuthenticated => _userId != null;
+
+  /// Getter for LINE ID Token Raw
+  String? get getIdTokenRaw => _idTokenRaw;
+
+  /// Getter for LINE user id from Get Profile Function
+  String? get getUserId => _userId;
+
+  /// Getter for LINE user display name from Get Profile Function
+  String? get getDisplayName => _displayName;
+
+  /// Getter for LINE user profile picture url from Get Profile Function
+  String? get getProfilePictureUrl => _profilePictureUrl;
+
+  /// Getter for LINE user email from Get Profile Function
+  String? get getLineEmail => _lineEmail;
+
+  /// Reset user data and notify listeners
+  void _resetUserData() {
+    _userId = null;
+    _displayName = null;
+    _profilePictureUrl = null;
+    _idTokenRaw = null;
+    _lineEmail = null;
+    _isLoggedIn = false;
+    notifyListeners();
+  }
+
+  /// Get LINE user profile
+  Future<void> _getProfile() async {
+    try {
+      final profileResult = await LineSDK.instance.getProfile();
+      _userId = profileResult.userId;
+      _displayName = profileResult.displayName;
+      _profilePictureUrl = profileResult.pictureUrl;
+      notifyListeners();
+    } on PlatformException catch (e, stackTrace) {
+      _logger.e('getProfile failed: ${e.message}',
+          error: e, stackTrace: stackTrace);
+    }
+  }
 
   /// Sign in with LINE Service
   Future<void> signInWithLine() async {
@@ -49,44 +90,4 @@ class LineLoginProvider with ChangeNotifier {
           error: e, stackTrace: stackTrace);
     }
   }
-
-  /// Reset user data and notify listeners
-  void _resetUserData() {
-    _userId = null;
-    _displayName = null;
-    _profilePictureUrl = null;
-    _idTokenRaw = null;
-    _lineEmail = null;
-    _isLoggedIn = false;
-    notifyListeners();
-  }
-
-  /// Get LINE user profile
-  Future<void> _getProfile() async {
-    try {
-      final profileResult = await LineSDK.instance.getProfile();
-      _userId = profileResult.userId;
-      _displayName = profileResult.displayName;
-      _profilePictureUrl = profileResult.pictureUrl;
-      notifyListeners();
-    } on PlatformException catch (e, stackTrace) {
-      _logger.e('getProfile failed: ${e.message}',
-          error: e, stackTrace: stackTrace);
-    }
-  }
-
-  /// Getter for LINE ID Token Raw
-  String? get getIdTokenRaw => _idTokenRaw;
-
-  /// Getter for LINE user id from Get Profile Function
-  String? get getUserId => _userId;
-
-  /// Getter for LINE user display name from Get Profile Function
-  String? get getDisplayName => _displayName;
-
-  /// Getter for LINE user profile picture url from Get Profile Function
-  String? get getProfilePictureUrl => _profilePictureUrl;
-
-  /// Getter for LINE user email from Get Profile Function
-  String? get getLineEmail => _lineEmail;
 }

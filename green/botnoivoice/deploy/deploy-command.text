@@ -1,5 +1,3 @@
-// String url = "https://api-voice-staging.botnoi.ai/openapi/v1/generate_audio";
-
 flutter clean && flutter pub get
 
 flutter build apk --release

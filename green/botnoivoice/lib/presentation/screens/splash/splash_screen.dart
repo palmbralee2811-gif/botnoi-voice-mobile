@@ -14,13 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFB1E9FD),
-              Color(0xFFF9D8FD),
-            ],
+          image: DecorationImage(
+            image: AssetImage('assets/images/splash_screen/background-320x684.png'), // ระบุตำแหน่งของไฟล์รูป
+            fit: BoxFit.cover, // ให้รูปภาพเต็มหน้าจอ
           ),
         ),
         child: Center(
@@ -34,3 +30,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
