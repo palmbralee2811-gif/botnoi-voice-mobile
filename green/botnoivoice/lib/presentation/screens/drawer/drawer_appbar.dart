@@ -80,7 +80,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                       backgroundImage: profilePictureUrl.isNotEmpty
                           ? NetworkImage(profilePictureUrl)
                           : const AssetImage(
-                                  'assets/app_icon/icon-foreground-432x432.png')
+                                  'assets/images/default-profile-picture.jpg')
                               as ImageProvider<Object>,
                       backgroundColor: Colors.black,
                       radius: 20.0.r,

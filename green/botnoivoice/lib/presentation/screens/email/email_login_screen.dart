@@ -23,7 +23,7 @@ class EmailLoginScreen extends StatefulWidget {
 
 class _EmailLoginScreenState extends State<EmailLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
@@ -39,18 +39,15 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       });
 
       try {
-        await emailLoginProvider.loginWithEmailPassword(
-          _emailController.text.trim(),
+        await emailLoginProvider.loginWithUsernamePassword(
+          _usernameController.text.trim(),
           _passwordController.text.trim(),
+          context,
         );
 
         final errorMessage = emailLoginProvider.errorMessage;
 
         if (errorMessage != null && errorMessage.isNotEmpty) {
-          //TODO: /*
-          // ตอนสร้างบัญชีใหม่ด้วยอีเมล มันขึ้นว่า verification sent แต่มาในรูปแบบของ Toast สีแดง
-          // ที่มาแปปเดียวแล้วหายไป ผมว่าทำเป็นป๊อปอัพดีกว่าเค้าจะได้อ่านง่ายๆ
-          // พอผู้ใช้อ่านเสร็จแล้ว กดตกลง ก็ให้เด้งไปหน้า เข้าสู่ระบบ เลย ผู้ใช้จะได้ไม่กดสร้างบัญชีซ้ำ */
           AlertNotificationDialog(
             context: context,
             text: errorMessage,
@@ -75,6 +72,53 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       }
     }
   }
+
+  // void _loginUser() async {
+  //   final emailLoginProvider =
+  //       Provider.of<EmailLoginProvider>(context, listen: false);
+
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _isLoading = true;
+  //     });
+
+  //     try {
+  //       await emailLoginProvider.loginWithEmailPassword(
+  //         _usernameController.text.trim(),
+  //         _passwordController.text.trim(),
+  //       );
+
+  //       final errorMessage = emailLoginProvider.errorMessage;
+
+  //       if (errorMessage != null && errorMessage.isNotEmpty) {
+  //         //TODO: /*
+  //         // ตอนสร้างบัญชีใหม่ด้วยอีเมล มันขึ้นว่า verification sent แต่มาในรูปแบบของ Toast สีแดง
+  //         // ที่มาแปปเดียวแล้วหายไป ผมว่าทำเป็นป๊อปอัพดีกว่าเค้าจะได้อ่านง่ายๆ
+  //         // พอผู้ใช้อ่านเสร็จแล้ว กดตกลง ก็ให้เด้งไปหน้า เข้าสู่ระบบ เลย ผู้ใช้จะได้ไม่กดสร้างบัญชีซ้ำ */
+  //         AlertNotificationDialog(
+  //           context: context,
+  //           text: errorMessage,
+  //         ).showAsError();
+  //       } else {
+  //         Navigator.pushReplacement(
+  //           context,
+  //           MaterialPageRoute(
+  //             builder: (context) => AuthChecker(),
+  //           ),
+  //         );
+  //       }
+  //     } catch (e) {
+  //       AlertNotificationDialog(
+  //         context: context,
+  //         text: 'An unexpected error occurred. Please try again.',
+  //       ).showAsError();
+  //     } finally {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //     }
+  //   }
+  // }
 
   /// Open Google Login and Close Email Login Screen
   void _openGoogleLogin() async {
@@ -165,10 +209,10 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     ),
                     SizedBox(height: 32.h),
                     TextFormField(
-                      controller: _emailController,
+                      controller: _usernameController, // ใช้ username แทน email
                       decoration: InputDecoration(
-                        labelText: 'อีเมล',
-                        prefixIcon: Icon(Icons.email, size: 24.w),
+                        labelText: 'ชื่อผู้ใช้',
+                        prefixIcon: Icon(Icons.person, size: 24.w),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(
@@ -176,9 +220,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      keyboardType: TextInputType.emailAddress,
                       validator: (value) =>
-                          value!.isEmpty ? 'โปรดใส่อีเมลของคุณ' : null,
+                          value!.isEmpty ? 'โปรดใส่ชื่อผู้ใช้ของคุณ' : null,
                     ),
                     SizedBox(height: 16.h),
                     TextFormField(

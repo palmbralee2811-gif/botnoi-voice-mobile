@@ -126,21 +126,35 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
 
   /api/dashboard/get_email?username=nah_i_win
 
+  https://api-voice-staging.botnoi.ai/api/dashboard/get_email?username=nah_i_win
+
   */
   Future<void> getEmailByUsername(String? usernameId) async {
-    // Make the request
-    //TODO: ทดสอบ URL ว่าถูกต้องไหม
-    String url = '$urlDomain/api/dashboard/get_email?username_id=$usernameId';
+    // TODO: ทดสอบ URL ว่าถูกต้องไหม
+    String url =
+        '$urlDomain/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
     };
+
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
+
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        _result = data.toString(); // เก็บผลลัพธ์ไว้ในตัวแปร
-        _logger.d('Response Data: $_result');
+
+        // ตรวจสอบว่า response ประกอบด้วยข้อมูล email หรือไม่
+        if (data['message'] == 'success' && data['data'] != null) {
+          // ดึงค่า email จาก data
+          String email = data['data']['email'];
+          _result = email; // เก็บเฉพาะ email ไว้ในตัวแปร _result
+          _logger.d('Email: $email');
+        } else {
+          _result = 'No email found in response data';
+          _logger.e('No email found in response data');
+        }
+
         notifyListeners();
       } else {
         _result = 'Failed to get email. Status Code: ${response.statusCode}';

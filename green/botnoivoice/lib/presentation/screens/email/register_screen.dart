@@ -11,7 +11,6 @@ import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.da
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -23,6 +22,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController =
+      TextEditingController(); // เพิ่ม username controller
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -74,10 +75,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   // Function to handle user registration
   void _registerUser() {
-    final emailLoginProvider =
+    final emailRegisterProvider =
         Provider.of<EmailRegisterProvider>(context, listen: false);
+
+    //TODO: ตรวจสอบ username ก่อนทำการสมัครสมาชิก
+    if (!isValidUsername(_usernameController.text.trim())) {
+      AlertNotificationDialog(
+        context: context,
+        text:
+            "ชื่อผู้ใช้ไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+      ).showAsError();
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
-      emailLoginProvider
+      // Set ค่า username ให้กับ provider
+      emailRegisterProvider.username = _usernameController.text.trim();
+
+      emailRegisterProvider
           .registerWithEmailPassword(
               _emailController.text.trim(),
               _passwordController.text.trim(),
@@ -86,11 +101,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .then((_) {
         //TODO: Open Email App on Deveice when need to verify email after registration
         //TODO: Alert Notification display for 10 seconds
-        //TODO: When registration is successful, clear vlue input form and Navigate to EmailLoginScreen
+        //TODO: When registration is successful, clear value input form and Navigate to EmailLoginScreen
         //TODO: Loading animation when processing registration
 
         final errorMessage =
-            Provider.of<EmailLoginProvider>(context, listen: false)
+            Provider.of<EmailRegisterProvider>(context, listen: false)
                 .errorMessage;
 
         if (errorMessage != null && errorMessage.isNotEmpty) {
@@ -204,6 +219,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) =>
                           value!.isEmpty ? 'โปรดใส่อีเมลของคุณ' : null,
+                    ),
+                    SizedBox(height: 16.h),
+                    TextFormField(
+                      controller: _usernameController, // เพิ่ม input username
+                      decoration: InputDecoration(
+                        labelText: 'ชื่อผู้ใช้',
+                        prefixIcon: Icon(Icons.person, size: 24.w),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? 'โปรดใส่ชื่อผู้ใช้ของคุณ' : null,
                     ),
                     SizedBox(height: 16.h),
                     TextFormField(

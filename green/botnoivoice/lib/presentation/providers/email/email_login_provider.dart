@@ -1,34 +1,33 @@
-import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
 
-/// Email & Password Provider and interface for authentication
 class EmailLoginProvider with ChangeNotifier {
   User? _userEmail;
   String? _errorMessage;
-  final Logger _logger = Logger(); // For debugging
-  bool _isLoggedIn = false; // Check if the user is logged in
+  final Logger _logger = Logger(); // สำหรับ debug
+  bool _isLoggedIn = false;
 
-  /// Getter for logged in status
+  /// Getter สำหรับการตรวจสอบว่าเข้าสู่ระบบแล้วหรือไม่
   bool get isLoggedIn => _isLoggedIn;
 
-  /// Getter for authenticated status
+  /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
   bool get isAuthenticated {
     return currentUser?.uid != null &&
         _userEmail?.providerData.isNotEmpty == true &&
         _userEmail?.providerData[0].providerId == 'password';
   }
 
-  /// Getter for user email
+  /// Getter สำหรับอีเมลของผู้ใช้
   User? get userEmail => _userEmail;
 
-  /// Getter for current user
+  /// Getter สำหรับผู้ใช้ปัจจุบัน
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
-  /// Getter for error message
+  /// Getter สำหรับ error message
   String? get errorMessage => _errorMessage;
 
   EmailLoginProvider() {
@@ -40,20 +39,44 @@ class EmailLoginProvider with ChangeNotifier {
     });
   }
 
-  /// Login user with email and password
+  /// เข้าสู่ระบบด้วย `username` และ `password` พร้อมกับเรียก `getUsernameByEmail`
+  Future<void> loginWithUsernamePassword(
+      String username, String password, BuildContext context) async {
+    final emailUsernameProvider =
+        Provider.of<EmailUsernameTokenProvider>(context, listen: false);
+
+    try {
+      // เรียกใช้ฟังก์ชัน getUsernameByEmail เพื่อดึง email จาก username
+      await emailUsernameProvider.getEmailByUsername(username);
+      final email = emailUsernameProvider.result; // รับค่า email จาก result
+
+      if (email.isEmpty) {
+        _errorMessage = 'ไม่พบ email สำหรับ username นี้';
+        _logger.e("No email found for username: $username");
+        notifyListeners();
+        return;
+      }
+
+      // ทำการเข้าสู่ระบบโดยใช้ email และ password ที่ได้จาก username
+      await loginWithEmailPassword(email, password);
+    } catch (e) {
+      _errorMessage = "เกิดข้อผิดพลาดในการเข้าสู่ระบบ: $e";
+      _logger.e("Error logging in with username: $e");
+      notifyListeners();
+    }
+  }
+
+  /// เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
   Future<void> loginWithEmailPassword(String email, String password) async {
     try {
-      // Perform login
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       _errorMessage = null;
 
-      // Check if email is verified
       if (!userCredential.user!.emailVerified) {
         _errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ.";
         _logger.w("User email is not verified: $email");
 
-        // Send verification email
         try {
           await userCredential.user?.sendEmailVerification();
           _errorMessage = "ส่งอีเมลยืนยันไปที่: $email";
@@ -67,23 +90,20 @@ class EmailLoginProvider with ChangeNotifier {
         return;
       }
 
-      // Set user after successful login
       _userEmail = userCredential.user;
       _isLoggedIn = true;
-      _logger.i("User logged in successfully with email: $email");
+      _logger.i("User logged in successfully with email: $email, User ID: ${_userEmail?.uid}");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
-      _logger
-          .e("Error logging in user with email: $email, Error: ${e.message}");
+      _logger.e("Error logging in with email: $email, Error: ${e.message}");
       notifyListeners();
     }
   }
 
-  /// Sign out
+  /// ออกจากระบบ
   Future<void> signOut(BuildContext context) async {
     try {
-      Provider.of<EmailTokenProvider>(context, listen: false).clearTokens();
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false;
       _logger.i("User signed out successfully");
