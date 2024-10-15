@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
@@ -39,7 +38,7 @@ class EmailLoginProvider with ChangeNotifier {
     });
   }
 
-  /// เข้าสู่ระบบด้วย `username` และ `password` พร้อมกับเรียก `getUsernameByEmail`
+  /// เข้าสู่ระบบด้วย `username` และ `password` พร้อมกับเรียก `get email by username`
   Future<void> loginWithUsernamePassword(
       String username, String password, BuildContext context) async {
     final emailUsernameProvider =
@@ -73,26 +72,33 @@ class EmailLoginProvider with ChangeNotifier {
           .signInWithEmailAndPassword(email: email, password: password);
       _errorMessage = null;
 
+      // ตรวจสอบว่าผู้ใช้อีเมลได้รับการยืนยันหรือไม่
       if (!userCredential.user!.emailVerified) {
         _errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ.";
         _logger.w("User email is not verified: $email");
 
+        // ส่งอีเมลยืนยันหากยังไม่ได้รับการยืนยัน
         try {
           await userCredential.user?.sendEmailVerification();
           _errorMessage = "ส่งอีเมลยืนยันไปที่: $email";
           _logger.i("Verification email sent to: $email");
-        } on PlatformException catch (e) {
+        } on FirebaseAuthException catch (e) {
           _errorMessage = e.message;
           _logger.e("Failed to send verification email: $e");
         }
 
+        // ทำการ sign out เพื่อป้องกันการเข้าถึงโดยไม่ยืนยันอีเมล
+        await FirebaseAuth.instance.signOut();
+        _isLoggedIn = false;
         notifyListeners();
         return;
       }
 
+      // หากยืนยันอีเมลแล้ว อนุญาตให้เข้าสู่ระบบ
       _userEmail = userCredential.user;
       _isLoggedIn = true;
-      _logger.i("User logged in successfully with email: $email, User ID: ${_userEmail?.uid}");
+      _logger.i(
+          "User logged in successfully with email: $email, User ID: ${_userEmail?.uid}");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;

@@ -25,7 +25,7 @@ class LineLoginProvider with ChangeNotifier {
   String? get getIdTokenRaw => _idTokenRaw;
 
   /// Getter for LINE user id from Get Profile Function
-  String? get getUserId => _userId;
+  String? get getLineUserId => _userId;
 
   /// Getter for LINE user display name from Get Profile Function
   String? get getDisplayName => _displayName;

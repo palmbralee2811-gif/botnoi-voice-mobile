@@ -34,7 +34,6 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
   print(response.text)
   */
   Future<void> getEmailMobile() async {
-    //TODO: ทดสอบ URL ว่าถูกต้องไหม และทดสอบ ว่า API ทำงานถูกต้องไหม
     String url = '$urlDomain/api/dashboard/get_email_mobile';
 
     // สร้าง query parameters หลายตัว
@@ -130,7 +129,6 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
 
   */
   Future<void> getEmailByUsername(String? usernameId) async {
-    // TODO: ทดสอบ URL ว่าถูกต้องไหม
     String url =
         '$urlDomain/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {

@@ -1,11 +1,15 @@
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/checkmark_modal.dart';
+import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 
 class NewPasswordScreen extends StatefulWidget {
-  const NewPasswordScreen({super.key});
+  final String resetCode;
+
+  const NewPasswordScreen({super.key, required this.resetCode});
 
   @override
   State<NewPasswordScreen> createState() => _NewPasswordScreenState();
@@ -14,17 +18,27 @@ class NewPasswordScreen extends StatefulWidget {
 class _NewPasswordScreenState extends State<NewPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _isPasswordVisible = false;
 
-  //TODO: How to use this modal
-  //TODO: open modal create user successfully
-  void openModal() {
-    const CheckmarkModal(
-      text: 'ตั้งรหัสผ่านใหม่สำเร็จ',
-    );
+  /// ฟังก์ชันรีเซ็ตรหัสผ่าน
+  Future<void> _resetPassword(String code, String newPassword) async {
+    final emailForgetPasswordProvider =
+        Provider.of<EmailForgetPasswordProvider>(context, listen: false);
+
+    try {
+      await emailForgetPasswordProvider.confirmPasswordReset(code, newPassword);
+      AlertMessageModal(
+        context: context,
+        text: "ตั้งรหัสผ่านใหม่สำเร็จ",
+      ).showCheckmarkModal(context);
+    } catch (e) {
+      AlertMessageModal(
+        context: context,
+        text: "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage}",
+      ).showErrorModal(context);
+    }
   }
 
   @override
@@ -55,16 +69,12 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(height: 40.h),
                 GradientTextAlign(
                   'ตั้งรหัสผ่านใหม่',
                   gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF9340FF),
-                      Color(0xFF34BDFA),
-                    ],
+                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -76,10 +86,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                 GradientTextAlign(
                   'รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป',
                   gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF9340FF),
-                      Color(0xFF34BDFA),
-                    ],
+                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -115,8 +122,14 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                     ),
                   ),
                   obscureText: !_isPasswordVisible,
-                  validator: (value) =>
-                      value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'โปรดใส่รหัสผ่านของคุณ';
+                    } else if (value.length < 6) {
+                      return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 16.h),
                 TextFormField(
@@ -145,16 +158,20 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                     ),
                   ),
                   obscureText: !_isPasswordVisible,
-                  validator: (value) => value != _passwordController.text
-                      ? 'รหัสผ่านไม่ตรงกัน'
-                      : null,
+                  validator: (value) {
+                    if (value != _passwordController.text) {
+                      return 'รหัสผ่านไม่ตรงกัน';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 16.h),
                 GradientTextButton(
                   text: 'ยืนยัน',
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      //TODO: Setter code from confirm forget password screen
+                      _resetPassword(
+                          widget.resetCode, _passwordController.text.trim());
                     }
                   },
                 ),

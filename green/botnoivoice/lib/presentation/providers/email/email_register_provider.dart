@@ -12,10 +12,10 @@ class EmailRegisterProvider with ChangeNotifier {
   final Logger _logger = Logger();
 
   /// Getter สำหรับ user ID
-  String? get userId => _userId;
+  String? get getEmailUserId => _userId;
 
   /// Getter สำหรับ username
-  String? get username => _username;
+  String? get getEmailUsername => _username;
 
   /// Setter สำหรับ username
   set username(String? value) {

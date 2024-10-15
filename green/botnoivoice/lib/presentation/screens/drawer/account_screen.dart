@@ -38,7 +38,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "No Name";
-      userId = lineProvider.getUserId ?? "No UID";
+      userId = lineProvider.getLineUserId ?? "No UID";
       email = lineProvider.getLineEmail ?? "No email found";
     } else if (googleProvider.isLoggedIn) {
       displayName = googleUser?.displayName ?? 'No Name';
@@ -56,7 +56,8 @@ class _AccountScreenState extends State<AccountScreen> {
   /// ฟังก์ชันสำหรับการออกจากระบบ
   Future<void> _signOut(BuildContext context) async {
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {

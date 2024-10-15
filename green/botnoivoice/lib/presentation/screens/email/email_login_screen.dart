@@ -7,6 +7,7 @@ import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  //TODO: งานพรุ่งนี้ ทำให้สามารถ login ด้วย email และ password ได้
+
   void _loginUser() async {
     final emailLoginProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
@@ -48,10 +51,10 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         final errorMessage = emailLoginProvider.errorMessage;
 
         if (errorMessage != null && errorMessage.isNotEmpty) {
-          AlertNotificationDialog(
+          AlertMessageModal(
             context: context,
             text: errorMessage,
-          ).showAsError();
+          ).showErrorModal(context);
         } else {
           Navigator.pushReplacement(
             context,
@@ -60,10 +63,10 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
             ),
           );
         }
-      } catch (e) {
+      } catch (error) {
         AlertNotificationDialog(
           context: context,
-          text: 'An unexpected error occurred. Please try again.',
+          text: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง. $error',
         ).showAsError();
       } finally {
         setState(() {
@@ -72,53 +75,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       }
     }
   }
-
-  // void _loginUser() async {
-  //   final emailLoginProvider =
-  //       Provider.of<EmailLoginProvider>(context, listen: false);
-
-  //   if (_formKey.currentState!.validate()) {
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     try {
-  //       await emailLoginProvider.loginWithEmailPassword(
-  //         _usernameController.text.trim(),
-  //         _passwordController.text.trim(),
-  //       );
-
-  //       final errorMessage = emailLoginProvider.errorMessage;
-
-  //       if (errorMessage != null && errorMessage.isNotEmpty) {
-  //         //TODO: /*
-  //         // ตอนสร้างบัญชีใหม่ด้วยอีเมล มันขึ้นว่า verification sent แต่มาในรูปแบบของ Toast สีแดง
-  //         // ที่มาแปปเดียวแล้วหายไป ผมว่าทำเป็นป๊อปอัพดีกว่าเค้าจะได้อ่านง่ายๆ
-  //         // พอผู้ใช้อ่านเสร็จแล้ว กดตกลง ก็ให้เด้งไปหน้า เข้าสู่ระบบ เลย ผู้ใช้จะได้ไม่กดสร้างบัญชีซ้ำ */
-  //         AlertNotificationDialog(
-  //           context: context,
-  //           text: errorMessage,
-  //         ).showAsError();
-  //       } else {
-  //         Navigator.pushReplacement(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) => AuthChecker(),
-  //           ),
-  //         );
-  //       }
-  //     } catch (e) {
-  //       AlertNotificationDialog(
-  //         context: context,
-  //         text: 'An unexpected error occurred. Please try again.',
-  //       ).showAsError();
-  //     } finally {
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //     }
-  //   }
-  // }
 
   /// Open Google Login and Close Email Login Screen
   void _openGoogleLogin() async {

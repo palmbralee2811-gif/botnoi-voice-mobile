@@ -15,16 +15,25 @@ class AuthChecker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<GoogleLoginProvider, LineLoginProvider, EmailLoginProvider>(
+    return Consumer3<GoogleLoginProvider, LineLoginProvider,
+        EmailLoginProvider>(
       builder: (context, googleProvider, lineProvider, emailProvider, child) {
         // ตรวจสอบ provider ที่ล็อกอิน
         String? loginProvider;
 
-        if (emailProvider.isAuthenticated && emailProvider.userEmail?.providerData[0].providerId == 'password') {
-          loginProvider = 'email';
+        if (emailProvider.isAuthenticated &&
+            emailProvider.userEmail?.providerData[0].providerId == 'password') {
+          // ตรวจสอบสถานะการยืนยันอีเมล
+          if (!emailProvider.userEmail!.emailVerified) {
+            emailProvider.signOut(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
+            loginProvider = null;
+          } else {
+            loginProvider = 'email';
+          }
         } else if (lineProvider.isAuthenticated) {
           loginProvider = 'line';
-        } else if (googleProvider.isAuthenticated && googleProvider.user?.providerData[0].providerId == 'google.com') {
+        } else if (googleProvider.isAuthenticated &&
+            googleProvider.user?.providerData[0].providerId == 'google.com') {
           loginProvider = 'google';
         }
 

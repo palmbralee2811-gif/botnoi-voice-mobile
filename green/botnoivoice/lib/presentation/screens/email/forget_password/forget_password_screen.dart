@@ -1,9 +1,12 @@
+import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/confirm_forget_password_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -15,6 +18,29 @@ class ForgetPasswordScreen extends StatefulWidget {
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+
+  void sendPasswordResetEmail() async {
+    final emailForgetPassword =
+        Provider.of<EmailForgetPasswordProvider>(context, listen: false);
+
+    if (_formKey.currentState!.validate()) {
+      await emailForgetPassword.sendPasswordResetEmail(_emailController.text);
+      final errorMessage = emailForgetPassword.errorMessage;
+      if (errorMessage != null && errorMessage.isNotEmpty) {
+        AlertMessageModal(
+          context: context,
+          text: errorMessage,
+        ).showErrorModal(context);
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ConfirmForgetPasswordScreen(),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +97,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 ),
                 SizedBox(height: 8.h),
                 GradientTextAlign(
-                  'ยืนยันอีเมลของคุณเพื่อทำการตั้งรหัสผ่านใหม่',
+                  'ยืนยันอีเมลของคุณเพื่อตั้งรหัสผ่านใหม่',
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xFF9340FF),
@@ -106,15 +132,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 GradientTextButton(
                   text: 'ส่ง',
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const ConfirmForgetPasswordScreen(),
-                        ),
-                      );
-                    }
+                    sendPasswordResetEmail();
                   },
                 ),
                 SizedBox(height: 16.h),

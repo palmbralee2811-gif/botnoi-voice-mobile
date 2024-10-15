@@ -18,6 +18,12 @@ class _ConfirmForgetPasswordScreenState
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _codeController = TextEditingController();
 
+  // นำฟังก์ชันจากไฟล์ 2 มาใช้
+  String _extractCodeFromLink(String link) {
+    Uri uri = Uri.parse(link);
+    return uri.queryParameters['oobCode'] ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -73,7 +79,7 @@ class _ConfirmForgetPasswordScreenState
                 ),
                 SizedBox(height: 8.h),
                 GradientTextAlign(
-                  'ระบบได้ส่งลิงค์สำหรับตั้งรหัสผ่านใหม่ไปยังอีเมลของคุณเรียบร้อยแล้ว',
+                  'คัดลอกลิงค์จากกล่องจดหมายของคุณ',
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xFF9340FF),
@@ -101,19 +107,21 @@ class _ConfirmForgetPasswordScreenState
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) => value!.isEmpty
-                      ? 'โปรดใส่ลิงค์ที่ได้รับจากอีเมล'
-                      : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'โปรดใส่ลิงค์ที่ได้รับจากอีเมล' : null,
                 ),
                 SizedBox(height: 16.h),
                 GradientTextButton(
                   text: 'ยืนยัน',
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      // ดึงรหัสจากลิงก์ที่ผู้ใช้ป้อน
+                      String code = _extractCodeFromLink(_codeController.text);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const NewPasswordScreen(),
+                          builder: (context) =>
+                              NewPasswordScreen(resetCode: code),
                         ),
                       );
                     }
