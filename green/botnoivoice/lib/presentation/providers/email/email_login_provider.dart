@@ -45,7 +45,7 @@ class EmailLoginProvider with ChangeNotifier {
         Provider.of<EmailUsernameTokenProvider>(context, listen: false);
 
     try {
-      // เรียกใช้ฟังก์ชัน getUsernameByEmail เพื่อดึง email จาก username
+      // เรียกใช้ฟังก์ชัน get email by username เพื่อดึง email จาก username
       await emailUsernameProvider.getEmailByUsername(username);
       final email = emailUsernameProvider.result; // รับค่า email จาก result
 

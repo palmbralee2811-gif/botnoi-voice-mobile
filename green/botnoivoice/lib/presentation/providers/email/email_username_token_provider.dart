@@ -185,17 +185,19 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        _result = data.toString(); // เก็บผลลัพธ์ไว้ในตัวแปร
-        _logger.d('Response Data: $_result');
+        _result = "email: $email \n${data.toString()}"; // เก็บผลลัพธ์ไว้ในตัวแปร
+        _logger.d('email: $email \nResponse Data: ${data.toString()}');
         notifyListeners();
       } else {
-        _result = 'Failed to get username. Status Code: ${response.statusCode}';
-        _logger.e('Failed with status code: ${response.statusCode}');
+        _result =
+            'email: $email \nFailed to get username. Status Code: ${response.statusCode}';
+        _logger.e(
+            'email: $email \nFailed with status code: ${response.statusCode}');
         notifyListeners();
       }
     } catch (e) {
-      _result = 'Error: $e';
-      _logger.e('Error: $e');
+      _result = 'email: $email \nError: $e';
+      _logger.e('email: $email \nError: $e');
       notifyListeners();
     }
   }

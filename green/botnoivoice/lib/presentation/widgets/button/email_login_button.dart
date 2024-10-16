@@ -2,6 +2,7 @@ import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 class EmailLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -39,7 +40,7 @@ class EmailLoginButton extends StatelessWidget {
                   ),
                   SizedBox(width: 16.w),
                   Text(
-                    'เข้าสู่ระบบด้วย Email',
+                    'เข้าสู่ระบบด้วยอีเมลหรือชื่อผู้ใช้',
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: kDark,

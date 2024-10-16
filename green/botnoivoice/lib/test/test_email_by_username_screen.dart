@@ -38,7 +38,7 @@ class _TestEmailByUsernameScreenState extends State<TestEmailByUsernameScreen> {
                   // เรียกใช้งานฟังก์ชัน getEmailByUsername
                   await Provider.of<EmailUsernameTokenProvider>(context,
                           listen: false)
-                      .getEmailByUsername(email);
+                      .getUsernameByEmail(email);
 
                   // อัพเดตผลลัพธ์
                   setState(() {

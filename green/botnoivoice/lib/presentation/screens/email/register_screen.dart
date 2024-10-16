@@ -29,6 +29,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isPasswordVisible = false;
 
+  /// ฟังก์ชันตรวจสอบรูปแบบอีเมล
+  bool isValidEmail(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
   /// ตรวจสอบชื่อผู้ใช้ว่าถูกต้องหรือไม่
   bool isValidUsername(String username) {
     if (username.length < 3) return false;
@@ -152,10 +160,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     _buildGradientText('สมัครใช้งาน'),
                     SizedBox(height: 40.h),
-                    _buildTextFormField(_emailController, 'อีเมล', Icons.email),
+                    _buildTextFormField(_emailController, 'อีเมล'/*, Icons.email*/),
                     SizedBox(height: 16.h),
                     _buildTextFormField(
-                        _usernameController, 'ชื่อผู้ใช้', Icons.person),
+                        _usernameController, 'ชื่อผู้ใช้',/* Icons.person*/),
                     SizedBox(height: 16.h),
                     _buildPasswordField(_passwordController, 'รหัสผ่าน'),
                     SizedBox(height: 16.h),
@@ -192,13 +200,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildTextFormField(
     TextEditingController controller,
     String label,
-    IconData icon,
+    // IconData icon,
   ) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, size: 24.w),
+        // prefixIcon: Icon(icon, size: 24.w),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -209,6 +217,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'โปรดใส่$labelของคุณ';
+        }
+        // ตรวจสอบรูปแบบอีเมล
+        if (label == 'อีเมล') {
+          if (!isValidEmail(value)) {
+            return 'รูปแบบอีเมลไม่ถูกต้อง';
+          }
+        }
+        // ตรวจสอบรูปแบบชื่อผู้ใช้
+        if (label == 'ชื่อผู้ใช้') {
+          if (!isValidUsername(value)) {
+            return 'ชื่อผู้ใช้ไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+          }
         }
         return null;
       },
@@ -224,7 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(Icons.lock, size: 24.w),
+        // prefixIcon: Icon(Icons.lock, size: 24.w),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
