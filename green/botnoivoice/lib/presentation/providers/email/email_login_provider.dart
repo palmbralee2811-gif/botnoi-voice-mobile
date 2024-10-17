@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
 
 class EmailLoginProvider with ChangeNotifier {
-  User? _userEmail;
+  User? _user;
   String? _errorMessage;
   final Logger _logger = Logger(); // สำหรับ debug
   bool _isLoggedIn = false;
@@ -16,12 +16,14 @@ class EmailLoginProvider with ChangeNotifier {
   /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
   bool get isAuthenticated {
     return currentUser?.uid != null &&
-        _userEmail?.providerData.isNotEmpty == true &&
-        _userEmail?.providerData[0].providerId == 'password';
+        _user?.providerData.isNotEmpty == true &&
+        _user?.providerData[0].providerId == 'password';
   }
 
   /// Getter สำหรับอีเมลของผู้ใช้
-  User? get userEmail => _userEmail;
+  User? get user => _user;
+
+  String? get getUserEmail => _user?.email;
 
   /// Getter สำหรับผู้ใช้ปัจจุบัน
   User? get currentUser => FirebaseAuth.instance.currentUser;
@@ -31,9 +33,9 @@ class EmailLoginProvider with ChangeNotifier {
 
   EmailLoginProvider() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-      _userEmail = user;
-      _logger.i("User email: $_userEmail");
-      _isLoggedIn = _userEmail != null;
+      _user = user;
+      _logger.i("User email: $_user");
+      _isLoggedIn = _user != null;
       notifyListeners(); // Update UI
     });
   }
@@ -95,10 +97,10 @@ class EmailLoginProvider with ChangeNotifier {
       }
 
       // หากยืนยันอีเมลแล้ว อนุญาตให้เข้าสู่ระบบ
-      _userEmail = userCredential.user;
+      _user = userCredential.user;
       _isLoggedIn = true;
       _logger.i(
-          "User logged in successfully with email: $email, User ID: ${_userEmail?.uid}");
+          "User logged in successfully with email: $email, User ID: ${_user?.uid}");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;

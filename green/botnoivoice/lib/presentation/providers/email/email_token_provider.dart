@@ -32,7 +32,7 @@ class EmailTokenProvider extends ChangeNotifier {
     // Get the idToken from the Authentication provider
     String? idToken =
         await Provider.of<EmailLoginProvider>(context, listen: false)
-            .userEmail
+            .user
             ?.getIdToken();
     _logger.d("Email ID Token: $idToken");
     if (idToken == null) {

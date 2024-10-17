@@ -28,7 +28,7 @@ class EmailLoginButton extends StatelessWidget {
                   ),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(224.w, 44.h),
+                minimumSize: Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

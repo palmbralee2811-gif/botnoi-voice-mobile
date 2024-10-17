@@ -22,9 +22,9 @@ class AuthChecker extends StatelessWidget {
         String? loginProvider;
 
         if (emailProvider.isAuthenticated &&
-            emailProvider.userEmail?.providerData[0].providerId == 'password') {
+            emailProvider.user?.providerData[0].providerId == 'password') {
           // ตรวจสอบสถานะการยืนยันอีเมล
-          if (!emailProvider.userEmail!.emailVerified) {
+          if (!emailProvider.user!.emailVerified) {
             emailProvider.signOut(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
             loginProvider = null;
           } else {

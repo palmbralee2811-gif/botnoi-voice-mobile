@@ -1,5 +1,6 @@
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -28,12 +29,15 @@ class _InitScreenState extends State<InitScreen> {
 
   /// ฟังก์ชันสำหรับการเช็คว่า ผู้ใช้เข้าสู่ระบบด้วยวิธีไหน และโหลดข้อมูลที่จำเป็น
   Future<void> initApp() async {
-    final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    final googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
 
     // ตรวจสอบการเข้าสู่ระบบโดย Google ก่อน
-    if (googleProvider.isLoggedIn && googleProvider.user?.providerData[0].providerId == 'google.com') {
+    if (googleProvider.isLoggedIn &&
+        googleProvider.user?.providerData[0].providerId == 'google.com') {
       await _loadGoogleCredentials();
       return;
     }
@@ -45,7 +49,8 @@ class _InitScreenState extends State<InitScreen> {
     }
 
     // ตรวจสอบการเข้าสู่ระบบด้วย Email
-    if (emailProvider.isLoggedIn && emailProvider.userEmail?.providerData[0].providerId == 'password') {
+    if (emailProvider.isLoggedIn &&
+        emailProvider.user?.providerData[0].providerId == 'password') {
       await _loadEmailCredentials();
       return;
     }
@@ -58,7 +63,8 @@ class _InitScreenState extends State<InitScreen> {
 
   /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Google
   Future<void> _loadGoogleCredentials() async {
-    final googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
+    final googleTokenProvider =
+        Provider.of<GoogleTokenProvider>(context, listen: false);
     await googleTokenProvider.loadJwtToken(context);
     await googleTokenProvider.loadCredentials();
     await googleTokenProvider.loadRemainingCredits();
@@ -70,7 +76,8 @@ class _InitScreenState extends State<InitScreen> {
 
   /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย LINE
   Future<void> _loadLineCredentials() async {
-    final lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
+    final lineTokenProvider =
+        Provider.of<LineTokenProvider>(context, listen: false);
     await lineTokenProvider.loadJwtToken(context);
     await lineTokenProvider.loadCredentials();
     await lineTokenProvider.loadRemainingCredits();
@@ -82,10 +89,15 @@ class _InitScreenState extends State<InitScreen> {
 
   /// โหลดข้อมูลเมื่อเข้าสู่ระบบด้วย Email
   Future<void> _loadEmailCredentials() async {
-    final emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
+    final emailTokenProvider =
+        Provider.of<EmailTokenProvider>(context, listen: false);
     await emailTokenProvider.loadJwtToken(context);
     await emailTokenProvider.loadCredentials();
     await emailTokenProvider.loadRemainingCredits();
+
+    /// Load get username by email
+    String? email = Provider.of<EmailLoginProvider>(context, listen: false).getUserEmail;
+    await Provider.of<EmailUsernameTokenProvider>(context, listen: false).loadGetUsername(email);
 
     setState(() {
       _initialized = true;

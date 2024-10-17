@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class DrawerAppbar extends StatefulWidget {
   const DrawerAppbar({super.key});
@@ -19,9 +16,8 @@ class DrawerAppbar extends StatefulWidget {
 }
 
 class _DrawerAppbarState extends State<DrawerAppbar> {
-  User? googleUser = FirebaseAuth.instance.currentUser;
   String displayName = "Loading...";
-  String email = "Loading...";
+  String uid = "Loading...";
   String profilePictureUrl = "";
 
   @override
@@ -33,30 +29,37 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   }
 
   Future<void> _loadUserInfo() async {
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       String? lineDisplayName = lineProvider.getDisplayName;
-      String? lineEmail = lineProvider.getLineEmail;
+      String? lineUid = lineProvider.getLineUserId;
       String? lineProfilePictureUrl = lineProvider.getProfilePictureUrl;
 
       setState(() {
         displayName = lineDisplayName ?? 'No Name';
-        email = lineEmail ?? 'No email found';
+        uid = lineUid ?? 'No uid found';
         profilePictureUrl = lineProfilePictureUrl ?? '';
       });
-    } else if (googleUser != null) {
+    } else if (googleProvider.isLoggedIn &&
+        googleProvider.user?.providerData[0].providerId == 'google.com') {
       setState(() {
-        displayName = googleUser?.displayName ?? 'No Name';
-        email = getUserEmail(googleUser) ?? 'No email found';
-        profilePictureUrl = googleUser?.photoURL ?? '';
+        displayName = googleProvider.user?.displayName ?? 'No email found';
+        uid = googleProvider.user?.uid ?? 'No uid found';
+        profilePictureUrl = googleProvider.user?.photoURL ?? 'No email found';
       });
-    } else if (emailProvider.isLoggedIn) {
+    } else if (emailProvider.isLoggedIn &&
+        emailProvider.user?.providerData[0].providerId == 'password') {
       setState(() {
-        displayName = emailProvider.currentUser?.displayName ?? 'No Name';
-        email = emailProvider.currentUser?.email ?? 'No email found';
-        profilePictureUrl = emailProvider.currentUser?.photoURL ?? '';
+        displayName =
+            Provider.of<EmailUsernameTokenProvider>(context, listen: false)
+                    .getUsername ??
+                "Unknown";
+        uid = emailProvider.user?.uid ?? "No UID";
+        profilePictureUrl = emailProvider.user?.photoURL ?? '';
       });
     }
   }
@@ -64,6 +67,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: 257.w,
       elevation: 16,
       backgroundColor: Colors.white,
       shadowColor: Colors.black,
@@ -76,14 +80,18 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: profilePictureUrl.isNotEmpty
-                          ? NetworkImage(profilePictureUrl)
-                          : const AssetImage(
-                                  'assets/images/default-profile-picture.jpg')
-                              as ImageProvider<Object>,
-                      backgroundColor: Colors.black,
-                      radius: 20.0.r,
+                    SizedBox(
+                      width: 56.w,
+                      height: 56.h,
+                      child: CircleAvatar(
+                        backgroundImage: profilePictureUrl.isNotEmpty
+                            ? NetworkImage(profilePictureUrl)
+                            : const AssetImage(
+                                    'assets/images/default-profile-picture.jpg')
+                                as ImageProvider<Object>,
+                        backgroundColor: Colors.black,
+                        radius: 20.0.r,
+                      ),
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -93,7 +101,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                         Navigator.pop(context);
                       },
                       child: Icon(
-                        Icons.menu_rounded,
+                        Icons.menu_sharp,
                         color: const Color(0xFF323130),
                         size: 32.sp,
                       ),
@@ -111,19 +119,20 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                           Text(
                             displayName,
                             style: GoogleFonts.prompt(
-                              fontSize: 15.sp,
+                              fontSize: 24.sp,
                               fontWeight: FontWeight.w600,
                               color: const Color(0xFF323130),
                             ),
                             softWrap: true,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+                            maxLines: 5,
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            email,
+                            'UID: $uid',
                             style: GoogleFonts.prompt(
                               fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
                               color: const Color(0xFF323130),
                             ),
                             maxLines: 1,
@@ -147,7 +156,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             title: Text(
               'ข้อมูลส่วนตัว',
               style: GoogleFonts.prompt(
-                fontSize: 18.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF323130),
               ),
@@ -159,28 +168,6 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                   builder: (context) => const AccountScreen(),
                 ),
               );
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.h),
-            leading: Icon(
-              Icons.credit_card_rounded,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'แพ็คเกจ',
-              style: GoogleFonts.prompt(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
-              ),
-            ),
-            onTap: () async {
-              if (Platform.isAndroid) {
-                await launchUrlString('https://voice.botnoi.ai/payment',
-                    mode: LaunchMode.platformDefault);
-              }
             },
           ),
         ],
