@@ -173,7 +173,7 @@ class AlertMessageModal {
 
   // Navigate to email login screen
   void _navigateToEmailLoginScreen(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
     );

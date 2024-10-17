@@ -1,15 +1,16 @@
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart'; 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TestEmailByUsernameScreen extends StatefulWidget {
-  const TestEmailByUsernameScreen({super.key});
+class TestUpdateUsernameScreen extends StatefulWidget {
+  const TestUpdateUsernameScreen({super.key});
 
   @override
-  State<TestEmailByUsernameScreen> createState() => _TestEmailByUsernameScreenState();
+  State<TestUpdateUsernameScreen> createState() =>
+      _TestUpdateUsernameScreenState();
 }
 
-class _TestEmailByUsernameScreenState extends State<TestEmailByUsernameScreen> {
+class _TestUpdateUsernameScreenState extends State<TestUpdateUsernameScreen> {
   final TextEditingController _usernameController = TextEditingController();
   String _result = ''; // แสดงผลลัพธ์จาก API
 
@@ -17,7 +18,7 @@ class _TestEmailByUsernameScreenState extends State<TestEmailByUsernameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Test getEmailByUsername'),
+        title: const Text('Test Update Username'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,18 +28,20 @@ class _TestEmailByUsernameScreenState extends State<TestEmailByUsernameScreen> {
             TextField(
               controller: _usernameController,
               decoration: const InputDecoration(
-                labelText: 'Enter Username',
+                labelText: 'Enter New Username',
               ),
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                String email = _usernameController.text.trim();
-                if (email.isNotEmpty) {
-                  // เรียกใช้งานฟังก์ชัน getEmailByUsername
+                String newUsername = _usernameController.text.trim();
+                String userId = 'example-firebase-uid'; // Replace with your Firebase UID
+
+                if (newUsername.isNotEmpty) {
+                  // เรียกใช้งานฟังก์ชัน postUpdateUsernameByFirebaseUid
                   await Provider.of<EmailUsernameTokenProvider>(context,
                           listen: false)
-                      .getUsernameByEmail(email);
+                      .postUpdateUsernameByFirebaseUid(userId, 'username_id', newUsername);
 
                   // อัพเดตผลลัพธ์
                   setState(() {
@@ -48,7 +51,7 @@ class _TestEmailByUsernameScreenState extends State<TestEmailByUsernameScreen> {
                   });
                 }
               },
-              child: const Text('Get Email'),
+              child: const Text('Update Username'),
             ),
             const SizedBox(height: 16.0),
             Text(

@@ -198,8 +198,6 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
     }
   }
 
-
-
   /// ดึง username จาก email และเรียกใช้ฟังก์ชัน get username by email
   Future<void> loadGetUsername(String? email) async {
     await getUsernameByEmail(email);

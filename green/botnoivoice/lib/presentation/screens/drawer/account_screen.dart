@@ -3,6 +3,7 @@ import 'package:botnoivoice/presentation/providers/email/email_username_token_pr
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// ฟังก์ชันสำหรับโหลดข้อมูลผู้ใช้
   Future<void> _loadUserInfo() async {
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
@@ -124,6 +126,9 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -244,6 +249,10 @@ class _AccountScreenState extends State<AccountScreen> {
                 await _signOut(context); // เรียกใช้ฟังก์ชันออกจากระบบ
               },
             ),
+            SizedBox(height: 16.h),
+            if (emailProvider.isLoggedIn &&
+                emailProvider.user?.providerData[0].providerId == 'password')
+              const EmailDeleteAccountButton(),
             SizedBox(height: 16.h),
           ],
         ),

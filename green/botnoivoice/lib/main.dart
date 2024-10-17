@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
@@ -11,6 +12,8 @@ import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
+import 'package:botnoivoice/test/test_get_username_by_email_screen.dart';
+import 'package:botnoivoice/test/test_update_username_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,6 +49,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailForgetPasswordProvider()),
         ChangeNotifierProvider(create: (_) => EmailTokenProvider()),
         ChangeNotifierProvider(create: (_) => EmailUsernameTokenProvider()),
+        ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
@@ -62,6 +66,8 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             home: AuthChecker(),
+            // home: const TestGetUsernameByEmailScreen(),
+            // home: const TestUpdateUsernameScreen(),
           );
         },
       ),
