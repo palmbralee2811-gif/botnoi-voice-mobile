@@ -21,10 +21,11 @@ class GoogleLoginProvider extends ChangeNotifier {
 
   GoogleLoginProvider() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-      this.user = user;
-      _logger.d("User: $user");
-      _isLoggedIn =
-          user != null; // Set's true if a user is logged in, or false if not.
+      if (user?.providerData[0].providerId == 'google.com') {
+        this.user = user;
+        _logger.d("Login with Google: $user");
+        _isLoggedIn = true;
+      }
       notifyListeners(); // Update UI
     });
   }
@@ -55,7 +56,7 @@ class GoogleLoginProvider extends ChangeNotifier {
         _isLoggedIn = true; // ตรวจสอบว่าเป็น Google user
       }
 
-      _logger.i("User signed in with Google successfully.");
+      _logger.i("User signed in with Google successfully, Google User ID: ${user?.uid}");
       notifyListeners(); // Update UI
     } catch (e) {
       _logger.e('Error signing in with Google: $e');
@@ -63,7 +64,7 @@ class GoogleLoginProvider extends ChangeNotifier {
   }
 
   /// Sign out and Check if the user is signed out
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOutWithGoogle(BuildContext context) async {
     try {
       Provider.of<GoogleTokenProvider>(context, listen: false).clearTokens();
       await GoogleSignIn().signOut();

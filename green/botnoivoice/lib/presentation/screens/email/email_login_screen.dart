@@ -24,12 +24,13 @@ class EmailLoginScreen extends StatefulWidget {
 
 class _EmailLoginScreenState extends State<EmailLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailOrUsernameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  /// Login with Username and Password
   void _loginUser() async {
     final emailLoginProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
@@ -40,21 +41,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       });
 
       try {
-        /// Check if the user wants to use email or username
-        if (_emailOrUsernameController.text.contains('@')) {
-          /// User wants to use email
-          await emailLoginProvider.loginWithEmailPassword(
-            _emailOrUsernameController.text.trim(),
-            _passwordController.text.trim(),
-          );
-        } else {
-          /// User wants to use username
-          await emailLoginProvider.loginWithUsernamePassword(
-            _emailOrUsernameController.text.trim(),
-            _passwordController.text.trim(),
-            context,
-          );
-        }
+        //TODO: เปลี่ยนเป็น loginWithUsernamePassword
+        //TODO: email green262544@gmail.com และ yiyis98804@abaot.com
+        await emailLoginProvider.loginWithEmailPassword(
+          _usernameController.text.trim(),
+          _passwordController.text.trim(),
+          // context,
+        );
 
         final errorMessage = emailLoginProvider.errorMessage;
 
@@ -173,10 +166,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     ),
                     SizedBox(height: 32.h),
                     TextFormField(
-                      controller: _emailOrUsernameController,
+                      controller: _usernameController,
                       decoration: InputDecoration(
-                        labelText: 'อีเมลหรือชื่อผู้ใช้',
-                        // prefixIcon: Icon(Icons.person, size: 24.w),
+                        labelText: 'ชื่อผู้ใช้งาน',
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(
@@ -186,10 +178,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'โปรดใส่ชื่อผู้ใช้หรืออีเมลของคุณ';
-                        }
-                        if (!value.contains('@') && value.isEmpty) {
-                          return 'โปรดใส่ชื่อผู้ใช้หรืออีเมลที่ถูกต้อง';
+                          return 'โปรดใส่ชื่อผู้ใช้ของคุณ';
                         }
                         return null;
                       },
@@ -199,7 +188,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: 'รหัสผ่าน',
-                        // prefixIcon: Icon(Icons.lock, size: 24.w),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(

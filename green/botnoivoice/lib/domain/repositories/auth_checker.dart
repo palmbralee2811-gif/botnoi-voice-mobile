@@ -25,7 +25,8 @@ class AuthChecker extends StatelessWidget {
             emailProvider.user?.providerData[0].providerId == 'password') {
           // ตรวจสอบสถานะการยืนยันอีเมล
           if (!emailProvider.user!.emailVerified) {
-            emailProvider.signOut(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
+            emailProvider
+                .signOutWithEmail(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
             loginProvider = null;
           } else {
             loginProvider = 'email';

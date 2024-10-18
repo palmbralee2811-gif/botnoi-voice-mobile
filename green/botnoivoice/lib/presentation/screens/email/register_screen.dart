@@ -37,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return emailRegex.hasMatch(email);
   }
 
-  /// ตรวจสอบชื่อผู้ใช้ว่าถูกต้องหรือไม่
+  /// ตรวจสอบชื่อผู้ใช้งานว่าถูกต้องหรือไม่
   bool isValidUsername(String username) {
     if (username.length < 3) return false;
     final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
@@ -82,7 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       AlertNotificationDialog(
         context: context,
         text:
-            "ชื่อผู้ใช้ไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+            "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
       ).showAsError();
       return;
     }
@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _buildTextFormField(_emailController, 'อีเมล'/*, Icons.email*/),
                     SizedBox(height: 16.h),
                     _buildTextFormField(
-                        _usernameController, 'ชื่อผู้ใช้',/* Icons.person*/),
+                        _usernameController, 'ชื่อผู้ใช้งาน',/* Icons.person*/),
                     SizedBox(height: 16.h),
                     _buildPasswordField(_passwordController, 'รหัสผ่าน'),
                     SizedBox(height: 16.h),
@@ -224,10 +224,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             return 'รูปแบบอีเมลไม่ถูกต้อง';
           }
         }
-        // ตรวจสอบรูปแบบชื่อผู้ใช้
-        if (label == 'ชื่อผู้ใช้') {
+        // ตรวจสอบรูปแบบชื่อผู้ใช้งาน
+        if (label == 'ชื่อผู้ใช้งาน') {
           if (!isValidUsername(value)) {
-            return 'ชื่อผู้ใช้ไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+            return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
           }
         }
         return null;

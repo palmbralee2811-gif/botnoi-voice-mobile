@@ -33,10 +33,11 @@ class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
       return;
     }
 
+    //TODO: ลบตรวจสอบ เครดิตคงเหลือ ออก แล้ว สร้างหน้า UI ใหม่ สำหรับยืนยันลบบัญชี
     if (tokenProvider.getRemainingCredits != '0') {
       AlertMessageModal(
         context: context,
-        text: 'กรุณาใช้เครดิตให้หมดเหลือ 0 ก่อนลบบัญชี.',
+        text: 'เครดิตคงเหลือ ${tokenProvider.getRemainingCredits} \nกรุณาใช้เครดิตให้หมดก่อนลบบัญชี.',
       ).showErrorModal(context);
       return;
     }

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
 
 class EmailLoginProvider with ChangeNotifier {
-  User? _user;
+  User? user;
   String? _errorMessage;
   final Logger _logger = Logger(); // สำหรับ debug
   bool _isLoggedIn = false;
@@ -16,14 +16,11 @@ class EmailLoginProvider with ChangeNotifier {
   /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
   bool get isAuthenticated {
     return currentUser?.uid != null &&
-        _user?.providerData.isNotEmpty == true &&
-        _user?.providerData[0].providerId == 'password';
+        user?.providerData.isNotEmpty == true &&
+        user?.providerData[0].providerId == 'password';
   }
 
-  /// Getter สำหรับอีเมลของผู้ใช้
-  User? get user => _user;
-
-  String? get getUserEmail => _user?.email;
+  String? get getUserEmail => user?.email;
 
   /// Getter สำหรับผู้ใช้ปัจจุบัน
   User? get currentUser => FirebaseAuth.instance.currentUser;
@@ -33,9 +30,11 @@ class EmailLoginProvider with ChangeNotifier {
 
   EmailLoginProvider() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-      _user = user;
-      _logger.i("User email: $_user");
-      _isLoggedIn = _user != null;
+      if (user?.providerData[0].providerId == 'password') {
+        this.user = user;
+        _logger.i("Login with Email: $user");
+        _isLoggedIn = true;
+      }
       notifyListeners(); // Update UI
     });
   }
@@ -97,10 +96,10 @@ class EmailLoginProvider with ChangeNotifier {
       }
 
       // หากยืนยันอีเมลแล้ว อนุญาตให้เข้าสู่ระบบ
-      _user = userCredential.user;
+      user = userCredential.user;
       _isLoggedIn = true;
       _logger.i(
-          "User logged in successfully with email: $email, User ID: ${_user?.uid}");
+          "User logged in successfully with email: $email, Email User ID: ${user?.uid}");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       _errorMessage = e.message;
@@ -110,7 +109,7 @@ class EmailLoginProvider with ChangeNotifier {
   }
 
   /// ออกจากระบบ
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOutWithEmail(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false;

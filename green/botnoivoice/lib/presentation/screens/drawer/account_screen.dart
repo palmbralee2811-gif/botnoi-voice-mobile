@@ -3,6 +3,7 @@ import 'package:botnoivoice/presentation/providers/email/email_username_token_pr
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/login/login_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -74,24 +75,33 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// ฟังก์ชันสำหรับการออกจากระบบ
   Future<void> _signOut(BuildContext context) async {
-    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var googleProvider =
+    final googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
-    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
+
+    if (googleProvider.isLoggedIn &&
+        googleProvider.user?.providerData[0].providerId == 'google.com') {
+      await googleProvider.signOutWithGoogle(context);
+    }
 
     if (lineProvider.isLoggedIn) {
       await lineProvider.signOutWithLine(context);
     }
 
-    if (googleProvider.isLoggedIn) {
-      await googleProvider.signOut(context);
+    if (emailProvider.isLoggedIn &&
+        emailProvider.user?.providerData[0].providerId == 'password') {
+      await emailProvider.signOutWithEmail(context);
     }
 
-    if (emailProvider.isLoggedIn) {
-      await emailProvider.signOut(context);
-    }
-
-    Navigator.popUntil(context, (r) => r.isFirst);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+      (Route<dynamic> route) => false,
+    );
   }
 
   /// ฟังก์ชันสำหรับซ่อนอีเมล
@@ -234,14 +244,22 @@ class _AccountScreenState extends State<AccountScreen> {
               },
             ),
             SizedBox(height: 16.h), // เพิ่มช่องว่างระหว่างแถว
-            UserInfoRow(
-              title: 'ชื่อผู้ใช้',
-              value: displayName,
-              icon: Icons.edit_rounded,
-              onIconPressed: () {
-                //TODO: Change username
-              },
-            ),
+            emailProvider.isLoggedIn &&
+                    emailProvider.user?.providerData[0].providerId == 'password'
+                ? UserInfoRow(
+                    title: 'ชื่อผู้ใช้',
+                    value: displayName,
+                    icon: Icons.edit_rounded,
+                    onIconPressed: () {
+                      //TODO: สร้าง UI หน้าเปลี่ยน username และ เขียนฟังก์ชัน เชื่อมต่อ api update username
+                      //TODO: ตรวจสอบ username ว่าซ้ำใน ฐานข้อมูลหรือไม่?
+                      //TODO: ตรวจสอบ username เดิม กับ username ใหม่ ซ้ำกันหรือไม่
+                    },
+                  )
+                : UserInfoRow(
+                    title: 'ชื่อผู้ใช้',
+                    value: displayName,
+                  ),
             const Spacer(),
             GradientTextButton(
               text: 'ออกจากระบบ',
