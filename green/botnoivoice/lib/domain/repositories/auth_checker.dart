@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 /// Check if the user is authenticated
 class AuthChecker extends StatelessWidget {
   AuthChecker({super.key});
-
+  
   final Logger _logger = Logger(); // For debugging
 
   @override

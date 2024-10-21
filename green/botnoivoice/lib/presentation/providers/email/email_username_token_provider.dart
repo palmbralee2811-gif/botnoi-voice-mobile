@@ -11,6 +11,7 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
 
   /// Getter for Login with Email or Username
   String? get getUsername => _getUsername;
+
   /// Getter for result of getEmailByUsername, getUsernameByEmail
   String get result => _result;
 
@@ -81,31 +82,43 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
   ///   "username": username_new
   /// }
   /// */
-  Future<void> postUpdateUsernameByFirebaseUid(
-      String? uid, String? usernameId, String? usernameNew) async {
-    String url = '$urlDomain/api/dashboard/update_$usernameId';
+  Future<void> postUpdateUsername(
+      String? uid, String? username, String? email) async {
+    // API endpoint สำหรับ register user
+    String url = '$urlDomain/api/dashboard/register_mobile';
+
+    // สร้าง payload ที่ต้องส่งไปใน body ของคำขอ
     Map<String, dynamic> payload = {
-      'user_id': '$uid',
-      'username': '$usernameNew'
+      'user_id': uid,
+      'username': username,
+      'email': email,
     };
+
+    // สร้าง header ที่ต้องใช้ในการส่งคำขอ
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
     };
+
     try {
+      // ส่งคำขอ POST ไปยัง API
       final response = await http.post(Uri.parse(url),
           headers: headers, body: jsonEncode(payload));
+
+      // ตรวจสอบสถานะการตอบสนองของ API
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        _result = data.toString();
+        _result = data.toString(); // เก็บผลลัพธ์ในตัวแปร
         _logger.d('Response Data: $_result');
-        notifyListeners();
+        notifyListeners(); // แจ้งให้ UI ทราบว่ามีการอัปเดตข้อมูล
       } else {
-        _result = 'Failed to get email. Status Code: ${response.statusCode}';
+        _result =
+            'Failed to register user. Status Code: ${response.statusCode}';
         _logger.e('Failed with status code: ${response.statusCode}');
         notifyListeners();
       }
     } catch (e) {
+      // จับข้อผิดพลาดในกรณีที่มีปัญหาในการส่งคำขอ
       _result = 'Error: $e';
       _logger.e('Error: $e');
       notifyListeners();

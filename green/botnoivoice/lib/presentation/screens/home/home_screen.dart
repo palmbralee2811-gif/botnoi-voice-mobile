@@ -72,21 +72,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    final googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
 
-    if (googleProvider.isLoggedIn && googleProvider.user?.providerData[0].providerId == 'google.com') {
+    if (googleProvider.isLoggedIn &&
+        googleProvider.user?.providerData[0].providerId == 'google.com') {
       await Provider.of<GoogleTokenProvider>(context, listen: false)
           .loadRemainingCredits();
     }
-    
+
     if (lineProvider.isLoggedIn) {
       await Provider.of<LineTokenProvider>(context, listen: false)
           .loadRemainingCredits();
     }
 
-    if (emailProvider.isLoggedIn && emailProvider.user?.providerData[0].providerId == 'password') {
+    if (emailProvider.isLoggedIn &&
+        emailProvider.user?.providerData[0].providerId == 'password') {
       await Provider.of<EmailTokenProvider>(context, listen: false)
           .loadRemainingCredits();
     }

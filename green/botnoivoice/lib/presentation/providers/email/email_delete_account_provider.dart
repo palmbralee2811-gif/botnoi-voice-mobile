@@ -1,3 +1,4 @@
+import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class EmailDeleteAccountProvider with ChangeNotifier {
 
         if (response.statusCode == 200) {
           // แสดงผลลัพธ์สำเร็จ
-          _logger.d("User account deleted successfully.");
+          _logger.d("User account deleted successfully, User ID: $userId, Email: ${user.email}");
         } else {
           // แสดงผลลัพธ์เมื่อการลบไม่สำเร็จ
           _errorMessage = 'Failed to delete user account. Status Code: ${response.statusCode}';
@@ -75,6 +76,36 @@ class EmailDeleteAccountProvider with ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
+
+  
+  Future<void> deleteAccount(context) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.providerData.any((info) => info.providerId == 'password')) {
+        await user.delete();
+        _logger.i("Account deleted successfully");
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ลบบัญชีสำเร็จ')),
+        );
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AuthChecker()),
+        );
+      } else {
+        _logger.e("Cannot delete Google account");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ไม่สามารถลบบัญชีที่ล็อกอินด้วย Google')),
+        );
+      }
+    } catch (error) {
+      _logger.e("Error deleting account: $error");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('เกิดข้อผิดพลาดในการลบบัญชี: $error')),
+      );
+    }
+  }
 
   // ฟังก์ชัน re-authenticate ผู้ใช้ก่อนลบบัญชี
   // Future<void> reauthenticateAndDelete(String email, String password) async {

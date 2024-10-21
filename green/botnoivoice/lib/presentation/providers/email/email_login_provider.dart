@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -15,15 +16,13 @@ class EmailLoginProvider with ChangeNotifier {
 
   /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
   bool get isAuthenticated {
-    return currentUser?.uid != null &&
+    return FirebaseAuth.instance.currentUser?.uid != null &&
         user?.providerData.isNotEmpty == true &&
         user?.providerData[0].providerId == 'password';
   }
 
+  /// Getter สำหรับอีเมล
   String? get getUserEmail => user?.email;
-
-  /// Getter สำหรับผู้ใช้ปัจจุบัน
-  User? get currentUser => FirebaseAuth.instance.currentUser;
 
   /// Getter สำหรับ error message
   String? get errorMessage => _errorMessage;
@@ -111,6 +110,7 @@ class EmailLoginProvider with ChangeNotifier {
   /// ออกจากระบบ
   Future<void> signOutWithEmail(BuildContext context) async {
     try {
+      Provider.of<EmailTokenProvider>(context, listen: false).clearTokens();
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false;
       _logger.i("User signed out successfully");

@@ -14,9 +14,11 @@ class GoogleLoginProvider extends ChangeNotifier {
   /// Getter for logged in status
   bool get isLoggedIn => _isLoggedIn;
 
-  /// Getter for authenticated status
+  /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
   bool get isAuthenticated {
-    return user != null && user?.providerData[0].providerId == 'google.com';
+    return FirebaseAuth.instance.currentUser?.uid != null &&
+        user?.providerData.isNotEmpty == true &&
+        user?.providerData[0].providerId == 'google.com';
   }
 
   GoogleLoginProvider() {
@@ -56,7 +58,8 @@ class GoogleLoginProvider extends ChangeNotifier {
         _isLoggedIn = true; // ตรวจสอบว่าเป็น Google user
       }
 
-      _logger.i("User signed in with Google successfully, Google User ID: ${user?.uid}");
+      _logger.i(
+          "User signed in with Google successfully, Google User ID: ${user?.uid}");
       notifyListeners(); // Update UI
     } catch (e) {
       _logger.e('Error signing in with Google: $e');

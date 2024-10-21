@@ -96,8 +96,10 @@ class _InitScreenState extends State<InitScreen> {
     await emailTokenProvider.loadRemainingCredits();
 
     /// Load get username by email
-    String? email = Provider.of<EmailLoginProvider>(context, listen: false).getUserEmail;
-    await Provider.of<EmailUsernameTokenProvider>(context, listen: false).loadGetUsername(email);
+    String? email =
+        Provider.of<EmailLoginProvider>(context, listen: false).getUserEmail;
+    await Provider.of<EmailUsernameTokenProvider>(context, listen: false)
+        .loadGetUsername(email);
 
     setState(() {
       _initialized = true;
