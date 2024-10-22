@@ -44,35 +44,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return usernameRegex.hasMatch(username);
   }
 
-  /// แสดง dialog ยืนยันการสมัคร
-  Future<void> _showConfirmationDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('ยืนยันการสมัครสมาชิก'),
-          content: const Text('คุณต้องการสมัครสมาชิกใช่หรือไม่?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('ยกเลิก'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('ยืนยัน'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _registerUser();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   /// ฟังก์ชันสมัครสมาชิก
   void _registerUser() {
     final emailRegisterProvider =
@@ -160,10 +131,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     _buildGradientText('สมัครใช้งาน'),
                     SizedBox(height: 40.h),
-                    _buildTextFormField(_emailController, 'อีเมล'/*, Icons.email*/),
+                    _buildTextFormField(
+                        _emailController, 'อีเมล' /*, Icons.email*/),
                     SizedBox(height: 16.h),
                     _buildTextFormField(
-                        _usernameController, 'ชื่อผู้ใช้งาน',/* Icons.person*/),
+                      _usernameController,
+                      'ชื่อผู้ใช้งาน', /* Icons.person*/
+                    ),
                     SizedBox(height: 16.h),
                     _buildPasswordField(_passwordController, 'รหัสผ่าน'),
                     SizedBox(height: 16.h),
@@ -176,9 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     GradientTextButton(
                       text: 'สมัครใช้งาน',
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _showConfirmationDialog(context);
-                        }
+                        _registerUser();
                       },
                     ),
                     SizedBox(height: 16.h),

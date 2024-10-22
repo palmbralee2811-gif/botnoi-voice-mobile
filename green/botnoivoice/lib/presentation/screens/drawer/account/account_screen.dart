@@ -75,9 +75,11 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// ฟังก์ชันสำหรับการออกจากระบบ
   Future<void> _signOut(BuildContext context) async {
-    final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    final googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
 
     if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
@@ -243,6 +245,8 @@ class _AccountScreenState extends State<AccountScreen> {
               },
             ),
             SizedBox(height: 16.h), // เพิ่มช่องว่างระหว่างแถว
+            /*
+            //TODO: Do this after deploy on App Store
             emailProvider.isLoggedIn &&
                     emailProvider.user?.providerData[0].providerId == 'password'
                 ? UserInfoRow(
@@ -252,18 +256,24 @@ class _AccountScreenState extends State<AccountScreen> {
                     onIconPressed: () {
                       //TODO: สร้าง UI หน้าเปลี่ยน username และ เขียนฟังก์ชัน เชื่อมต่อ api update username
                       //TODO: ตรวจสอบ username ว่าซ้ำใน ฐานข้อมูลหรือไม่?
-                      //TODO: ตรวจสอบ username เดิม กับ username ใหม่ ซ้ำกันหรือไม่
+                      //TODO: ตรวจสอบ username ในฐานข้อมูลว่าซ้ำไหม?
+                      //TODO: โหลด Get Username ใหม่ เพื่ออัพเดตข้อมูลจาก API
                     },
                   )
                 : UserInfoRow(
                     title: 'ชื่อผู้ใช้',
                     value: displayName,
                   ),
+            */
+            UserInfoRow(
+              title: 'ชื่อผู้ใช้',
+              value: displayName,
+            ),
             const Spacer(),
             GradientTextButton(
               text: 'ออกจากระบบ',
               onPressed: () async {
-                await _signOut(context); // เรียกใช้ฟังก์ชันออกจากระบบ
+                await _signOut(context);
               },
             ),
             SizedBox(height: 16.h),

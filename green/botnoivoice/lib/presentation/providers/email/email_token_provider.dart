@@ -13,6 +13,9 @@ class EmailTokenProvider extends ChangeNotifier {
   String? _credentialsToken;
   final Logger _logger = Logger(); // For debugging
 
+  /// Getter for the json web token after login   
+  String? get getJwtToken => _jwtToken;
+
   /// Getter for the remaining credits
   String? get getRemainingCredits => _remainingCredits;
 
@@ -59,7 +62,7 @@ class EmailTokenProvider extends ChangeNotifier {
           var tokenStartIndex = tokenIndex + 'token='.length;
           _jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
-          _logger.i('JWT Token successfully loaded.');
+          _logger.i('JWT Token successfully loaded. \nToken: $_jwtToken');
         } else {
           _logger.w('Token not found in response message: $message');
         }

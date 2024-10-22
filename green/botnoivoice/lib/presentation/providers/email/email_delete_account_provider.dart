@@ -1,4 +1,3 @@
-import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,18 +12,18 @@ class EmailDeleteAccountProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   /// ***DO NOT DLETE THIS TEXT FOR ANY REASON***
-  /// 
+  ///
   /// 2 Steps to Delete Account:
   /// - 1. Delete User Account Data in Database (MongoDB).
   /// - 2. Delete User Account Data in Firebase (Staging and Production).
-  /// 
-  /// ***WARNING*** 
-  /// - When you delete user account in Firebase, it will delete user account in staging and production too.
+  ///
+  /// ***WARNING***
+  /// - When you delete user account in Firebase,
+  /// it will delete user account in staging and production too.
   Future<void> deleteUserAccountWithDatabase() async {
-    // ดึง userId จาก Firebase
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      String userId = user.uid; // ดึง UID ของผู้ใช้
+      String userId = user.uid;
 
       String url = '$urlDomain/db/dashboard/users/$userId';
       Map<String, String> headers = {
@@ -35,16 +34,15 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         final response = await http.delete(Uri.parse(url), headers: headers);
 
         if (response.statusCode == 200) {
-          // แสดงผลลัพธ์สำเร็จ
-          _logger.d("User account deleted successfully, User ID: $userId, Email: ${user.email}");
+          _errorMessage = null;
+          _logger.d("User Account deleted successfully with Database. \nUser ID: $userId. \nEmail: ${user.email}");
         } else {
-          // แสดงผลลัพธ์เมื่อการลบไม่สำเร็จ
-          _errorMessage = 'Failed to delete user account. Status Code: ${response.statusCode}';
+          _errorMessage =
+              'Failed to delete user account. Status Code: ${response.statusCode}';
           _logger.e(_errorMessage);
           notifyListeners();
         }
       } catch (e) {
-        // แสดงข้อผิดพลาด
         _errorMessage = "Error deleting user account: $e";
         _logger.e(_errorMessage);
         notifyListeners();
@@ -77,52 +75,33 @@ class EmailDeleteAccountProvider with ChangeNotifier {
   //   }
   // }
 
-  
-  Future<void> deleteAccount(context) async {
+  Future<void> deleteUserAccountWithFirebase(
+      BuildContext context, String password) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null && user.providerData.any((info) => info.providerId == 'password')) {
+      if (user != null &&
+          user.providerData.any((info) => info.providerId == 'password')) {
+        // Re-authenticate the user
+        final credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: password,
+        );
+        await user.reauthenticateWithCredential(credential);
+        // Now delete the user
         await user.delete();
-        _logger.i("Account deleted successfully");
-
+        _errorMessage = null;
+        _logger.i("User Account deleted successfully with Firebase. \nEmail: ${user.email}. \nUser ID: ${user.uid}");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('ลบบัญชีสำเร็จ')),
         );
-
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => AuthChecker()),
-        );
       } else {
+        _errorMessage = "บัญชีที่เข้าสู่ระบบด้วย Google ไม่สามารถลบผ่านแอปได้. โปรดไปที่ Google Account เพื่อดำเนินการ";
         _logger.e("Cannot delete Google account");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ไม่สามารถลบบัญชีที่ล็อกอินด้วย Google')),
-        );
       }
     } catch (error) {
+      _errorMessage = "เกิดข้อผิดพลาดในการลบบัญชี: $error";
       _logger.e("Error deleting account: $error");
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('เกิดข้อผิดพลาดในการลบบัญชี: $error')),
-      );
+      notifyListeners();
     }
   }
-
-  // ฟังก์ชัน re-authenticate ผู้ใช้ก่อนลบบัญชี
-  // Future<void> reauthenticateAndDelete(String email, String password) async {
-  //   try {
-  //     User? user = FirebaseAuth.instance.currentUser;
-
-  //     // ทำการ re-authenticate ผู้ใช้ก่อนลบบัญชี
-  //     AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
-  //     await user?.reauthenticateWithCredential(credential);
-
-  //     // ลบบัญชีผู้ใช้
-  //     await user?.delete();
-  //     _logger.d("บัญชีผู้ใช้ถูกลบสำเร็จ");
-  //   } catch (e) {
-  //     _errorMessage = "เกิดข้อผิดพลาดในการลบบัญชี: $e";
-  //     _logger.e(_errorMessage);
-  //     notifyListeners();
-  //   }
-  // }
 }
