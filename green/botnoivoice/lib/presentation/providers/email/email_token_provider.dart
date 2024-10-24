@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class EmailTokenProvider extends ChangeNotifier {
   String? _credentialsToken;
   final Logger _logger = Logger(); // For debugging
 
-  /// Getter for the json web token after login   
+  /// Getter for the json web token after login
   String? get getJwtToken => _jwtToken;
 
   /// Getter for the remaining credits
@@ -27,7 +28,10 @@ class EmailTokenProvider extends ChangeNotifier {
     _jwtToken = null;
     _remainingCredits = null;
     _credentialsToken = null;
-    notifyListeners();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   /// Get the _jwtToken from Firebase
@@ -37,7 +41,6 @@ class EmailTokenProvider extends ChangeNotifier {
         await Provider.of<EmailLoginProvider>(context, listen: false)
             .user
             ?.getIdToken();
-    _logger.d("Email ID Token: $idToken");
     if (idToken == null) {
       _logger.e("Error: Email idToken is null");
       return; // หยุดการทำงานถ้าไม่มี idToken
@@ -62,7 +65,7 @@ class EmailTokenProvider extends ChangeNotifier {
           var tokenStartIndex = tokenIndex + 'token='.length;
           _jwtToken = message.substring(tokenStartIndex);
           notifyListeners();
-          _logger.i('JWT Token successfully loaded. \nToken: $_jwtToken');
+          _logger.i('JWT Token successfully loaded.');
         } else {
           _logger.w('Token not found in response message: $message');
         }

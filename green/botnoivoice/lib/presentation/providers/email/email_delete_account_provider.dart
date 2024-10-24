@@ -54,27 +54,7 @@ class EmailDeleteAccountProvider with ChangeNotifier {
     }
   }
 
-  //TODO: /*แล้วก็ลง firebase แต่แนะนำ
-  // เปลี่ยนเป็นของเราก่อน
-  // อย่าพึ่งลองของจริง เผื่อพลาดไปลบของลูกค้าอันตราย
-  // ให้สร้าง firebase ใหม่ เป็นของตัวทดลอง แล้วทดสอบในนั้น
-  // ใช่ทดสอบแค่ฟังก์ลับ user เฉยๆ ว่าลบได้จริงมั้ย
-  // ถ้าลบได้เทสสักสองสาม email
-  // ค่อยมาต่อกับของ บริษัท
-  // เพราะ firebase นี้มันรวมทั้ง staging และ production */
-
-  // // ฟังก์ชันลบบัญชีจาก Firebase
-  // Future<void> deleteUserAccountWithFirebase() async {
-  //   try {
-  //     await FirebaseAuth.instance.currentUser?.delete();
-  //     _logger.d("User account deleted successfully from Firebase.");
-  //   } catch (error) {
-  //     _errorMessage = "Error deleting user account: $error";
-  //     _logger.e(_errorMessage);
-  //     notifyListeners();
-  //   }
-  // }
-
+  /// Re-authenticate the user with password and Delete User Account in Firebase
   Future<void> deleteUserAccountWithFirebase(
       BuildContext context, String password) async {
     try {

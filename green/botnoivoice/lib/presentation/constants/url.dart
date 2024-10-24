@@ -6,4 +6,4 @@ String _production = "https://api-voice.botnoi.ai";
 String _staging = "https://api-voice-staging.botnoi.ai";
 
 /// URL Domain for all the API calls on Production or Staging
-String get urlDomain => _staging;
+String get urlDomain => _production;

@@ -41,11 +41,10 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       });
 
       try {
-        //TODO: เปลี่ยนเป็น loginWithUsernamePassword
-        //TODO: email green262544@gmail.com และ yiyis98804@abaot.com
-        await emailLoginProvider.loginWithEmailPassword(
+        await emailLoginProvider.loginWithUsernamePassword(
           _usernameController.text.trim(),
           _passwordController.text.trim(),
+          context,
           // context,
         );
 

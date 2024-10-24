@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +11,8 @@ class TestUpdateUsername extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emailUsernameProvider = Provider.of<EmailUsernameTokenProvider>(context);
+    final emailUsernameProvider =
+        Provider.of<EmailUsernameApiProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +43,8 @@ class TestUpdateUsername extends StatelessWidget {
                 final email = _emailController.text;
 
                 // เรียกใช้ฟังก์ชัน postRegisterMobileUser
-                emailUsernameProvider.postUpdateUsername(uid, username, email);
+                emailUsernameProvider.postSendUsernameToDatabase(
+                    uid, username, email);
               },
               child: const Text('ลงทะเบียนผู้ใช้'),
             ),

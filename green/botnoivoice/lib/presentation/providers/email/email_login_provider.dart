@@ -1,9 +1,10 @@
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 
 class EmailLoginProvider with ChangeNotifier {
   User? user;
@@ -42,7 +43,7 @@ class EmailLoginProvider with ChangeNotifier {
   Future<void> loginWithUsernamePassword(
       String username, String password, BuildContext context) async {
     final emailUsernameProvider =
-        Provider.of<EmailUsernameTokenProvider>(context, listen: false);
+        Provider.of<EmailUsernameApiProvider>(context, listen: false);
 
     try {
       // เรียกใช้ฟังก์ชัน get email by username เพื่อดึง email จาก username
@@ -107,7 +108,7 @@ class EmailLoginProvider with ChangeNotifier {
     }
   }
 
-  /// ออกจากระบบ
+  /// Sign out for Login with Email and Password
   Future<void> signOutWithEmail(BuildContext context) async {
     try {
       Provider.of<EmailTokenProvider>(context, listen: false).clearTokens();
@@ -117,6 +118,9 @@ class EmailLoginProvider with ChangeNotifier {
     } catch (e) {
       _logger.e("Error signing out: $e");
     }
-    notifyListeners();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 }

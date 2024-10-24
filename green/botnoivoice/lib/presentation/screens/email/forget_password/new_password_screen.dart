@@ -18,7 +18,8 @@ class NewPasswordScreen extends StatefulWidget {
 class _NewPasswordScreenState extends State<NewPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _isPasswordVisible = false;
 
@@ -32,7 +33,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       AlertMessageModal(
         context: context,
         text: "ตั้งรหัสผ่านใหม่สำเร็จ",
-      ).showCheckmarkModal(context);
+      ).showCheckmarkModalWithLogin(context);
     } catch (e) {
       AlertMessageModal(
         context: context,

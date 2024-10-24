@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,13 +38,13 @@ class _TestGetUsernameByEmailScreenState
                 String email = _usernameController.text.trim();
                 if (email.isNotEmpty) {
                   // เรียกใช้งานฟังก์ชัน getEmailByUsername
-                  await Provider.of<EmailUsernameTokenProvider>(context,
+                  await Provider.of<EmailUsernameApiProvider>(context,
                           listen: false)
                       .getUsernameByEmail(email);
 
                   // อัพเดตผลลัพธ์
                   setState(() {
-                    _result = Provider.of<EmailUsernameTokenProvider>(context,
+                    _result = Provider.of<EmailUsernameApiProvider>(context,
                             listen: false)
                         .result; // ดึงข้อมูล result ที่ได้จาก logger
                   });

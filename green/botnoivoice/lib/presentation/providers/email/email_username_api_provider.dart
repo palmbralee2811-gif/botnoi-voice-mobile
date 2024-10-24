@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-class EmailUsernameTokenProvider extends ChangeNotifier {
+class EmailUsernameApiProvider extends ChangeNotifier {
   String? _getUsername; // Username for Login with Email or Username
   final Logger _logger = Logger(); // For debugging
   String _result = ''; // ตัวแปรสำหรับเก็บผลลัพธ์ที่จะแสดงใน UI
@@ -82,7 +82,7 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
   ///   "username": username_new
   /// }
   /// */
-  Future<void> postUpdateUsername(
+  Future<void> postSendUsernameToDatabase(
       String? uid, String? username, String? email) async {
     // API endpoint สำหรับ register user
     String url = '$urlDomain/api/dashboard/register_mobile';
@@ -153,8 +153,8 @@ class EmailUsernameTokenProvider extends ChangeNotifier {
           _result = email; // เก็บเฉพาะ email ไว้ในตัวแปร _result
           _logger.d('Email: $email');
         } else {
-          _result = 'No email found in response data';
-          _logger.e('No email found in response data');
+          _result = 'email not found';
+          _logger.e('email not found');
         }
 
         notifyListeners();

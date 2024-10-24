@@ -10,7 +10,7 @@ class AlertMessageModal {
   final String text;
   final BuildContext context;
 
-  /// nomaly error modal
+  /// Error Modal for failed
   void showErrorModal(BuildContext context) {
     showDialog(
         context: context,
@@ -62,8 +62,60 @@ class AlertMessageModal {
         });
   }
 
-  /// checkmark modal for success
+  /// Checkmark Modal for successfully
   void showCheckmarkModal(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(32.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/icon/checkmark-modal.svg',
+                      height: 54.h,
+                      width: 54.w,
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center, // ทำให้ข้อความอยู่ตรงกลาง
+                    ),
+                    SizedBox(height: 16.h),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // ปิด Dialog
+                      },
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.close),
+                          SizedBox(width: 8),
+                          Text("ปิด"),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  /// show checkmark modal and go to email login screen
+  void showCheckmarkModalWithLogin(BuildContext context) {
     showDialog(
         context: context,
         barrierDismissible: false, // ป้องกันการปิดด้วยการแตะด้านนอก
@@ -116,7 +168,7 @@ class AlertMessageModal {
         });
   }
 
-  /// show error modal with go to email login screen
+  /// show error modal and go to email login screen
   void showErrorModalWithLogin(BuildContext context) {
     showDialog(
       context: context,
@@ -171,7 +223,7 @@ class AlertMessageModal {
     );
   }
 
-  // Navigate to email login screen
+  /// Navigate to email login screen
   void _navigateToEmailLoginScreen(BuildContext context) {
     Navigator.pushReplacement(
       context,

@@ -1,9 +1,10 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,7 +64,7 @@ class _AccountScreenState extends State<AccountScreen> {
         emailProvider.user?.providerData[0].providerId == 'password') {
       userId = emailProvider.user?.uid ?? "No UID";
       displayName =
-          Provider.of<EmailUsernameTokenProvider>(context, listen: false)
+          Provider.of<EmailUsernameApiProvider>(context, listen: false)
                   .getUsername ??
               "Unknown";
       email = emailProvider.user?.email ?? "No email found";
@@ -233,7 +234,7 @@ class _AccountScreenState extends State<AccountScreen> {
               onIconPressed: _copyUID,
               isValueOverflow: true, // จัดการข้อความยาวให้แสดง ...
             ),
-            SizedBox(height: 16.h), // เพิ่มช่องว่างระหว่างแถว
+            SizedBox(height: 16.h),
             UserInfoRow(
               title: 'อีเมล',
               value: getMaskedEmail(),
@@ -244,9 +245,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 });
               },
             ),
-            SizedBox(height: 16.h), // เพิ่มช่องว่างระหว่างแถว
-            /*
-            //TODO: Do this after deploy on App Store
+            SizedBox(height: 16.h),
             emailProvider.isLoggedIn &&
                     emailProvider.user?.providerData[0].providerId == 'password'
                 ? UserInfoRow(
@@ -254,21 +253,19 @@ class _AccountScreenState extends State<AccountScreen> {
                     value: displayName,
                     icon: Icons.edit_rounded,
                     onIconPressed: () {
-                      //TODO: สร้าง UI หน้าเปลี่ยน username และ เขียนฟังก์ชัน เชื่อมต่อ api update username
-                      //TODO: ตรวจสอบ username ว่าซ้ำใน ฐานข้อมูลหรือไม่?
-                      //TODO: ตรวจสอบ username ในฐานข้อมูลว่าซ้ำไหม?
-                      //TODO: โหลด Get Username ใหม่ เพื่ออัพเดตข้อมูลจาก API
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const ChangeEmailUsernameScreen(),
+                        ),
+                      );
                     },
                   )
                 : UserInfoRow(
                     title: 'ชื่อผู้ใช้',
                     value: displayName,
                   ),
-            */
-            UserInfoRow(
-              title: 'ชื่อผู้ใช้',
-              value: displayName,
-            ),
             const Spacer(),
             GradientTextButton(
               text: 'ออกจากระบบ',

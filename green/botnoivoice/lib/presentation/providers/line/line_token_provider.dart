@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -24,14 +25,20 @@ class LineTokenProvider extends ChangeNotifier {
     _jwtToken = null;
     _remainingCredits = null;
     _credentialsToken = null;
-    notifyListeners();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   /// Loading LINE JWT Token from API
   Future<void> loadJwtToken(BuildContext context) async {
     String? idToken =
         Provider.of<LineLoginProvider>(context, listen: false).getIdTokenRaw;
-    if (idToken == null) return;
+    if (idToken == null) {
+      _logger.e("Error: Google idToken is null");
+      return;
+    }
 
     String url = '$urlDomain/api/dashboard/liff';
     Map<String, String> headers = {

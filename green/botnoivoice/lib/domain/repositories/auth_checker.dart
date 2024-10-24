@@ -4,13 +4,14 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 /// Check if the user is authenticated
 class AuthChecker extends StatelessWidget {
   AuthChecker({super.key});
-  
+
   final Logger _logger = Logger(); // For debugging
 
   @override
@@ -25,8 +26,9 @@ class AuthChecker extends StatelessWidget {
             emailProvider.user?.providerData[0].providerId == 'password') {
           // ตรวจสอบสถานะการยืนยันอีเมล
           if (!emailProvider.user!.emailVerified) {
-            emailProvider
-                .signOutWithEmail(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              emailProvider.signOutWithEmail(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
+            });
             loginProvider = null;
           } else {
             loginProvider = 'email';

@@ -2,12 +2,10 @@ import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +116,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             text: errorMessage,
           ).showErrorModal(context);
         } else {
-          await FirebaseAuth.instance.signOut();
+          await Provider.of<EmailLoginProvider>(context, listen: false).signOutWithEmail(context);
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -138,37 +136,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    /* //TODO: Delete User Account Testing
-    String displayName =
-        Provider.of<EmailUsernameTokenProvider>(context, listen: false)
-                .getUsername ??
-            "Unknown";
-    final user = FirebaseAuth.instance.currentUser;
-    String loginMethod = 'ไม่สามารถระบุได้';
-    String uid = '';
-    String email = '';
-    String providerId = '';
-
-    // ตรวจสอบผู้ให้บริการที่ใช้ในการล็อกอิน
-    bool canDeleteAccount = false; // ใช้เพื่อตรวจสอบว่าจะแสดงปุ่มลบหรือไม่
-    if (user != null) {
-      uid = user.uid; // ดึง uid ของผู้ใช้
-      email = user.email ?? 'ไม่มีอีเมล'; // ดึงอีเมลของผู้ใช้ (ถ้ามี)
-
-      // วนลูปผ่าน providerData เพื่อตรวจสอบ providerId
-      for (var info in user.providerData) {
-        providerId = info.providerId;
-        if (info.providerId == 'google.com') {
-          loginMethod = 'เข้าสู่ระบบด้วย Google';
-          canDeleteAccount = false; // ไม่ให้ลบได้เมื่อใช้ Google
-        } else if (info.providerId == 'password') {
-          loginMethod = 'เข้าสู่ระบบด้วย Email/Password';
-          canDeleteAccount = true; // สามารถลบได้เมื่อใช้ Email/Password
-        }
-      }
-    }
-    */
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -277,14 +244,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               },
             ),
             SizedBox(height: 16.h),
-            /* //TODO: Delete User Account Testing
-            Text('Username: $displayName'),
-            Text('UID: $uid'),
-            Text('Email: $email'),
-            Text('Provider ID: $providerId'),
-            Text('วิธีการเข้าสู่ระบบ: $loginMethod'),
-            Text("Can delete account: $canDeleteAccount"),
-            */
             ElevatedButton(
               onPressed: () {
                 _deleteAccount();

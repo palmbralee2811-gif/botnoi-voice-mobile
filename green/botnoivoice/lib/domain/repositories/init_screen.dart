@@ -1,6 +1,6 @@
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -98,7 +98,7 @@ class _InitScreenState extends State<InitScreen> {
     /// Load get username by email
     String? email =
         Provider.of<EmailLoginProvider>(context, listen: false).getUserEmail;
-    await Provider.of<EmailUsernameTokenProvider>(context, listen: false)
+    await Provider.of<EmailUsernameApiProvider>(context, listen: false)
         .loadGetUsername(email);
 
     setState(() {

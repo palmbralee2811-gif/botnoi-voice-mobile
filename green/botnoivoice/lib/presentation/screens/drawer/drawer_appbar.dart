@@ -1,5 +1,5 @@
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
@@ -55,7 +55,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
         emailProvider.user?.providerData[0].providerId == 'password') {
       setState(() {
         displayName =
-            Provider.of<EmailUsernameTokenProvider>(context, listen: false)
+            Provider.of<EmailUsernameApiProvider>(context, listen: false)
                     .getUsername ??
                 "Unknown";
         uid = emailProvider.user?.uid ?? "No UID";

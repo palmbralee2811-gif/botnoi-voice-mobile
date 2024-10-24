@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:botnoivoice/presentation/constants/url.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,10 @@ class GoogleTokenProvider extends ChangeNotifier {
     _jwtToken = null;
     _remainingCredits = null;
     _credentialsToken = null;
-    notifyListeners();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   /// Get the _jwtToken from Firebase
@@ -34,7 +38,6 @@ class GoogleTokenProvider extends ChangeNotifier {
         await Provider.of<GoogleLoginProvider>(context, listen: false)
             .user
             ?.getIdToken();
-    _logger.d("Google ID Token: $idToken");
     if (idToken == null) {
       _logger.e("Error: Google idToken is null");
       return;

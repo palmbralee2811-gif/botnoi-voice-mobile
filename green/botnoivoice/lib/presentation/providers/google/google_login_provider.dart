@@ -1,6 +1,7 @@
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -47,10 +48,6 @@ class GoogleLoginProvider extends ChangeNotifier {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
-      _logger.d(
-          "AccessToken: ${googleAuth.accessToken}, IDToken: ${googleAuth.idToken}");
-
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       if (FirebaseAuth.instance.currentUser?.providerData[0].providerId ==
@@ -58,8 +55,7 @@ class GoogleLoginProvider extends ChangeNotifier {
         _isLoggedIn = true; // ตรวจสอบว่าเป็น Google user
       }
 
-      _logger.i(
-          "User signed in with Google successfully, Google User ID: ${user?.uid}");
+      _logger.i("User signed in with Google successfully.");
       notifyListeners(); // Update UI
     } catch (e) {
       _logger.e('Error signing in with Google: $e');
@@ -77,6 +73,9 @@ class GoogleLoginProvider extends ChangeNotifier {
     } catch (e) {
       _logger.e("Error signing out: $e");
     }
-    notifyListeners(); // Update UI
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 }

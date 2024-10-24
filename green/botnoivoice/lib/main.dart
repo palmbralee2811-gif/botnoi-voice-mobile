@@ -1,9 +1,10 @@
+import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
@@ -46,8 +47,9 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailRegisterProvider()),
         ChangeNotifierProvider(create: (_) => EmailForgetPasswordProvider()),
         ChangeNotifierProvider(create: (_) => EmailTokenProvider()),
-        ChangeNotifierProvider(create: (_) => EmailUsernameTokenProvider()),
+        ChangeNotifierProvider(create: (_) => EmailUsernameApiProvider()),
         ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
+        ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
