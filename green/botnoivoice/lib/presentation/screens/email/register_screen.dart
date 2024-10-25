@@ -132,11 +132,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _buildGradientText('สมัครใช้งาน'),
                     SizedBox(height: 40.h),
                     _buildTextFormField(
-                        _emailController, 'อีเมล' /*, Icons.email*/),
+                        _emailController, 'อีเมล'),
                     SizedBox(height: 16.h),
                     _buildTextFormField(
                       _usernameController,
-                      'ชื่อผู้ใช้งาน', /* Icons.person*/
+                      'ชื่อผู้ใช้งาน',
                     ),
                     SizedBox(height: 16.h),
                     _buildPasswordField(_passwordController, 'รหัสผ่าน'),
@@ -172,13 +172,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildTextFormField(
     TextEditingController controller,
     String label,
-    // IconData icon,
   ) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        // prefixIcon: Icon(icon, size: 24.w),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -216,7 +214,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        // prefixIcon: Icon(Icons.lock, size: 24.w),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
