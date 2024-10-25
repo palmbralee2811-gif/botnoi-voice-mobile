@@ -98,7 +98,6 @@ class _ConfirmForgetPasswordScreenState
                   controller: _codeController,
                   decoration: InputDecoration(
                     labelText: 'ลิงค์',
-                    prefixIcon: Icon(Icons.link, size: 24.w),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
@@ -128,17 +127,6 @@ class _ConfirmForgetPasswordScreenState
                   },
                 ),
                 SizedBox(height: 16.h),
-                Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'ส่งอีเมลใหม่อีกครั้งภายใน 00:30',
-                      style: TextStyle(
-                          color: Colors.grey.shade600, fontSize: 14.sp),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

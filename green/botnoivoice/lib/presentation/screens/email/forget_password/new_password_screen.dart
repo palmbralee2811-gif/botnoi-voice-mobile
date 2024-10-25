@@ -101,7 +101,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'รหัสผ่าน',
-                    prefixIcon: Icon(Icons.lock, size: 24.w),
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -137,7 +136,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
                     labelText: 'ยืนยันรหัสผ่าน',
-                    prefixIcon: Icon(Icons.lock, size: 24.w),
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(

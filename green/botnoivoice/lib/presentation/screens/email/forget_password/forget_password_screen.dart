@@ -116,7 +116,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'อีเมล',
-                    prefixIcon: Icon(Icons.email, size: 24.w),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
