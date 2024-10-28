@@ -192,7 +192,6 @@ class _AccountScreenState extends State<AccountScreen> {
                       : const ColorFilter.mode(
                           kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
                 ),
-
                 SizedBox(width: 10.w),
                 Container(
                   width: 32.w,
@@ -290,7 +289,7 @@ class UserInfoRow extends StatelessWidget {
   final String value;
   final IconData? icon;
   final VoidCallback? onIconPressed;
-  final bool isValueOverflow; // เพิ่มตัวเลือกเพื่อแสดงผล...
+  final bool isValueOverflow;
 
   const UserInfoRow({
     super.key,
@@ -320,6 +319,7 @@ class UserInfoRow extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                SizedBox(width: 24.w),
                 Expanded(
                   child: Text(
                     value,
@@ -327,11 +327,9 @@ class UserInfoRow extends StatelessWidget {
                       fontSize: 14.sp,
                       color: const Color(0xFFBBBFC4),
                     ),
-                    overflow: isValueOverflow
-                        ? TextOverflow.ellipsis
-                        : null, // จัดการข้อความยาวด้วย ...
-                    maxLines: 1, // แสดงแค่ 1 บรรทัด
-                    textAlign: TextAlign.right, // จัดเรียงให้ชิดขวา
+                    overflow: isValueOverflow ? TextOverflow.ellipsis : null,
+                    maxLines: value.length > 15 ? 5 : 1,
+                    textAlign: TextAlign.right,
                   ),
                 ),
                 if (icon != null) ...[

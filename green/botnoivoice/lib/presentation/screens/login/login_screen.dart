@@ -89,6 +89,7 @@ class LoginScreen extends StatelessWidget {
               _openGoogleLogin(context);
             }),
           ),
+          SizedBox(height: 40.h),
         ],
       ),
     );
