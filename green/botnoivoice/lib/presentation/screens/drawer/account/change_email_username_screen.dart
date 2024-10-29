@@ -4,7 +4,6 @@ import 'package:botnoivoice/presentation/providers/email/email_login_provider.da
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/action_message_model.dart';
 import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +21,8 @@ class ChangeEmailUsernameScreen extends StatefulWidget {
 class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _confirmUsernameController = TextEditingController();
+  final TextEditingController _confirmUsernameController =
+      TextEditingController();
 
   bool isValidUsername(String username) {
     if (username.length < 3) return false;
@@ -47,7 +47,8 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
     if (!isValidUsername(_usernameController.text.trim())) {
       AlertNotificationDialog(
         context: context,
-        text: "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+        text:
+            "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
       ).showAsError();
       return;
     }
@@ -64,7 +65,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
           text: errorMessage,
         ).showErrorModal(context);
       } else {
-        ActionMessageModal(
+        AlertMessageModal(
           context: context,
           text: 'ตั้งชื่อผู้ใช้งานใหม่สำเร็จ',
           onPressed: () async {
@@ -165,7 +166,8 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
                     ),
                   ),
                   keyboardType: TextInputType.text,
-                  validator: (value) => value!.isEmpty ? 'โปรดใส่ชื่อผู้ใช้งานของคุณ' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'โปรดใส่ชื่อผู้ใช้งานของคุณ' : null,
                 ),
                 SizedBox(height: 16.h),
                 TextFormField(
@@ -180,7 +182,8 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
                     ),
                   ),
                   keyboardType: TextInputType.text,
-                  validator: (value) => value!.isEmpty ? 'โปรดยืนยันชื่อผู้ใช้งานของคุณ' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'โปรดยืนยันชื่อผู้ใช้งานของคุณ' : null,
                 ),
                 SizedBox(height: 16.h),
                 GradientTextButton(

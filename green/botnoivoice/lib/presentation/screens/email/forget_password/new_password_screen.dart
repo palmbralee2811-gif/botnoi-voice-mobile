@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
@@ -33,7 +34,13 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       AlertMessageModal(
         context: context,
         text: "ตั้งรหัสผ่านใหม่สำเร็จ",
-      ).showCheckmarkModalWithLogin(context);
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
+          );
+        },
+      ).showCheckmarkModalWithAction(context);
     } catch (e) {
       AlertMessageModal(
         context: context,

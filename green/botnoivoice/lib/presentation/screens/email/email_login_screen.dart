@@ -45,7 +45,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
           _usernameController.text.trim(),
           _passwordController.text.trim(),
           context,
-          // context,
         );
 
         final errorMessage = emailLoginProvider.errorMessage;

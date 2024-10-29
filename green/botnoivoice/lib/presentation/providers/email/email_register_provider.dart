@@ -7,8 +7,9 @@ import 'dart:convert';
 
 class EmailRegisterProvider with ChangeNotifier {
   String? _userId;
-  String? _username; // ตัวแปรสำหรับเก็บค่า username
+  String? _username;
   String? _errorMessage;
+  String? _resultMessage;
   final Logger _logger = Logger();
 
   /// Getter สำหรับ user ID
@@ -25,6 +26,9 @@ class EmailRegisterProvider with ChangeNotifier {
 
   /// Getter สำหรับ error message
   String? get errorMessage => _errorMessage;
+
+  /// Getter สำหรับ result message
+  String? get resultMessage => _resultMessage;
 
   /// ฟังก์ชันตรวจสอบว่า username ซ้ำหรือไม่
   Future<bool> checkUsernameAvailability(String usernameId) async {
@@ -45,19 +49,17 @@ class EmailRegisterProvider with ChangeNotifier {
           _logger.i('Username is available');
           return true; // username ใช้ได้
         } else {
-          _errorMessage = 'Username already taken. Please choose another one.';
-          _logger.w('Username is already taken');
+          _errorMessage = 'ชื่อผู้ใช้งานถูกใช้ไปแล้ว';
+          _logger.w('Username already taken. Please choose another one.');
           notifyListeners();
           return false; // username ซ้ำ
         }
       } else {
-        _errorMessage = 'Failed to check username availability. Status Code: ${response.statusCode}';
-        _logger.e('Failed to check username availability, Status Code: ${response.statusCode}');
+        _logger.e('Failed to check username availability. Status Code: ${response.statusCode}');
         notifyListeners();
         return false;
       }
     } catch (e) {
-      _errorMessage = 'Error: $e';
       _logger.e('Error during username check: $e');
       notifyListeners();
       return false;
@@ -68,7 +70,7 @@ class EmailRegisterProvider with ChangeNotifier {
   Future<void> registerWithEmailPassword(
       String email, String password, String confirmPassword) async {
     if (password != confirmPassword) {
-      _errorMessage = "Passwords do not match.";
+      _errorMessage = "รหัสผ่านไม่ตรงกัน";
       _logger.w("Passwords do not match for email: $email");
       notifyListeners();
       return;
@@ -83,15 +85,13 @@ class EmailRegisterProvider with ChangeNotifier {
           email: email,
           password: password,
         );
-        _errorMessage = null;
         _userId = userCredential.user?.uid;
-        _logger.i(
-            "User registered successfully with email: $email, User ID: $_userId");
+        _logger.i("User registered successfully.");
 
         // ส่ง verification email
         try {
           await userCredential.user?.sendEmailVerification();
-          _errorMessage = "Verification email sent to: $email";
+          _resultMessage = "กรุณายืนยันอีเมล: $email";
           _logger.i("Verification email sent to: $email");
 
           // เรียก API เพื่อส่งข้อมูล user_id, username, email ไปยัง backend
@@ -103,9 +103,8 @@ class EmailRegisterProvider with ChangeNotifier {
 
         notifyListeners();
       } on FirebaseAuthException catch (e) {
-        _errorMessage = e.message;
-        _logger
-            .e("Error registering user with email: $email, Error: ${e.message}");
+        _errorMessage = "อีเมลถูกใช้โดยบัญชีอื่นแล้ว";
+        _logger.e("Error registering user with email: $email, Error: ${e.message}");
         notifyListeners();
       }
     } else {

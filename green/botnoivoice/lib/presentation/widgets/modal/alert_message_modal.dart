@@ -1,178 +1,29 @@
-import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-/// Alert Modal for error message
+/// Alert Modal for displaying messages
 class AlertMessageModal {
-  AlertMessageModal({required this.context, required this.text});
+  AlertMessageModal({
+    required this.context,
+    required this.text,
+    this.onPressed, // กำหนด onPressed เป็น optional
+  });
 
   final String text;
   final BuildContext context;
+  final VoidCallback? onPressed;
 
-  /// Error Modal for failed
-  void showErrorModal(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(32.r),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.error_outline_rounded,
-                      color: Colors.red,
-                      size: 54.h,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center, // ทำให้ข้อความอยู่ตรงกลาง
-                    ),
-                    SizedBox(height: 16.h),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.close),
-                          SizedBox(width: 8),
-                          Text("ปิด"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  /// Checkmark Modal for successfully
-  void showCheckmarkModal(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(32.r),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/icon/checkmark-modal.svg',
-                      height: 54.h,
-                      width: 54.w,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center, // ทำให้ข้อความอยู่ตรงกลาง
-                    ),
-                    SizedBox(height: 16.h),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // ปิด Dialog
-                      },
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.close),
-                          SizedBox(width: 8),
-                          Text("ปิด"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  /// show checkmark modal and go to email login screen
-  void showCheckmarkModalWithLogin(BuildContext context) {
-    showDialog(
-        context: context,
-        barrierDismissible: false, // ป้องกันการปิดด้วยการแตะด้านนอก
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(32.r),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/icon/checkmark-modal.svg',
-                      height: 54.h,
-                      width: 54.w,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center, // ทำให้ข้อความอยู่ตรงกลาง
-                    ),
-                    SizedBox(height: 16.h),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // ปิด Dialog
-                        _navigateToEmailLoginScreen(context); // ไปหน้า Login
-                      },
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.close),
-                          SizedBox(width: 8),
-                          Text("ปิด"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  /// show error modal and go to email login screen
-  void showErrorModalWithLogin(BuildContext context) {
+  /// ฟังก์ชันที่ใช้สร้าง UI ของ modal
+  void _showModal({
+    required BuildContext context,
+    required Widget icon,
+    required bool barrierDismissible,
+    VoidCallback? onPressed,
+  }) {
     showDialog(
       context: context,
-      barrierDismissible: false, // ป้องกันการปิดโดยการแตะด้านนอก
+      barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -184,11 +35,7 @@ class AlertMessageModal {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    color: Colors.red,
-                    size: 54.h,
-                  ),
+                  icon,
                   SizedBox(height: 16.h),
                   Text(
                     text,
@@ -202,8 +49,8 @@ class AlertMessageModal {
                   SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // ปิด Dialog
-                      _navigateToEmailLoginScreen(context); // ไปหน้า Login
+                      Navigator.of(context).pop(); // ปิด dialog
+                      (onPressed ?? () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
                     },
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -223,11 +70,59 @@ class AlertMessageModal {
     );
   }
 
-  /// Navigate to email login screen
-  void _navigateToEmailLoginScreen(BuildContext context) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
+  /// Modal for error message
+  void showErrorModal(BuildContext context) {
+    _showModal(
+      context: context,
+      icon: Icon(
+        Icons.error_outline_rounded,
+        color: Colors.red,
+        size: 54.h,
+      ),
+      barrierDismissible: true,
+      onPressed: onPressed,
+    );
+  }
+
+  /// Modal for error message with action
+  void showErrorModalWithAction(BuildContext context) {
+    _showModal(
+      context: context,
+      icon: Icon(
+        Icons.error_outline_rounded,
+        color: Colors.red,
+        size: 54.h,
+      ),
+      barrierDismissible: false,
+      onPressed: onPressed,
+    );
+  }
+
+  /// Modal for success message
+  void showCheckmarkModal(BuildContext context) {
+    _showModal(
+      context: context,
+      icon: SvgPicture.asset(
+        'assets/images/icon/checkmark-modal.svg',
+        height: 54.h,
+        width: 54.w,
+      ),
+      barrierDismissible: true,
+      onPressed: onPressed,
+    );
+  }
+
+  /// Modal for success message with action
+  void showCheckmarkModalWithAction(BuildContext context) {
+    _showModal(
+      context: context,
+      icon: SvgPicture.asset(
+        'assets/images/icon/checkmark-modal.svg',
+        height: 54.h,
+        width: 54.w,
+      ),
+      barrierDismissible: false,
+      onPressed: onPressed,
     );
   }
 }

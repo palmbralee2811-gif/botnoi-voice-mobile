@@ -2,6 +2,9 @@ import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
+import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_screen.dart';
+import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
@@ -72,7 +75,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
           AlertMessageModal(
             context: context,
             text: errorMessage,
-          ).showErrorModalWithLogin(context);
+          ).showErrorModal(context);
+        } else {
+          final resultMessage = emailRegisterProvider.resultMessage;
+          if (resultMessage != null && resultMessage.isNotEmpty) {
+            AlertMessageModal(
+              context: context,
+              text: resultMessage,
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EmailLoginScreen()),
+                );
+              },
+            ).showCheckmarkModalWithAction(context);
+          }
         }
       });
     }
@@ -131,8 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     _buildGradientText('สมัครใช้งาน'),
                     SizedBox(height: 40.h),
-                    _buildTextFormField(
-                        _emailController, 'อีเมล'),
+                    _buildTextFormField(_emailController, 'อีเมล'),
                     SizedBox(height: 16.h),
                     _buildTextFormField(
                       _usernameController,
@@ -159,6 +176,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _buildDividerWithText('หรือ'),
                     SizedBox(height: 16.h),
                     _buildSocialButtons(),
+                    SizedBox(height: 16.h),
+                    _buildPolicayScreen(),
                   ],
                 ),
               ),
@@ -301,6 +320,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Padding(
           padding: EdgeInsets.only(left: 15.w, right: 15.w),
           child: GoogleLoginButton(onPressed: _openGoogleLogin),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPolicayScreen() {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const TermsServiceScreen()),
+              );
+            },
+            child: const Text("Terms of USE"),
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+          child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PrivacyPolicyScreen()),
+                );
+              },
+              child: const Text('Private Pollicy.')),
         ),
       ],
     );
