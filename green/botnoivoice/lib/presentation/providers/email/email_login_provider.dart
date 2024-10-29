@@ -81,7 +81,7 @@ class EmailLoginProvider with ChangeNotifier {
         // ส่งอีเมลยืนยันหากยังไม่ได้รับการยืนยัน
         try {
           await userCredential.user?.sendEmailVerification();
-          _errorMessage = "ส่งอีเมลยืนยันไปที่: $email";
+          _errorMessage = "กรุณายืนยันอีเมล: $email";
           _logger.i("Verification email sent to: $email");
         } on FirebaseAuthException catch (e) {
           _errorMessage = e.message;
@@ -102,7 +102,7 @@ class EmailLoginProvider with ChangeNotifier {
           "User logged in successfully with email: $email, Email User ID: ${user?.uid}");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message;
+      _errorMessage = "ชื่อผู้ใช้งานหรือรหัสผ่าน \nไม่ถูกต้อง";
       _logger.e("Error logging in with email: $email, Error: ${e.message}");
       notifyListeners();
     }
