@@ -1,4 +1,5 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -138,47 +139,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(24.w),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildGradientText('สมัครใช้งาน'),
-                    SizedBox(height: 40.h),
-                    _buildTextFormField(_emailController, 'อีเมล'),
-                    SizedBox(height: 16.h),
-                    _buildTextFormField(
-                      _usernameController,
-                      'ชื่อผู้ใช้งาน',
-                    ),
-                    SizedBox(height: 16.h),
-                    _buildPasswordField(_passwordController, 'รหัสผ่าน'),
-                    SizedBox(height: 16.h),
-                    _buildPasswordField(
-                      _confirmPasswordController,
-                      'ยืนยันรหัสผ่าน',
-                      isConfirmPassword: true,
-                    ),
-                    SizedBox(height: 16.h),
-                    GradientTextButton(
-                      text: 'สมัครใช้งาน',
-                      onPressed: () {
-                        _registerUser();
-                      },
-                    ),
-                    SizedBox(height: 16.h),
-                    _buildBackToLoginButton(),
-                    SizedBox(height: 16.h),
-                    _buildDividerWithText('หรือ'),
-                    SizedBox(height: 16.h),
-                    _buildSocialButtons(),
-                    SizedBox(height: 16.h),
-                    _buildPolicayScreen(),
-                  ],
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                // padding: EdgeInsets.all(24.w),
+                padding: EdgeInsets.only(left: 24.w, right: 24.w),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildGradientText('สมัครใช้งาน'),
+                      SizedBox(height: 20.h),
+                      _buildTextFormField(_emailController, 'อีเมล'),
+                      SizedBox(height: 16.h),
+                      _buildTextFormField(
+                        _usernameController,
+                        'ชื่อผู้ใช้งาน',
+                      ),
+                      SizedBox(height: 16.h),
+                      _buildPasswordField(_passwordController, 'รหัสผ่าน'),
+                      SizedBox(height: 16.h),
+                      _buildPasswordField(
+                        _confirmPasswordController,
+                        'ยืนยันรหัสผ่าน',
+                        isConfirmPassword: true,
+                      ),
+                      SizedBox(height: 16.h),
+                      GradientTextButton(
+                        text: 'สมัครใช้งาน',
+                        onPressed: () {
+                          _registerUser();
+                        },
+                      ),
+                      SizedBox(height: 16.h),
+                      _buildBackToLoginButton(),
+                      SizedBox(height: 16.h),
+                      _buildDividerWithText('หรือ'),
+                      SizedBox(height: 16.h),
+                      _buildSocialButtons(),
+                      SizedBox(height: 16.h),
+                      _buildPolicyScreen(),
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -190,34 +195,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildTextFormField(
     TextEditingController controller,
-    String label,
-  ) {
+    String label, {
+    bool isPassword = false,
+    bool isConfirmPassword = false,
+  }) {
     return TextFormField(
       controller: controller,
+      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide.none,
         ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            isPassword || isConfirmPassword
+                ? (_isPasswordVisible ? Icons.visibility : Icons.visibility_off)
+                : null,
+            size: 24.w,
+          ),
+          onPressed: isPassword || isConfirmPassword
+              ? () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                }
+              : null,
+        ),
       ),
+      obscureText:
+          isPassword || isConfirmPassword ? !_isPasswordVisible : false,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'โปรดใส่$labelของคุณ';
         }
-        // ตรวจสอบรูปแบบอีเมล
-        if (label == 'อีเมล') {
-          if (!isValidEmail(value)) {
-            return 'รูปแบบอีเมลไม่ถูกต้อง';
-          }
+        if (label == 'อีเมล' && !isValidEmail(value)) {
+          return 'รูปแบบอีเมลไม่ถูกต้อง';
         }
-        // ตรวจสอบรูปแบบชื่อผู้ใช้งาน
-        if (label == 'ชื่อผู้ใช้งาน') {
-          if (!isValidUsername(value)) {
-            return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
-          }
+        if (label == 'ชื่อผู้ใช้งาน' && !isValidUsername(value)) {
+          return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+        }
+        if (isConfirmPassword && value != _passwordController.text) {
+          return 'รหัสผ่านไม่ตรงกัน';
         }
         return null;
       },
@@ -231,8 +254,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return TextFormField(
       controller: controller,
+      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -325,36 +350,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildPolicayScreen() {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w),
-          child: TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const TermsServiceScreen()),
-              );
-            },
-            child: const Text("Terms of USE"),
-          ),
-        ),
-        SizedBox(height: 16.h),
-        Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w),
-          child: TextButton(
-              onPressed: () {
+  Widget _buildPolicyScreen() {
+    return Padding(
+      padding: EdgeInsets.only(left: 15.w, right: 15.w),
+      child: Center(
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            Text(
+              "I have read and accepted the ",
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: kDark,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TermsServiceScreen()),
+                );
+              },
+              child: GradientTextStyle(
+                "Terms of USE",
+                gradient: const LinearGradient(
+                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
+              ),
+            ),
+            Text(
+              " and ",
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: kDark,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const PrivacyPolicyScreen()),
                 );
               },
-              child: const Text('Private Pollicy.')),
+              child: GradientTextStyle(
+                "Private Policy.",
+                gradient: const LinearGradient(
+                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

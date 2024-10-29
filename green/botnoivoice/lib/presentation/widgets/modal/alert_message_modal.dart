@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -47,18 +48,30 @@ class AlertMessageModal {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16.h),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // ปิด dialog
-                      (onPressed ?? () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
-                    },
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.close),
-                        SizedBox(width: 8),
-                        Text("ปิด"),
-                      ],
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop(); // ปิด dialog
+                  //     (onPressed ??
+                  //         () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
+                  //   },
+                  //   child: const Row(
+                  //     mainAxisSize: MainAxisSize.min,
+                  //     children: [
+                  //       Icon(Icons.close),
+                  //       SizedBox(width: 8),
+                  //       Text("ปิด"),
+                  //     ],
+                  //   ),
+                  // ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 30.w, right: 30.w),
+                    child: GradientTextButton(
+                      text: 'ปิด',
+                      onPressed: () {
+                        Navigator.of(context).pop(); // ปิด dialog
+                        (onPressed ??
+                            () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
+                      },
                     ),
                   ),
                 ],

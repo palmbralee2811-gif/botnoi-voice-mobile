@@ -1,5 +1,7 @@
+import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TermsServiceScreen extends StatefulWidget {
@@ -37,7 +39,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
               Center(
                 child: Padding(
                   padding: EdgeInsets.all(8.w),
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     'assets/images/logo/appbar-icon.svg',
                     width: 54.w,
                     height: 62.h,
@@ -73,7 +75,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   'Accessing this website As well as opening various pages contained in this website, website users. (“User”) agrees and agrees to comply with the policies of Botnoi Group (“Bobotnoi Group”), applicable laws and the terms and conditions of use of the website set forth in this Agreement as well. Generally defined and specifically defined in any part of this website ("Terms and Conditions of Use"), the user acknowledges and agrees that these terms and conditions of use are are subject to change without prior notice.',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -82,7 +84,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   child: Text(
                     'However, any changes Any changes relating to the Terms and Conditions of Use will be published on this website, and when the user accesses this website after such changes, the user shall be deemed to have accepted all terms and conditions of use in accordance with. has been changed, so users are advised to always follow the terms and conditions of use of this website set forth herein.\nHowever, if you do not agree or wish to refuse to be bound by any of the terms and conditions of use, please stop visiting and using this website',
                     style: GoogleFonts.prompt(
-                        fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                        fontSize: 14.sp, color: kDark),
                   )),
               Padding(
                 padding:
@@ -91,7 +93,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   '1. Use of the Website and Intellectual Property',
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
-                    color: const Color(0xFF605E5C),
+                    color: kDark,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -101,7 +103,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   '1.1 All information contained in this website including but not limited to picture message Trademarks, graphics, sound, screen design, applications, user interface design, data in any form. Any software programs contained in this website, including all materials downloaded by users from this website (hereinafter collectively referred to as "Content"), are owned by the BOTLIER GROUP or its affiliates. grant a license to Little Bot Group whose content is protected by intellectual property and/or other proprietary rights. under the laws of Thailand and/or the laws of other countries in any form. and whether it has been registered or not ',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -110,7 +112,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   'By the way, the use of trade names trademark Service marks and other marks of Botnoi Group including any intellectual property to use any material appearing on this website for any purpose Users must obtain prior written consent from the bot group before proceeding.',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -119,7 +121,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   '1.2 All trade names, product names, trademarks service marks and other marks as well as any other intellectual property that appears on this website other than Botnoi is intellectual property. The Group which has been compiled or made available as a component of this website is for the sole purpose of beautifying the appearance of the website by Botnoi Group, as the operator of this website, not intended to be take any action which infringes any commercial or intellectual property rights of any person unless otherwise stated on this website',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -130,7 +132,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   style: GoogleFonts.prompt(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF605E5C)),
+                      color: kDark),
                 ),
               ),
               Padding(
@@ -139,7 +141,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   '2.1. All Users must use the Service in accordance with the terms specified in the Terms and Conditions. This edition, the user will not be able to use the service unless the user has agreed to the terms and conditions. this edition',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -148,7 +150,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   '2.2. Users who are minors may use the Service only with the prior consent of their parents or legal representatives. If such users use the Service on behalf of or for the purposes of any business entity, it shall be deemed that such business entity has agreed to these Terms and Conditions in advance.',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -157,7 +159,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   '2.3. If there are terms and conditions Any additional terms and conditions relating to the Service, the User shall comply with such additional terms and conditions as well as the Terms and Conditions. in using this edition',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -168,7 +170,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   style: GoogleFonts.prompt(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF605E5C)),
+                      color: kDark),
                 ),
               ),
               Padding(
@@ -177,7 +179,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                 child: Text(
                   '3.1 This website is a website for the use of Speech Synthetic. to use in a way that damages, defames, infringes intellectual copyright Or violate any law if the user uses the content on the website for illegal use. violation of privacy or violation of intellectual property The user is responsible for all legal consequences. solely',
                   style: GoogleFonts.prompt(
-                      fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                      fontSize: 14.sp, color: kDark),
                 ),
               ),
               Padding(
@@ -186,7 +188,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   child: Text(
                     '3.2 Botnoi Group reserves the right to consider not allowing users to use this website and reserves the right to change or suspend the website service in part or in whole and at any time. to the user without prior notice or stating the reason for doing so',
                     style: GoogleFonts.prompt(
-                        fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                        fontSize: 14.sp, color: kDark),
                   )),
               Padding(
                   padding:
@@ -194,7 +196,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   child: Text(
                     '3.3 Botnoy Group does not warrant that all advertisements on this website (if any) are accurate, complete and free from any defects. Botnoy Group is only an intermediary in transmitting advertising data. and is not an agent, partner or legal relationship in any way with the owner of the advertisements displayed on this website. can not check Or know the source and/or details of all advertisements that appear on this website. If such advertisements cause loss or damage to the user. Botnoi Group disclaims all liability and legal obligations.',
                     style: GoogleFonts.prompt(
-                        fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                        fontSize: 14.sp, color: kDark),
                   )),
               Padding(
                   padding:
@@ -202,7 +204,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   child: Text(
                     '3.4 Other than those set forth in these Terms and Conditions of Use, Botnoi Group, its directors, managers, executives, employees, employees, agents or consultants of Botnoi Group will not be held liable for mistakes. or any defects of the website or from the information content appearing on the website as well as not being liable for the consequences of any omissions in connection with this website. Whether caused by contract, tort, negligence or any other cause that may occur Although a small group of bots have been informed that such damage may occur.',
                     style: GoogleFonts.prompt(
-                        fontSize: 14.sp, color: const Color(0xFF605E5C)),
+                        fontSize: 14.sp, color: kDark),
                   )),
               Padding(
                 padding:
@@ -212,7 +214,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   style: GoogleFonts.prompt(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF605E5C)),
+                      color: kDark),
                 ),
               ),
               Padding(
@@ -223,7 +225,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   style: GoogleFonts.prompt(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF605E5C)),
+                      color: kDark),
                 ),
               ),
               Padding(
@@ -234,7 +236,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   style: GoogleFonts.prompt(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF605E5C)),
+                      color: kDark),
                 ),
               ),
               Padding(
@@ -245,9 +247,10 @@ class _TreamsofService extends State<TermsServiceScreen> {
                   style: GoogleFonts.prompt(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF605E5C)),
+                      color: kDark),
                 ),
               ),
+              SizedBox(height: 40.h),
             ],
           ),
         ),
