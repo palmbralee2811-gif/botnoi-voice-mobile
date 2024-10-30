@@ -31,20 +31,29 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
     try {
       await emailForgetPasswordProvider.confirmPasswordReset(code, newPassword);
-      NotificationDialog(
-        context: context,
-        text: "ตั้งรหัสผ่านใหม่สำเร็จ",
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
-          );
-        },
-      ).showCheckmarkModalWithAction(context);
+
+      if (emailForgetPasswordProvider.errorMessage == null) {
+        NotificationDialog(
+          context: context,
+          text: "ตั้งรหัสผ่านใหม่สำเร็จ",
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
+            );
+          },
+        ).showCheckmarkModalWithAction(context);
+      } else {
+        NotificationDialog(
+          context: context,
+          text: "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage}",
+        ).showErrorModal(context);
+      }
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage}",
+        text:
+            "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage ?? e.toString()}",
       ).showErrorModal(context);
     }
   }
@@ -63,125 +72,140 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
           },
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: SizedBox.expand(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(24.w),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 40.h),
-                GradientTextAlign(
-                  'ตั้งรหัสผ่านใหม่',
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                  ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20.sp,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                GradientTextAlign(
-                  'รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป',
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                  ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: 40.h),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'รหัสผ่าน',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        size: 24.w,
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(left: 24.w, right: 24.w),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GradientTextAlign(
+                        'ตั้งรหัสผ่านใหม่',
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.sp,
+                          decoration: TextDecoration.none,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  obscureText: !_isPasswordVisible,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'โปรดใส่รหัสผ่านของคุณ';
-                    } else if (value.length < 6) {
-                      return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.h),
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  decoration: InputDecoration(
-                    labelText: 'ยืนยันรหัสผ่าน',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        size: 24.w,
+                      GradientTextAlign(
+                        'รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป',
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                          decoration: TextDecoration.none,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
+                      SizedBox(height: 40.h),
+                      TextFormField(
+                        controller: _passwordController,
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        decoration: InputDecoration(
+                          labelText: 'รหัสผ่าน',
+                          labelStyle: TextStyle(
+                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 24.w,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        obscureText: !_isPasswordVisible,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'โปรดใส่รหัสผ่านของคุณ';
+                          } else if (value.length < 6) {
+                            return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16.h),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        decoration: InputDecoration(
+                          labelText: 'ยืนยันรหัสผ่าน',
+                          labelStyle: TextStyle(
+                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              size: 24.w,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        obscureText: !_isPasswordVisible,
+                        validator: (value) {
+                          if (value != _passwordController.text) {
+                            return 'รหัสผ่านไม่ตรงกัน';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16.h),
+                      GradientTextButton(
+                        text: 'ยืนยัน',
+                        onPressed: () {
+                          if (_formKey.currentState != null &&
+                              _formKey.currentState!.validate()) {
+                            _resetPassword(widget.resetCode,
+                                _passwordController.text.trim());
+                          }
+                        },
+                      ),
+                      SizedBox(height: 60.h),
+                    ],
                   ),
-                  obscureText: !_isPasswordVisible,
-                  validator: (value) {
-                    if (value != _passwordController.text) {
-                      return 'รหัสผ่านไม่ตรงกัน';
-                    }
-                    return null;
-                  },
                 ),
-                SizedBox(height: 16.h),
-                GradientTextButton(
-                  text: 'ยืนยัน',
-                  onPressed: () {
-                    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-                      _resetPassword(
-                          widget.resetCode, _passwordController.text.trim());
-                    }
-                  },
-                ),
-              ],
+              ),
             ),
           ),
         ),

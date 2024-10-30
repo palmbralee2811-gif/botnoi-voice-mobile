@@ -1,9 +1,11 @@
 import 'package:botnoivoice/presentation/screens/email/forget_password/new_password_screen.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logger/logger.dart';
 
 class ConfirmForgetPasswordScreen extends StatefulWidget {
   const ConfirmForgetPasswordScreen({super.key});
@@ -17,11 +19,17 @@ class _ConfirmForgetPasswordScreenState
     extends State<ConfirmForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _codeController = TextEditingController();
+  final Logger _logger = Logger(); // For debugging
 
   // นำฟังก์ชันจากไฟล์ 2 มาใช้
   String _extractCodeFromLink(String link) {
-    Uri uri = Uri.parse(link);
-    return uri.queryParameters['oobCode'] ?? '';
+    try {
+      Uri uri = Uri.parse(link);
+      return uri.queryParameters['oobCode'] ?? '';
+    } catch (e) {
+      _logger.e("Error parsing reset link: $e");
+      return '';
+    }
   }
 
   @override
@@ -96,8 +104,12 @@ class _ConfirmForgetPasswordScreenState
                 SizedBox(height: 32.h),
                 TextFormField(
                   controller: _codeController,
+                  style:
+                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                     labelText: 'ลิงค์',
+                    labelStyle:
+                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
@@ -113,16 +125,24 @@ class _ConfirmForgetPasswordScreenState
                 GradientTextButton(
                   text: 'ยืนยัน',
                   onPressed: () {
-                    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+                    if (_formKey.currentState != null &&
+                        _formKey.currentState!.validate()) {
                       // ดึงรหัสจากลิงก์ที่ผู้ใช้ป้อน
                       String code = _extractCodeFromLink(_codeController.text);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              NewPasswordScreen(resetCode: code),
-                        ),
-                      );
+                      if (code.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                NewPasswordScreen(resetCode: code),
+                          ),
+                        );
+                      } else {
+                        NotificationDialog(
+                          context: context,
+                          text: "ลิงค์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง",
+                        ).showErrorModal(context);
+                      }
                     }
                   },
                 ),

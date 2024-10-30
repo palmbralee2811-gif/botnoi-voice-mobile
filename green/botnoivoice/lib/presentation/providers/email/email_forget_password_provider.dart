@@ -16,26 +16,49 @@ class EmailForgetPasswordProvider with ChangeNotifier {
       _errorMessage = null;
       _logger.i("Password reset email sent to: $email");
     } on FirebaseAuthException catch (e) {
-      _errorMessage =
-          "Error sending password reset email to $email: ${e.message}";
-      _logger.e("Error sending password reset email to $email: ${e.message}");
+      switch (e.code) {
+        case 'user-not-found':
+          _errorMessage = "ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้";
+          break;
+        case 'invalid-email':
+          _errorMessage = "รูปแบบอีเมลไม่ถูกต้อง";
+          break;
+        default:
+          _errorMessage = "เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน";
+          break;
+      }
+      _logger.e(
+          "Error sending password reset email to $email \nMessage: ${e.message} \nCode: ${e.code}");
     }
-
     notifyListeners();
   }
 
   /// Confirm password reset with the code from the email
   Future<void> confirmPasswordReset(String code, String newPassword) async {
     try {
-      await FirebaseAuth.instance
-          .confirmPasswordReset(code: code, newPassword: newPassword);
+      await FirebaseAuth.instance.confirmPasswordReset(
+        code: code,
+        newPassword: newPassword,
+      );
       _errorMessage = null;
       _logger.i("Password has been reset successfully.");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message;
+      switch (e.code) {
+        case 'expired-action-code':
+          _errorMessage = "ลิงค์นี้หมดอายุแล้ว";
+          break;
+        case 'invalid-action-code':
+          _errorMessage = "โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว";
+          break;
+        case 'weak-password':
+          _errorMessage = "รหัสผ่านใหม่ไม่แข็งแรงพอ";
+          break;
+        default:
+          _errorMessage = "เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน";
+      }
       _logger
-          .e("Error resetting password with code: $code, Error: ${e.message}");
+          .e("Error resetting password with code: $code \nMessage: ${e.message} \nCode: ${e.code}");
       notifyListeners();
     }
   }

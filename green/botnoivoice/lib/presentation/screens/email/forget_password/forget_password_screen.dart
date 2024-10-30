@@ -114,8 +114,12 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 SizedBox(height: 32.h),
                 TextFormField(
                   controller: _emailController,
+                  style:
+                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                     labelText: 'อีเมล',
+                    labelStyle:
+                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
