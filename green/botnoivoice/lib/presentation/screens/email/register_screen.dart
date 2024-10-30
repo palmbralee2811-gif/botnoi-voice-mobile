@@ -33,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
 
   bool _isPasswordVisible = false;
-  bool _isRegisteringUser = false;
+  bool _isLoading = false;
 
   /// ฟังก์ชันตรวจสอบรูปแบบอีเมล
   bool isValidEmail(String email) {
@@ -55,8 +55,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final emailRegisterProvider =
         Provider.of<EmailRegisterProvider>(context, listen: false);
 
-    if (_isRegisteringUser) return; // ป้องกันการกดปุ่มซ้ำ
-    setState(() => _isRegisteringUser = true); // เริ่มสถานะการทำงาน
+    if (_isLoading) return; // ป้องกันการกดปุ่มซ้ำ
+    setState(() => _isLoading = true); // เริ่มสถานะการทำงาน
 
     if (!isValidUsername(_usernameController.text.trim())) {
       NotificationPopup(
@@ -64,8 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         text:
             "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
       ).showAsError();
-      setState(
-          () => _isRegisteringUser = false); // ยกเลิกสถานะการทำงานหากมีข้อผิดพลาด
+      setState(() => _isLoading = false); // ยกเลิกสถานะการทำงานหากมีข้อผิดพลาด
       return;
     }
 
@@ -83,25 +82,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context: context,
           text: errorMessage,
         ).showErrorModal(context);
-      } else {
-        final resultMessage = emailRegisterProvider.resultMessage;
-        if (resultMessage != null && resultMessage.isNotEmpty) {
-          NotificationDialog(
-            context: context,
-            text: resultMessage,
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const EmailLoginScreen()),
-              );
-            },
-          ).showCheckmarkModalWithAction(context);
-        }
+        setState(
+            () => _isLoading = false); // ยกเลิกสถานะการทำงานหากมีข้อผิดพลาด
+        return;
       }
+
+      final resultMessage = emailRegisterProvider.resultMessage;
+      if (resultMessage != null && resultMessage.isNotEmpty) {
+        NotificationDialog(
+          context: context,
+          text: resultMessage,
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
+            );
+          },
+        ).showCheckmarkModalWithAction(context);
+      }
+    } else {
+      setState(() =>
+          _isLoading = false); // ยกเลิกสถานะการทำงานหาก validation ล้มเหลว
     }
 
-    setState(() => _isRegisteringUser = false); // การทำงานเสร็จสิ้น
+    setState(() => _isLoading = false); // การทำงานเสร็จสิ้น
   }
 
   /// Display Email Permission Dialog and Call Register Function
@@ -179,11 +183,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _confirmPasswordController, 'ยืนยันรหัสผ่าน',
                           isConfirmPassword: true),
                       SizedBox(height: 16.h),
-                      GradientTextButton(
-                        text: 'สมัครใช้งาน',
-                        onPressed:
-                            _isRegisteringUser ? () {} : _openEmailPermissionDialog,
-                      ),
+                      _isLoading
+                          ? const Center(
+                              child:
+                                  CircularProgressIndicator()) // แสดงสถานะการโหลด
+                          : GradientTextButton(
+                              text: 'สมัครใช้งาน',
+                              onPressed: _openEmailPermissionDialog,
+                            ),
                       SizedBox(height: 16.h),
                       _buildBackToLoginButton(),
                       SizedBox(height: 16.h),
