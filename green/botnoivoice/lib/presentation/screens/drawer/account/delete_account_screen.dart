@@ -114,12 +114,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     // หากรหัสผ่านถูกต้อง ลบข้อมูลในฐานข้อมูล
     try {
       await emailDeleteAccountProvider.deleteUserAccountWithDatabase();
-      final errorMessageDatabase = emailDeleteAccountProvider.errorMessage;
+      final errorMessage = emailDeleteAccountProvider.errorMessage;
 
-      if (errorMessageDatabase != null && errorMessageDatabase.isNotEmpty) {
+      if (errorMessage != null && errorMessage.isNotEmpty) {
         NotificationDialog(
           context: context,
-          text: errorMessageDatabase,
+          text: errorMessage,
         ).showErrorModal(context);
         return;
       }
