@@ -23,7 +23,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     final emailForgetPassword =
         Provider.of<EmailForgetPasswordProvider>(context, listen: false);
 
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       await emailForgetPassword.sendPasswordResetEmail(_emailController.text);
       final errorMessage = emailForgetPassword.errorMessage;
       if (errorMessage != null && errorMessage.isNotEmpty) {

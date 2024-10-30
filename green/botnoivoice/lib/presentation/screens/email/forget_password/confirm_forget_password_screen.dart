@@ -113,7 +113,7 @@ class _ConfirmForgetPasswordScreenState
                 GradientTextButton(
                   text: 'ยืนยัน',
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
                       // ดึงรหัสจากลิงก์ที่ผู้ใช้ป้อน
                       String code = _extractCodeFromLink(_codeController.text);
                       Navigator.push(

@@ -35,7 +35,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
     final emailLoginProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
 
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });

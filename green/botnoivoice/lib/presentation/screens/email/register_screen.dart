@@ -8,6 +8,7 @@ import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_scr
 import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
@@ -32,6 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
 
   bool _isPasswordVisible = false;
+  bool _isRegisteringUser = false;
 
   /// ฟังก์ชันตรวจสอบรูปแบบอีเมล
   bool isValidEmail(String email) {
@@ -49,9 +51,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   /// ฟังก์ชันสมัครสมาชิก
-  void _registerUser() {
+  Future<void> _registerUser() async {
     final emailRegisterProvider =
         Provider.of<EmailRegisterProvider>(context, listen: false);
+
+    if (_isRegisteringUser) return; // ป้องกันการกดปุ่มซ้ำ
+    setState(() => _isRegisteringUser = true); // เริ่มสถานะการทำงาน
 
     if (!isValidUsername(_usernameController.text.trim())) {
       NotificationPopup(
@@ -59,62 +64,75 @@ class _RegisterScreenState extends State<RegisterScreen> {
         text:
             "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
       ).showAsError();
+      setState(
+          () => _isRegisteringUser = false); // ยกเลิกสถานะการทำงานหากมีข้อผิดพลาด
       return;
     }
 
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       emailRegisterProvider.username = _usernameController.text.trim();
-      emailRegisterProvider
-          .registerWithEmailPassword(
+      await emailRegisterProvider.registerWithEmailPassword(
         _emailController.text.trim(),
         _passwordController.text.trim(),
         _confirmPasswordController.text.trim(),
-      )
-          .then((_) {
-        final errorMessage = emailRegisterProvider.errorMessage;
-        if (errorMessage != null && errorMessage.isNotEmpty) {
+      );
+
+      final errorMessage = emailRegisterProvider.errorMessage;
+      if (errorMessage != null && errorMessage.isNotEmpty) {
+        NotificationDialog(
+          context: context,
+          text: errorMessage,
+        ).showErrorModal(context);
+      } else {
+        final resultMessage = emailRegisterProvider.resultMessage;
+        if (resultMessage != null && resultMessage.isNotEmpty) {
           NotificationDialog(
             context: context,
-            text: errorMessage,
-          ).showErrorModal(context);
-        } else {
-          final resultMessage = emailRegisterProvider.resultMessage;
-          if (resultMessage != null && resultMessage.isNotEmpty) {
-            NotificationDialog(
-              context: context,
-              text: resultMessage,
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EmailLoginScreen()),
-                );
-              },
-            ).showCheckmarkModalWithAction(context);
-          }
+            text: resultMessage,
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const EmailLoginScreen()),
+              );
+            },
+          ).showCheckmarkModalWithAction(context);
         }
-      });
+      }
+    }
+
+    setState(() => _isRegisteringUser = false); // การทำงานเสร็จสิ้น
+  }
+
+  /// Display Email Permission Dialog and Call Register Function
+  void _openEmailPermissionDialog() {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return EmailPermissionDialog(
+            onPressed: _registerUser,
+          );
+        },
+      );
     }
   }
 
   /// แสดงหน้าจอ Google Login
-  void _openGoogleLogin() async {
+  Future<void> _openGoogleLogin() async {
     await Provider.of<GoogleLoginProvider>(context, listen: false)
-        .signInWithGoogle()
-        .whenComplete(() {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => AuthChecker()));
-    });
+        .signInWithGoogle();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => AuthChecker()));
   }
 
   /// แสดงหน้าจอ Line Login
-  void _openLineLogin() async {
+  Future<void> _openLineLogin() async {
     await Provider.of<LineLoginProvider>(context, listen: false)
-        .signInWithLine()
-        .whenComplete(() {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => AuthChecker()));
-    });
+        .signInWithLine();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => AuthChecker()));
   }
 
   @override
@@ -143,7 +161,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                // padding: EdgeInsets.all(24.w),
                 padding: EdgeInsets.only(left: 24.w, right: 24.w),
                 child: Form(
                   key: _formKey,
@@ -154,24 +171,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20.h),
                       _buildTextFormField(_emailController, 'อีเมล'),
                       SizedBox(height: 16.h),
-                      _buildTextFormField(
-                        _usernameController,
-                        'ชื่อผู้ใช้งาน',
-                      ),
+                      _buildTextFormField(_usernameController, 'ชื่อผู้ใช้งาน'),
                       SizedBox(height: 16.h),
                       _buildPasswordField(_passwordController, 'รหัสผ่าน'),
                       SizedBox(height: 16.h),
                       _buildPasswordField(
-                        _confirmPasswordController,
-                        'ยืนยันรหัสผ่าน',
-                        isConfirmPassword: true,
-                      ),
+                          _confirmPasswordController, 'ยืนยันรหัสผ่าน',
+                          isConfirmPassword: true),
                       SizedBox(height: 16.h),
                       GradientTextButton(
                         text: 'สมัครใช้งาน',
-                        onPressed: () {
-                          _registerUser();
-                        },
+                        onPressed:
+                            _isRegisteringUser ? () {} : _openEmailPermissionDialog,
                       ),
                       SizedBox(height: 16.h),
                       _buildBackToLoginButton(),
@@ -193,12 +204,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildTextFormField(
-    TextEditingController controller,
-    String label, {
-    bool isPassword = false,
-    bool isConfirmPassword = false,
-  }) {
+  Widget _buildTextFormField(TextEditingController controller, String label,
+      {bool isPassword = false, bool isConfirmPassword = false}) {
     return TextFormField(
       controller: controller,
       style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
@@ -247,11 +254,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildPasswordField(
-    TextEditingController controller,
-    String label, {
-    bool isConfirmPassword = false,
-  }) {
+  Widget _buildPasswordField(TextEditingController controller, String label,
+      {bool isConfirmPassword = false}) {
     return TextFormField(
       controller: controller,
       style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
@@ -322,11 +326,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Divider(thickness: 1.0, color: Color(0xFF34BDFA))),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w),
-          child: Text(text,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.sp,
-                  color: Colors.grey.shade600)),
+          child: Text(
+            text,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
+                color: Colors.grey.shade600),
+          ),
         ),
         const Expanded(
             child: Divider(thickness: 1.0, color: Color(0xFF34BDFA))),
@@ -359,18 +365,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             Text(
               "I have read and accepted the ",
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: kDark,
-              ),
+              style: TextStyle(fontSize: 12.sp, color: kDark),
             ),
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TermsServiceScreen()),
-                );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const TermsServiceScreen()));
               },
               child: GradientTextStyle(
                 "Terms of USE",
@@ -381,18 +383,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             Text(
               " and ",
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: kDark,
-              ),
+              style: TextStyle(fontSize: 12.sp, color: kDark),
             ),
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PrivacyPolicyScreen()),
-                );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyScreen()));
               },
               child: GradientTextStyle(
                 "Private Policy.",

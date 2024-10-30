@@ -175,7 +175,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                 GradientTextButton(
                   text: 'ยืนยัน',
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
                       _resetPassword(
                           widget.resetCode, _passwordController.text.trim());
                     }

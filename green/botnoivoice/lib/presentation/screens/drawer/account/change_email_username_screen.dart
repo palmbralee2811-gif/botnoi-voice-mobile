@@ -54,7 +54,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
     }
 
     // ถ้า validate ผ่านหมดแล้ว
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       await changeUsername.postChangeUsername(
           context, _usernameController.text);
       final errorMessage = changeUsername.errorMessage;
