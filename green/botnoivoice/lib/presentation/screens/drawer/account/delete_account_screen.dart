@@ -18,6 +18,7 @@ class DeleteAccountScreen extends StatefulWidget {
 }
 
 class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
+  //TODO: เปลี่ยนจาก Show Dialog เป็น Confirm Password to Delete Account Screen
   Future<String?> _showPasswordDialog() async {
     String? password;
     bool isPasswordVisible = false; // To track the visibility of the password
@@ -97,36 +98,43 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       return;
     }
 
+    // ตรวจสอบรหัสผ่านก่อน
+    bool isPasswordValid =
+        await emailDeleteAccountProvider.verifyPassword(password);
+
+    if (!isPasswordValid) {
+      // แสดง NotificationDialog ถ้ารหัสผ่านผิด
+      NotificationDialog(
+        context: context,
+        text: emailDeleteAccountProvider.errorMessage ?? 'รหัสผ่านไม่ถูกต้อง',
+      ).showErrorModal(context);
+      return;
+    }
+
+    // หากรหัสผ่านถูกต้อง ลบข้อมูลในฐานข้อมูล
     try {
       await emailDeleteAccountProvider.deleteUserAccountWithDatabase();
-      final errorMessage = emailDeleteAccountProvider.errorMessage;
+      final errorMessageDatabase = emailDeleteAccountProvider.errorMessage;
 
-      if (errorMessage != null && errorMessage.isNotEmpty) {
+      if (errorMessageDatabase != null && errorMessageDatabase.isNotEmpty) {
         NotificationDialog(
           context: context,
-          text: errorMessage,
+          text: errorMessageDatabase,
         ).showErrorModal(context);
-      } else {
-        await emailDeleteAccountProvider.deleteUserAccountWithFirebase(
-            context, password);
-        final errorMessage = emailDeleteAccountProvider.errorMessage;
-        if (errorMessage != null && errorMessage.isNotEmpty) {
-          NotificationDialog(
-            context: context,
-            text: errorMessage,
-          ).showErrorModal(context);
-        } else {
-          await Provider.of<EmailLoginProvider>(context, listen: false)
-              .signOutWithEmail(context);
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AuthChecker(),
-            ),
-            (Route<dynamic> route) => false,
-          );
-        }
+        return;
       }
+
+      // ลบข้อมูลใน Firebase หลังจากลบในฐานข้อมูลสำเร็จ
+      await emailDeleteAccountProvider.deleteUserAccountWithFirebase(context);
+      await Provider.of<EmailLoginProvider>(context, listen: false)
+          .signOutWithEmail(context);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AuthChecker(),
+        ),
+        (Route<dynamic> route) => false,
+      );
     } catch (error) {
       NotificationPopup(
         context: context,
@@ -167,7 +175,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 24.h),
             GradientTextAlign(
               'โปรดอ่าน',
               gradient: const LinearGradient(
