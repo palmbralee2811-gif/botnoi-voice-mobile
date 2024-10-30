@@ -32,7 +32,8 @@ class EmailRegisterProvider with ChangeNotifier {
 
   /// ฟังก์ชันตรวจสอบว่า username ซ้ำหรือไม่
   Future<bool> checkUsernameAvailability(String usernameId) async {
-    String url = '$urlDomain/api/dashboard/get_email_mobile?username=$usernameId';
+    String url =
+        '$urlDomain/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
@@ -45,8 +46,11 @@ class EmailRegisterProvider with ChangeNotifier {
         var data = json.decode(response.body);
 
         // ตรวจสอบว่ามี email ไม่พบในระบบ แสดงว่า username ใช้ได้
-        if (data['message'] == 'success' && data['data']['email'] == 'email not found') {
+        if (data['message'] == 'success' &&
+            data['data']['email'] == 'email not found') {
           _logger.i('Username is available');
+          _errorMessage = null; // รีเซ็ต error message
+          notifyListeners();
           return true; // username ใช้ได้
         } else {
           _errorMessage = 'ชื่อผู้ใช้งานถูกใช้ไปแล้ว';
@@ -55,12 +59,15 @@ class EmailRegisterProvider with ChangeNotifier {
           return false; // username ซ้ำ
         }
       } else {
-        _logger.e('Failed to check username availability. Status Code: ${response.statusCode}');
+        _logger.e(
+            'Failed to check username availability. Status Code: ${response.statusCode}');
+        _errorMessage = "เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้";
         notifyListeners();
         return false;
       }
     } catch (e) {
       _logger.e('Error during username check: $e');
+      _errorMessage = "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์";
       notifyListeners();
       return false;
     }
@@ -86,29 +93,47 @@ class EmailRegisterProvider with ChangeNotifier {
           password: password,
         );
         _userId = userCredential.user?.uid;
+        _errorMessage = null; // รีเซ็ต error message
         _logger.i("User registered successfully.");
+        notifyListeners();
 
         // ส่ง verification email
         try {
           await userCredential.user?.sendEmailVerification();
           _resultMessage = "กรุณายืนยันอีเมล: $email";
+          _errorMessage = null; // รีเซ็ต error message
           _logger.i("Verification email sent to: $email");
 
           // เรียก API เพื่อส่งข้อมูล user_id, username, email ไปยัง backend
           await _registerUserToBackend(_userId, email);
-
+          notifyListeners();
         } catch (e) {
+          _errorMessage = "ไม่สามารถส่งอีเมลยืนยันได้";
           _logger.e("Failed to send verification email: $e");
+          notifyListeners();
         }
-
-        notifyListeners();
       } on FirebaseAuthException catch (e) {
-        _errorMessage = "อีเมลถูกใช้โดยบัญชีอื่นแล้ว";
-        _logger.e("Error registering user with email: $email, Error: ${e.message}");
+        switch (e.code) {
+          case 'email-already-in-use':
+            _errorMessage = "อีเมลถูกใช้โดยบัญชีอื่นแล้ว";
+            break;
+          case 'invalid-email':
+            _errorMessage = "รูปแบบอีเมลไม่ถูกต้อง";
+            break;
+          case 'weak-password':
+            _errorMessage = "รหัสผ่านไม่แข็งแรงพอ";
+            break;
+          case 'operation-not-allowed':
+            _errorMessage = "การดำเนินการนี้ไม่ได้รับอนุญาต";
+            break;
+          default:
+            _errorMessage = "เกิดข้อผิดพลาดในการสมัครสมาชิก";
+            break;
+        }
+        _logger.e(
+            "Error registering user with email: $email \nMessage: ${e.message} \nCode: ${e.code}");
         notifyListeners();
       }
-    } else {
-      _logger.w("Username is already taken. Please choose another one.");
     }
   }
 
@@ -116,6 +141,8 @@ class EmailRegisterProvider with ChangeNotifier {
   Future<void> _registerUserToBackend(String? userId, String email) async {
     if (userId == null || _username == null) {
       _logger.e("User ID or Username is null, cannot register to backend.");
+      _errorMessage = "ไม่มีรหัส UID หรือชื่อผู้ใช้งาน";
+      notifyListeners();
       return;
     }
 
@@ -136,12 +163,18 @@ class EmailRegisterProvider with ChangeNotifier {
       final response = await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
+        _errorMessage = null; // รีเซ็ต error message เมื่อส่งข้อมูลสำเร็จ
         _logger.i("User successfully registered to backend.");
       } else {
-        _logger.e("Failed to register user to backend, Status Code: ${response.statusCode}");
+        _errorMessage = "เกิดข้อผิดพลาดในการสมัครสมาชิก";
+        _logger.e(
+            "Failed to register user to backend, Status Code: ${response.statusCode}");
       }
+      notifyListeners();
     } catch (e) {
+      _errorMessage = "เกิดข้อผิดพลาดในเชื่อมต่อกับเซิร์ฟเวอร์";
       _logger.e("Error during API call: $e");
+      notifyListeners();
     }
   }
 }
