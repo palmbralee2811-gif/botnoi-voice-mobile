@@ -4,6 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
+/// ***DO NOT DELETE THIS TEXT FOR ANY REASON***
+///
+/// 3 Steps to Delete Account:
+/// - 1. Verify the User Password.
+/// - 2. Delete User Account Data in Database (MongoDB).
+/// - 3. Delete User Account Data in Firebase (Staging and Production).
+///
+/// ***WARNING***
+/// - When you delete the user account in Firebase,
+/// it will delete the user account in both staging and production environments.
 class EmailDeleteAccountProvider with ChangeNotifier {
   String? _errorMessage;
   final Logger _logger = Logger(); // For debugging
@@ -13,7 +23,8 @@ class EmailDeleteAccountProvider with ChangeNotifier {
 
   /// Helper function to check if user is logged in with password provider
   bool isPasswordProviderUser(User? user) {
-    return user != null && user.providerData.any((info) => info.providerId == 'password');
+    return user != null &&
+        user.providerData.any((info) => info.providerId == 'password');
   }
 
   /// ฟังก์ชันตรวจสอบรหัสผ่าน
@@ -27,15 +38,24 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         );
         await user.reauthenticateWithCredential(credential);
         _errorMessage = null;
+        notifyListeners();
         return true;
-      } catch (error) {
-        _errorMessage = "รหัสผ่านไม่ถูกต้อง";
-        _logger.e("Password verification failed: $error");
+      } on FirebaseAuthException catch (error) {
+        switch (error.code) {
+          case 'wrong-password':
+            _errorMessage = "รหัสผ่านไม่ถูกต้อง";
+            break;
+          default:
+            _errorMessage = "เกิดข้อผิดพลาดในการยืนยันรหัสผ่าน";
+            break;
+        }
+        _logger.e(
+            "Password verification failed. \nMessage: ${error.message} \nCode: ${error.code}");
         notifyListeners();
         return false;
       }
     } else {
-      _errorMessage = "ไม่ได้เข้าสู่ระบบด้วยผู้ใช้และรหัสผ่าน";
+      _errorMessage = "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน";
       _logger.e("Cannot verify Google account password");
       notifyListeners();
       return false;
@@ -54,10 +74,13 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         final response = await http.delete(Uri.parse(url), headers: headers);
         if (response.statusCode == 200) {
           _errorMessage = null;
-          _logger.d("User Account deleted successfully with Database. \nUser ID: $userId. \nEmail: ${user.email}");
+          _logger.d(
+              "User Account deleted successfully with Database. \nUser ID: $userId. \nEmail: ${user.email}");
         } else {
-          _errorMessage = 'ไม่สามารถลบบัญชีผู้ใช้ได้ รหัสสถานะ: ${response.statusCode}';
-          _logger.e("Failed to delete user account. Status Code: ${response.statusCode}");
+          _errorMessage =
+              'ไม่สามารถลบบัญชีผู้ใช้ได้ รหัสสถานะ: ${response.statusCode}';
+          _logger.e(
+              "Failed to delete user account. Status Code: ${response.statusCode}");
           notifyListeners();
         }
       } catch (error) {
@@ -79,7 +102,8 @@ class EmailDeleteAccountProvider with ChangeNotifier {
       try {
         await user!.delete();
         _errorMessage = null;
-        _logger.i("User Account deleted successfully from Firebase. \nEmail: ${user.email}. \nUser ID: ${user.uid}");
+        _logger.i(
+            "User Account deleted successfully from Firebase. \nEmail: ${user.email}. \nUser ID: ${user.uid}");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('ลบบัญชีสำเร็จ')),
         );
