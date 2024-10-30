@@ -15,7 +15,7 @@ import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -294,8 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () async {
             await audioPlayer.stop();
             if (_textController.text.isEmpty) {
-              AlertNotificationDialog(
-                      context: context, text: "กรุณาพิมพ์ข้อความ")
+              NotificationPopup(context: context, text: "กรุณาพิมพ์ข้อความ")
                   .showAsError();
             }
             if (_textController.text.isNotEmpty) {
@@ -380,8 +379,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          AlertNotificationDialog(
-                  context: context, text: 'ไม่สามารสร้างเสียงได้')
+          NotificationPopup(context: context, text: 'ไม่สามารสร้างเสียงได้')
               .showAsError();
         }
       }

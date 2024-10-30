@@ -2,7 +2,7 @@ import 'package:botnoivoice/presentation/providers/email/email_forget_password_p
 import 'package:botnoivoice/presentation/screens/email/forget_password/confirm_forget_password_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +27,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       await emailForgetPassword.sendPasswordResetEmail(_emailController.text);
       final errorMessage = emailForgetPassword.errorMessage;
       if (errorMessage != null && errorMessage.isNotEmpty) {
-        AlertMessageModal(
+        NotificationDialog(
           context: context,
           text: errorMessage,
         ).showErrorModal(context);

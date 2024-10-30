@@ -8,10 +8,10 @@ import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_scr
 import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
-import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Provider.of<EmailRegisterProvider>(context, listen: false);
 
     if (!isValidUsername(_usernameController.text.trim())) {
-      AlertNotificationDialog(
+      NotificationPopup(
         context: context,
         text:
             "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
@@ -73,14 +73,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .then((_) {
         final errorMessage = emailRegisterProvider.errorMessage;
         if (errorMessage != null && errorMessage.isNotEmpty) {
-          AlertMessageModal(
+          NotificationDialog(
             context: context,
             text: errorMessage,
           ).showErrorModal(context);
         } else {
           final resultMessage = emailRegisterProvider.resultMessage;
           if (resultMessage != null && resultMessage.isNotEmpty) {
-            AlertMessageModal(
+            NotificationDialog(
               context: context,
               text: resultMessage,
               onPressed: () {

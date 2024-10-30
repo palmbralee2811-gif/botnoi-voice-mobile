@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-class AlertNotificationDialog {
-  AlertNotificationDialog({
+/// shows different messages: Error, Success, and Info. 
+/// Each message has its own color and animation, then closes after 5 seconds.
+class NotificationPopup {
+  NotificationPopup({
     required this.context,
     required this.text,
   });
@@ -144,33 +145,6 @@ class AlertNotificationDialog {
       animDuration: const Duration(milliseconds: 300),
       duration: const Duration(seconds: 4),
       position: StyledToastPosition.top,
-    );
-  }
-
-  /// Show permission denied dialog
-  void showPermissionDeniedDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("สิทธิ์ถูกปฏิเสธ"),
-        content:
-            const Text("กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การเข้าถึงไฟล์."),
-        actions: [
-          TextButton(
-            onPressed: () {
-              openAppSettings(); // Redirect to app settings
-              Navigator.of(context).pop();
-            },
-            child: const Text("ไปหน้าตั้งค่า"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text("ยกเลิก"),
-          ),
-        ],
-      ),
     );
   }
 }

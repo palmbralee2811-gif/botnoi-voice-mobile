@@ -1,7 +1,7 @@
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
     try {
       await emailForgetPasswordProvider.confirmPasswordReset(code, newPassword);
-      AlertMessageModal(
+      NotificationDialog(
         context: context,
         text: "ตั้งรหัสผ่านใหม่สำเร็จ",
         onPressed: () {
@@ -42,7 +42,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         },
       ).showCheckmarkModalWithAction(context);
     } catch (e) {
-      AlertMessageModal(
+      NotificationDialog(
         context: context,
         text: "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage}",
       ).showErrorModal(context);

@@ -4,7 +4,8 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/android_permission_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
@@ -55,7 +56,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
     // Show Alert if Permission Denied
     if (!hasPermission) {
-      AlertNotificationDialog(
+      AndroidPermissionDialog(
               context: context, text: "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า")
           .showPermissionDeniedDialog();
     } else {
@@ -167,7 +168,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     FileRepositoryImpl fileRepository = FileRepositoryImpl();
     bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
     if (isSaved == false) {
-      AlertNotificationDialog(context: context, text: "ไม่สามารถบันทึกไฟล์ได้")
+      NotificationPopup(context: context, text: "ไม่สามารถบันทึกไฟล์ได้")
           .showAsError();
     }
   }

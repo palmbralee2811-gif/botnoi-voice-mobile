@@ -4,10 +4,10 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +50,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         final errorMessage = emailLoginProvider.errorMessage;
 
         if (errorMessage != null && errorMessage.isNotEmpty) {
-          AlertMessageModal(
+          NotificationDialog(
             context: context,
             text: errorMessage,
           ).showErrorModal(context);
@@ -63,7 +63,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
           );
         }
       } catch (error) {
-        AlertNotificationDialog(
+        NotificationPopup(
           context: context,
           text: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง. $error',
         ).showAsError();
@@ -166,10 +166,12 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       SizedBox(height: 32.h),
                       TextFormField(
                         controller: _usernameController,
-                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'ชื่อผู้ใช้งาน',
-                          labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          labelStyle: TextStyle(
+                              fontSize: 16.sp, fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
                           filled: true,
                           border: OutlineInputBorder(
@@ -194,10 +196,12 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       SizedBox(height: 16.h),
                       TextFormField(
                         controller: _passwordController,
-                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'รหัสผ่าน',
-                          labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          labelStyle: TextStyle(
+                              fontSize: 16.sp, fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
                           filled: true,
                           border: OutlineInputBorder(

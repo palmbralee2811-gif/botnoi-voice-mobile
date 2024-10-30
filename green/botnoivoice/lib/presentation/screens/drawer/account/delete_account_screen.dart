@@ -2,10 +2,10 @@ import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +82,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     if (!emailProvider.isLoggedIn ||
         emailProvider.user == null ||
         emailProvider.user?.providerData[0].providerId != 'password') {
-      AlertMessageModal(
+      NotificationDialog(
         context: context,
         text: 'ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยอีเมล',
       ).showErrorModal(context);
@@ -102,7 +102,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       final errorMessage = emailDeleteAccountProvider.errorMessage;
 
       if (errorMessage != null && errorMessage.isNotEmpty) {
-        AlertMessageModal(
+        NotificationDialog(
           context: context,
           text: errorMessage,
         ).showErrorModal(context);
@@ -111,12 +111,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             context, password);
         final errorMessage = emailDeleteAccountProvider.errorMessage;
         if (errorMessage != null && errorMessage.isNotEmpty) {
-          AlertMessageModal(
+          NotificationDialog(
             context: context,
             text: errorMessage,
           ).showErrorModal(context);
         } else {
-          await Provider.of<EmailLoginProvider>(context, listen: false).signOutWithEmail(context);
+          await Provider.of<EmailLoginProvider>(context, listen: false)
+              .signOutWithEmail(context);
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -127,7 +128,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         }
       }
     } catch (error) {
-      AlertNotificationDialog(
+      NotificationPopup(
         context: context,
         text: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง. $error',
       ).showAsError();

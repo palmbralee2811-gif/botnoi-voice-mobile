@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 /// Alert Modal for displaying messages
-class AlertMessageModal {
-  AlertMessageModal({
+class NotificationDialog {
+  NotificationDialog({
     required this.context,
     required this.text,
     this.onPressed, // กำหนด onPressed เป็น optional
@@ -48,21 +48,6 @@ class AlertMessageModal {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 16.h),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).pop(); // ปิด dialog
-                  //     (onPressed ??
-                  //         () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
-                  //   },
-                  //   child: const Row(
-                  //     mainAxisSize: MainAxisSize.min,
-                  //     children: [
-                  //       Icon(Icons.close),
-                  //       SizedBox(width: 8),
-                  //       Text("ปิด"),
-                  //     ],
-                  //   ),
-                  // ),
                   Padding(
                     padding: EdgeInsets.only(left: 30.w, right: 30.w),
                     child: GradientTextButton(

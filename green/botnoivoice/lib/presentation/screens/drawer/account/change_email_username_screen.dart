@@ -1,10 +1,10 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/alert_notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/modal/alert_message_modal.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +36,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
 
     // ตรวจสอบว่าชื่อผู้ใช้งานสองช่องตรงกันหรือไม่
     if (_usernameController.text != _confirmUsernameController.text) {
-      AlertNotificationDialog(
+      NotificationPopup(
         context: context,
         text: "ชื่อผู้ใช้งานทั้งสองช่องต้องตรงกัน",
       ).showAsError();
@@ -45,7 +45,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
 
     // ตรวจสอบความถูกต้องของชื่อผู้ใช้งาน
     if (!isValidUsername(_usernameController.text.trim())) {
-      AlertNotificationDialog(
+      NotificationPopup(
         context: context,
         text:
             "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
@@ -60,12 +60,12 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
       final errorMessage = changeUsername.errorMessage;
 
       if (errorMessage != null && errorMessage.isNotEmpty) {
-        AlertMessageModal(
+        NotificationDialog(
           context: context,
           text: errorMessage,
         ).showErrorModal(context);
       } else {
-        AlertMessageModal(
+        NotificationDialog(
           context: context,
           text: 'ตั้งชื่อผู้ใช้งานใหม่สำเร็จ',
           onPressed: () async {
