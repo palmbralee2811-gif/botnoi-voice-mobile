@@ -102,17 +102,22 @@ class EmailLoginProvider with ChangeNotifier {
           "User logged in successfully with email: $email, Email User ID: ${user?.uid}");
       notifyListeners();
     } on FirebaseAuthException catch (e) {
-      if (e.message == 'email not found' ||
-          e.message == 'The email address is badly formatted.') {
-        _errorMessage = "ชื่อผู้ใช้งานไม่ถูกต้อง";
-      } else if (e.message ==
-          'The password is invalid or the user does not have a password.') {
-        _errorMessage = "รหัสผ่านไม่ถูกต้อง";
-      } else {
-        _errorMessage = "ชื่อผู้ใช้งานหรือรหัสผ่าน \nไม่ถูกต้อง";
+      switch (e.code) {
+        case 'invalid-email':
+          _errorMessage = "ชื่อผู้ใช้งานไม่ถูกต้อง";
+          break;
+        case 'wrong-password':
+          _errorMessage = "รหัสผ่านไม่ถูกต้อง";
+          break;
+        case 'user-disabled':
+          _errorMessage = "บัญชีนี้ถูกระงับการใช้งาน";
+          break;
+        default:
+          _errorMessage = "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง";
+          break;
       }
-
-      _logger.e("Error logging in with email: $email, Error: ${e.message}");
+      _logger.e(
+          "Error logging in with email. \nMessage: ${e.message} \nCode: ${e.code}");
       notifyListeners();
     }
   }
