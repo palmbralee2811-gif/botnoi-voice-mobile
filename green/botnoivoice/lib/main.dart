@@ -66,6 +66,7 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             home: AuthChecker(),
+            // home: const EmailPermissionDialog(),
           );
         },
       ),
