@@ -9,13 +9,13 @@ import 'package:botnoivoice/presentation/screens/email/policy/terms_service_scre
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:string_validator/string_validator.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -37,10 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   /// ฟังก์ชันตรวจสอบรูปแบบอีเมล
   bool isValidEmail(String email) {
-    final RegExp emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    return emailRegex.hasMatch(email);
+    return isEmail(email);
   }
 
   /// ตรวจสอบชื่อผู้ใช้งานว่าถูกต้องหรือไม่
@@ -57,16 +54,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (_isLoading) return; // ป้องกันการกดปุ่มซ้ำ
     setState(() => _isLoading = true); // เริ่มสถานะการทำงาน
-
-    if (!isValidUsername(_usernameController.text.trim())) {
-      NotificationPopup(
-        context: context,
-        text:
-            "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
-      ).showAsError();
-      setState(() => _isLoading = false); // ยกเลิกสถานะการทำงานหากมีข้อผิดพลาด
-      return;
-    }
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       emailRegisterProvider.username = _usernameController.text.trim();
@@ -226,6 +213,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide.none,
         ),
+        errorStyle: TextStyle(fontSize: 14.sp),
+        errorMaxLines: 5,
         suffixIcon: IconButton(
           icon: Icon(
             isPassword || isConfirmPassword
@@ -276,6 +265,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide.none,
         ),
+        errorStyle: TextStyle(fontSize: 14.sp),
+        errorMaxLines: 5,
         suffixIcon: IconButton(
           icon: Icon(
             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
