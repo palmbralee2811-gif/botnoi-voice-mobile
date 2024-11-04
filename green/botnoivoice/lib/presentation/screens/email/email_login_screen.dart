@@ -30,6 +30,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  /// ตรวจสอบชื่อผู้ใช้งานว่าถูกต้องหรือไม่
+  bool isValidUsername(String username) {
+    if (username.length < 3) return false;
+    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
+    return usernameRegex.hasMatch(username);
+  }
+
   /// Login with Username and Password
   void _loginUser() async {
     final emailLoginProvider =
@@ -178,6 +185,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide.none,
                           ),
+                          errorStyle: TextStyle(fontSize: 14.sp),
+                          errorMaxLines: 5,
                           suffixIcon: IconButton(
                             icon: Icon(
                               null,
@@ -189,6 +198,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'โปรดใส่ชื่อผู้ใช้ของคุณ';
+                          }
+                          if (!isValidUsername(value)) {
+                            return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
                           }
                           return null;
                         },
@@ -208,6 +220,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide.none,
                           ),
+                          errorStyle: TextStyle(fontSize: 14.sp),
+                          errorMaxLines: 5,
                           suffixIcon: IconButton(
                             icon: Icon(
                               _isPasswordVisible

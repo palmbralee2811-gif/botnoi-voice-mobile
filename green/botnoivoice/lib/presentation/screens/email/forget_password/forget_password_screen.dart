@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:string_validator/string_validator.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -18,6 +19,10 @@ class ForgetPasswordScreen extends StatefulWidget {
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+
+  bool isValidEmail(String email) {
+    return isEmail(email);
+  }
 
   void sendPasswordResetEmail() async {
     final emailForgetPassword =
@@ -126,10 +131,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide.none,
                     ),
+                    errorStyle: TextStyle(fontSize: 14.sp),
+                    errorMaxLines: 5,
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) =>
-                      value!.isEmpty ? 'โปรดใส่อีเมลของคุณ' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'โปรดใส่อีเมลของคุณ';
+                    }
+                    if (!isValidEmail(value)) {
+                      return 'รูปแบบอีเมลไม่ถูกต้อง';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 16.h),
                 GradientTextButton(
