@@ -3,6 +3,7 @@ import 'package:botnoivoice/presentation/providers/email/email_username_api_prov
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
+import 'package:botnoivoice/presentation/screens/payment/payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -166,6 +167,30 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AccountScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.only(left: 30.w),
+            leading: Icon(
+              Icons.credit_card,
+              size: 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'ราคาและโปรโมชั่น',
+              style: GoogleFonts.prompt(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PaymentScreen(),
                 ),
               );
             },
