@@ -1,7 +1,6 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
@@ -30,31 +29,13 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
     return usernameRegex.hasMatch(username);
   }
 
-  void sendUsernameResetAPI() async {
+  void submitUsernameChangeRequest() async {
     final changeUsername =
         Provider.of<EmailChangeUsernameProvider>(context, listen: false);
 
-    // ตรวจสอบว่าชื่อผู้ใช้งานสองช่องตรงกันหรือไม่
-    if (_usernameController.text != _confirmUsernameController.text) {
-      NotificationPopup(
-        context: context,
-        text: "ชื่อผู้ใช้งานทั้งสองช่องต้องตรงกัน",
-      ).showAsError();
-      return;
-    }
-
-    // ตรวจสอบความถูกต้องของชื่อผู้ใช้งาน
-    if (!isValidUsername(_usernameController.text.trim())) {
-      NotificationPopup(
-        context: context,
-        text:
-            "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
-      ).showAsError();
-      return;
-    }
-
-    // ถ้า validate ผ่านหมดแล้ว
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
       await changeUsername.postChangeUsername(
           context, _usernameController.text);
       final errorMessage = changeUsername.errorMessage;
@@ -74,7 +55,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => AuthChecker(), // Go back to Login Screen
+                builder: (context) => AuthChecker(),
               ),
               (Route<dynamic> route) => false,
             );
@@ -106,6 +87,8 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
         ),
       ),
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
@@ -113,87 +96,116 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.all(24.w),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: 40.h),
-                GradientTextAlign(
-                  'เปลี่ยนชื่อผู้ใช้',
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF9340FF),
-                      Color(0xFF34BDFA),
-                    ],
-                  ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20.sp,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: 8.h),
-                GradientTextAlign(
-                  'ตั้งชื่อผู้ใช้งานใหม่สำหรับใช้ในการเข้าสู่ระบบ',
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF9340FF),
-                      Color(0xFF34BDFA),
-                    ],
-                  ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    decoration: TextDecoration.none,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: 32.h),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'ชื่อผู้ใช้งานใหม่',
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(24.w),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 40.h),
+                  GradientTextAlign(
+                    'เปลี่ยนชื่อผู้ใช้',
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF9340FF),
+                        Color(0xFF34BDFA),
+                      ],
                     ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  validator: (value) =>
-                      value!.isEmpty ? 'โปรดใส่ชื่อผู้ใช้งานของคุณ' : null,
-                ),
-                SizedBox(height: 16.h),
-                TextFormField(
-                  controller: _confirmUsernameController,
-                  decoration: InputDecoration(
-                    labelText: 'ยืนยันชื่อผู้ใช้งานใหม่',
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20.sp,
+                      decoration: TextDecoration.none,
                     ),
+                    textAlign: TextAlign.left,
                   ),
-                  keyboardType: TextInputType.text,
-                  validator: (value) =>
-                      value!.isEmpty ? 'โปรดยืนยันชื่อผู้ใช้งานของคุณ' : null,
-                ),
-                SizedBox(height: 16.h),
-                GradientTextButton(
-                  text: 'ยืนยัน',
-                  onPressed: () {
-                    sendUsernameResetAPI();
-                  },
-                ),
-                SizedBox(height: 16.h),
-              ],
+                  SizedBox(height: 8.h),
+                  GradientTextAlign(
+                    'ตั้งชื่อผู้ใช้งานใหม่สำหรับใช้ในการเข้าสู่ระบบ',
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF9340FF),
+                        Color(0xFF34BDFA),
+                      ],
+                    ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14.sp,
+                      decoration: TextDecoration.none,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 32.h),
+                  TextFormField(
+                    controller: _usernameController,
+                    style:
+                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                    decoration: InputDecoration(
+                      labelText: 'ชื่อผู้ใช้งานใหม่',
+                      labelStyle: TextStyle(
+                          fontSize: 16.sp, fontWeight: FontWeight.w400),
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide.none,
+                      ),
+                      errorStyle: TextStyle(fontSize: 14.sp),
+                      errorMaxLines: 5,
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'โปรดใส่ชื่อผู้ใช้งานของคุณ';
+                      }
+                      if (!isValidUsername(value.trim())) {
+                        return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  TextFormField(
+                    controller: _confirmUsernameController,
+                    style:
+                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                    decoration: InputDecoration(
+                      labelText: 'ยืนยันชื่อผู้ใช้งานใหม่',
+                      labelStyle: TextStyle(
+                          fontSize: 16.sp, fontWeight: FontWeight.w400),
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide.none,
+                      ),
+                      errorStyle: TextStyle(fontSize: 14.sp),
+                      errorMaxLines: 5,
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'โปรดยืนยันชื่อผู้ใช้งานของคุณ';
+                      }
+                      if (!isValidUsername(value.trim())) {
+                        return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+                      }
+                      if (value != _usernameController.text) {
+                        return 'ชื่อผู้ใช้งานทั้งสองช่องต้องตรงกัน';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  GradientTextButton(
+                    text: 'ยืนยัน',
+                    onPressed: () {
+                      submitUsernameChangeRequest();
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                ],
+              ),
             ),
           ),
         ),

@@ -63,7 +63,7 @@ class EmailChangeUsernameProvider extends ChangeNotifier {
         }
       } else {
         // ถ้า email ไม่เป็น 'email not found' แสดงว่า username ซ้ำ
-        _errorMessage = 'Username already exists.';
+        _errorMessage = 'ชื่อผู้ใช้งานซ้ำกับบัญชีอื่น';
         _logger.e('Cannot change username. Username already exists.');
       }
     } catch (e) {
