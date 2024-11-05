@@ -33,8 +33,7 @@ void main() {
       expect(isValidEmail('user@@example.com'), isFalse);
     });
 
-    test('should return false for an email with invalid special characters',
-        () {
+    test('should return false for an email with invalid special characters', () {
       expect(isValidEmail('user!@example.com'), isFalse);
     });
 
@@ -47,4 +46,3 @@ void main() {
     });
   });
 }
-

@@ -1,7 +1,9 @@
-import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
+import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -13,6 +15,8 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
+    final paymentProvider = Provider.of<PaymentProvider>(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -30,6 +34,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // ตรวจสอบการแสดงข้อผิดพลาด
+                if (paymentProvider.errorMessage != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.h),
+                    child: Text(
+                      paymentProvider.errorMessage!,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
                 // Balance section
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -103,9 +119,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ),
                   child: Column(
                     children: [
-                      _buildPromotionItem('30,500 พ้อยท์', '750', '400'),
-                      _buildPromotionItem('80,000 พ้อยท์', '2,000', '1,000'),
-                      _buildPromotionItem('200,000 พ้อยท์', '5,000', '2,300'),
+                      _buildPromotionItem(
+                        '30,500 พ้อยท์',
+                        '750',
+                        '400',
+                        paymentProvider,
+                      ),
+                      _buildPromotionItem(
+                        '80,000 พ้อยท์',
+                        '2,000',
+                        '1,000',
+                        paymentProvider,
+                      ),
+                      _buildPromotionItem(
+                        '200,000 พ้อยท์',
+                        '5,000',
+                        '2,300',
+                        paymentProvider,
+                      ),
                     ],
                   ),
                 ),
@@ -129,9 +160,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   ),
                   child: Column(
                     children: [
-                      _buildPromotionItem('4,100 พ้อยท์', '', '99'),
-                      _buildPromotionItem('12,500 พ้อยท์', '299', '199'),
-                      _buildPromotionItem('23,500 พ้อยท์', '499', '349'),
+                      _buildPromotionItem(
+                        '4,100 พ้อยท์',
+                        '',
+                        '99',
+                        paymentProvider,
+                      ),
+                      _buildPromotionItem(
+                        '12,500 พ้อยท์',
+                        '299',
+                        '199',
+                        paymentProvider,
+                      ),
+                      _buildPromotionItem(
+                        '23,500 พ้อยท์',
+                        '499',
+                        '349',
+                        paymentProvider,
+                      ),
                     ],
                   ),
                 ),
@@ -144,7 +190,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildPromotionItem(
-      String title, String originalPrice, String currentPrice) {
+    String title,
+    String originalPrice,
+    String currentPrice,
+    PaymentProvider paymentProvider,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
       child: Row(
@@ -207,10 +257,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   SizedBox(width: 5.w),
                   ElevatedButton(
-                    onPressed: () {
-                      //TODO: Call Payment API
-                      print("Pay $currentPrice");
-                    },
+                    onPressed: () => _handlePurchase(title, paymentProvider),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding:
@@ -253,5 +300,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ],
       ),
     );
+  }
+
+  void _handlePurchase(String title, PaymentProvider paymentProvider) {
+    if (paymentProvider.products.isNotEmpty) {
+      final product = paymentProvider.products.firstWhere(
+        (p) => p.title.contains(title),
+        orElse: () => paymentProvider.products.first,
+      );
+      paymentProvider.purchaseProduct(product);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('ไม่พบสินค้า')),
+      );
+    }
   }
 }

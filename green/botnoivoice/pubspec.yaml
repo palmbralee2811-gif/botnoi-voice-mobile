@@ -53,6 +53,7 @@ dependencies:
   device_info_plus: ^10.1.2
 
   # In-App Purchase (IAP) for iOS
+  in_app_purchase: ^3.2.0
   in_app_purchase_storekit: ^0.3.18+3
   
 dev_dependencies:
