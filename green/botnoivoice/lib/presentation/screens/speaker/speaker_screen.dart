@@ -368,60 +368,72 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     'FIL',
                     context,
                     setState),
-                // _buildLanguageFilter(
-                //     'Arabic - อาหรับ',
-                //     'assets/images/national_flag/arabic.png',
-                //     'ar',
-                //     context,
-                //     setState),
+                _buildLanguageFilter(
+                    'Arabic - อาหรับ',
+                    'assets/images/national_flag/arabic.png',
+                    'AR',
+                    context,
+                    setState),
                 _buildLanguageFilter(
                     'German - เยอรมัน',
                     'assets/images/national_flag/german.png',
-                    'de',
+                    'DE',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Spanish - สเปน',
                     'assets/images/national_flag/spanish.png',
-                    'es',
+                    'ES',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'French - ฝรั่งเศส',
                     'assets/images/national_flag/french.png',
-                    'fr',
+                    'FR',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Dutch - ดัตช์',
                     'assets/images/national_flag/dutch.png',
-                    'nl',
+                    'NL',
                     context,
                     setState),
                 _buildLanguageFilter(
                     'Korea - เกาหลี',
                     'assets/images/national_flag/korea.png',
-                    'ko',
+                    'KO',
                     context,
                     setState),
-                // _buildLanguageFilter(
-                //     'Malaysia - มาเลเซีย',
-                //     'assets/images/national_flag/malaysia.png',
-                //     'ms',
-                //     context,
-                //     setState),
-                // _buildLanguageFilter(
-                //     'Portuguese - โปรตุเกส',
-                //     'assets/images/national_flag/portuguese.png',
-                //     'pt-br',
-                //     context,
-                //     setState),
-                // _buildLanguageFilter(
-                //     'Russia - รัสเซีย',
-                //     'assets/images/national_flag/russia.png',
-                //     'ru',
-                //     context,
-                //     setState),
+                _buildLanguageFilter(
+                    'Malaysia - มาเลเซีย',
+                    'assets/images/national_flag/malaysia.png',
+                    'MS',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Portuguese - โปรตุเกส',
+                    'assets/images/national_flag/portuguese.png',
+                    'PT-BR',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Russia - รัสเซีย',
+                    'assets/images/national_flag/russia.png',
+                    'RU',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Hindi - ฮินดู',
+                    'assets/images/national_flag/hindi.png',
+                    'HI',
+                    context,
+                    setState),
+                _buildLanguageFilter(
+                    'Italy - อิตาลี',
+                    'assets/images/national_flag/italy.png',
+                    'IT',
+                    context,
+                    setState),
               ],
             ),
           ),
@@ -541,7 +553,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   Widget _buildLanguageFilter(String text, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
-
     return InkWell(
       onTap: () {
         setState(() {
@@ -706,8 +717,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     return filteredSpeakers;
   }
 
-  Widget buildSingleSpeaker(
-      SpeakerEntity speakerItem, int index) {
+  Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -778,6 +788,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                       image: AssetImage(
                         speakerItem.squareImage,
                       ),
+                      onError: (exception, stackTrace) => const AssetImage(
+                          'assets/images/default-profile-picture.jpg'),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [

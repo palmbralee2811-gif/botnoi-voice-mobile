@@ -1,4 +1,3 @@
-/// Speaker Entity class for Speaker Model in Database
 class SpeakerEntity {
   final String speakerId;
   final String speakerName;
@@ -32,6 +31,8 @@ class SpeakerEntity {
   final int priceThb;
   final int priceUsd;
   final String userId;
+  final String languageCode;
+  final int price;
 
   const SpeakerEntity({
     required this.speakerId,
@@ -66,5 +67,7 @@ class SpeakerEntity {
     required this.priceThb,
     required this.priceUsd,
     required this.userId,
+    required this.languageCode,
+    required this.price,
   });
 }

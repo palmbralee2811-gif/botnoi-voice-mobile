@@ -311,7 +311,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       paymentProvider.purchaseProduct(product);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('ไม่พบสินค้า')),
+        const SnackBar(content: Text('ไม่พบสินค้า')),
       );
     }
   }
