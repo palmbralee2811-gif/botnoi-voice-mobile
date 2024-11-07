@@ -50,8 +50,8 @@ class EmailLoginProvider with ChangeNotifier {
       await emailUsernameProvider.getEmailByUsername(username);
       final email = emailUsernameProvider.result; // รับค่า email จาก result
 
-      if (email.isEmpty) {
-        _errorMessage = 'ไม่พบ email สำหรับ username นี้';
+      if (email == 'email not found') {
+        _errorMessage = 'ชื่อผู้ใช้งานไม่ถูกต้อง';
         _logger.e("No email found for username: $username");
         notifyListeners();
         return;
@@ -104,7 +104,7 @@ class EmailLoginProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
-          _errorMessage = "ชื่อผู้ใช้งานไม่ถูกต้อง";
+          _errorMessage = "อีเมลไม่ถูกต้อง";
           break;
         case 'wrong-password':
           _errorMessage = "รหัสผ่านไม่ถูกต้อง";
