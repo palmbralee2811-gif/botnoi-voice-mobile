@@ -31,13 +31,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
-  /// ตรวจสอบชื่อผู้ใช้งานว่าถูกต้องหรือไม่
-  bool isValidUsername(String username) {
-    if (username.length < 3) return false;
-    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
-    return usernameRegex.hasMatch(username);
-  }
-
   /// Login with Username and Password
   void _loginUser() async {
     final emailLoginProvider =
