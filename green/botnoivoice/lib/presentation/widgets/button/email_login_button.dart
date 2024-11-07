@@ -40,7 +40,7 @@ class EmailLoginButton extends StatelessWidget {
                   ),
                   SizedBox(width: 16.w),
                   Text(
-                    'เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน',
+                    'เข้าสู่ระบบด้วยชื่อผู้ใช้งานหรืออีเมล',
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: kDark,
