@@ -24,7 +24,8 @@ class EmailLoginScreen extends StatefulWidget {
 
 class _EmailLoginScreenState extends State<EmailLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailOrUsernameController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
@@ -48,14 +49,21 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       });
 
       try {
-        await emailLoginProvider.loginWithUsernamePassword(
-          _usernameController.text.trim(),
-          _passwordController.text.trim(),
-          context,
-        );
+        if (_emailOrUsernameController.text.contains('@')) {
+          await emailLoginProvider.loginWithEmailPassword(
+            _emailOrUsernameController.text.trim(),
+            _passwordController.text.trim(),
+          );
+        } else {
+          await emailLoginProvider.loginWithUsernamePassword(
+            _emailOrUsernameController.text.trim(),
+            _passwordController.text.trim(),
+            context,
+          );
+        }
 
+        // แสดงผลข้อผิดพลาด ถ้ามี
         final errorMessage = emailLoginProvider.errorMessage;
-
         if (errorMessage != null && errorMessage.isNotEmpty) {
           NotificationDialog(
             context: context,
@@ -172,11 +180,11 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       ),
                       SizedBox(height: 32.h),
                       TextFormField(
-                        controller: _usernameController,
+                        controller: _emailOrUsernameController,
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
-                          labelText: 'ชื่อผู้ใช้งาน',
+                          labelText: 'ชื่อผู้ใช้งานหรืออีเมล',
                           labelStyle: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
@@ -197,10 +205,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'โปรดใส่ชื่อผู้ใช้ของคุณ';
-                          }
-                          if (!isValidUsername(value)) {
-                            return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+                            return 'โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ';
                           }
                           return null;
                         },
