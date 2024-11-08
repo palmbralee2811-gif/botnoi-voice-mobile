@@ -75,7 +75,7 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         if (response.statusCode == 200) {
           _errorMessage = null;
           _logger.d(
-              "User Account deleted successfully with Database. \nUser ID: $userId. \nEmail: ${user.email}");
+              "User Account deleted successfully with Database \nUser ID: $userId \nEmail: ${user.email}");
         } else {
           _errorMessage =
               'ไม่สามารถลบบัญชีผู้ใช้ได้ รหัสสถานะ: ${response.statusCode}';
@@ -103,7 +103,7 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         await user!.delete();
         _errorMessage = null;
         _logger.i(
-            "User Account deleted successfully from Firebase. \nEmail: ${user.email}. \nUser ID: ${user.uid}");
+            "User Account deleted successfully from Firebase \nEmail: ${user.email} \nUser ID: ${user.uid}");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('ลบบัญชีสำเร็จ')),
         );

@@ -173,11 +173,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       _isLoading
                           ? const Center(
                               child:
-                                  CircularProgressIndicator()) // แสดงสถานะการโหลด
+                                  CircularProgressIndicator())
                           : GradientTextButton(
                               text: 'สมัครใช้งาน',
-                              //TODO: เปลี่ยนกลับ onPressed: _openEmailPermissionDialog,
-                              onPressed: _registerUser,
+                              onPressed: _openEmailPermissionDialog,
                             ),
                       SizedBox(height: 16.h),
                       _buildBackToLoginButton(),

@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,171 +18,236 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final paymentProvider = Provider.of<PaymentProvider>(context);
 
+    //TODO: ปรับปรุง UI ให้ตรงตามแบบใน Figma และรอบรับการแสดงบน 4.65 6.4 6.7 และ Tablet
+    //TODO: ทดสอบ SafeArea บน Android และ iOS
+    //TODO: ต้องทดสอบ ให้ดีกว่า การแสดงผลโดน กล้อง และ แถบหน้าม้าของ iPhone บังการแสดงผลไหม
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: Text('ราคาและโปรโมชั่น', style: TextStyle(fontSize: 20.sp)),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: 24.sp),
+            icon: Icon(Icons.arrow_back_ios, size: 24.sp),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ตรวจสอบการแสดงข้อผิดพลาด
-                if (paymentProvider.errorMessage != null)
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                    child: Text(
-                      paymentProvider.errorMessage!,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ),
-                // Balance section
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2.sp,
-                        blurRadius: 5.sp,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'พ้อยท์ของฉัน',
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ตรวจสอบการแสดงข้อผิดพลาด
+                  if (paymentProvider.errorMessage != null)
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Text(
+                        paymentProvider.errorMessage!,
                         style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          fontSize: 14.sp,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Icon(Icons.monetization_on,
-                              color: Colors.blue, size: 24.sp),
-                          SizedBox(width: 8.w),
-                          GradientText(
-                            text: '100,000,000',
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              color: Colors.black,
+                    ),
+                  // Balance section
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    decoration: BoxDecoration(
+                      color: kDark,
+                      borderRadius: BorderRadius.circular(16.r),
+                      border: Border.all(color: Colors.white, width: 4),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'พ้อยท์ของฉัน',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Flexible(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 4.h),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16.r),
                             ),
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 28.sp,
+                                  height: 28.sp,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(4.w),
+                                    child: SvgPicture.asset(
+                                      'assets/images/logo/credit-icon.svg',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 4.w),
+                                Flexible(
+                                  child: GradientText(
+                                    text: '100,000,000',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF9340FF),
+                                        Color(0xFF34BDFA)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  // Hot Promotion Section
+                  Container(
+                    padding: EdgeInsets.all(1.5.w),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            spreadRadius: 1,
+                            blurRadius: 8,
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                // Promotions section
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.h, horizontal: 12.w),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(12.r),
+                                topRight: Radius.circular(12.r),
+                              ),
+                            ),
+                            child: Text(
+                              'ด่วน! โปรโมชั่นจำกัด 1/1',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              _buildPromotionItem('30,500 พ้อยท์', '750', '400',
+                                  paymentProvider),
+                              _buildPromotionItem('80,000 พ้อยท์', '2,000',
+                                  '1,000', paymentProvider),
+                              _buildPromotionItem('200,000 พ้อยท์', '5,000',
+                                  '2,300', paymentProvider),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Text(
-                    'ด่วน! โปรโมชั่นจำกัด 1/1',
-                    style: TextStyle(
-                      fontSize: 14.sp,
+                  SizedBox(height: 20.h),
+                  // Starter Promotion Section
+                  Container(
+                    decoration: BoxDecoration(
                       color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                          child: GradientText(
+                            text: 'แพ็คเกจผู้เริ่มต้น',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.grey[300],
+                          thickness: 2.0,
+                        ),
+                        Column(
+                          children: [
+                            _buildPromotionItem(
+                                '4,100 พ้อยท์', '', '99', paymentProvider),
+                            _buildPromotionItem(
+                                '12,500 พ้อยท์', '299', '199', paymentProvider),
+                            _buildPromotionItem(
+                                '23,500 พ้อยท์', '499', '349', paymentProvider),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                SizedBox(height: 10.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildPromotionItem(
-                        '30,500 พ้อยท์',
-                        '750',
-                        '400',
-                        paymentProvider,
-                      ),
-                      _buildPromotionItem(
-                        '80,000 พ้อยท์',
-                        '2,000',
-                        '1,000',
-                        paymentProvider,
-                      ),
-                      _buildPromotionItem(
-                        '200,000 พ้อยท์',
-                        '5,000',
-                        '2,300',
-                        paymentProvider,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                GradientText(
-                  text: 'แพ็คเกจผู้เริ่มต้น',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.purple.shade50,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildPromotionItem(
-                        '4,100 พ้อยท์',
-                        '',
-                        '99',
-                        paymentProvider,
-                      ),
-                      _buildPromotionItem(
-                        '12,500 พ้อยท์',
-                        '299',
-                        '199',
-                        paymentProvider,
-                      ),
-                      _buildPromotionItem(
-                        '23,500 พ้อยท์',
-                        '499',
-                        '349',
-                        paymentProvider,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -302,6 +368,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
+  //TODO: ไม่มีสินค้าในระบบ
+  //TODO: ทดสอบระบบชำระเงินภายในแอพ
+  //TODO: ติดต่อ App Store Support ยื่นเรื่องขอเพิ่มระบบชำระเงินภายใน และติดต่อเรื่องเอกสาร กับพี่ Ning
   void _handlePurchase(String title, PaymentProvider paymentProvider) {
     if (paymentProvider.products.isNotEmpty) {
       final product = paymentProvider.products.firstWhere(

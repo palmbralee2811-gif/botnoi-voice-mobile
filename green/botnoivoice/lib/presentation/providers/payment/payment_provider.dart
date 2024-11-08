@@ -8,7 +8,7 @@ class PaymentProvider with ChangeNotifier {
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   bool _available = false;
   List<ProductDetails> _products = [];
-  List<PurchaseDetails> _purchases = [];
+  final List<PurchaseDetails> _purchases = [];
   String? _errorMessage;
   final Logger _logger = Logger();
 
@@ -40,9 +40,9 @@ class PaymentProvider with ChangeNotifier {
 
   Future<void> _loadProducts() async {
     try {
-      const Set<String> _productIds = {'com.botnoimobile.botnoivoice.4100credits'};
+      const Set<String> productIds = {'com.botnoimobile.botnoivoice.4100credits'};
       final ProductDetailsResponse response =
-          await _iap.queryProductDetails(_productIds);
+          await _iap.queryProductDetails(productIds);
       if (response.error != null) {
         throw Exception('Failed to load products: ${response.error}');
       }
