@@ -429,8 +429,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     context,
                     setState),
                 _buildLanguageFilter(
-                    'Italy - อิตาลี',
-                    'assets/images/national_flag/italy.png',
+                    'Italian - อิตาลี',
+                    'assets/images/national_flag/italian.png',
                     'IT',
                     context,
                     setState),
