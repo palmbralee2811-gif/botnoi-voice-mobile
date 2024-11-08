@@ -1,4 +1,7 @@
 import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +24,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
     //TODO: ปรับปรุง UI ให้ตรงตามแบบใน Figma และรอบรับการแสดงบน 4.65 6.4 6.7 และ Tablet
     //TODO: ทดสอบ SafeArea บน Android และ iOS
     //TODO: ต้องทดสอบ ให้ดีกว่า การแสดงผลโดน กล้อง และ แถบหน้าม้าของ iPhone บังการแสดงผลไหม
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -111,7 +113,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 SizedBox(width: 4.w),
                                 Flexible(
                                   child: GradientText(
-                                    text: '100,000,000',
+                                    text: " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
@@ -215,7 +217,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.h, horizontal: 12.w),
                           child: GradientText(
                             text: 'แพ็คเกจผู้เริ่มต้น',
                             style: TextStyle(
