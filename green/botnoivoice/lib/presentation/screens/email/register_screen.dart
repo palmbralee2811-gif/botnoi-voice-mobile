@@ -8,7 +8,7 @@ import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_scr
 import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/email_permission_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/email_permission/email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';

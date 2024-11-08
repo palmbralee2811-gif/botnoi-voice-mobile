@@ -110,7 +110,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 4.w),
                                 Flexible(
                                   child: GradientText(
                                     text: " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
