@@ -8,9 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Alert Modal for displaying messages
 class DisableEmailPermissionDialog extends StatelessWidget {
-  const DisableEmailPermissionDialog({super.key, required this.onPressed});
+  const DisableEmailPermissionDialog({
+    super.key,
+    required this.onConfirm,
+    required this.onCancel,
+  });
 
-  final VoidCallback onPressed;
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                   text: 'ต้องการ',
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onPressed();
+                    onConfirm();
                   },
                 ),
                 SizedBox(height: 12.h),
@@ -75,6 +80,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                   text: 'ไม่ต้องการ',
                   onPressed: () {
                     Navigator.of(context).pop();
+                    onCancel();
                   },
                 ),
               ],

@@ -1,4 +1,6 @@
 import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,6 +12,28 @@ class EmailPermissionScreen extends StatefulWidget {
 }
 
 class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
+  bool isEmailAccessEnabled = true; // Initial state for the switch
+
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return isEmailAccessEnabled
+            ? const EnableEmailPermissionDialog()
+            : DisableEmailPermissionDialog(
+                onConfirm: () {
+                  //TODO: Disable Forget Password with Email
+                },
+                onCancel: () {
+                  setState(() {
+                    isEmailAccessEnabled = true; // Reset toggle to true
+                  });
+                },
+              );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,14 +67,80 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20.h),
-            Text(
-              'การเข้าถึงข้อมูลอีเมล',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-                color: kDark,
-              ),
-              textAlign: TextAlign.left,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'การเข้าถึงข้อมูลอีเมล',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.sp,
+                    color: kDark,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      isEmailAccessEnabled ? 'เปิด' : 'ปิด',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
+                        color: kDark,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isEmailAccessEnabled = !isEmailAccessEnabled;
+                        });
+                        _showDialog(context);
+                      },
+                      child: Container(
+                        width: 60.w,
+                        height: 30.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.r),
+                          gradient: isEmailAccessEnabled
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF9340FF),
+                                    Color(0xFF34BDFA)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                )
+                              : LinearGradient(
+                                  colors: [
+                                    Colors.grey.shade400,
+                                    Colors.grey.shade600
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                        ),
+                        child: Align(
+                          alignment: isEmailAccessEnabled
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Padding(
+                            padding: EdgeInsets.all(2.w),
+                            child: Container(
+                              width: 24.w,
+                              height: 24.h,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             SizedBox(height: 8.h),
             Text(
