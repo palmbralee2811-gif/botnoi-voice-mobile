@@ -10,16 +10,9 @@ json_file_path = 'C:/Users/kku/Downloads/response02.json'
 with open(json_file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)
 
-# Create base download folder
-base_folder = 'download_image'
-os.makedirs(base_folder, exist_ok=True)
-
-# Ensure the subfolders for each type of image exist
-folders = ['image', 'face_image', 'horizontal_face_image', 'square_image']
-folder_counts = {folder: 0 for folder in folders}
-
-for folder in folders:
-    os.makedirs(os.path.join(base_folder, folder), exist_ok=True)
+# Create download folder for square_image
+folder = 'download_image/square_image'
+os.makedirs(folder, exist_ok=True)
 
 # Function to download image from URL
 def download_image(url, folder, item_number):
@@ -38,20 +31,16 @@ def download_image(url, folder, item_number):
         print(f"No.{item_number}: Failed to download {url}")
         return False
 
-# Iterate over each speaker and download images
+# Iterate over each speaker and download only square_image
 item_count = 1
+total_images = 0
 for speaker in data['data']:
-    for folder in folders:
-        if folder in speaker:
-            url = speaker[folder]
-            folder_path = os.path.join(base_folder, folder)
-            if download_image(url, folder_path, item_count):
-                folder_counts[folder] += 1
-            item_count += 1
+    if 'square_image' in speaker:
+        url = speaker['square_image']
+        if download_image(url, folder, item_count):
+            total_images += 1
+        item_count += 1
 
-# Print the total number of images per folder and overall
-total_images = sum(folder_counts.values())
+# Print the total number of downloaded images
 print("\nDownload Summary:")
-for folder, count in folder_counts.items():
-    print(f"Total images in {folder}: {count}")
-print(f"Total images downloaded across all folders: {total_images}")
+print(f"Total square images downloaded: {total_images}")

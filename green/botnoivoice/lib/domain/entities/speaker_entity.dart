@@ -17,7 +17,6 @@ class SpeakerEntity {
   final String language;
   final bool status;
   final String gender;
-  final bool isPrivate;
   final List<String> allowUid;
   final List<String> availableLanguage;
   final bool premier;
@@ -53,7 +52,6 @@ class SpeakerEntity {
     required this.language,
     required this.status,
     required this.gender,
-    required this.isPrivate,
     required this.allowUid,
     required this.availableLanguage,
     required this.premier,
