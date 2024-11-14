@@ -1,33 +1,30 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:string_validator/string_validator.dart';
 
-/// 81%
-bool isValidEmail(String email) {
-  return isEmail(email);
-}
-
+/// Unit Testing for Email Validator
 /// 90%
-// bool isValidEmail(String email) {
-//   return EmailValidator.validate(email);
-// }
+bool isValidEmail(String email) {
+  return EmailValidator.validate(email);
+}
 
 void main() {
   final logger = Logger();
   int totalTests = 0;
   int totalPassed = 0;
   int totalFailed = 0;
-  
+
   void logResult(String email, bool result, bool expectedResult) {
     try {
       totalTests++;
       if (result == expectedResult) {
         totalPassed++;
-        logger.i('PASSED: $email - Expected: ${expectedResult ? "Valid" : "Invalid"}, Result: ${result ? "Valid" : "Invalid"}');
+        logger.i(
+            'PASSED: $email - Expected: ${expectedResult ? "Valid" : "Invalid"}, Result: ${result ? "Valid" : "Invalid"}');
       } else {
         totalFailed++;
-        logger.e('ERROR: $email - Expected: ${expectedResult ? "Valid" : "Invalid"}, Result: ${result ? "Valid" : "Invalid"}');
+        logger.e(
+            'ERROR: $email - Expected: ${expectedResult ? "Valid" : "Invalid"}, Result: ${result ? "Valid" : "Invalid"}');
       }
     } catch (e) {
       totalFailed++;
