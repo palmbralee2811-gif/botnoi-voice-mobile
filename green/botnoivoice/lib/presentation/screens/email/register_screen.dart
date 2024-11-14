@@ -12,10 +12,10 @@ import 'package:botnoivoice/presentation/widgets/dialog/email_permission/email_p
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:string_validator/string_validator.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -37,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   /// ฟังก์ชันตรวจสอบรูปแบบอีเมล
   bool isValidEmail(String email) {
-    return isEmail(email);
+    return EmailValidator.validate(email);
   }
 
   /// ตรวจสอบชื่อผู้ใช้งานว่าถูกต้องหรือไม่
@@ -96,19 +96,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   /// Display Email Permission Dialog and Call Register Function
-  void _openEmailPermissionDialog() {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return EmailPermissionDialog(
-            onPressed: _registerUser,
-          );
-        },
-      );
-    }
-  }
+  // void _openEmailPermissionDialog() {
+  //   if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+  //     showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (BuildContext context) {
+  //         return EmailPermissionDialog(
+  //           onPressed: _registerUser,
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 
   /// แสดงหน้าจอ Google Login
   Future<void> _openGoogleLogin() async {
@@ -171,12 +171,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           isConfirmPassword: true),
                       SizedBox(height: 16.h),
                       _isLoading
-                          ? const Center(
-                              child:
-                                  CircularProgressIndicator())
+                          ? const Center(child: CircularProgressIndicator())
                           : GradientTextButton(
                               text: 'สมัครใช้งาน',
-                              onPressed: _openEmailPermissionDialog,
+                              onPressed: _registerUser,
+                              //TODO: v1.3 เปลี่ยนกลับ ไปใช้ _openEmailPermissionDialog
+                              // onPressed: _openEmailPermissionDialog,
                             ),
                       SizedBox(height: 16.h),
                       _buildBackToLoginButton(),

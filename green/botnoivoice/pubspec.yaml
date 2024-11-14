@@ -50,7 +50,7 @@ dependencies:
   device_info_plus: ^10.1.2
 
   # Check Email for Register & Forgot Password
-  string_validator: ^1.1.0
+  email_validator: ^3.0.0
 
   # In-App Purchase (IAP) for iOS
   in_app_purchase: ^3.2.0

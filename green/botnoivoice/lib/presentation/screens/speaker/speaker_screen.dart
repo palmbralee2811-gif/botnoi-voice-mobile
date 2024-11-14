@@ -517,40 +517,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
-  Widget buildSpeechStyleFilter(String text, bool isSelected) {
-    return IntrinsicWidth(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: 8.w, vertical: 4.h), // ปรับ padding ให้เล็กลง
-        decoration: BoxDecoration(
-          gradient: isSelected
-              ? const LinearGradient(
-                  colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
-                )
-              : null,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: GoogleFonts.prompt(
-              fontSize: 12.sp,
-              color: isSelected
-                  ? const Color(0xFFFFFFFF)
-                  : const Color(0xFF323130),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildLanguageFilter(String text, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
     return InkWell(
