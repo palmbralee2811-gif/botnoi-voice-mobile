@@ -1,14 +1,9 @@
-import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/color.dart';
-import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -18,131 +13,6 @@ class DeleteAccountScreen extends StatefulWidget {
 }
 
 class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
-  //TODO: เปลี่ยนจาก Show Dialog เป็น Confirm Password to Delete Account Screen
-  Future<String?> _showPasswordDialog() async {
-    String? password;
-    bool isPasswordVisible = false; // To track the visibility of the password
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('กรุณาใส่รหัสผ่านของคุณ'),
-              content: TextField(
-                obscureText: !isPasswordVisible, // Toggles password visibility
-                onChanged: (value) {
-                  password = value;
-                },
-                decoration: InputDecoration(
-                  hintText: 'รหัสผ่าน',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isPasswordVisible = !isPasswordVisible;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  child: const Text('ยกเลิก'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    password = null;
-                  },
-                ),
-                TextButton(
-                  child: const Text('ยืนยัน'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-    return password;
-  }
-
-  Future<void> _deleteAccount() async {
-    final emailDeleteAccountProvider =
-        Provider.of<EmailDeleteAccountProvider>(context, listen: false);
-    final emailProvider =
-        Provider.of<EmailLoginProvider>(context, listen: false);
-
-    if (!emailProvider.isLoggedIn ||
-        emailProvider.user == null ||
-        emailProvider.user?.providerData[0].providerId != 'password') {
-      NotificationDialog(
-        context: context,
-        text: 'ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยอีเมล',
-      ).showErrorModal(context);
-      return;
-    }
-
-    // Prompt for password
-    String? password = await _showPasswordDialog();
-
-    if (password == null || password.isEmpty) {
-      // User canceled or didn't enter a password
-      return;
-    }
-
-    // ตรวจสอบรหัสผ่านก่อน
-    bool isPasswordValid =
-        await emailDeleteAccountProvider.verifyPassword(password);
-
-    if (!isPasswordValid) {
-      // แสดง NotificationDialog ถ้ารหัสผ่านผิด
-      NotificationDialog(
-        context: context,
-        text: emailDeleteAccountProvider.errorMessage ?? 'รหัสผ่านไม่ถูกต้อง',
-      ).showErrorModal(context);
-      return;
-    }
-
-    // หากรหัสผ่านถูกต้อง ลบข้อมูลในฐานข้อมูล
-    try {
-      await emailDeleteAccountProvider.deleteUserAccountWithDatabase();
-      final errorMessage = emailDeleteAccountProvider.errorMessage;
-
-      if (errorMessage != null && errorMessage.isNotEmpty) {
-        NotificationDialog(
-          context: context,
-          text: errorMessage,
-        ).showErrorModal(context);
-        return;
-      }
-
-      // ลบข้อมูลใน Firebase หลังจากลบในฐานข้อมูลสำเร็จ
-      await emailDeleteAccountProvider.deleteUserAccountWithFirebase(context);
-      await Provider.of<EmailLoginProvider>(context, listen: false)
-          .signOutWithEmail(context);
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AuthChecker(),
-        ),
-        (Route<dynamic> route) => false,
-      );
-    } catch (error) {
-      NotificationPopup(
-        context: context,
-        text: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง. $error',
-      ).showAsError();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,14 +117,19 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             SizedBox(height: 16.h),
             GradientTextButton(
               text: 'ยกเลิก',
-              onPressed: () async {
+              onPressed: () {
                 Navigator.pop(context);
               },
             ),
             SizedBox(height: 16.h),
             ElevatedButton(
               onPressed: () {
-                _deleteAccount();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ConfirmDeleteAccountScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
