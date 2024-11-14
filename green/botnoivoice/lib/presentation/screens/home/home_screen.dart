@@ -37,6 +37,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final Logger logger = Logger();
+  bool isGenerateAudio = false;
 
   // Generate Audio
   String response = '';
@@ -94,6 +95,36 @@ class _HomeScreenState extends State<HomeScreen> {
       await Provider.of<EmailTokenProvider>(context, listen: false)
           .loadRemainingCredits();
     }
+  }
+
+  Future<void> _generateAudio() async {
+    setState(() {
+      isGenerateAudio = true;
+    });
+
+    await audioPlayer.stop();
+    if (_textController.text.isEmpty) {
+      NotificationPopup(context: context, text: "กรุณาพิมพ์ข้อความ")
+          .showAsError();
+      setState(() {
+        isGenerateAudio = false;
+      });
+      return;
+    }
+
+    if (_textController.text.isNotEmpty) {
+      final audioUrl = await generateAudio(_textController.text);
+      await _loadRemainingCredits();
+      if (audioUrl.isNotEmpty) {
+        await openAudioPlayerDialog(
+            url: audioUrl,
+            fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
+      }
+    }
+
+    setState(() {
+      isGenerateAudio = false;
+    });
   }
 
   @override
@@ -269,44 +300,34 @@ class _HomeScreenState extends State<HomeScreen> {
       padding:
           EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
       child: GradientRow(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('สร้างเสียง',
-                  style: GoogleFonts.prompt(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600)),
-              SizedBox(width: 10.w),
-              SvgPicture.asset(
-                'assets/images/logo/credit-icon.svg',
-                height: 20.h,
-                width: 20.w,
+        onPressed: isGenerateAudio ? () {} : () async => await _generateAudio(),
+        child: isGenerateAudio
+            ? const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('สร้างเสียง',
+                      style: GoogleFonts.prompt(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600)),
+                  SizedBox(width: 10.w),
+                  SvgPicture.asset(
+                    'assets/images/logo/credit-icon.svg',
+                    height: 20.h,
+                    width: 20.w,
+                  ),
+                  SizedBox(width: 5.w),
+                  Text('${_textController.text.length}',
+                      style: GoogleFonts.prompt(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600)),
+                ],
               ),
-              SizedBox(width: 5.w),
-              Text('${_textController.text.length}',
-                  style: GoogleFonts.prompt(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600)),
-            ],
-          ),
-          onPressed: () async {
-            await audioPlayer.stop();
-            if (_textController.text.isEmpty) {
-              NotificationPopup(context: context, text: "กรุณาพิมพ์ข้อความ")
-                  .showAsError();
-            }
-            if (_textController.text.isNotEmpty) {
-              final audioUrl = await generateAudio(_textController.text);
-              await _loadRemainingCredits();
-              if (audioUrl.isNotEmpty) {
-                await openAudioPlayerDialog(
-                    url: audioUrl,
-                    fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
-              }
-            }
-          }),
+      ),
     );
   }
 
