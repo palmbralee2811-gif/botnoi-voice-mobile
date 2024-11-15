@@ -32,8 +32,11 @@ dependencies:
   # Audio Player
   http: ^1.2.1
   url_launcher: ^6.0.0
-  audioplayers: ^6.0.0
+  audioplayers: ^6.1.0
   just_audio: ^0.9.39
+  
+  # Language Switcher
+  easy_localization: ^3.0.0
 
   # Download File, Android Permission, and Open File
   dio: ^5.6.0
@@ -86,3 +89,4 @@ flutter:
     - assets/images/national_flag/
     - assets/images/splash_screen/
     - assets/square_image/
+    - assets/langs/       #assets สำหรับเปลี่ยนภาษาแอป
