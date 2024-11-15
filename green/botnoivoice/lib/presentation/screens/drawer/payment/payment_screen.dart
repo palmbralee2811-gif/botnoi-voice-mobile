@@ -52,11 +52,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ตรวจสอบการแสดงข้อผิดพลาด
-                  if (paymentProvider.errorMessage != null)
+                  // if (paymentProvider.errorMessage != null)
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h),
                       child: Text(
-                        paymentProvider.errorMessage!,
+                        '',
+                        // paymentProvider.errorMessage!,
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 14.sp,
@@ -374,16 +375,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
   //TODO: ทดสอบระบบชำระเงินภายในแอพ
   //TODO: ติดต่อ App Store Support ยื่นเรื่องขอเพิ่มระบบชำระเงินภายใน และติดต่อเรื่องเอกสาร กับพี่ Ning
   void _handlePurchase(String title, PaymentProvider paymentProvider) {
-    if (paymentProvider.products.isNotEmpty) {
-      final product = paymentProvider.products.firstWhere(
-        (p) => p.title.contains(title),
-        orElse: () => paymentProvider.products.first,
-      );
-      paymentProvider.purchaseProduct(product);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('ไม่พบสินค้า')),
-      );
-    }
+    // if () {
+    // } else {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('ไม่พบสินค้า')),
+    //   );
+    // }
   }
 }

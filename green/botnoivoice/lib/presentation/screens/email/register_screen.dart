@@ -96,19 +96,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   /// Display Email Permission Dialog and Call Register Function
-  // void _openEmailPermissionDialog() {
-  //   if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-  //     showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (BuildContext context) {
-  //         return EmailPermissionDialog(
-  //           onPressed: _registerUser,
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  void _openEmailPermissionDialog() {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return EmailPermissionDialog(
+            onPressed: _registerUser,
+          );
+        },
+      );
+    }
+  }
 
   /// แสดงหน้าจอ Google Login
   Future<void> _openGoogleLogin() async {
@@ -174,9 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ? const Center(child: CircularProgressIndicator())
                           : GradientTextButton(
                               text: 'สมัครใช้งาน',
-                              onPressed: _registerUser,
-                              //TODO: v1.3 เปลี่ยนกลับ ไปใช้ _openEmailPermissionDialog
-                              // onPressed: _openEmailPermissionDialog,
+                              onPressed: _openEmailPermissionDialog,
                             ),
                       SizedBox(height: 16.h),
                       _buildBackToLoginButton(),

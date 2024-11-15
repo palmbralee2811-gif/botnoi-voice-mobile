@@ -1,7 +1,7 @@
 name: botnoivoice
 description: "Botnoi Voice Mobile"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+13 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
+version: 1.0.0+14 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -52,9 +52,8 @@ dependencies:
   # Check Email for Register & Forgot Password
   email_validator: ^3.0.0
 
-  # In-App Purchase (IAP) for iOS
-  in_app_purchase: ^3.2.0
-  in_app_purchase_storekit: ^0.3.18+3
+  # RevenueCat: In-App Purchase (IAP) Platform supports iOS, Android, Flutter, React Native, Unity and etc.
+  purchases_flutter: ^8.2.1
   
 dev_dependencies:
   flutter_test:

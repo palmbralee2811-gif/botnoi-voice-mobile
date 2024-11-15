@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// StatelessWidget = HTML + CSS
+/// StatefulWidget = HTML + CSS + JS
+/// Animation = CSS + JS
 class GoogleLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   const GoogleLoginButton({super.key, required this.onPressed});
