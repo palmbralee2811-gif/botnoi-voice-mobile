@@ -2,7 +2,8 @@ import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/mock_payment_provider.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,8 +20,9 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = Provider.of<PaymentProvider>(context);
+    final mockProvider = Provider.of<MockPaymentProvider>(context);
 
+    /* DO NOT DELETE THIS COMMENT LIKE THIS //TODO: OKAY? */
     //TODO: ปรับปรุง UI ให้ตรงตามแบบใน Figma และรอบรับการแสดงบน 4.65 6.4 6.7 และ Tablet
     //TODO: ทดสอบ SafeArea บน Android และ iOS
     //TODO: ต้องทดสอบ ให้ดีกว่า การแสดงผลโดน กล้อง และ แถบหน้าม้าของ iPhone บังการแสดงผลไหม
@@ -51,20 +53,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ตรวจสอบการแสดงข้อผิดพลาด
-                  // if (paymentProvider.errorMessage != null)
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: Text(
-                        '',
-                        // paymentProvider.errorMessage!,
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                    ),
-                  // Balance section
+                  // Section: My Points
                   Container(
                     padding:
                         EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
@@ -113,7 +102,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 ),
                                 Flexible(
                                   child: GradientText(
-                                    text: " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
+                                    text:
+                                        " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
@@ -126,6 +116,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(width: 5.w),
                               ],
                             ),
                           ),
@@ -134,7 +125,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   ),
                   SizedBox(height: 20.h),
-                  // Hot Promotion Section
+                  // Section: Hot Promotion
                   Container(
                     padding: EdgeInsets.all(1.5.w),
                     decoration: BoxDecoration(
@@ -186,21 +177,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             ),
                           ),
                           Column(
-                            children: [
-                              _buildPromotionItem('30,500 พ้อยท์', '750', '400',
-                                  paymentProvider),
-                              _buildPromotionItem('80,000 พ้อยท์', '2,000',
-                                  '1,000', paymentProvider),
-                              _buildPromotionItem('200,000 พ้อยท์', '5,000',
-                                  '2,300', paymentProvider),
-                            ],
+                            children: mockProvider.mockProducts
+                                .map((product) => _buildPromotionItem(
+                                      product['title']!,
+                                      product['originalPrice'] ?? '',
+                                      product['currentPrice']!,
+                                      mockProvider,
+                                    ))
+                                .toList(),
                           ),
                         ],
                       ),
                     ),
                   ),
                   SizedBox(height: 20.h),
-                  // Starter Promotion Section
+                  // Section: Starter Promotion (Unchanged UI)
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -237,14 +228,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           thickness: 2.0,
                         ),
                         Column(
-                          children: [
-                            _buildPromotionItem(
-                                '4,100 พ้อยท์', '', '99', paymentProvider),
-                            _buildPromotionItem(
-                                '12,500 พ้อยท์', '299', '199', paymentProvider),
-                            _buildPromotionItem(
-                                '23,500 พ้อยท์', '499', '349', paymentProvider),
-                          ],
+                          children: mockProvider.mockStarterProducts
+                              .map((product) => _buildPromotionItem(
+                                    product['title']!,
+                                    product['originalPrice'] ?? '',
+                                    product['currentPrice']!,
+                                    mockProvider,
+                                  ))
+                              .toList(),
                         ),
                       ],
                     ),
@@ -262,7 +253,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     String title,
     String originalPrice,
     String currentPrice,
-    PaymentProvider paymentProvider,
+    MockPaymentProvider mockProvider,
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
@@ -326,7 +317,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   SizedBox(width: 5.w),
                   ElevatedButton(
-                    onPressed: () => _handlePurchase(title, paymentProvider),
+                    onPressed: () async {
+                      _handlePurchase(title);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding:
@@ -371,15 +364,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
+  /* DO NOT DELETE THIS COMMENT LIKE //TODO: */
   //TODO: ไม่มีสินค้าในระบบ
   //TODO: ทดสอบระบบชำระเงินภายในแอพ
   //TODO: ติดต่อ App Store Support ยื่นเรื่องขอเพิ่มระบบชำระเงินภายใน และติดต่อเรื่องเอกสาร กับพี่ Ning
-  void _handlePurchase(String title, PaymentProvider paymentProvider) {
-    // if () {
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('ไม่พบสินค้า')),
-    //   );
-    // }
+  Future<void> _handlePurchase(String title) async {
+    final mockProvider = Provider.of<MockPaymentProvider>(context);
+    try {
+      await mockProvider.simulatePurchase(title);
+      NotificationDialog(
+        context: context,
+        text: "ได้รับพ้อยท์จำนวน $title",
+        onPressed: () {},
+      ).showCheckmarkModal(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("ไม่สามารถทำรายการได้: $e")),
+      );
+    }
   }
 }
