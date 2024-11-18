@@ -750,7 +750,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      //TODO: เก็บรูปภาพที่โหลดจาก URL ไว้ใน Cache ของแอปพลิเคชัน
+                      //TODO: Update Speaker Data
                       image: AssetImage(
                         speakerItem.squareImage,
                       ),

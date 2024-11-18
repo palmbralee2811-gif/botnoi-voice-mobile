@@ -22,177 +22,116 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final mockProvider = Provider.of<MockPaymentProvider>(context);
 
-    /* DO NOT DELETE THIS COMMENT LIKE THIS //TODO: OKAY? */
-    //TODO: ปรับปรุง UI ให้ตรงตามแบบใน Figma และรอบรับการแสดงบน 4.65 6.4 6.7 และ Tablet
-    //TODO: ทดสอบ SafeArea บน Android และ iOS
-    //TODO: ต้องทดสอบ ให้ดีกว่า การแสดงผลโดน กล้อง และ แถบหน้าม้าของ iPhone บังการแสดงผลไหม
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('ราคาและโปรโมชั่น', style: TextStyle(fontSize: 20.sp)),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, size: 24.sp),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ราคาและโปรโมชั่น', style: TextStyle(fontSize: 20.sp)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, size: 24.sp),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Section: My Points
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                    decoration: BoxDecoration(
-                      color: kDark,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(color: Colors.white, width: 4),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'พ้อยท์ของฉัน',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section: My Points
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                  decoration: BoxDecoration(
+                    color: kDark,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: Colors.white, width: 4),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'พ้อยท์ของฉัน',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Flexible(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
                             color: Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
                           ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Flexible(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 4.h),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 28.sp,
-                                  height: 28.sp,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(4.w),
-                                    child: SvgPicture.asset(
-                                      'assets/images/logo/credit-icon.svg',
-                                      fit: BoxFit.contain,
-                                    ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 28.sp,
+                                height: 28.sp,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(4.w),
+                                  child: SvgPicture.asset(
+                                    'assets/images/logo/credit-icon.svg',
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
-                                Flexible(
-                                  child: GradientText(
-                                    text:
-                                        " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF9340FF),
-                                        Color(0xFF34BDFA)
-                                      ],
-                                    ),
+                              ),
+                              Flexible(
+                                child: GradientText(
+                                  text:
+                                      " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF9340FF),
+                                      Color(0xFF34BDFA)
+                                    ],
                                   ),
                                 ),
-                                SizedBox(width: 5.w),
-                              ],
-                            ),
+                              ),
+                              SizedBox(width: 5.w),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 20.h),
-                  // Section: Hot Promotion
-                  Container(
-                    padding: EdgeInsets.all(1.5.w),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(14.r),
+                ),
+                SizedBox(height: 20.h),
+                // Section: Hot Promotion
+                Container(
+                  padding: EdgeInsets.all(1.5.w),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 12.w),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12.r),
-                                topRight: Radius.circular(12.r),
-                              ),
-                            ),
-                            child: Text(
-                              'ด่วน! โปรโมชั่นจำกัด 1/1',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Column(
-                            children: mockProvider.mockProducts
-                                .map((product) => _buildPromotionItem(
-                                      product['title']!,
-                                      product['originalPrice'] ?? '',
-                                      product['currentPrice']!,
-                                      mockProvider,
-                                    ))
-                                .toList(),
-                          ),
-                        ],
-                      ),
-                    ),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
-                  SizedBox(height: 20.h),
-                  // Section: Starter Promotion (Unchanged UI)
-                  Container(
+                  child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12.r),
@@ -207,28 +146,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
+                        Container(
+                          width: double.infinity,
                           padding: EdgeInsets.symmetric(
                               vertical: 10.h, horizontal: 12.w),
-                          child: GradientText(
-                            text: 'แพ็คเกจผู้เริ่มต้น',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12.r),
+                              topRight: Radius.circular(12.r),
                             ),
                           ),
-                        ),
-                        Divider(
-                          color: Colors.grey[300],
-                          thickness: 2.0,
+                          child: Text(
+                            'ด่วน! โปรโมชั่นจำกัด 1/1',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
                         Column(
-                          children: mockProvider.mockStarterProducts
+                          children: mockProvider.mockProducts
                               .map((product) => _buildPromotionItem(
                                     product['title']!,
                                     product['originalPrice'] ?? '',
@@ -240,8 +184,58 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 20.h),
+                // Section: Starter Promotion (Unchanged UI)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        spreadRadius: 1,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.h, horizontal: 12.w),
+                        child: GradientText(
+                          text: 'แพ็คเกจผู้เริ่มต้น',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey[300],
+                        thickness: 2.0,
+                      ),
+                      Column(
+                        children: mockProvider.mockStarterProducts
+                            .map((product) => _buildPromotionItem(
+                                  product['title']!,
+                                  product['originalPrice'] ?? '',
+                                  product['currentPrice']!,
+                                  mockProvider,
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -318,7 +312,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   SizedBox(width: 5.w),
                   ElevatedButton(
                     onPressed: () async {
-                      _handlePurchase(title);
+                      try {
+                        await mockProvider.simulatePurchase(title);
+                        NotificationDialog(
+                          context: context,
+                          text: "ได้รับพ้อยท์จำนวน $title",
+                          onPressed: () {},
+                        ).showCheckmarkModal(context);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("ไม่สามารถทำรายการได้: $e")),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -362,25 +367,5 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ],
       ),
     );
-  }
-
-  /* DO NOT DELETE THIS COMMENT LIKE //TODO: */
-  //TODO: ไม่มีสินค้าในระบบ
-  //TODO: ทดสอบระบบชำระเงินภายในแอพ
-  //TODO: ติดต่อ App Store Support ยื่นเรื่องขอเพิ่มระบบชำระเงินภายใน และติดต่อเรื่องเอกสาร กับพี่ Ning
-  Future<void> _handlePurchase(String title) async {
-    final mockProvider = Provider.of<MockPaymentProvider>(context);
-    try {
-      await mockProvider.simulatePurchase(title);
-      NotificationDialog(
-        context: context,
-        text: "ได้รับพ้อยท์จำนวน $title",
-        onPressed: () {},
-      ).showCheckmarkModal(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("ไม่สามารถทำรายการได้: $e")),
-      );
-    }
   }
 }

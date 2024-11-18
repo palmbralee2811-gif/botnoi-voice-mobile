@@ -59,7 +59,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
-        //TODO: ลบออก ตอนที่ ทดสอบเสร็จแล้ว
+        //TODO: Delete this line
         ChangeNotifierProvider(create: (_) => MockPaymentProvider()),
       ],
       child: ScreenUtilInit(

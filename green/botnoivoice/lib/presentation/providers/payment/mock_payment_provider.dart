@@ -41,7 +41,7 @@ class MockPaymentProvider with ChangeNotifier {
 
   // การจำลองการซื้อสินค้า
   Future<void> simulatePurchase(String title) async {
-    await Future.delayed(Duration(seconds: 2)); // จำลองเวลาการประมวลผล
+    await Future.delayed(const Duration(seconds: 2)); // จำลองเวลาการประมวลผล
     // เพิ่มโลจิกอื่นถ้าจำเป็น
   }
 }
