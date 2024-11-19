@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
 Color get kDark => const Color(0xFF323130);
+Color get kDark262626 => const Color(0xFF262626);
 Color get kGray => const Color(0xFF4F4F4F);
 Color get kGreen => const Color(0xFF00B900);
