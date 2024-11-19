@@ -1,14 +1,16 @@
+import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/presentation/constants/color.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/mock_payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
+import 'package:botnoivoice/domain/entities/apple_product_entity.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -18,233 +20,236 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  late final List<AppleProduct> appleProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    appleProducts = AppleProductModel.getAppleProductData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final mockProvider = Provider.of<MockPaymentProvider>(context);
-
-    /* DO NOT DELETE THIS COMMENT LIKE THIS //TODO: OKAY? */
-    //TODO: ปรับปรุง UI ให้ตรงตามแบบใน Figma และรอบรับการแสดงบน 4.65 6.4 6.7 และ Tablet
-    //TODO: ทดสอบ SafeArea บน Android และ iOS
-    //TODO: ต้องทดสอบ ให้ดีกว่า การแสดงผลโดน กล้อง และ แถบหน้าม้าของ iPhone บังการแสดงผลไหม
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('ราคาและโปรโมชั่น', style: TextStyle(fontSize: 20.sp)),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, size: 24.sp),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ราคาและโปรโมชั่น',
+            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, size: 24.sp),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildPointsSection(context),
+                SizedBox(height: 20.h),
+                _buildHotPromotionSection(),
+                SizedBox(height: 20.h),
+                _buildStarterPromotionSection(),
+              ],
             ),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPointsSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: kDark262626,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Colors.white, width: 4),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'พ้อยท์ของฉัน',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Section: My Points
                   Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                    decoration: BoxDecoration(
-                      color: kDark,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(color: Colors.white, width: 4),
+                    width: 28.sp,
+                    height: 28.sp,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'พ้อยท์ของฉัน',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Flexible(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 4.h),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 28.sp,
-                                  height: 28.sp,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(4.w),
-                                    child: SvgPicture.asset(
-                                      'assets/images/logo/credit-icon.svg',
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                                Flexible(
-                                  child: GradientText(
-                                    text:
-                                        " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF9340FF),
-                                        Color(0xFF34BDFA)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 5.w),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: EdgeInsets.all(4.w),
+                      child: SvgPicture.asset(
+                        'assets/images/logo/credit-icon.svg',
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 20.h),
-                  // Section: Hot Promotion
-                  Container(
-                    padding: EdgeInsets.all(1.5.w),
-                    decoration: BoxDecoration(
+                  Flexible(
+                    child: GradientText(
+                      text:
+                          " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                       gradient: const LinearGradient(
                         colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 12.w),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12.r),
-                                topRight: Radius.circular(12.r),
-                              ),
-                            ),
-                            child: Text(
-                              'ด่วน! โปรโมชั่นจำกัด 1/1',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                          Column(
-                            children: mockProvider.mockProducts
-                                .map((product) => _buildPromotionItem(
-                                      product['title']!,
-                                      product['originalPrice'] ?? '',
-                                      product['currentPrice']!,
-                                      mockProvider,
-                                    ))
-                                .toList(),
-                          ),
-                        ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 20.h),
-                  // Section: Starter Promotion (Unchanged UI)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          spreadRadius: 1,
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10.h, horizontal: 12.w),
-                          child: GradientText(
-                            text: 'แพ็คเกจผู้เริ่มต้น',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.grey[300],
-                          thickness: 2.0,
-                        ),
-                        Column(
-                          children: mockProvider.mockStarterProducts
-                              .map((product) => _buildPromotionItem(
-                                    product['title']!,
-                                    product['originalPrice'] ?? '',
-                                    product['currentPrice']!,
-                                    mockProvider,
-                                  ))
-                              .toList(),
-                        ),
-                      ],
-                    ),
-                  ),
+                  SizedBox(width: 5.w),
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHotPromotionSection() {
+    return Container(
+      padding: EdgeInsets.all(1.5.w),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(14.r),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              spreadRadius: 1,
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.r),
+                  topRight: Radius.circular(12.r),
+                ),
+              ),
+              child: Text(
+                'ด่วน! โปรโมชั่นจำกัด 1/1',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Column(
+              children: appleProducts
+                  .where((product) => product.id >= 4 && product.id <= 6)
+                  .map((product) => _buildPromotionItem(
+                        product.title,
+                        product.originalPrice,
+                        product.price,
+                      ))
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStarterPromotionSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            spreadRadius: 1,
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+            child: GradientText(
+              text: 'แพ็คเกจผู้เริ่มต้น',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+              ),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+          Divider(
+            color: Colors.grey[300],
+            thickness: 2.0,
+          ),
+          Column(
+            children: appleProducts
+                .where((product) => product.id >= 1 && product.id <= 3)
+                .map((product) => _buildPromotionItem(
+                      product.title,
+                      product.originalPrice,
+                      product.price,
+                    ))
+                .toList(),
+          ),
+        ],
       ),
     );
   }
@@ -253,7 +258,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
     String title,
     String originalPrice,
     String currentPrice,
-    MockPaymentProvider mockProvider,
   ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
@@ -274,7 +278,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     SizedBox(width: 4.w),
                     Expanded(
                       child: Text(
-                        title,
+                        "$title พ้อยท์",
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -317,13 +321,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   SizedBox(width: 5.w),
                   ElevatedButton(
-                    onPressed: () async {
-                      _handlePurchase(title);
-                    },
+                    onPressed: () => _onPurchase(context, title),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 4.h,
+                        horizontal: 8.w,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -364,22 +368,36 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  /* DO NOT DELETE THIS COMMENT LIKE //TODO: */
-  //TODO: ไม่มีสินค้าในระบบ
-  //TODO: ทดสอบระบบชำระเงินภายในแอพ
-  //TODO: ติดต่อ App Store Support ยื่นเรื่องขอเพิ่มระบบชำระเงินภายใน และติดต่อเรื่องเอกสาร กับพี่ Ning
-  Future<void> _handlePurchase(String title) async {
-    final mockProvider = Provider.of<MockPaymentProvider>(context);
+  void _onPurchase(BuildContext context, String title) async {
+    final paymentProvider =
+        Provider.of<PaymentProvider>(context, listen: false);
+
     try {
-      await mockProvider.simulatePurchase(title);
-      NotificationDialog(
-        context: context,
-        text: "ได้รับพ้อยท์จำนวน $title",
-        onPressed: () {},
-      ).showCheckmarkModal(context);
+      final product = appleProducts.firstWhere(
+        (p) => p.title == title,
+        orElse: () => throw Exception('Product not found.'),
+      );
+
+      await paymentProvider.handlePurchase(product);
+
+      if (paymentProvider.errorMessage == null) {
+        NotificationDialog(
+          context: context,
+          text: "ได้รับพ้อยท์จำนวน $title",
+          onPressed: () {},
+        ).showCheckmarkModal(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(paymentProvider.errorMessage ?? "เกิดข้อผิดพลาด"),
+          ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("ไม่สามารถทำรายการได้: $e")),
+        SnackBar(
+          content: Text("ไม่พบสินค้า: $e"),
+        ),
       );
     }
   }

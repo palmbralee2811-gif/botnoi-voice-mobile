@@ -12,7 +12,6 @@ import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/mock_payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,9 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-final _configuration =
-    PurchasesConfiguration('appl_hHLMxSjhEDXVqqqazXdGQsozLmb');
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -33,7 +29,7 @@ void main() async {
     print("LineSDK Prepared");
   });
 
-  await Purchases.configure(_configuration);
+  await Purchases.configure(PurchasesConfiguration('appl_hHLMxSjhEDXVqqqazXdGQsozLmb'));
 
   runApp(const BotnoiVoiceApp());
 }
@@ -59,8 +55,6 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
-        //TODO: ลบออก ตอนที่ ทดสอบเสร็จแล้ว
-        ChangeNotifierProvider(create: (_) => MockPaymentProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
