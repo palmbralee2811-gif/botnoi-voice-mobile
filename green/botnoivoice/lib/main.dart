@@ -22,6 +22,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 
+// Import easy_localization
+import 'package:easy_localization/easy_localization.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -31,7 +34,15 @@ void main() async {
 
   await configureRevenueCat();
 
-  runApp(const BotnoiVoiceApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: [Locale('en', 'US'), Locale('th', 'TH')], // Supported locales
+      path: 'assets/langs', // Path to your localization files
+      fallbackLocale: Locale('th', 'TH'), // Fallback locale
+      startLocale: Locale('th', 'TH'), //ภาษาเริ่มต้น
+      child: const BotnoiVoiceApp(),
+    ),
+  );
 }
 
 class BotnoiVoiceApp extends StatelessWidget {
@@ -70,7 +81,12 @@ class BotnoiVoiceApp extends StatelessWidget {
                 Theme.of(context).textTheme,
               ),
             ),
+            // Home should be wrapped with the EasyLocalization
             home: AuthChecker(),
+            // Add localization delegate
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
           );
         },
       ),

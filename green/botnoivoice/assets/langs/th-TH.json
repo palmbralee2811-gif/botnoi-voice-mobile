@@ -1,0 +1,68 @@
+{
+    "language": "ภาษา",
+    "welcome_message": {
+        "line1": "แปลี่ยนข้อความเป็นเสียง",
+        "line2": "บอทน้อย",
+        "line3": "ว้อยส์"
+    },
+    "auth": {
+        "sign_in": "เข้าสู่ระบบ",
+        "sign_in_with_username_email": "เข้าสู่ระบบด้วยชื่อผู้ใช้งานหรืออีเมล",
+        "sign_in_with_line": "เข้าสู่ระบบด้วย LINE",
+        "sign_in_with_google": "เข้าสู่ระบบด้วย Google"
+    },
+    "sign_in": {
+        "error_occurred": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+        "welcome_message": "สวัสดี, Botnoi Voice ยินดีต้อนรับ",
+        "username_or_email": "ชื่อผู้ใช้งานหรืออีเมล",
+        "please_enter_username_or_email": "โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ",
+        "password": "รหัสผ่าน",
+        "please_enter_password": "โปรดใส่รหัสผ่านของคุณ",
+        "register": "สมัครใช้งาน",
+        "forgot_password": "ลืมรหัสผ่าน?",
+        "or": "หรือ"
+    },
+    "register": {
+        "sign_up": "สมัครใช้งาน",
+        "email": "อีเมล",
+        "username": "ชื่อผู้ใช้งาน",
+        "password": "รหัสผ่าน",
+        "confirm_password": "ยืนยันรหัสผ่าน",
+        "or": "หรือ",
+        "please_enter_label": "โปรดใส่ {label} ของคุณ",
+        "password_minimum_length": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+        "password_mismatch": "รหัสผ่านไม่ตรงกัน",
+        "back_to_sign_in": "กลับไปที่เข้าสู่ระบบ",
+        "email_invalid_format": "รูปแบบอีเมลไม่ถูกต้อง",
+        "username_invalid": "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+        "please_enter_password": "โปรดใส่รหัสผ่านของคุณ"
+    },
+    "confirm_forget_password": {
+        "check_your_email": "ตรวจสอบอีเมลของคุณ",
+        "copy_link_from_your_inbox": "คัดลอกลิงค์จากกล่องจดหมายของคุณ",
+        "link": "ลิงค์",
+        "please_enter_link_from_email": "โปรดใส่ลิงค์ที่ได้รับจากอีเมล",
+        "confirm": "ยืนยัน",
+        "link_invalid_try_again": "ลิงค์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง"
+    },
+    "forget_password": {
+        "forgot_password": "ลืมรหัสผ่าน",
+        "confirm_email": "ยืนยันอีเมลของคุณเพื่อตั้งรหัสผ่านใหม่",
+        "email": "อีเมล",
+        "please_enter_email": "โปรดใส่อีเมลของคุณ",
+        "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
+        "send": "ส่ง"
+    },
+    "new_password": {
+        "password_reset_success": "ตั้งรหัสผ่านใหม่สำเร็จ",
+        "error_occurred": "เกิดข้อผิดพลาด:",
+        "reset_password": "ตั้งรหัสผ่านใหม่",
+        "password_length": "รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป",
+        "password": "รหัสผ่าน",
+        "please_enter_password": "โปรดใส่รหัสผ่านของคุณ",
+        "password_min_length": "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร",
+        "confirm_password": "ยืนยันรหัสผ่าน",
+        "password_mismatch": "รหัสผ่านไม่ตรงกัน",
+        "confirm": "ยืนยัน"
+    }
+}

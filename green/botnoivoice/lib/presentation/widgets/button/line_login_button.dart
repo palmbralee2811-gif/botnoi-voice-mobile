@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,7 +36,7 @@ class LineLoginButton extends StatelessWidget {
                   ),
                   SizedBox(width: 16.w),
                   Text(
-                    'เข้าสู่ระบบด้วย LINE',
+                    'auth.sign_in_with_line'.tr(),
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: Colors.white,

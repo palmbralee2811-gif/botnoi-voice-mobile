@@ -5,10 +5,12 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/payment/payment_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerAppbar extends StatefulWidget {
   const DrawerAppbar({super.key});
@@ -21,6 +23,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   String displayName = "Loading...";
   String uid = "Loading...";
   String profilePictureUrl = "";
+  String _selectedLanguage = 'th'; // Default language (Thai)
 
   @override
   void initState() {
@@ -28,6 +31,29 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) async => await _loadUserInfo());
+  }
+
+  // Load saved language from SharedPreferences
+  _loadLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedLanguage = prefs.getString('selected_language');
+    if (savedLanguage != null) {
+      setState(() {
+        _selectedLanguage = savedLanguage; // Set the selected language
+      });
+      // Set the locale based on the saved language
+      if (_selectedLanguage == 'th') {
+        context.setLocale(const Locale('th', 'TH'));
+      } else if (_selectedLanguage == 'en') {
+        context.setLocale(const Locale('en', 'US'));
+      }
+    }
+  }
+
+  // Save selected language to SharedPreferences
+  _saveLanguage(String language) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_language', language);
   }
 
   Future<void> _loadUserInfo() async {
@@ -217,8 +243,112 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               );
             },
           ),
+          SizedBox(height: 10.h),
+          InkWell(
+            onTap: () {
+              // Show bottom sheet to select language
+              _showLanguageBottomSheet();
+            },
+            child: ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w),
+              leading: Icon(
+                Icons.language,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'language'
+                    .tr(), // You can replace this with any text you prefer
+                style: GoogleFonts.prompt(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+            ),
+          )
         ],
       ),
+    );
+  }
+
+  // Function to show a bottom sheet for language selection
+  void _showLanguageBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Close Button
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context); // Close the bottom sheet
+                  },
+                ),
+              ),
+              // Language Options
+              ListTile(
+                leading: Image.asset(
+                  'assets/images/national_flag/english.png',
+                  width: 24, // Flag size
+                  height: 24,
+                ),
+                title: Text(
+                  'English',
+                  style: GoogleFonts.prompt(
+                    fontSize: 18.sp,
+                    fontWeight: _selectedLanguage == 'en'
+                        ? FontWeight.w600
+                        : FontWeight
+                            .w400, // Apply bold weight for selected language
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedLanguage = 'en';
+                  });
+                  context.setLocale(const Locale('en', 'US'));
+                  _saveLanguage('en');
+                  Navigator.pop(
+                      context); // Close the bottom sheet after selection
+                },
+              ),
+              ListTile(
+                leading: Image.asset(
+                  'assets/images/national_flag/thai.png',
+                  width: 24, // Flag size
+                  height: 24,
+                ),
+                title: Text(
+                  'ไทย',
+                  style: GoogleFonts.prompt(
+                    fontSize: 18.sp,
+                    fontWeight: _selectedLanguage == 'th'
+                        ? FontWeight.w600
+                        : FontWeight
+                            .w400, // Apply bold weight for selected language
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedLanguage = 'th';
+                  });
+                  context.setLocale(const Locale('th', 'TH'));
+                  _saveLanguage('th');
+                  Navigator.pop(
+                      context); // Close the bottom sheet after selection
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

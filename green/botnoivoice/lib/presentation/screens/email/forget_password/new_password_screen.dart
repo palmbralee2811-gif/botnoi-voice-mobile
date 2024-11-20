@@ -2,6 +2,7 @@ import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       if (emailForgetPasswordProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: "ตั้งรหัสผ่านใหม่สำเร็จ",
+          text: "new_password.password_reset_success".tr(),
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -46,14 +47,14 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       } else {
         NotificationDialog(
           context: context,
-          text: "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage}",
+          text: "${'new_password.error_occurred'.tr()} ${emailForgetPasswordProvider.errorMessage}",
         ).showErrorModal(context);
       }
     } catch (e) {
       NotificationDialog(
         context: context,
         text:
-            "เกิดข้อผิดพลาด: ${emailForgetPasswordProvider.errorMessage ?? e.toString()}",
+            "${'new_password.error_occurred'.tr()} ${emailForgetPasswordProvider.errorMessage ?? e.toString()}",
       ).showErrorModal(context);
     }
   }
@@ -91,7 +92,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GradientTextAlign(
-                        'ตั้งรหัสผ่านใหม่',
+                        'new_password.reset_password'.tr(),
                         gradient: const LinearGradient(
                           colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                         ),
@@ -103,7 +104,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         textAlign: TextAlign.left,
                       ),
                       GradientTextAlign(
-                        'รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป',
+                        'new_password.password_length'.tr(),
                         gradient: const LinearGradient(
                           colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                         ),
@@ -120,7 +121,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
-                          labelText: 'รหัสผ่าน',
+                          labelText: 'new_password.password'.tr(),
                           labelStyle: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                           filled: true,
@@ -146,9 +147,9 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         obscureText: !_isPasswordVisible,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'โปรดใส่รหัสผ่านของคุณ';
+                            return 'new_password.please_enter_password'.tr();
                           } else if (value.length < 6) {
-                            return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+                            return 'new_password.password_min_length'.tr();
                           }
                           return null;
                         },
@@ -159,7 +160,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
-                          labelText: 'ยืนยันรหัสผ่าน',
+                          labelText: 'new_password.confirm_password'.tr(),
                           labelStyle: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                           filled: true,
@@ -185,14 +186,14 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         obscureText: !_isPasswordVisible,
                         validator: (value) {
                           if (value != _passwordController.text) {
-                            return 'รหัสผ่านไม่ตรงกัน';
+                            return 'new_password.password_mismatch'.tr();
                           }
                           return null;
                         },
                       ),
                       SizedBox(height: 16.h),
                       GradientTextButton(
-                        text: 'ยืนยัน',
+                        text: 'new_password.confirm'.tr(),
                         onPressed: () {
                           if (_formKey.currentState != null &&
                               _formKey.currentState!.validate()) {
