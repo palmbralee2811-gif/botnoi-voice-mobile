@@ -1,3 +1,4 @@
+import 'package:botnoivoice/domain/usecases/get_user_id.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -20,7 +21,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,7 @@ void main() async {
     print("LineSDK Prepared");
   });
 
-  await Purchases.configure(PurchasesConfiguration('appl_hHLMxSjhEDXVqqqazXdGQsozLmb'));
+  await configureRevenueCat();
 
   runApp(const BotnoiVoiceApp());
 }
