@@ -5,6 +5,7 @@ import 'package:botnoivoice/presentation/widgets/button/email_login_button.dart'
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
+import 'package:botnoivoice/presentation/widgets/language/language_change_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -64,36 +65,51 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildForm(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 127.h),
-          _buildCenter(),
-          SizedBox(height: 120.h),
-          EmailLoginButton(onPressed: () {
-            _openEmailLogin(context);
-          }),
-          SizedBox(height: 20.h),
-          Padding(
-            padding: EdgeInsets.only(left: 30.w, right: 30.w),
-            child: LineLoginButton(onPressed: () {
-              _openLineLogin(context);
+Widget _buildForm(BuildContext context) {
+  return Stack(
+    children: [
+      // Form content inside a SingleChildScrollView
+      SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 127.h), // Adjusted height to give space from top
+            _buildCenter(),
+            SizedBox(height: 95.h),
+            EmailLoginButton(onPressed: () {
+              _openEmailLogin(context);
             }),
-          ),
-          SizedBox(height: 20.h),
-          Padding(
-            padding: EdgeInsets.only(left: 30.w, right: 30.w),
-            child: GoogleLoginButton(onPressed: () {
-              _openGoogleLogin(context);
-            }),
-          ),
-          SizedBox(height: 40.h),
-        ],
+            SizedBox(height: 20.h),
+            Padding(
+              padding: EdgeInsets.only(left: 30.w, right: 30.w),
+              child: LineLoginButton(onPressed: () {
+                _openLineLogin(context);
+              }),
+            ),
+            SizedBox(height: 20.h),
+            Padding(
+              padding: EdgeInsets.only(left: 30.w, right: 30.w),
+              child: GoogleLoginButton(onPressed: () {
+                _openGoogleLogin(context);
+              }),
+            ),
+            SizedBox(height: 40.h),
+          ],
+        ),
       ),
-    );
-  }
+
+      Positioned(
+        top: 30.h, 
+        right: 16.w, 
+        child: const Material(
+          color: Colors.transparent, 
+          child: LanguageChangeDropdown(),  
+        ),
+      ),
+    ],
+  );
+}
+
 
   Widget _buildCenter() {
     return Column(
