@@ -72,8 +72,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     'เสียงใจเย็น',
     'ใต้'
   ]; 
+
   // รายการสไตล์เสียงภาษาอังกฤษ 
-  List<String> voiceStyleEng = [
+List<String> voiceStyleEng = [
   'Playful',
   'Serious',
   'Clear',
@@ -92,6 +93,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   'Calm',
   'Southern'
 ];
+  
   //หมวดหมู่เสียงภาษาไทย
   List<String> speechStyle = [
     'ฟรี',
@@ -106,6 +108,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     'สไตล์เล่าเรื่อง',
     'สไตล์เสียงต่างประเทศ',
   ];  
+ 
  // หมวดหมู่เสียงภาษาอังกฤษ
   List<String> engSpeechStyle = [
   'Storytelling',
@@ -1250,6 +1253,7 @@ void showModalSelection({
               const SizedBox(height: 20),
               Row(
                 children: [
+                  // เปลี่ยนปุ่มจาก "ยกเลิก" เป็น "รีเซ็ต"
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -1258,9 +1262,12 @@ void showModalSelection({
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        tempSelectedItems.clear(); // รีเซ็ตค่าที่เลือก
+                        (context as Element).markNeedsBuild(); // อัปเดต UI
+                      },
                       child: Text(
-                        'ยกเลิก',
+                        'รีเซ็ต',
                         style: GoogleFonts.prompt(color: Colors.white),
                       ),
                     ),
