@@ -4,7 +4,7 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
-import 'package:botnoivoice/presentation/screens/drawer/payment/payment_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -181,7 +181,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'ราคาและโปรโมชั่น',
+              'ซื้อพ้อยท์',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -189,12 +189,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PaymentScreen(),
-                ),
-              );
+              showPaymentDialog(context);
             },
           ),
           SizedBox(height: 10.h),

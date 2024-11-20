@@ -15,41 +15,31 @@
   ],
   "products" : [
     {
-      "displayPrice" : "2.99",
+      "displayPrice" : "100.00",
       "familyShareable" : false,
-      "internalID" : "0B32ACEE",
+      "internalID" : "592A9573",
       "localizations" : [
         {
-          "description" : "",
-          "displayName" : "",
+          "description" : "This package will give you 5,000 credits",
+          "displayName" : "5,000 Credits",
           "locale" : "en_US"
-        }
-      ],
-      "productID" : "com.botnoimobile.botnoivoice.4100credits",
-      "referenceName" : "4,100 Credits",
-      "type" : "Consumable"
-    },
-    {
-      "displayPrice" : "4.99",
-      "familyShareable" : false,
-      "internalID" : "B31C33ED",
-      "localizations" : [
+        },
         {
-          "description" : "",
-          "displayName" : "",
-          "locale" : "en_US"
+          "description" : "แพ็คเกจนี้จะให้คุณ 5,000 พอยท์",
+          "displayName" : "5,000 พอยท์",
+          "locale" : "th"
         }
       ],
-      "productID" : "com.botnoimobile.botnoivoice.12500credits",
-      "referenceName" : "12,500 Credits",
+      "productID" : "mobile_100",
+      "referenceName" : "5,000 Credits",
       "type" : "Consumable"
     }
   ],
   "settings" : {
     "_askToBuyEnabled" : false,
     "_failTransactionsEnabled" : false,
-    "_locale" : "en_US",
-    "_storefront" : "USA",
+    "_locale" : "th",
+    "_storefront" : "THA",
     "_storeKitErrors" : [
       {
         "current" : null,

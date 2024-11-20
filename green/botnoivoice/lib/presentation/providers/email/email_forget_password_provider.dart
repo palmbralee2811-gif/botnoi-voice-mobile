@@ -11,6 +11,7 @@ class EmailForgetPasswordProvider with ChangeNotifier {
 
   /// Send password reset email if username exists
   Future<void> sendPasswordResetEmail(String email) async {
+    //TODO: Call API (GET) method to check email permission is true or false for use forget password function
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       _errorMessage = null;

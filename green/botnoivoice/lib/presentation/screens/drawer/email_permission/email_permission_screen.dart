@@ -96,9 +96,10 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                           isEmailAccessEnabled = !isEmailAccessEnabled;
                         });
                         _showDialog(context);
+                        //TODO: Call API (UPDATE) method to enable Forget Password with Email
                       },
                       child: Container(
-                        width: 60.w,
+                        width: 50.w,
                         height: 30.h,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.r),

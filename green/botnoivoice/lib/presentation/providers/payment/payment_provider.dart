@@ -21,7 +21,8 @@ class PaymentProvider with ChangeNotifier {
 
       if (products.isNotEmpty) {
         _logger.i("Purchasing product: ${products.first.identifier}");
-        final purchaseResult = await Purchases.purchaseStoreProduct(products.first);
+        final purchaseResult =
+            await Purchases.purchaseStoreProduct(products.first);
 
         _logger.i("Purchase successful: $purchaseResult");
       } else {
