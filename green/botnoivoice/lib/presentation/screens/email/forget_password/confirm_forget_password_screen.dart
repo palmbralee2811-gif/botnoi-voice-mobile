@@ -2,6 +2,7 @@ import 'package:botnoivoice/presentation/screens/email/forget_password/new_passw
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +72,7 @@ class _ConfirmForgetPasswordScreenState
               children: [
                 SizedBox(height: 40.h),
                 GradientTextAlign(
-                  'ตรวจสอบอีเมลของคุณ',
+                  'confirm_forget_password.check_your_email'.tr(),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xFF9340FF),
@@ -87,7 +88,7 @@ class _ConfirmForgetPasswordScreenState
                 ),
                 SizedBox(height: 8.h),
                 GradientTextAlign(
-                  'คัดลอกลิงค์จากกล่องจดหมายของคุณ',
+                  'confirm_forget_password.copy_link_from_your_inbox'.tr(),
                   gradient: const LinearGradient(
                     colors: [
                       Color(0xFF9340FF),
@@ -107,7 +108,7 @@ class _ConfirmForgetPasswordScreenState
                   style:
                       TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
-                    labelText: 'ลิงค์',
+                    labelText: 'confirm_forget_password.link'.tr(),
                     labelStyle:
                         TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
                     fillColor: Colors.white,
@@ -121,11 +122,11 @@ class _ConfirmForgetPasswordScreenState
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) =>
-                      value!.isEmpty ? 'โปรดใส่ลิงค์ที่ได้รับจากอีเมล' : null,
+                      value!.isEmpty ? 'confirm_forget_password.please_enter_link_from_email'.tr() : null,
                 ),
                 SizedBox(height: 16.h),
                 GradientTextButton(
-                  text: 'ยืนยัน',
+                  text: 'confirm_forget_password.confirm'.tr(),
                   onPressed: () {
                     if (_formKey.currentState != null &&
                         _formKey.currentState!.validate()) {
@@ -142,7 +143,7 @@ class _ConfirmForgetPasswordScreenState
                       } else {
                         NotificationDialog(
                           context: context,
-                          text: "ลิงค์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง",
+                          text: "confirm_forget_password.link_invalid_try_again".tr(),
                         ).showErrorModal(context);
                       }
                     }

@@ -12,6 +12,7 @@ import 'package:botnoivoice/presentation/widgets/dialog/email_permission/email_p
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -158,28 +159,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildGradientText('สมัครใช้งาน'),
+                      _buildGradientText('register.sign_up'.tr()),
                       SizedBox(height: 20.h),
-                      _buildTextFormField(_emailController, 'อีเมล'),
+                      _buildTextFormField(_emailController, 'register.email'.tr()),
                       SizedBox(height: 16.h),
-                      _buildTextFormField(_usernameController, 'ชื่อผู้ใช้งาน'),
+                      _buildTextFormField(_usernameController, 'register.username'.tr()),
                       SizedBox(height: 16.h),
-                      _buildPasswordField(_passwordController, 'รหัสผ่าน'),
+                      _buildPasswordField(_passwordController, 'register.password'.tr()),
                       SizedBox(height: 16.h),
                       _buildPasswordField(
-                          _confirmPasswordController, 'ยืนยันรหัสผ่าน',
+                          _confirmPasswordController, 'register.confirm_password'.tr(),
                           isConfirmPassword: true),
                       SizedBox(height: 16.h),
                       _isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : GradientTextButton(
-                              text: 'สมัครใช้งาน',
+                              text: 'register.sign_up'.tr(),
                               onPressed: _openEmailPermissionDialog,
                             ),
                       SizedBox(height: 16.h),
                       _buildBackToLoginButton(),
                       SizedBox(height: 16.h),
-                      _buildDividerWithText('หรือ'),
+                      _buildDividerWithText('register.or'.tr()),
                       SizedBox(height: 16.h),
                       _buildSocialButtons(),
                       SizedBox(height: 16.h),
@@ -232,16 +233,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           isPassword || isConfirmPassword ? !_isPasswordVisible : false,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'โปรดใส่$labelของคุณ';
+          return 'please_enter_label'.tr(namedArgs: {'label': label});
         }
         if (label == 'อีเมล' && !isValidEmail(value)) {
-          return 'รูปแบบอีเมลไม่ถูกต้อง';
+          return 'register.email_invalid_format'.tr();
         }
         if (label == 'ชื่อผู้ใช้งาน' && !isValidUsername(value)) {
-          return 'ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -';
+          return 'register.username_invalid'.tr();
         }
         if (isConfirmPassword && value != _passwordController.text) {
-          return 'รหัสผ่านไม่ตรงกัน';
+          return 'register.password_mismatch'.tr();
         }
         return null;
       },
@@ -279,11 +280,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       obscureText: !_isPasswordVisible,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'โปรดใส่รหัสผ่านของคุณ';
+          return 'register.please_enter_password'.tr();
         } else if (value.length < 6) {
-          return 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+          return 'register.password_minimum_length'.tr();
         } else if (isConfirmPassword && value != _passwordController.text) {
-          return 'รหัสผ่านไม่ตรงกัน';
+          return 'register.password_mismatch'.tr();
         }
         return null;
       },
@@ -309,7 +310,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
       child: Align(
         alignment: Alignment.center,
-        child: Text('กลับไปที่เข้าสู่ระบบ',
+        child: Text('register.back_to_sign_in'.tr(),
             style: TextStyle(color: Colors.grey.shade600, fontSize: 14.sp)),
       ),
     );
