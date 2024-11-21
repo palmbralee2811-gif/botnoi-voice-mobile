@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
-//TODO: Refactor โค้ดส่วนนี้ให้เป็น provider แยก และ จัดการพวก getUser ซ้ำๆ ในหลายไฟล์ ให้อยู่รวมในไฟล์เดียว
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-String getFirebaseUserId() {
+String? getFirebaseUserId() {
   final User? user = auth.currentUser;
-  return user?.uid ?? "anonymous_user";
+  return user?.uid;
 }
 
 Future<void> configureRevenueCat() async {

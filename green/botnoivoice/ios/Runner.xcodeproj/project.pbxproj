@@ -20,6 +20,7 @@
 		EE536C122CEB4B1100A2459C /* configurationTest.storekit in Resources */ = {isa = PBXBuildFile; fileRef = EE536C112CEB4B1100A2459C /* configurationTest.storekit */; };
 		EE536C142CEB4D2900A2459C /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = EE536C132CEB4D2900A2459C /* StoreKitTestCertificate.cer */; };
 		EE8DB7532CEAE562007436DB /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8DB7522CEAE562007436DB /* StoreKit.framework */; };
+		EEA89C282CEED38600B0818F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 681A48482C9369450044D21F /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 			files = (
 				EE8DB7532CEAE562007436DB /* StoreKit.framework in Frameworks */,
 				681A484A2C9369680044D21F /* libsqlite3.tbd in Frameworks */,
+				EEA89C282CEED38600B0818F /* libsqlite3.tbd in Frameworks */,
 				D46D56D1EEC31B98F0310F2C /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
