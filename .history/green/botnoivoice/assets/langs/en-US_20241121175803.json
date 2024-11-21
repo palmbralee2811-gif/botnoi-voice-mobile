@@ -77,12 +77,12 @@
         "login_with": "Sign In with",
         "email": "Email",
         "username": "Username",
-        "logout": "Sign Out"
+        "logout": "Sign out"
     },
     "change_email_username": {
         "username_changed_successfully": "Username changed successfully",
         "change_username": "Change username",
-        "set_new_username_for_login": "Set a new username for Sign In",
+        "set_new_username_for_login": "Set a new username for login",
         "new_username": "New username",
         "please_enter_your_username": "Please enter your username",
         "invalid_username": "Invalid username. Please use letters a-z, A-Z, numbers, and underscores or hyphens.",
@@ -213,7 +213,7 @@
     "home_screen": {
         "please_type_message": "Please type the message",
         "type_message_in_selected_language": "Type the message in the selected language...",
-        "create_sound": "Generate",
-        "unable_to_create_sound": "Unable to generate"
+        "create_sound": "Create sound",
+        "unable_to_create_sound": "Unable to create sound"
     }
 }

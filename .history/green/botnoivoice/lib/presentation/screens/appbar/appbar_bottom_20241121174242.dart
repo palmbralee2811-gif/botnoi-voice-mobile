@@ -31,7 +31,11 @@ class _AppBarBottomState extends State<AppBarBottom> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
+        // Get the current locale from easy_localization
+    String selectedName = context.locale.languageCode == 'th'
+        ? speakerProvider.speaker?.thaiName ?? 'เอวา'
+        : speakerProvider.speaker?.engName ?? 'Ava';
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
 
     return SizedBox(

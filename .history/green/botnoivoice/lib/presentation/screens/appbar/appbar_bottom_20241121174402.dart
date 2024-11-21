@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,8 +32,11 @@ class _AppBarBottomState extends State<AppBarBottom> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
+    String selectedName = context.locale.languageCode == 'th'
+        ? speakerProvider.speaker?.thaiName ?? 'เอวา'
+        : speakerProvider.speaker?.engName ?? 'Ava';
 
     return SizedBox(
       width: double.infinity,

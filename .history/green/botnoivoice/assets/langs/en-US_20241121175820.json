@@ -213,7 +213,7 @@
     "home_screen": {
         "please_type_message": "Please type the message",
         "type_message_in_selected_language": "Type the message in the selected language...",
-        "create_sound": "Generate",
-        "unable_to_create_sound": "Unable to generate"
+        "create_sound": "Create sound",
+        "unable_to_create_sound": "Unable to create sound"
     }
 }

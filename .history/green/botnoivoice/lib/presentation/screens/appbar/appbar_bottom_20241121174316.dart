@@ -31,8 +31,11 @@ class _AppBarBottomState extends State<AppBarBottom> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
+    String selectedName = context.locale.languageCode == 'th'
+        ? speakerProvider.speaker?.thaiName ?? 'เอวา'
+        : speakerProvider.speaker?.engName ?? 'Ava';
 
     return SizedBox(
       width: double.infinity,
