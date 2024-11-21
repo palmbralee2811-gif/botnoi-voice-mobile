@@ -74,7 +74,7 @@
         "password_mismatch": "Passwords do not match",
         "confirm": "Confirm"
     },
-    "app_drawer": {
+    "app_drawer.": {
         "profile": "Profile",
         "buy_points": "Buy Points",
         "security": "Security"

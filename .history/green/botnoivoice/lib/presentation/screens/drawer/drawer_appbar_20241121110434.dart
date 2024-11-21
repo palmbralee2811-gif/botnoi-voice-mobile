@@ -227,7 +227,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'app_drawer.security'.tr(), //ความปลอดภัย
+              'app_drawer.', //ความปลอดภัย
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -257,7 +257,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 color: const Color(0xFF323130),
               ),
               title: Text(
-                'language'.tr(),
+                'language'
+                    .tr(), // You can replace this with any text you prefer
                 style: GoogleFonts.prompt(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,

@@ -64,10 +64,5 @@
         "confirm_password": "ยืนยันรหัสผ่าน",
         "password_mismatch": "รหัสผ่านไม่ตรงกัน",
         "confirm": "ยืนยัน"
-    },
-    "app_drawer": {
-        "profile": "ข้อมูลส่วนตัว",
-        "buy_points": "ซื้อพ้อยท์",
-        "security": "ความปลอดภัย"
-      }
+    }
 }

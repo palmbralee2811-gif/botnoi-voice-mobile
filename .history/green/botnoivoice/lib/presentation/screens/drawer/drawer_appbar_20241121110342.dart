@@ -182,7 +182,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text( 
-              'app_drawer.profile'.tr(), //ข้อมูลส่วนตัว
+              'ข้อมูลส่วนตัว',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -207,7 +207,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
+              'ซื้อพ้อยท์',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -227,7 +227,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'app_drawer.security'.tr(), //ความปลอดภัย
+              'ความปลอดภัย',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -257,7 +257,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 color: const Color(0xFF323130),
               ),
               title: Text(
-                'language'.tr(),
+                'language'
+                    .tr(), // You can replace this with any text you prefer
                 style: GoogleFonts.prompt(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,

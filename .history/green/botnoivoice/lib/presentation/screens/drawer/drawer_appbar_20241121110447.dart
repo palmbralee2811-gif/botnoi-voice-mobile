@@ -257,7 +257,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 color: const Color(0xFF323130),
               ),
               title: Text(
-                'language'.tr(),
+                'language'
+                    .tr(),
                 style: GoogleFonts.prompt(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,

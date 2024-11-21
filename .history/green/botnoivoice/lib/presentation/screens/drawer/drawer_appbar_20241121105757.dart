@@ -181,8 +181,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               size: 24.sp,
               color: const Color(0xFF323130),
             ),
-            title: Text( 
-              'app_drawer.profile'.tr(), //ข้อมูลส่วนตัว
+            title: Text(
+              'ข้อมูลส่วนตัว',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -207,7 +207,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
+              'ซื้อพ้อยท์',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -227,7 +227,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              'app_drawer.security'.tr(), //ความปลอดภัย
+              'ความปลอดภัย',
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
@@ -257,7 +257,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 color: const Color(0xFF323130),
               ),
               title: Text(
-                'language'.tr(),
+                'language'
+                    .tr(), // You can replace this with any text you prefer
                 style: GoogleFonts.prompt(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,
@@ -281,6 +282,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Close Button
               Align(
                 alignment: Alignment.topRight,
                 child: IconButton(
@@ -289,6 +291,33 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                     Navigator.pop(context); 
                   },
                 ),
+              ),
+              // Language Options
+              ListTile(
+                leading: Image.asset(
+                  'assets/images/national_flag/english.png',
+                  width: 24, // Flag size
+                  height: 24,
+                ),
+                title: Text(
+                  'English',
+                  style: GoogleFonts.prompt(
+                    fontSize: 18.sp,
+                    fontWeight: _selectedLanguage == 'en'
+                        ? FontWeight.w600
+                        : FontWeight
+                            .w400, 
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedLanguage = 'en';
+                  });
+                  context.setLocale(const Locale('en', 'US'));
+                  _saveLanguage('en');
+                  Navigator.pop(
+                      context); 
+                },
               ),
               ListTile(
                 leading: Image.asset(
@@ -314,32 +343,6 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                   _saveLanguage('th');
                   Navigator.pop(
                       context);
-                },
-              ),
-              ListTile(
-                leading: Image.asset(
-                  'assets/images/national_flag/english.png',
-                  width: 24, 
-                  height: 24,
-                ),
-                title: Text(
-                  'English',
-                  style: GoogleFonts.prompt(
-                    fontSize: 18.sp,
-                    fontWeight: _selectedLanguage == 'en'
-                        ? FontWeight.w600
-                        : FontWeight
-                            .w400, 
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedLanguage = 'en';
-                  });
-                  context.setLocale(const Locale('en', 'US'));
-                  _saveLanguage('en');
-                  Navigator.pop(
-                      context); 
                 },
               ),
             ],
