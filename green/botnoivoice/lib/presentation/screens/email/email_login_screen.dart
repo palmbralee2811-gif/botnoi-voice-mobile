@@ -8,6 +8,7 @@ import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       } catch (error) {
         NotificationPopup(
           context: context,
-          text: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง. $error',
+          text: '${'sign_in.error_occurred'.tr()} $error', //เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.
         ).showAsError();
       } finally {
         setState(() {
@@ -141,7 +142,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GradientTextAlign(
-                        'เข้าสู่ระบบ',
+                        'auth.sign_in'.tr(), //เข้าสู่ระบบ
                         gradient: const LinearGradient(
                           colors: [
                             Color(0xFF9340FF),
@@ -157,7 +158,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       ),
                       SizedBox(height: 8.h),
                       GradientTextAlign(
-                        'สวัสดี, Botnoi Voice ยินดีต้อนรับ',
+                        'sign_in.welcome_message'.tr(), //สวัสดี, Botnoi Voice ยินดีต้อนรับ
                         gradient: const LinearGradient(
                           colors: [
                             Color(0xFF9340FF),
@@ -177,7 +178,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
-                          labelText: 'ชื่อผู้ใช้งานหรืออีเมล',
+                          labelText: 'sign_in.username_or_email'.tr(), //ชื่อผู้ใช้งานหรืออีเมล
                           labelStyle: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
@@ -198,7 +199,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ';
+                            return 'sign_in.please_enter_username_or_email'.tr(); //โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ
                           }
                           return null;
                         },
@@ -209,7 +210,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
-                          labelText: 'รหัสผ่าน',
+                          labelText: 'sign_in.password'.tr(), //รหัสผ่าน
                           labelStyle: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
@@ -236,7 +237,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                         obscureText: !_isPasswordVisible,
                         validator: (value) =>
-                            value!.isEmpty ? 'โปรดใส่รหัสผ่านของคุณ' : null,
+                            value!.isEmpty ? 'sign_in.please_enter_password'.tr() : null, //โปรดใส่รหัสผ่านของคุณ
                       ),
                       SizedBox(height: 12.h),
                       _isLoading
@@ -244,7 +245,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                               child:
                                   CircularProgressIndicator()) // แสดงสถานะการโหลด
                           : GradientTextButton(
-                              text: 'เข้าสู่ระบบ',
+                              text: 'auth.sign_in'.tr(),
                               onPressed: _loginUser,
                             ),
                       SizedBox(height: 16.h),
@@ -262,7 +263,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                               );
                             },
                             child: Text(
-                              'สมัครใช้งาน',
+                              'sign_in.register'.tr(), //สมัครใช้งาน
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey.shade600,
@@ -280,7 +281,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                               );
                             },
                             child: Text(
-                              'ลืมรหัสผ่าน?',
+                              'sign_in.forgot_password'.tr(), //ลืมรหัสผ่าน?
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey.shade600,
@@ -301,7 +302,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.w),
                             child: Text(
-                              'หรือ',
+                              'sign_in.or'.tr(), //หรือ
                               style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.bold,
