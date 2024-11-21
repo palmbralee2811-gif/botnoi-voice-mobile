@@ -13,6 +13,7 @@ class EmailForgetPasswordProvider with ChangeNotifier {
   /// Send password reset email if username exists
   Future<void> sendPasswordResetEmail(String email) async {
     //TODO: Call API (GET) method to check email permission is true or false for use forget password function
+    //TODO: Show OfflineEmailPermissionDialog(); when disable email permission
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       _errorMessage = null;
@@ -59,8 +60,8 @@ class EmailForgetPasswordProvider with ChangeNotifier {
         default:
           _errorMessage = 'forget_password_provider.error_resetting_password'.tr(); //เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน
       }
-      _logger
-          .e("Error resetting password with code: $code \nMessage: ${e.message} \nCode: ${e.code}");
+      _logger.e(
+          "Error resetting password with code: $code \nMessage: ${e.message} \nCode: ${e.code}");
       notifyListeners();
     }
   }

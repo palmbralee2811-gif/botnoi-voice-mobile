@@ -3,13 +3,14 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
+import 'package:botnoivoice/data/repositories/ios_file_repository.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/android_permission_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -154,10 +155,17 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
   /// Start downloading the file using FlutterDownloader (Don't working on Android 10)
   Future<void> _startDownload() async {
+    String folderPath = "";
+    if (Platform.isAndroid) {
+      //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
+      folderPath = "/storage/emulated/0/Download";
+    } else if (Platform.isIOS) {
+      folderPath = await createiOSAppFolder();
+    }
+
     taskId = await FlutterDownloader.enqueue(
       url: widget.audioUrl,
-      //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
-      savedDir: '/storage/emulated/0/Download',
+      savedDir: folderPath,
       fileName: widget.filePath.split('/').last,
       showNotification: true,
       openFileFromNotification: true,
@@ -270,7 +278,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   GradientRow(
                     onPressed: () async {
                       if (Platform.isIOS) {
-                        OpenFile.open(widget.filePath);
+                        _startDownload().whenComplete(() {
+                          OpenFile.open(widget.filePath);
+                        });
                       } else if (Platform.isAndroid) {
                         await _checkAndroidRequestPermissions();
                       }
