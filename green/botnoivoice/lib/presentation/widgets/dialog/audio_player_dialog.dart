@@ -159,7 +159,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       //WARNING: Change Path and File: android\app\src\main\res\xml\provider_paths.xml
       folderPath = "/storage/emulated/0/Download";
     } else if (Platform.isIOS) {
-      folderPath = await createAppFolder();
+      folderPath = await createiOSAppFolder();
     }
 
     taskId = await FlutterDownloader.enqueue(
