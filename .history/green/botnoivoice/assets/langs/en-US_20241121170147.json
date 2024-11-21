@@ -10,7 +10,7 @@
         "sign_in_with_username_email": "Sign in with username or email",
         "sign_in_with_line": "Sign in with LINE",
         "sign_in_with_google": "Sign in with Google",
-        "delete_account_button": "Delete Account"
+        "delete_account_button": "delete_account": "Delete Account"
     },
     "sign_in": {
         "error_occurred": "An error occurred. Please try again.",
@@ -209,11 +209,5 @@
     "offline_email_permission": {
         "unable_to_change_password": "Unable to change the password because email access is disabled. Please enable email access in the Security menu to proceed.",
         "understood": "Understood"
-    },
-    "home_screen": {
-        "please_type_message": "Please type the message",
-        "type_message_in_selected_language": "Type the message in the selected language...",
-        "create_sound": "Create sound",
-        "unable_to_create_sound": "Unable to create sound"
     }
 }

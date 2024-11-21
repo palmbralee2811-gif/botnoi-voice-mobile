@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'home_screen.type_message_in_selected_language'.tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
+                        hintText: 'app_drawer.type_message_in_selected_language'.tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
                           fontStyle:
@@ -309,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('home_screen.create_sound'.tr(), //สร้างเสียง
+                  Text('app_drawer.create_sound'.tr(), //สร้างเสียง
                       style: GoogleFonts.prompt(
                           color: Colors.white,
                           fontSize: 16.sp,
@@ -401,7 +401,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          NotificationPopup(context: context, text: 'home_screen.unable_to_create_sound'.tr()) //ไม่สามารสร้างเสียงได้
+          NotificationPopup(context: context, text: 'app_drawer.unable_to_create_sound'.tr()) //ไม่สามารสร้างเสียงได้
               .showAsError();
         }
       }

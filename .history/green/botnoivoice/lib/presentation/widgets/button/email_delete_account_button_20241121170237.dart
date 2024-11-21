@@ -35,7 +35,7 @@ class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
                 builder: (context) => const DeleteAccountScreen()),
           );
         },
-        child: Text("auth.delete_account_button".tr(), //"ลบบัญชี"
+        child: Text("auth.delete_account_button".tr(),
             style: GoogleFonts.prompt(
                 color: Colors.red,
                 fontSize: 16.sp,

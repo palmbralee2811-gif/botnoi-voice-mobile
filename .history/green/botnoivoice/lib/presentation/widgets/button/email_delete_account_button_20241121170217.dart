@@ -1,5 +1,4 @@
 import 'package:botnoivoice/presentation/screens/drawer/account/delete_account_screen.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,7 +34,7 @@ class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
                 builder: (context) => const DeleteAccountScreen()),
           );
         },
-        child: Text("auth.delete_account_button".tr(), //"ลบบัญชี"
+        child: Text("a",
             style: GoogleFonts.prompt(
                 color: Colors.red,
                 fontSize: 16.sp,

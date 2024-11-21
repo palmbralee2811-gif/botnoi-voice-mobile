@@ -209,11 +209,5 @@
     "offline_email_permission": {
         "unable_to_change_password": "ไม่สามารถแก้ไขรหัสผ่านได้ เนื่องจาก การเข้าถึงอีเมลของคุณถูกปิด กรุณา เปิดการอนุญาตให้เข้าถึงอีเมลที่เมนู ความปลอดภัย เพื่อดำเนินการต่อ",
         "understood": "เข้าใจแล้ว"
-    },
-    "home_screen": {
-        "please_type_message": "กรุณาพิมพ์ข้อความ",
-        "type_message_in_selected_language": "พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .",
-        "create_sound": "สร้างเสียง",
-        "unable_to_create_sound": "ไม่สามารสร้างเสียงได้"
     }
 }

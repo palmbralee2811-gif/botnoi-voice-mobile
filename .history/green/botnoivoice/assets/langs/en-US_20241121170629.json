@@ -210,10 +210,5 @@
         "unable_to_change_password": "Unable to change the password because email access is disabled. Please enable email access in the Security menu to proceed.",
         "understood": "Understood"
     },
-    "home_screen": {
-        "please_type_message": "Please type the message",
-        "type_message_in_selected_language": "Type the message in the selected language...",
-        "create_sound": "Create sound",
-        "unable_to_create_sound": "Unable to create sound"
-    }
+    "home_screen"
 }

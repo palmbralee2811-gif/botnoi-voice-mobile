@@ -17,7 +17,6 @@ import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:dio/dio.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -105,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await audioPlayer.stop();
     if (_textController.text.isEmpty) {
-      NotificationPopup(context: context, text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
+      NotificationPopup(context: context, text: "กรุณาพิมพ์ข้อความ") //กรุณาพิมพ์ข้อความ
           .showAsError();
       setState(() {
         isGenerateAudio = false;
@@ -203,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'home_screen.type_message_in_selected_language'.tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
+                        hintText: 'พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .', //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
                           fontStyle:
@@ -309,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('home_screen.create_sound'.tr(), //สร้างเสียง
+                  Text('สร้างเสียง', //สร้างเสียง
                       style: GoogleFonts.prompt(
                           color: Colors.white,
                           fontSize: 16.sp,
@@ -401,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          NotificationPopup(context: context, text: 'home_screen.unable_to_create_sound'.tr()) //ไม่สามารสร้างเสียงได้
+          NotificationPopup(context: context, text: 'ไม่สามารสร้างเสียงได้') //ไม่สามารสร้างเสียงได้
               .showAsError();
         }
       }

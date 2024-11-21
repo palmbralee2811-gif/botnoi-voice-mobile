@@ -211,9 +211,9 @@
         "understood": "เข้าใจแล้ว"
     },
     "home_screen": {
-        "please_type_message": "กรุณาพิมพ์ข้อความ",
-        "type_message_in_selected_language": "พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .",
-        "create_sound": "สร้างเสียง",
-        "unable_to_create_sound": "ไม่สามารสร้างเสียงได้"
+        "please_type_message": "Please type the message",
+        "type_message_in_selected_language": "Type the message in the selected language...",
+        "create_sound": "Create sound",
+        "unable_to_create_sound": "Unable to create sound"
     }
 }

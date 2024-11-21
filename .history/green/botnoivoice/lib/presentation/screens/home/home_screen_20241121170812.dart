@@ -401,7 +401,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          NotificationPopup(context: context, text: 'home_screen.unable_to_create_sound'.tr()) //ไม่สามารสร้างเสียงได้
+          NotificationPopup(context: context, text: 'app_drawer.unable_to_create_sound'.tr()) //ไม่สามารสร้างเสียงได้
               .showAsError();
         }
       }
