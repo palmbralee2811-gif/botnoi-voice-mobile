@@ -1,0 +1,91 @@
+{
+    "language": "Language",
+    "welcome_message": {
+        "line1": "convert text to speech",
+        "line2": "BOTNOI",
+        "line3": "VOICE"
+    },
+    "auth": {
+        "sign_in": "Sign In",
+        "sign_in_with_username_email": "Sign in with username or email",
+        "sign_in_with_line": "Sign in with LINE",
+        "sign_in_with_google": "Sign in with Google"
+    },
+    "sign_in": {
+        "error_occurred": "An error occurred. Please try again.",
+        "welcome_message": "Hello, Botnoi Voice welcomes you",
+        "username_or_email": "Username or email",
+        "please_enter_username_or_email": "Please enter your username or email",
+        "password": "Password",
+        "please_enter_password": "Please enter your password",
+        "register": "Sign up",
+        "forgot_password": "Forgot password?",
+        "or": "or",
+        "back_to_sign_in": "Back to sign in",
+        "password_mismatch": "Passwords do not match",
+        "password_minimum_length": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+        "username_invalid": "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+        "email_invalid_format": "รูปแบบอีเมลไม่ถูกต้อง",
+        "please_enter_label": "โปรดใส่$labelของคุณ",
+        "confirm_password": "ยืนยันรหัสผ่าน",
+        "username": "ชื่อผู้ใช้งาน",
+        "email": "อีเมล"
+    },
+    "register": {
+        "sign_up": "Sign up",
+        "email": "Email",
+        "username": "Username",
+        "password": "Password",
+        "confirm_password": "Confirm password",
+        "or": "or",
+        "please_enter_label": "Please enter your {label}",
+        "password_minimum_length": "Password must be at least 6 characters long",
+        "password_mismatch": "Passwords do not match",
+        "back_to_sign_in": "Back to sign in",
+        "email_invalid_format": "Invalid email format",
+        "username_invalid": "Username is invalid. Please use a-z, A-Z, numbers, and _ or - symbols.",
+        "please_enter_password": "Please enter your password."
+    },
+    "confirm_forget_password": {
+        "check_your_email": "Check your email",
+        "copy_link_from_your_inbox": "Copy the link from your inbox",
+        "link": "Link",
+        "please_enter_link_from_email": "Please enter the link received from your email",
+        "confirm": "Confirm",
+        "link_invalid_try_again": "The link is incorrect. Please try again."
+    },
+    "forget_password": {
+        "forgot_password": "Forgot password",
+        "confirm_email": "Confirm your email to reset your password",
+        "email": "Email",
+        "please_enter_email": "Please enter your email",
+        "invalid_email_format": "Invalid email format",
+        "send": "Send"
+    },
+    "new_password": {
+        "password_reset_success": "Password reset successful",
+        "error_occurred": "An error occurred:",
+        "reset_password": "Reset password",
+        "password_length": "Password must be at least 6 characters long",
+        "password": "Password",
+        "please_enter_password": "Please enter your password",
+        "password_min_length": "Password must be at least 6 characters",
+        "confirm_password": "Confirm password",
+        "password_mismatch": "Passwords do not match",
+        "confirm": "Confirm"
+    },
+    "app_drawer": {
+        "profile": "Profile",
+        "buy_points": "Buy Points",
+        "security": "Security"
+    },
+    "account": {
+        "uid_copy_success": "UID copied successfully",
+        "profile": "Profile",
+        "login_with": "Log in with",
+        "email": "Email",
+        "username": "Username",
+        "logout": "Log out"
+    },
+    "change_email"
+}
