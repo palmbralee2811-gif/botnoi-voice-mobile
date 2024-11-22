@@ -1,3 +1,4 @@
+import 'package:botnoivoice/core/revenuecat_config.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -5,6 +6,7 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +71,9 @@ class _InitScreenState extends State<InitScreen> {
     await googleTokenProvider.loadCredentials();
     await googleTokenProvider.loadRemainingCredits();
 
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
+    await configureRevenueCat(context);
+
     setState(() {
       _initialized = true;
     });
@@ -81,6 +86,9 @@ class _InitScreenState extends State<InitScreen> {
     await lineTokenProvider.loadJwtToken(context);
     await lineTokenProvider.loadCredentials();
     await lineTokenProvider.loadRemainingCredits();
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
+    await configureRevenueCat(context);
 
     setState(() {
       _initialized = true;
@@ -100,6 +108,12 @@ class _InitScreenState extends State<InitScreen> {
         Provider.of<EmailLoginProvider>(context, listen: false).getUserEmail;
     await Provider.of<EmailUsernameApiProvider>(context, listen: false)
         .loadGetUsername(email);
+
+    /// Load user info show mail (email permission)
+    await Provider.of<UserInfoProvider>(context, listen: false).getUserInfoShowMail(context);
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
+    await configureRevenueCat(context);
 
     setState(() {
       _initialized = true;

@@ -33,7 +33,7 @@ class UserInfoProvider with ChangeNotifier {
   }
 
   /// Fetch user information
-  Future<void> getUserInfo(BuildContext context) async {
+  Future<void> getUserInfoShowMail(BuildContext context) async {
     try {
       final userId = await getUserId(context);
       final response =
@@ -53,7 +53,7 @@ class UserInfoProvider with ChangeNotifier {
   }
 
   /// Update Email Permission
-  Future<void> updateShowEmail(BuildContext context, bool value) async {
+  Future<void> postUserInfoShowMail(BuildContext context, bool value) async {
     try {
       final userId = await getUserId(context);
       final response = await _dio.post(

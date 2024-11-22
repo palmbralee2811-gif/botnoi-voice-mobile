@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 //TODO: Testing all functions in this provider!!!
 /// Configure RevenueCat with the current user ID
-Future<void> configureRevenueCat(context) async {
+Future<void> configureRevenueCat(BuildContext context) async {
   final userId = await getUserId(context);
 
   await Purchases.configure(
