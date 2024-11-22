@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/constants/url.dart';
+import 'package:botnoivoice/presentation/constants/api_url_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class EmailRegisterProvider with ChangeNotifier {
   /// ฟังก์ชันตรวจสอบว่า username ซ้ำหรือไม่
   Future<bool> checkUsernameAvailability(String usernameId) async {
     String url =
-        '$urlDomain/api/dashboard/get_email_mobile?username=$usernameId';
+        '$baseApiUrl/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
@@ -54,7 +54,8 @@ class EmailRegisterProvider with ChangeNotifier {
           notifyListeners();
           return true; // username ใช้ได้
         } else {
-          _errorMessage = 'register_provider.username_taken'.tr(); //ชื่อผู้ใช้งานถูกใช้ไปแล้ว
+          _errorMessage = 'register_provider.username_taken'
+              .tr(); //ชื่อผู้ใช้งานถูกใช้ไปแล้ว
           _logger.w('Username already taken. Please choose another one.');
           notifyListeners();
           return false; // username ซ้ำ
@@ -62,13 +63,15 @@ class EmailRegisterProvider with ChangeNotifier {
       } else {
         _logger.e(
             'Failed to check username availability. Status Code: ${response.statusCode}');
-        _errorMessage = 'register_provider.error_checking_username'.tr(); //เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้
+        _errorMessage = 'register_provider.error_checking_username'
+            .tr(); //เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้
         notifyListeners();
         return false;
       }
     } catch (e) {
       _logger.e('Error during username check: $e');
-      _errorMessage = 'register_provider.error_connecting_server'.tr(); //เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์
+      _errorMessage = 'register_provider.error_connecting_server'
+          .tr(); //เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์
       notifyListeners();
       return false;
     }
@@ -78,7 +81,8 @@ class EmailRegisterProvider with ChangeNotifier {
   Future<void> registerWithEmailPassword(
       String email, String password, String confirmPassword) async {
     if (password != confirmPassword) {
-      _errorMessage = 'register_provider.passwords_do_not_match'.tr(); //รหัสผ่านไม่ตรงกัน
+      _errorMessage =
+          'register_provider.passwords_do_not_match'.tr(); //รหัสผ่านไม่ตรงกัน
       _logger.w("Passwords do not match for email: $email");
       notifyListeners();
       return;
@@ -101,7 +105,8 @@ class EmailRegisterProvider with ChangeNotifier {
         // ส่ง verification email
         try {
           await userCredential.user?.sendEmailVerification();
-          _resultMessage = "${'register_provider.please_verify_email'.tr()} $email"; //กรุณายืนยันอีเมล:
+          _resultMessage =
+              "${'register_provider.please_verify_email'.tr()} $email"; //กรุณายืนยันอีเมล:
           _errorMessage = null; // รีเซ็ต error message
           _logger.i("Verification email sent to: $email");
 
@@ -109,26 +114,32 @@ class EmailRegisterProvider with ChangeNotifier {
           await _registerUserToBackend(_userId, email);
           notifyListeners();
         } catch (e) {
-          _errorMessage = 'register_provider.unable_to_send_verification_email'.tr(); //ไม่สามารถส่งอีเมลยืนยันได้
+          _errorMessage = 'register_provider.unable_to_send_verification_email'
+              .tr(); //ไม่สามารถส่งอีเมลยืนยันได้
           _logger.e("Failed to send verification email: $e");
           notifyListeners();
         }
       } on FirebaseAuthException catch (e) {
         switch (e.code) {
           case 'email-already-in-use':
-            _errorMessage = 'register_provider.email_used_by_another_account'.tr(); //อีเมลถูกใช้โดยบัญชีอื่นแล้ว
+            _errorMessage = 'register_provider.email_used_by_another_account'
+                .tr(); //อีเมลถูกใช้โดยบัญชีอื่นแล้ว
             break;
           case 'invalid-email':
-            _errorMessage = 'register_provider.invalid_email_format'.tr(); //รูปแบบอีเมลไม่ถูกต้อง
+            _errorMessage = 'register_provider.invalid_email_format'
+                .tr(); //รูปแบบอีเมลไม่ถูกต้อง
             break;
           case 'weak-password':
-            _errorMessage = 'register_provider.password_not_strong_enough'.tr(); //รหัสผ่านไม่แข็งแรงพอ
+            _errorMessage = 'register_provider.password_not_strong_enough'
+                .tr(); //รหัสผ่านไม่แข็งแรงพอ
             break;
           case 'operation-not-allowed':
-            _errorMessage = 'register_provider.action_not_allowed'.tr(); //การดำเนินการนี้ไม่ได้รับอนุญาต
+            _errorMessage = 'register_provider.action_not_allowed'
+                .tr(); //การดำเนินการนี้ไม่ได้รับอนุญาต
             break;
           default:
-            _errorMessage = 'register_provider.error_registering'.tr(); //เกิดข้อผิดพลาดในการสมัครสมาชิก
+            _errorMessage = 'register_provider.error_registering'
+                .tr(); //เกิดข้อผิดพลาดในการสมัครสมาชิก
             break;
         }
         _logger.e(
@@ -142,12 +153,13 @@ class EmailRegisterProvider with ChangeNotifier {
   Future<void> _registerUserToBackend(String? userId, String email) async {
     if (userId == null || _username == null) {
       _logger.e("User ID or Username is null, cannot register to backend.");
-      _errorMessage = 'register_provider.no_uid_or_username'.tr(); //ไม่มีรหัส UID หรือชื่อผู้ใช้งาน
+      _errorMessage = 'register_provider.no_uid_or_username'
+          .tr(); //ไม่มีรหัส UID หรือชื่อผู้ใช้งาน
       notifyListeners();
       return;
     }
 
-    final url = Uri.parse('$urlDomain/api/dashboard/register_mobile');
+    final url = Uri.parse('$baseApiUrl/api/dashboard/register_mobile');
     final headers = {
       'Content-Type': 'application/json',
       'X-API-BOTNOI': 'Ym90b25vaQ',
@@ -167,13 +179,15 @@ class EmailRegisterProvider with ChangeNotifier {
         _errorMessage = null; // รีเซ็ต error message เมื่อส่งข้อมูลสำเร็จ
         _logger.i("User successfully registered to backend.");
       } else {
-        _errorMessage = 'register_provider.error_registering'.tr(); //เกิดข้อผิดพลาดในการสมัครสมาชิก
+        _errorMessage = 'register_provider.error_registering'
+            .tr(); //เกิดข้อผิดพลาดในการสมัครสมาชิก
         _logger.e(
             "Failed to register user to backend, Status Code: ${response.statusCode}");
       }
       notifyListeners();
     } catch (e) {
-      _errorMessage = 'register_provider.error_connecting_server'.tr(); //เกิดข้อผิดพลาดในเชื่อมต่อกับเซิร์ฟเวอร์
+      _errorMessage = 'register_provider.error_connecting_server'
+          .tr(); //เกิดข้อผิดพลาดในเชื่อมต่อกับเซิร์ฟเวอร์
       _logger.e("Error during API call: $e");
       notifyListeners();
     }

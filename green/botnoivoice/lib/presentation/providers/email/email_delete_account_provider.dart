@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/constants/url.dart';
+import 'package:botnoivoice/presentation/constants/api_url_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,10 +44,12 @@ class EmailDeleteAccountProvider with ChangeNotifier {
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case 'wrong-password':
-            _errorMessage = 'delete_account_provider.incorrect_password'.tr(); //รหัสผ่านไม่ถูกต้อง
+            _errorMessage = 'delete_account_provider.incorrect_password'
+                .tr(); //รหัสผ่านไม่ถูกต้อง
             break;
           default:
-            _errorMessage = 'delete_account_provider.error_confirming_password'.tr(); //เกิดข้อผิดพลาดในการยืนยันรหัสผ่าน
+            _errorMessage = 'delete_account_provider.error_confirming_password'
+                .tr(); //เกิดข้อผิดพลาดในการยืนยันรหัสผ่าน
             break;
         }
         _logger.e(
@@ -56,7 +58,9 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         return false;
       }
     } else {
-      _errorMessage = 'delete_account_provider.not_logged_in_with_username_and_password'.tr(); //ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน
+      _errorMessage =
+          'delete_account_provider.not_logged_in_with_username_and_password'
+              .tr(); //ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน
       _logger.e("Cannot verify Google account password");
       notifyListeners();
       return false;
@@ -68,7 +72,7 @@ class EmailDeleteAccountProvider with ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (isPasswordProviderUser(user)) {
       String userId = user!.uid;
-      String url = '$urlDomain/db/dashboard/users/$userId';
+      String url = '$baseApiUrl/db/dashboard/users/$userId';
       Map<String, String> headers = {'Content-Type': 'application/json'};
 
       try {
@@ -85,12 +89,15 @@ class EmailDeleteAccountProvider with ChangeNotifier {
           notifyListeners();
         }
       } catch (error) {
-        _errorMessage = "${'delete_account_provider.error_deleting_account'.tr()} $error"; //เกิดข้อผิดพลาดในการลบบัญชี
+        _errorMessage =
+            "${'delete_account_provider.error_deleting_account'.tr()} $error"; //เกิดข้อผิดพลาดในการลบบัญชี
         _logger.e("Error deleting user account: $error");
         notifyListeners();
       }
     } else {
-      _errorMessage = 'delete_account_provider.not_logged_in_with_user_and_password'.tr(); //ไม่ได้เข้าสู่ระบบด้วยผู้ใช้และรหัสผ่าน
+      _errorMessage =
+          'delete_account_provider.not_logged_in_with_user_and_password'
+              .tr(); //ไม่ได้เข้าสู่ระบบด้วยผู้ใช้และรหัสผ่าน
       _logger.w("No user is currently signed in.");
       notifyListeners();
     }
@@ -106,15 +113,21 @@ class EmailDeleteAccountProvider with ChangeNotifier {
         _logger.i(
             "User Account deleted successfully from Firebase \nEmail: ${user.email} \nUser ID: ${user.uid}");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('delete_account_provider.account_deleted_successfully'.tr())), //ลบบัญชีสำเร็จ
+          SnackBar(
+              content: Text(
+                  'delete_account_provider.account_deleted_successfully'
+                      .tr())), //ลบบัญชีสำเร็จ
         );
       } catch (error) {
-        _errorMessage = "${'delete_account_provider.error_deleting_account'.tr()} $error"; //เกิดข้อผิดพลาดในการลบบัญชี
+        _errorMessage =
+            "${'delete_account_provider.error_deleting_account'.tr()} $error"; //เกิดข้อผิดพลาดในการลบบัญชี
         _logger.e("Error deleting account: $error");
         notifyListeners();
       }
     } else {
-      _errorMessage = 'delete_account_provider.not_logged_in_with_user_and_password'.tr(); //ไม่ได้เข้าสู่ระบบด้วยผู้ใช้งานและรหัสผ่าน
+      _errorMessage =
+          'delete_account_provider.not_logged_in_with_user_and_password'
+              .tr(); //ไม่ได้เข้าสู่ระบบด้วยผู้ใช้งานและรหัสผ่าน
       _logger.e("No user logged in or invalid provider for Firebase deletion");
       notifyListeners();
     }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/presentation/constants/url.dart';
+import 'package:botnoivoice/presentation/constants/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -105,7 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await audioPlayer.stop();
     if (_textController.text.isEmpty) {
-      NotificationPopup(context: context, text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
+      NotificationPopup(
+              context: context,
+              text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
           .showAsError();
       setState(() {
         isGenerateAudio = false;
@@ -203,7 +205,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'home_screen.type_message_in_selected_language'.tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
+                        hintText:
+                            'home_screen.type_message_in_selected_language'
+                                .tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
                           fontStyle:
@@ -356,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
     logger.i("LINE-credentialsToken: $lineCredentialsToken");
     logger.i("Email-credentialsToken: $emailCredentialsToken");
 
-    String url = "$urlDomain/openapi/v1/generate_audio";
+    String url = "$baseApiUrl/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,
@@ -401,7 +405,10 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
-          NotificationPopup(context: context, text: 'home_screen.unable_to_create_sound'.tr()) //ไม่สามารสร้างเสียงได้
+          NotificationPopup(
+                  context: context,
+                  text: 'home_screen.unable_to_create_sound'
+                      .tr()) //ไม่สามารสร้างเสียงได้
               .showAsError();
         }
       }
