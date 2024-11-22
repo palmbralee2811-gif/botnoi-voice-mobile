@@ -1,5 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
-// import 'package:botnoivoice/data/models/speaker_model.dart';
+import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-// import 'package:botnoivoice/data/models/speaker_entity.dart';
+import 'package:botnoivoice/data/models/speaker_entity.dart';
 
 
 
@@ -127,7 +127,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      speakerProvider.nationalFlagName ?? 'appbar_bottom.thai'.tr(),
+                      speakerProvider.nationalFlagName ?? 'appbar_bottom.change'.tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 10.sp,
                         color: const Color(0xFF323130),

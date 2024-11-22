@@ -1,14 +1,13 @@
 import 'package:audioplayers/audioplayers.dart';
-// import 'package:botnoivoice/data/models/speaker_model.dart';
+import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-// import 'package:botnoivoice/data/models/speaker_entity.dart';
+import 'package:botnoivoice/data/models/speaker_entity.dart';
 
 
 
@@ -39,6 +38,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
   Widget build(BuildContext context) {  
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     
+    
+
     return SizedBox(
       width: double.infinity,
       height: 60.h,
@@ -127,7 +128,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      speakerProvider.nationalFlagName ?? 'appbar_bottom.thai'.tr(),
+                      speakerProvider.nationalFlagName ?? 'ไทย',
                       style: GoogleFonts.prompt(
                         fontSize: 10.sp,
                         color: const Color(0xFF323130),
@@ -135,7 +136,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     ),
                     const Spacer(),
                     Text(
-                      'appbar_bottom.change'.tr(),
+                      'เปลี่ยน',
                       style: GoogleFonts.prompt(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,

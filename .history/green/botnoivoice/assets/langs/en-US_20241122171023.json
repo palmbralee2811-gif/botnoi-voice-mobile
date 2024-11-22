@@ -111,64 +111,64 @@
     },
     "email_permission": {
         "security": "Security",
-        "email_access": "Email Access",
-        "on": "Enabled",
-        "off": "Disabled",
-        "email_access_description": "Enable email access to use the password recovery feature and receive important notifications about your app usage."
+        "email_access": "Email access",
+        "on": "On",
+        "off": "Off",
+        "email_access_description": "So you can use the password recovery feature and allow us to notify you about important information related to your app usage."
     },
     "payment": {
-        "buy_points": "Purchase Points",
-        "baht": "THB",
-        "get_points": "Get {productTitle} points",
-        "buy_now": "Purchase Now",
-        "received_points": "You have received {pointsTitle} points.",
-        "error_occurred": "An error occurred during the transaction. Please try again."
+        "buy_points": "Buy Points",
+        "baht": "Baht",
+        "get_points": "You get {productTitle} points",
+        "buy_now": "Buy Now",
+        "received_points": "Received {pointsTitle} points",
+        "error_occurred": "An error occurred"
     },
     "change_username_provider": {
-        "username_taken": "This username is already in use by another account. Please choose a different username."
+        "username_taken": "Username is already taken by another account"
     },
     "delete_account_provider": {
-        "incorrect_password": "The password you entered is incorrect. Please try again.",
-        "error_confirming_password": "An error occurred while confirming your password. Please try again.",
-        "not_logged_in_with_username_and_password": "You are not logged in with a username and password. Please log in to proceed.",
-        "unable_to_delete_account_status_code": "Unable to delete your account. Status code:",
-        "error_deleting_account": "An error occurred while deleting your account:",
-        "not_logged_in_with_user_and_password": "You are not logged in with a username and password. Please log in to proceed.",
-        "account_deleted_successfully": "Your account has been deleted successfully.",
-        "not_logged_in_with_username_and_password_again": "You are not logged in with a username and password. Please log in to continue."
+        "incorrect_password": "Incorrect password",
+        "error_confirming_password": "Error confirming password",
+        "not_logged_in_with_username_and_password": "Not logged in with username and password",
+        "unable_to_delete_account_status_code": "Unable to delete account. Status code:",
+        "error_deleting_account": "Error deleting account:",
+        "not_logged_in_with_user_and_password": "Not logged in with user and password",
+        "account_deleted_successfully": "Account deleted successfully",
+        "not_logged_in_with_username_and_password_again": "Not logged in with username and password"
     },
     "forget_password_provider": {
-        "no_account_found": "No account associated with this email address was found.",
-        "invalid_email_format": "The email address format you entered is invalid. Please check and try again.",
-        "error_sending_reset_email": "An error occurred while sending the password reset email. Please try again.",
-        "link_expired": "The link you used has expired. Please request a new one.",
-        "code_incorrect_or_used": "The code you entered is incorrect or has already been used.",
-        "weak_new_password": "Your new password is not strong enough. Please choose a stronger password.",
-        "error_resetting_password": "An error occurred while resetting your password. Please try again."
+        "no_account_found": "No account found with this email",
+        "invalid_email_format": "Invalid email format",
+        "error_sending_reset_email": "Error sending password reset email",
+        "link_expired": "This link has expired",
+        "code_incorrect_or_used": "Code is incorrect or has already been used",
+        "weak_new_password": "New password is not strong enough",
+        "error_resetting_password": "Error resetting password"
     },
     "login_provider": {
-        "invalid_username": "The username you entered is invalid. Please check and try again.",
-        "error_logging_in": "An error occurred while logging in:",
-        "please_verify_email_before_login": "Please verify your email address before logging in.",
-        "please_verify_email": "Please verify your email address:",
-        "invalid_email": "The email address you entered is invalid. Please check and try again.",
-        "incorrect_password": "The password you entered is incorrect. Please try again.",
-        "account_suspended": "This account has been suspended. Please contact support for assistance.",
-        "username_or_password_incorrect": "The username or password you entered is incorrect. Please try again."
+        "invalid_username": "Invalid username",
+        "error_logging_in": "Error logging in:",
+        "please_verify_email_before_login": "Please verify your email before logging in",
+        "please_verify_email": "Please verify your email:",
+        "invalid_email": "Invalid email",
+        "incorrect_password": "Incorrect password",
+        "account_suspended": "This account has been suspended",
+        "username_or_password_incorrect": "Username or password is incorrect"
     },
     "register_provider": {
-        "username_taken": "This username is already in use. Please choose a different username.",
-        "error_checking_username": "An error occurred while checking the username. Please try again.",
-        "error_connecting_server": "An error occurred while connecting to the server. Please check your connection and try again.",
-        "passwords_do_not_match": "The passwords you entered do not match. Please check and try again.",
-        "please_verify_email": "Please verify your email address:",
-        "unable_to_send_verification_email": "We were unable to send the verification email. Please try again.",
-        "email_used_by_another_account": "This email address is already associated with another account.",
-        "invalid_email_format": "The email address format you entered is invalid. Please check and try again.",
-        "password_not_strong_enough": "Your password is not strong enough. Please choose a stronger password.",
-        "action_not_allowed": "This action is not allowed. Please contact support if you believe this is a mistake.",
-        "error_registering": "An error occurred while registering your account. Please try again.",
-        "no_uid_or_username": "No UID or username was provided. Please check your input and try again."
+        "username_taken": "Username is already taken",
+        "error_checking_username": "Error checking username",
+        "error_connecting_server": "Error connecting to the server",
+        "passwords_do_not_match": "Passwords do not match",
+        "please_verify_email": "Please verify your email:",
+        "unable_to_send_verification_email": "Unable to send verification email",
+        "email_used_by_another_account": "Email is already used by another account",
+        "invalid_email_format": "Invalid email format",
+        "password_not_strong_enough": "Password is not strong enough",
+        "action_not_allowed": "This action is not allowed",
+        "error_registering": "Error registering",
+        "no_uid_or_username": "No UID or username"
     },
     "android_permission": {
         "permission_denied": "Permission denied",
@@ -181,7 +181,7 @@
         "audio_file_not_found": "Audio file not found or file is empty.",
         "error_playing_audio": "Error playing audio file:",
         "unable_to_save_file": "Unable to save the file.",
-        "audio_created_successfully": "Voice Generated!",
+        "audio_created_successfully": "Audio created successfully.",
         "download": "Download",
         "close": "Close"
     },
@@ -201,7 +201,7 @@
         "revoke_permission_later": "You can revoke this permission at any time in your settings.",
         "agree": "Agree",
         "disagree": "Disagree"
-    },
+    }
     "enable_email_permission": {
         "email_used": "We've used the email you provided earlier. If you'd like to update it, please visit My Account.",
         "understood": "Understood"
@@ -214,7 +214,7 @@
         "please_type_message": "Please type your message",
         "type_message_in_selected_language": "Type your message in the selected language...",
         "create_sound": "Generate",
-        "unable_to_create_sound": "Unable to generate voice"
+        "unable_to_create_sound": "Unable to generate"
     },
     "appbar_bottom": {
         "thai": "Thai",

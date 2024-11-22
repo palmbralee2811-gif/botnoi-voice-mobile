@@ -119,7 +119,7 @@
     "payment": {
         "buy_points": "ซื้อพ้อยท์",
         "baht": "บาท",
-        "get_points": "ได้รับ {productTitle} พ้อยท์",
+        "get_points": "ได้ {productTitle} พ้อยท์",
         "buy_now": "ซื้อตอนนี้",
         "received_points": "ได้รับพ้อยท์จำนวน {pointsTitle} พ้อยท์",
         "error_occurred": "เกิดข้อผิดพลาด"
@@ -217,7 +217,7 @@
         "unable_to_create_sound": "ไม่สามารสร้างเสียงได้"
     },
     "appbar_bottom": {
-        "thai": "ไทย",
-        "change": "เปลี่ยน"
+        "thai": "Thai",
+        "change": "Change"
     }
 }

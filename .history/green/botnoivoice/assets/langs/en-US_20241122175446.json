@@ -119,7 +119,7 @@
     "payment": {
         "buy_points": "Purchase Points",
         "baht": "THB",
-        "get_points": "Get {productTitle} points",
+        "get_points": "{productTitle} points will be added.",
         "buy_now": "Purchase Now",
         "received_points": "You have received {pointsTitle} points.",
         "error_occurred": "An error occurred during the transaction. Please try again."

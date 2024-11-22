@@ -72,10 +72,10 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   }
 
   String getName(BuildContext context) {
-    print("Current Speaker: $currentSpeaker"); // ตรวจสอบค่าปัจจุบัน
-    if (currentSpeaker == null) return 'Default Name';
-    String locale = Localizations.localeOf(context).languageCode;
-    return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
+  print("Current Speaker: $currentSpeaker"); // ตรวจสอบค่าปัจจุบัน
+  if (currentSpeaker == null) return 'Default Name';
+  String locale = Localizations.localeOf(context).languageCode;
+  return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
   }
 
   void setSpeaker(SpeakerEntity speaker) {
