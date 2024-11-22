@@ -1,4 +1,4 @@
-import 'package:botnoivoice/core/firebase_revenuecat_config.dart';
+import 'package:botnoivoice/core/revenuecat_config.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
