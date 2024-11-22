@@ -1,5 +1,6 @@
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,7 +32,7 @@ class EnableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'เราได้ใช้อีเมลเดิมที่คุณเคยให้ไว้หากต้องการเปลี่ยนแปลงอีเมลกรุณาไปที่บัญชีของฉัน',
+                  'enable_email_permission.email_used'.tr(), //เราได้ใช้อีเมลเดิมที่คุณเคยให้ไว้หากต้องการเปลี่ยนแปลงอีเมลกรุณาไปที่บัญชีของฉัน
                   style: GoogleFonts.prompt(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -41,7 +42,7 @@ class EnableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
                 GradientTextButton(
-                  text: 'เข้าใจแล้ว',
+                  text: 'enable_email_permission.understood'.tr(), //เข้าใจแล้ว
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

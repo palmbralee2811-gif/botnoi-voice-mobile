@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';

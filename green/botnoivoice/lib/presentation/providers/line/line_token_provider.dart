@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/constants/url.dart';
+import 'package:botnoivoice/presentation/constants/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -40,7 +40,7 @@ class LineTokenProvider extends ChangeNotifier {
       return;
     }
 
-    String url = '$urlDomain/api/dashboard/liff';
+    String url = '$baseApiUrl/api/dashboard/liff';
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
       'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ class LineTokenProvider extends ChangeNotifier {
   Future<void> loadRemainingCredits() async {
     if (_jwtToken == null) return;
 
-    String url = '$urlDomain/api/dashboard/get_profile';
+    String url = '$baseApiUrl/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
@@ -98,7 +98,7 @@ class LineTokenProvider extends ChangeNotifier {
   Future<void> loadCredentials() async {
     if (_jwtToken == null) return;
 
-    String url = '$urlDomain/api/service/get_token';
+    String url = '$baseApiUrl/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -20,13 +21,13 @@ class EmailForgetPasswordProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
-          _errorMessage = "ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้";
+          _errorMessage = 'forget_password_provider.no_account_found'.tr(); //ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้
           break;
         case 'invalid-email':
-          _errorMessage = "รูปแบบอีเมลไม่ถูกต้อง";
+          _errorMessage = 'forget_password_provider.invalid_email_format'.tr(); //รูปแบบอีเมลไม่ถูกต้อง
           break;
         default:
-          _errorMessage = "เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน";
+          _errorMessage = 'forget_password_provider.error_sending_reset_email'.tr(); //เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน
           break;
       }
       _logger.e(
@@ -48,16 +49,16 @@ class EmailForgetPasswordProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'expired-action-code':
-          _errorMessage = "ลิงค์นี้หมดอายุแล้ว";
+          _errorMessage = 'forget_password_provider.link_expired'.tr(); //ลิงค์นี้หมดอายุแล้ว
           break;
         case 'invalid-action-code':
-          _errorMessage = "โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว";
+          _errorMessage = 'forget_password_provider.code_incorrect_or_used'.tr(); //โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว
           break;
         case 'weak-password':
-          _errorMessage = "รหัสผ่านใหม่ไม่แข็งแรงพอ";
+          _errorMessage = 'forget_password_provider.weak_new_password'.tr(); //รหัสผ่านใหม่ไม่แข็งแรงพอ
           break;
         default:
-          _errorMessage = "เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน";
+          _errorMessage = 'forget_password_provider.error_resetting_password'.tr(); //เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน
       }
       _logger.e(
           "Error resetting password with code: $code \nMessage: ${e.message} \nCode: ${e.code}");

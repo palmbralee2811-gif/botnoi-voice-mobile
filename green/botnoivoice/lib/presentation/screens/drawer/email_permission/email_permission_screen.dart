@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';

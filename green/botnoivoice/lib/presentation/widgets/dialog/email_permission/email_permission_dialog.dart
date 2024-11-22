@@ -1,6 +1,7 @@
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +35,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'ขออนุญาตในการเก็บข้อมูลอีเมล',
+                  'email_permission_dialog.request_email_permission'.tr(), //ขออนุญาตในการเก็บข้อมูลอีเมล
                   style: GoogleFonts.prompt(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -44,7 +45,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณตามเงื่อนไขการเก็บข้อมูลอีเมลของคุณ โดยข้อมูลนี้จะถูกเก็บรักษาอย่างปลอดภัยและไม่ใช้เพื่อวัตถุประสงค์ทางโฆษณาโดยไม่ได้รับความยินยอม',
+                  'email_permission_dialog.email_permission_info'.tr(), //เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณตามเงื่อนไขการเก็บข้อมูลอีเมลของคุณ โดยข้อมูลนี้จะถูกเก็บรักษาอย่างปลอดภัยและไม่ใช้เพื่อวัตถุประสงค์ทางโฆษณาโดยไม่ได้รับความยินยอม
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -54,7 +55,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'คุณสามารถยกเลิกการอนุญาตได้ในภายหลัง',
+                  'email_permission_dialog.revoke_permission_later'.tr(), //คุณสามารถยกเลิกการอนุญาตได้ในภายหลัง
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -64,7 +65,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
                 GradientTextButton(
-                  text: 'ยินยอม',
+                  text: 'email_permission_dialog.agree'.tr(), //ยินยอม
                   onPressed: () {
                     Navigator.of(context).pop();
                     onPressed();
@@ -72,7 +73,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 GradientCloseButton(
-                  text: 'ไม่ยินยอม',
+                  text: 'email_permission_dialog.disagree'.tr(), //ไม่ยินยอม
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

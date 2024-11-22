@@ -1,5 +1,5 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';

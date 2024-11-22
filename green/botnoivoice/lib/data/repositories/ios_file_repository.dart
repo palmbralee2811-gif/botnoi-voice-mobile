@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
-Future<String> createAppFolder() async {
+Future<String> createiOSAppFolder() async {
   // ดึง directory ของแอพ
-  final Directory appSupportDirectory = await getApplicationDocumentsDirectory();
+  final Directory appSupportDirectory =
+      await getApplicationDocumentsDirectory();
   final Directory appFolder = Directory('${appSupportDirectory.path}/bnv');
 
   if (!(await appFolder.exists())) {

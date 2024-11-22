@@ -1,6 +1,7 @@
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +40,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'ปิดใช้งานการเข้าถึงข้อมูลอีเมล',
+                  'disable_email_permission.disable_email_access'.tr(), //ปิดใช้งานการเข้าถึงข้อมูลอีเมล
                   style: GoogleFonts.prompt(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -49,7 +50,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้',
+                  'disable_email_permission.email_access_disabled_warning'.tr().tr(), //หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -59,7 +60,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'คุณต้องการที่จะปิดใช้งานหรือไม่',
+                  'disable_email_permission.do_you_want_to_disable'.tr(), //คุณต้องการที่จะปิดใช้งานหรือไม่
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -69,7 +70,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
                 GradientTextButton(
-                  text: 'ต้องการ',
+                  text: 'disable_email_permission.yes'.tr(), //ต้องการ
                   onPressed: () {
                     Navigator.of(context).pop();
                     onConfirm();
@@ -77,7 +78,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 GradientCloseButton(
-                  text: 'ไม่ต้องการ',
+                  text: 'disable_email_permission.no'.tr(), //ไม่ต้องการ
                   onPressed: () {
                     Navigator.of(context).pop();
                     onCancel();

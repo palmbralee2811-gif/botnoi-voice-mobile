@@ -1,5 +1,6 @@
-import 'package:botnoivoice/presentation/constants/color.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,7 +32,7 @@ class OfflineEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'ไม่สามารถแก้ไขรหัสผ่านได้ เนื่องจาก การเข้าถึงอีเมลของคุณถูกปิด กรุณา เปิดการอนุญาตให้เข้าถึงอีเมลที่เมนู ความปลอดภัย เพื่อดำเนินการต่อ',
+                  'offline_email_permission.unable_to_change_password'.tr(), //ไม่สามารถแก้ไขรหัสผ่านได้ เนื่องจาก การเข้าถึงอีเมลของคุณถูกปิด กรุณา เปิดการอนุญาตให้เข้าถึงอีเมลที่เมนู ความปลอดภัย เพื่อดำเนินการต่อ
                   style: GoogleFonts.prompt(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
@@ -41,7 +42,7 @@ class OfflineEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 24.h),
                 GradientTextButton(
-                  text: 'เข้าใจแล้ว',
+                  text: 'offline_email_permission.understood'.tr(), //เข้าใจแล้ว
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

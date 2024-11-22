@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/constants/url.dart';
+import 'package:botnoivoice/presentation/constants/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -44,7 +44,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     }
 
     // Get the _jwtToken from the Firebase API
-    String url = '$urlDomain/api/dashboard/firebase_auth';
+    String url = '$baseApiUrl/api/dashboard/firebase_auth';
 
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
@@ -81,7 +81,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     if (_jwtToken == null) return;
 
     // Make the request
-    String url = '$urlDomain/api/dashboard/get_profile';
+    String url = '$baseApiUrl/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
@@ -108,7 +108,7 @@ class GoogleTokenProvider extends ChangeNotifier {
     if (_jwtToken == null) return;
 
     // Make the request
-    String url = '$urlDomain/api/service/get_token';
+    String url = '$baseApiUrl/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',

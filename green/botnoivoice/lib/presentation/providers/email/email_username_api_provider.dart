@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/constants/url.dart';
+import 'package:botnoivoice/presentation/constants/api_url_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -33,7 +33,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
   /// print(response.text)
   /// */
   Future<void> getEmailMobile() async {
-    String url = '$urlDomain/api/dashboard/get_email_mobile';
+    String url = '$baseApiUrl/api/dashboard/get_email_mobile';
 
     // สร้าง query parameters หลายตัว
     Map<String, String> queryParams = {
@@ -85,7 +85,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
   Future<void> postSendUsernameToDatabase(
       String? uid, String? username, String? email) async {
     // API endpoint สำหรับ register user
-    String url = '$urlDomain/api/dashboard/register_mobile';
+    String url = '$baseApiUrl/api/dashboard/register_mobile';
 
     // สร้าง payload ที่ต้องส่งไปใน body ของคำขอ
     Map<String, dynamic> payload = {
@@ -134,7 +134,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
   /// */
   Future<void> getEmailByUsername(String? usernameId) async {
     String url =
-        '$urlDomain/api/dashboard/get_email_mobile?username=$usernameId';
+        '$baseApiUrl/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
@@ -177,7 +177,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
   /// https://api-voice-staging.botnoi.ai/api/dashboard/get_username_id?email=porton555@gmail.com
   /// */
   Future<void> getUsernameByEmail(String? email) async {
-    String url = '$urlDomain/api/dashboard/get_username_id?email=$email';
+    String url = '$baseApiUrl/api/dashboard/get_username_id?email=$email';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'

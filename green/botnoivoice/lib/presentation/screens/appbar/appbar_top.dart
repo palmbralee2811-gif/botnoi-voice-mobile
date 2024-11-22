@@ -4,7 +4,7 @@ import 'package:botnoivoice/presentation/providers/email/email_token_provider.da
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
-import 'package:botnoivoice/presentation/screens/drawer/payment/payment_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
