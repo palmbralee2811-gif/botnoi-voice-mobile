@@ -111,18 +111,18 @@
     },
     "email_permission": {
         "security": "Security",
-        "email_access": "Email Access",
-        "on": "Enabled",
-        "off": "Disabled",
-        "email_access_description": "Enable email access to use the password recovery feature and receive important notifications about your app usage."
+        "email_access": "Email access",
+        "on": "On",
+        "off": "Off",
+        "email_access_description": "So you can use the password recovery feature and allow us to notify you about important information related to your app usage."
     },
     "payment": {
-        "buy_points": "Purchase Points",
-        "baht": "THB",
-        "get_points": "Get {productTitle} points",
-        "buy_now": "Purchase Now",
-        "received_points": "You have received {pointsTitle} points.",
-        "error_occurred": "An error occurred during the transaction. Please try again."
+        "buy_points": "Buy Points",
+        "baht": "Baht",
+        "get_points": "You get {productTitle} points",
+        "buy_now": "Buy Now!",
+        "received_points": "Received {pointsTitle} points",
+        "error_occurred": "An error occurred"
     },
     "change_username_provider": {
         "username_taken": "This username is already in use by another account. Please choose a different username."

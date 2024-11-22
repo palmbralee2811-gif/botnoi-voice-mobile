@@ -1,4 +1,3 @@
-import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/domain/entities/speaker_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -66,16 +65,9 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     notifyListeners();
   }
 
-  SpeakerRepositoryImpl() {
-    // ตั้งค่า Speaker คนแรกเป็นค่าเริ่มต้น
-    currentSpeaker = SpeakerModel.speakerItem[0];
-  }
-
   String getName(BuildContext context) {
-    print("Current Speaker: $currentSpeaker"); // ตรวจสอบค่าปัจจุบัน
-    if (currentSpeaker == null) return 'Default Name';
     String locale = Localizations.localeOf(context).languageCode;
-    return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
+    return locale == 'th' ? $speakerName.thaiName : $speakerName.engName;
   }
 
   void setSpeaker(SpeakerEntity speaker) {

@@ -69,10 +69,11 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   SpeakerRepositoryImpl() {
     // ตั้งค่า Speaker คนแรกเป็นค่าเริ่มต้น
     currentSpeaker = SpeakerModel.speakerItem[0];
+    Provider.of<SpeakerRepositoryImpl>(context, listen: false)
+    .setSpeaker(speaker); // กำหนดค่า Speaker ปัจจุบัน
   }
 
   String getName(BuildContext context) {
-    print("Current Speaker: $currentSpeaker"); // ตรวจสอบค่าปัจจุบัน
     if (currentSpeaker == null) return 'Default Name';
     String locale = Localizations.localeOf(context).languageCode;
     return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
