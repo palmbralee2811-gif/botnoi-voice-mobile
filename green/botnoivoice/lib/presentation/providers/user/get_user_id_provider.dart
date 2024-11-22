@@ -1,7 +1,6 @@
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,12 +18,6 @@ class GetUserIdProvider with ChangeNotifier {
 
   String? _userId;
   String? get userId => _userId;
-
-  /// Get Current Firebase User ID
-  String? get getCurrentFirebaseUserId {
-    final user = FirebaseAuth.instance.currentUser;
-    return user?.uid;
-  }
 
   /// Get User ID with LINE
   Future<void> getUserIdWithLine() async {

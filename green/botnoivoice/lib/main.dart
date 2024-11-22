@@ -26,14 +26,15 @@ import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 // Import easy_localization
 import 'package:easy_localization/easy_localization.dart';
 
-void main() async {
+void main(context) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LineSDK.instance.setup("1656375389").then((_) {
     print("LineSDK Prepared");
   });
 
-  await configureRevenueCat();
+  //TODO: Testing this function!!!
+  await configureRevenueCat(context);
 
   runApp(
     EasyLocalization(
