@@ -43,17 +43,14 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   //เพิ่มสไตล์เสียง
   Set<String> selectedStyles = {};
   String selectedVoiceStyle = ''; // ตัวแปรเก็บเสียงที่ผู้ใช้เลือก
-  String selectedStyle = '';   // สไตล์เสียงที่เลือก
-
+  String selectedStyle = ''; // สไตล์เสียงที่เลือก
 
   //เพิ่มหมวดหมู่
   Set<String> selectedCategories = {}; // เก็บหมวดหมู่ที่เลือก
 
-
-
- // ข้อมูลตัวเลือกต่าง ๆ สำหรับภาษาไทยและภาษาอังกฤษ
+  // ข้อมูลตัวเลือกต่าง ๆ สำหรับภาษาไทยและภาษาอังกฤษ
   // สไตล์เสียงภาษาไทย
-   List<String> voiceStyle = [
+  List<String> voiceStyle = [
     'เสียงขี้เล่น',
     'เสียงจริงจัง',
     'เสียงชัดเจน',
@@ -71,175 +68,184 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     'เสียงเหนือ',
     'เสียงใจเย็น',
     'ใต้'
-  ]; 
+  ];
 
-  // รายการสไตล์เสียงภาษาอังกฤษ 
-List<String> voiceStyleEng = [
-  'Playful',
-  'Serious',
-  'Clear',
-  'Excited',
-  'Deep',
-  'Regional',
-  'Soft',
-  'Smooth',
-  'Cute',
-  'Trustworthy',
-  'Confident',
-  'Sweet',
-  'Warm',
-  'Northeastern',
-  'Northern',
-  'Calm',
-  'Southern'
-];
-  
+  // รายการสไตล์เสียงภาษาอังกฤษ
+  List<String> voiceStyleEng = [
+    'Playful',
+    'Serious',
+    'Clear',
+    'Excited',
+    'Deep',
+    'Regional',
+    'Soft',
+    'Smooth',
+    'Cute',
+    'Trustworthy',
+    'Confident',
+    'Sweet',
+    'Warm',
+    'Northeastern',
+    'Northern',
+    'Calm',
+    'Southern'
+  ];
+
   //หมวดหมู่เสียงภาษาไทย
-  List<String> speechStyle = [
-    'ฟรี',
-    'สไตล์ตัวละคร',
-    'สไตล์ท้องถิ่น',
-    'สไตล์บรรยาย',
-    'สไตล์สปอตโฆษณา',
-    'สไตล์สารคดี',
-    'สไตล์อนิเมะ',
-    'สไตล์อาจารย์',
-    'สไตล์อ่านข่าว',
-    'สไตล์เล่าเรื่อง',
-    'สไตล์เสียงต่างประเทศ',
-  ];  
- 
- // หมวดหมู่เสียงภาษาอังกฤษ
-  List<String> engSpeechStyle = [
-  'Storytelling',
-  'Narrating',
-  'Free',
-  'News Reading',
-  'Advertising Spot',
-  'Character',
-  'Documentary',
-  'Local',
-  'Anime',
-  'Foreign Voice'
+List<String> speechStyle = [
+  'ฟรี',
+  'สไตล์ตัวละคร',
+  'สไตล์ท้องถิ่น',
+  'สไตล์บรรยาย',
+  'สไตล์สปอตโฆษณา',
+  'สไตล์สารคดี',
+  'สไตล์อนิเมะ',
+  'สไตล์อาจารย์',
+  'สไตล์อ่านข่าว',
+  'สไตล์เล่าเรื่อง',
+  'สไตล์เสียงต่างประเทศ',
 ];
+
+  // หมวดหมู่เสียงภาษาอังกฤษ
+  List<String> engSpeechStyle = [
+    'Storytelling',
+    'Narrating',
+    'Free',
+    'News Reading',
+    'Advertising Spot',
+    'Character',
+    'Documentary',
+    'Local',
+    'Anime',
+    'Foreign Voice'
+  ];
 
   @override
   void initState() {
     super.initState();
     language = 'TH'; //กำหนดภาษาเริ่มต้นเป็นไทย
-    gender = '';  // กำหนดให้เริ่มต้นแสดงทุกเพศ
+    gender = ''; // กำหนดให้เริ่มต้นแสดงทุกเพศ
   }
 
   @override
   // build: ฟังก์ชันหลักที่แสดงหน้าจอทั้งหมด รวมถึง AppBar และ body ที่เรียกใช้ buildFilterNavbar
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        title: Padding(
-          padding: EdgeInsets.only(left: 89.w),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            SvgPicture.asset(
-              'assets/images/logo/appbar-icon.svg',
-              width: 30.w,
-              height: 34.h,
-            ),
-          ]),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: const Color(0xFFFFFFFF),
+      title: Align(
+        alignment:const FractionalOffset(0.4, 0.6),
+        child: SvgPicture.asset(
+          'assets/images/logo/appbar-icon.svg',
+          width: 30.w,
+          height: 34.h,
         ),
       ),
-      body: buildFilterNavbar(context),
-    );
-  }
-  
-// buildFilterNavbar: ส่วนหลักของหน้าจอ แบ่งเป็นแถวต่างๆ เช่น แถวสำหรับปุ่มภาษา เพศ Favorite 
+    ),
+    body: buildFilterNavbar(context),
+  );
+}
+
+// buildFilterNavbar: ส่วนหลักของหน้าจอ แบ่งเป็นแถวต่างๆ เช่น แถวสำหรับปุ่มภาษา เพศ Favorite
 // และแถวสำหรับปุ่มตัวกรอง (สไตล์และหมวดหมู่) รวมถึงส่วนแสดงลำโพงและปุ่มยืนยัน
-  Widget buildFilterNavbar(BuildContext context) {
+// เพิ่มการแสดง AlertDialog เมื่อเลือกเสียง
+Widget buildFilterNavbar(BuildContext context) {
   return Column(
     children: [
-      // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
-      Container(
-        height: 50.h,
-        width: 320.w,
-        color: Colors.white,
-        child: Padding(
-          padding: EdgeInsets.only(left: 10.w, right: 10.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildLanguageButtonTrigger(context), // ปุ่มภาษา
-              buildGenderButtonTrigger(context),   // ปุ่มเพศ
-              buildFavoriteButton(),               // ปุ่ม Favorite
-            ],
-          ),
-        ),
-      ),
-      // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
-      Container(
-        width: 320.w,
-        color: Colors.white,
-        padding: const EdgeInsets.only(top: 1, left: 15, right: 15),
-        child: Row(
-          children: [
-            // ปุ่มสำหรับเลือกสไตล์
-            Flexible(
-              flex: 4, // ลดน้ำหนักของปุ่มให้เล็กลง
-              child: buildFilterButton(
-                context,
-                title: selectedStyles.isEmpty
-                    ? 'สไตล์'
-                    : '${selectedStyles.length} สไตล์',
-                icon: Icons.style,
-                items: voiceStyle, // ใช้รายการสไตล์ภาษาไทยเสมอ
-                selectedItems: selectedStyles,
-                onConfirm: (newSelected) {
-                  setState(() {
-                    selectedStyles = newSelected;
-                  });
-                },
-              ),
-            ),
-            const SizedBox(width: 8), // ลดระยะห่างระหว่างปุ่ม
-            // ปุ่มสำหรับเลือกหมวดหมู่
-            Flexible(
-              flex: 4, // ลดน้ำหนักของปุ่มให้เล็กลง
-              child: buildFilterButton(
-                context,
-                title: selectedCategories.isEmpty
-                    ? 'หมวดหมู่'
-                    : '${selectedCategories.length} หมวดหมู่',
-                icon: Icons.category,
-                items: speechStyle, // ใช้รายการหมวดหมู่ภาษาไทยเสมอ
-                selectedItems: selectedCategories,
-                onConfirm: (newSelected) {
-                  setState(() {
-                    selectedCategories = newSelected;
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      // แสดงลำโพง
+      // เนื้อหาหลักของหน้าจอ
       Expanded(
-        child: Container(
-          color: const Color(0xFFFFFFFF),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ishover ? buildFavoriteFilter(context) : buildMultipleSpeaker(context),
+              // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
+              Container(
+                height: 50.h,
+                width: 320.w,
+                color: Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start, // เปลี่ยนจาก spaceBetween
+                    children: [
+                      buildLanguageButtonTrigger(context), // ปุ่มภาษา
+                      SizedBox(width: 10.w),  // เพิ่มระยะห่างระหว่างปุ่มภาษาและเพศ
+                      buildGenderButtonTrigger(context), // ปุ่มเพศ
+                      SizedBox(width: 10.w),  // เพิ่มระยะห่างระหว่างปุ่มเพศและ Favorite
+                      Expanded(  // ใช้ Expanded เพื่อให้ปุ่ม Favorite ยืดหยุ่น
+                        child: buildFavoriteButton(), // ปุ่ม Favorite
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
+              Container(
+                width: 320.w,
+                color: Colors.white,
+                padding: const EdgeInsets.only(top: 1, left: 16, right: 20),
+                child: Row(
+                  children: [
+                    // ปุ่มสำหรับเลือกสไตล์
+                    Flexible(
+                      flex: 4,
+                      child: buildFilterButton(
+                        context,
+                        title: selectedStyles.isEmpty
+                            ? 'สไตล์'
+                            : '${selectedStyles.length} สไตล์',
+                        items: voiceStyle,
+                        selectedItems: selectedStyles,
+                        onConfirm: (newSelected) {
+                          setState(() {
+                            selectedStyles = newSelected;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // ปุ่มสำหรับเลือกหมวดหมู่
+                    Flexible(
+                      flex: 4,
+                      child: buildFilterButton(
+                        context,
+                        title: selectedCategories.isEmpty
+                            ? 'หมวดหมู่'
+                            : '${selectedCategories.length} หมวดหมู่',
+                        items: speechStyle,
+                        selectedItems: selectedCategories,
+                        onConfirm: (newSelected) {
+                          setState(() {
+                            selectedCategories = newSelected;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // แสดงลำโพง
+              Container(
+                color: const Color(0xFFFFFFFF),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ishover
+                        ? buildFavoriteFilter(context)
+                        : buildMultipleSpeaker(context),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
-      // ปุ่ม "ตกลง" ที่ด้านล่างของหน้าจอ
+      // ปุ่ม "ตกลง" ที่ด้านล่างสุดของหน้าจอ
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
         child: SizedBox(
           height: 50.h,
           child: GradientTextButton(
-            text: 'ตกลง', 
+            text: 'ตกลง',
             onPressed: () {
               if (audioPlayer.state == PlayerState.playing) {
                 audioPlayer.stop();
@@ -252,6 +258,7 @@ List<String> voiceStyleEng = [
     ],
   );
 }
+
 
 // buildLanguageButton: แสดง Modal สำหรับเลือกภาษา พร้อมรายการตัวเลือกของภาษาที่รองรับ
   Widget buildLanguageButton(BuildContext context, StateSetter setState) {
@@ -614,76 +621,103 @@ List<String> voiceStyleEng = [
   }
 
 // buildMultipleSpeaker: แสดงรายการลำโพงทั้งหมด (อยู่ในส่วนเนื้อหาหลักของหน้าจอ) โดยจะใช้ข้อมูลที่กรองจาก _filterSpeakers
-Widget buildMultipleSpeaker(BuildContext context) {
-  final filteredItems = _filterSpeakers(); // ดึงรายการที่ผ่านการกรอง
+  Widget buildMultipleSpeaker(BuildContext context) {
+    final filteredItems = _filterSpeakers(); // ดึงรายการที่ผ่านการกรอง
 
-  if (filteredItems.isEmpty) {
-    return Center(
-      child: Text(
-        'ไม่มีผู้พูดที่ตรงกับเงื่อนไข',
-        style: GoogleFonts.prompt(fontSize: 16.sp, color: Colors.black),
+    if (filteredItems.isEmpty) {
+      return Center(
+        child: Text(
+          'ไม่มีผู้พูดที่ตรงกับเงื่อนไข',
+          style: GoogleFonts.prompt(fontSize: 16.sp, color: Colors.black),
+        ),
+      );
+    }
+
+    // ใช้ SingleChildScrollView เพื่อให้กริดสามารถเลื่อนได้
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: 420.h, // ใช้ ScreenUtil เพื่อปรับขนาดตามหน้าจอ
+        width: 320.w, // ใช้ ScreenUtil เพื่อปรับขนาดตามหน้าจอ
+        child: GridView.builder(
+          itemCount: filteredItems.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, // จำนวนคอลัมน์ในกริด
+            crossAxisSpacing: 0,
+            childAspectRatio: 0.8, // ปรับอัตราส่วนของ child แต่ละตัว
+          ),
+          itemBuilder: (context, index) {
+            final data = filteredItems[index];
+            return buildSingleSpeaker(data, index);
+          },
+        ),
       ),
     );
   }
 
-  return SizedBox(
-    height: 420.h,
-    width: 320.w,
-    child: GridView.builder(
-      itemCount: filteredItems.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 0,
-        childAspectRatio: 0.8,
-      ),
-      itemBuilder: (context, index) {
-        final data = filteredItems[index];
-        return buildSingleSpeaker(data, index);
-      },
-    ),
-  );
-}
-
 // _filterSpeakers: ฟังก์ชันกรองลำโพงตามเงื่อนไขที่ผู้ใช้เลือก เช่น ภาษา เพศ สไตล์เสียง หรือหมวดหมู่
-List<SpeakerEntity> _filterSpeakers() {
-  List<SpeakerEntity> filteredSpeakers = [];
+  List<SpeakerEntity> _filterSpeakers() {
+    List<SpeakerEntity> filteredSpeakers = [];
 
-  // กรองลำโพงตามภาษาที่เลือก
-  filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-    return item.language == language;
-  }).toList();
-
-  // หากไม่มีผู้พูดที่ตรงกับภาษาในฟิลด์ language
-  if (filteredSpeakers.isEmpty) {
+    // กรองลำโพงตามภาษาที่เลือก
     filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-      return item.availableLanguage.contains(language?.toLowerCase()) &&
-          item.language != language; // ไม่แสดงผลที่มี language ตรงเป๊ะ
+      return item.language == language;
     }).toList();
+
+    // เพิ่ม Log เพื่อตรวจสอบว่าได้กรองตามภาษาแล้ว
+    logger.w(
+        "Filtered by language ($language): ${filteredSpeakers.length} speakers found");
+
+    // หากไม่มีผู้พูดที่ตรงกับภาษาในฟิลด์ language
+    if (filteredSpeakers.isEmpty) {
+      filteredSpeakers = SpeakerModel.speakerItem.where((item) {
+        return item.availableLanguage.contains(language?.toLowerCase()) &&
+            item.language != language; // ไม่แสดงผลที่มี language ตรงเป๊ะ
+      }).toList();
+
+      logger.w(
+          "Filtered by available language: ${filteredSpeakers.length} speakers found");
+    }
+
+    // กรองตามเพศ (ถ้ามีการเลือก)
+    if (gender != null && gender!.isNotEmpty) {
+      filteredSpeakers =
+          filteredSpeakers.where((item) => item.gender == gender).toList();
+
+      // เพิ่ม Log เพื่อตรวจสอบการกรองเพศ
+      logger.w(
+          "Filtered by gender ($gender): ${filteredSpeakers.length} speakers found");
+    }
+
+    // กรองตามสไตล์เสียง (ถ้ามีการเลือก)
+    if (selectedStyles.isNotEmpty) {
+      filteredSpeakers = filteredSpeakers.where((item) {
+        return item.voiceStyle.any((style) => selectedStyles.contains(style));
+      }).toList();
+
+      // เพิ่ม Log เพื่อตรวจสอบการกรองสไตล์เสียง
+      logger.w(
+          "Filtered by voice style: ${filteredSpeakers.length} speakers found");
+    }
+
+    // กรองตามหมวดหมู่เสียง (speechStyle) (ถ้ามีการเลือก)
+    if (selectedCategories.isNotEmpty) {
+      filteredSpeakers = filteredSpeakers.where((item) {
+        return item.speechStyle
+            .any((category) => selectedCategories.contains(category));
+      }).toList();
+
+      // เพิ่ม Log เพื่อตรวจสอบการกรองหมวดหมู่
+      logger
+          .w("Filtered by category: ${filteredSpeakers.length} speakers found");
+    }
+
+    // เพิ่ม log เพื่อดูจำนวนลำโพงที่ผ่านการกรองแล้ว
+    logger.i("Total speakers after all filters: ${filteredSpeakers.length}");
+
+    return filteredSpeakers;
   }
 
-  // กรองตามเพศ (ถ้ามีการเลือก)
-  if (gender != null && gender!.isNotEmpty) {
-    filteredSpeakers = filteredSpeakers.where((item) => item.gender == gender).toList();
-  }
-
-  // กรองตามสไตล์เสียง (ถ้ามีการเลือก)
-  if (selectedStyles.isNotEmpty) {
-    filteredSpeakers = filteredSpeakers.where((item) {
-      return item.voiceStyle.any((style) => selectedStyles.contains(style));
-    }).toList();
-  }
-
-  // กรองตามหมวดหมู่เสียง (speechStyle) (ถ้ามีการเลือก)
-  if (selectedCategories.isNotEmpty) {
-    filteredSpeakers = filteredSpeakers.where((item) {
-      return item.speechStyle.any((category) => selectedCategories.contains(category));
-    }).toList();
-  }
-
-  return filteredSpeakers;
-}
-
-// buildSingleSpeaker: สร้างการ์ดแสดงลำโพงแต่ละตัว (เรียกใช้ใน buildMultipleSpeaker และ buildFavoriteFilter) 
+// buildSingleSpeaker: สร้างการ์ดแสดงลำโพงแต่ละตัว (เรียกใช้ใน buildMultipleSpeaker และ buildFavoriteFilter)
 // พร้อมปุ่มสำหรับเล่นเสียงและ Favorite
   Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
     return Column(
@@ -918,7 +952,7 @@ List<SpeakerEntity> _filterSpeakers() {
     );
   }
 
-// buildFavoriteFilter: แสดงรายการลำโพงที่ Favorite ไว้ (อยู่ในส่วนเนื้อหาหลักของหน้าจอ) 
+// buildFavoriteFilter: แสดงรายการลำโพงที่ Favorite ไว้ (อยู่ในส่วนเนื้อหาหลักของหน้าจอ)
 // แสดงผลเมื่อผู้ใช้เปิดโหมด Favorite
   Widget buildFavoriteFilter(BuildContext context) {
     return SizedBox(
@@ -949,7 +983,7 @@ List<SpeakerEntity> _filterSpeakers() {
     );
   }
 
-// buildLanguageButtonTrigger: ปุ่มเลือกภาษา (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal 
+// buildLanguageButtonTrigger: ปุ่มเลือกภาษา (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal
 // เพื่อให้ผู้ใช้สามารถเลือกภาษาที่ต้องการ
   Widget buildLanguageButtonTrigger(BuildContext context) {
     return InkWell(
@@ -1023,7 +1057,7 @@ List<SpeakerEntity> _filterSpeakers() {
     );
   }
 
-// buildGenderButtonTrigger: ปุ่มเลือกเพศ (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal 
+// buildGenderButtonTrigger: ปุ่มเลือกเพศ (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal
 // เพื่อให้ผู้ใช้สามารถเลือกเพศที่ต้องการกรองลำโพง
   Widget buildGenderButtonTrigger(BuildContext context) {
     return InkWell(
@@ -1116,72 +1150,99 @@ List<SpeakerEntity> _filterSpeakers() {
     );
   }
 
-// buildFilterButton: ปุ่มเลือกตัวกรอง (สไตล์หรือหมวดหมู่) (อยู่ในแถวที่สองของหน้าจอ) 
+// buildFilterButton: ปุ่มเลือกตัวกรอง (สไตล์หรือหมวดหมู่) (อยู่ในแถวที่สองของหน้าจอ)
 // ใช้สำหรับเปิด Modal ให้ผู้ใช้เลือกสไตล์เสียงหรือหมวดหมู่เสียงที่ต้องการ
-Widget buildFilterButton(
-  BuildContext context, {
-  required String title,
-  required IconData icon,
-  required List<String> items,
-  required Set<String> selectedItems,
-  required ValueChanged<Set<String>> onConfirm,
-}) {
-  return InkWell(
-    onTap: () {
-      showModalSelection(
-        context: context,
-        title: title,
-        items: items,
-        selectedItems: selectedItems,
-        onConfirm: onConfirm,
-      );
-    },
-    child: Container(
-      width: 150.w,
-      height: 35.h,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(4),
-        ),
-        border: Border.all(
-          color: const Color(0xFFE2E3E9),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 16.w, color: const Color(0xFF323130)),
-          SizedBox(width: 6.w),
-          Text(
-            title,
-            style: GoogleFonts.prompt(fontSize: 14.sp),
+  Widget buildFilterButton(
+    BuildContext context, {
+    required String title,
+    required List<String> items,
+    required Set<String> selectedItems,
+    required ValueChanged<Set<String>> onConfirm,
+  }) {
+    bool isExpanded = false; // Local state for the dropdown
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        void toggleExpanded() {
+          setState(() {
+            isExpanded = !isExpanded; // Toggle the expanded state
+          });
+        }
+
+        return InkWell(
+          onTap: () {
+            toggleExpanded(); // Open or close the dropdown
+
+            // Open the Modal Selection
+            showModalSelection(
+              context: context,
+              title: title,
+              items: items,
+              selectedItems: selectedItems,
+              onConfirm: (newSelected) {
+                onConfirm(newSelected); // Update selection
+                toggleExpanded(); // Close the dropdown
+              },
+            ).whenComplete(() {
+              // Reset the state when the modal is dismissed
+              setState(() {
+                isExpanded = false;
+              });
+            });
+          },
+          child: Container(
+            width: 150.w,
+            height: 35.h,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(4),
+              ),
+              border: Border.all(
+                color: const Color(0xFFE2E3E9),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.prompt(fontSize: 14.sp),
+                ),
+                SizedBox(width: 6.w),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up_sharp // ^ when expanded
+                      : Icons.keyboard_arrow_down_sharp, // v when collapsed
+                  size: 20,
+                  color: const Color(0xFF323130),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
-    ),
-  );
-}
+        );
+      },
+    );
+  }
 
 // showModalSelection: แสดง Modal สำหรับเลือกตัวกรอง (สไตล์หรือหมวดหมู่) โดยมีรายการตัวเลือก
 // และปุ่ม "ตกลง" หรือ "ยกเลิก"
-void showModalSelection({
+Future<void> showModalSelection({
   required BuildContext context,
   required String title,
   required List<String> items,
   required Set<String> selectedItems,
   required ValueChanged<Set<String>> onConfirm,
-}) {
-  Set<String> tempSelectedItems = Set.from(selectedItems);
-
-  showModalBottomSheet(
+}) async {
+  await showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.white,
     builder: (BuildContext context) {
+      Set<String> tempSelectedItems = Set.from(selectedItems);
       return FractionallySizedBox(
-        heightFactor: 0.5, // ปรับความสูง Modal
+        heightFactor: 0.6, // เพิ่มขนาด Modal ให้เหมาะสม
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -1206,10 +1267,10 @@ void showModalSelection({
               Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount: 2,  // ปรับให้เหมาะสมกับขนาดของรายการ
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 3.5,
+                    childAspectRatio: 3, // ลดขนาดของรายการให้เล็กลง
                   ),
                   itemCount: items.length,
                   itemBuilder: (context, index) {
@@ -1222,7 +1283,7 @@ void showModalSelection({
                         } else {
                           tempSelectedItems.add(item);
                         }
-                        (context as Element).markNeedsBuild();
+                        (context as Element).markNeedsBuild(); // Update UI
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -1240,7 +1301,7 @@ void showModalSelection({
                           child: Text(
                             item,
                             style: GoogleFonts.prompt(
-                              fontSize: 14.sp,
+                              fontSize: 12.sp, // ขนาดฟอนต์ลดลงเพื่อให้เหมาะสม
                               color: isSelected ? Colors.white : Colors.black,
                             ),
                           ),
@@ -1253,7 +1314,6 @@ void showModalSelection({
               const SizedBox(height: 20),
               Row(
                 children: [
-                  // เปลี่ยนปุ่มจาก "ยกเลิก" เป็น "รีเซ็ต"
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -1261,14 +1321,17 @@ void showModalSelection({
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
+                        minimumSize: Size(double.infinity, 50.h), // เพิ่มขนาดให้ใหญ่ขึ้น
                       ),
                       onPressed: () {
-                        tempSelectedItems.clear(); // รีเซ็ตค่าที่เลือก
-                        (context as Element).markNeedsBuild(); // อัปเดต UI
+                        tempSelectedItems.clear(); // Reset selection
+                        (context as Element).markNeedsBuild(); // Update UI
                       },
                       child: Text(
                         'รีเซ็ต',
-                        style: GoogleFonts.prompt(color: Colors.white),
+                        style: GoogleFonts.prompt(
+                          fontSize: 12.sp,
+                          color: Colors.white),
                       ),
                     ),
                   ),
@@ -1280,14 +1343,17 @@ void showModalSelection({
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
+                        minimumSize: Size(double.infinity, 50.h), // เพิ่มขนาดให้ใหญ่ขึ้น
                       ),
                       onPressed: () {
                         onConfirm(tempSelectedItems);
-                        Navigator.pop(context);
+                        Navigator.pop(context); // Close the modal
                       },
                       child: Text(
                         'ตกลง',
-                        style: GoogleFonts.prompt(color: Colors.white),
+                        style: GoogleFonts.prompt(
+                          fontSize: 12.sp,
+                          color: Colors.white),
                       ),
                     ),
                   ),

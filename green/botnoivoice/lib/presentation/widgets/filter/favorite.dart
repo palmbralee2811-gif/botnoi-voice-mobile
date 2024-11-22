@@ -12,8 +12,8 @@ class Favorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 35.w,
-      height: 35.h,
+      width: 35.w,  // ขนาดที่เหมาะสมกับปุ่มอื่นๆ
+      height: 35.h, // ขนาดที่เหมาะสมกับปุ่มอื่นๆ
       decoration: BoxDecoration(
         gradient: ishover
             ? const LinearGradient(
@@ -40,16 +40,16 @@ class Favorite extends StatelessWidget {
               ishover
                   ? Icon(
                       Icons.favorite,
-                      size: 28.sp,
+                      size: 20.sp, // ขนาดของไอคอนให้เหมาะสม
                       color: Colors.white,
                     )
                   : Icon(
                       Icons.favorite_border,
-                      size: 28.sp,
+                      size: 20.sp, // ขนาดของไอคอนให้เหมาะสม
                       color: Colors.black,
                     ),
             ],
-          )
+          ),
         ],
       ),
     );
