@@ -15,7 +15,7 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
-import 'package:botnoivoice/presentation/providers/user/user_provider.dart';
+import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,7 +37,10 @@ void main() async {
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en', 'US'), Locale('th', 'TH')], // Supported locales
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('th', 'TH')
+      ], // Supported locales
       path: 'assets/langs', // Path to your localization files
       fallbackLocale: const Locale('th', 'TH'), // Fallback locale
       startLocale: const Locale('th', 'TH'), //ภาษาเริ่มต้น
@@ -67,7 +70,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => UserInfoProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
