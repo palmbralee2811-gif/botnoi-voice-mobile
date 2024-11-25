@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/domain/entities/speaker_entity.dart';
-import 'package:botnoivoice/presentation/screens/speaker/Style_model.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -12,6 +11,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/screens/speaker/style_models/voicestyle_th.dart';
+import 'package:botnoivoice/presentation/screens/speaker/style_models/voicestyle_eng.dart';
+import 'package:botnoivoice/presentation/screens/speaker/style_models/speechstyle_th.dart';
+import 'package:botnoivoice/presentation/screens/speaker/style_models/speechstyle_eng.dart';
+
 
 class SpeakerScreen extends StatefulWidget {
   const SpeakerScreen({super.key});
@@ -43,6 +47,11 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   //เพิ่มหมวดหมู่
   Set<String> selectedCategories = {}; // เก็บหมวดหมู่ที่เลือก
+
+    //เพิ่มสไตล์เสียง
+  Set<String> selectedStyles = {};
+  String selectedVoiceStyle = ''; // ตัวแปรเก็บเสียงที่ผู้ใช้เลือก
+  String selectedStyle = ''; // สไตล์เสียงที่เลือก
 
   @override
   void initState() {
@@ -334,7 +343,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     setState),
                 _buildLanguageFilter(
                     'Russia - รัสเซีย',
-                    'assets/images/national_flag/russiaF.png',
+                    'assets/images/national_flag/russia.png',
                     'RU',
                     context,
                     setState),
@@ -1156,143 +1165,151 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
 // showModalSelection: แสดง Modal สำหรับเลือกตัวกรอง (สไตล์หรือหมวดหมู่) โดยมีรายการตัวเลือก
 // และปุ่ม "ตกลง" หรือ "ยกเลิก"
-  Future<void> showModalSelection({
-    required BuildContext context,
-    required String title,
-    required List<String> items,
-    required Set<String> selectedItems,
-    required ValueChanged<Set<String>> onConfirm,
-  }) async {
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      builder: (BuildContext context) {
-        Set<String> tempSelectedItems = Set.from(selectedItems);
-        return FractionallySizedBox(
-          heightFactor: 0.6, // เพิ่มขนาด Modal ให้เหมาะสม
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.prompt(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+// เมื่อเปิด Modal ตัวกรองใหม่จะล้างค่าที่เลือกไว้
+Future<void> showModalSelection({
+  required BuildContext context,
+  required String title,
+  required List<String> items,
+  required Set<String> selectedItems,
+  required ValueChanged<Set<String>> onConfirm,
+}) async {
+  // สร้างตัวแปรใหม่สำหรับเก็บการเลือกชั่วคราว
+  Set<String> tempSelectedItems = Set.from(selectedItems);
+
+  await showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    builder: (BuildContext context) {
+      return FractionallySizedBox(
+        heightFactor: 0.6,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // หัวข้อและปุ่มปิด
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.prompt(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // ปรับให้เหมาะสมกับขนาดของรายการ
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 3, // ลดขนาดของรายการให้เล็กลง
-                    ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      final isSelected = tempSelectedItems.contains(item);
-                      return GestureDetector(
-                        onTap: () {
-                          if (isSelected) {
-                            tempSelectedItems.remove(item);
-                          } else {
-                            tempSelectedItems.add(item);
-                          }
-                          (context as Element).markNeedsBuild(); // Update UI
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, 
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 3,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    final isSelected = tempSelectedItems.contains(item);
+                    return GestureDetector(
+                      onTap: () {
+                        if (isSelected) {
+                          tempSelectedItems.remove(item);
+                        } else {
+                          tempSelectedItems.add(item);
+                        }
+                        (context as Element).markNeedsBuild();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFF01BFFB)
+                              : Colors.white,
+                          border: Border.all(
                             color: isSelected
                                 ? const Color(0xFF01BFFB)
-                                : Colors.white,
-                            border: Border.all(
-                              color: isSelected
-                                  ? const Color(0xFF01BFFB)
-                                  : const Color(0xFFE2E3E9),
-                            ),
-                            borderRadius: BorderRadius.circular(8),
+                                : const Color(0xFFE2E3E9),
                           ),
-                          child: Center(
-                            child: Text(
-                              item,
-                              style: GoogleFonts.prompt(
-                                fontSize: 12.sp, // ขนาดฟอนต์ลดลงเพื่อให้เหมาะสม
-                                color: isSelected ? Colors.white : Colors.black,
-                              ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            item,
+                            style: GoogleFonts.prompt(
+                              fontSize: 12.sp,
+                              color: isSelected ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  // ปุ่ม "รีเซ็ต + ตกลง" ที่จะทำทั้งสองอย่างในปุ่มเดียว
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        minimumSize: Size(double.infinity, 50.h),
+                      ),
+                      onPressed: () {
+                        tempSelectedItems.clear(); // รีเซ็ตค่าทั้งหมด
+                        onConfirm(tempSelectedItems); // ส่งค่าที่เลือกใหม่ไปที่ onConfirm
+                        Navigator.pop(context); // ปิด Modal
+                      },
+                      child: Text(
+                        'รีเซ็ทและตกลง',
+                        style: GoogleFonts.prompt(
+                          fontSize: 12.sp,
+                          color: Colors.white),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          minimumSize: Size(
-                              double.infinity, 50.h), // เพิ่มขนาดให้ใหญ่ขึ้น
+                  const SizedBox(width: 10),
+                  // ปุ่ม "ตกลง" เพื่อยืนยันการเลือก
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF01BFFB),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        onPressed: () {
-                          tempSelectedItems.clear(); // Reset selection
-                          (context as Element).markNeedsBuild(); // Update UI
-                        },
-                        child: Text(
-                          'รีเซ็ต',
-                          style: GoogleFonts.prompt(
-                              fontSize: 12.sp, color: Colors.white),
-                        ),
+                        minimumSize: Size(double.infinity, 50.h),
+                      ),
+                      onPressed: () {
+                        onConfirm(tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
+                        Navigator.pop(context); // ปิด Modal
+                      },
+                      child: Text(
+                        'ตกลง',
+                        style: GoogleFonts.prompt(
+                          fontSize: 12.sp,
+                          color: Colors.white),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF01BFFB),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          minimumSize: Size(
-                              double.infinity, 50.h), // เพิ่มขนาดให้ใหญ่ขึ้น
-                        ),
-                        onPressed: () {
-                          onConfirm(tempSelectedItems);
-                          Navigator.pop(context); // Close the modal
-                        },
-                        child: Text(
-                          'ตกลง',
-                          style: GoogleFonts.prompt(
-                              fontSize: 12.sp, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
+
+
 }
