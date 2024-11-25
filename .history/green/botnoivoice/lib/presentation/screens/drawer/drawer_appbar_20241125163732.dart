@@ -5,7 +5,6 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -182,7 +181,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               size: 24.sp,
               color: const Color(0xFF323130),
             ),
-            title: Text(
+            title: Text( 
               'app_drawer.profile'.tr(), //ข้อมูลส่วนตัว
               style: GoogleFonts.prompt(
                 fontSize: 20.sp,
@@ -247,19 +246,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           SizedBox(height: 10.h),
           InkWell(
             onTap: () {
-              // Show the reusable bottom sheet for language selection
-              showLanguageBottomSheet(
-                context: context,
-                selectedLanguage:
-                    _selectedLanguage, // Assuming _selectedLanguage is defined
-                onLanguageSelected: (language) {
-                  setState(() {
-                    _selectedLanguage =
-                        language; // Update the selected language
-                  });
-                  _saveLanguage(language); // Save the language if needed
-                },
-              );
+              // Show bottom sheet to select language
+              _showLanguageBottomSheet();
             },
             child: ListTile(
               contentPadding: EdgeInsets.only(left: 30.w),
@@ -277,7 +265,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -298,7 +286,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //               child: IconButton(
   //                 icon: const Icon(Icons.close),
   //                 onPressed: () {
-  //                   Navigator.pop(context);
+  //                   Navigator.pop(context); 
   //                 },
   //               ),
   //             ),
@@ -315,7 +303,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //                   fontWeight: _selectedLanguage == 'th'
   //                       ? FontWeight.w600
   //                       : FontWeight
-  //                           .w400,
+  //                           .w400, 
   //                 ),
   //               ),
   //               onTap: () {
@@ -331,7 +319,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //             ListTile(
   //               leading: Image.asset(
   //                 'assets/images/national_flag/english.png',
-  //                 width: 24,
+  //                 width: 24, 
   //                 height: 24,
   //               ),
   //               title: Text(
@@ -341,7 +329,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //                   fontWeight: _selectedLanguage == 'en'
   //                       ? FontWeight.w600
   //                       : FontWeight
-  //                           .w400,
+  //                           .w400, 
   //                 ),
   //               ),
   //               onTap: () {
@@ -351,7 +339,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //                 context.setLocale(const Locale('en', 'US'));
   //                 _saveLanguage('en');
   //                 Navigator.pop(
-  //                     context);
+  //                     context); 
   //               },
   //             ),
   //           ],
