@@ -1255,7 +1255,7 @@ Future<void> showModalSelection({
               const SizedBox(height: 20),
               Row(
                 children: [
-                  // ปุ่ม "รีเซ็ต + ตกลง" ที่จะทำทั้งสองอย่างในปุ่มเดียว
+                  // ปุ่ม "รีเซ็ทและตกลง" ที่จะทำทั้งสองอย่างในปุ่มเดียว
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -1267,8 +1267,7 @@ Future<void> showModalSelection({
                       ),
                       onPressed: () {
                         tempSelectedItems.clear(); // รีเซ็ตค่าทั้งหมด
-                        onConfirm(tempSelectedItems); // ส่งค่าที่เลือกใหม่ไปที่ onConfirm
-                        Navigator.pop(context); // ปิด Modal
+                        (context as Element).markNeedsBuild();  // รีเฟรช UI แต่ไม่ปิด Modal
                       },
                       child: Text(
                         'รีเซ็ทและตกลง',

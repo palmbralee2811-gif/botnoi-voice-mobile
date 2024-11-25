@@ -1,9 +1,11 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
+import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class EmailPermissionScreen extends StatefulWidget {
   const EmailPermissionScreen({super.key});
@@ -13,7 +15,31 @@ class EmailPermissionScreen extends StatefulWidget {
 }
 
 class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
-  bool isEmailAccessEnabled = true; // Initial state for the switch
+  bool isEmailAccessEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEmailPermissionState();
+  }
+
+  /// Load initial email permission state
+  void _loadEmailPermissionState() async {
+    final userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    await userInfoProvider.getUserInfoShowMail(context);
+    setState(() {
+      isEmailAccessEnabled = userInfoProvider.isShowEmail ?? true;
+    });
+  }
+
+  /// Handle updating email permission state
+  void _updateEmailPermissionState(bool isShowEmail) async {
+    final userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    await userInfoProvider.updateUserInfoShowMail(context, isShowEmail);
+    setState(() {
+      isEmailAccessEnabled = isShowEmail;
+    });
+  }
 
   void _showDialog(BuildContext context) {
     showDialog(
@@ -23,7 +49,7 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
             ? const EnableEmailPermissionDialog()
             : DisableEmailPermissionDialog(
                 onConfirm: () {
-                  //TODO: Disable Forget Password with Email
+                  _updateEmailPermissionState(false); // Disable email access
                 },
                 onCancel: () {
                   setState(() {
@@ -42,7 +68,7 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'email_permission.security'.tr(), //ความปลอดภัย
+          'email_permission.security'.tr(),
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16.sp,
@@ -72,7 +98,7 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'email_permission.email_access'.tr(), //การเข้าถึงข้อมูลอีเมล
+                  'email_permission.email_access'.tr(),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16.sp,
@@ -83,7 +109,7 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                 Row(
                   children: [
                     Text(
-                      isEmailAccessEnabled ? 'email_permission.on'.tr() : 'email_permission.off'.tr(), //'เปิด' : 'ปิด'
+                      isEmailAccessEnabled ? 'email_permission.on'.tr() : 'email_permission.off'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14.sp,
@@ -97,7 +123,6 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                           isEmailAccessEnabled = !isEmailAccessEnabled;
                         });
                         _showDialog(context);
-                        //TODO: Call API (UPDATE) method to enable Forget Password with Email
                       },
                       child: Container(
                         width: 50.w,
@@ -146,7 +171,7 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
             ),
             SizedBox(height: 8.h),
             Text(
-              'email_permission.email_access_description'.tr(), //เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณ
+              'email_permission.email_access_description'.tr(),
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 12.sp,

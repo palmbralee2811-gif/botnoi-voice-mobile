@@ -36,8 +36,8 @@ class UserInfoProvider with ChangeNotifier {
   Future<void> getUserInfoShowMail(BuildContext context) async {
     try {
       final userId = await getUserId(context);
-      final response =
-          await _dio.get('$baseApiUrl/db/dashboard/users_info/$userId');
+      final response = await _dio.get(
+          '$baseApiUrl/api/dashboard/get_user_info_un_auth?user_id=$userId');
 
       if (response.statusCode == 200) {
         _isShowEmail = response.data['data']?['show_mail'];
@@ -53,17 +53,14 @@ class UserInfoProvider with ChangeNotifier {
   }
 
   /// Update Email Permission
-  Future<void> postUserInfoShowMail(BuildContext context, bool value) async {
+  Future<void> updateUserInfoShowMail(BuildContext context, bool showEmail) async {
     try {
       final userId = await getUserId(context);
-      final response = await _dio.post(
-        '$baseApiUrl/db/dashboard/users_info_show_email/$userId',
-        data: {'show_email': value},
-      );
+      final response = await _dio.get(
+          '$baseApiUrl/api/dashboard/users_info_show_email?user_id=$userId&show_email=$showEmail');
 
       if (response.statusCode == 200) {
-        _isShowEmail = value;
-        _logger.i("show_email updated successfully to $value");
+        _logger.i("show_email updated successfully. \nUser ID: $userId \nshow_email: $showEmail");
         _clearError();
       } else {
         throw Exception(

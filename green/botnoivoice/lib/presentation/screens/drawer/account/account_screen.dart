@@ -68,6 +68,8 @@ class _AccountScreenState extends State<AccountScreen> {
           Provider.of<EmailUsernameApiProvider>(context, listen: false)
                   .getUsername ??
               "Unknown";
+      //TODO: Check getUserInfoShowMail() is True or False
+      //TODO: If False, show "Email Permission is Disabled" in the UI
       email = emailProvider.user?.email ?? "No email found";
       isEmailLoggedIn = true;
     }

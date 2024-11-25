@@ -10,10 +10,13 @@ class EmailForgetPasswordProvider with ChangeNotifier {
   /// Getter for error message
   String? get errorMessage => _errorMessage;
 
+  Future<void> checkShowEmail(BuildContext context) async {
+    //TODO: Create a new function to call getUserInfoShowMail()
+    //TODO: Show OfflineEmailPermissionDialog(); when disable email permission
+  }
+
   /// Send password reset email if username exists
   Future<void> sendPasswordResetEmail(String email) async {
-    //TODO: Call API (GET) method to check email permission is true or false for use forget password function
-    //TODO: Show OfflineEmailPermissionDialog(); when disable email permission
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       _errorMessage = null;
@@ -21,13 +24,16 @@ class EmailForgetPasswordProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
-          _errorMessage = 'forget_password_provider.no_account_found'.tr(); //ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้
+          _errorMessage = 'forget_password_provider.no_account_found'
+              .tr(); //ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้
           break;
         case 'invalid-email':
-          _errorMessage = 'forget_password_provider.invalid_email_format'.tr(); //รูปแบบอีเมลไม่ถูกต้อง
+          _errorMessage = 'forget_password_provider.invalid_email_format'
+              .tr(); //รูปแบบอีเมลไม่ถูกต้อง
           break;
         default:
-          _errorMessage = 'forget_password_provider.error_sending_reset_email'.tr(); //เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน
+          _errorMessage = 'forget_password_provider.error_sending_reset_email'
+              .tr(); //เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน
           break;
       }
       _logger.e(
@@ -49,16 +55,20 @@ class EmailForgetPasswordProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'expired-action-code':
-          _errorMessage = 'forget_password_provider.link_expired'.tr(); //ลิงค์นี้หมดอายุแล้ว
+          _errorMessage = 'forget_password_provider.link_expired'
+              .tr(); //ลิงค์นี้หมดอายุแล้ว
           break;
         case 'invalid-action-code':
-          _errorMessage = 'forget_password_provider.code_incorrect_or_used'.tr(); //โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว
+          _errorMessage = 'forget_password_provider.code_incorrect_or_used'
+              .tr(); //โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว
           break;
         case 'weak-password':
-          _errorMessage = 'forget_password_provider.weak_new_password'.tr(); //รหัสผ่านใหม่ไม่แข็งแรงพอ
+          _errorMessage = 'forget_password_provider.weak_new_password'
+              .tr(); //รหัสผ่านใหม่ไม่แข็งแรงพอ
           break;
         default:
-          _errorMessage = 'forget_password_provider.error_resetting_password'.tr(); //เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน
+          _errorMessage = 'forget_password_provider.error_resetting_password'
+              .tr(); //เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน
       }
       _logger.e(
           "Error resetting password with code: $code \nMessage: ${e.message} \nCode: ${e.code}");
