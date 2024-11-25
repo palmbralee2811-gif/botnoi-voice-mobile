@@ -9,7 +9,7 @@
       }
     ]
   },
-  "identifier" : "EC55D44F",
+  "identifier" : "F1BC64EB",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -17,7 +17,7 @@
     {
       "displayPrice" : "100.00",
       "familyShareable" : false,
-      "internalID" : "592A9573",
+      "internalID" : "F079A288",
       "localizations" : [
         {
           "description" : "This package will give you 5,000 credits",
@@ -31,12 +31,11 @@
         }
       ],
       "productID" : "mobile_100",
-      "referenceName" : "5,000 Credits",
+      "referenceName" : "5000 Credits",
       "type" : "Consumable"
     }
   ],
   "settings" : {
-    "_askToBuyEnabled" : false,
     "_failTransactionsEnabled" : false,
     "_locale" : "th",
     "_storefront" : "THA",
