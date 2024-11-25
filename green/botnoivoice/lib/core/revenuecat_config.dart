@@ -13,7 +13,11 @@ Future<void> configureRevenueCat(BuildContext context) async {
   await Purchases.configure(
     PurchasesConfiguration("appl_hHLMxSjhEDXVqqqazXdGQsozLmb")
       ..appUserID = userId,
-  );
+  ).then((_) {
+    debugPrint("RevenueCat configured with user ID: $userId");
+  }).catchError((error) {
+    debugPrint("Error configuring RevenueCat: $error");
+  });
 }
 
 /// Get the current user ID from available providers
