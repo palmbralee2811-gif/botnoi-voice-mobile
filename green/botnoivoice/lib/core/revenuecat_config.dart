@@ -6,7 +6,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 
-final logger = Logger();
+final _logger = Logger();
 
 /// Configure RevenueCat with the current user ID
 Future<void> configureRevenueCat(BuildContext context) async {
@@ -16,9 +16,9 @@ Future<void> configureRevenueCat(BuildContext context) async {
       PurchasesConfiguration("appl_hHLMxSjhEDXVqqqazXdGQsozLmb")
         ..appUserID = userId,
     );
-    logger.d("RevenueCat configured with user ID: $userId");
+    _logger.d("RevenueCat configured with user ID: $userId");
   } catch (error) {
-    logger.e("Error configuring RevenueCat", error: error);
+    _logger.e("Error configuring RevenueCat", error: error);
   }
 }
 
@@ -28,8 +28,7 @@ Future<String> getUserId(BuildContext context) async {
     // Try LINE login provider
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     if (lineProvider.isLoggedIn) {
-      //TODO: fix this error by wrong user id
-      final userId = lineProvider.getIdTokenRaw!;
+      final userId = lineProvider.getLineUserId!;
       return userId;
     }
 
