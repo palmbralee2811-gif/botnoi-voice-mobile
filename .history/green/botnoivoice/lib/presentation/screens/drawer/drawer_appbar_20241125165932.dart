@@ -360,4 +360,22 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //     },
   //   );
   // }
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        showLanguageBottomSheet(
+          context: context,
+          selectedLanguage: _selectedLanguage,
+          onLanguageSelected: (language) {
+            setState(() {
+              _selectedLanguage = language;
+            });
+            _saveLanguage(language);
+          },
+        );
+      },
+      child: const Text('Select Language'),
+    );
+  }
 }

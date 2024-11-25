@@ -247,17 +247,21 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           SizedBox(height: 10.h),
           InkWell(
             onTap: () {
-              // Show the reusable bottom sheet for language selection
-              showLanguageBottomSheet(
+              // Show the reusable bottom sheet widget
+              showModalBottomSheet(
                 context: context,
-                selectedLanguage:
-                    _selectedLanguage, // Assuming _selectedLanguage is defined
-                onLanguageSelected: (language) {
-                  setState(() {
-                    _selectedLanguage =
-                        language; // Update the selected language
-                  });
-                  _saveLanguage(language); // Save the language if needed
+                builder: (context) {
+                  return LanguageBottomSheet(
+                    selectedLanguage:
+                        _selectedLanguage, // Pass the current selected language
+                    onLanguageSelected: (language) {
+                      setState(() {
+                        _selectedLanguage =
+                            language; // Update the selected language
+                      });
+                      _saveLanguage(language); // Save the language if needed
+                    },
+                  );
                 },
               );
             },
@@ -360,4 +364,22 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   //     },
   //   );
   // }
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        showLanguageBottomSheet(
+          context: context,
+          selectedLanguage: _selectedLanguage,
+          onLanguageSelected: (language) {
+            setState(() {
+              _selectedLanguage = language;
+            });
+            _saveLanguage(language);
+          },
+        );
+      },
+      child: const Text('Select Language'),
+    );
+  }
 }
