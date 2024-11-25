@@ -1,7 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/domain/entities/speaker_entity.dart';
-import 'package:botnoivoice/presentation/screens/speaker/voice_style_model.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -43,6 +42,27 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   //เพิ่มหมวดหมู่
   Set<String> selectedCategories = {}; // เก็บหมวดหมู่ที่เลือก
+
+
+
+
+
+
+
+
+  // หมวดหมู่เสียงภาษาอังกฤษ
+  List<String> engSpeechStyle = [
+    'Storytelling',
+    'Narrating',
+    'Free',
+    'News Reading',
+    'Advertising Spot',
+    'Character',
+    'Documentary',
+    'Local',
+    'Anime',
+    'Foreign Voice'
+  ];
 
   @override
   void initState() {
