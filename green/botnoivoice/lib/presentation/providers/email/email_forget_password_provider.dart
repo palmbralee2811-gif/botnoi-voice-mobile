@@ -1,7 +1,10 @@
+import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/email_permission/offline_email_permission_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class EmailForgetPasswordProvider with ChangeNotifier {
   String? _errorMessage;
@@ -10,9 +13,30 @@ class EmailForgetPasswordProvider with ChangeNotifier {
   /// Getter for error message
   String? get errorMessage => _errorMessage;
 
-  Future<void> checkShowEmail(BuildContext context) async {
-    //TODO: Create a new function to call getUserInfoShowMail()
-    //TODO: Show OfflineEmailPermissionDialog(); when disable email permission
+  /// Check if the user has permission to show email
+  Future<bool> checkShowEmail(BuildContext context) async {
+    try {
+      final userInfoProvider =
+          Provider.of<UserInfoProvider>(context, listen: false);
+      await userInfoProvider.getUserInfoShowMail(context);
+
+      if (userInfoProvider.isShowEmail == true) {
+        _logger.d("Email permission is enabled.");
+        return true;
+      } else {
+        _logger.e("Email permission is disabled. Showing dialog.");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const OfflineEmailPermissionDialog();
+          },
+        );
+        return false;
+      }
+    } catch (error) {
+      _logger.e("Error checking email permission: $error");
+      return false;
+    }
   }
 
   /// Send password reset email if username exists
