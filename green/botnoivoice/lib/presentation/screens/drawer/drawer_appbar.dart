@@ -5,7 +5,7 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet.dart';
+import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet_app_drawer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
