@@ -1,68 +1,41 @@
+import 'package:botnoivoice/data/repositories/email_permission_repository_impl.dart.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
-import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class EmailPermissionScreen extends StatefulWidget {
+class EmailPermissionScreen extends StatelessWidget {
   const EmailPermissionScreen({super.key});
 
-  @override
-  State<EmailPermissionScreen> createState() => _EmailPermissionScreenState();
-}
-
-class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
-  bool isEmailAccessEnabled = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadEmailPermissionState();
-  }
-
-  /// Load initial email permission state
-  void _loadEmailPermissionState() async {
-    final userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    await userInfoProvider.getUserInfoShowMail(context);
-    setState(() {
-      isEmailAccessEnabled = userInfoProvider.isShowEmail ?? true;
-    });
-  }
-
-  /// Handle updating email permission state
-  void _updateEmailPermissionState(bool isShowEmail) async {
-    final userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
-    await userInfoProvider.updateUserInfoShowMail(context, isShowEmail);
-    setState(() {
-      isEmailAccessEnabled = isShowEmail;
-    });
-  }
-
   void _showDialog(BuildContext context) {
+    final emailPermissionRepositoryImpl = Provider.of<EmailPermissionRepositoryImpl>(context, listen: false);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return isEmailAccessEnabled
-            ? const EnableEmailPermissionDialog()
-            : DisableEmailPermissionDialog(
-                onConfirm: () {
-                  _updateEmailPermissionState(false); // Disable email access
-                },
-                onCancel: () {
-                  setState(() {
-                    isEmailAccessEnabled = true; // Reset toggle to true
-                  });
-                },
-              );
+        if (emailPermissionRepositoryImpl.isEmailAccessEnabled) {
+          return const EnableEmailPermissionDialog();
+        } else {
+          return DisableEmailPermissionDialog(
+            onConfirm: () {
+              emailPermissionRepositoryImpl.setEmailAccessEnabled(false);
+            },
+            onCancel: () {
+              emailPermissionRepositoryImpl.setEmailAccessEnabled(true);
+            },
+          );
+        }
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final emailPermissionRepositoryImpl = Provider.of<EmailPermissionRepositoryImpl>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -109,7 +82,9 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                 Row(
                   children: [
                     Text(
-                      isEmailAccessEnabled ? 'email_permission.on'.tr() : 'email_permission.off'.tr(),
+                      emailPermissionRepositoryImpl.isEmailAccessEnabled
+                          ? 'email_permission.on'.tr()
+                          : 'email_permission.off'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14.sp,
@@ -119,9 +94,9 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                     SizedBox(width: 8.w),
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          isEmailAccessEnabled = !isEmailAccessEnabled;
-                        });
+                        emailPermissionRepositoryImpl.setEmailAccessEnabled(
+                          !emailPermissionRepositoryImpl.isEmailAccessEnabled,
+                        );
                         _showDialog(context);
                       },
                       child: Container(
@@ -129,11 +104,11 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                         height: 30.h,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.r),
-                          gradient: isEmailAccessEnabled
+                          gradient: emailPermissionRepositoryImpl.isEmailAccessEnabled
                               ? const LinearGradient(
                                   colors: [
                                     Color(0xFF9340FF),
-                                    Color(0xFF34BDFA)
+                                    Color(0xFF34BDFA),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -141,14 +116,14 @@ class _EmailPermissionScreenState extends State<EmailPermissionScreen> {
                               : LinearGradient(
                                   colors: [
                                     Colors.grey.shade400,
-                                    Colors.grey.shade600
+                                    Colors.grey.shade600,
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                         ),
                         child: Align(
-                          alignment: isEmailAccessEnabled
+                          alignment: emailPermissionRepositoryImpl.isEmailAccessEnabled
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                           child: Padding(
