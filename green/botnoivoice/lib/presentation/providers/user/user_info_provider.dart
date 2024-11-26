@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 
-//TODO: Testing all functions in this provider!!!
 /// Provider for managing user information
 class UserInfoProvider with ChangeNotifier {
   final Dio _dio = Dio();

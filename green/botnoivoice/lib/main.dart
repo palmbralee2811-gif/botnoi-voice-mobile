@@ -16,7 +16,6 @@ import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
-import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,7 +69,12 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-        ChangeNotifierProvider(create: (_) => EmailPermissionRepositoryImpl()),
+        ChangeNotifierProxyProvider<UserInfoProvider,
+            EmailPermissionRepositoryImpl>(
+          create: (_) => EmailPermissionRepositoryImpl(UserInfoProvider()),
+          update: (_, userInfoProvider, __) =>
+              EmailPermissionRepositoryImpl(userInfoProvider),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
@@ -87,8 +91,7 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            // home: AuthChecker(),
-            home: HomeScreen(),
+            home: AuthChecker(),
             // Add localization delegate
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
