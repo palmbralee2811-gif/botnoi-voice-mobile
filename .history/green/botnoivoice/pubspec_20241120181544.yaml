@@ -1,0 +1,92 @@
+name: botnoivoice
+description: "Botnoi Voice Mobile"
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+14 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
+
+environment:
+  sdk: ">=3.4.3 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # User Interface
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  gradient_borders: ^1.0.1
+  flutter_screenutil: ^5.9.3
+  flutter_styled_toast: ^2.2.1
+
+  # Statate Management
+  provider: ^6.1.2 
+
+  # Google Login
+  firebase_core: ^3.3.0
+  firebase_auth: ^5.1.2
+  google_sign_in: ^6.2.1
+
+  # LINE Login
+  flutter_line_sdk: ^2.3.8
+
+  # Audio Player
+  http: ^1.2.1
+  url_launcher: ^6.0.0
+  audioplayers: ^6.1.0
+  just_audio: ^0.9.39
+  
+  # Language Switcher
+  easy_localization: ^3.0.0
+
+  # Download File, Android Permission, and Open File
+  dio: ^5.6.0
+  path_provider: ^2.1.3
+  open_file_plus: ^3.4.1+1
+  path: ^1.9.0
+  permission_handler: ^11.3.1
+  flutter_downloader: ^1.11.8
+
+  # Debugging Logger
+  logger: ^2.4.0
+  
+  # Check OS Device Version
+  device_info_plus: ^10.1.2
+
+  # Check Email for Register & Forgot Password
+  email_validator: ^3.0.0
+
+  # RevenueCat: In-App Purchase (IAP) Platform supports iOS, Android, Flutter, React Native, Unity and etc.
+  purchases_flutter: ^8.2.1
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: "^0.13.1"
+  flutter_lints: ^4.0.0
+
+flutter_launcher_icons:
+  image_path_android: "assets/app_icon/icon-710x599-android.png"
+  image_path_ios: "assets/app_icon/icon-1024x1024-ios.png"
+  android: true
+  ios: true
+  adaptive_icon_background: "assets/app_icon/background-620x420.png"
+  adaptive_icon_foreground: "assets/app_icon/icon-foreground-432x432.png"
+  adaptive_icon_monochrome: "assets/app_icon/icon-foreground-432x432.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  background_color_ios: "#ffffff"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/app_icon/
+    - assets/images/
+    - assets/images/auth_screen/
+    - assets/images/gender/
+    - assets/images/icon/
+    - assets/images/logo/
+    - assets/images/national_flag/
+    - assets/images/splash_screen/
+    - assets/square_image/
+    - assets/langs/       #assets สำหรับเปลี่ยนภาษาแอป

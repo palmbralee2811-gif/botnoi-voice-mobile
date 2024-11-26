@@ -1,0 +1,225 @@
+{
+    "language": "Language",
+    "thai": "Thai",
+    "englist": "English",
+    "welcome_message": {
+        "line1": "convert text to speech",
+        "line2": "BOTNOI",
+        "line3": "VOICE"
+    },
+    "auth": {
+        "sign_in": "Sign In",
+        "sign_in_with_username_email": "Sign in with username or email",
+        "sign_in_with_line": "Sign in with LINE",
+        "sign_in_with_google": "Sign in with Google",
+        "delete_account_button": "Delete Account"
+    },
+    "sign_in": {
+        "error_occurred": "An error occurred. Please try again.",
+        "welcome_message": "Hello, Botnoi Voice welcomes you",
+        "username_or_email": "Username or email",
+        "please_enter_username_or_email": "Please enter your username or email",
+        "password": "Password",
+        "please_enter_password": "Please enter your password",
+        "register": "Sign Up",
+        "forgot_password": "Forgot password?",
+        "or": "or"
+    },
+    "register": {
+        "sign_up": "Sign Up",
+        "email": "Email",
+        "username": "Username",
+        "password": "Password",
+        "confirm_password": "Confirm password",
+        "or": "or",
+        "please_enter_label": "Please enter your {label}",
+        "password_minimum_length": "Password must be at least 6 characters long",
+        "password_mismatch": "Passwords do not match",
+        "back_to_sign_in": "Back to sign in",
+        "email_invalid_format": "Invalid email format",
+        "username_invalid": "Username is invalid. Please use a-z, A-Z, numbers, and _ or - symbols.",
+        "please_enter_password": "Please enter your password."
+    },
+    "confirm_forget_password": {
+        "check_your_email": "Check your email",
+        "copy_link_from_your_inbox": "Copy the link from your inbox",
+        "link": "Link",
+        "please_enter_link_from_email": "Please enter the link received from your email",
+        "confirm": "Confirm",
+        "link_invalid_try_again": "The link is incorrect. Please try again."
+    },
+    "forget_password": {
+        "forgot_password": "Forgot password",
+        "confirm_email": "Confirm your email to reset your password",
+        "email": "Email",
+        "please_enter_email": "Please enter your email",
+        "invalid_email_format": "Invalid email format",
+        "send": "Send"
+    },
+    "new_password": {
+        "password_reset_success": "Password reset successful",
+        "error_occurred": "An error occurred:",
+        "reset_password": "Reset password",
+        "password_length": "Password must be at least 6 characters long",
+        "password": "Password",
+        "please_enter_password": "Please enter your password",
+        "password_min_length": "Password must be at least 6 characters",
+        "confirm_password": "Confirm password",
+        "password_mismatch": "Passwords do not match",
+        "confirm": "Confirm"
+    },
+    "app_drawer": {
+        "profile": "Profile",
+        "buy_points": "Buy Points",
+        "security": "Security"
+    },
+    "account": {
+        "uid_copy_success": "UID copied successfully",
+        "profile": "Profile",
+        "login_with": "Sign In with",
+        "email": "Email",
+        "username": "Username",
+        "logout": "Sign Out"
+    },
+    "change_email_username": {
+        "username_changed_successfully": "Username changed successfully",
+        "change_username": "Change username",
+        "set_new_username_for_login": "Set a new username for Sign In",
+        "new_username": "New username",
+        "please_enter_your_username": "Please enter your username",
+        "invalid_username": "Invalid username. Please use letters a-z, A-Z, numbers, and underscores or hyphens.",
+        "confirm_new_username": "Confirm new username",
+        "please_confirm_your_username": "Please confirm your username",
+        "usernames_must_match": "Both username fields must match",
+        "confirm": "Confirm"
+    },
+    "delete_account": {
+        "delete_account": "Delete account",
+        "please_read": "Please read",
+        "account_deletion_warning": "Account deletion is irreversible. You will no longer be able to use this account with products and services, remaining points, or subscribed packages. Any privileges and promotions will also no longer be available. Please proceed with caution.",
+        "confirm_account_deletion": "If you are sure you want to delete your account, please press the button",
+        "confirm_account_deletion_button": "Confirm account deletion",
+        "cancel": "Cancel",
+        "confirm_account_deletion_below": "Confirm account deletion below"
+    },
+    "confirm_delete_account": {
+        "unable_to_delete_account": "Unable to delete account. You are not logged in with an email.",
+        "incorrect_password": "Incorrect password",
+        "error_try_again": "An error occurred. Please try again.",
+        "confirm_password": "Confirm password",
+        "confirm_password_to_delete": "Confirm your password to proceed with account deletion.",
+        "please_enter_your_password": "Please enter your password",
+        "confirm": "Confirm"
+    },
+    "email_permission": {
+        "security": "Security",
+        "email_access": "Email Access",
+        "on": "Enabled",
+        "off": "Disabled",
+        "email_access_description": "Enable email access to use the password recovery feature and receive important notifications about your app usage."
+    },
+    "payment": {
+        "buy_points": "Purchase Points",
+        "baht": "THB",
+        "get_points": "Get {productTitle} points",
+        "buy_now": "Purchase Now",
+        "received_points": "You have received {pointsTitle} points.",
+        "error_occurred": "An error occurred during the transaction. Please try again."
+    },
+    "change_username_provider": {
+        "username_taken": "This username is already in use by another account. Please choose a different username."
+    },
+    "delete_account_provider": {
+        "incorrect_password": "The password you entered is incorrect. Please try again.",
+        "error_confirming_password": "An error occurred while confirming your password. Please try again.",
+        "not_logged_in_with_username_and_password": "You are not logged in with a username and password. Please log in to proceed.",
+        "unable_to_delete_account_status_code": "Unable to delete your account. Status code:",
+        "error_deleting_account": "An error occurred while deleting your account:",
+        "not_logged_in_with_user_and_password": "You are not logged in with a username and password. Please log in to proceed.",
+        "account_deleted_successfully": "Your account has been deleted successfully.",
+        "not_logged_in_with_username_and_password_again": "You are not logged in with a username and password. Please log in to continue."
+    },
+    "forget_password_provider": {
+        "no_account_found": "No account associated with this email address was found.",
+        "invalid_email_format": "The email address format you entered is invalid. Please check and try again.",
+        "error_sending_reset_email": "An error occurred while sending the password reset email. Please try again.",
+        "link_expired": "The link you used has expired. Please request a new one.",
+        "code_incorrect_or_used": "The code you entered is incorrect or has already been used.",
+        "weak_new_password": "Your new password is not strong enough. Please choose a stronger password.",
+        "error_resetting_password": "An error occurred while resetting your password. Please try again."
+    },
+    "login_provider": {
+        "invalid_username": "The username you entered is invalid. Please check and try again.",
+        "error_logging_in": "An error occurred while logging in:",
+        "please_verify_email_before_login": "Please verify your email address before logging in.",
+        "please_verify_email": "Please verify your email address:",
+        "invalid_email": "The email address you entered is invalid. Please check and try again.",
+        "incorrect_password": "The password you entered is incorrect. Please try again.",
+        "account_suspended": "This account has been suspended. Please contact support for assistance.",
+        "username_or_password_incorrect": "The username or password you entered is incorrect. Please try again."
+    },
+    "register_provider": {
+        "username_taken": "This username is already in use. Please choose a different username.",
+        "error_checking_username": "An error occurred while checking the username. Please try again.",
+        "error_connecting_server": "An error occurred while connecting to the server. Please check your connection and try again.",
+        "passwords_do_not_match": "The passwords you entered do not match. Please check and try again.",
+        "please_verify_email": "Please verify your email address:",
+        "unable_to_send_verification_email": "We were unable to send the verification email. Please try again.",
+        "email_used_by_another_account": "This email address is already associated with another account.",
+        "invalid_email_format": "The email address format you entered is invalid. Please check and try again.",
+        "password_not_strong_enough": "Your password is not strong enough. Please choose a stronger password.",
+        "action_not_allowed": "This action is not allowed. Please contact support if you believe this is a mistake.",
+        "error_registering": "An error occurred while registering your account. Please try again.",
+        "no_uid_or_username": "No UID or username was provided. Please check your input and try again."
+    },
+    "android_permission": {
+        "permission_denied": "Permission denied",
+        "go_to_settings_to_enable_permission": "Please go to settings to enable file access permission.",
+        "go_to_settings_page": "Go to settings page",
+        "cancel": "Cancel"
+    },
+    "audio_player": {
+        "permission_denied": "Permission denied. Please go to settings.",
+        "audio_file_not_found": "Audio file not found or file is empty.",
+        "error_playing_audio": "Error playing audio file:",
+        "unable_to_save_file": "Unable to save the file.",
+        "audio_created_successfully": "Voice Generated!",
+        "download": "Download",
+        "close": "Close"
+    },
+    "notification": {
+        "close": "Close"
+    },
+    "disable_email_permission": {
+        "disable_email_access": "Disable Email Access",
+        "email_access_disabled_warning": "Disabling email access may restrict you from using the password recovery feature or receiving important notifications about your app usage. Please proceed with caution.",
+        "do_you_want_to_disable": "Are you sure you want to disable email access?",
+        "yes": "Yes",
+        "no": "No"
+    },
+    "email_permission_dialog": {
+        "request_email_permission": "Request for Email Data Collection Permission",
+        "email_permission_info": "To enable password recovery and notify you of important updates about your app usage, we request your permission to collect and store email data securely. Your data will not be used for advertising without your explicit consent.",
+        "revoke_permission_later": "You can revoke this permission at any time in your settings.",
+        "agree": "Agree",
+        "disagree": "Disagree"
+    },
+    "enable_email_permission": {
+        "email_used": "We've used the email you provided earlier. If you'd like to update it, please visit My Account.",
+        "understood": "Understood"
+    },
+    "offline_email_permission": {
+        "unable_to_change_password": "Unable to change the password because email access is disabled. Please enable email access in the Security menu to proceed.",
+        "understood": "Understood"
+    },
+    "home_screen": {
+        "please_type_message": "Please type your message",
+        "type_message_in_selected_language": "Type your message in the selected language...",
+        "create_sound": "Generate",
+        "unable_to_create_sound": "Unable to generate voice"
+    },
+    "appbar_bottom": {
+        "thai": "Thai",
+        "change": "Change"
+    }
+}

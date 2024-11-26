@@ -46,5 +46,4 @@ app.*.map.json
 /.json_models/
 models.jsonc
 
-# Ignore the specific directory
-.history/green/botnoivoice/
+*.history
