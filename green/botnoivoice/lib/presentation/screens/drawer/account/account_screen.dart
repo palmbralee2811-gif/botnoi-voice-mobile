@@ -1,10 +1,13 @@
+import 'package:botnoivoice/data/repositories/email_permission_repository_impl.dart.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
+import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -48,6 +51,8 @@ class _AccountScreenState extends State<AccountScreen> {
         Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    var emailPermissionRepo =
+        Provider.of<EmailPermissionRepositoryImpl>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "No Name";
@@ -68,9 +73,13 @@ class _AccountScreenState extends State<AccountScreen> {
           Provider.of<EmailUsernameApiProvider>(context, listen: false)
                   .getUsername ??
               "Unknown";
-      //TODO: Check getUserInfoShowMail() is True or False
-      //TODO: If False, show "Email Permission is Disabled" in the UI
-      email = emailProvider.user?.email ?? "No email found";
+
+      // ตรวจสอบการอนุญาตในการแสดงอีเมล
+      if (emailPermissionRepo.isEmailAccessEnabled) {
+        email = emailProvider.user?.email ?? "No email found";
+      } else {
+        email = "Email Permission is Disabled.";
+      }
       isEmailLoggedIn = true;
     }
 
@@ -135,8 +144,19 @@ class _AccountScreenState extends State<AccountScreen> {
   void _copyUID() {
     Clipboard.setData(ClipboardData(text: userId));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('account.uid_copy_success'.tr())), //UID คัดลอกเรียบร้อยแล้ว
+      SnackBar(
+          content:
+              Text('account.uid_copy_success'.tr())), //UID คัดลอกเรียบร้อยแล้ว
     );
+  }
+
+  /// Function to check if the user has permission to view the email
+  Future<bool> _checkEmailPermission() async {
+    final emailForgetPassword =
+        Provider.of<EmailForgetPasswordProvider>(context, listen: false);
+
+    final hasEmailPermission = await emailForgetPassword.checkShowEmail(context);
+    return hasEmailPermission; // Return TRUE or FALSE
   }
 
   @override
@@ -267,6 +287,28 @@ class _AccountScreenState extends State<AccountScreen> {
                 : UserInfoRow(
                     title: 'account.username'.tr(), //ชื่อผู้ใช้
                     value: displayName,
+                  ),
+            emailProvider.isLoggedIn &&
+                    emailProvider.user?.providerData[0].providerId == 'password'
+                ? UserInfoRow(
+                    title: 'รหัสผ่าน',
+                    value: '********',
+                    icon: Icons.edit_rounded,
+                    onIconPressed: () async {
+                      final hasPermission = await _checkEmailPermission();
+                      if (hasPermission) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgetPasswordScreen(),
+                          ),
+                        );
+                      }
+                    },
+                  )
+                : const UserInfoRow(
+                    title: '', //ชื่อผู้ใช้
+                    value: '',
                   ),
             const Spacer(),
             GradientTextButton(

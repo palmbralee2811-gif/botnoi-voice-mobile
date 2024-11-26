@@ -11,20 +11,20 @@ class EmailPermissionScreen extends StatelessWidget {
   const EmailPermissionScreen({super.key});
 
   void _showDialog(BuildContext context) {
-    final emailPermissionRepositoryImpl = Provider.of<EmailPermissionRepositoryImpl>(context, listen: false);
+    final emailPermissionRepo = Provider.of<EmailPermissionRepositoryImpl>(context, listen: false);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        if (emailPermissionRepositoryImpl.isEmailAccessEnabled) {
+        if (emailPermissionRepo.isEmailAccessEnabled) {
           return const EnableEmailPermissionDialog();
         } else {
           return DisableEmailPermissionDialog(
-            onConfirm: () {
-              emailPermissionRepositoryImpl.setEmailAccessEnabled(false);
+            onConfirm: () async {
+              await emailPermissionRepo.updateEmailAccessState(context, false);
             },
-            onCancel: () {
-              emailPermissionRepositoryImpl.setEmailAccessEnabled(true);
+            onCancel: () async {
+              await emailPermissionRepo.updateEmailAccessState(context, true);
             },
           );
         }
@@ -34,7 +34,7 @@ class EmailPermissionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emailPermissionRepositoryImpl = Provider.of<EmailPermissionRepositoryImpl>(context);
+    final emailPermissionRepo = Provider.of<EmailPermissionRepositoryImpl>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -82,7 +82,7 @@ class EmailPermissionScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      emailPermissionRepositoryImpl.isEmailAccessEnabled
+                      emailPermissionRepo.isEmailAccessEnabled
                           ? 'email_permission.on'.tr()
                           : 'email_permission.off'.tr(),
                       style: TextStyle(
@@ -94,8 +94,9 @@ class EmailPermissionScreen extends StatelessWidget {
                     SizedBox(width: 8.w),
                     GestureDetector(
                       onTap: () {
-                        emailPermissionRepositoryImpl.setEmailAccessEnabled(
-                          !emailPermissionRepositoryImpl.isEmailAccessEnabled,
+                        emailPermissionRepo.updateEmailAccessState(
+                          context,
+                          !emailPermissionRepo.isEmailAccessEnabled,
                         );
                         _showDialog(context);
                       },
@@ -104,7 +105,7 @@ class EmailPermissionScreen extends StatelessWidget {
                         height: 30.h,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.r),
-                          gradient: emailPermissionRepositoryImpl.isEmailAccessEnabled
+                          gradient: emailPermissionRepo.isEmailAccessEnabled
                               ? const LinearGradient(
                                   colors: [
                                     Color(0xFF9340FF),
@@ -123,7 +124,7 @@ class EmailPermissionScreen extends StatelessWidget {
                                 ),
                         ),
                         child: Align(
-                          alignment: emailPermissionRepositoryImpl.isEmailAccessEnabled
+                          alignment: emailPermissionRepo.isEmailAccessEnabled
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                           child: Padding(
