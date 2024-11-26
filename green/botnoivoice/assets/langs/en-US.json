@@ -1,5 +1,7 @@
 {
     "language": "Language",
+    "thai": "Thai",
+    "english": "English",
     "welcome_message": {
         "line1": "convert text to speech",
         "line2": "BOTNOI",

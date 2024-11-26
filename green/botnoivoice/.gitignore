@@ -6,7 +6,7 @@
 .DS_Store
 .atom/
 .buildlog/
-.history
+.history/
 .svn/
 migrate_working_dir/
 
@@ -45,3 +45,7 @@ app.*.map.json
 # "JSON to Dart Model" generator tracker files locations.
 /.json_models/
 models.jsonc
+
+# Ignore the specific directory
+*.history/green/botnoivoice/
+
