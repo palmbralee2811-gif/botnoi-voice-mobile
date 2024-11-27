@@ -83,120 +83,110 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 // buildFilterNavbar: ส่วนหลักของหน้าจอ แบ่งเป็นแถวต่างๆ เช่น แถวสำหรับปุ่มภาษา เพศ Favorite
 // และแถวสำหรับปุ่มตัวกรอง (สไตล์และหมวดหมู่) รวมถึงส่วนแสดงลำโพงและปุ่มยืนยัน
 // เพิ่มการแสดง AlertDialog เมื่อเลือกเสียง
-  Widget buildFilterNavbar(BuildContext context) {
-    return Column(
-      children: [
-        // เนื้อหาหลักของหน้าจอ
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
+Widget buildFilterNavbar(BuildContext context) {
+  return Column(
+    children: [
+      // กรอบ Filter Navbar ที่ปรับขนาดความสูง
+      Container(
+        height: 110.h, // ความสูงกรอบ Filter
+        width: double.infinity,
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
-                Container(
-                  height: 50.h,
-                  width: 320.w,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10.w, right: 10.w),
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.start, // เปลี่ยนจาก spaceBetween
-                      children: [
-                        buildLanguageButtonTrigger(context), // ปุ่มภาษา
-                        SizedBox(
-                            width: 10.w), // เพิ่มระยะห่างระหว่างปุ่มภาษาและเพศ
-                        buildGenderButtonTrigger(context), // ปุ่มเพศ
-                        SizedBox(
-                            width: 10
-                                .w), // เพิ่มระยะห่างระหว่างปุ่มเพศและ Favorite
-                        Expanded(
-                          // ใช้ Expanded เพื่อให้ปุ่ม Favorite ยืดหยุ่น
-                          child: buildFavoriteButton(), // ปุ่ม Favorite
-                        ),
-                      ],
-                    ),
+                buildLanguageButtonTrigger(context),
+                SizedBox(width: 10.w),
+                buildGenderButtonTrigger(context),
+                SizedBox(width: 10.w),
+                Expanded(child: buildFavoriteButton()),
+              ],
+            ),
+            SizedBox(height: 10.h), // ระยะห่างระหว่างแถว
+            // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
+            Row(
+              children: [
+                Flexible(
+                  flex: 4,
+                  child: buildFilterButton(
+                    context,
+                    title: selectedStyles.isEmpty
+                        ? 'สไตล์'
+                        : '${selectedStyles.length} สไตล์',
+                    items: voiceStyle,
+                    selectedItems: selectedStyles,
+                    onConfirm: (newSelected) {
+                      setState(() {
+                        selectedStyles = newSelected;
+                      });
+                    },
                   ),
                 ),
-                // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
-                Container(
-                  width: 320.w,
-                  color: Colors.white,
-                  padding: const EdgeInsets.only(top: 1, left: 16, right: 20),
-                  child: Row(
-                    children: [
-                      // ปุ่มสำหรับเลือกสไตล์
-                      Flexible(
-                        flex: 4,
-                        child: buildFilterButton(
-                          context,
-                          title: selectedStyles.isEmpty
-                              ? 'สไตล์'
-                              : '${selectedStyles.length} สไตล์',
-                          items: voiceStyle,
-                          selectedItems: selectedStyles,
-                          onConfirm: (newSelected) {
-                            setState(() {
-                              selectedStyles = newSelected;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // ปุ่มสำหรับเลือกหมวดหมู่
-                      Flexible(
-                        flex: 4,
-                        child: buildFilterButton(
-                          context,
-                          title: selectedCategories.isEmpty
-                              ? 'หมวดหมู่'
-                              : '${selectedCategories.length} หมวดหมู่',
-                          items: speechStyle,
-                          selectedItems: selectedCategories,
-                          onConfirm: (newSelected) {
-                            setState(() {
-                              selectedCategories = newSelected;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // แสดงลำโพง
-                Container(
-                  color: const Color(0xFFFFFFFF),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      ishover
-                          ? buildFavoriteFilter(context)
-                          : buildMultipleSpeaker(context),
-                    ],
+                const SizedBox(width: 8),
+                Flexible(
+                  flex: 4,
+                  child: buildFilterButton(
+                    context,
+                    title: selectedCategories.isEmpty
+                        ? 'หมวดหมู่'
+                        : '${selectedCategories.length} หมวดหมู่',
+                    items: speechStyle,
+                    selectedItems: selectedCategories,
+                    onConfirm: (newSelected) {
+                      setState(() {
+                        selectedCategories = newSelected;
+                      });
+                    },
                   ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
-        // ปุ่ม "ตกลง" ที่ด้านล่างสุดของหน้าจอ
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
-          child: SizedBox(
-            height: 50.h,
-            child: GradientTextButton(
-              text: 'ตกลง',
-              onPressed: () {
-                if (audioPlayer.state == PlayerState.playing) {
-                  audioPlayer.stop();
-                }
-                Navigator.pop(context);
-              },
+      ),
+      // ส่วนที่เลื่อนของ Speaker
+      Expanded(
+        child: Container(
+          color: const Color(0xFFFFFFFF),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ishover
+                    ? buildFavoriteFilter(context)
+                    : buildMultipleSpeaker(context),
+              ],
             ),
           ),
         ),
-      ],
-    );
-  }
+      ),
+      // Spacer เพื่อเลื่อนปุ่มขึ้น
+      SizedBox(height: 20.h), // เพิ่มระยะว่าง
+      // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: SizedBox(
+          height: 50.h,
+          child: GradientTextButton(
+            text: 'ตกลง',
+            onPressed: () {
+              if (audioPlayer.state == PlayerState.playing) {
+                audioPlayer.stop();
+              }
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+      SizedBox(height: 40.h), // เพิ่มระยะห่างด้านล่าง
+    ],
+  );
+}
+
 
 // buildLanguageButton: แสดง Modal สำหรับเลือกภาษา พร้อมรายการตัวเลือกของภาษาที่รองรับ
   Widget buildLanguageButton(BuildContext context, StateSetter setState) {
