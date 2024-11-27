@@ -1,5 +1,11 @@
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/domain/entities/apple_product_entity.dart';
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -23,6 +29,30 @@ void showPaymentDialog(BuildContext context) {
       return _PaymentBottomSheetContent(product: product);
     },
   );
+}
+
+Future<void> _loadRemainingCredits(BuildContext context) async {
+  final googleProvider =
+      Provider.of<GoogleLoginProvider>(context, listen: false);
+  final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+  final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+
+  if (googleProvider.isLoggedIn &&
+      googleProvider.user?.providerData[0].providerId == 'google.com') {
+    await Provider.of<GoogleTokenProvider>(context, listen: false)
+        .loadRemainingCredits();
+  }
+
+  if (lineProvider.isLoggedIn) {
+    await Provider.of<LineTokenProvider>(context, listen: false)
+        .loadRemainingCredits();
+  }
+
+  if (emailProvider.isLoggedIn &&
+      emailProvider.user?.providerData[0].providerId == 'password') {
+    await Provider.of<EmailTokenProvider>(context, listen: false)
+        .loadRemainingCredits();
+  }
 }
 
 class _PaymentBottomSheetContent extends StatelessWidget {
@@ -77,7 +107,9 @@ class _PaymentBottomSheetContent extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Text(
-                'payment.get_points'.tr(namedArgs: {'productTitle': product.title}), //ได้ ${product.title} พ้อยท์
+                'payment.get_points'.tr(namedArgs: {
+                  'productTitle': product.title
+                }), //ได้ ${product.title} พ้อยท์
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w600,
@@ -109,9 +141,15 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       if (paymentProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: 'payment.received_points'.tr(namedArgs: {'pointsTitle': title}), //ได้รับพ้อยท์จำนวน $title พ้อยท์
-          onPressed: () {},
+          text: 'payment.received_points'.tr(namedArgs: {
+            'pointsTitle': title
+          }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
+          onPressed: () async {
+            await _loadRemainingCredits(context);
+          },
         ).showCheckmarkModal(context);
+        /// Refresh Points After Purchase (In-App Purchase: IAP)
+        await _loadRemainingCredits(context);
       } else {
         NotificationDialog(
           context: context,
