@@ -250,8 +250,6 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               // Show the reusable bottom sheet for language selection
               showLanguageBottomSheet(
                 context: context,
-                selectedLanguage:
-                    _selectedLanguage, // Assuming _selectedLanguage is defined
                 onLanguageSelected: (language) {
                   setState(() {
                     _selectedLanguage =

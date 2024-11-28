@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 void showLanguageBottomSheet({
   required BuildContext context,
-  required String selectedLanguage,
   required Function(String) onLanguageSelected,
-}) {
+}) async {
+  // Load the previously selected language
+  String selectedLanguage = await loadSelectedLanguage();
+
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
@@ -44,8 +46,9 @@ void showLanguageBottomSheet({
             ),
             SizedBox(height: 15.h),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 // On selecting Thai language
+                await saveSelectedLanguage('th');
                 onLanguageSelected('th');
                 context.setLocale(const Locale('th', 'TH'));
 
@@ -53,7 +56,7 @@ void showLanguageBottomSheet({
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => const HomeScreen(), // Replace with your current page widget
+                    builder: (BuildContext context) => const HomeScreen(),
                   ),
                 );
               },
@@ -71,7 +74,7 @@ void showLanguageBottomSheet({
                     ),
                     SizedBox(width: 20.w),
                     Text(
-                      'thai'.tr(),
+                      'ไทย',
                       style: GoogleFonts.prompt(
                         fontSize: 14.sp,
                         fontWeight: selectedLanguage == 'th'
@@ -84,8 +87,9 @@ void showLanguageBottomSheet({
               ),
             ),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 // On selecting English language
+                await saveSelectedLanguage('en');
                 onLanguageSelected('en');
                 context.setLocale(const Locale('en', 'US'));
 
@@ -93,7 +97,7 @@ void showLanguageBottomSheet({
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => const HomeScreen(), // Replace with your current page widget
+                    builder: (BuildContext context) => const HomeScreen(),
                   ),
                 );
               },
@@ -111,7 +115,7 @@ void showLanguageBottomSheet({
                     ),
                     SizedBox(width: 20.w),
                     Text(
-                      'english'.tr(),
+                      'English',
                       style: GoogleFonts.prompt(
                         fontSize: 14.sp,
                         fontWeight: selectedLanguage == 'en'
@@ -130,3 +134,14 @@ void showLanguageBottomSheet({
   );
 }
 
+// Save the selected language in shared preferences
+Future<void> saveSelectedLanguage(String languageCode) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('selected_language', languageCode);
+}
+
+// Load the selected language from shared preferences
+Future<String> loadSelectedLanguage() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('selected_language') ?? 'en'; // Default to 'en' if no language is set
+}

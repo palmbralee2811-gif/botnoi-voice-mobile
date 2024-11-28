@@ -70,16 +70,24 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     // ตั้งค่า Speaker คนแรกเป็นค่าเริ่มต้น
     currentSpeaker = SpeakerModel.speakerItem[0];
   }
-
-  String getName(BuildContext context) {
-    print("Current Speaker: $currentSpeaker"); // ตรวจสอบค่าปัจจุบัน
-    if (currentSpeaker == null) return 'Default Name';
-    String locale = Localizations.localeOf(context).languageCode;
-    return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
-  }
-
+  // ฟังก์ชันที่ตั้งค่า currentSpeaker
   void setSpeaker(SpeakerEntity speaker) {
     currentSpeaker = speaker;
-    notifyListeners(); // แจ้ง Widget ให้รีเฟรช
+    notifyListeners(); // แจ้งให้ widget รีเฟรชเมื่อข้อมูลเปลี่ยนแปลง
+  }
+
+  String getName(BuildContext context) {
+    // ตรวจสอบว่า currentSpeaker มีค่าไม่เป็น null
+    if (currentSpeaker == null) {
+      print("Current Speaker: No speaker selected");
+      return 'Default Name'; // ถ้าไม่มี speaker ให้ใช้ Default Name
+    }
+
+    // ถ้ามี speaker ให้แสดงชื่อของ speaker คนปัจจุบัน
+    print(
+        "Current Speaker: ${currentSpeaker!.thaiName}"); // หรือ engName ก็ได้ตามต้องการ
+
+    String locale = Localizations.localeOf(context).languageCode;
+    return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
   }
 }

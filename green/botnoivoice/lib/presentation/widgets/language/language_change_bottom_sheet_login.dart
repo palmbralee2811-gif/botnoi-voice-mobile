@@ -1,5 +1,4 @@
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
-import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
