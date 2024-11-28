@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -9,13 +11,17 @@ import 'package:logger/logger.dart';
 final _logger = Logger();
 
 /// Configure RevenueCat with the current user ID
+//TODO: Check Platform OS When Call This Function
 Future<void> configureRevenueCat(BuildContext context) async {
   try {
     final userId = await getUserId(context);
-    await Purchases.configure(
-      PurchasesConfiguration("appl_hHLMxSjhEDXVqqqazXdGQsozLmb")
-        ..appUserID = userId,
-    );
+    //TODO: Check Platform OS
+    if (Platform.isIOS) {
+      await Purchases.configure(
+        PurchasesConfiguration("appl_hHLMxSjhEDXVqqqazXdGQsozLmb")
+          ..appUserID = userId,
+      );
+    }
     _logger.d("RevenueCat configured with user ID: $userId");
   } catch (error) {
     _logger.e("Error configuring RevenueCat", error: error);

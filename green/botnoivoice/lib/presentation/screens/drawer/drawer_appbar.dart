@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -95,6 +97,9 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
 
   @override
   Widget build(BuildContext context) {
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
+
     return Drawer(
       width: 257.w,
       elevation: 16,
@@ -199,52 +204,57 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               );
             },
           ),
-          SizedBox(height: 10.h),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w),
-            leading: Icon(
-              Icons.credit_card,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
-              style: GoogleFonts.prompt(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
+          if (Platform.isIOS) SizedBox(height: 10.h),
+          if (Platform.isIOS)
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w),
+              leading: Icon(
+                Icons.credit_card,
+                size: 24.sp,
                 color: const Color(0xFF323130),
               ),
-            ),
-            onTap: () {
-              showPaymentDialog(context);
-            },
-          ),
-          SizedBox(height: 10.h),
-          ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w),
-            leading: Icon(
-              Icons.security_outlined,
-              size: 24.sp,
-              color: const Color(0xFF323130),
-            ),
-            title: Text(
-              'app_drawer.security'.tr(), //ความปลอดภัย
-              style: GoogleFonts.prompt(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EmailPermissionScreen(),
+              title: Text(
+                'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
+                style: GoogleFonts.prompt(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
                 ),
-              );
-            },
-          ),
+              ),
+              onTap: () {
+                showPaymentDialog(context);
+              },
+            ),
           SizedBox(height: 10.h),
+          if (emailProvider.isLoggedIn &&
+              emailProvider.user?.providerData[0].providerId == 'password')
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 30.w),
+              leading: Icon(
+                Icons.security_outlined,
+                size: 24.sp,
+                color: const Color(0xFF323130),
+              ),
+              title: Text(
+                'app_drawer.security'.tr(), //ความปลอดภัย
+                style: GoogleFonts.prompt(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF323130),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EmailPermissionScreen(),
+                  ),
+                );
+              },
+            ),
+          if (emailProvider.isLoggedIn &&
+              emailProvider.user?.providerData[0].providerId == 'password')
+            SizedBox(height: 10.h),
           InkWell(
             onTap: () {
               // Show the reusable bottom sheet for language selection
