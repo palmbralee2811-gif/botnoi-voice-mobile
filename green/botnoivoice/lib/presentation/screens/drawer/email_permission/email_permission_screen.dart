@@ -20,10 +20,7 @@ class EmailPermissionScreen extends StatelessWidget {
               await Provider.of<UserInfoProvider>(context, listen: false)
                   .updateUserInfoShowMail(context, false);
             },
-            onCancel: () async {
-              await Provider.of<UserInfoProvider>(context, listen: false)
-                  .updateUserInfoShowMail(context, true);
-            },
+            onCancel: () {},
           );
         } else {
           return const EnableEmailPermissionDialog();
