@@ -1,4 +1,3 @@
-import 'package:botnoivoice/data/repositories/email_permission_repository_impl.dart.dart';
 import 'package:botnoivoice/domain/repositories/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -6,6 +5,7 @@ import 'package:botnoivoice/presentation/providers/email/email_username_api_prov
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
@@ -51,8 +51,8 @@ class _AccountScreenState extends State<AccountScreen> {
         Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-    var emailPermissionRepo =
-        Provider.of<EmailPermissionRepositoryImpl>(context, listen: false);
+    var userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "No Name";
@@ -75,7 +75,7 @@ class _AccountScreenState extends State<AccountScreen> {
               "Unknown";
 
       // ตรวจสอบการอนุญาตในการแสดงอีเมล
-      if (emailPermissionRepo.isEmailAccessEnabled) {
+      if (userInfoProvider.isShowEmail) {
         email = emailProvider.user?.email ?? "No email found";
       } else {
         email = "Email Permission is Disabled.";
@@ -155,7 +155,8 @@ class _AccountScreenState extends State<AccountScreen> {
     final emailForgetPassword =
         Provider.of<EmailForgetPasswordProvider>(context, listen: false);
 
-    final hasEmailPermission = await emailForgetPassword.checkShowEmail(context);
+    final hasEmailPermission =
+        await emailForgetPassword.checkShowEmail(context);
     return hasEmailPermission; // Return TRUE or FALSE
   }
 

@@ -1,9 +1,9 @@
 import 'package:botnoivoice/presentation/constants/api_url_config.dart';
+import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 
 /// Provider for managing user information
 class UserInfoProvider with ChangeNotifier {
@@ -11,9 +11,9 @@ class UserInfoProvider with ChangeNotifier {
   final Logger _logger = Logger();
 
   String? _errorMessage;
-  bool? _isShowEmail;
+  bool _isShowEmail = false;
 
-  bool? get isShowEmail => _isShowEmail;
+  bool get isShowEmail => _isShowEmail;
   String? get errorMessage => _errorMessage;
 
   /// Fetch User ID from Email Provider
@@ -52,23 +52,27 @@ class UserInfoProvider with ChangeNotifier {
   }
 
   /// Update Email Permission
-  Future<void> updateUserInfoShowMail(BuildContext context, bool showEmail) async {
-    try {
-      final userId = await getUserId(context);
-      final response = await _dio.get(
-          '$baseApiUrl/api/dashboard/users_info_show_email?user_id=$userId&show_email=$showEmail');
+Future<void> updateUserInfoShowMail(BuildContext context, bool showEmail) async {
+  try {
+    final userId = await getUserId(context);
+    // DO NOT CHANGE THIS METHOD, GET IS CORRECT!!!
+    final response = await _dio.get(
+        '$baseApiUrl/api/dashboard/users_info_show_email?user_id=$userId&show_email=$showEmail');
 
-      if (response.statusCode == 200) {
-        _logger.i("show_email updated successfully. \nUser ID: $userId \nshow_email: $showEmail");
-        _clearError();
-      } else {
-        throw Exception(
-            "Failed to update show_email. Status code: ${response.statusCode}");
-      }
-    } catch (error) {
-      _setError("Error updating show_email: $error");
+    if (response.statusCode == 200) {
+      _isShowEmail = showEmail; // Update the value
+      _logger.i("show_email updated successfully. \nUser ID: $userId \nshow_email: $showEmail");
+      notifyListeners(); // Notify the listeners to update the UI
+      _clearError();
+    } else {
+      throw Exception(
+          "Failed to update show_email. Status code: ${response.statusCode}");
     }
+  } catch (error) {
+    _setError("Error updating show_email: $error");
   }
+}
+
 
   /// Set error message and notify listeners
   void _setError(String message) {

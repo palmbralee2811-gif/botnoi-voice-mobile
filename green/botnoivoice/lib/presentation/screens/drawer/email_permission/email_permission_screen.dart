@@ -1,5 +1,5 @@
-import 'package:botnoivoice/data/repositories/email_permission_repository_impl.dart.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -10,23 +10,23 @@ import 'package:provider/provider.dart';
 class EmailPermissionScreen extends StatelessWidget {
   const EmailPermissionScreen({super.key});
 
-  void _showDialog(BuildContext context) {
-    final emailPermissionRepo = Provider.of<EmailPermissionRepositoryImpl>(context, listen: false);
-
+  void _showDialog(BuildContext context, bool showMail) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        if (emailPermissionRepo.isEmailAccessEnabled) {
-          return const EnableEmailPermissionDialog();
-        } else {
+        if (showMail) {
           return DisableEmailPermissionDialog(
             onConfirm: () async {
-              await emailPermissionRepo.updateEmailAccessState(context, false);
+              await Provider.of<UserInfoProvider>(context, listen: false)
+                  .updateUserInfoShowMail(context, false);
             },
             onCancel: () async {
-              await emailPermissionRepo.updateEmailAccessState(context, true);
+              await Provider.of<UserInfoProvider>(context, listen: false)
+                  .updateUserInfoShowMail(context, true);
             },
           );
+        } else {
+          return const EnableEmailPermissionDialog();
         }
       },
     );
@@ -34,129 +34,111 @@ class EmailPermissionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emailPermissionRepo = Provider.of<EmailPermissionRepositoryImpl>(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'email_permission.security'.tr(),
+          tr('email_permission.security'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16.sp,
             color: kDark,
           ),
-          textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: kDark,
-            size: 24.sp,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: Icon(Icons.arrow_back_ios, color: kDark, size: 24.sp),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'email_permission.email_access'.tr(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.sp,
-                    color: kDark,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      emailPermissionRepo.isEmailAccessEnabled
-                          ? 'email_permission.on'.tr()
-                          : 'email_permission.off'.tr(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14.sp,
-                        color: kDark,
-                      ),
+        child: Consumer<UserInfoProvider>(
+          builder: (_, userInfoProvider, __) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    tr('email_permission.email_access'),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      color: kDark,
                     ),
-                    SizedBox(width: 8.w),
-                    GestureDetector(
-                      onTap: () {
-                        emailPermissionRepo.updateEmailAccessState(
-                          context,
-                          !emailPermissionRepo.isEmailAccessEnabled,
-                        );
-                        _showDialog(context);
-                      },
-                      child: Container(
-                        width: 50.w,
-                        height: 30.h,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          gradient: emailPermissionRepo.isEmailAccessEnabled
-                              ? const LinearGradient(
-                                  colors: [
-                                    Color(0xFF9340FF),
-                                    Color(0xFF34BDFA),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                )
-                              : LinearGradient(
-                                  colors: [
-                                    Colors.grey.shade400,
-                                    Colors.grey.shade600,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        userInfoProvider.isShowEmail
+                            ? tr('email_permission.on')
+                            : tr('email_permission.off'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.sp,
+                          color: kDark,
                         ),
-                        child: Align(
-                          alignment: emailPermissionRepo.isEmailAccessEnabled
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.all(2.w),
-                            child: Container(
-                              width: 24.w,
-                              height: 24.h,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
+                      ),
+                      SizedBox(width: 8.w),
+                      GestureDetector(
+                        onTap: () {
+                          _showDialog(context, userInfoProvider.isShowEmail);
+                        },
+                        child: Container(
+                          width: 50.w,
+                          height: 30.h,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.r),
+                            gradient: LinearGradient(
+                              colors: userInfoProvider.isShowEmail
+                                  ? [
+                                      const Color(0xFF9340FF),
+                                      const Color(0xFF34BDFA)
+                                    ]
+                                  : [
+                                      Colors.grey.shade400,
+                                      Colors.grey.shade600,
+                                    ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Align(
+                            alignment: userInfoProvider.isShowEmail
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.all(2.w),
+                              child: Container(
+                                width: 24.w,
+                                height: 24.h,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              'email_permission.email_access_description'.tr(),
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 12.sp,
-                color: kDark,
+                    ],
+                  ),
+                ],
               ),
-              textAlign: TextAlign.left,
-            ),
-            SizedBox(height: 16.h),
-          ],
+              SizedBox(height: 8.h),
+              Text(
+                tr('email_permission.email_access_description'),
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12.sp,
+                  color: kDark,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

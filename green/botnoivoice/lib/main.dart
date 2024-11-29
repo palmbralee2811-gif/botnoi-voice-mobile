@@ -1,4 +1,3 @@
-import 'package:botnoivoice/data/repositories/email_permission_repository_impl.dart.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -69,12 +68,6 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-        ChangeNotifierProxyProvider<UserInfoProvider,
-            EmailPermissionRepositoryImpl>(
-          create: (_) => EmailPermissionRepositoryImpl(UserInfoProvider()),
-          update: (_, userInfoProvider, __) =>
-              EmailPermissionRepositoryImpl(userInfoProvider),
-        ),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
