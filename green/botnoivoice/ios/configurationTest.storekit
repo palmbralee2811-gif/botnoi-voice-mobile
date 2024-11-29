@@ -9,7 +9,7 @@
       }
     ]
   },
-  "identifier" : "1AF44D6E",
+  "identifier" : "B81A452C",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -17,11 +17,11 @@
     {
       "displayPrice" : "100.00",
       "familyShareable" : false,
-      "internalID" : "83D8BDD3",
+      "internalID" : "643222C9",
       "localizations" : [
         {
-          "description" : "This package will give you 5,000 credits",
-          "displayName" : "5,000 Credits",
+          "description" : "This package will give you 5,000 points",
+          "displayName" : "5,000 Points",
           "locale" : "en_US"
         },
         {

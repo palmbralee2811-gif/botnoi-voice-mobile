@@ -18,9 +18,9 @@ Future<void> configureRevenueCat(BuildContext context) async {
     //TODO: Check Platform OS
     if (Platform.isIOS) {
       await Purchases.configure(
-        PurchasesConfiguration("appl_hHLMxSjhEDXVqqqazXdGQsozLmb")
+        PurchasesConfiguration("appl_mImKODlZTfTPWctkaQrVLpkMUuz")
           ..appUserID = userId,
-      );
+      ); 
     }
     _logger.d("RevenueCat configured with user ID: $userId");
   } catch (error) {
