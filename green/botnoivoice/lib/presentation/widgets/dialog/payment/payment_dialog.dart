@@ -115,6 +115,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       await paymentProvider.handlePurchase(product);
 
       if (paymentProvider.errorMessage == null) {
+        await _loadRemainingCredits(context);
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
@@ -138,6 +139,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         text: "${'payment.error_occurred'.tr()} $e", //เกิดข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
+    } finally {
+      await _loadRemainingCredits(context);
     }
   }
 
