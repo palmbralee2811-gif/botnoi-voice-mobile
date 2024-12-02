@@ -135,7 +135,7 @@
         "not_logged_in_with_username_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",
         "unable_to_delete_account_status_code": "ไม่สามารถลบบัญชีผู้ใช้ได้ รหัสสถานะ:",
         "error_deleting_account": "เกิดข้อผิดพลาดในการลบบัญชี:",
-        "not_logged_in_with_user_and_password": "ไม่ได้เข้าสู่ระบบด้วยผู้ใช้และรหัสผ่าน",
+        "not_logged_in_with_user_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",
         "account_deleted_successfully": "ลบบัญชีสำเร็จ",
         "not_logged_in_with_username_and_password_again": "ไม่ได้เข้าสู่ระบบด้วยผู้ใช้งานและรหัสผ่าน"
     },
@@ -151,7 +151,7 @@
     "login_provider": {
         "invalid_username": "ชื่อผู้ใช้งานไม่ถูกต้อง",
         "error_logging_in": "เกิดข้อผิดพลาดในการเข้าสู่ระบบ:",
-        "please_verify_email_before_login": "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ",
+        "please_verify_email_before_login": "กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ",
         "please_verify_email": "กรุณายืนยันอีเมล:",
         "invalid_email": "อีเมลไม่ถูกต้อง",
         "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
@@ -216,7 +216,7 @@
         "please_type_message": "กรุณาพิมพ์ข้อความ",
         "type_message_in_selected_language": "พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .",
         "create_sound": "สร้างเสียง",
-        "unable_to_create_sound": "ไม่สามารสร้างเสียงได้"
+        "unable_to_create_sound": "ไม่สามารถสร้างเสียงได้"
     },
     "appbar_bottom": {
         "thai": "ไทย",

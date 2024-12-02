@@ -42,7 +42,7 @@
     },
     "confirm_forget_password": {
         "check_your_email": "Check your email",
-        "copy_link_from_your_inbox": "Copy the link from your inbox",
+        "copy_link_from_your_inbox": "Copy the link from your email inbox",
         "link": "Link",
         "please_enter_link_from_email": "Please enter the link received from your email",
         "confirm": "Confirm",
