@@ -139,7 +139,7 @@ class LoginScreen extends StatelessWidget {
                           ],
                         ),
                         style: GoogleFonts.prompt(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           fontSize: 20.sp,
                           decoration: TextDecoration.none,
                         ),

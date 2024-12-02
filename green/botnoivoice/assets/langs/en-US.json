@@ -3,21 +3,21 @@
     "thai": "Thai",
     "english": "English",
     "welcome_message": {
-        "line1": "convert text to speech",
+        "line1": "Convert Text to Speech",
         "line2": "BOTNOI",
         "line3": "VOICE"
     },
     "auth": {
         "sign_in": "Sign In",
-        "sign_in_with_username_email": "Sign in with username or email",
+        "sign_in_with_username_email": "Sign in with Username or Email",
         "sign_in_with_line": "Sign in with LINE",
         "sign_in_with_google": "Sign in with Google",
         "delete_account_button": "Delete Account"
     },
     "sign_in": {
         "error_occurred": "An error occurred. Please try again.",
-        "welcome_message": "Hello, Botnoi Voice welcomes you",
-        "username_or_email": "Username or email",
+        "welcome_message": "WELCOME TO BOTNOI VOICE",
+        "username_or_email": "Username or Email",
         "please_enter_username_or_email": "Please enter your username or email",
         "password": "Password",
         "please_enter_password": "Please enter your password",
@@ -94,11 +94,11 @@
         "confirm": "Confirm"
     },
     "delete_account": {
-        "delete_account": "Delete account",
-        "please_read": "Please read",
-        "account_deletion_warning": "Account deletion is irreversible. You will no longer be able to use this account with products and services, remaining points, or subscribed packages. Any privileges and promotions will also no longer be available. Please proceed with caution.",
-        "confirm_account_deletion": "If you are sure you want to delete your account, please press the button",
-        "confirm_account_deletion_button": "Confirm account deletion",
+        "delete_account": "Delete Account",
+        "please_read": "Please read carefully",
+        "account_deletion_warning": "Deleting your account is an irreversible action. You will no longer be able to use this account for products and services, any remaining points or subscribed packages, as well as privileges and promotions. Please proceed with caution.",
+        "confirm_account_deletion": "If you wish to proceed with deleting your account, please press the button.",
+        "confirm_account_deletion_button": "Confirm Account Deletion",
         "cancel": "Cancel",
         "confirm_account_deletion_below": "Confirm account deletion below"
     },
