@@ -3,14 +3,14 @@ import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
 import 'package:botnoivoice/domain/repositories/file_repository.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
-/// Save File to Documents Directory
+/// Save File to a Custom Path using FilePicker and PathProvider
 class FileRepositoryImpl implements FileRepository {
   final Logger logger = Logger();
 
   @override
   Future<bool> saveFileCustomPath(String sourceFilePath) async {
-
     try {
       // ตรวจสอบไฟล์ต้นทาง
       File sourceFile = File(sourceFilePath);
@@ -19,36 +19,97 @@ class FileRepositoryImpl implements FileRepository {
         return false;
       }
 
-      // กำหนดโฟลเดอร์ปลายทางบน Android (Downloads)
-      Directory? destinationDirectory;
-      if (Platform.isAndroid) {
-        destinationDirectory = Directory('/storage/emulated/0/Download/bnv');
-      } else if (Platform.isIOS) {
-        destinationDirectory = await getApplicationDocumentsDirectory();
+      // ให้ผู้ใช้เลือกโฟลเดอร์ปลายทาง
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory == null) {
+        logger.w("ผู้ใช้ยกเลิกการเลือกโฟลเดอร์ปลายทาง");
+        return false;
       }
 
-      if (destinationDirectory != null) {
-        // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่แล้วหรือไม่ ถ้าไม่มีให้สร้าง
-        if (!await destinationDirectory.exists()) {
-          await destinationDirectory.create(recursive: true);
-          logger.i("สร้างโฟลเดอร์ดาวน์โหลดใหม่: ${destinationDirectory.path}");
+      // ตรวจสอบการเลือกโฟลเดอร์
+      Directory destinationDirectory = Directory(selectedDirectory);
+
+      // หากผู้ใช้ไม่เลือกโฟลเดอร์ เราสามารถใช้ `path_provider` เป็น fallback
+      if (!await destinationDirectory.exists()) {
+        logger.w("โฟลเดอร์ที่เลือกไม่มีอยู่");
+        if (Platform.isAndroid) {
+          destinationDirectory = await getExternalStorageDirectory() ?? Directory('');
+        } else if (Platform.isIOS) {
+          destinationDirectory = await getApplicationDocumentsDirectory();
         }
-
-        String fileName = p.basename(sourceFilePath);
-        String destinationFilePath =
-            p.join(destinationDirectory.path, fileName);
-
-        File destinationFile = File(destinationFilePath);
-        await destinationFile.writeAsBytes(await sourceFile.readAsBytes());
-
-        logger.i("ไฟล์ถูกบันทึกลงใน: $destinationFilePath");
-        return true;
-      } else {
-        logger.w("ไม่สามารถรับพาธของโฟลเดอร์ดาวน์โหลดได้");
       }
+
+      if (!await destinationDirectory.exists()) {
+        logger.w("ไม่สามารถกำหนดโฟลเดอร์ปลายทางได้");
+        return false;
+      }
+
+      // กำหนดพาธไฟล์ปลายทาง
+      String fileName = p.basename(sourceFilePath);
+      String destinationFilePath = p.join(destinationDirectory.path, fileName);
+
+      // เขียนไฟล์ไปยังปลายทาง
+      File destinationFile = File(destinationFilePath);
+      await destinationFile.writeAsBytes(await sourceFile.readAsBytes());
+
+      logger.i("ไฟล์ถูกบันทึกลงใน: $destinationFilePath");
+      return true;
     } catch (e) {
-      logger.e("Error on saveFileToDocuments(): $e");
+      logger.e("เกิดข้อผิดพลาดในการบันทึกไฟล์: $e");
     }
     return false;
   }
 }
+
+
+
+
+
+// /// Save File to Documents Directory
+// class FileRepositoryImpl implements FileRepository {
+//   final Logger logger = Logger();
+
+//   @override
+//   Future<bool> saveFileCustomPath(String sourceFilePath) async {
+
+//     try {
+//       // ตรวจสอบไฟล์ต้นทาง
+//       File sourceFile = File(sourceFilePath);
+//       if (!await sourceFile.exists()) {
+//         logger.w("ไม่พบไฟล์ต้นทาง: $sourceFilePath");
+//         return false;
+//       }
+
+//       // กำหนดโฟลเดอร์ปลายทางบน Android (Downloads)
+//       Directory? destinationDirectory;
+//       if (Platform.isAndroid) {
+//         destinationDirectory = Directory('/storage/emulated/0/Download/bnv');
+//       } else if (Platform.isIOS) {
+//         destinationDirectory = await getApplicationDocumentsDirectory();
+//       }
+
+//       if (destinationDirectory != null) {
+//         // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่แล้วหรือไม่ ถ้าไม่มีให้สร้าง
+//         if (!await destinationDirectory.exists()) {
+//           await destinationDirectory.create(recursive: true);
+//           logger.i("สร้างโฟลเดอร์ดาวน์โหลดใหม่: ${destinationDirectory.path}");
+//         }
+
+//         String fileName = p.basename(sourceFilePath);
+//         String destinationFilePath =
+//             p.join(destinationDirectory.path, fileName);
+
+//         File destinationFile = File(destinationFilePath);
+//         await destinationFile.writeAsBytes(await sourceFile.readAsBytes());
+
+//         logger.i("ไฟล์ถูกบันทึกลงใน: $destinationFilePath");
+//         return true;
+//       } else {
+//         logger.w("ไม่สามารถรับพาธของโฟลเดอร์ดาวน์โหลดได้");
+//       }
+//     } catch (e) {
+//       logger.e("Error on saveFileToDocuments(): $e");
+//     }
+//     return false;
+//   }
+// }
