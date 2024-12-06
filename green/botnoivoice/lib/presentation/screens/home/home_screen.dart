@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/presentation/constants/api_url_config.dart';
+import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/domain/usecases/random_string.dart';
+import 'package:botnoivoice/data/functions/random_string.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
@@ -360,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
     logger.i("LINE-credentialsToken: $lineCredentialsToken");
     logger.i("Email-credentialsToken: $emailCredentialsToken");
 
-    String url = "$baseApiUrl/openapi/v1/generate_audio";
+    String url = "$apiUrl/openapi/v1/generate_audio";
     Map<String, dynamic> payload = {
       "text": text,
       "speaker": speakerId,

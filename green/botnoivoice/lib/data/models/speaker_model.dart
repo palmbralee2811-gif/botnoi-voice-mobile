@@ -1,4 +1,4 @@
-import 'package:botnoivoice/domain/entities/speaker_entity.dart';
+import 'package:botnoivoice/data/entities/speaker_entity.dart';
 
 /// Model for Speaker Entity class for Speaker Model in Database
 class SpeakerModel {

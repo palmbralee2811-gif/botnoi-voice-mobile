@@ -1,11 +1,13 @@
-import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
+import 'package:botnoivoice/presentation/widgets/button/apple_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/email_permission_dialog.dart';
@@ -111,6 +113,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  // แสดงหน้าจอ Apple Login
+  Future<void> _openAppleLogin() async {
+    await Provider.of<AppleLoginProvider>(context, listen: false)
+        .signInWithApple();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => AuthChecker()));
+  }
+
   /// แสดงหน้าจอ Google Login
   Future<void> _openGoogleLogin() async {
     await Provider.of<GoogleLoginProvider>(context, listen: false)
@@ -161,14 +171,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       _buildGradientText('register.sign_up'.tr()),
                       SizedBox(height: 20.h),
-                      _buildTextFormField(_emailController, 'register.email'.tr()),
+                      _buildTextFormField(
+                          _emailController, 'register.email'.tr()),
                       SizedBox(height: 16.h),
-                      _buildTextFormField(_usernameController, 'register.username'.tr()),
-                      SizedBox(height: 16.h),
-                      _buildPasswordField(_passwordController, 'register.password'.tr()),
+                      _buildTextFormField(
+                          _usernameController, 'register.username'.tr()),
                       SizedBox(height: 16.h),
                       _buildPasswordField(
-                          _confirmPasswordController, 'register.confirm_password'.tr(),
+                          _passwordController, 'register.password'.tr()),
+                      SizedBox(height: 16.h),
+                      _buildPasswordField(_confirmPasswordController,
+                          'register.confirm_password'.tr(),
                           isConfirmPassword: true),
                       SizedBox(height: 16.h),
                       _isLoading
@@ -348,6 +361,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Padding(
           padding: EdgeInsets.only(left: 15.w, right: 15.w),
           child: GoogleLoginButton(onPressed: _openGoogleLogin),
+        ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+          child: AppleLoginButton(onPressed: _openAppleLogin),
         ),
       ],
     );

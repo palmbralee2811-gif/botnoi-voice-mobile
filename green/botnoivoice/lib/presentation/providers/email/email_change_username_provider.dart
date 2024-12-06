@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/constants/api_url_config.dart';
+import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -32,7 +32,7 @@ class EmailChangeUsernameProvider extends ChangeNotifier {
         // ถ้า email ไม่พบ แสดงว่า username สามารถใช้ได้
         final jwtToken =
             Provider.of<EmailTokenProvider>(context, listen: false).getJwtToken;
-        String url = '$baseApiUrl/api/dashboard/edit_username_id';
+        String url = '$apiUrl/api/dashboard/edit_username_id';
         Map<String, String> headers = {
           'Authorization': 'Bearer $jwtToken',
           'Content-Type': 'application/json'

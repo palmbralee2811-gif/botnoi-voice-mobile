@@ -1,3 +1,5 @@
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -7,9 +9,9 @@ import 'package:botnoivoice/presentation/providers/email/email_token_provider.da
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/core/firebase_options.dart';
+import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
@@ -53,6 +55,8 @@ class BotnoiVoiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AppleLoginProvider()),
+        ChangeNotifierProvider(create: (_) => AppleTokenProvider()),
         ChangeNotifierProvider(create: (_) => GoogleLoginProvider()),
         ChangeNotifierProvider(create: (_) => GoogleTokenProvider()),
         ChangeNotifierProvider(create: (_) => SpeakerRepositoryImpl()),

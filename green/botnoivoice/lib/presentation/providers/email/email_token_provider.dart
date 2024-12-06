@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:botnoivoice/presentation/constants/api_url_config.dart';
+import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -47,7 +47,7 @@ class EmailTokenProvider extends ChangeNotifier {
     }
 
     // Get the _jwtToken from the Firebase API
-    String url = '$baseApiUrl/api/dashboard/sign_in';
+    String url = '$apiUrl/api/dashboard/sign_in';
 
     Map<String, String> headers = {
       'firebase-token': 'Bearer $idToken',
@@ -83,7 +83,7 @@ class EmailTokenProvider extends ChangeNotifier {
     if (_jwtToken == null) return;
 
     // Make the request
-    String url = '$baseApiUrl/api/dashboard/get_profile';
+    String url = '$apiUrl/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
       'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ class EmailTokenProvider extends ChangeNotifier {
     if (_jwtToken == null) return;
 
     // Make the request
-    String url = '$baseApiUrl/api/service/get_token';
+    String url = '$apiUrl/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',

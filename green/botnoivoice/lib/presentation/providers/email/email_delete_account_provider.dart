@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/constants/api_url_config.dart';
+import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +72,7 @@ class EmailDeleteAccountProvider with ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (isPasswordProviderUser(user)) {
       String userId = user!.uid;
-      String url = '$baseApiUrl/db/dashboard/users/$userId';
+      String url = '$apiUrl/db/dashboard/users/$userId';
       Map<String, String> headers = {'Content-Type': 'application/json'};
 
       try {

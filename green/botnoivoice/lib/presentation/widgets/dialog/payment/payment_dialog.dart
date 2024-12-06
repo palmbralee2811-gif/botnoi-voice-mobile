@@ -1,5 +1,5 @@
 import 'package:botnoivoice/data/models/apple_product_model.dart';
-import 'package:botnoivoice/domain/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';

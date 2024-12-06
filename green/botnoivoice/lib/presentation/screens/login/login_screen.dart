@@ -1,6 +1,8 @@
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
+import 'package:botnoivoice/presentation/widgets/button/apple_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
@@ -28,6 +30,10 @@ class LoginScreen extends StatelessWidget {
   void _openGoogleLogin(context) async {
     Provider.of<GoogleLoginProvider>(context, listen: false).signInWithGoogle();
   }
+
+  void _openAppleLogin(context) async {
+    Provider.of<AppleLoginProvider>(context, listen: false).signInWithApple();
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +98,13 @@ class LoginScreen extends StatelessWidget {
                 padding: EdgeInsets.only(left: 30.w, right: 30.w),
                 child: GoogleLoginButton(onPressed: () {
                   _openGoogleLogin(context);
+                }),
+              ),
+                            SizedBox(height: 20.h),
+              Padding(
+                padding: EdgeInsets.only(left: 30.w, right: 30.w),
+                child: AppleLoginButton(onPressed: () {
+                  _openAppleLogin(context);
                 }),
               ),
               SizedBox(height: 40.h),

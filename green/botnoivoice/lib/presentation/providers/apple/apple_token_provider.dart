@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
-import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
-class LineTokenProvider extends ChangeNotifier {
+class AppleTokenProvider extends ChangeNotifier {
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
@@ -31,20 +31,26 @@ class LineTokenProvider extends ChangeNotifier {
     });
   }
 
-  /// Loading LINE JWT Token from API
+  /// Get the _jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
+    // Get the idToken from the Authentication provider
     String? idToken =
-        Provider.of<LineLoginProvider>(context, listen: false).getIdTokenRaw;
+        await Provider.of<AppleLoginProvider>(context, listen: false)
+            .user
+            ?.getIdToken();
     if (idToken == null) {
       _logger.e("Error: Google idToken is null");
       return;
     }
 
-    String url = '$apiUrl/api/dashboard/liff';
+    // Get the _jwtToken from the Firebase API
+    String url = '$apiUrl/api/dashboard/firebase_auth';
+
     Map<String, String> headers = {
       'Botnoi-Token': 'Bearer $idToken',
       'Content-Type': 'application/json'
     };
+
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
@@ -69,10 +75,12 @@ class LineTokenProvider extends ChangeNotifier {
     }
   }
 
-  /// Loading the remaining credits from API
+  /// Get the remaining credits using _jwtToken
   Future<void> loadRemainingCredits() async {
+    // Check if _jwtToken exists
     if (_jwtToken == null) return;
 
+    // Make the request
     String url = '$apiUrl/api/dashboard/get_profile';
     Map<String, String> headers = {
       'Authorization': 'Bearer $_jwtToken',
@@ -94,10 +102,12 @@ class LineTokenProvider extends ChangeNotifier {
     }
   }
 
-  /// Loading the credentials token from API
+  // Get the credentials token using _jwtToken
   Future<void> loadCredentials() async {
+    // Check if _jwtToken exists
     if (_jwtToken == null) return;
 
+    // Make the request
     String url = '$apiUrl/api/service/get_token';
     Map<String, dynamic> payload = {};
     Map<String, String> headers = {

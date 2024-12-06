@@ -1,4 +1,6 @@
-import 'package:botnoivoice/core/revenuecat_config.dart';
+import 'package:botnoivoice/presentation/configurations/revenuecat_config.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -31,11 +33,20 @@ class _InitScreenState extends State<InitScreen> {
 
   /// Function to check how the user logs in and loading data
   Future<void> initApp() async {
+    final appleProvider =
+        Provider.of<AppleLoginProvider>(context, listen: false);
     final googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     final emailProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
+
+    /// Check if the user logs in with Apple
+    if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      await _loadAppleCredentials();
+      return;
+    }
 
     /// Check if the user logs in with Google
     if (googleProvider.isLoggedIn &&
@@ -58,6 +69,22 @@ class _InitScreenState extends State<InitScreen> {
     }
 
     /// If no login is found from any provider
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  /// Load data when logging in with Apple
+  Future<void> _loadAppleCredentials() async {
+    final appleTokenProvider =
+        Provider.of<AppleTokenProvider>(context, listen: false);
+    await appleTokenProvider.loadJwtToken(context);
+    await appleTokenProvider.loadCredentials();
+    await appleTokenProvider.loadRemainingCredits();
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
+    await configureRevenueCat(context);
+
     setState(() {
       _initialized = true;
     });
@@ -110,7 +137,8 @@ class _InitScreenState extends State<InitScreen> {
         .loadGetUsername(email);
 
     /// Load user info show mail (email permission)
-    await Provider.of<UserInfoProvider>(context, listen: false).getUserInfoShowMail(context);
+    await Provider.of<UserInfoProvider>(context, listen: false)
+        .getUserInfoShowMail(context);
 
     /// Configure RevenueCat with User ID for In-App Purchase (IAP)
     await configureRevenueCat(context);
@@ -123,7 +151,9 @@ class _InitScreenState extends State<InitScreen> {
   @override
   Widget build(BuildContext context) {
     if (_initialized) {
-      return const HomeScreen(); /// Return to HomeScreen when successfully loaded
+      return const HomeScreen();
+
+      /// Return to HomeScreen when successfully loaded
     } else {
       return const SplashScreen(); // Loading Screen
     }

@@ -1,4 +1,5 @@
-import 'package:botnoivoice/domain/repositories/init_screen.dart';
+import 'package:botnoivoice/data/authentication/init_screen.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -16,9 +17,10 @@ class AuthChecker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<GoogleLoginProvider, LineLoginProvider,
+    return Consumer4<AppleLoginProvider, GoogleLoginProvider, LineLoginProvider,
         EmailLoginProvider>(
-      builder: (context, googleProvider, lineProvider, emailProvider, child) {
+      builder: (context, appleProvider, googleProvider, lineProvider,
+          emailProvider, child) {
         // ตรวจสอบ provider ที่ล็อกอิน
         String? loginProvider;
 
@@ -27,7 +29,8 @@ class AuthChecker extends StatelessWidget {
           // ตรวจสอบสถานะการยืนยันอีเมล
           if (!emailProvider.user!.emailVerified) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              emailProvider.signOutWithEmail(context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
+              emailProvider.signOutWithEmail(
+                  context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
             });
             loginProvider = null;
           } else {
@@ -38,6 +41,9 @@ class AuthChecker extends StatelessWidget {
         } else if (googleProvider.isAuthenticated &&
             googleProvider.user?.providerData[0].providerId == 'google.com') {
           loginProvider = 'google';
+        } else if (appleProvider.isAuthenticated &&
+            appleProvider.user?.providerData[0].providerId == 'apple.com') {
+          loginProvider = 'apple';
         }
 
         // ตรวจสอบสถานะการล็อกอิน

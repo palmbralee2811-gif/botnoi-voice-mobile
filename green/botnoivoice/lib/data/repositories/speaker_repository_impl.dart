@@ -1,5 +1,5 @@
 import 'package:botnoivoice/data/models/speaker_model.dart';
-import 'package:botnoivoice/domain/entities/speaker_entity.dart';
+import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 

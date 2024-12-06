@@ -1,4 +1,4 @@
-import 'package:botnoivoice/domain/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';

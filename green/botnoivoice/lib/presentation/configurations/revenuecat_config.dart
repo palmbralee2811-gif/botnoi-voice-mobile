@@ -11,11 +11,9 @@ import 'package:logger/logger.dart';
 final _logger = Logger();
 
 /// Configure RevenueCat with the current user ID
-//TODO: Check Platform OS When Call This Function
 Future<void> configureRevenueCat(BuildContext context) async {
   try {
     final userId = await getUserId(context);
-    //TODO: Check Platform OS
     if (Platform.isIOS) {
       await Purchases.configure(
         PurchasesConfiguration("appl_mImKODlZTfTPWctkaQrVLpkMUuz")

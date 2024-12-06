@@ -1,4 +1,4 @@
-import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';

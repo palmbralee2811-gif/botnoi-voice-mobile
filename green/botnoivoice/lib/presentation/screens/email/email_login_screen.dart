@@ -1,7 +1,9 @@
-import 'package:botnoivoice/domain/repositories/auth_checker.dart';
+import 'package:botnoivoice/data/authentication/auth_checker.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
+import 'package:botnoivoice/presentation/widgets/button/apple_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
@@ -82,6 +84,15 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         });
       }
     }
+  }
+
+  // Open Apple Login and Close Email Login Screen
+  void _openAppleLogin() async {
+    await Provider.of<AppleLoginProvider>(context, listen: false)
+        .signInWithApple()
+        .whenComplete(() {
+      Navigator.pop(context);
+    });
   }
 
   /// Open Google Login and Close Email Login Screen
@@ -329,6 +340,13 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         padding: EdgeInsets.only(left: 15.w, right: 15.w),
                         child: GoogleLoginButton(onPressed: () {
                           _openGoogleLogin();
+                        }),
+                      ),
+                                            SizedBox(height: 16.h),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                        child: AppleLoginButton(onPressed: () {
+                          _openAppleLogin();
                         }),
                       ),
                       SizedBox(height: 140.h),

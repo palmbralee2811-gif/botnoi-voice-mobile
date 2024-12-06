@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
-import 'package:botnoivoice/domain/entities/speaker_entity.dart';
+import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_filter_button.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';

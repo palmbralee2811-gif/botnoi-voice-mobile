@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/constants/api_url_config.dart';
+import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +33,7 @@ class EmailRegisterProvider with ChangeNotifier {
 
   /// ฟังก์ชันตรวจสอบว่า username ซ้ำหรือไม่
   Future<bool> checkUsernameAvailability(String usernameId) async {
-    String url =
-        '$baseApiUrl/api/dashboard/get_email_mobile?username=$usernameId';
+    String url = '$apiUrl/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {
       'X-API-BOTNOI': 'Ym90b25vaQ',
       'Content-Type': 'application/json'
@@ -159,7 +158,7 @@ class EmailRegisterProvider with ChangeNotifier {
       return;
     }
 
-    final url = Uri.parse('$baseApiUrl/api/dashboard/register_mobile');
+    final url = Uri.parse('$apiUrl/api/dashboard/register_mobile');
     final headers = {
       'Content-Type': 'application/json',
       'X-API-BOTNOI': 'Ym90b25vaQ',

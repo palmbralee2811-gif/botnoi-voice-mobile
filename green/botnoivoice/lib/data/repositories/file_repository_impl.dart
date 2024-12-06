@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
-import 'package:botnoivoice/domain/repositories/file_repository.dart';
 import 'package:path_provider/path_provider.dart';
+
+/// Repository for file operations
+abstract class FileRepository {
+  Future<bool> saveFileCustomPath(String sourceFilePath);
+}
 
 /// Save File to Documents Directory
 class FileRepositoryImpl implements FileRepository {

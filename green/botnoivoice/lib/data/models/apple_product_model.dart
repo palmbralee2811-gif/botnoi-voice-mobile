@@ -1,4 +1,4 @@
-import 'package:botnoivoice/domain/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 
 class AppleProductModel {
   static List<AppleProduct> getAppleProductData() {
