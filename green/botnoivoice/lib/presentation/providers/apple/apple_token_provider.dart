@@ -38,8 +38,9 @@ class AppleTokenProvider extends ChangeNotifier {
         await Provider.of<AppleLoginProvider>(context, listen: false)
             .user
             ?.getIdToken();
+    _logger.i('Apple idToken: $idToken');
     if (idToken == null) {
-      _logger.e("Error: Google idToken is null");
+      _logger.e("Error: Apple idToken is null");
       return;
     }
 
@@ -55,6 +56,7 @@ class AppleTokenProvider extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
+        _logger.i('Apple Data loaded: $data');
         var message = data['message'];
         var tokenIndex = message.indexOf('token=');
 

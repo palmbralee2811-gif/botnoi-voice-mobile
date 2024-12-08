@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -60,6 +61,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   }
 
   Future<void> _loadUserInfo() async {
+    var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
     var googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
@@ -75,12 +77,19 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
         uid = lineUid ?? 'No uid found';
         profilePictureUrl = lineProfilePictureUrl ?? '';
       });
+    } else if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      setState(() {
+        displayName = appleProvider.user?.displayName ?? 'Apple User';
+        uid = appleProvider.user?.uid ?? 'No uid found';
+        profilePictureUrl = appleProvider.user?.photoURL?? '';
+      });
     } else if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
       setState(() {
-        displayName = googleProvider.user?.displayName ?? 'No email found';
+        displayName = googleProvider.user?.displayName ?? 'No Name';
         uid = googleProvider.user?.uid ?? 'No uid found';
-        profilePictureUrl = googleProvider.user?.photoURL ?? 'No email found';
+        profilePictureUrl = googleProvider.user?.photoURL ?? '';
       });
     } else if (emailProvider.isLoggedIn &&
         emailProvider.user?.providerData[0].providerId == 'password') {

@@ -1,4 +1,5 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -35,6 +36,7 @@ class _AccountScreenState extends State<AccountScreen> {
   static const kGray = Colors.grey; // สีเทาสำหรับไอคอนที่ไม่ได้ล็อกอินด้วย
 
   bool isEmailLoggedIn = false;
+  bool isAppleLoggedIn = false;
   bool isGoogleLoggedIn = false;
   bool isLineLoggedIn = false;
 
@@ -47,6 +49,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// ฟังก์ชันสำหรับโหลดข้อมูลผู้ใช้
   Future<void> _loadUserInfo() async {
+    var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
     var googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
@@ -55,13 +58,20 @@ class _AccountScreenState extends State<AccountScreen> {
         Provider.of<UserInfoProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
-      displayName = lineProvider.getDisplayName ?? "No Name";
+      displayName = lineProvider.getDisplayName ?? "Line User";
       userId = lineProvider.getLineUserId ?? "No UID";
       email = lineProvider.getLineEmail ?? "No email found";
       isLineLoggedIn = true;
+    } else if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      displayName = appleProvider.user?.displayName ?? 'Apple User';
+      userId = appleProvider.user?.uid ?? 'No UID';
+      email =
+          getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
+      isAppleLoggedIn = true;
     } else if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
-      displayName = googleProvider.user?.displayName ?? 'No email found';
+      displayName = googleProvider.user?.displayName ?? 'Google User';
       userId = googleProvider.user?.uid ?? 'No UID';
       email =
           getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
@@ -72,7 +82,7 @@ class _AccountScreenState extends State<AccountScreen> {
       displayName =
           Provider.of<EmailUsernameApiProvider>(context, listen: false)
                   .getUsername ??
-              "Unknown";
+              "Email/Username User";
 
       // ตรวจสอบการอนุญาตในการแสดงอีเมล
       if (userInfoProvider.isShowEmail) {
@@ -88,11 +98,18 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// ฟังก์ชันสำหรับการออกจากระบบ
   Future<void> _signOut(BuildContext context) async {
+    final appleProvider =
+        Provider.of<AppleLoginProvider>(context, listen: false);
     final googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     final emailProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
+
+    if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      await appleProvider.signOutWithApple(context);
+    }
 
     if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {

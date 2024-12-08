@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -33,6 +34,15 @@ Future<String> getUserId(BuildContext context) async {
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     if (lineProvider.isLoggedIn) {
       final userId = lineProvider.getLineUserId!;
+      return userId;
+    }
+
+    // Try Apple login provider
+    final appleProvider =
+        Provider.of<AppleLoginProvider>(context, listen: false);
+    if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      final userId = appleProvider.user!.uid;
       return userId;
     }
 
