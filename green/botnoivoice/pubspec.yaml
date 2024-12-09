@@ -49,10 +49,7 @@ dependencies:
   path: ^1.9.0
   permission_handler: ^11.3.1
   flutter_downloader: ^1.11.8
-
-
-  file_picker: ^8.1.4 #update
-
+  file_picker: ^8.1.4 
 
   # Debugging Logger
   logger: ^2.4.0
