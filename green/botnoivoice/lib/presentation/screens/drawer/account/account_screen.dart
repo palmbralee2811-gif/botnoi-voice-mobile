@@ -223,7 +223,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     color: const Color(0xFF323130),
                   ),
                 ),
-                SizedBox(width: 50.w), // ระยะห่างระหว่างข้อความและไอคอน
+                SizedBox(width: 30.w), // ระยะห่างระหว่างข้อความและไอคอน
                 SvgPicture.asset(
                   'assets/images/auth_screen/email-icon.svg',
                   width: 20.w,
@@ -260,6 +260,16 @@ class _AccountScreenState extends State<AccountScreen> {
                   width: 32.w,
                   height: 32.h,
                   colorFilter: isGoogleLoggedIn
+                      ? null
+                      : const ColorFilter.mode(
+                          kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
+                ),
+                SizedBox(width: 10.w),
+                SvgPicture.asset(
+                  'assets/images/auth_screen/apple-icon.svg',
+                  width: 32.w,
+                  height: 32.h,
+                  colorFilter: isAppleLoggedIn
                       ? null
                       : const ColorFilter.mode(
                           kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -74,11 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadRemainingCredits() async {
+    final appleProvider =
+        Provider.of<AppleLoginProvider>(context, listen: false);
     final googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     final emailProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
+
+    if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      await Provider.of<AppleTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
     if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
@@ -344,6 +354,9 @@ class _HomeScreenState extends State<HomeScreen> {
     String language =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
             'th';
+    String? appleCredentialsToken =
+        Provider.of<AppleTokenProvider>(context, listen: false)
+            .getCredentialsToken;
     String? googleCredentialsToken =
         Provider.of<GoogleTokenProvider>(context, listen: false)
             .getCredentialsToken;
@@ -356,6 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     logger.i("speakerId: $speakerId");
     logger.i("language: $language");
+    logger.i("Apple-credentialsToken: $appleCredentialsToken");
     logger.i("Google-credentialsToken: $googleCredentialsToken");
     logger.i("LINE-credentialsToken: $lineCredentialsToken");
     logger.i("Email-credentialsToken: $emailCredentialsToken");
@@ -376,6 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
     String? selectedToken;
     if (Provider.of<LineLoginProvider>(context, listen: false).isLoggedIn) {
       selectedToken = lineCredentialsToken;
+    } else if (appleCredentialsToken != null &&
+        appleCredentialsToken.isNotEmpty) {
+      selectedToken = appleCredentialsToken;
     } else if (googleCredentialsToken != null &&
         googleCredentialsToken.isNotEmpty) {
       selectedToken = googleCredentialsToken;

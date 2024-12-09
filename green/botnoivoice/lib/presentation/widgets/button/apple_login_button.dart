@@ -2,12 +2,13 @@ import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AppleLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   const AppleLoginButton({super.key, required this.onPressed});
 
-  @override  
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -18,7 +19,7 @@ class AppleLoginButton extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
                   side: BorderSide(
@@ -32,17 +33,23 @@ class AppleLoginButton extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                    Image.asset(
-                    'assets/images/auth_screen/apple-icon.png',
-                    height: 32.h,
-                    width: 32.w,
+                  ColorFiltered(
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/images/auth_screen/apple-icon.svg',
+                      height: 24.h,
+                      width: 24.w,
+                    ),
                   ),
                   SizedBox(width: 16.w),
                   Text(
                     'เข้าสู่ระบบด้วย Apple',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: kDark,
+                      color: Colors.white,
                       decoration: TextDecoration.none,
                     ),
                   ),
