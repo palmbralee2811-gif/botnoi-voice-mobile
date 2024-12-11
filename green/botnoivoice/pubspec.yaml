@@ -50,6 +50,12 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_downloader: ^1.11.8
 
+  # Choose Download Folder from Device for Android
+  file_picker: ^8.1.4
+
+  # Share File to Other App 
+  share_plus: ^10.1.2
+
   # Debugging Logger
   logger: ^2.4.0
   

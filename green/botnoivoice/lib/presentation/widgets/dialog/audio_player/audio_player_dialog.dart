@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/audio_player/share_file.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/ios_file_repository.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
@@ -59,7 +60,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     // Show Alert if Permission Denied
     if (!hasPermission) {
       AndroidPermissionDialog(
-              context: context, text: 'audio_player.permission_denied'.tr()) //สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า
+              context: context,
+              text: 'audio_player.permission_denied'
+                  .tr()) //สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า
           .showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
@@ -75,7 +78,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     try {
       final file = File(widget.filePath);
       if (!await file.exists() || await file.length() == 0) {
-        throw Exception('audio_player.audio_file_not_found'.tr()); //ไม่พบไฟล์เสียงหรือไฟล์ว่างเปล่า
+        throw Exception('audio_player.audio_file_not_found'
+            .tr()); //ไม่พบไฟล์เสียงหรือไฟล์ว่างเปล่า
       }
       await audioPlayer.setSourceDeviceFile(widget.filePath);
       audioPlayer.onDurationChanged.listen((d) {
@@ -116,7 +120,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("${'audio_player.error_playing_audio'.tr()} $e")), //เกิดข้อผิดพลาดในการเล่นไฟล์เสียง:
+          SnackBar(
+              content: Text(
+                  "${'audio_player.error_playing_audio'.tr()} $e")), //เกิดข้อผิดพลาดในการเล่นไฟล์เสียง:
         );
       }
     }
@@ -177,7 +183,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     FileRepositoryImpl fileRepository = FileRepositoryImpl();
     bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
     if (isSaved == false) {
-      NotificationPopup(context: context, text: 'audio_player.unable_to_save_file'.tr()) //ไม่สามารถบันทึกไฟล์ได้
+      NotificationPopup(
+              context: context,
+              text: 'audio_player.unable_to_save_file'
+                  .tr()) //ไม่สามารถบันทึกไฟล์ได้
           .showAsError();
     }
   }
@@ -208,7 +217,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'audio_player.audio_created_successfully'.tr(), //สร้างเสียงสำเร็จ
+                    'audio_player.audio_created_successfully'
+                        .tr(), //สร้างเสียงสำเร็จ
                     style: GoogleFonts.prompt(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
@@ -305,6 +315,35 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Builder(
+                    builder: (BuildContext context) {
+                      return GradientRow(
+                        onPressed: () =>
+                            shareAudioFile(context, widget.filePath),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.share,
+                              size: 25.sp,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              'แชร์', //แชร์
+                              style: GoogleFonts.prompt(
+                                color: Colors.white,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(height: 10.h),
                   GradientCloseButton(

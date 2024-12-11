@@ -13,10 +13,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/presentation/screens/speaker/style_models/voicestyle_th.dart';
-import 'package:botnoivoice/presentation/screens/speaker/style_models/voicestyle_eng.dart';
-import 'package:botnoivoice/presentation/screens/speaker/style_models/speechstyle_th.dart';
-import 'package:botnoivoice/presentation/screens/speaker/style_models/speechstyle_eng.dart';
 
 class SpeakerScreen extends StatefulWidget {
   const SpeakerScreen({super.key});
@@ -54,6 +50,49 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   Set<String> selectedStyles = {};
   String selectedVoiceStyle = ''; // ตัวแปรเก็บเสียงที่ผู้ใช้เลือก
   String selectedStyle = ''; // สไตล์เสียงที่เลือก
+
+List<String> _getVoiceStyles() {
+  Set<String> voiceStylesSet = {};
+
+  // กรองสไตล์เสียงตามภาษาที่เลือก
+  for (var speaker in SpeakerModel.speakerItem) {
+    if (speaker.language == language) {
+      // ถ้าเป็นภาษาไทย ใช้ voiceStyle
+      if (language == 'TH') {
+        voiceStylesSet.addAll(speaker.voiceStyle); // ใช้ voiceStyle สำหรับภาษาไทย
+      }
+      // สำหรับภาษาอื่น ๆ ใช้ engVoiceStyle
+      else {
+        voiceStylesSet.addAll(speaker.engVoiceStyle); // ใช้ engVoiceStyle สำหรับภาษาอื่น
+      }
+    }
+  }
+
+  // แปลง Set เป็น List และคืนค่า
+  return voiceStylesSet.toList();
+}
+
+List<String> _getSpeechStyles() {
+  Set<String> speechStylesSet = {};
+
+  // กรองหมวดหมู่เสียงตามภาษาที่เลือก
+  for (var speaker in SpeakerModel.speakerItem) {
+    if (speaker.language == language) {
+      // ถ้าเป็นภาษาไทย ใช้ speechStyle
+      if (language == 'TH') {
+        speechStylesSet.addAll(speaker.speechStyle); // ใช้ speechStyle สำหรับภาษาไทย
+      }
+      // สำหรับภาษาอื่น ๆ ใช้ engSpeechStyle
+      else {
+        speechStylesSet.addAll(speaker.engSpeechStyle); // ใช้ engSpeechStyle สำหรับภาษาอื่น
+      }
+    }
+  }
+
+  // แปลง Set เป็น List และคืนค่า
+  return speechStylesSet.toList();
+}
+
 
   @override
   void initState() {
@@ -118,7 +157,7 @@ Widget buildFilterNavbar(BuildContext context) {
                     title: selectedStyles.isEmpty
                         ? 'สไตล์'
                         : '${selectedStyles.length} สไตล์',
-                    items: voiceStyle,
+                    items: _getVoiceStyles(), // ดึงข้อมูล voiceStyle จาก SpeakerModel
                     selectedItems: selectedStyles,
                     onConfirm: (newSelected) {
                       setState(() {
@@ -135,7 +174,7 @@ Widget buildFilterNavbar(BuildContext context) {
                     title: selectedCategories.isEmpty
                         ? 'หมวดหมู่'
                         : '${selectedCategories.length} หมวดหมู่',
-                    items: speechStyle,
+                    items: _getSpeechStyles(), // ดึงข้อมูล speechStyle จาก SpeakerModel
                     selectedItems: selectedCategories,
                     onConfirm: (newSelected) {
                       setState(() {
@@ -187,7 +226,6 @@ Widget buildFilterNavbar(BuildContext context) {
     ],
   );
 }
-
 
 // buildLanguageButton: แสดง Modal สำหรับเลือกภาษา พร้อมรายการตัวเลือกของภาษาที่รองรับ
   Widget buildLanguageButton(BuildContext context, StateSetter setState) {
@@ -584,67 +622,58 @@ Widget buildFilterNavbar(BuildContext context) {
   }
 
 // _filterSpeakers: ฟังก์ชันกรองลำโพงตามเงื่อนไขที่ผู้ใช้เลือก เช่น ภาษา เพศ สไตล์เสียง หรือหมวดหมู่
-  List<SpeakerEntity> _filterSpeakers() {
-    List<SpeakerEntity> filteredSpeakers = [];
+List<SpeakerEntity> _filterSpeakers() {
+  List<SpeakerEntity> filteredSpeakers = [];
 
-    // กรองลำโพงตามภาษาที่เลือก
+  // กรองลำโพงตามภาษาที่เลือก
+  filteredSpeakers = SpeakerModel.speakerItem.where((item) {
+    return item.language == language;
+  }).toList();
+
+  logger.w("Filtered by language ($language): ${filteredSpeakers.length} speakers found");
+
+  if (filteredSpeakers.isEmpty) {
     filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-      return item.language == language;
+      return item.availableLanguage.contains(language?.toLowerCase()) &&
+          item.language != language; // ไม่แสดงผลที่มี language ตรงเป๊ะ
     }).toList();
 
-    // เพิ่ม Log เพื่อตรวจสอบว่าได้กรองตามภาษาแล้ว
-    logger.w(
-        "Filtered by language ($language): ${filteredSpeakers.length} speakers found");
-
-    // หากไม่มีผู้พูดที่ตรงกับภาษาในฟิลด์ language
-    if (filteredSpeakers.isEmpty) {
-      filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-        return item.availableLanguage.contains(language?.toLowerCase()) &&
-            item.language != language; // ไม่แสดงผลที่มี language ตรงเป๊ะ
-      }).toList();
-
-      logger.w(
-          "Filtered by available language: ${filteredSpeakers.length} speakers found");
-    }
-
-    // กรองตามเพศ (ถ้ามีการเลือก)
-    if (gender != null && gender!.isNotEmpty) {
-      filteredSpeakers =
-          filteredSpeakers.where((item) => item.gender == gender).toList();
-
-      // เพิ่ม Log เพื่อตรวจสอบการกรองเพศ
-      logger.w(
-          "Filtered by gender ($gender): ${filteredSpeakers.length} speakers found");
-    }
-
-    // กรองตามสไตล์เสียง (ถ้ามีการเลือก)
-    if (selectedStyles.isNotEmpty) {
-      filteredSpeakers = filteredSpeakers.where((item) {
-        return item.voiceStyle.any((style) => selectedStyles.contains(style));
-      }).toList();
-
-      // เพิ่ม Log เพื่อตรวจสอบการกรองสไตล์เสียง
-      logger.w(
-          "Filtered by voice style: ${filteredSpeakers.length} speakers found");
-    }
-
-    // กรองตามหมวดหมู่เสียง (speechStyle) (ถ้ามีการเลือก)
-    if (selectedCategories.isNotEmpty) {
-      filteredSpeakers = filteredSpeakers.where((item) {
-        return item.speechStyle
-            .any((category) => selectedCategories.contains(category));
-      }).toList();
-
-      // เพิ่ม Log เพื่อตรวจสอบการกรองหมวดหมู่
-      logger
-          .w("Filtered by category: ${filteredSpeakers.length} speakers found");
-    }
-
-    // เพิ่ม log เพื่อดูจำนวนลำโพงที่ผ่านการกรองแล้ว
-    logger.i("Total speakers after all filters: ${filteredSpeakers.length}");
-
-    return filteredSpeakers;
+    logger.w("Filtered by available language: ${filteredSpeakers.length} speakers found");
   }
+
+  // ตรวจสอบการกรองสไตล์เสียง
+  if (selectedStyles.isNotEmpty) {
+    filteredSpeakers = filteredSpeakers.where((item) {
+      if (language == 'TH') {
+        // กรองสไตล์เสียงสำหรับภาษาไทย (voiceStyle)
+        return item.voiceStyle.any((style) => selectedStyles.contains(style));
+      } else {
+        // กรองสไตล์เสียงสำหรับภาษาอื่น ๆ (engVoiceStyle)
+        return item.engVoiceStyle.any((style) => selectedStyles.contains(style));
+      }
+    }).toList();
+
+    logger.w("Filtered by voiceStyle/engVoiceStyle: ${filteredSpeakers.length} speakers found");
+  }
+
+  // ตรวจสอบการกรองหมวดหมู่เสียง
+  if (selectedCategories.isNotEmpty) {
+    filteredSpeakers = filteredSpeakers.where((item) {
+      if (language == 'TH') {
+        // กรองหมวดหมู่เสียงสำหรับภาษาไทย (speechStyle)
+        return item.speechStyle.any((category) => selectedCategories.contains(category));
+      } else {
+        // กรองหมวดหมู่เสียงสำหรับภาษาอื่น ๆ (engSpeechStyle)
+        return item.engSpeechStyle.any((category) => selectedCategories.contains(category));
+      }
+    }).toList();
+
+    logger.w("Filtered by speechStyle/engSpeechStyle: ${filteredSpeakers.length} speakers found");
+  }
+
+  logger.i("Total speakers after all filters: ${filteredSpeakers.length}");
+  return filteredSpeakers;
+}
 
 // buildSingleSpeaker: สร้างการ์ดแสดงลำโพงแต่ละตัว (เรียกใช้ใน buildMultipleSpeaker และ buildFavoriteFilter)
 // พร้อมปุ่มสำหรับเล่นเสียงและ Favorite
