@@ -17,6 +17,7 @@ import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/select_language/select_language_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -88,7 +89,7 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            home: AuthChecker(),
+            home: LanguageSelectionScreen(),
             // home: HomeScreen(),
             // Add localization delegate
             localizationsDelegates: context.localizationDelegates,
