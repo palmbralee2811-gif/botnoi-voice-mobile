@@ -1,5 +1,5 @@
-import 'package:botnoivoice/presentation/screens/splash/select_language/gradient_text.dart';
-import 'package:botnoivoice/presentation/screens/splash/select_language/language_button.dart';
+import 'package:botnoivoice/presentation/screens/select_language/gradient_text.dart';
+import 'package:botnoivoice/presentation/screens/select_language/language_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
