@@ -160,7 +160,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                       title: selectedStyles.isEmpty
                           ? 'style'.tr()
                           // : '${selectedStyles.length} สไตล์',
-                          : 'style_plural'.tr(namedArgs: {'count': selectedStyles.length.toString()}),  // แสดงจำนวนสไตล์
+                          : 'style_plural'.tr(namedArgs: {
+                              'count': selectedStyles.length.toString()
+                            }), // แสดงจำนวนสไตล์
                       items:
                           _getVoiceStyles(), // ดึงข้อมูล voiceStyle จาก SpeakerModel
                       selectedItems: selectedStyles,
@@ -179,7 +181,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                       title: selectedCategories.isEmpty
                           ? 'category'.tr()
                           // : '${selectedCategories.length} หมวดหมู่',
-                          : 'category_plural'.tr(namedArgs: {'count': selectedCategories.length.toString()}),  // แสดงจำนวนหมวดหมู่
+                          : 'category_plural'.tr(namedArgs: {
+                              'count': selectedCategories.length.toString()
+                            }), // แสดงจำนวนหมวดหมู่
                       items:
                           _getSpeechStyles(), // ดึงข้อมูล speechStyle จาก SpeakerModel
                       selectedItems: selectedCategories,
@@ -911,8 +915,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                               // speakerItem.thaiName,
                               Localizations.localeOf(context).languageCode ==
                                       'th'
-                                  ? speakerItem
-                                      .thaiName // แสดงชื่อไทย
+                                  ? speakerItem.thaiName // แสดงชื่อไทย
                                   : speakerItem
                                       .engName, // แสดงชื่ออังกฤษหากเปลี่ยน
                               style: GoogleFonts.prompt(

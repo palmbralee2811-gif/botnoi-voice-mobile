@@ -5,8 +5,8 @@
     "gender": "Gender",
     "style": "Style",
     "style_plural": "{count} styles",
-    "category": "Categories",
-    "category_plural": "{count} categories",
+    "category": "Category",
+    "category_plural": "{count} category",
     "welcome_message": {
         "line1": "Convert Text to Speech",
         "line2": "BOTNOI",
@@ -85,6 +85,7 @@
         "login_with": "Sign In with",
         "email": "Email",
         "username": "Username",
+        "password": "Password",
         "logout": "Sign Out"
     },
     "change_email_username": {

@@ -319,7 +319,7 @@ class _AccountScreenState extends State<AccountScreen> {
             emailProvider.isLoggedIn &&
                     emailProvider.user?.providerData[0].providerId == 'password'
                 ? UserInfoRow(
-                    title: 'รหัสผ่าน',
+                    title: 'account.password'.tr(), //รหัสผ่าน
                     value: '********',
                     icon: Icons.edit_rounded,
                     onIconPressed: () async {

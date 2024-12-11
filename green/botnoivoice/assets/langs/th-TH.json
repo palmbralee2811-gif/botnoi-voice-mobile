@@ -85,6 +85,7 @@
         "login_with": "เข้าสู่ระบบด้วย",
         "email": "อีเมล",
         "username": "ชื่อผู้ใช้",
+        "password": "รหัสผ่าน",
         "logout": "ออกจากระบบ"
     },
     "change_email_username": {
