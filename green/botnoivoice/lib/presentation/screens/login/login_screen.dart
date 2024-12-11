@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -99,12 +101,13 @@ class LoginScreen extends StatelessWidget {
                 }),
               ),
               SizedBox(height: 20.h),
-              Padding(
-                padding: EdgeInsets.only(left: 30.w, right: 30.w),
-                child: AppleLoginButton(onPressed: () {
-                  _openAppleLogin(context);
-                }),
-              ),
+              if (Platform.isIOS)
+                Padding(
+                  padding: EdgeInsets.only(left: 30.w, right: 30.w),
+                  child: AppleLoginButton(onPressed: () {
+                    _openAppleLogin(context);
+                  }),
+                ),
               SizedBox(height: 40.h),
             ],
           ),
