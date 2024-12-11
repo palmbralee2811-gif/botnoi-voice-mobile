@@ -221,7 +221,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           child: SizedBox(
             height: 50.h,
             child: GradientTextButton(
-              text: 'ตกลง',
+              text: 'confirm'.tr(), //ตกลง
               onPressed: () {
                 if (audioPlayer.state == PlayerState.playing) {
                   audioPlayer.stop();
@@ -471,7 +471,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
         child: SizedBox(
           child: GradientTextButton(
-            text: 'ตกลง',
+            text: 'confirm'.tr(), //ตกลง
             onPressed: () {
               if (audioPlayer.state == PlayerState.playing) {
                 audioPlayer.stop();

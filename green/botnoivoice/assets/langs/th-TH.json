@@ -7,6 +7,8 @@
     "style_plural": "{count} สไตล์",
     "category": "หมวดหมู่",
     "category_plural": "{count} หมวดหมู่",
+    "confirm": "ตกลง",
+    "reset": "รีเซ็ท",
     "welcome_message": {
         "line1": "เปลี่ยนข้อความเป็นเสียง",
         "line2": "บอทน้อย",

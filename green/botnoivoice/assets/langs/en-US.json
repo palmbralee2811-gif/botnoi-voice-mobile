@@ -4,9 +4,11 @@
     "english": "English",
     "gender": "Gender",
     "style": "Style",
-    "style_plural": "{count} styles",
+    "style_plural": "{count} Style",
     "category": "Category",
-    "category_plural": "{count} category",
+    "category_plural": "{count} Category",
+    "confirm": "Confirm",
+    "reset": "Reset",
     "welcome_message": {
         "line1": "Convert Text to Speech",
         "line2": "BOTNOI",
