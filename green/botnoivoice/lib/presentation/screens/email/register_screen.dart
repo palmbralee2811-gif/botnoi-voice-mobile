@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
@@ -365,10 +367,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: GoogleLoginButton(onPressed: _openGoogleLogin),
         ),
         SizedBox(height: 16.h),
-        Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w),
-          child: AppleLoginButton(onPressed: _openAppleLogin),
-        ),
+        if (Platform.isIOS)
+          Padding(
+            padding: EdgeInsets.only(left: 15.w, right: 15.w),
+            child: AppleLoginButton(onPressed: _openAppleLogin),
+          ),
       ],
     );
   }
@@ -381,7 +384,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           alignment: WrapAlignment.center,
           children: [
             Text(
-              "term.read".tr(), //I have read and accepted the 
+              "term.read".tr(), //I have read and accepted the
               style: TextStyle(fontSize: 12.sp, color: kDark),
             ),
             GestureDetector(
@@ -399,7 +402,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             Text(
-              "term.and".tr(), // and 
+              "term.and".tr(), // and
               style: TextStyle(fontSize: 12.sp, color: kDark),
             ),
             GestureDetector(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -76,7 +78,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       } catch (error) {
         NotificationPopup(
           context: context,
-          text: '${'sign_in.error_occurred'.tr()} $error', //เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.
+          text:
+              '${'sign_in.error_occurred'.tr()} $error', //เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.
         ).showAsError();
       } finally {
         setState(() {
@@ -169,7 +172,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                       ),
                       SizedBox(height: 8.h),
                       GradientTextAlign(
-                        'sign_in.welcome_message'.tr(), //สวัสดี, Botnoi Voice ยินดีต้อนรับ
+                        'sign_in.welcome_message'
+                            .tr(), //สวัสดี, Botnoi Voice ยินดีต้อนรับ
                         gradient: const LinearGradient(
                           colors: [
                             Color(0xFF9340FF),
@@ -189,7 +193,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         style: TextStyle(
                             fontSize: 16.sp, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
-                          labelText: 'sign_in.username_or_email'.tr(), //ชื่อผู้ใช้งานหรืออีเมล
+                          labelText: 'sign_in.username_or_email'
+                              .tr(), //ชื่อผู้ใช้งานหรืออีเมล
                           labelStyle: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
@@ -210,7 +215,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'sign_in.please_enter_username_or_email'.tr(); //โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ
+                            return 'sign_in.please_enter_username_or_email'
+                                .tr(); //โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ
                           }
                           return null;
                         },
@@ -247,8 +253,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           ),
                         ),
                         obscureText: !_isPasswordVisible,
-                        validator: (value) =>
-                            value!.isEmpty ? 'sign_in.please_enter_password'.tr() : null, //โปรดใส่รหัสผ่านของคุณ
+                        validator: (value) => value!.isEmpty
+                            ? 'sign_in.please_enter_password'.tr()
+                            : null, //โปรดใส่รหัสผ่านของคุณ
                       ),
                       SizedBox(height: 12.h),
                       _isLoading
@@ -342,13 +349,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           _openGoogleLogin();
                         }),
                       ),
-                                            SizedBox(height: 16.h),
-                      Padding(
-                        padding: EdgeInsets.only(left: 15.w, right: 15.w),
-                        child: AppleLoginButton(onPressed: () {
-                          _openAppleLogin();
-                        }),
-                      ),
+                      SizedBox(height: 16.h),
+                      if (Platform.isIOS)
+                        Padding(
+                          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                          child: AppleLoginButton(onPressed: () {
+                            _openAppleLogin();
+                          }),
+                        ),
                       SizedBox(height: 140.h),
                     ],
                   ),

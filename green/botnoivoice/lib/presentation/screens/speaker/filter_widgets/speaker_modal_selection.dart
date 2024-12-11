@@ -127,7 +127,8 @@ Future<void> showModalSelection({
                             color: Colors.grey, // สีเทาสำหรับ Border
                             width: 1, // ความหนาของ Border
                           ),
-                          borderRadius: BorderRadius.circular(8), // มุมโค้งของ Border
+                          borderRadius:
+                              BorderRadius.circular(8), // มุมโค้งของ Border
                           color: Colors.white, // พื้นหลังสีขาว
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -147,7 +148,8 @@ Future<void> showModalSelection({
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        onConfirm(tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
+                        onConfirm(
+                            tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
                         Navigator.pop(context); // ปิด Modal
                       },
                       child: Container(
@@ -160,7 +162,8 @@ Future<void> showModalSelection({
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           ),
-                          borderRadius: BorderRadius.circular(8), // ทำให้มุมโค้ง
+                          borderRadius:
+                              BorderRadius.circular(8), // ทำให้มุมโค้ง
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                         alignment: Alignment.center,
