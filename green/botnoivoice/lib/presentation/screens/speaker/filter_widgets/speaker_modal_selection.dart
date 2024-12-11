@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -110,7 +111,7 @@ Future<void> showModalSelection({
                         (context as Element).markNeedsBuild();  // รีเฟรช UI แต่ไม่ปิด Modal
                       },
                       child: Text(
-                        'รีเซ็ท',
+                        'reset'.tr(), //รีเซ็ท
                         style: GoogleFonts.prompt(
                           fontSize: 12.sp,
                           color: Colors.white),
@@ -133,7 +134,7 @@ Future<void> showModalSelection({
                         Navigator.pop(context); // ปิด Modal
                       },
                       child: Text(
-                        'ตกลง',
+                        'confirm'.tr(), //ตกลง
                         style: GoogleFonts.prompt(
                           fontSize: 12.sp,
                           color: Colors.white),
