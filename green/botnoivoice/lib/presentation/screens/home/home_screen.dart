@@ -16,7 +16,7 @@ import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/audio_player_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/audio_player/audio_player_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';

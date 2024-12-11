@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/audio_player/share_file.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/ios_file_repository.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
@@ -18,7 +19,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:logger/logger.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 // Play Audio on Temporary Directory, Download File, and Open Audio File
 class AudioPlayerDialog extends StatefulWidget {
@@ -320,8 +320,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   Builder(
                     builder: (BuildContext context) {
                       return GradientRow(
-                        onPressed: () => shareAudioFile(
-                            context, widget.filePath),
+                        onPressed: () =>
+                            shareAudioFile(context, widget.filePath),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -356,33 +356,5 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
               ),
       ),
     );
-  }
-
-  Future<void> shareAudioFile(BuildContext context, String mp3FilePath) async {
-    final box = context.findRenderObject() as RenderBox?;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-    final shareResult = await Share.shareXFiles(
-      [XFile(mp3FilePath)],
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    );
-
-    scaffoldMessenger.showSnackBar(getResultSnackBar(shareResult));
-  }
-
-  SnackBar getResultSnackBar(ShareResult result) {
-    String message;
-    switch (result.status) {
-      case ShareResultStatus.success:
-        message = 'Share Audio File Successful';
-        break;
-      case ShareResultStatus.dismissed:
-        message = 'Share Audio File Dismissed';
-        break;
-      default:
-        message = 'Share Audio File Failed';
-        break;
-    }
-    return SnackBar(content: Text(message));
   }
 }
