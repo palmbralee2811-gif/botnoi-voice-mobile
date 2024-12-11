@@ -182,8 +182,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           : 'category_plural'.tr(namedArgs: {
                               'count': selectedCategories.length.toString()
                             }), // แสดงจำนวนหมวดหมู่
-                      items:
-                          _getSpeechStyles(context), // ดึงข้อมูล speechStyle จาก SpeakerModel
+                      items: _getSpeechStyles(
+                          context), // ดึงข้อมูล speechStyle จาก SpeakerModel
                       selectedItems: selectedCategories,
                       onConfirm: (newSelected) {
                         setState(() {
@@ -451,7 +451,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             height: 15.h,
           ),
           _buildGenderFilter(
-              'ช/ญ', 'assets/images/gender/all.svg', '', context),
+              'ชาย/หญิง', 'assets/images/gender/all.svg', '', context),
           _buildGenderFilter(
               'หญิง', 'assets/images/gender/woman.svg', 'ผู้หญิง', context),
           _buildGenderFilter(
@@ -546,52 +546,70 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
 // _buildGenderFilter: สร้างรายการตัวเลือกเพศแต่ละตัวใน Modal เพศ
-  Widget _buildGenderFilter(
-      String text,
-      String imagePath,
-      String gen, ///// เลือกเพศ
-      BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (text == 'ช/ญ') {
-          selectedGender = 'ช/ญ';
-          selectedGenderImage = 'assets/images/gender/all.svg';
-          gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
-        } else {
-          selectedGender = text;
-          selectedGenderImage = imagePath;
-          gender = gen;
-        }
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
-        width: 320.w,
-        color: const Color(0xFFFFFFFF),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SvgPicture.asset(
-              imagePath,
-              width: 23.w,
-              height: 23.h,
-            ),
-            SizedBox(width: 20.w),
-            Text(
-              text,
-              style: GoogleFonts.prompt(
-                fontSize: 14.sp,
-                fontWeight: selectedGender == text
-                    ? FontWeight.w600
-                    : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+String genderNameDefaultThai = "ชาย/หญิง";
+String genderNameDefaultEnglish = "Man/Woman";
+String genderNameManThai = "ชาย";
+String genderNameManEnglish = "Man";
+String genderNameWomanThai = "หญิง";
+String genderNameWomanEnglish = "Woman";
+
+Widget _buildGenderFilter(
+    String text,
+    String imagePath,
+    String gen, ///// เลือกเพศ
+    BuildContext context) {
+  String displayText;
+  if (text == 'ชาย/หญิง' || text == 'Man/Woman') {
+    displayText = Localizations.localeOf(context).languageCode == 'th'
+        ? genderNameDefaultThai
+        : genderNameDefaultEnglish;
+  } else if (text == 'ชาย' || text == 'Man') {
+    displayText = Localizations.localeOf(context).languageCode == 'th'
+        ? genderNameManThai
+        : genderNameManEnglish;
+  } else if (text == 'หญิง' || text == 'Woman') {
+    displayText = Localizations.localeOf(context).languageCode == 'th'
+        ? genderNameWomanThai
+        : genderNameWomanEnglish;
+  } else {
+    displayText = text;
   }
+
+  return InkWell(
+    onTap: () {
+      selectedGender = displayText;
+      selectedGenderImage = imagePath;
+      gender = gen;
+      Navigator.pop(context);
+    },
+    child: Container(
+      padding: EdgeInsets.only(left: 10.w),
+      height: 42.h,
+      width: 320.w,
+      color: const Color(0xFFFFFFFF),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SvgPicture.asset(
+            imagePath,
+            width: 23.w,
+            height: 23.h,
+          ),
+          SizedBox(width: 20.w),
+          Text(
+            displayText,
+            style: GoogleFonts.prompt(
+              fontSize: 14.sp,
+              fontWeight: selectedGender == displayText
+                  ? FontWeight.w600
+                  : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
 // buildMultipleSpeaker: แสดงรายการลำโพงทั้งหมด (อยู่ในส่วนเนื้อหาหลักของหน้าจอ) โดยจะใช้ข้อมูลที่กรองจาก _filterSpeakers
   Widget buildMultipleSpeaker(BuildContext context) {
@@ -1049,94 +1067,96 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
 // buildGenderButtonTrigger: ปุ่มเลือกเพศ (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal
 // เพื่อให้ผู้ใช้สามารถเลือกเพศที่ต้องการกรองลำโพง
-  Widget buildGenderButtonTrigger(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          changeIcon = !changeIcon;
-        });
-        showModalBottomSheet(
-          backgroundColor: Colors.white,
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-                return SizedBox(
-                  height: 220.h,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      children: [
-                        buildGenderButton(context),
-                      ],
-                    ),
+Widget buildGenderButtonTrigger(BuildContext context) {
+  return InkWell(
+    onTap: () {
+      setState(() {
+        changeIcon = !changeIcon;
+      });
+      showModalBottomSheet(
+        backgroundColor: Colors.white,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setModalState) {
+              return SizedBox(
+                height: 220.h,
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Column(
+                    children: [
+                      buildGenderButton(context),
+                    ],
                   ),
-                );
-              },
-            );
-          },
-        ).whenComplete(() {
-          setState(() {
-            changeIcon = false;
-          });
-        });
-      },
-      child: Container(
-        width: 100.w,
-        height: 35.h,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: 3.w),
-                SvgPicture.asset(
-                  selectedGenderImage,
-                  width: 28.w,
-                  height: 28.h,
                 ),
-                SizedBox(width: 6.w),
-                if (gender == '')
-                  Text(
-                    'ช/ญ',
-                    style: GoogleFonts.prompt(
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                if (gender.toString() != '')
-                  Text(
-                    selectedGender,
-                    style: GoogleFonts.prompt(
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                changeIcon
-                    ? const Icon(
-                        Icons.keyboard_arrow_up_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
-                      )
-                    : const Icon(
-                        Icons.keyboard_arrow_down_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
-                      ),
-              ],
-            ),
-          ],
+              );
+            },
+          );
+        },
+      ).whenComplete(() {
+        setState(() {
+          changeIcon = false;
+        });
+      });
+    },
+    child: Container(
+      width: 100.w,
+      height: 35.h,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: const BorderRadius.all(
+          Radius.circular(4),
+        ),
+        border: Border.all(
+          color: const Color(0xFFE2E3E9),
+          width: 1,
         ),
       ),
-    );
-  }
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(width: 3.w),
+              SvgPicture.asset(
+                selectedGenderImage,
+                width: 28.w,
+                height: 28.h,
+              ),
+              SizedBox(width: 6.w),
+              if (gender == '')
+                Text(
+                  Localizations.localeOf(context).languageCode == 'th'
+                      ? 'ช/ญ'
+                      : 'M/W',
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                  ),
+                ),
+              if (gender.toString() != '')
+                Text(
+                  selectedGender,
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                  ),
+                ),
+              changeIcon
+                  ? const Icon(
+                      Icons.keyboard_arrow_up_sharp,
+                      size: 20,
+                      color: Color(0xFF323130),
+                    )
+                  : const Icon(
+                      Icons.keyboard_arrow_down_sharp,
+                      size: 20,
+                      color: Color(0xFF323130),
+                    ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
 }
