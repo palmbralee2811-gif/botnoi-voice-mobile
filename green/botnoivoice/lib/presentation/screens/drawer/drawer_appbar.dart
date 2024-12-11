@@ -27,7 +27,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   String displayName = "Loading...";
   String uid = "Loading...";
   String profilePictureUrl = "";
-  String _selectedLanguage = 'th'; // Default language (Thai)
+  String selectedLanguage = 'th'; // Default language (Thai)
 
   @override
   void initState() {
@@ -37,22 +37,22 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
         .addPostFrameCallback((_) async => await _loadUserInfo());
   }
 
-  // Load saved language from SharedPreferences
-  _loadLanguage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedLanguage = prefs.getString('selected_language');
-    if (savedLanguage != null) {
-      setState(() {
-        _selectedLanguage = savedLanguage; // Set the selected language
-      });
-      // Set the locale based on the saved language
-      if (_selectedLanguage == 'th') {
-        context.setLocale(const Locale('th', 'TH'));
-      } else if (_selectedLanguage == 'en') {
-        context.setLocale(const Locale('en', 'US'));
-      }
-    }
-  }
+  // // Load saved language from SharedPreferences
+  // _loadLanguage() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? savedLanguage = prefs.getString('selected_language');
+  //   if (savedLanguage != null) {
+  //     setState(() {
+  //       _selectedLanguage = savedLanguage; // Set the selected language
+  //     });
+  //     // Set the locale based on the saved language
+  //     if (_selectedLanguage == 'th') {
+  //       context.setLocale(const Locale('th', 'TH'));
+  //     } else if (_selectedLanguage == 'en') {
+  //       context.setLocale(const Locale('en', 'US'));
+  //     }
+  //   }
+  // }
 
   // Save selected language to SharedPreferences
   _saveLanguage(String language) async {
@@ -271,7 +271,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 context: context,
                 onLanguageSelected: (language) {
                   setState(() {
-                    _selectedLanguage =
+                    selectedLanguage =
                         language; // Update the selected language
                   });
                   _saveLanguage(language); // Save the language if needed
