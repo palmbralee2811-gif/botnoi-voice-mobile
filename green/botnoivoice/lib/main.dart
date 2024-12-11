@@ -9,7 +9,6 @@ import 'package:botnoivoice/presentation/providers/email/email_token_provider.da
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -24,8 +23,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
-
-// Import easy_localization
 import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
@@ -89,7 +86,7 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            home: LanguageSelectionScreen(),
+            home: const LanguageSelectionScreen(),
             // home: HomeScreen(),
             // Add localization delegate
             localizationsDelegates: context.localizationDelegates,

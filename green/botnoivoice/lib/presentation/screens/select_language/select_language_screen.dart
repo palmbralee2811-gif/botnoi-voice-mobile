@@ -1,6 +1,6 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
-import 'package:botnoivoice/presentation/screens/select_language/gradient_text.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_button.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +39,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   height: 56.h,
                   alignment: Alignment.center,
                   child: GradientText(
-                    'Languages',
+                    text: 'Languages',
                     gradient: const LinearGradient(
                       colors: [
                         Color(0xFF9340FF),

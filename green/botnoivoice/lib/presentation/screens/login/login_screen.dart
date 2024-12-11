@@ -7,7 +7,6 @@ import 'package:botnoivoice/presentation/widgets/button/email_login_button.dart'
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
-import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet_login.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -75,12 +74,11 @@ class LoginScreen extends StatelessWidget {
   Widget _buildForm(BuildContext context) {
     return Stack(
       children: [
-        // Form content inside a SingleChildScrollView
         SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 127.h), // Adjusted height to give space from top
+              SizedBox(height: 127.h),
               _buildCenter(),
               SizedBox(height: 95.h),
               EmailLoginButton(onPressed: () {
@@ -111,14 +109,6 @@ class LoginScreen extends StatelessWidget {
             ],
           ),
         ),
-        // Positioned(
-        //   top: 60.h,
-        //   right: 35,
-        //   child: const Material(
-        //     color: Colors.transparent,
-        //     child: LanguageChangeBottomSheetLogin(),
-        //   ),
-        // ),
       ],
     );
   }

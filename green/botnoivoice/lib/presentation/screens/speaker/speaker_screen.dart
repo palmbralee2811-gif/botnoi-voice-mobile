@@ -51,22 +51,21 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   String selectedVoiceStyle = ''; // ตัวแปรเก็บเสียงที่ผู้ใช้เลือก
   String selectedStyle = ''; // สไตล์เสียงที่เลือก
 
-  List<String> _getVoiceStyles() {
+  List<String> _getVoiceStyles(BuildContext context) {
     Set<String> voiceStylesSet = {};
+    String languageCode = Localizations.localeOf(context).languageCode;
 
     // กรองสไตล์เสียงตามภาษาที่เลือก
     for (var speaker in SpeakerModel.speakerItem) {
-      if (speaker.language == language) {
-        // ถ้าเป็นภาษาไทย ใช้ voiceStyle
-        if (language == 'TH') {
-          voiceStylesSet
-              .addAll(speaker.voiceStyle); // ใช้ voiceStyle สำหรับภาษาไทย
-        }
-        // สำหรับภาษาอื่น ๆ ใช้ engVoiceStyle
-        else {
-          voiceStylesSet.addAll(
-              speaker.engVoiceStyle); // ใช้ engVoiceStyle สำหรับภาษาอื่น
-        }
+      // ถ้าเป็นภาษาไทย ใช้ voiceStyle
+      if (languageCode == 'th') {
+        voiceStylesSet
+            .addAll(speaker.voiceStyle); // ใช้ voiceStyle สำหรับภาษาไทย
+      }
+      // สำหรับภาษาอื่น ๆ ใช้ engVoiceStyle
+      else {
+        voiceStylesSet
+            .addAll(speaker.engVoiceStyle); // ใช้ engVoiceStyle สำหรับภาษาอื่น
       }
     }
 
@@ -74,22 +73,21 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     return voiceStylesSet.toList();
   }
 
-  List<String> _getSpeechStyles() {
+  List<String> _getSpeechStyles(BuildContext context) {
     Set<String> speechStylesSet = {};
+    String languageCode = Localizations.localeOf(context).languageCode;
 
     // กรองหมวดหมู่เสียงตามภาษาที่เลือก
     for (var speaker in SpeakerModel.speakerItem) {
-      if (speaker.language == language) {
-        // ถ้าเป็นภาษาไทย ใช้ speechStyle
-        if (language == 'TH') {
-          speechStylesSet
-              .addAll(speaker.speechStyle); // ใช้ speechStyle สำหรับภาษาไทย
-        }
-        // สำหรับภาษาอื่น ๆ ใช้ engSpeechStyle
-        else {
-          speechStylesSet.addAll(
-              speaker.engSpeechStyle); // ใช้ engSpeechStyle สำหรับภาษาอื่น
-        }
+      // ถ้าเป็นภาษาไทย ใช้ speechStyle
+      if (languageCode == 'th') {
+        speechStylesSet
+            .addAll(speaker.speechStyle); // ใช้ speechStyle สำหรับภาษาไทย
+      }
+      // สำหรับภาษาอื่น ๆ ใช้ engSpeechStyle
+      else {
+        speechStylesSet.addAll(
+            speaker.engSpeechStyle); // ใช้ engSpeechStyle สำหรับภาษาอื่น
       }
     }
 
@@ -163,8 +161,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           : 'style_plural'.tr(namedArgs: {
                               'count': selectedStyles.length.toString()
                             }), // แสดงจำนวนสไตล์
-                      items:
-                          _getVoiceStyles(), // ดึงข้อมูล voiceStyle จาก SpeakerModel
+                      items: _getVoiceStyles(
+                          context), // ดึงข้อมูล voiceStyle จาก SpeakerModel
                       selectedItems: selectedStyles,
                       onConfirm: (newSelected) {
                         setState(() {
@@ -185,7 +183,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                               'count': selectedCategories.length.toString()
                             }), // แสดงจำนวนหมวดหมู่
                       items:
-                          _getSpeechStyles(), // ดึงข้อมูล speechStyle จาก SpeakerModel
+                          _getSpeechStyles(context), // ดึงข้อมูล speechStyle จาก SpeakerModel
                       selectedItems: selectedCategories,
                       onConfirm: (newSelected) {
                         setState(() {
@@ -453,11 +451,11 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             height: 15.h,
           ),
           _buildGenderFilter(
-              'ช/ญ', 'assets/images/gender/all.svg', '', context, setState),
-          _buildGenderFilter('หญิง', 'assets/images/gender/woman.svg',
-              'ผู้หญิง', context, setState),
-          _buildGenderFilter('ชาย', 'assets/images/gender/man.svg', 'ผู้ชาย',
-              context, setState)
+              'ช/ญ', 'assets/images/gender/all.svg', '', context),
+          _buildGenderFilter(
+              'หญิง', 'assets/images/gender/woman.svg', 'ผู้หญิง', context),
+          _buildGenderFilter(
+              'ชาย', 'assets/images/gender/man.svg', 'ผู้ชาย', context)
         ],
       ),
     );
@@ -552,21 +550,18 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       String text,
       String imagePath,
       String gen, ///// เลือกเพศ
-      BuildContext context,
-      StateSetter setState) {
+      BuildContext context) {
     return InkWell(
       onTap: () {
-        setState(() {
-          if (text == 'ช/ญ') {
-            selectedGender = 'ช/ญ';
-            selectedGenderImage = 'assets/images/gender/all.svg';
-            gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
-          } else {
-            selectedGender = text;
-            selectedGenderImage = imagePath;
-            gender = gen;
-          }
-        });
+        if (text == 'ช/ญ') {
+          selectedGender = 'ช/ญ';
+          selectedGenderImage = 'assets/images/gender/all.svg';
+          gender = ''; // กำหนดค่าเป็นว่างเพื่อให้แสดงทุกเพศ
+        } else {
+          selectedGender = text;
+          selectedGenderImage = imagePath;
+          gender = gen;
+        }
         Navigator.pop(context);
       },
       child: Container(
@@ -632,9 +627,10 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
-// _filterSpeakers: ฟังก์ชันกรองลำโพงตามเงื่อนไขที่ผู้ใช้เลือก เช่น ภาษา เพศ สไตล์เสียง หรือหมวดหมู่
+  // _filterSpeakers: ฟังก์ชันกรองลำโพงตามเงื่อนไขที่ผู้ใช้เลือก เช่น ภาษา เพศ สไตล์เสียง หรือหมวดหมู่
   List<SpeakerEntity> _filterSpeakers() {
     List<SpeakerEntity> filteredSpeakers = [];
+    String languageCode = Localizations.localeOf(context).languageCode;
 
     // กรองลำโพงตามภาษาที่เลือก
     filteredSpeakers = SpeakerModel.speakerItem.where((item) {
@@ -654,10 +650,18 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           "Filtered by available language: ${filteredSpeakers.length} speakers found");
     }
 
+    // เพิ่มการกรองเพศถ้ามีการเลือกเพศ
+    if (gender != null && gender!.isNotEmpty) {
+      filteredSpeakers =
+          filteredSpeakers.where((item) => item.gender == gender).toList();
+
+      logger.w("Filtered by gender: ${filteredSpeakers.length} speakers found");
+    }
+
     // ตรวจสอบการกรองสไตล์เสียง
     if (selectedStyles.isNotEmpty) {
       filteredSpeakers = filteredSpeakers.where((item) {
-        if (language == 'TH') {
+        if (languageCode == 'th') {
           // กรองสไตล์เสียงสำหรับภาษาไทย (voiceStyle)
           return item.voiceStyle.any((style) => selectedStyles.contains(style));
         } else {
@@ -674,7 +678,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     // ตรวจสอบการกรองหมวดหมู่เสียง
     if (selectedCategories.isNotEmpty) {
       filteredSpeakers = filteredSpeakers.where((item) {
-        if (language == 'TH') {
+        if (languageCode == 'th') {
           // กรองหมวดหมู่เสียงสำหรับภาษาไทย (speechStyle)
           return item.speechStyle
               .any((category) => selectedCategories.contains(category));
