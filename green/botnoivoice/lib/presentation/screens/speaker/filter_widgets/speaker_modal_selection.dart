@@ -179,7 +179,6 @@ Future<void> showModalSelection({
                   ),
                 ],
               ),
-              const SizedBox(height: 10), // ระยะห่างจากปุ่มถึงขอบล่าง
             ],
           ),
         ),
