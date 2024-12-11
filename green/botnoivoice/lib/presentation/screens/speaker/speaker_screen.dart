@@ -32,7 +32,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   List<SpeakerEntity>? speakerItem;
   List<String> selectedIndexFavorites = [];
   // String selectedLanguage = 'thai'.tr();
-  String selectedLanguage = 'ไทย';
+  String selectedLanguage = 'Thai - ไทย';
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   bool isExpanded = false;
 
@@ -487,6 +487,147 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 // _buildLanguageFilter: สร้างรายการตัวเลือกภาษาแต่ละตัวใน Modal ภาษา
   Widget _buildLanguageFilter(String text, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
+    String displayText = text;
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    if (languageCode == 'th') {
+      switch (lang) {
+        case 'TH':
+          displayText = 'ไทย';
+          break;
+        case 'EN':
+          displayText = 'อังกฤษ';
+          break;
+        case 'ID':
+          displayText = 'อินโดนีเซีย';
+          break;
+        case 'JA':
+          displayText = 'ญี่ปุ่น';
+          break;
+        case 'LO':
+          displayText = 'ลาว';
+          break;
+        case 'MY':
+          displayText = 'เมียนมาร์';
+          break;
+        case 'VI':
+          displayText = 'เวียดนาม';
+          break;
+        case 'ZH':
+          displayText = 'จีน';
+          break;
+        case 'KM':
+          displayText = 'กัมพูชา';
+          break;
+        case 'FIL':
+          displayText = 'ฟิลิปปินส์';
+          break;
+        case 'AR':
+          displayText = 'อาหรับ';
+          break;
+        case 'DE':
+          displayText = 'เยอรมัน';
+          break;
+        case 'ES':
+          displayText = 'สเปน';
+          break;
+        case 'FR':
+          displayText = 'ฝรั่งเศส';
+          break;
+        case 'NL':
+          displayText = 'ดัตช์';
+          break;
+        case 'KO':
+          displayText = 'เกาหลี';
+          break;
+        case 'MS':
+          displayText = 'มาเลเซีย';
+          break;
+        case 'PT-BR':
+          displayText = 'โปรตุเกส';
+          break;
+        case 'RU':
+          displayText = 'รัสเซีย';
+          break;
+        case 'HI':
+          displayText = 'ฮินดู';
+          break;
+        case 'IT':
+          displayText = 'อิตาลี';
+          break;
+        default:
+          displayText = text;
+      }
+    } else if (languageCode == 'en') {
+      switch (lang) {
+        case 'TH':
+          displayText = 'Thai (Thailand)';
+          break;
+        case 'EN':
+          displayText = 'English (UK)';
+          break;
+        case 'ID':
+          displayText = 'Indonesia';
+          break;
+        case 'JA':
+          displayText = 'Japanese';
+          break;
+        case 'LO':
+          displayText = 'Laos';
+          break;
+        case 'MY':
+          displayText = 'Burmese';
+          break;
+        case 'VI':
+          displayText = 'Vietnamese';
+          break;
+        case 'ZH':
+          displayText = 'Chinese (Simplified)';
+          break;
+        case 'KM':
+          displayText = 'Cambodia';
+          break;
+        case 'FIL':
+          displayText = 'Filipino';
+          break;
+        case 'AR':
+          displayText = 'Arabic';
+          break;
+        case 'DE':
+          displayText = 'German';
+          break;
+        case 'ES':
+          displayText = 'Spanish';
+          break;
+        case 'FR':
+          displayText = 'French';
+          break;
+        case 'NL':
+          displayText = 'Dutch';
+          break;
+        case 'KO':
+          displayText = 'Korea';
+          break;
+        case 'MS':
+          displayText = 'Malaysia';
+          break;
+        case 'PT-BR':
+          displayText = 'Portuguese';
+          break;
+        case 'RU':
+          displayText = 'Russia';
+          break;
+        case 'HI':
+          displayText = 'Hindi';
+          break;
+        case 'IT':
+          displayText = 'Italian';
+          break;
+        default:
+          displayText = text;
+      }
+    }
+
     return InkWell(
       onTap: () {
         setState(() {
@@ -494,8 +635,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           language = lang;
           logger.w("Selected Language: $language");
 
-          List<String> parts = text.split(' - ');
-          selectedLanguage = parts.length > 1 ? parts[1] : text;
+          selectedLanguage = displayText;
           selectedLanguageImage = imagePath;
 
           logger.w("Selected Language: $selectedLanguage");
@@ -526,13 +666,10 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                   width: 20.w,
                 ),
                 Text(
-                  text,
+                  displayText,
                   style: GoogleFonts.prompt(
                     fontSize: 14.sp,
-                    fontWeight: selectedLanguage ==
-                            (text.split(' - ').length > 1
-                                ? text.split(' - ')[1]
-                                : text)
+                    fontWeight: selectedLanguage == displayText
                         ? FontWeight.w600
                         : FontWeight.normal,
                   ),
@@ -546,70 +683,70 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
 // _buildGenderFilter: สร้างรายการตัวเลือกเพศแต่ละตัวใน Modal เพศ
-String genderNameDefaultThai = "ชาย/หญิง";
-String genderNameDefaultEnglish = "Man/Woman";
-String genderNameManThai = "ชาย";
-String genderNameManEnglish = "Man";
-String genderNameWomanThai = "หญิง";
-String genderNameWomanEnglish = "Woman";
+  String genderNameDefaultThai = "ชาย/หญิง";
+  String genderNameDefaultEnglish = "Man/Woman";
+  String genderNameManThai = "ชาย";
+  String genderNameManEnglish = "Man";
+  String genderNameWomanThai = "หญิง";
+  String genderNameWomanEnglish = "Woman";
 
-Widget _buildGenderFilter(
-    String text,
-    String imagePath,
-    String gen, ///// เลือกเพศ
-    BuildContext context) {
-  String displayText;
-  if (text == 'ชาย/หญิง' || text == 'Man/Woman') {
-    displayText = Localizations.localeOf(context).languageCode == 'th'
-        ? genderNameDefaultThai
-        : genderNameDefaultEnglish;
-  } else if (text == 'ชาย' || text == 'Man') {
-    displayText = Localizations.localeOf(context).languageCode == 'th'
-        ? genderNameManThai
-        : genderNameManEnglish;
-  } else if (text == 'หญิง' || text == 'Woman') {
-    displayText = Localizations.localeOf(context).languageCode == 'th'
-        ? genderNameWomanThai
-        : genderNameWomanEnglish;
-  } else {
-    displayText = text;
-  }
+  Widget _buildGenderFilter(
+      String text,
+      String imagePath,
+      String gen, ///// เลือกเพศ
+      BuildContext context) {
+    String displayText;
+    if (text == 'ชาย/หญิง' || text == 'Man/Woman') {
+      displayText = Localizations.localeOf(context).languageCode == 'th'
+          ? genderNameDefaultThai
+          : genderNameDefaultEnglish;
+    } else if (text == 'ชาย' || text == 'Man') {
+      displayText = Localizations.localeOf(context).languageCode == 'th'
+          ? genderNameManThai
+          : genderNameManEnglish;
+    } else if (text == 'หญิง' || text == 'Woman') {
+      displayText = Localizations.localeOf(context).languageCode == 'th'
+          ? genderNameWomanThai
+          : genderNameWomanEnglish;
+    } else {
+      displayText = text;
+    }
 
-  return InkWell(
-    onTap: () {
-      selectedGender = displayText;
-      selectedGenderImage = imagePath;
-      gender = gen;
-      Navigator.pop(context);
-    },
-    child: Container(
-      padding: EdgeInsets.only(left: 10.w),
-      height: 42.h,
-      width: 320.w,
-      color: const Color(0xFFFFFFFF),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SvgPicture.asset(
-            imagePath,
-            width: 23.w,
-            height: 23.h,
-          ),
-          SizedBox(width: 20.w),
-          Text(
-            displayText,
-            style: GoogleFonts.prompt(
-              fontSize: 14.sp,
-              fontWeight: selectedGender == displayText
-                  ? FontWeight.w600
-                  : FontWeight.normal,
+    return InkWell(
+      onTap: () {
+        selectedGender = displayText;
+        selectedGenderImage = imagePath;
+        gender = gen;
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 10.w),
+        height: 42.h,
+        width: 320.w,
+        color: const Color(0xFFFFFFFF),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SvgPicture.asset(
+              imagePath,
+              width: 23.w,
+              height: 23.h,
             ),
-          ),
-        ],
+            SizedBox(width: 20.w),
+            Text(
+              displayText,
+              style: GoogleFonts.prompt(
+                fontSize: 14.sp,
+                fontWeight: selectedGender == displayText
+                    ? FontWeight.w600
+                    : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
 // buildMultipleSpeaker: แสดงรายการลำโพงทั้งหมด (อยู่ในส่วนเนื้อหาหลักของหน้าจอ) โดยจะใช้ข้อมูลที่กรองจาก _filterSpeakers
   Widget buildMultipleSpeaker(BuildContext context) {
@@ -1067,96 +1204,96 @@ Widget _buildGenderFilter(
 
 // buildGenderButtonTrigger: ปุ่มเลือกเพศ (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal
 // เพื่อให้ผู้ใช้สามารถเลือกเพศที่ต้องการกรองลำโพง
-Widget buildGenderButtonTrigger(BuildContext context) {
-  return InkWell(
-    onTap: () {
-      setState(() {
-        changeIcon = !changeIcon;
-      });
-      showModalBottomSheet(
-        backgroundColor: Colors.white,
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setModalState) {
-              return SizedBox(
-                height: 220.h,
-                child: Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    children: [
-                      buildGenderButton(context),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ).whenComplete(() {
+  Widget buildGenderButtonTrigger(BuildContext context) {
+    return InkWell(
+      onTap: () {
         setState(() {
-          changeIcon = false;
+          changeIcon = !changeIcon;
         });
-      });
-    },
-    child: Container(
-      width: 100.w,
-      height: 35.h,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(4),
-        ),
-        border: Border.all(
-          color: const Color(0xFFE2E3E9),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(width: 3.w),
-              SvgPicture.asset(
-                selectedGenderImage,
-                width: 28.w,
-                height: 28.h,
-              ),
-              SizedBox(width: 6.w),
-              if (gender == '')
-                Text(
-                  Localizations.localeOf(context).languageCode == 'th'
-                      ? 'ช/ญ'
-                      : 'M/W',
-                  style: GoogleFonts.prompt(
-                    fontSize: 12.sp,
-                  ),
-                ),
-              if (gender.toString() != '')
-                Text(
-                  selectedGender,
-                  style: GoogleFonts.prompt(
-                    fontSize: 12.sp,
-                  ),
-                ),
-              changeIcon
-                  ? const Icon(
-                      Icons.keyboard_arrow_up_sharp,
-                      size: 20,
-                      color: Color(0xFF323130),
-                    )
-                  : const Icon(
-                      Icons.keyboard_arrow_down_sharp,
-                      size: 20,
-                      color: Color(0xFF323130),
+        showModalBottomSheet(
+          backgroundColor: Colors.white,
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+                return SizedBox(
+                  height: 220.h,
+                  child: Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      children: [
+                        buildGenderButton(context),
+                      ],
                     ),
-            ],
+                  ),
+                );
+              },
+            );
+          },
+        ).whenComplete(() {
+          setState(() {
+            changeIcon = false;
+          });
+        });
+      },
+      child: Container(
+        width: 100.w,
+        height: 35.h,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(4),
           ),
-        ],
+          border: Border.all(
+            color: const Color(0xFFE2E3E9),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: 3.w),
+                SvgPicture.asset(
+                  selectedGenderImage,
+                  width: 28.w,
+                  height: 28.h,
+                ),
+                SizedBox(width: 6.w),
+                if (gender == '')
+                  Text(
+                    Localizations.localeOf(context).languageCode == 'th'
+                        ? 'ช/ญ'
+                        : 'M/W',
+                    style: GoogleFonts.prompt(
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                if (gender.toString() != '')
+                  Text(
+                    selectedGender,
+                    style: GoogleFonts.prompt(
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                changeIcon
+                    ? const Icon(
+                        Icons.keyboard_arrow_up_sharp,
+                        size: 20,
+                        color: Color(0xFF323130),
+                      )
+                    : const Icon(
+                        Icons.keyboard_arrow_down_sharp,
+                        size: 20,
+                        color: Color(0xFF323130),
+                      ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
