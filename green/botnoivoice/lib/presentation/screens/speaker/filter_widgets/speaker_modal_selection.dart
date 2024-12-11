@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 // showModalSelection: แสดง Modal สำหรับเลือกตัวกรอง (สไตล์หรือหมวดหมู่) โดยมีรายการตัวเลือก
 // และปุ่ม "ตกลง" หรือ "ยกเลิก"
 // เมื่อเปิด Modal ตัวกรองใหม่จะล้างค่าที่เลือกไว้
@@ -41,15 +40,20 @@ Future<void> showModalSelection({
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.close,
+                      size: 24.sp, // กำหนดขนาดไอคอน
+                      color: Colors.black, // กำหนดสีไอคอน
+                    ),
+                    onPressed: () => Navigator.pop(context), // ปิด Modal
                   ),
                 ],
               ),
+              const SizedBox(height: 20), // เพิ่มระยะห่าง 20px
               Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, 
+                    crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     childAspectRatio: 3,
@@ -69,22 +73,35 @@ Future<void> showModalSelection({
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xFF01BFFB)
-                              : Colors.white,
+                          // ใช้ Gradient เมื่อถูกเลือก
+                          gradient: isSelected
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF9340FF), // สีแรกของ Gradient
+                                    Color(0xFF34BDFA), // สีที่สองของ Gradient
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                )
+                              : null, // ไม่ใช้ Gradient หากไม่ได้เลือก
+                          // ใช้สีพื้นหลังธรรมดาเมื่อไม่ได้เลือก
+                          color: isSelected ? null : Colors.white,
                           border: Border.all(
                             color: isSelected
-                                ? const Color(0xFF01BFFB)
-                                : const Color(0xFFE2E3E9),
+                                ? Colors.transparent // ไม่มีขอบเมื่อเลือก
+                                : const Color(
+                                    0xFFE2E3E9), // ขอบสีเทาอ่อนเมื่อไม่ได้เลือก
                           ),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8), // มุมโค้ง
                         ),
                         child: Center(
                           child: Text(
                             item,
                             style: GoogleFonts.prompt(
                               fontSize: 12.sp,
-                              color: isSelected ? Colors.white : Colors.black,
+                              color: isSelected
+                                  ? Colors.white
+                                  : Colors.black, // เปลี่ยนสีข้อความตามสถานะ
                             ),
                           ),
                         ),
@@ -98,13 +115,14 @@ Future<void> showModalSelection({
                 children: [
                   // ปุ่ม "รีเซ็ทและตกลง" ที่จะทำทั้งสองอย่างในปุ่มเดียว
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey, // สีฟ้าสำหรับ Border
+                          width: 1, // ความหนาของ Border
                         ),
-                        minimumSize: Size(double.infinity, 50.h),
+                        borderRadius:
+                            BorderRadius.circular(8), // มุมโค้งของ Border
                       ),
                       onPressed: () {
                         tempSelectedItems.clear(); // รีเซ็ตค่าทั้งหมด
@@ -118,16 +136,21 @@ Future<void> showModalSelection({
                       ),
                     ),
                   ),
+
                   const SizedBox(width: 10),
                   // ปุ่ม "ตกลง" เพื่อยืนยันการเลือก
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF01BFFB),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF9340FF), // สีแรกของ Gradient
+                            Color(0xFF34BDFA), // สีที่สองของ Gradient
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
                         ),
-                        minimumSize: Size(double.infinity, 50.h),
+                        borderRadius: BorderRadius.circular(8), // ทำให้มุมโค้ง
                       ),
                       onPressed: () {
                         onConfirm(tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
@@ -143,6 +166,7 @@ Future<void> showModalSelection({
                   ),
                 ],
               ),
+              const SizedBox(height: 10), // ระยะห่างจากปุ่มถึงขอบล่าง
             ],
           ),
         ),
