@@ -1,8 +1,10 @@
+import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/screens/select_language/gradient_text.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -21,7 +23,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/splash_screen/background-320x684.png'),
+            image: AssetImage(
+                'assets/images/splash_screen/background-320x684.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -58,11 +61,27 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   width: 256.w,
                   height: 48.h,
                   fontSize: 16.sp,
-                  isSelected: selectedLanguage == 'English (UK)', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
-                  onTap: () {
+                  isSelected: selectedLanguage ==
+                      'English (UK)', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
+                  // onTap: () {
+                  //   setState(() {
+                  //     selectedLanguage = 'English (UK)'; // อัปเดตภาษาที่เลือก
+                  //   });
+                  // },
+                  onTap: () async {
+                    // เลือกภาษาอังกฤษ
                     setState(() {
-                      selectedLanguage = 'English (UK)'; // อัปเดตภาษาที่เลือก
+                      saveSelectedLanguage('en');
+                      context.setLocale(const Locale('en', 'US'));
                     });
+
+                    // push ไปหน้า Login
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AuthChecker(),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 10),
@@ -73,11 +92,28 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   width: 256.w,
                   height: 48.h,
                   fontSize: 16.sp,
-                  isSelected: selectedLanguage == 'ไทย', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
-                  onTap: () {
+                  isSelected: selectedLanguage ==
+                      'ไทย', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
+                  // onTap: () {
+                  //   setState(() {
+                  //     selectedLanguage = 'ไทย'; // อัปเดตภาษาที่เลือก
+                  //   });
+                  // },
+                  onTap: () async {
+                    // ใช้ setState เพื่ออัปเดตสถานะ
                     setState(() {
-                      selectedLanguage = 'ไทย'; // อัปเดตภาษาที่เลือก
+                      // เลือกภาษาไทย
+                      saveSelectedLanguage('th');
+                      context.setLocale(const Locale('th', 'TH'));
                     });
+
+                    // push ไปหน้า Login
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AuthChecker(),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -87,4 +123,17 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
       ),
     );
   }
+}
+
+// Save the selected language in shared preferences
+Future<void> saveSelectedLanguage(String languageCode) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('selected_language', languageCode);
+}
+
+// Load the selected language from shared preferences
+Future<String> loadSelectedLanguage() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('selected_language') ??
+      'en'; // Default to 'en' if no language is set
 }
