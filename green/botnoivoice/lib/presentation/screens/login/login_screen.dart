@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
 
   void _openAppleLogin(context) async {
     Provider.of<AppleLoginProvider>(context, listen: false).signInWithApple();
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class LoginScreen extends StatelessWidget {
                   _openGoogleLogin(context);
                 }),
               ),
-                            SizedBox(height: 20.h),
+              SizedBox(height: 20.h),
               Padding(
                 padding: EdgeInsets.only(left: 30.w, right: 30.w),
                 child: AppleLoginButton(onPressed: () {
