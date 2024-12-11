@@ -113,54 +113,64 @@ Future<void> showModalSelection({
               const SizedBox(height: 20),
               Row(
                 children: [
-                  // ปุ่ม "รีเซ็ทและตกลง" ที่จะทำทั้งสองอย่างในปุ่มเดียว
+                  // ปุ่ม "รีเซ็ท"
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey, // สีฟ้าสำหรับ Border
-                          width: 1, // ความหนาของ Border
-                        ),
-                        borderRadius:
-                            BorderRadius.circular(8), // มุมโค้งของ Border
-                      ),
-                      onPressed: () {
+                    child: GestureDetector(
+                      onTap: () {
                         tempSelectedItems.clear(); // รีเซ็ตค่าทั้งหมด
-                        (context as Element).markNeedsBuild();  // รีเฟรช UI แต่ไม่ปิด Modal
+                        (context as Element)
+                            .markNeedsBuild(); // รีเฟรช UI แต่ไม่ปิด Modal
                       },
-                      child: Text(
-                        'reset'.tr(), //รีเซ็ท
-                        style: GoogleFonts.prompt(
-                          fontSize: 12.sp,
-                          color: Colors.white),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey, // สีเทาสำหรับ Border
+                            width: 1, // ความหนาของ Border
+                          ),
+                          borderRadius: BorderRadius.circular(8), // มุมโค้งของ Border
+                          color: Colors.white, // พื้นหลังสีขาว
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'reset'.tr(), // รีเซ็ท
+                          style: GoogleFonts.prompt(
+                            fontSize: 12.sp,
+                            color: Colors.black, // ข้อความสีดำ
+                          ),
+                        ),
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 10),
-                  // ปุ่ม "ตกลง" เพื่อยืนยันการเลือก
+                  // ปุ่ม "ตกลง"
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF9340FF), // สีแรกของ Gradient
-                            Color(0xFF34BDFA), // สีที่สองของ Gradient
-                          ],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(8), // ทำให้มุมโค้ง
-                      ),
-                      onPressed: () {
+                    child: GestureDetector(
+                      onTap: () {
                         onConfirm(tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
                         Navigator.pop(context); // ปิด Modal
                       },
-                      child: Text(
-                        'confirm'.tr(), //ตกลง
-                        style: GoogleFonts.prompt(
-                          fontSize: 12.sp,
-                          color: Colors.white),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF9340FF), // สีแรกของ Gradient
+                              Color(0xFF34BDFA), // สีที่สองของ Gradient
+                            ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: BorderRadius.circular(8), // ทำให้มุมโค้ง
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'confirm'.tr(), // ตกลง
+                          style: GoogleFonts.prompt(
+                            fontSize: 12.sp,
+                            color: Colors.white, // ข้อความสีขาว
+                          ),
+                        ),
                       ),
                     ),
                   ),
