@@ -246,16 +246,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           isPassword || isConfirmPassword ? !_isPasswordVisible : false,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'please_enter_label'.tr(namedArgs: {'label': label});
+          return 'register.please_enter_your_label'
+              .tr(namedArgs: {'Label': label}); //โปรดใส่$labelของคุณ
         }
         if (label == 'อีเมล' && !isValidEmail(value)) {
-          return 'register.email_invalid_format'.tr();
+          return 'register.email_invalid_format'.tr(); //รูปแบบอีเมลไม่ถูกต้อง
         }
         if (label == 'ชื่อผู้ใช้งาน' && !isValidUsername(value)) {
-          return 'register.username_invalid'.tr();
+          return 'register.username_invalid'
+              .tr(); //ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -
         }
         if (isConfirmPassword && value != _passwordController.text) {
-          return 'register.password_mismatch'.tr();
+          return 'register.password_mismatch'.tr(); //รหัสผ่านไม่ตรงกัน
         }
         return null;
       },
@@ -379,7 +381,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           alignment: WrapAlignment.center,
           children: [
             Text(
-              "I have read and accepted the ",
+              "term.read".tr(), //I have read and accepted the 
               style: TextStyle(fontSize: 12.sp, color: kDark),
             ),
             GestureDetector(
@@ -390,14 +392,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         builder: (context) => const TermsServiceScreen()));
               },
               child: GradientTextStyle(
-                "Terms of USE",
+                "term.use".tr(), //Terms of USE
                 gradient: const LinearGradient(
                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
               ),
             ),
             Text(
-              " and ",
+              "term.and".tr(), // and 
               style: TextStyle(fontSize: 12.sp, color: kDark),
             ),
             GestureDetector(
@@ -408,7 +410,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         builder: (context) => const PrivacyPolicyScreen()));
               },
               child: GradientTextStyle(
-                "Private Policy.",
+                "term.policy".tr(), //Private Policy.
                 gradient: const LinearGradient(
                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),

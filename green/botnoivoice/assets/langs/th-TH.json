@@ -2,6 +2,11 @@
     "language": "ภาษา",
     "thai": "ไทย",
     "english": "อังกฤษ",
+    "gender": "เพศ",
+    "style": "สไตล์",
+    "style_plural": "{count} สไตล์",
+    "category": "หมวดหมู่",
+    "category_plural": "{count} หมวดหมู่",
     "welcome_message": {
         "line1": "เปลี่ยนข้อความเป็นเสียง",
         "line2": "บอทน้อย",
@@ -12,6 +17,7 @@
         "sign_in_with_username_email": "เข้าสู่ระบบด้วยชื่อผู้ใช้งานหรืออีเมล",
         "sign_in_with_line": "เข้าสู่ระบบด้วย LINE",
         "sign_in_with_google": "เข้าสู่ระบบด้วย Google",
+        "sign_in_with_apple": "เข้าสู่ระบบด้วย Apple",
         "delete_account_button": "ลบบัญชี"
     },
     "sign_in": {
@@ -32,7 +38,7 @@
         "password": "รหัสผ่าน",
         "confirm_password": "ยืนยันรหัสผ่าน",
         "or": "หรือ",
-        "please_enter_label": "โปรดใส่ {label} ของคุณ",
+        "please_enter_your_label": "โปรดใส่{Label}ของคุณ",
         "password_minimum_length": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
         "password_mismatch": "รหัสผ่านไม่ตรงกัน",
         "back_to_sign_in": "กลับไปที่เข้าสู่ระบบ",
@@ -221,5 +227,11 @@
     "appbar_bottom": {
         "thai": "ไทย",
         "change": "เปลี่ยน"
+    },
+    "term": {
+        "read": "ฉันได้อ่านและยอมรับ ",
+        "use": "ข้อกำหนดการใช้บริการ",
+        "and": " และ ",
+        "policy": "นโยบายความเป็นส่วนตัว"
     }
 }

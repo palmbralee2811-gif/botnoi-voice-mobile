@@ -2,6 +2,11 @@
     "language": "Language",
     "thai": "Thai",
     "english": "English",
+    "gender": "Gender",
+    "style": "Style",
+    "style_plural": "{count} styles",
+    "category": "Categories",
+    "category_plural": "{count} categories",
     "welcome_message": {
         "line1": "Convert Text to Speech",
         "line2": "BOTNOI",
@@ -12,6 +17,7 @@
         "sign_in_with_username_email": "Sign in with Username or Email",
         "sign_in_with_line": "Sign in with LINE",
         "sign_in_with_google": "Sign in with Google",
+        "sign_in_with_apple": "Sign in with Apple",
         "delete_account_button": "Delete Account"
     },
     "sign_in": {
@@ -32,7 +38,7 @@
         "password": "Password",
         "confirm_password": "Confirm password",
         "or": "or",
-        "please_enter_label": "Please enter your {label}",
+        "please_enter_your_label": "Please enter your {Label}",
         "password_minimum_length": "Password must be at least 6 characters long",
         "password_mismatch": "Passwords do not match",
         "back_to_sign_in": "Back to sign in",
@@ -221,5 +227,11 @@
     "appbar_bottom": {
         "thai": "Thai",
         "change": "Change"
+    },
+    "term": {
+        "read": "I have read and accepted the ",
+        "use": "Terms of USE",
+        "and": " and ",
+        "policy": "Private Policy."
     }
 }
