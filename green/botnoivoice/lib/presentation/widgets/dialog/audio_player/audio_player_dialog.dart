@@ -333,7 +333,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                             ),
                             SizedBox(width: 8.w),
                             Text(
-                              'แชร์', //แชร์
+                              'share'.tr(), //แชร์
                               style: GoogleFonts.prompt(
                                 color: Colors.white,
                                 fontSize: 16.sp,
