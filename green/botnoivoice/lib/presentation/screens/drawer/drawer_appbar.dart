@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -65,7 +64,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
       setState(() {
         displayName = appleProvider.user?.displayName ?? 'Apple User';
         uid = appleProvider.user?.uid ?? 'No uid found';
-        profilePictureUrl = appleProvider.user?.photoURL?? '';
+        profilePictureUrl = appleProvider.user?.photoURL ?? '';
       });
     } else if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
@@ -254,8 +253,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 context: context,
                 onLanguageSelected: (language) {
                   setState(() {
-                    selectedLanguage =
-                        language; // Update the selected language
+                    selectedLanguage = language; // Update the selected language
                   });
                   _saveLanguage(language); // Save the language if needed
                 },

@@ -1,5 +1,7 @@
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -38,73 +40,82 @@ class _PaymentBottomSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'payment.buy_points'.tr(), //ซื้อพ้อยท์
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Icon(
-                  Icons.close,
-                  size: 24.sp,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            "${product.price} ${'payment.baht'.tr()}", //บาท
-            style: TextStyle(
-              fontSize: 45.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+    final paymentProvider = Provider.of<PaymentProvider>(context);
+
+    return paymentProvider.isLoading
+        ? Container(
+            color: Colors.black54,
+            child: const Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/images/logo/credit-icon.svg',
-                width: 24.w,
-                height: 24.h,
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                'payment.get_points'.tr(namedArgs: {
-                  'productTitle': product.title
-                }), //ได้ ${product.title} พ้อยท์
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+          )
+        : Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'payment.buy_points'.tr(), //ซื้อพ้อยท์
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(
+                        Icons.close,
+                        size: 24.sp,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 30.h),
-          GradientTextButton(
-            text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
-            onPressed: () async {
-              await _handlePurchase(context, product.title);
-            },
-          ),
-          SizedBox(height: 20.h),
-        ],
-      ),
-    );
+                SizedBox(height: 20.h),
+                Text(
+                  "${product.price} ${'payment.baht'.tr()}", //บาท
+                  style: TextStyle(
+                    fontSize: 45.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/logo/credit-icon.svg',
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'payment.get_points'.tr(namedArgs: {
+                        'productTitle': product.title
+                      }), //ได้ ${product.title} พ้อยท์
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30.h),
+                GradientTextButton(
+                  text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
+                  onPressed: () async {
+                    await _handlePurchase(context, product.title);
+                  },
+                ),
+                SizedBox(height: 20.h),
+              ],
+            ),
+          );
   }
 
   Future<void> _handlePurchase(BuildContext context, String title) async {
@@ -145,11 +156,19 @@ class _PaymentBottomSheetContent extends StatelessWidget {
   }
 
   Future<void> _loadRemainingCredits(BuildContext context) async {
+    final appleProvider =
+        Provider.of<AppleLoginProvider>(context, listen: false);
     final googleProvider =
         Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     final emailProvider =
         Provider.of<EmailLoginProvider>(context, listen: false);
+
+    if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      await Provider.of<AppleTokenProvider>(context, listen: false)
+          .loadRemainingCredits();
+    }
 
     if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {

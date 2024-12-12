@@ -6,12 +6,13 @@ import 'package:logger/logger.dart';
 class PaymentProvider with ChangeNotifier {
   final Logger _logger = Logger();
   String? _errorMessage;
-  bool isLoading = false;
+  bool _isLoading = false;
 
+  bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
   Future<void> handlePurchase(AppleProduct product) async {
-    isLoading = true;
+    _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
@@ -33,7 +34,7 @@ class PaymentProvider with ChangeNotifier {
       _logger.e("Error during purchase: $e");
       _errorMessage = "Purchase failed: $e";
     } finally {
-      isLoading = false;
+      _isLoading = false;
       notifyListeners();
     }
   }
