@@ -1,7 +1,9 @@
 flutter clean && flutter pub get
 
+// Android (.apk) for Firebase App Tester Only
 flutter build apk --release
 
+// Android (.aap) for Google Play Store
 flutter build appbundle --release
 
 // Reset Firebase Config

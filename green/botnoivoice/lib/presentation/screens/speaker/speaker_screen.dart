@@ -31,8 +31,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   List<SpeakerEntity>? speakerItem;
   List<String> selectedIndexFavorites = [];
-  // String selectedLanguage = 'thai'.tr();
-  String selectedLanguage = 'Thai - ไทย';
+  String selectedLanguage = 'thai'.tr();
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   bool isExpanded = false;
 
@@ -633,16 +632,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         setState(() {
           // เซ็ตค่า language ตาม lang ที่ส่งเข้ามา
           language = lang;
-          logger.w("Selected Language: $language");
-
           selectedLanguage = displayText;
           selectedLanguageImage = imagePath;
-
-          logger.w("Selected Language: $selectedLanguage");
-
-          // ส่งค่า language ไปที่ repository
-          Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-              .setLanguage(language!.toLowerCase());
         });
         Navigator.pop(context);
       },
@@ -879,6 +870,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               speakerProvider.setSpeaker(
                   speakerItem); // ตั้งค่า currentSpeaker ให้เป็น speakerItem
 
+              Provider.of<SpeakerRepositoryImpl>(context, listen: false)
+                  .setLanguage(speakerItem.language.toLowerCase());
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerId(speakerItem.speakerId);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)

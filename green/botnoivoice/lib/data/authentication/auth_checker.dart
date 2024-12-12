@@ -54,6 +54,14 @@ class AuthChecker extends StatelessWidget {
           _logger.d("Not Authenticated");
           return const LoginScreen();
         }
+
+        //TODO: หน้าเลือกภาษา
+        // ถ้าเลือกภาษา ไป AuthChecker ก่อน
+        // ถ้ายังไม่เลือกภาษา ไป หน้า LanguageSelectionScreen
+        // 
+
+        // login แล้ว ไม่ต้องขึ้น หน้า เลือกภาษา
+        // 
       },
     );
   }

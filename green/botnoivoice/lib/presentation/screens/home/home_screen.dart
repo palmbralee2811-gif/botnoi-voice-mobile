@@ -420,6 +420,10 @@ class _HomeScreenState extends State<HomeScreen> {
         audioUrl = jsonData['audio_url'];
         logger.i("generateAudio -> $audioUrl");
       } else {
+        setState(() {
+          isGenerateAudio = false;
+          audioUrl = '';
+        });
         logger.e("Failed to generate audio: ${response.statusCode}");
         if (mounted) {
           NotificationPopup(
