@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../screens/select_language/select_language_screen.dart';
 
 void showLanguageBottomSheet({
   required BuildContext context,
@@ -132,16 +132,4 @@ void showLanguageBottomSheet({
       );
     },
   );
-}
-
-// Save the selected language in shared preferences
-Future<void> saveSelectedLanguage(String languageCode) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('selected_language', languageCode);
-}
-
-// Load the selected language from shared preferences
-Future<String> loadSelectedLanguage() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('selected_language') ?? 'en'; // Default to 'en' if no language is set
 }

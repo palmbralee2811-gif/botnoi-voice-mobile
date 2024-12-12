@@ -135,5 +135,5 @@ Future<void> saveSelectedLanguage(String languageCode) async {
 Future<String> loadSelectedLanguage() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString('selected_language') ??
-      'en'; // Default to 'en' if no language is set
+      ''; // ตั้งภาษาเริ่มต้นที่แสดงเป็นค่าว่าง ตามภาษาที่ถูกเลือกหน้าแรก
 }
