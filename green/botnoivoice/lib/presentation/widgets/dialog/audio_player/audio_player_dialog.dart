@@ -176,9 +176,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     );
   }
 
-  //TODO: TN Mobile โต ปรับปรุงฟังก์ชันเลือกโฟลเดอร์ดาวโหลดไฟล์เสียง
-  //Error: Android 11
-  //PASS: Android 9, 10,
+//.TODO ต้องทำดูมาตรวจสอบ
+
+  /// Save file to Local Path (Don't working on Android 10, 11, 12)
   Future<void> _downloadFileToCustomPath() async {
     FileRepositoryImpl fileRepository = FileRepositoryImpl();
     bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
