@@ -143,7 +143,7 @@ void showLanguageBottomSheetLogin({
               onTap: () {
                 // On selecting Thai language
                 onLanguageSelected('th');
-                context.setLocale(const Locale('th', 'TH'));
+                context.setLocale(const Locale('th'));
 
                 // Refresh the current screen by navigating to it again
                 Navigator.pushReplacement(
@@ -184,7 +184,7 @@ void showLanguageBottomSheetLogin({
               onTap: () {
                 // On selecting English language
                 onLanguageSelected('en');
-                context.setLocale(const Locale('en', 'US'));
+                context.setLocale(const Locale('en'));
 
                 // Refresh the current screen by navigating to it again
                 Navigator.pushReplacement(

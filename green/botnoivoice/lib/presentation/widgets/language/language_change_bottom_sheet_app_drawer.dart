@@ -50,7 +50,7 @@ void showLanguageBottomSheet({
                 // On selecting Thai language
                 await saveSelectedLanguage('th');
                 onLanguageSelected('th');
-                context.setLocale(const Locale('th', 'TH'));
+                context.setLocale(const Locale('th'));
 
                 // Refresh the current screen by navigating to it again
                 Navigator.pushReplacement(
@@ -91,7 +91,7 @@ void showLanguageBottomSheet({
                 // On selecting English language
                 await saveSelectedLanguage('en');
                 onLanguageSelected('en');
-                context.setLocale(const Locale('en', 'US'));
+                context.setLocale(const Locale('en'));
 
                 // Refresh the current screen by navigating to it again
                 Navigator.pushReplacement(

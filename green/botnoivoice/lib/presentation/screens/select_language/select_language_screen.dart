@@ -1,5 +1,6 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_button.dart';
+import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -63,17 +64,13 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   fontSize: 16.sp,
                   isSelected: selectedLanguage ==
                       'English (UK)', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
-                  // onTap: () {
-                  //   setState(() {
-                  //     selectedLanguage = 'English (UK)'; // อัปเดตภาษาที่เลือก
-                  //   });
-                  // },
                   onTap: () async {
                     // เลือกภาษาอังกฤษ
-                    setState(() {
-                      saveSelectedLanguage('en');
-                      context.setLocale(const Locale('en', 'US'));
-                    });
+                    // setState(() {
+                    // saveSelectedLanguage('en');
+                    await LanguageHelper.saveSelectedLanguage('en');
+                    context.setLocale(const Locale('en'));
+                    // });
 
                     // push ไปหน้า Login
                     Navigator.push(
@@ -94,18 +91,14 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   fontSize: 16.sp,
                   isSelected: selectedLanguage ==
                       'ไทย', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
-                  // onTap: () {
-                  //   setState(() {
-                  //     selectedLanguage = 'ไทย'; // อัปเดตภาษาที่เลือก
-                  //   });
-                  // },
                   onTap: () async {
                     // ใช้ setState เพื่ออัปเดตสถานะ
-                    setState(() {
-                      // เลือกภาษาไทย
-                      saveSelectedLanguage('th');
-                      context.setLocale(const Locale('th', 'TH'));
-                    });
+                    // setState(() {
+                    // เลือกภาษาไทย
+                    // saveSelectedLanguage('th');
+                    await LanguageHelper.saveSelectedLanguage('th');
+                    context.setLocale(const Locale('th'));
+                    // });
 
                     // push ไปหน้า Login
                     Navigator.push(

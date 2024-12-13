@@ -1,3 +1,4 @@
+import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
@@ -16,6 +17,7 @@ import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
 import 'package:botnoivoice/presentation/screens/select_language/select_language_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -32,15 +34,24 @@ void main() async {
     print("LineSDK Prepared");
   });
 
+  // โหลดภาษาเริ่มต้นจาก LanguageHelper
+  String localeCode = await LanguageHelper.loadSelectedLanguage();
+  Locale initialLocale = localeCode.isNotEmpty
+      ? Locale(localeCode) // ใช้ภาษาที่เลือกไว้
+      : const Locale('th'); // ค่าเริ่มต้นเป็นภาษาไทย
+
   runApp(
     EasyLocalization(
       supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('th', 'TH')
+        Locale('en'),
+        Locale('th')
       ], // Supported locales
       path: 'assets/langs', // Path to your localization files
-      fallbackLocale: const Locale('th', 'TH'), // Fallback locale
-      startLocale: const Locale('th', 'TH'), //ภาษาเริ่มต้น
+      fallbackLocale: const Locale(
+          'th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
+      // startLocale: const Locale('th', 'TH'), //ภาษาเริ่มต้น
+      // startLocale: const Locale('en', 'US'), //ภาษาเริ่มต้น
+      startLocale: initialLocale, //ภาษาเริ่มต้น
       child: const BotnoiVoiceApp(),
     ),
   );
@@ -86,7 +97,8 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            home: const LanguageSelectionScreen(),
+            // home: const LanguageSelectionScreen(),
+            home: const LanguageSelectionChecker(),
             // home: HomeScreen(),
             // Add localization delegate
             localizationsDelegates: context.localizationDelegates,
