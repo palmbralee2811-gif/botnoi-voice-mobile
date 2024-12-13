@@ -50,49 +50,70 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   String selectedVoiceStyle = ''; // ตัวแปรเก็บเสียงที่ผู้ใช้เลือก
   String selectedStyle = ''; // สไตล์เสียงที่เลือก
 
-  List<String> _getVoiceStyles(BuildContext context) {
-    Set<String> voiceStylesSet = {};
-    String languageCode = Localizations.localeOf(context).languageCode;
+List<String> _getVoiceStyles(BuildContext context) {
+  Set<String> voiceStylesSet = {};
+  String languageCode = Localizations.localeOf(context).languageCode;
 
-    // กรองสไตล์เสียงตามภาษาที่เลือก
-    for (var speaker in SpeakerModel.speakerItem) {
-      // ถ้าเป็นภาษาไทย ใช้ voiceStyle
+  for (var speaker in SpeakerModel.speakerItem) {
+    // ตรวจสอบหมวดหมู่ที่เลือก
+    if (selectedCategories.isNotEmpty) {
       if (languageCode == 'th') {
-        voiceStylesSet
-            .addAll(speaker.voiceStyle); // ใช้ voiceStyle สำหรับภาษาไทย
+        // กรองสไตล์ที่มีหมวดหมู่ที่เลือก
+        if (speaker.speechStyle
+            .any((category) => selectedCategories.contains(category))) {
+          voiceStylesSet.addAll(speaker.voiceStyle);
+        }
+      } else {
+        if (speaker.engSpeechStyle
+            .any((category) => selectedCategories.contains(category))) {
+          voiceStylesSet.addAll(speaker.engVoiceStyle);
+        }
       }
-      // สำหรับภาษาอื่น ๆ ใช้ engVoiceStyle
-      else {
-        voiceStylesSet
-            .addAll(speaker.engVoiceStyle); // ใช้ engVoiceStyle สำหรับภาษาอื่น
+    } else {
+      // ถ้าไม่ได้เลือกหมวดหมู่ ให้แสดงทุกสไตล์
+      if (languageCode == 'th') {
+        voiceStylesSet.addAll(speaker.voiceStyle);
+      } else {
+        voiceStylesSet.addAll(speaker.engVoiceStyle);
       }
     }
-
-    // แปลง Set เป็น List และคืนค่า
-    return voiceStylesSet.toList();
   }
 
-  List<String> _getSpeechStyles(BuildContext context) {
-    Set<String> speechStylesSet = {};
-    String languageCode = Localizations.localeOf(context).languageCode;
+  return voiceStylesSet.toList();
+}
 
-    // กรองหมวดหมู่เสียงตามภาษาที่เลือก
-    for (var speaker in SpeakerModel.speakerItem) {
-      // ถ้าเป็นภาษาไทย ใช้ speechStyle
+List<String> _getSpeechStyles(BuildContext context) {
+  Set<String> speechStylesSet = {};
+  String languageCode = Localizations.localeOf(context).languageCode;
+
+  for (var speaker in SpeakerModel.speakerItem) {
+    // ตรวจสอบสไตล์ที่เลือก
+    if (selectedStyles.isNotEmpty) {
       if (languageCode == 'th') {
-        speechStylesSet
-            .addAll(speaker.speechStyle); // ใช้ speechStyle สำหรับภาษาไทย
+        // กรองหมวดหมู่ที่มีสไตล์ที่เลือก
+        if (speaker.voiceStyle
+            .any((style) => selectedStyles.contains(style))) {
+          speechStylesSet.addAll(speaker.speechStyle);
+        }
+      } else {
+        if (speaker.engVoiceStyle
+            .any((style) => selectedStyles.contains(style))) {
+          speechStylesSet.addAll(speaker.engSpeechStyle);
+        }
       }
-      // สำหรับภาษาอื่น ๆ ใช้ engSpeechStyle
-      else {
-        speechStylesSet.addAll(
-            speaker.engSpeechStyle); // ใช้ engSpeechStyle สำหรับภาษาอื่น
+    } else {
+      // ถ้าไม่ได้เลือกสไตล์ ให้แสดงทุกหมวดหมู่
+      if (languageCode == 'th') {
+        speechStylesSet.addAll(speaker.speechStyle);
+      } else {
+        speechStylesSet.addAll(speaker.engSpeechStyle);
       }
     }
-
-    // แปลง Set เป็น List และคืนค่า
-    return speechStylesSet.toList();
   }
+
+  return speechStylesSet.toList();
+}
+
 
   @override
   void initState() {
@@ -123,117 +144,125 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 // buildFilterNavbar: ส่วนหลักของหน้าจอ แบ่งเป็นแถวต่างๆ เช่น แถวสำหรับปุ่มภาษา เพศ Favorite
 // และแถวสำหรับปุ่มตัวกรอง (สไตล์และหมวดหมู่) รวมถึงส่วนแสดงลำโพงและปุ่มยืนยัน
 // เพิ่มการแสดง AlertDialog เมื่อเลือกเสียง
-  Widget buildFilterNavbar(BuildContext context) {
-    return Column(
-      children: [
-        // กรอบ Filter Navbar ที่ปรับขนาดความสูง
-        Container(
-          height: 110.h, // ความสูงกรอบ Filter
-          width: double.infinity,
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  buildLanguageButtonTrigger(context),
-                  SizedBox(width: 10.w),
-                  buildGenderButtonTrigger(context),
-                  SizedBox(width: 10.w),
-                  Expanded(child: buildFavoriteButton()),
-                ],
-              ),
-              SizedBox(height: 10.h), // ระยะห่างระหว่างแถว
-              // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
-              Row(
-                children: [
-                  Flexible(
-                    flex: 4,
-                    child: buildFilterButton(
-                      context,
-                      title: selectedStyles.isEmpty
-                          ? 'style'.tr()
-                          // : '${selectedStyles.length} สไตล์',
-                          : 'style_plural'.tr(namedArgs: {
-                              'count': selectedStyles.length.toString()
-                            }), // แสดงจำนวนสไตล์
-                      items: _getVoiceStyles(
-                          context), // ดึงข้อมูล voiceStyle จาก SpeakerModel
-                      selectedItems: selectedStyles,
-                      onConfirm: (newSelected) {
-                        setState(() {
-                          selectedStyles = newSelected;
-                        });
-                      },
-                    ),
+Widget buildFilterNavbar(BuildContext context) {
+  return Column(
+    children: [
+      // กรอบ Filter Navbar ที่ปรับขนาดความสูง
+      Container(
+        height: 110.h, // ความสูงกรอบ Filter
+        width: double.infinity,
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                buildLanguageButtonTrigger(context),
+                SizedBox(width: 10.w),
+                buildGenderButtonTrigger(context),
+                SizedBox(width: 10.w),
+                Expanded(child: buildFavoriteButton()),
+              ],
+            ),
+            SizedBox(height: 10.h), // ระยะห่างระหว่างแถว
+            // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
+            Row(
+              children: [
+                Flexible(
+                  flex: 4,
+                  child: buildFilterButton(
+                    context,
+                    title: selectedStyles.isEmpty
+                        ? 'style'.tr()
+                        : 'style_plural'.tr(namedArgs: {
+                            'count': selectedStyles.length.toString()
+                          }), // แสดงจำนวนสไตล์
+                    items: _getVoiceStyles(
+                        context), // ดึงข้อมูล voiceStyle จาก SpeakerModel
+                    selectedItems: selectedStyles,
+                    onConfirm: (newSelected) {
+                      setState(() {
+                        selectedStyles = newSelected;
+                        // อัปเดตหมวดหมู่ที่สัมพันธ์กับสไตล์
+                        selectedCategories = selectedCategories
+                            .where((category) =>
+                                _getSpeechStyles(context).contains(category))
+                            .toSet();
+                      });
+                    },
                   ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    flex: 4,
-                    child: buildFilterButton(
-                      context,
-                      title: selectedCategories.isEmpty
-                          ? 'category'.tr()
-                          // : '${selectedCategories.length} หมวดหมู่',
-                          : 'category_plural'.tr(namedArgs: {
-                              'count': selectedCategories.length.toString()
-                            }), // แสดงจำนวนหมวดหมู่
-                      items: _getSpeechStyles(
-                          context), // ดึงข้อมูล speechStyle จาก SpeakerModel
-                      selectedItems: selectedCategories,
-                      onConfirm: (newSelected) {
-                        setState(() {
-                          selectedCategories = newSelected;
-                        });
-                      },
-                    ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  flex: 4,
+                  child: buildFilterButton(
+                    context,
+                    title: selectedCategories.isEmpty
+                        ? 'category'.tr()
+                        : 'category_plural'.tr(namedArgs: {
+                            'count': selectedCategories.length.toString()
+                          }), // แสดงจำนวนหมวดหมู่
+                    items: _getSpeechStyles(
+                        context), // ดึงข้อมูล speechStyle จาก SpeakerModel
+                    selectedItems: selectedCategories,
+                    onConfirm: (newSelected) {
+                      setState(() {
+                        selectedCategories = newSelected;
+                        // อัปเดตสไตล์ที่สัมพันธ์กับหมวดหมู่
+                        selectedStyles = selectedStyles
+                            .where((style) =>
+                                _getVoiceStyles(context).contains(style))
+                            .toSet();
+                      });
+                    },
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
-        // ส่วนที่เลื่อนของ Speaker
-        Expanded(
-          child: Container(
-            color: const Color(0xFFFFFFFF),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ishover
-                      ? buildFavoriteFilter(context)
-                      : buildMultipleSpeaker(context),
-                ],
-              ),
+      ),
+      // ส่วนที่เลื่อนของ Speaker
+      Expanded(
+        child: Container(
+          color: const Color(0xFFFFFFFF),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ishover
+                    ? buildFavoriteFilter(context)
+                    : buildMultipleSpeaker(context),
+              ],
             ),
           ),
         ),
-        // Spacer เพื่อเลื่อนปุ่มขึ้น
-        SizedBox(height: 20.h), // เพิ่มระยะว่าง
-        // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: SizedBox(
-            height: 50.h,
-            child: GradientTextButton(
-              text: 'confirm'.tr(), //ตกลง
-              onPressed: () {
-                if (audioPlayer.state == PlayerState.playing) {
-                  audioPlayer.stop();
-                }
-                Navigator.pop(context);
-              },
-            ),
+      ),
+      // Spacer เพื่อเลื่อนปุ่มขึ้น
+      SizedBox(height: 20.h), // เพิ่มระยะว่าง
+      // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: SizedBox(
+          height: 50.h,
+          child: GradientTextButton(
+            text: 'confirm'.tr(), //ตกลง
+            onPressed: () {
+              if (audioPlayer.state == PlayerState.playing) {
+                audioPlayer.stop();
+              }
+              Navigator.pop(context);
+            },
           ),
         ),
-        SizedBox(height: 40.h), // เพิ่มระยะห่างด้านล่าง
-      ],
-    );
-  }
+      ),
+      SizedBox(height: 40.h), // เพิ่มระยะห่างด้านล่าง
+    ],
+  );
+}
 
 // buildLanguageButton: แสดง Modal สำหรับเลือกภาษา พร้อมรายการตัวเลือกของภาษาที่รองรับ
   Widget buildLanguageButton(BuildContext context, StateSetter setState) {
@@ -774,74 +803,66 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   // _filterSpeakers: ฟังก์ชันกรองลำโพงตามเงื่อนไขที่ผู้ใช้เลือก เช่น ภาษา เพศ สไตล์เสียง หรือหมวดหมู่
-  List<SpeakerEntity> _filterSpeakers() {
-    List<SpeakerEntity> filteredSpeakers = [];
-    String languageCode = Localizations.localeOf(context).languageCode;
+List<SpeakerEntity> _filterSpeakers() {
+  List<SpeakerEntity> filteredSpeakers = [];
+  String languageCode = Localizations.localeOf(context).languageCode;
 
-    // กรองลำโพงตามภาษาที่เลือก
+  // เริ่มต้นด้วยการกรองตามภาษา
+  filteredSpeakers = SpeakerModel.speakerItem.where((item) {
+    return item.language == language;
+  }).toList();
+
+  if (filteredSpeakers.isEmpty) {
+    // หากไม่มีลำโพงที่ตรงกับภาษาหลัก ให้กรองจาก availableLanguage
     filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-      return item.language == language;
+      return item.availableLanguage.contains(language?.toLowerCase()) &&
+          item.language != language;
     }).toList();
-
-    logger.w(
-        "Filtered by language ($language): ${filteredSpeakers.length} speakers found");
-
-    if (filteredSpeakers.isEmpty) {
-      filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-        return item.availableLanguage.contains(language?.toLowerCase()) &&
-            item.language != language; // ไม่แสดงผลที่มี language ตรงเป๊ะ
-      }).toList();
-
-      logger.w(
-          "Filtered by available language: ${filteredSpeakers.length} speakers found");
-    }
-
-    // เพิ่มการกรองเพศถ้ามีการเลือกเพศ
-    if (gender != null && gender!.isNotEmpty) {
-      filteredSpeakers =
-          filteredSpeakers.where((item) => item.gender == gender).toList();
-
-      logger.w("Filtered by gender: ${filteredSpeakers.length} speakers found");
-    }
-
-    // ตรวจสอบการกรองสไตล์เสียง
-    if (selectedStyles.isNotEmpty) {
-      filteredSpeakers = filteredSpeakers.where((item) {
-        if (languageCode == 'th') {
-          // กรองสไตล์เสียงสำหรับภาษาไทย (voiceStyle)
-          return item.voiceStyle.any((style) => selectedStyles.contains(style));
-        } else {
-          // กรองสไตล์เสียงสำหรับภาษาอื่น ๆ (engVoiceStyle)
-          return item.engVoiceStyle
-              .any((style) => selectedStyles.contains(style));
-        }
-      }).toList();
-
-      logger.w(
-          "Filtered by voiceStyle/engVoiceStyle: ${filteredSpeakers.length} speakers found");
-    }
-
-    // ตรวจสอบการกรองหมวดหมู่เสียง
-    if (selectedCategories.isNotEmpty) {
-      filteredSpeakers = filteredSpeakers.where((item) {
-        if (languageCode == 'th') {
-          // กรองหมวดหมู่เสียงสำหรับภาษาไทย (speechStyle)
-          return item.speechStyle
-              .any((category) => selectedCategories.contains(category));
-        } else {
-          // กรองหมวดหมู่เสียงสำหรับภาษาอื่น ๆ (engSpeechStyle)
-          return item.engSpeechStyle
-              .any((category) => selectedCategories.contains(category));
-        }
-      }).toList();
-
-      logger.w(
-          "Filtered by speechStyle/engSpeechStyle: ${filteredSpeakers.length} speakers found");
-    }
-
-    logger.i("Total speakers after all filters: ${filteredSpeakers.length}");
-    return filteredSpeakers;
   }
+
+  // กรองตามเพศ (ถ้ามีการเลือก)
+  if (gender != null && gender!.isNotEmpty) {
+    filteredSpeakers =
+        filteredSpeakers.where((item) => item.gender == gender).toList();
+  }
+
+  // กรองตามสไตล์เสียง
+  if (selectedStyles.isNotEmpty) {
+    filteredSpeakers = filteredSpeakers.where((item) {
+      if (languageCode == 'th') {
+        return item.voiceStyle.isNotEmpty &&
+            item.voiceStyle.any((style) => selectedStyles.contains(style));
+      } else {
+        return item.engVoiceStyle.isNotEmpty &&
+            item.engVoiceStyle.any((style) => selectedStyles.contains(style));
+      }
+    }).toList();
+  }
+
+  // กรองตามหมวดหมู่เสียง
+  if (selectedCategories.isNotEmpty) {
+    filteredSpeakers = filteredSpeakers.where((item) {
+      if (languageCode == 'th') {
+        return item.speechStyle.isNotEmpty &&
+            item.speechStyle
+                .any((category) => selectedCategories.contains(category));
+      } else {
+        return item.engSpeechStyle.isNotEmpty &&
+            item.engSpeechStyle
+                .any((category) => selectedCategories.contains(category));
+      }
+    }).toList();
+  }
+
+  // หากลำโพงที่ผ่านการกรองเป็นศูนย์ ให้คืนค่าว่าง (ไม่แสดงลำโพง)
+  if (filteredSpeakers.isEmpty) {
+    logger.w("No speakers match all filters.");
+    return [];
+  }
+
+  logger.i("Total speakers after filtering: ${filteredSpeakers.length}");
+  return filteredSpeakers;
+}
 
 // buildSingleSpeaker: สร้างการ์ดแสดงลำโพงแต่ละตัว (เรียกใช้ใน buildMultipleSpeaker และ buildFavoriteFilter)
 // พร้อมปุ่มสำหรับเล่นเสียงและ Favorite
