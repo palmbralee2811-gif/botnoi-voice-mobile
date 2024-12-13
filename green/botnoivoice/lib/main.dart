@@ -18,7 +18,6 @@ import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
-import 'package:botnoivoice/presentation/screens/select_language/select_language_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

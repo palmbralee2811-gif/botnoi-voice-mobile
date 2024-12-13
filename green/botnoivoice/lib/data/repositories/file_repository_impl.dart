@@ -12,12 +12,16 @@ abstract class FileRepository {
 /// Save File using SAF
 class FileRepositoryImpl implements FileRepository {
   final Logger logger = Logger();
+  String? _errorMessage;
+
+  String? get errorMessage => _errorMessage;
 
   @override
   Future<bool> saveFileCustomPath(String sourceFilePath) async {
     try {
       // Check if the source file exists
       if (sourceFilePath.isEmpty) {
+        _errorMessage = "Source file path is empty.";
         logger.e("Source file path is empty.");
         return false;
       }
@@ -51,6 +55,7 @@ class FileRepositoryImpl implements FileRepository {
       // Define destination file path
       String fileName = p.basename(sourceFilePath);
       if (fileName.isEmpty) {
+        _errorMessage = "Cannot extract file name from sourceFilePath.";
         logger.e("Cannot extract file name from sourceFilePath.");
         return false;
       }
@@ -62,8 +67,10 @@ class FileRepositoryImpl implements FileRepository {
       await destinationFile.writeAsBytes(await sourceFile.readAsBytes());
 
       logger.i("File successfully saved to: $destinationFilePath");
+      _errorMessage = null;
       return true;
     } catch (e, stackTrace) {
+      _errorMessage = e.toString();
       logger.e("Error saving the file: $e", error: e, stackTrace: stackTrace);
       return false;
     }
@@ -89,80 +96,3 @@ class FileRepositoryImpl implements FileRepository {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-// import 'dart:io';
-// import 'package:logger/logger.dart';
-// import 'package:path/path.dart' as p;
-// import 'package:path_provider/path_provider.dart';
-// import 'package:file_picker/file_picker.dart';
-
-// /// Repository for file operations
-// abstract class FileRepository {
-//   Future<bool> saveFileCustomPath(String sourceFilePath);
-// }
-
-// /// Save File to Documents Directory
-// class FileRepositoryImpl implements FileRepository {
-//   final Logger logger = Logger();
-
-//   @override
-//   Future<bool> saveFileCustomPath(String sourceFilePath) async {
-//     try {
-//       // ตรวจสอบไฟล์ต้นทาง
-//       File sourceFile = File(sourceFilePath);
-//       if (!await sourceFile.exists()) {
-//         logger.w("ไม่พบไฟล์ต้นทาง: $sourceFilePath");
-//         return false;
-//       }
-
-//       // ให้ผู้ใช้เลือกโฟลเดอร์ปลายทาง
-//       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-//       if (selectedDirectory == null) {
-//         logger.w("ผู้ใช้ยกเลิกการเลือกโฟลเดอร์ปลายทาง");
-//         return false;
-//       }
-
-//       // ตรวจสอบการเลือกโฟลเดอร์
-//       Directory destinationDirectory = Directory(selectedDirectory);
-
-//       // หากผู้ใช้ไม่เลือกโฟลเดอร์ เราสามารถใช้ `path_provider` เป็น fallback
-//       if (!await destinationDirectory.exists()) {
-//         logger.w("โฟลเดอร์ที่เลือกไม่มีอยู่");
-//         if (Platform.isAndroid) {
-//           destinationDirectory = await getExternalStorageDirectory() ?? Directory('');
-//         } else if (Platform.isIOS) {
-//           destinationDirectory = await getApplicationDocumentsDirectory();
-//         }
-//       }
-
-//       if (!await destinationDirectory.exists()) {
-//         logger.w("ไม่สามารถกำหนดโฟลเดอร์ปลายทางได้");
-//         return false;
-//       }
-
-//       // กำหนดพาธไฟล์ปลายทาง
-//       String fileName = p.basename(sourceFilePath);
-//       String destinationFilePath = p.join(destinationDirectory.path, fileName);
-
-//       // เขียนไฟล์ไปยังปลายทาง
-//       File destinationFile = File(destinationFilePath);
-//       await destinationFile.writeAsBytes(await sourceFile.readAsBytes());
-
-//       logger.i("ไฟล์ถูกบันทึกลงใน: $destinationFilePath");
-//       return true;
-//     } catch (e) {
-//       logger.e("เกิดข้อผิดพลาดในการบันทึกไฟล์: $e");
-//     }
-//     return false;
-//   }
-// }

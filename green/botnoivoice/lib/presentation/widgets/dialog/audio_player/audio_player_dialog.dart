@@ -66,7 +66,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
           .showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
-        OpenFile.open(widget.filePath);
+        _downloadFileToCustomPath().whenComplete(() {
+          OpenFile.open(widget.filePath);
+        });
       });
     }
   }
@@ -176,17 +178,18 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     );
   }
 
-//.TODO ต้องทำดูมาตรวจสอบ
-
-  /// Save file to Local Path (Don't working on Android 10, 11, 12)
+  //TODO: TN Mobile โต ปรับปรุงฟังก์ชันเลือกโฟลเดอร์ดาวโหลดไฟล์เสียง
+  //Error: Android 11
+  //PASS: Android 9, 10,
   Future<void> _downloadFileToCustomPath() async {
     FileRepositoryImpl fileRepository = FileRepositoryImpl();
     bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
     if (isSaved == false) {
       NotificationPopup(
               context: context,
-              text: 'audio_player.unable_to_save_file'
-                  .tr()) //ไม่สามารถบันทึกไฟล์ได้
+              text: fileRepository.errorMessage ??
+                  'audio_player.unable_to_save_file'
+                      .tr()) //ไม่สามารถบันทึกไฟล์ได้
           .showAsError();
     }
   }
