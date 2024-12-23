@@ -130,7 +130,8 @@
     },
     "payment": {
         "buy_points": "Purchase Points",
-        "baht": "USD",
+        "price": "2.99",
+        "currency": "USD",
         "get_points": "Get {productTitle} points",
         "buy_now": "Purchase Now",
         "received_points": "You have received {pointsTitle} points.",

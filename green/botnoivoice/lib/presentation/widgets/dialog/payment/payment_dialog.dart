@@ -76,7 +76,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  "${product.price} ${'payment.baht'.tr()}", //บาท
+                  "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
                   style: TextStyle(
                     fontSize: 45.sp,
                     fontWeight: FontWeight.bold,
