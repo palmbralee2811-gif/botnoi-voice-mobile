@@ -19,6 +19,12 @@ Future<void> configureRevenueCat(BuildContext context) async {
         PurchasesConfiguration("appl_mImKODlZTfTPWctkaQrVLpkMUuz")
           ..appUserID = userId,
       ); 
+    } else if (Platform.isAndroid) {
+      await Purchases.configure(
+        //TODO: Get the public key from RevenueCat
+        PurchasesConfiguration("")
+          ..appUserID = userId,
+      );
     }
     _logger.d("RevenueCat configured with user ID: $userId");
   } catch (error) {
