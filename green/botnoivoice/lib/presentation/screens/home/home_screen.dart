@@ -162,8 +162,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildTextBox() {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Container(
-      width: 320.w,
+      width: isLandscape ? 320.w : 320.w,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
@@ -172,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(10.w),
+        padding: EdgeInsets.all(isLandscape ? 20.w : 10.w),
         child: Center(
           child: Container(
             width: 288.w,
@@ -187,14 +190,17 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(14.r),
             ),
             child: Padding(
-              padding: EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+              padding: EdgeInsets.only(
+                  left: isLandscape ? 20.w : 30.w,
+                  right: isLandscape ? 5.w : 10.w,
+                  top: isLandscape ? 15.w : 20.w),
               child: Column(
                 children: [
                   Expanded(
                     child: TextField(
                       cursorColor: const Color(0xFF000000),
                       style: GoogleFonts.prompt(
-                        fontSize: 14.sp,
+                        fontSize: isLandscape ? 8.sp : 14.sp,
                         color: const Color(0xFF323130),
                       ),
                       maxLines: null,
@@ -220,8 +226,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
-                          fontStyle:
-                              GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
+                          fontStyle: GoogleFonts.prompt(
+                                  fontSize: isLandscape ? 8.sp : 14.sp)
+                              .fontStyle,
                         ),
                         hintMaxLines: 1,
                       ),
@@ -238,6 +245,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildBottomTextBox() {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Padding(
       padding: EdgeInsets.only(right: 25.w),
       child: Row(
@@ -251,7 +261,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                            textStyle: TextStyle(
+                                fontSize: isLandscape ? 5.sp : 10.sp)),
                         onPressed: () {
                           setState(() {
                             _textController.clear();
@@ -260,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                         child: GradientIcon(
                           icon: Icons.close_sharp,
-                          size: 20.sp,
+                          size: isLandscape ? 10.sp : 20.sp,
                           gradient: const LinearGradient(
                             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                             begin: Alignment.topLeft,
@@ -273,11 +284,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                            textStyle: TextStyle(
+                                fontSize: isLandscape ? 12.sp : 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
-                          size: 20.sp,
+                          size: isLandscape ? 10.sp : 20.sp,
                           color: Colors.transparent,
                         ),
                       ),
@@ -289,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
               GradientText(
                 text: '${_textController.text.length}',
                 style: GoogleFonts.prompt(
-                  fontSize: 14.sp,
+                  fontSize: isLandscape ? 8.sp : 14.sp,
                   color: const Color(0xFFA19F9D),
                 ),
                 gradient: const LinearGradient(
@@ -299,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 ' / 1000',
                 style: GoogleFonts.prompt(
-                  fontSize: 14.sp,
+                  fontSize: isLandscape ? 8.sp : 14.sp,
                   color: const Color(0xFFA19F9D),
                 ),
               ),
@@ -311,9 +323,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildGenerateButton(BuildContext context) {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Padding(
-      padding:
-          EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+      padding: EdgeInsets.only(
+          left: isLandscape ? 60.w : 20.w,
+          top: isLandscape ? 30.h : 15.h,
+          right: isLandscape ? 60.w : 20.w,
+          bottom: isLandscape ? 30.h : 15.h),
       child: GradientRow(
         onPressed: isGenerateAudio ? () {} : () async => await _generateAudio(),
         child: isGenerateAudio
@@ -326,19 +344,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text('home_screen.create_sound'.tr(), //สร้างเสียง
                       style: GoogleFonts.prompt(
                           color: Colors.white,
-                          fontSize: 16.sp,
+                          fontSize: isLandscape ? 11.sp : 16.sp,
                           fontWeight: FontWeight.w600)),
-                  SizedBox(width: 10.w),
+                  SizedBox(width: isLandscape ? 5.w : 10.w),
                   SvgPicture.asset(
                     'assets/images/logo/credit-icon.svg',
-                    height: 20.h,
-                    width: 20.w,
+                    height: isLandscape ? 15.sp : 20.h,
+                    width: isLandscape ? 15.sp : 20.w,
                   ),
                   SizedBox(width: 5.w),
                   Text('${_textController.text.length}',
                       style: GoogleFonts.prompt(
                           color: Colors.white,
-                          fontSize: 16.sp,
+                          fontSize: isLandscape ? 11.sp : 16.sp,
                           fontWeight: FontWeight.w600)),
                 ],
               ),

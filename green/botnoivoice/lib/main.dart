@@ -97,8 +97,8 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            home: const LanguageSelectionScreen(),
-            // home: const LanguageSelectionChecker(),
+            // home: const LanguageSelectionScreen(),
+            home: const LanguageSelectionChecker(),
             // home: HomeScreen(),
             // Add localization delegate
             localizationsDelegates: context.localizationDelegates,
