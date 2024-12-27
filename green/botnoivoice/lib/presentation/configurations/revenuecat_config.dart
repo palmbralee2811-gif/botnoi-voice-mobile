@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -20,6 +19,12 @@ Future<void> configureRevenueCat(BuildContext context) async {
         PurchasesConfiguration("appl_mImKODlZTfTPWctkaQrVLpkMUuz")
           ..appUserID = userId,
       ); 
+    } else if (Platform.isAndroid) {
+      await Purchases.configure(
+        //TODO: Get the public key from RevenueCat
+        PurchasesConfiguration("")
+          ..appUserID = userId,
+      );
     }
     _logger.d("RevenueCat configured with user ID: $userId");
   } catch (error) {
