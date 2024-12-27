@@ -11,9 +11,12 @@ class GradientTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Container(
       width: double.infinity,
-      height: 50.h,
+      height: isLandscape ? 80.h : 50.h,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
@@ -29,7 +32,7 @@ class GradientTextButton extends StatelessWidget {
         child: Text(text,
             style: GoogleFonts.prompt(
                 color: Colors.white,
-                fontSize: 16.sp,
+                fontSize: isLandscape ? 13.sp : 16.sp,
                 fontWeight: FontWeight.w600)),
       ),
     );

@@ -11,8 +11,11 @@ class GoogleLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   const GoogleLoginButton({super.key, required this.onPressed});
 
-  @override  
+  @override
   Widget build(BuildContext context) {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -31,21 +34,22 @@ class GoogleLoginButton extends StatelessWidget {
                   ),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(224.w, 48.h),
+                minimumSize:
+                    isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
                     'assets/images/auth_screen/google-icon.svg',
-                    height: 32.h,
-                    width: 32.w,
+                    height: isLandscape ? 52.h : 32.h,
+                    width: isLandscape ? 32.w : 32.w,
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: isLandscape ? 12.w : 16.w),
                   Text(
                     'auth.sign_in_with_google'.tr(),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: isLandscape ? 9.sp : 12.sp,
                       color: kDark,
                       decoration: TextDecoration.none,
                     ),
