@@ -5,6 +5,7 @@ import 'package:botnoivoice/presentation/providers/email/email_token_provider.da
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,32 +37,32 @@ class _AppBarTopState extends State<AppBarTop> {
       elevation: 4.0,
       leading: SizedBox(
         width: double.infinity,
-        height: 140.h,
+        height: OrientationHelper.isLandscape ? 100.h : 140.h,
         child: IconButton(
           icon: Icon(
             Icons.menu_rounded,
-            size: 25.sp,
+            size: OrientationHelper.isLandscape ? 12.sp : 25.sp,
             color: const Color(0xFF323130),
           ),
           onPressed: () => Scaffold.of(context).openDrawer(),
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
       ),
-      leadingWidth: 60.w,
+      leadingWidth: OrientationHelper.isLandscape ? 35.w : 60.w,
       title: SizedBox(
         height: 140.h,
         child: Center(
           child: SvgPicture.asset(
             'assets/images/logo/appbar-icon.svg',
-            width: 30.w,
-            height: 30.h,
+            width: OrientationHelper.isLandscape ? 42.w : 30.w,
+            height: OrientationHelper.isLandscape ? 42.h : 30.h,
             fit: BoxFit.contain,
           ),
         ),
       ),
       actions: [
         Container(
-          height: 30.h,
+          height: OrientationHelper.isLandscape ? 35.h : 30.h,
           decoration: BoxDecoration(
             boxShadow: const [
               BoxShadow(
@@ -85,28 +86,28 @@ class _AppBarTopState extends State<AppBarTop> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(width: 5.w),
+                SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
                 SizedBox(
-                  height: 20.h,
-                  width: 20.h,
+                  height: OrientationHelper.isLandscape ? 35.h : 20.h,
+                  width: OrientationHelper.isLandscape ? 35.h : 20.h,
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: SvgPicture.asset(
                       'assets/images/logo/credit-icon.svg',
-                      width: 20.w,
-                      height: 20.h,
+                      width: OrientationHelper.isLandscape ? 35.h : 20.w,
+                      height: OrientationHelper.isLandscape ? 35.w : 20.h,
                     ),
                   ),
                 ),
                 Text(
                   " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<AppleTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
                   style: GoogleFonts.prompt(
-                    fontSize: 12.sp,
+                    fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF323130),
                   ),
                 ),
-                SizedBox(width: 5.w),
+                SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
               ],
             ),
           ),

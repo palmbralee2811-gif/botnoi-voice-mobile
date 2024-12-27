@@ -17,8 +17,8 @@ import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
-import 'package:botnoivoice/presentation/screens/select_language/select_language_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,10 +42,7 @@ void main() async {
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [
-        Locale('en'),
-        Locale('th')
-      ], // Supported locales
+      supportedLocales: const [Locale('en'), Locale('th')], // Supported locales
       path: 'assets/langs', // Path to your localization files
       fallbackLocale: const Locale(
           'th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
@@ -86,6 +83,8 @@ class BotnoiVoiceApp extends StatelessWidget {
         designSize: const Size(320, 684),
         splitScreenMode: true,
         builder: (context, child) {
+          // เรียก OrientationHelper.init ก่อนเริ่มแสดง UI
+          OrientationHelper.init(context);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Botnoi Voice",

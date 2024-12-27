@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,9 +11,6 @@ class LineLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orientation =
-        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
-    final isLandscape = orientation == Orientation.landscape;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -28,21 +26,21 @@ class LineLoginButton extends StatelessWidget {
                 ),
                 padding: EdgeInsets.zero,
                 minimumSize:
-                    isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
+                    OrientationHelper.isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
                     'assets/images/auth_screen/line-icon.svg',
-                    height: isLandscape ? 52.h : 32.h,
-                    width: isLandscape ? 32.w : 32.w,
+                    height: OrientationHelper.isLandscape ? 52.h : 32.h,
+                    width: OrientationHelper.isLandscape ? 32.w : 32.w,
                   ),
-                  SizedBox(width: isLandscape ? 12.w : 16.w),
+                  SizedBox(width: OrientationHelper.isLandscape ? 12.w : 16.w),
                   Text(
                     'auth.sign_in_with_line'.tr(),
                     style: TextStyle(
-                      fontSize: isLandscape ? 9.sp : 12.sp,
+                      fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp,
                       color: Colors.white,
                       decoration: TextDecoration.none,
                     ),

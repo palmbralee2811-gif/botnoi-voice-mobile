@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 // import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -9,8 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 // import 'package:botnoivoice/data/models/speaker_entity.dart';
-
-
 
 class AppBarBottom extends StatefulWidget {
   const AppBarBottom({
@@ -36,12 +35,11 @@ class _AppBarBottomState extends State<AppBarBottom> {
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
-    
     return SizedBox(
       width: double.infinity,
-      height: 60.h,
+      height: OrientationHelper.isLandscape ? 60.h : 60.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -64,12 +62,12 @@ class _AppBarBottomState extends State<AppBarBottom> {
               }
             },
             child: Padding(
-              padding: EdgeInsets.all(8.w),
+              padding: EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
               child: GradientIcon(
                 icon: isPlaying
                     ? Icons.pause_circle_outline
                     : Icons.play_circle_outline,
-                size: 24.sp,
+                size: OrientationHelper.isLandscape ? 18.sp : 24.sp,
                 gradient: const LinearGradient(
                   colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                   begin: Alignment.topLeft,
@@ -88,48 +86,49 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all( OrientationHelper.isLandscape ? 2.w : 8.w),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 14.r,
+                      radius: OrientationHelper.isLandscape ? 20.r : 14.r,
                       backgroundImage: speakerProvider.speakerImagePath != null
                           ? AssetImage(speakerProvider.speakerImagePath!)
                           : const AssetImage(
                               "assets/square_image/square_ava.webp"),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
                     Text(
                       speakerProvider.getName(context),
                       // speakerProvider.speakerName ?? 'เอวา',
                       style: GoogleFonts.prompt(
-                        fontSize: 14.sp,
+                        fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF323130),
                       ),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
                     Container(
-                      width: 4.w,
-                      height: 4.w,
+                      width: OrientationHelper.isLandscape ? 2.w : 4.w,
+                      height: OrientationHelper.isLandscape ? 2.w : 4.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.grey.shade700,
                       ),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
                     CircleAvatar(
-                      radius: 7.r,
+                      radius: OrientationHelper.isLandscape ? 15.r : 7.r,
                       backgroundImage: speakerProvider.nationalFlagPath != null
                           ? AssetImage(speakerProvider.nationalFlagPath!)
                           : const AssetImage(
                               "assets/images/national_flag/thai.png"),
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(width:  OrientationHelper.isLandscape ? 4.w : 8.w),
                     Text(
-                      speakerProvider.nationalFlagName ?? 'appbar_bottom.thai'.tr(),
+                      speakerProvider.nationalFlagName ??
+                          'appbar_bottom.thai'.tr(),
                       style: GoogleFonts.prompt(
-                        fontSize: 10.sp,
+                        fontSize:  OrientationHelper.isLandscape ? 7.sp : 10.sp,
                         color: const Color(0xFF323130),
                       ),
                     ),
@@ -137,12 +136,12 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     Text(
                       'appbar_bottom.change'.tr(),
                       style: GoogleFonts.prompt(
-                        fontSize: 14.sp,
+                        fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF323130),
                       ),
                     ),
-                    SizedBox(width: 16.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 10.w : 16.w),
                   ],
                 ),
               ),

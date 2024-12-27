@@ -1,4 +1,5 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_button.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
@@ -20,10 +21,6 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final orientation =
-        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
-    final isLandscape = orientation == Orientation.landscape;
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -40,8 +37,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
               children: [
                 // GradientText: ข้อความ "Languages"
                 Container(
-                  width: isLandscape ? 300.w : 256.w, // ปรับตาม orientation
-                  height: isLandscape ? 90.h : 56.h,
+                  width: OrientationHelper.isLandscape ? 300.w : 256.w, // ปรับตาม orientation
+                  height: OrientationHelper.isLandscape ? 90.h : 56.h,
                   alignment: Alignment.center,
                   child: GradientText(
                     text: 'Languages',
@@ -53,23 +50,23 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w600, // กึ่งหนา
-                      fontSize: isLandscape ? 16.sp : 22.sp, // ปรับขนาดฟอนต์
+                      fontSize: OrientationHelper.isLandscape ? 16.sp : 22.sp, // ปรับขนาดฟอนต์
                       decoration: TextDecoration.none,
                     ),
                   ),
                 ),
-                SizedBox(height: isLandscape ? 40.h : 20.h), // ปรับระยะห่าง
+                SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h), // ปรับระยะห่าง
                 // ปุ่มสำหรับเลือกภาษา English
                 LanguageButton(
                   flagAsset: 'assets/images/national_flag/english.png',
                   language: 'English (UK)',
-                  width: isLandscape ? 300.w : 256.w,
-                  height: isLandscape ? 70.h : 48.h,
-                  fontSize: isLandscape ? 12.sp : 16.sp,
-                  flagWidth: isLandscape
+                  width: OrientationHelper.isLandscape ? 300.w : 256.w,
+                  height: OrientationHelper.isLandscape ? 70.h : 48.h,
+                  fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+                  flagWidth: OrientationHelper.isLandscape
                       ? 30.w
                       : 30.w, // กำหนดขนาดของธงตาม orientation
-                  flagHeight: isLandscape
+                  flagHeight: OrientationHelper.isLandscape
                       ? 40.h
                       : 20.h, // กำหนดขนาดของธงตาม orientation
                   isSelected: selectedLanguage == 'English (UK)',
@@ -85,18 +82,18 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     );
                   },
                 ),
-                SizedBox(height: isLandscape ? 15.h : 10.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 15.h : 10.h),
                 // ปุ่มสำหรับเลือกภาษาไทย
                 LanguageButton(
                   flagAsset: 'assets/images/national_flag/thai.png',
                   language: 'ไทย',
-                  width: isLandscape ? 300.w : 256.w,
-                  height: isLandscape ? 70.h : 48.h,
-                  fontSize: isLandscape ? 12.sp : 16.sp,
-                  flagWidth: isLandscape
+                  width: OrientationHelper.isLandscape ? 300.w : 256.w,
+                  height: OrientationHelper.isLandscape ? 70.h : 48.h,
+                  fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+                  flagWidth: OrientationHelper.isLandscape
                       ? 30.w
                       : 30.w, // กำหนดขนาดของธงตาม orientation
-                  flagHeight: isLandscape
+                  flagHeight: OrientationHelper.isLandscape
                       ? 40.h
                       : 20.h, // กำหนดขนาดของธงตาม orientation
                   isSelected: selectedLanguage == 'ไทย',

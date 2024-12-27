@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
@@ -47,7 +48,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       } else {
         NotificationDialog(
           context: context,
-          text: "${'new_password.error_occurred'.tr()} ${emailForgetPasswordProvider.errorMessage}",
+          text:
+              "${'new_password.error_occurred'.tr()} ${emailForgetPasswordProvider.errorMessage}",
         ).showErrorModal(context);
       }
     } catch (e) {
@@ -68,6 +70,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          iconSize: OrientationHelper.isLandscape ? 10.sp : 16.sp,
           onPressed: () {
             Navigator.pop(context);
           },
@@ -98,7 +101,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 20.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 14.sp : 20.sp,
                           decoration: TextDecoration.none,
                         ),
                         textAlign: TextAlign.left,
@@ -110,7 +114,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 10.sp : 14.sp,
                           decoration: TextDecoration.none,
                         ),
                         textAlign: TextAlign.left,
@@ -119,11 +124,15 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                       TextFormField(
                         controller: _passwordController,
                         style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            fontSize:
+                                OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                            fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'new_password.password'.tr(),
                           labelStyle: TextStyle(
-                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                              fontSize:
+                                  OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                              fontWeight: FontWeight.w400),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -135,7 +144,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                               _isPasswordVisible
                                   ? Icons.visibility
                                   : Icons.visibility_off,
-                              size: 24.w,
+                              size:
+                                  OrientationHelper.isLandscape ? 16.sp : 24.w,
                             ),
                             onPressed: () {
                               setState(() {
@@ -143,6 +153,11 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                               });
                             },
                           ),
+                          errorStyle: TextStyle(
+                              fontSize: OrientationHelper.isLandscape
+                                  ? 10.sp
+                                  : 14.sp),
+                          errorMaxLines: 5,
                         ),
                         obscureText: !_isPasswordVisible,
                         validator: (value) {
@@ -158,11 +173,15 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                       TextFormField(
                         controller: _confirmPasswordController,
                         style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            fontSize:
+                                OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                            fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'new_password.confirm_password'.tr(),
                           labelStyle: TextStyle(
-                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                              fontSize:
+                                  OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                              fontWeight: FontWeight.w400),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -174,7 +193,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                               _isPasswordVisible
                                   ? Icons.visibility
                                   : Icons.visibility_off,
-                              size: 24.w,
+                              size:
+                                  OrientationHelper.isLandscape ? 16.sp : 24.w,
                             ),
                             onPressed: () {
                               setState(() {
@@ -182,6 +202,11 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                               });
                             },
                           ),
+                          errorStyle: TextStyle(
+                              fontSize: OrientationHelper.isLandscape
+                                  ? 10.sp
+                                  : 14.sp),
+                          errorMaxLines: 5,
                         ),
                         obscureText: !_isPasswordVisible,
                         validator: (value) {

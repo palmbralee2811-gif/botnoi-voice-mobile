@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,12 +12,9 @@ class GradientTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orientation =
-        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
-    final isLandscape = orientation == Orientation.landscape;
     return Container(
       width: double.infinity,
-      height: isLandscape ? 80.h : 50.h,
+      height: OrientationHelper.isLandscape ? 80.h : 50.h,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
@@ -32,7 +30,7 @@ class GradientTextButton extends StatelessWidget {
         child: Text(text,
             style: GoogleFonts.prompt(
                 color: Colors.white,
-                fontSize: isLandscape ? 13.sp : 16.sp,
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 16.sp,
                 fontWeight: FontWeight.w600)),
       ),
     );
