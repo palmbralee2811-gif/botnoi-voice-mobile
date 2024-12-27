@@ -20,6 +20,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isPortrait = orientation == Orientation.portrait;
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -36,8 +39,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
               children: [
                 // GradientText: ข้อความ "Languages"
                 Container(
-                  width: 256.w,
-                  height: 56.h,
+                  width: isPortrait ? 256.w : 300.w, // ปรับตาม orientation
+                  height: isPortrait ? 56.h : 70.h,
                   alignment: Alignment.center,
                   child: GradientText(
                     text: 'Languages',
@@ -49,30 +52,24 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w600, // กึ่งหนา
-                      fontSize: 22.sp,
+                      fontSize: isPortrait ? 22.sp : 28.sp, // ปรับขนาดฟอนต์
                       decoration: TextDecoration.none,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: isPortrait ? 20.h : 30.h), // ปรับระยะห่าง
                 // ปุ่มสำหรับเลือกภาษา English
                 LanguageButton(
                   flagAsset: 'assets/images/national_flag/english.png',
                   language: 'English (UK)',
-                  width: 256.w,
-                  height: 48.h,
-                  fontSize: 16.sp,
-                  isSelected: selectedLanguage ==
-                      'English (UK)', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
+                  width: isPortrait ? 256.w : 300.w,
+                  height: isPortrait ? 48.h : 60.h,
+                  fontSize: isPortrait ? 16.sp : 18.sp,
+                  isSelected: selectedLanguage == 'English (UK)',
                   onTap: () async {
-                    // เลือกภาษาอังกฤษ
-                    // setState(() {
-                    // saveSelectedLanguage('en');
                     await LanguageHelper.saveSelectedLanguage('en');
                     context.setLocale(const Locale('en'));
-                    // });
 
-                    // push ไปหน้า Login
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -81,26 +78,19 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: isPortrait ? 10.h : 15.h),
                 // ปุ่มสำหรับเลือกภาษาไทย
                 LanguageButton(
                   flagAsset: 'assets/images/national_flag/thai.png',
                   language: 'ไทย',
-                  width: 256.w,
-                  height: 48.h,
-                  fontSize: 16.sp,
-                  isSelected: selectedLanguage ==
-                      'ไทย', // ตรวจสอบว่าภาษานี้ถูกเลือกหรือไม่
+                  width: isPortrait ? 256.w : 300.w,
+                  height: isPortrait ? 48.h : 60.h,
+                  fontSize: isPortrait ? 16.sp : 18.sp,
+                  isSelected: selectedLanguage == 'ไทย',
                   onTap: () async {
-                    // ใช้ setState เพื่ออัปเดตสถานะ
-                    // setState(() {
-                    // เลือกภาษาไทย
-                    // saveSelectedLanguage('th');
                     await LanguageHelper.saveSelectedLanguage('th');
                     context.setLocale(const Locale('th'));
-                    // });
 
-                    // push ไปหน้า Login
                     Navigator.push(
                       context,
                       MaterialPageRoute(
