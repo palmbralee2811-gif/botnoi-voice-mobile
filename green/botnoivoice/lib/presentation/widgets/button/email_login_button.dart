@@ -11,12 +11,17 @@ class EmailLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
           child: Padding(
-            padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            padding: EdgeInsets.only(
+                left: isLandscape ? 65.w : 30.w,
+                right: isLandscape ? 65.w : 30.w),
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
@@ -29,21 +34,22 @@ class EmailLoginButton extends StatelessWidget {
                   ),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(224.w, 48.h),
+                minimumSize:
+                    isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
                     'assets/images/auth_screen/email-icon.svg',
-                    height: 20.h,
-                    width: 20.w,
+                    height: isLandscape ? 35.h : 20.h,
+                    width: isLandscape ? 20.w : 20.w,
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: isLandscape ? 12.w : 16.w),
                   Text(
                     'auth.sign_in_with_username_email'.tr(),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: isLandscape ? 9.sp : 12.sp,
                       color: kDark,
                       decoration: TextDecoration.none,
                     ),

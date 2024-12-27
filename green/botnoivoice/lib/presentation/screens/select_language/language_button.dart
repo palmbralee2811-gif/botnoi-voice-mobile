@@ -9,6 +9,8 @@ class LanguageButton extends StatelessWidget {
   final double fontSize; // ขนาดตัวอักษร
   final bool isSelected; // สถานะว่าปุ่มนี้ถูกเลือกหรือไม่
   final VoidCallback onTap; // ฟังก์ชันที่เรียกเมื่อกดปุ่ม
+  final double flagWidth; // ความกว้างของรูปธง
+  final double flagHeight; // ความสูงของรูปธง
 
   const LanguageButton({
     required this.flagAsset,
@@ -18,6 +20,8 @@ class LanguageButton extends StatelessWidget {
     required this.fontSize,
     required this.isSelected,
     required this.onTap,
+    required this.flagWidth, // รับค่าขนาดธง
+    required this.flagHeight, // รับค่าขนาดธง
     super.key,
   });
 
@@ -31,7 +35,8 @@ class LanguageButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
           // กำหนดสีพื้นหลังและกรอบ
-          color: isSelected ? Colors.white.withOpacity(0.1) : Colors.transparent,
+          color:
+              isSelected ? Colors.white.withOpacity(0.1) : Colors.transparent,
           border: Border.all(
             color: isSelected ? const Color(0xFF34BDFA) : Colors.transparent,
             width: 1.5,
@@ -42,10 +47,15 @@ class LanguageButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // แสดงรูปธงชาติ
+            // Image.asset(
+            //   flagAsset,
+            //   width: 30.w,
+            //   height: 20.h,
+            // ),
             Image.asset(
               flagAsset,
-              width: 30.w,
-              height: 20.h,
+              width: flagWidth, // ใช้ขนาดธงจากตัวแปร
+              height: flagHeight, // ใช้ขนาดธงจากตัวแปร
             ),
             SizedBox(width: 10.w),
             // แสดงชื่อภาษา
@@ -53,7 +63,9 @@ class LanguageButton extends StatelessWidget {
               language,
               style: TextStyle(
                 fontSize: fontSize,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400, // กึ่งหนาเมื่อถูกเลือก
+                fontWeight: isSelected
+                    ? FontWeight.w600
+                    : FontWeight.w400, // กึ่งหนาเมื่อถูกเลือก
                 color: Colors.black,
               ),
             ),

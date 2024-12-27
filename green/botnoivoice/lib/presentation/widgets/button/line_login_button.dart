@@ -10,6 +10,9 @@ class LineLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orientation =
+        MediaQuery.of(context).orientation; // ตรวจสอบ orientation
+    final isLandscape = orientation == Orientation.landscape;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -24,21 +27,22 @@ class LineLoginButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(224.w, 48.h),
+                minimumSize:
+                    isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
                     'assets/images/auth_screen/line-icon.svg',
-                    height: 32.h,
-                    width: 32.w,
+                    height: isLandscape ? 52.h : 32.h,
+                    width: isLandscape ? 32.w : 32.w,
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: isLandscape ? 12.w : 16.w),
                   Text(
                     'auth.sign_in_with_line'.tr(),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: isLandscape ? 9.sp : 12.sp,
                       color: Colors.white,
                       decoration: TextDecoration.none,
                     ),
