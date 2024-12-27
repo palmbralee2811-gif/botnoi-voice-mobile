@@ -6,6 +6,7 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet_app_drawer.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -99,15 +100,18 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
       child: ListView(
         children: <Widget>[
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 15.w, right: 30.w),
+            contentPadding: EdgeInsets.only(
+              left: OrientationHelper.isLandscape ? 20.w : 30.w, 
+              top: 15.w, 
+              right: 30.w),
             title: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      width: 56.w,
-                      height: 56.h,
+                      width: OrientationHelper.isLandscape ? 22.w : 56.w,
+                      height: OrientationHelper.isLandscape ? 76.h : 56.h,
                       child: CircleAvatar(
                         backgroundImage: profilePictureUrl.isNotEmpty
                             ? NetworkImage(profilePictureUrl)
@@ -115,7 +119,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                                     'assets/images/default-profile-picture.jpg')
                                 as ImageProvider<Object>,
                         backgroundColor: Colors.black,
-                        radius: 20.0.r,
+                        radius: OrientationHelper.isLandscape ? 15.0.r : 20.0.r,
                       ),
                     ),
                     TextButton(
@@ -128,7 +132,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                       child: Icon(
                         Icons.menu_sharp,
                         color: const Color(0xFF323130),
-                        size: 32.sp,
+                        size: OrientationHelper.isLandscape ? 22.sp : 32.sp,
                       ),
                     ),
                   ],
@@ -144,7 +148,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                           Text(
                             displayName,
                             style: GoogleFonts.prompt(
-                              fontSize: 24.sp,
+                              fontSize: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                               fontWeight: FontWeight.w600,
                               color: const Color(0xFF323130),
                             ),
@@ -156,7 +160,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                           Text(
                             'UID: $uid',
                             style: GoogleFonts.prompt(
-                              fontSize: 14.sp,
+                              fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                               fontWeight: FontWeight.w400,
                               color: const Color(0xFF323130),
                             ),
@@ -172,16 +176,18 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             ),
           ),
           ListTile(
-            contentPadding: EdgeInsets.only(left: 30.w, top: 30.h),
+            contentPadding: EdgeInsets.only(
+            left: OrientationHelper.isLandscape ? 20.w : 30.w, 
+            top: OrientationHelper.isLandscape ? 10.h : 30.h),
             leading: Icon(
               Icons.account_circle_outlined,
-              size: 24.sp,
+              size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
               color: const Color(0xFF323130),
             ),
             title: Text(
               'app_drawer.profile'.tr(), //ข้อมูลส่วนตัว
               style: GoogleFonts.prompt(
-                fontSize: 20.sp,
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF323130),
               ),
@@ -198,16 +204,16 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           if (Platform.isIOS) SizedBox(height: 10.h),
           if (Platform.isIOS)
             ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w),
+              contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.credit_card,
-                size: 24.sp,
+                size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                 color: const Color(0xFF323130),
               ),
               title: Text(
                 'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),
@@ -220,16 +226,16 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           if (emailProvider.isLoggedIn &&
               emailProvider.user?.providerData[0].providerId == 'password')
             ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w),
+              contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.security_outlined,
-                size: 24.sp,
+                size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                 color: const Color(0xFF323130),
               ),
               title: Text(
                 'app_drawer.security'.tr(), //ความปลอดภัย
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),
@@ -260,16 +266,16 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               );
             },
             child: ListTile(
-              contentPadding: EdgeInsets.only(left: 30.w),
+              contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.language,
-                size: 24.sp,
+                size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                 color: const Color(0xFF323130),
               ),
               title: Text(
                 'language'.tr(),
                 style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
+                  fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF323130),
                 ),

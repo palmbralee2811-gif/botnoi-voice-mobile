@@ -150,11 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: buildTextBox(),
+              child: buildTextBox(),
           ),
           Container(
             width: double.infinity,
             color: Colors.white,
+            height: 90.h,
             child: buildGenerateButton(context),
           ),
         ],
@@ -165,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildTextBox() {
     return Container(
       width: 320.w,
-      height: 100.h,
+      height: 80.h,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
@@ -226,7 +227,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
                           fontStyle: GoogleFonts.prompt(
-                                  fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp)
+                                  fontSize: OrientationHelper.isLandscape
+                                      ? 8.sp
+                                      : 14.sp)
                               .fontStyle,
                         ),
                         hintMaxLines: 1,
@@ -245,7 +248,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildBottomTextBox() {
     return Padding(
-      padding: EdgeInsets.only(right: OrientationHelper.isLandscape ? 15.w : 25.w),
+      padding:
+          EdgeInsets.only(right: OrientationHelper.isLandscape ? 15.w : 25.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -258,7 +262,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: TextButton(
                         style: TextButton.styleFrom(
                             textStyle: TextStyle(
-                                fontSize: OrientationHelper.isLandscape ? 5.sp : 10.sp)),
+                                fontSize: OrientationHelper.isLandscape
+                                    ? 5.sp
+                                    : 10.sp)),
                         onPressed: () {
                           setState(() {
                             _textController.clear();
@@ -281,7 +287,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: TextButton(
                         style: TextButton.styleFrom(
                             textStyle: TextStyle(
-                                fontSize: OrientationHelper.isLandscape ? 12.sp : 10.sp)),
+                                fontSize: OrientationHelper.isLandscape
+                                    ? 12.sp
+                                    : 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
@@ -337,7 +345,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text('home_screen.create_sound'.tr(), //สร้างเสียง
                       style: GoogleFonts.prompt(
                           color: Colors.white,
-                          fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 11.sp : 16.sp,
                           fontWeight: FontWeight.w600)),
                   SizedBox(width: OrientationHelper.isLandscape ? 5.w : 10.w),
                   SvgPicture.asset(
@@ -349,7 +358,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text('${_textController.text.length}',
                       style: GoogleFonts.prompt(
                           color: Colors.white,
-                          fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 11.sp : 16.sp,
                           fontWeight: FontWeight.w600)),
                 ],
               ),

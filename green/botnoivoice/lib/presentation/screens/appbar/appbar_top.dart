@@ -21,7 +21,7 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
   State<AppBarTop> createState() => _AppBarTopState();
 
   @override
-  Size get preferredSize => Size.fromHeight(100.h);
+  Size get preferredSize => Size.fromHeight(135.h);
 }
 
 class _AppBarTopState extends State<AppBarTop> {
@@ -37,7 +37,7 @@ class _AppBarTopState extends State<AppBarTop> {
       elevation: 4.0,
       leading: SizedBox(
         width: double.infinity,
-        height: OrientationHelper.isLandscape ? 100.h : 140.h,
+        height: OrientationHelper.isLandscape ? 150.h : 140.h,
         child: IconButton(
           icon: Icon(
             Icons.menu_rounded,
@@ -54,8 +54,8 @@ class _AppBarTopState extends State<AppBarTop> {
         child: Center(
           child: SvgPicture.asset(
             'assets/images/logo/appbar-icon.svg',
-            width: OrientationHelper.isLandscape ? 42.w : 30.w,
-            height: OrientationHelper.isLandscape ? 42.h : 30.h,
+            width: OrientationHelper.isLandscape ? 53.w : 30.w,
+            height: OrientationHelper.isLandscape ? 53.h : 30.h,
             fit: BoxFit.contain,
           ),
         ),
@@ -88,14 +88,14 @@ class _AppBarTopState extends State<AppBarTop> {
               children: [
                 SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
                 SizedBox(
-                  height: OrientationHelper.isLandscape ? 35.h : 20.h,
-                  width: OrientationHelper.isLandscape ? 35.h : 20.h,
+                  height: OrientationHelper.isLandscape ? 40.h : 20.h,
+                  width: OrientationHelper.isLandscape ? 10.w : 20.w,
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: SvgPicture.asset(
                       'assets/images/logo/credit-icon.svg',
-                      width: OrientationHelper.isLandscape ? 35.h : 20.w,
-                      height: OrientationHelper.isLandscape ? 35.w : 20.h,
+                      width: OrientationHelper.isLandscape ? 30.w : 20.w,
+                      height: OrientationHelper.isLandscape ? 30.h : 20.h,
                     ),
                   ),
                 ),

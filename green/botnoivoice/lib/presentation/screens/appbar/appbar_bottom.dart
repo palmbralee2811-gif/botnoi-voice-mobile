@@ -39,7 +39,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     return SizedBox(
       width: double.infinity,
-      height: OrientationHelper.isLandscape ? 60.h : 60.h,
+      height: OrientationHelper.isLandscape ? 80.h : 60.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -90,13 +90,13 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: OrientationHelper.isLandscape ? 20.r : 14.r,
+                      radius: OrientationHelper.isLandscape ? 22.r : 14.r,
                       backgroundImage: speakerProvider.speakerImagePath != null
                           ? AssetImage(speakerProvider.speakerImagePath!)
                           : const AssetImage(
                               "assets/square_image/square_ava.webp"),
                     ),
-                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
                       speakerProvider.getName(context),
                       // speakerProvider.speakerName ?? 'เอวา',
@@ -106,7 +106,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         color: const Color(0xFF323130),
                       ),
                     ),
-                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Container(
                       width: OrientationHelper.isLandscape ? 2.w : 4.w,
                       height: OrientationHelper.isLandscape ? 2.w : 4.w,
@@ -115,9 +115,9 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         color: Colors.grey.shade700,
                       ),
                     ),
-                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     CircleAvatar(
-                      radius: OrientationHelper.isLandscape ? 15.r : 7.r,
+                      radius: OrientationHelper.isLandscape ? 16.r : 7.r,
                       backgroundImage: speakerProvider.nationalFlagPath != null
                           ? AssetImage(speakerProvider.nationalFlagPath!)
                           : const AssetImage(
