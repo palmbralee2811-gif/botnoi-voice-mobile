@@ -20,6 +20,7 @@ import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart'
 import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,13 @@ import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // บังคับ Orientation เป็นแนวตั้งเท่านั้น
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LineSDK.instance.setup("1656375389").then((_) {
     print("LineSDK Prepared");
@@ -55,6 +63,7 @@ void main() async {
     ),
   );
 }
+
 
 class BotnoiVoiceApp extends StatelessWidget {
   const BotnoiVoiceApp({super.key});
