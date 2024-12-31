@@ -3,7 +3,7 @@ import 'package:botnoivoice/presentation/providers/email/email_change_username_p
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

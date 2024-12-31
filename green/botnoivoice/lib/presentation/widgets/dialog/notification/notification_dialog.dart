@@ -124,26 +124,4 @@ class NotificationDialog {
       onPressed: onPressed,
     );
   }
-
-  void showSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(text),
-        duration: const Duration(seconds: 10),
-      ),
-    );
-  }
-
-  void showSnackBarWithAction(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Dowload File Successfully'),
-        action: SnackBarAction(
-          label: 'OPEN',
-          onPressed: onPressed ?? () {},
-        ),
-        duration: const Duration(seconds: 15),
-      ),
-    );
-  }
 }
