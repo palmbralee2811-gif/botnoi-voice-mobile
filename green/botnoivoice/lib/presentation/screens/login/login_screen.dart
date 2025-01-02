@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: OrientationHelper.isLandscape ? 30.h : 127.h),
+              SizedBox(height: OrientationHelper.isLandscape ? 80.h : 127.h),
               _buildCenter(context),
               SizedBox(height: OrientationHelper.isLandscape ? 75.h : 95.h),
               EmailLoginButton(onPressed: () {
@@ -115,7 +115,7 @@ class LoginScreen extends StatelessWidget {
                     _openAppleLogin(context);
                   }),
                 ),
-              SizedBox(height: OrientationHelper.isLandscape ? 15.h : 40.h),
+              SizedBox(height: OrientationHelper.isLandscape ? 70.h : 40.h),
             ],
           ),
         ),
@@ -204,7 +204,7 @@ class LoginScreen extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(
                               left: 20.w,
-                              // bottom: 13.h,
+                              bottom: 13.h,
                             ),
                             child: GradientTextStyle(
                               'welcome_message.line2'.tr(), // บอทน้อย
