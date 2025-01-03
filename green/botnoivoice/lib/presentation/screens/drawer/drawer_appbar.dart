@@ -201,8 +201,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               );
             },
           ),
-          // if (Platform.isIOS) SizedBox(height: 10.h),
-          // if (Platform.isIOS)
+          if (Platform.isIOS) SizedBox(height: 10.h),
+          if (Platform.isIOS)
             ListTile(
               contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
               leading: Icon(

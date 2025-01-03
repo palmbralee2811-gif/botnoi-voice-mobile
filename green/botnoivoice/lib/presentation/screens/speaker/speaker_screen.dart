@@ -243,12 +243,12 @@ Widget buildFilterNavbar(BuildContext context) {
         ),
       ),
       // Spacer เพื่อเลื่อนปุ่มขึ้น
-      SizedBox(height: OrientationHelper.isLandscape ? 35.h : 20.h), // เพิ่มระยะว่าง
+      SizedBox(height: OrientationHelper.isLandscape ? 30.h : 20.h), // เพิ่มระยะว่าง
       // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        padding: EdgeInsets.symmetric(horizontal: OrientationHelper.isLandscape ? 40.w : 20.w),
         child: SizedBox(
-          height: OrientationHelper.isLandscape ? 80.h : 50.h,
+          height: OrientationHelper.isLandscape ? 70.h : 50.h,
           child: GradientTextButton(
             text: 'confirm'.tr(), //ตกลง
             onPressed: () {
@@ -273,7 +273,7 @@ Widget buildFilterNavbar(BuildContext context) {
         children: [
           Container(
             color: Colors.transparent,
-            width: OrientationHelper.isLandscape ? 300.w : 280.w,
+            width: OrientationHelper.isLandscape ? 140.w : 280.w,
             child: Column(
               children: [
                 Row(
@@ -443,7 +443,10 @@ Widget buildFilterNavbar(BuildContext context) {
           ishover = !ishover;
         });
       },
-      child: Favorite(ishover: ishover),
+      child: SizedBox(
+        height: OrientationHelper.isLandscape ? 55.h : 35.h,
+        child: Favorite(ishover: ishover),
+      ),
     );
   }
 
@@ -460,7 +463,7 @@ Widget buildFilterNavbar(BuildContext context) {
               Text(
                 'gender'.tr(),
                 style: GoogleFonts.prompt(
-                  fontSize: 16.sp,
+                  fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -470,7 +473,7 @@ Widget buildFilterNavbar(BuildContext context) {
                 },
                 child: Icon(
                   Icons.close,
-                  size: 24.sp,
+                  size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                   color: Colors.black,
                 ),
               ),
@@ -668,8 +671,8 @@ Widget buildFilterNavbar(BuildContext context) {
         Navigator.pop(context);
       },
       child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
+        padding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 0.w : 10.w),
+        height: OrientationHelper.isLandscape ? 82.h : 42.h,
         width: 320.w,
         color: const Color(0xFFFFFFFF),
         child: Column(
@@ -680,16 +683,16 @@ Widget buildFilterNavbar(BuildContext context) {
               children: [
                 Image.asset(
                   imagePath,
-                  width: 23.w,
-                  height: 23.h,
+                  width: OrientationHelper.isLandscape ? 13.w : 23.w,
+                  height: OrientationHelper.isLandscape ? 43.h : 23.h,
                 ),
                 SizedBox(
-                  width: 20.w,
+                  width: OrientationHelper.isLandscape ? 10.w : 20.w,
                 ),
                 Text(
                   displayText,
                   style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                     fontWeight: selectedLanguage == displayText
                         ? FontWeight.w600
                         : FontWeight.normal,
@@ -741,8 +744,8 @@ Widget buildFilterNavbar(BuildContext context) {
         Navigator.pop(context);
       },
       child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
+        padding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 0.w : 10.w),
+        height: OrientationHelper.isLandscape ? 82.h : 42.h,
         width: 320.w,
         color: const Color(0xFFFFFFFF),
         child: Row(
@@ -750,14 +753,14 @@ Widget buildFilterNavbar(BuildContext context) {
           children: [
             SvgPicture.asset(
               imagePath,
-              width: 23.w,
-              height: 23.h,
+              width: OrientationHelper.isLandscape ? 13.w : 23.w,
+              height: OrientationHelper.isLandscape ? 43.h : 23.h,
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: OrientationHelper.isLandscape ? 10.w : 20.w),
             Text(
               displayText,
               style: GoogleFonts.prompt(
-                fontSize: 14.sp,
+                fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                 fontWeight: selectedGender == displayText
                     ? FontWeight.w600
                     : FontWeight.normal,
@@ -922,8 +925,8 @@ List<SpeakerEntity> _filterSpeakers() {
             child: Column(
               children: [
                 Container(
-                  width: 100.w,
-                  height: 113.h,
+                  width: OrientationHelper.isLandscape ? 120.w : 100.w,
+                  height: OrientationHelper.isLandscape ? 313.h : 113.h,
                   decoration: BoxDecoration(
                     border: GradientBoxBorder(
                       width: 3.w,
@@ -984,7 +987,7 @@ List<SpeakerEntity> _filterSpeakers() {
                               child: selectedIndex.contains(index)
                                   ? Container(
                                       width: 31.w,
-                                      height: 17.h,
+                                      height: OrientationHelper.isLandscape ? 30.h : 17.h,
                                       decoration: BoxDecoration(
                                         gradient: const LinearGradient(
                                           colors: [
@@ -994,15 +997,15 @@ List<SpeakerEntity> _filterSpeakers() {
                                         ),
                                         color: Colors.white,
                                         borderRadius:
-                                            BorderRadius.circular(8.r),
+                                            BorderRadius.circular( OrientationHelper.isLandscape ? 16 .r : 8.r),
                                       ),
                                       child: Center(
-                                        child: Text('เลือก',
+                                        child: Text('select'.tr(), //เลือก
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontStyle: GoogleFonts.prompt()
                                                   .fontStyle,
-                                              fontSize: 10.sp,
+                                              fontSize: OrientationHelper.isLandscape ? 6.sp : 8.sp,
                                               fontWeight: FontWeight.bold,
                                             )),
                                       ),
@@ -1040,14 +1043,14 @@ List<SpeakerEntity> _filterSpeakers() {
                                         },
                                         child: SvgPicture.asset(
                                           'assets/images/icon/heart-on.svg',
-                                          width: 20.w,
-                                          height: 20.h,
+                                          width: OrientationHelper.isLandscape ? 50.w : 20.w,
+                                          height: OrientationHelper.isLandscape ? 50.h : 20.h,
                                         ),
                                       )
                                     : SvgPicture.asset(
                                         'assets/images/icon/heart-off.svg',
-                                        width: 20.w,
-                                        height: 20.h,
+                                        width: OrientationHelper.isLandscape ? 50.w : 20.w,
+                                        height: OrientationHelper.isLandscape ? 50.h : 20.h,
                                       ),
                               ),
                             )
@@ -1072,14 +1075,14 @@ List<SpeakerEntity> _filterSpeakers() {
                                     },
                                     child: SvgPicture.asset(
                                       'assets/images/icon/play-on.svg',
-                                      width: 16.h,
-                                      height: 16.w,
+                                      width: OrientationHelper.isLandscape ? 12.h : 16.h,
+                                      height: OrientationHelper.isLandscape ? 12.w : 16.w,
                                     ),
                                   )
                                 : SvgPicture.asset(
                                     'assets/images/icon/play-off.svg',
-                                    width: 16.h,
-                                    height: 16.w,
+                                    width: OrientationHelper.isLandscape ? 12.h : 16.h,
+                                    height: OrientationHelper.isLandscape ? 12.w : 16.w,
                                   ),
                             SizedBox(
                               width: 3.w,
@@ -1157,11 +1160,14 @@ List<SpeakerEntity> _filterSpeakers() {
           builder: (BuildContext context) {
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return SingleChildScrollView(
-                  child: Row(
-                    children: [
-                      buildLanguageButton(context, setState),
-                    ],
+                return SizedBox(
+                  width: 600.w,
+                  child: SingleChildScrollView(
+                    child: Row(
+                      children: [
+                        buildLanguageButton(context, setState),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -1174,8 +1180,8 @@ List<SpeakerEntity> _filterSpeakers() {
         });
       },
       child: Container(
-        width: 100.w,
-        height: 35.h,
+        width: OrientationHelper.isLandscape ? 90.w : 100.w,
+        height: OrientationHelper.isLandscape ? 55.h : 35.h,
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: const BorderRadius.all(
@@ -1191,16 +1197,16 @@ List<SpeakerEntity> _filterSpeakers() {
           children: [
             Image.asset(
               selectedLanguageImage,
-              width: 28.w,
-              height: 28.h,
+              width: OrientationHelper.isLandscape ? 18.w : 28.w,
+              height: OrientationHelper.isLandscape ? 48.h : 28.h,
             ),
-            SizedBox(width: 6.w),
+            SizedBox(width: OrientationHelper.isLandscape ? 5.w : 6.w),
             Flexible(
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
                   selectedLanguage,
-                  style: GoogleFonts.prompt(fontSize: 16.sp),
+                  style: GoogleFonts.prompt(fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp),
                 ),
               ),
             ),
@@ -1208,7 +1214,7 @@ List<SpeakerEntity> _filterSpeakers() {
               isExpanded
                   ? Icons.keyboard_arrow_up_sharp
                   : Icons.keyboard_arrow_down_sharp,
-              size: 20,
+              size: OrientationHelper.isLandscape ? 30 : 20,
               color: const Color(0xFF323130),
             ),
           ],
@@ -1232,9 +1238,9 @@ List<SpeakerEntity> _filterSpeakers() {
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
                 return SizedBox(
-                  height: 220.h,
+                  height: OrientationHelper.isLandscape ? 440.h : 220.h,
                   child: Padding(
-                    padding: const EdgeInsets.all(25),
+                    padding: EdgeInsets.all( OrientationHelper.isLandscape ? 20 : 25),
                     child: Column(
                       children: [
                         buildGenderButton(context),
@@ -1252,8 +1258,8 @@ List<SpeakerEntity> _filterSpeakers() {
         });
       },
       child: Container(
-        width: 100.w,
-        height: 35.h,
+        width: OrientationHelper.isLandscape ? 90.w : 100.w,
+        height: OrientationHelper.isLandscape ? 55.h : 35.h,
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: const BorderRadius.all(
@@ -1272,37 +1278,37 @@ List<SpeakerEntity> _filterSpeakers() {
               children: [
                 SizedBox(width: 3.w),
                 SvgPicture.asset(
-                  selectedGenderImage,
-                  width: 28.w,
-                  height: 28.h,
+                  selectedGenderImage,  
+                  width: OrientationHelper.isLandscape ? 18.w : 28.w,
+                  height: OrientationHelper.isLandscape ? 48.h : 28.h,
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: OrientationHelper.isLandscape ? 5.w : 6.w),
                 if (gender == '')
                   Text(
                     Localizations.localeOf(context).languageCode == 'th'
                         ? 'ช/ญ'
                         : 'M/W',
                     style: GoogleFonts.prompt(
-                      fontSize: 12.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 12.sp,
                     ),
                   ),
                 if (gender.toString() != '')
                   Text(
                     selectedGender,
                     style: GoogleFonts.prompt(
-                      fontSize: 12.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 12.sp,
                     ),
                   ),
                 changeIcon
-                    ? const Icon(
+                    ? Icon(
                         Icons.keyboard_arrow_up_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
+                        size: OrientationHelper.isLandscape ? 30 : 20,
+                        color: const Color(0xFF323130),
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.keyboard_arrow_down_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
+                        size: OrientationHelper.isLandscape ? 30 : 20,
+                        color: const Color(0xFF323130),
                       ),
               ],
             ),

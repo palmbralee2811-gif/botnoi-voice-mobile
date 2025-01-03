@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +23,7 @@ Future<void> showModalSelection({
     backgroundColor: Colors.white,
     builder: (BuildContext context) {
       return FractionallySizedBox(
-        heightFactor: 0.6,
+        heightFactor: 0.8,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -35,14 +36,14 @@ Future<void> showModalSelection({
                   Text(
                     title,
                     style: GoogleFonts.prompt(
-                      fontSize: 16.sp,
+                      fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   IconButton(
                     icon: Icon(
                       Icons.close,
-                      size: 24.sp, // กำหนดขนาดไอคอน
+                      size: OrientationHelper.isLandscape ? 16.sp : 24.sp, // กำหนดขนาดไอคอน
                       color: Colors.black, // กำหนดสีไอคอน
                     ),
                     onPressed: () => Navigator.pop(context), // ปิด Modal
@@ -98,7 +99,7 @@ Future<void> showModalSelection({
                           child: Text(
                             item,
                             style: GoogleFonts.prompt(
-                              fontSize: 12.sp,
+                              fontSize: OrientationHelper.isLandscape ? 7.sp : 12.sp,
                               color: isSelected
                                   ? Colors.white
                                   : Colors.black, // เปลี่ยนสีข้อความตามสถานะ
@@ -136,7 +137,7 @@ Future<void> showModalSelection({
                         child: Text(
                           'reset'.tr(), // รีเซ็ท
                           style: GoogleFonts.prompt(
-                            fontSize: 12.sp,
+                            fontSize: OrientationHelper.isLandscape ? 10.sp : 12.sp,
                             color: Colors.black, // ข้อความสีดำ
                           ),
                         ),
@@ -170,7 +171,7 @@ Future<void> showModalSelection({
                         child: Text(
                           'confirm'.tr(), // ตกลง
                           style: GoogleFonts.prompt(
-                            fontSize: 12.sp,
+                            fontSize: OrientationHelper.isLandscape ? 10.sp : 12.sp,
                             color: Colors.white, // ข้อความสีขาว
                           ),
                         ),

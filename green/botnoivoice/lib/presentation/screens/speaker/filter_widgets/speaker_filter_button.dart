@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_modal_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,7 +48,7 @@ Widget buildFilterButton(
         },
         child: Container(
           width: 150.w,
-          height: 35.h,
+          height: OrientationHelper.isLandscape ? 55.h : 35.h,
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: const BorderRadius.all(
@@ -63,14 +64,14 @@ Widget buildFilterButton(
             children: [
               Text(
                 title,
-                style: GoogleFonts.prompt(fontSize: 14.sp),
+                style: GoogleFonts.prompt(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
               ),
               SizedBox(width: 6.w),
               Icon(
                 isExpanded
                     ? Icons.keyboard_arrow_up_sharp // ^ when expanded
                     : Icons.keyboard_arrow_down_sharp, // v when collapsed
-                size: 20,
+                size: OrientationHelper.isLandscape ? 30 : 20,
                 color: const Color(0xFF323130),
               ),
             ],

@@ -19,7 +19,7 @@ void showLanguageBottomSheet({
       return Container(
         color: Colors.transparent,
         width: 280.w,
-        height: OrientationHelper.isLandscape ? 280.h : 160.h,
+        height: OrientationHelper.isLandscape ? 280.h : 180.h,
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,

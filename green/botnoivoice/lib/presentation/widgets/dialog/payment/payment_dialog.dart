@@ -51,7 +51,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all( OrientationHelper.isLandscape ? 8.w : 16.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -79,7 +79,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 Text(
                   "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
                   style: TextStyle(
-                    fontSize: OrientationHelper.isLandscape ? 35.sp : 45.sp,
+                    fontSize: OrientationHelper.isLandscape ? 25.sp : 45.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -90,8 +90,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       'assets/images/logo/credit-icon.svg',
-                      width: 24.w,
-                      height: 24.h,
+                      width: OrientationHelper.isLandscape ? 44.w : 24.w,
+                      height: OrientationHelper.isLandscape ? 44.h : 24.h,
                     ),
                     SizedBox(width: 8.w),
                     Text(
@@ -99,7 +99,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                         'productTitle': product.title
                       }), //ได้ ${product.title} พ้อยท์
                       style: TextStyle(
-                        fontSize: 24.sp,
+                        fontSize: OrientationHelper.isLandscape ? 13.sp : 22.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
@@ -113,7 +113,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                     await _handlePurchase(context, product.title);
                   },
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 10.h : 20.h),
               ],
             ),
           );
