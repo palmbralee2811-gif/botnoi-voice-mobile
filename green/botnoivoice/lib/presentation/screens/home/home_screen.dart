@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             width: double.infinity,
             color: Colors.white,
-            height: 90.h,
+            height: OrientationHelper.isLandscape ? 75.h : 90.h,
             child: buildGenerateButton(context),
           ),
         ],
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(OrientationHelper.isLandscape ? 20.w : 10.w),
+        padding: EdgeInsets.all(10.w),
         child: Center(
           child: Container(
             width: OrientationHelper.isLandscape ? 250.w : 288.w,
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.only(
                   left: OrientationHelper.isLandscape ? 20.w : 30.w,
                   right: OrientationHelper.isLandscape ? 0.w : 10.w,
-                  top: OrientationHelper.isLandscape ? 15.w : 20.w),
+                  top: OrientationHelper.isLandscape ? 5.w : 20.w),
               child: Column(
                 children: [
                   Expanded(
@@ -351,8 +351,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(width: OrientationHelper.isLandscape ? 5.w : 10.w),
                   SvgPicture.asset(
                     'assets/images/logo/credit-icon.svg',
-                    height: OrientationHelper.isLandscape ? 15.sp : 20.h,
-                    width: OrientationHelper.isLandscape ? 15.sp : 20.w,
+                    height: OrientationHelper.isLandscape ? 40.h : 20.h,
+                    width: OrientationHelper.isLandscape ? 40.w : 20.w,
                   ),
                   SizedBox(width: 5.w),
                   Text('${_textController.text.length}',
