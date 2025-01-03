@@ -44,7 +44,7 @@ class EnableEmailPermissionDialog extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 34.h : 24.h),
                 GradientTextButton(
                   text: 'enable_email_permission.understood'.tr(), //เข้าใจแล้ว
                   onPressed: () async {

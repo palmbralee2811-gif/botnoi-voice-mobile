@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class OfflineEmailPermissionDialog extends StatelessWidget {
       ),
       child: SizedBox(
         width: 288.w,
-        height: 320.h,
+        height: OrientationHelper.isLandscape ? 500.h : 320.h,
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16.w),
@@ -28,13 +29,13 @@ class OfflineEmailPermissionDialog extends StatelessWidget {
                 SvgPicture.asset(
                   'assets/images/icon/chat-text.svg',
                   width: 54.w,
-                  height: 54.h,
+                  height: OrientationHelper.isLandscape ? 84.h : 54.h,
                 ),
                 SizedBox(height: 16.h),
                 Text(
                   'offline_email_permission.unable_to_change_password'.tr(), //ไม่สามารถแก้ไขรหัสผ่านได้ เนื่องจาก การเข้าถึงอีเมลของคุณถูกปิด กรุณา เปิดการอนุญาตให้เข้าถึงอีเมลที่เมนู ความปลอดภัย เพื่อดำเนินการต่อ
                   style: GoogleFonts.prompt(
-                    fontSize: 16.sp,
+                    fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                     color: kDark,
                   ),

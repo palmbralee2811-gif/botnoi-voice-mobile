@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -31,36 +32,39 @@ class NotificationDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(32.r),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  icon,
-                  SizedBox(height: 16.h),
-                  Text(
-                    text,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+          child: SizedBox(
+            height: 500.h,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(32.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    icon,
+                    SizedBox(height: 16.h),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: OrientationHelper.isLandscape ? 14.sp : 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.h),
-                  Padding(
-                    padding: EdgeInsets.only(left: 30.w, right: 30.w),
-                    child: GradientTextButton(
-                      text: 'notification.close'.tr(), //ปิด
-                      onPressed: () {
-                        Navigator.of(context).pop(); // ปิด dialog
-                        (onPressed ??
-                            () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
-                      },
+                    SizedBox(height: OrientationHelper.isLandscape ? 106.h : 16.h),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30.w, right: 30.w),
+                      child: GradientTextButton(
+                        text: 'notification.close'.tr(), //ปิด
+                        onPressed: () {
+                          Navigator.of(context).pop(); // ปิด dialog
+                          (onPressed ??
+                              () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -76,7 +80,7 @@ class NotificationDialog {
       icon: Icon(
         Icons.error_outline_rounded,
         color: Colors.red,
-        size: 54.h,
+        size: OrientationHelper.isLandscape ? 84.h : 54.h,
       ),
       barrierDismissible: true,
       onPressed: onPressed,
@@ -90,7 +94,7 @@ class NotificationDialog {
       icon: Icon(
         Icons.error_outline_rounded,
         color: Colors.red,
-        size: 54.h,
+        size: OrientationHelper.isLandscape ? 84.h : 54.h,
       ),
       barrierDismissible: false,
       onPressed: onPressed,
@@ -103,7 +107,7 @@ class NotificationDialog {
       context: context,
       icon: SvgPicture.asset(
         'assets/images/icon/checkmark-modal.svg',
-        height: 54.h,
+        height: OrientationHelper.isLandscape ? 84.h : 54.h,
         width: 54.w,
       ),
       barrierDismissible: true,
@@ -117,7 +121,7 @@ class NotificationDialog {
       context: context,
       icon: SvgPicture.asset(
         'assets/images/icon/checkmark-modal.svg',
-        height: 54.h,
+        height: OrientationHelper.isLandscape ? 84.h : 54.h,
         width: 54.w,
       ),
       barrierDismissible: false,

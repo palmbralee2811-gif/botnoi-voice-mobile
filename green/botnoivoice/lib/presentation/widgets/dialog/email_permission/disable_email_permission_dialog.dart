@@ -77,7 +77,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                     onConfirm();
                   },
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 22.h : 12.h),
                 GradientCloseButton(
                   text: 'disable_email_permission.no'.tr(), //ไม่ต้องการ
                   onPressed: () {
