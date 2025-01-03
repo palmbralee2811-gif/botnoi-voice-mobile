@@ -243,7 +243,7 @@ Widget buildFilterNavbar(BuildContext context) {
         ),
       ),
       // Spacer เพื่อเลื่อนปุ่มขึ้น
-      SizedBox(height: OrientationHelper.isLandscape ? 30.h : 20.h), // เพิ่มระยะว่าง
+      SizedBox(height: OrientationHelper.isLandscape ? 25.h : 20.h), // เพิ่มระยะว่าง
       // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
       Padding(
         padding: EdgeInsets.symmetric(horizontal: OrientationHelper.isLandscape ? 40.w : 20.w),
@@ -260,7 +260,7 @@ Widget buildFilterNavbar(BuildContext context) {
           ),
         ),
       ),
-      SizedBox(height: OrientationHelper.isLandscape ? 30.h : 40.h), // เพิ่มระยะห่างด้านล่าง
+      SizedBox(height: OrientationHelper.isLandscape ? 25.h : 40.h), // เพิ่มระยะห่างด้านล่าง
     ],
   );
 }
