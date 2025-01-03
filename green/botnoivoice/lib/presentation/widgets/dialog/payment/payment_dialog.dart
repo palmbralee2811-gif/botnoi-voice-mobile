@@ -9,6 +9,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -60,7 +61,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                     Text(
                       'payment.buy_points'.tr(), //ซื้อพ้อยท์
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -68,7 +69,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: Icon(
                         Icons.close,
-                        size: 24.sp,
+                        size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                         color: Colors.black,
                       ),
                     ),
@@ -78,7 +79,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 Text(
                   "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
                   style: TextStyle(
-                    fontSize: 45.sp,
+                    fontSize: OrientationHelper.isLandscape ? 35.sp : 45.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),

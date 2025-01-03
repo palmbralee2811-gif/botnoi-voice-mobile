@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +19,7 @@ void showLanguageBottomSheet({
       return Container(
         color: Colors.transparent,
         width: 280.w,
+        height: OrientationHelper.isLandscape ? 280.h : 160.h,
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -28,7 +30,7 @@ void showLanguageBottomSheet({
                 Text(
                   'language'.tr(),
                   style: GoogleFonts.prompt(
-                    fontSize: 16.sp,
+                    fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -38,13 +40,13 @@ void showLanguageBottomSheet({
                   },
                   child: Icon(
                     Icons.close,
-                    size: 24.sp,
+                    size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                     color: Colors.black,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 15.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 15.h),
             InkWell(
               onTap: () async {
                 // On selecting Thai language
@@ -61,22 +63,24 @@ void showLanguageBottomSheet({
                 );
               },
               child: Container(
-                padding: EdgeInsets.only(left: 10.w),
-                height: 42.h,
+                padding: EdgeInsets.only(
+                    left: OrientationHelper.isLandscape ? 0.w : 10.w),
+                height: OrientationHelper.isLandscape ? 62.h : 42.h,
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Image.asset(
                       'assets/images/national_flag/thai.png',
-                      width: 23.w,
-                      height: 23.h,
+                      width: OrientationHelper.isLandscape ? 44.w : 23.w,
+                      height: OrientationHelper.isLandscape ? 44.h : 23.h,
                     ),
-                    SizedBox(width: 20.w),
+                    SizedBox(
+                        width: OrientationHelper.isLandscape ? 10.w : 20.w),
                     Text(
                       'ไทย',
                       style: GoogleFonts.prompt(
-                        fontSize: 14.sp,
+                        fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                         fontWeight: selectedLanguage == 'th'
                             ? FontWeight.w600
                             : FontWeight.w400,
@@ -86,6 +90,7 @@ void showLanguageBottomSheet({
                 ),
               ),
             ),
+            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 15.h),
             InkWell(
               onTap: () async {
                 // On selecting English language
@@ -102,22 +107,24 @@ void showLanguageBottomSheet({
                 );
               },
               child: Container(
-                padding: EdgeInsets.only(left: 10.w),
-                height: 42.h,
+                padding: EdgeInsets.only(
+                    left: OrientationHelper.isLandscape ? 0.w : 10.w),
+                height: OrientationHelper.isLandscape ? 62.h : 42.h,
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Image.asset(
                       'assets/images/national_flag/english.png',
-                      width: 23.w,
-                      height: 23.h,
+                      width: OrientationHelper.isLandscape ? 44.w : 23.w,
+                      height: OrientationHelper.isLandscape ? 44.h : 23.h,
                     ),
-                    SizedBox(width: 20.w),
+                    SizedBox(
+                        width: OrientationHelper.isLandscape ? 10.w : 20.w),
                     Text(
                       'English',
                       style: GoogleFonts.prompt(
-                        fontSize: 14.sp,
+                        fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                         fontWeight: selectedLanguage == 'en'
                             ? FontWeight.w600
                             : FontWeight.w400,

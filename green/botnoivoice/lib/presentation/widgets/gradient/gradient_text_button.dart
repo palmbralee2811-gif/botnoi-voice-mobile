@@ -14,7 +14,7 @@ class GradientTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: OrientationHelper.isLandscape ? 80.h : 50.h,
+      height: OrientationHelper.isLandscape ? 75.h : 50.h,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],

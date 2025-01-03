@@ -9,6 +9,7 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -189,7 +190,7 @@ class _AccountScreenState extends State<AccountScreen> {
         title: Text(
           'account.profile'.tr(), //ข้อมูลส่วนตัว
           style: GoogleFonts.prompt(
-              fontSize: 16.sp,
+              fontSize: OrientationHelper.isLandscape ? 12.sp : 12.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF323130)),
         ),
@@ -198,7 +199,7 @@ class _AccountScreenState extends State<AccountScreen> {
           icon: Icon(
             Icons.arrow_back_ios,
             color: const Color(0xFF323130),
-            size: 24.sp,
+            size: OrientationHelper.isLandscape ? 10.sp : 24.sp,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -210,7 +211,7 @@ class _AccountScreenState extends State<AccountScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
             Row(
               // จัดข้อความและไอคอนให้อยู่ในแนวเดียวกัน
               mainAxisAlignment: MainAxisAlignment.start,
@@ -218,25 +219,25 @@ class _AccountScreenState extends State<AccountScreen> {
                 Text(
                   'account.login_with'.tr(), //เข้าสู่ระบบด้วย
                   style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF323130),
                   ),
                 ),
-                SizedBox(width: 30.w), // ระยะห่างระหว่างข้อความและไอคอน
+                SizedBox(width: OrientationHelper.isLandscape ? 90.w : 30.w), // ระยะห่างระหว่างข้อความและไอคอน
                 SvgPicture.asset(
                   'assets/images/auth_screen/email-icon.svg',
-                  width: 20.w,
-                  height: 20.h,
+                  width: OrientationHelper.isLandscape ? 40.w : 20.w,
+                  height: OrientationHelper.isLandscape ? 40.h : 20.h,
                   colorFilter: isEmailLoggedIn
                       ? null
                       : const ColorFilter.mode(
                           kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
                 ),
-                SizedBox(width: 10.w),
+                SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
                 Container(
-                  width: 32.w,
-                  height: 32.h,
+                  width: OrientationHelper.isLandscape ? 42.w : 32.w,
+                  height: OrientationHelper.isLandscape ? 42.h : 32.h,
                   decoration: BoxDecoration(
                     color: isLineLoggedIn
                         ? kGreen
@@ -247,28 +248,28 @@ class _AccountScreenState extends State<AccountScreen> {
                     // ทำให้ไอคอนอยู่ตรงกลาง
                     child: SvgPicture.asset(
                       'assets/images/auth_screen/line-icon.svg',
-                      width: 24.w, // ปรับขนาดไอคอนให้เล็กลง
-                      height: 24.h, // ปรับขนาดไอคอนให้เล็กลง
+                      width: OrientationHelper.isLandscape ? 34.w : 24.w, // ปรับขนาดไอคอนให้เล็กลง
+                      height: OrientationHelper.isLandscape ? 34.h : 24.h, // ปรับขนาดไอคอนให้เล็กลง
                       fit: BoxFit
                           .contain, // ทำให้ไอคอนถูกย่อให้พอดีกับพื้นที่ที่กำหนด
                     ),
                   ),
                 ),
-                SizedBox(width: 10.w),
+                SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
                 SvgPicture.asset(
                   'assets/images/auth_screen/google-icon.svg',
-                  width: 32.w,
-                  height: 32.h,
+                  width: OrientationHelper.isLandscape ? 42.w : 32.w,
+                  height: OrientationHelper.isLandscape ? 42.h : 32.h,
                   colorFilter: isGoogleLoggedIn
                       ? null
                       : const ColorFilter.mode(
                           kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
                 ),
-                SizedBox(width: 10.w),
+                SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
                 SvgPicture.asset(
-                  'assets/images/auth_screen/apple-icon.svg',
-                  width: 32.w,
-                  height: 32.h,
+                  'assets/images/auth_screen/apple-icon.svg', 
+                  width: OrientationHelper.isLandscape ? 52.w : 32.w,
+                  height: OrientationHelper.isLandscape ? 52.h : 32.h,
                   colorFilter: isAppleLoggedIn
                       ? null
                       : const ColorFilter.mode(
@@ -345,11 +346,11 @@ class _AccountScreenState extends State<AccountScreen> {
                 await _signOut(context);
               },
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 6.h : 16.h),
             if (emailProvider.isLoggedIn &&
                 emailProvider.user?.providerData[0].providerId == 'password')
               const EmailDeleteAccountButton(),
-            SizedBox(height: 16.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 8.h : 16.h),
           ],
         ),
       ),
@@ -383,7 +384,7 @@ class UserInfoRow extends StatelessWidget {
           Text(
             title,
             style: GoogleFonts.prompt(
-              fontSize: 14.sp,
+              fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF323130),
             ),
@@ -397,7 +398,7 @@ class UserInfoRow extends StatelessWidget {
                   child: Text(
                     value,
                     style: GoogleFonts.prompt(
-                      fontSize: 14.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                       color: const Color(0xFFBBBFC4),
                     ),
                     overflow: isValueOverflow ? TextOverflow.ellipsis : null,
@@ -408,7 +409,7 @@ class UserInfoRow extends StatelessWidget {
                 if (icon != null) ...[
                   SizedBox(width: 8.w),
                   IconButton(
-                    icon: Icon(icon, size: 18.sp),
+                    icon: Icon(icon, size: OrientationHelper.isLandscape ? 12.sp : 18.sp),
                     onPressed: onIconPressed,
                   ),
                 ]

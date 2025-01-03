@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/screens/drawer/account/delete_account_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +18,7 @@ class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 50.h,
+      height: OrientationHelper.isLandscape ? 75.h : 50.h,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Colors.white, Colors.white],
@@ -38,7 +39,7 @@ class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
         child: Text("auth.delete_account_button".tr(), //"ลบบัญชี"
             style: GoogleFonts.prompt(
                 color: Colors.red,
-                fontSize: 16.sp,
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 16.sp,
                 fontWeight: FontWeight.w600)),
       ),
     );

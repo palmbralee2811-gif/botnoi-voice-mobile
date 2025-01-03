@@ -1,5 +1,6 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/confirm_delete_account_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -24,7 +25,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           'delete_account.delete_account'.tr(), //ลบบัญชี
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
+            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
             color: kDark,
           ),
           textAlign: TextAlign.center,
@@ -34,14 +35,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           icon: Icon(
             Icons.arrow_back_ios,
             color: kDark,
-            size: 24.sp,
+            size: OrientationHelper.isLandscape ? 10.sp : 24.sp,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: Padding(
+      body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +57,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ),
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 22.sp,
+                fontSize: OrientationHelper.isLandscape ? 16.sp : 22.sp,
                 decoration: TextDecoration.none,
               ),
               textAlign: TextAlign.left,
@@ -72,7 +73,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ),
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                fontSize: 14.sp,
+                fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                 decoration: TextDecoration.none,
               ),
               textAlign: TextAlign.left,
@@ -92,7 +93,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 14.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                       decoration: TextDecoration.none,
                     ),
                     textAlign: TextAlign.center,
@@ -107,7 +108,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 14.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                       decoration: TextDecoration.none,
                     ),
                     textAlign: TextAlign.center,
@@ -115,14 +116,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 8.h : 16.h),
             GradientTextButton(
               text: 'delete_account.cancel'.tr(), //ยกเลิก
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 8.h : 16.h),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -145,14 +146,14 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 child: Text(
                   'delete_account.confirm_account_deletion_button'.tr(),
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: OrientationHelper.isLandscape ? 8.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                     color: kDark,
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
           ],
         ),
       ),

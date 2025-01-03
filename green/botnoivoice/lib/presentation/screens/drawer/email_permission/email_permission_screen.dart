@@ -1,5 +1,6 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,13 +40,13 @@ class EmailPermissionScreen extends StatelessWidget {
           tr('email_permission.security'),
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
+            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
             color: kDark,
           ),
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: kDark, size: 24.sp),
+          icon: Icon(Icons.arrow_back_ios, color: kDark, size: OrientationHelper.isLandscape ? 10.sp : 24.sp),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -63,7 +64,7 @@ class EmailPermissionScreen extends StatelessWidget {
                     tr('email_permission.email_access'),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
+                      fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                       color: kDark,
                     ),
                   ),
@@ -75,7 +76,7 @@ class EmailPermissionScreen extends StatelessWidget {
                             : tr('email_permission.off'),
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
-                          fontSize: 14.sp,
+                          fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                           color: kDark,
                         ),
                       ),
@@ -85,10 +86,10 @@ class EmailPermissionScreen extends StatelessWidget {
                           _showDialog(context, userInfoProvider.isShowEmail);
                         },
                         child: Container(
-                          width: 50.w,
-                          height: 30.h,
+                          width: OrientationHelper.isLandscape ? 30.w : 50.w,
+                          height: OrientationHelper.isLandscape ? 45.h : 30.h,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.r),
+                            borderRadius: BorderRadius.circular( OrientationHelper.isLandscape ? 35.r : 20.r),
                             gradient: LinearGradient(
                               colors: userInfoProvider.isShowEmail
                                   ? [
@@ -110,8 +111,8 @@ class EmailPermissionScreen extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.all(2.w),
                               child: Container(
-                                width: 24.w,
-                                height: 24.h,
+                                width: OrientationHelper.isLandscape ? 10.w : 24.w,
+                                height: OrientationHelper.isLandscape ? 34.h : 24.h,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Colors.white,
@@ -130,7 +131,7 @@ class EmailPermissionScreen extends StatelessWidget {
                 tr('email_permission.email_access_description'),
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
-                  fontSize: 12.sp,
+                  fontSize: OrientationHelper.isLandscape ? 8.sp : 12.sp,
                   color: kDark,
                 ),
               ),

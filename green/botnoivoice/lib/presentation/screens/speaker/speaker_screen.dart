@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_filter_button.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
@@ -129,11 +130,11 @@ List<String> _getSpeechStyles(BuildContext context) {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: Align(
-          alignment: const FractionalOffset(0.4, 0.6),
+          alignment: const FractionalOffset(0.49, 0.6), //0.4
           child: SvgPicture.asset(
             'assets/images/logo/appbar-icon.svg',
-            width: 30.w,
-            height: 34.h,
+            width: OrientationHelper.isLandscape ? 50.w : 30.w,
+            height: OrientationHelper.isLandscape ? 54.h : 34.h,
           ),
         ),
       ),
@@ -149,7 +150,7 @@ Widget buildFilterNavbar(BuildContext context) {
     children: [
       // กรอบ Filter Navbar ที่ปรับขนาดความสูง
       Container(
-        height: 110.h, // ความสูงกรอบ Filter
+        height: OrientationHelper.isLandscape ? 150.h : 110.h, // ความสูงกรอบ Filter
         width: double.infinity,
         color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -167,7 +168,7 @@ Widget buildFilterNavbar(BuildContext context) {
                 Expanded(child: buildFavoriteButton()),
               ],
             ),
-            SizedBox(height: 10.h), // ระยะห่างระหว่างแถว
+            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 10.h), // ระยะห่างระหว่างแถว
             // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
             Row(
               children: [
@@ -242,12 +243,12 @@ Widget buildFilterNavbar(BuildContext context) {
         ),
       ),
       // Spacer เพื่อเลื่อนปุ่มขึ้น
-      SizedBox(height: 20.h), // เพิ่มระยะว่าง
+      SizedBox(height: OrientationHelper.isLandscape ? 35.h : 20.h), // เพิ่มระยะว่าง
       // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: SizedBox(
-          height: 50.h,
+          height: OrientationHelper.isLandscape ? 80.h : 50.h,
           child: GradientTextButton(
             text: 'confirm'.tr(), //ตกลง
             onPressed: () {
@@ -259,7 +260,7 @@ Widget buildFilterNavbar(BuildContext context) {
           ),
         ),
       ),
-      SizedBox(height: 40.h), // เพิ่มระยะห่างด้านล่าง
+      SizedBox(height: OrientationHelper.isLandscape ? 30.h : 40.h), // เพิ่มระยะห่างด้านล่าง
     ],
   );
 }
@@ -267,12 +268,12 @@ Widget buildFilterNavbar(BuildContext context) {
 // buildLanguageButton: แสดง Modal สำหรับเลือกภาษา พร้อมรายการตัวเลือกของภาษาที่รองรับ
   Widget buildLanguageButton(BuildContext context, StateSetter setState) {
     return Padding(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all( OrientationHelper.isLandscape ? 10.w : 20.w),
       child: Column(
         children: [
           Container(
             color: Colors.transparent,
-            width: 280.w,
+            width: OrientationHelper.isLandscape ? 300.w : 280.w,
             child: Column(
               children: [
                 Row(
@@ -281,7 +282,7 @@ Widget buildFilterNavbar(BuildContext context) {
                     Text(
                       'language'.tr(),
                       style: GoogleFonts.prompt(
-                        fontSize: 16.sp,
+                        fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -291,14 +292,14 @@ Widget buildFilterNavbar(BuildContext context) {
                       },
                       child: Icon(
                         Icons.close,
-                        size: 24.sp,
+                        size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                         color: Colors.black,
                       ),
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 15.h,
+                  height: OrientationHelper.isLandscape ? 10.h : 15.h,
                 ),
                 _buildLanguageFilter(
                     'Thai (Thailand) - ไทย',
