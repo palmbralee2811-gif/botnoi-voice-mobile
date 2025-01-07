@@ -37,7 +37,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   String selectedLanguage = 'thai'.tr();
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   bool isExpanded = false;
-  String selectedGender = 'ช/ญ';
+  String selectedGender = 'mw'.tr();
   String selectedGenderImage = 'assets/images/gender/all.svg';
   bool changeIcon = false;
   Set<String> selectedCategories = {};
@@ -335,7 +335,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       child: buildButtonContainer(
         context,
         selectedGenderImage,
-        gender == '' ? 'ช/ญ' : selectedGender,
+        selectedGender,
         changeIcon,
       ),
     );

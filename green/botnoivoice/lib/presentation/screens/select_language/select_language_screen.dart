@@ -59,7 +59,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 // ปุ่มสำหรับเลือกภาษา English
                 LanguageButton(
                   flagAsset: 'assets/images/national_flag/english.png',
-                  language: 'English (UK)',
+                  language: 'English',
                   width: OrientationHelper.isLandscape ? 300.w : 256.w,
                   height: OrientationHelper.isLandscape ? 70.h : 48.h,
                   fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
@@ -69,7 +69,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   flagHeight: OrientationHelper.isLandscape
                       ? 40.h
                       : 20.h, // กำหนดขนาดของธงตาม orientation
-                  isSelected: selectedLanguage == 'English (UK)',
+                  isSelected: selectedLanguage == 'English',
                   onTap: () async {
                     await LanguageHelper.saveSelectedLanguage('en');
                     context.setLocale(const Locale('en'));

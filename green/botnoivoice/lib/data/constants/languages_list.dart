@@ -1,13 +1,13 @@
 final languages = [
   {
     'thaiName': 'ไทย',
-    'englishName': 'Thai (Thailand)',
+    'englishName': 'Thai',
     'image': 'assets/images/national_flag/thai.png',
     'code': 'TH'
   },
   {
     'thaiName': 'อังกฤษ',
-    'englishName': 'English (UK)',
+    'englishName': 'English',
     'image': 'assets/images/national_flag/english.png',
     'code': 'EN'
   },
@@ -43,7 +43,7 @@ final languages = [
   },
   {
     'thaiName': 'จีน',
-    'englishName': 'Chinese (Simplified)',
+    'englishName': 'Chinese',
     'image': 'assets/images/national_flag/chinese.png',
     'code': 'ZH'
   },
@@ -124,6 +124,12 @@ final languages = [
     'englishName': 'Italian',
     'image': 'assets/images/national_flag/italian.png',
     'code': 'IT'
+  },
+  {
+    'thaiName': 'ตุรกี',
+    'englishName': 'Turkish',
+    'image': 'assets/images/national_flag/turkey.png',
+    'code': 'TR'
   },
   // ... Add other languages here
 ];
