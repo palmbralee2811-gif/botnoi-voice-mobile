@@ -191,9 +191,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             context,
             title: selectedStyles.isEmpty
                 ? 'style'.tr()
-                : 'style_plural'.tr(namedArgs: {
-                    'count': selectedStyles.length.toString()
-                  }),
+                : 'style_plural'
+                    .tr(namedArgs: {'count': selectedStyles.length.toString()}),
             items: _getVoiceStyles(context),
             selectedItems: selectedStyles,
             onConfirm: (newSelected) {
@@ -214,9 +213,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             context,
             title: selectedCategories.isEmpty
                 ? 'category'.tr()
-                : 'category_plural'.tr(namedArgs: {
-                    'count': selectedCategories.length.toString()
-                  }),
+                : 'category_plural'.tr(
+                    namedArgs: {'count': selectedCategories.length.toString()}),
             items: _getSpeechStyles(context),
             selectedItems: selectedCategories,
             onConfirm: (newSelected) {
@@ -320,15 +318,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               builder: (BuildContext context, StateSetter setModalState) {
                 return SizedBox(
                   height: OrientationHelper.isLandscape ? 440.h : 220.h,
-                  child: Padding(
-                    padding:
-                        EdgeInsets.all(OrientationHelper.isLandscape ? 20 : 25),
-                    child: Column(
-                      children: [
-                        buildGenderButton(context),
-                      ],
-                    ),
-                  ),
+                  child: SingleChildScrollView(
+                      child: buildGenderButton(context, setModalState)),
                 );
               },
             );
@@ -348,8 +339,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
-  Widget buildButtonContainer(BuildContext context, String imagePath,
-      String text, bool isExpanded) {
+  Widget buildButtonContainer(
+      BuildContext context, String imagePath, String text, bool isExpanded) {
     return Container(
       width: OrientationHelper.isLandscape ? 90.w : 100.w,
       height: OrientationHelper.isLandscape ? 55.h : 35.h,
@@ -361,11 +352,17 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            imagePath,
-            width: OrientationHelper.isLandscape ? 18.w : 28.w,
-            height: OrientationHelper.isLandscape ? 48.h : 28.h,
-          ),
+          imagePath.endsWith('.svg')
+              ? SvgPicture.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 18.w : 28.w,
+                  height: OrientationHelper.isLandscape ? 48.h : 28.h,
+                )
+              : Image.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 18.w : 28.w,
+                  height: OrientationHelper.isLandscape ? 48.h : 28.h,
+                ),
           SizedBox(width: OrientationHelper.isLandscape ? 5.w : 6.w),
           Flexible(
             child: FittedBox(
@@ -399,7 +396,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             width: OrientationHelper.isLandscape ? 140.w : 280.w,
             child: Column(
               children: [
-                buildModalHeader(context, 'language'.tr(), setState),
+                buildModalHeader(context, 'language'.tr()),
                 SizedBox(height: OrientationHelper.isLandscape ? 10.h : 15.h),
                 ...buildLanguageFilters(context, setState),
               ],
@@ -414,15 +411,15 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       BuildContext context, StateSetter setState) {
     final languages = [
       {
-        'thaiName': 'ไทย', 
-        'englishName':'Thai (Thailand)',
-        'image': 'assets/images/national_flag/thai.png', 
+        'thaiName': 'ไทย',
+        'englishName': 'Thai (Thailand)',
+        'image': 'assets/images/national_flag/thai.png',
         'code': 'TH'
       },
       {
-        'thaiName': 'อังกฤษ', 
-        'englishName':'English (UK)',
-        'image': 'assets/images/national_flag/english.png', 
+        'thaiName': 'อังกฤษ',
+        'englishName': 'English (UK)',
+        'image': 'assets/images/national_flag/english.png',
         'code': 'EN'
       },
       // ... Add other languages here
@@ -440,49 +437,68 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     }).toList();
   }
 
-  Widget buildGenderButton(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      width: 280.w,
+  Widget buildGenderButton(BuildContext context, StateSetter setState) {
+    return Padding(
+      padding: EdgeInsets.all(OrientationHelper.isLandscape ? 10.w : 20.w),
       child: Column(
         children: [
-          buildModalHeader(context, 'gender'.tr(), null),
-          SizedBox(height: 15.h),
-          _buildGenderFilter('ชาย/หญิง', 'assets/images/gender/all.svg', '', context),
-          _buildGenderFilter('หญิง', 'assets/images/gender/woman.svg', 'ผู้หญิง', context),
-          _buildGenderFilter('ชาย', 'assets/images/gender/man.svg', 'ผู้ชาย', context),
+          Container(
+            color: Colors.transparent,
+            width: OrientationHelper.isLandscape ? 140.w : 280.w,
+            child: Column(
+              children: [
+                buildModalHeader(context, 'gender'.tr()),
+                SizedBox(height: OrientationHelper.isLandscape ? 10.h : 15.h),
+                ...buildGenderFilters(context, setState),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget buildModalHeader(BuildContext context, String title, StateSetter? setState) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: GoogleFonts.prompt(
-            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.close,
-            size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-            color: Colors.black,
-          ),
-        ),
-      ],
-    );
+  List<Widget> buildGenderFilters(BuildContext context, StateSetter setState) {
+    final genders = [
+      {
+        'thaiName': 'ชาย/หญิง',
+        'englishName': 'M/W',
+        'image': 'assets/images/gender/all.svg',
+        'code': ''
+      },
+      {
+        'thaiName': 'หญิง',
+        'englishName': 'Woman',
+        'image': 'assets/images/gender/woman.svg',
+        'code': 'ผู้หญิง'
+      },
+      {
+        'thaiName': 'ชาย',
+        'englishName': 'Man',
+        'image': 'assets/images/gender/man.svg',
+        'code': 'ผู้ชาย'
+      },
+    ];
+
+    return genders.map((gender) {
+      return _buildGenderFilter(
+        gender['thaiName']!,
+        gender['englishName']!,
+        gender['image']!,
+        gender['code']!,
+        context,
+        setState,
+      );
+    }).toList();
   }
 
-Widget _buildLanguageFilter(String thaiName, String englishName, String imagePath, String lang,
-      BuildContext context, StateSetter setState) {
+  Widget _buildLanguageFilter(
+      String thaiName,
+      String englishName,
+      String imagePath,
+      String lang,
+      BuildContext context,
+      StateSetter setState) {
     String displayText = thaiName;
     String languageCode = Localizations.localeOf(context).languageCode;
 
@@ -505,9 +521,21 @@ Widget _buildLanguageFilter(String thaiName, String englishName, String imagePat
     );
   }
 
-  Widget _buildGenderFilter(String text, String imagePath, String gen,
-      BuildContext context) {
-    String displayText = _getGenderDisplayText(text, context);
+  Widget _buildGenderFilter(
+      String thaiName,
+      String englishName,
+      String imagePath,
+      String gen,
+      BuildContext context,
+      StateSetter setState) {
+    String displayText = thaiName;
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    if (languageCode == 'th') {
+      displayText = thaiName;
+    } else if (languageCode == 'en') {
+      displayText = englishName;
+    }
 
     return InkWell(
       onTap: () {
@@ -522,38 +550,28 @@ Widget _buildLanguageFilter(String thaiName, String englishName, String imagePat
     );
   }
 
-  String _getGenderDisplayText(String text, BuildContext context) {
-    if (text == 'ชาย/หญิง' || text == 'Man/Woman') {
-      return Localizations.localeOf(context).languageCode == 'th'
-          ? 'ชาย/หญิง'
-          : 'Man/Woman';
-    } else if (text == 'ชาย' || text == 'Man') {
-      return Localizations.localeOf(context).languageCode == 'th'
-          ? 'ชาย'
-          : 'Man';
-    } else if (text == 'หญิง' || text == 'Woman') {
-      return Localizations.localeOf(context).languageCode == 'th'
-          ? 'หญิง'
-          : 'Woman';
-    } else {
-      return text;
-    }
-  }
-
-  Widget buildFilterOption(BuildContext context, String imagePath, String text) {
+  Widget buildFilterOption(
+      BuildContext context, String imagePath, String text) {
     return Container(
-      padding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 0.w : 10.w),
+      padding:
+          EdgeInsets.only(left: OrientationHelper.isLandscape ? 0.w : 10.w),
       height: OrientationHelper.isLandscape ? 82.h : 42.h,
       width: 320.w,
       color: const Color(0xFFFFFFFF),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Image.asset(
-            imagePath,
-            width: OrientationHelper.isLandscape ? 13.w : 23.w,
-            height: OrientationHelper.isLandscape ? 43.h : 23.h,
-          ),
+          imagePath.endsWith('.svg')
+              ? SvgPicture.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 13.w : 23.w,
+                  height: OrientationHelper.isLandscape ? 43.h : 23.h,
+                )
+              : Image.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 13.w : 23.w,
+                  height: OrientationHelper.isLandscape ? 43.h : 23.h,
+                ),
           SizedBox(width: OrientationHelper.isLandscape ? 10.w : 20.w),
           Text(
             text,
@@ -566,6 +584,31 @@ Widget _buildLanguageFilter(String thaiName, String englishName, String imagePat
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildModalHeader(BuildContext context, String title) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.prompt(
+            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.close,
+            size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+            color: Colors.black,
+          ),
+        ),
+      ],
     );
   }
 
@@ -678,8 +721,7 @@ Widget _buildLanguageFilter(String thaiName, String englishName, String imagePat
 
               final speakerProvider =
                   Provider.of<SpeakerRepositoryImpl>(context, listen: false);
-              speakerProvider.setSpeaker(
-                  speakerItem);
+              speakerProvider.setSpeaker(speakerItem);
 
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setLanguage(speakerItem.language.toLowerCase());
