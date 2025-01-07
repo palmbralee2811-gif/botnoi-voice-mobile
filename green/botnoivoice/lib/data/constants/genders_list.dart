@@ -1,6 +1,6 @@
 final genders = [
   {
-    'thaiName': 'ชาย/หญิง',
+    'thaiName': 'ช/ญ',
     'englishName': 'M/W',
     'image': 'assets/images/gender/all.svg',
     'code': ''
