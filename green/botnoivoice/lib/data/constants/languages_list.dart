@@ -1,0 +1,129 @@
+final languages = [
+  {
+    'thaiName': 'ไทย',
+    'englishName': 'Thai (Thailand)',
+    'image': 'assets/images/national_flag/thai.png',
+    'code': 'TH'
+  },
+  {
+    'thaiName': 'อังกฤษ',
+    'englishName': 'English (UK)',
+    'image': 'assets/images/national_flag/english.png',
+    'code': 'EN'
+  },
+  {
+    'thaiName': 'อินโดนีเซีย',
+    'englishName': 'Indonesia',
+    'image': 'assets/images/national_flag/indonesia.png',
+    'code': 'ID'
+  },
+  {
+    'thaiName': 'ญี่ปุ่น',
+    'englishName': 'Japanese',
+    'image': 'assets/images/national_flag/japanese.png',
+    'code': 'JA'
+  },
+  {
+    'thaiName': 'ลาว',
+    'englishName': 'Laos',
+    'image': 'assets/images/national_flag/laos.png',
+    'code': 'LO'
+  },
+  {
+    'thaiName': 'เมียนมาร์',
+    'englishName': 'Burmese',
+    'image': 'assets/images/national_flag/burmese.png',
+    'code': 'MY'
+  },
+  {
+    'thaiName': 'เวียดนาม',
+    'englishName': 'Vietnamese',
+    'image': 'assets/images/national_flag/vietnamese.png',
+    'code': 'VI'
+  },
+  {
+    'thaiName': 'จีน',
+    'englishName': 'Chinese (Simplified)',
+    'image': 'assets/images/national_flag/chinese.png',
+    'code': 'ZH'
+  },
+  {
+    'thaiName': 'กัมพูชา',
+    'englishName': 'Cambodia',
+    'image': 'assets/images/national_flag/cambodia.png',
+    'code': 'KM'
+  },
+  {
+    'thaiName': 'ฟิลิปปินส์',
+    'englishName': 'Filipino',
+    'image': 'assets/images/national_flag/filipino.png',
+    'code': 'FIL'
+  },
+  {
+    'thaiName': 'อาหรับ',
+    'englishName': 'Arabic',
+    'image': 'assets/images/national_flag/arabic.png',
+    'code': 'AR'
+  },
+  {
+    'thaiName': 'เยอรมัน',
+    'englishName': 'German',
+    'image': 'assets/images/national_flag/german.png',
+    'code': 'DE'
+  },
+  {
+    'thaiName': 'สเปน',
+    'englishName': 'Spanish',
+    'image': 'assets/images/national_flag/spanish.png',
+    'code': 'ES'
+  },
+  {
+    'thaiName': 'ฝรั่งเศส',
+    'englishName': 'French',
+    'image': 'assets/images/national_flag/french.png',
+    'code': 'FR'
+  },
+  {
+    'thaiName': 'ดัตช์',
+    'englishName': 'Dutch',
+    'image': 'assets/images/national_flag/dutch.png',
+    'code': 'NL'
+  },
+  {
+    'thaiName': 'เกาหลี',
+    'englishName': 'Korea',
+    'image': 'assets/images/national_flag/korea.png',
+    'code': 'KO'
+  },
+  {
+    'thaiName': 'มาเลเซีย',
+    'englishName': 'Malaysia',
+    'image': 'assets/images/national_flag/malaysia.png',
+    'code': 'MS'
+  },
+  {
+    'thaiName': 'โปรตุเกส',
+    'englishName': 'Portuguese',
+    'image': 'assets/images/national_flag/portuguese.png',
+    'code': 'PT-BR'
+  },
+  {
+    'thaiName': 'รัสเซีย',
+    'englishName': 'Russia',
+    'image': 'assets/images/national_flag/russia.png',
+    'code': 'RU'
+  },
+  {
+    'thaiName': 'ฮินดี',
+    'englishName': 'Hindi',
+    'image': 'assets/images/national_flag/hindi.png',
+    'code': 'HI'
+  },
+  {
+    'thaiName': 'อิตาลี',
+    'englishName': 'Italian',
+    'image': 'assets/images/national_flag/italian.png',
+    'code': 'IT'
+  },
+  // ... Add other languages here
+];

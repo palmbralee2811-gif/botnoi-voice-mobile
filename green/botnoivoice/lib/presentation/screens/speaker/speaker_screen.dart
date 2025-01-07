@@ -1,4 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/data/constants/genders_list.dart';
+import 'package:botnoivoice/data/constants/languages_list.dart';
 import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
@@ -409,22 +411,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   List<Widget> buildLanguageFilters(
       BuildContext context, StateSetter setState) {
-    final languages = [
-      {
-        'thaiName': 'ไทย',
-        'englishName': 'Thai (Thailand)',
-        'image': 'assets/images/national_flag/thai.png',
-        'code': 'TH'
-      },
-      {
-        'thaiName': 'อังกฤษ',
-        'englishName': 'English (UK)',
-        'image': 'assets/images/national_flag/english.png',
-        'code': 'EN'
-      },
-      // ... Add other languages here
-    ];
-
     return languages.map((lang) {
       return _buildLanguageFilter(
         lang['thaiName']!,
@@ -459,27 +445,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   List<Widget> buildGenderFilters(BuildContext context, StateSetter setState) {
-    final genders = [
-      {
-        'thaiName': 'ชาย/หญิง',
-        'englishName': 'M/W',
-        'image': 'assets/images/gender/all.svg',
-        'code': ''
-      },
-      {
-        'thaiName': 'หญิง',
-        'englishName': 'Woman',
-        'image': 'assets/images/gender/woman.svg',
-        'code': 'ผู้หญิง'
-      },
-      {
-        'thaiName': 'ชาย',
-        'englishName': 'Man',
-        'image': 'assets/images/gender/man.svg',
-        'code': 'ผู้ชาย'
-      },
-    ];
-
     return genders.map((gender) {
       return _buildGenderFilter(
         gender['thaiName']!,
@@ -577,7 +542,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             text,
             style: GoogleFonts.prompt(
               fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
-              fontWeight: selectedLanguage == text
+              fontWeight: (selectedLanguage == text || selectedGender == text)
                   ? FontWeight.w600
                   : FontWeight.normal,
             ),
