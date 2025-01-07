@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -101,9 +100,9 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
         children: <Widget>[
           ListTile(
             contentPadding: EdgeInsets.only(
-              left: OrientationHelper.isLandscape ? 20.w : 30.w, 
-              top: 15.w, 
-              right: 30.w),
+                left: OrientationHelper.isLandscape ? 20.w : 30.w,
+                top: 15.w,
+                right: 30.w),
             title: Column(
               children: [
                 Row(
@@ -148,7 +147,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                           Text(
                             displayName,
                             style: GoogleFonts.prompt(
-                              fontSize: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+                              fontSize:
+                                  OrientationHelper.isLandscape ? 16.sp : 24.sp,
                               fontWeight: FontWeight.w600,
                               color: const Color(0xFF323130),
                             ),
@@ -160,7 +160,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                           Text(
                             'UID: $uid',
                             style: GoogleFonts.prompt(
-                              fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
+                              fontSize:
+                                  OrientationHelper.isLandscape ? 8.sp : 14.sp,
                               fontWeight: FontWeight.w400,
                               color: const Color(0xFF323130),
                             ),
@@ -177,8 +178,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           ),
           ListTile(
             contentPadding: EdgeInsets.only(
-            left: OrientationHelper.isLandscape ? 20.w : 30.w, 
-            top: OrientationHelper.isLandscape ? 10.h : 30.h),
+                left: OrientationHelper.isLandscape ? 20.w : 30.w,
+                top: OrientationHelper.isLandscape ? 10.h : 30.h),
             leading: Icon(
               Icons.account_circle_outlined,
               size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
@@ -201,33 +202,35 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               );
             },
           ),
-          // if (Platform.isIOS) 
+          // if (Platform.isIOS)
           SizedBox(height: 10.h),
           // if (Platform.isIOS)
-            ListTile(
-              contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
-              leading: Icon(
-                Icons.credit_card,
-                size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 20.w : 30.w),
+            leading: Icon(
+              Icons.credit_card,
+              size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
+              style: GoogleFonts.prompt(
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
                 color: const Color(0xFF323130),
               ),
-              title: Text(
-                'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
-                style: GoogleFonts.prompt(
-                  fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () {
-                showPaymentDialog(context);
-              },
             ),
+            onTap: () {
+              showPaymentDialog(context);
+            },
+          ),
           SizedBox(height: 10.h),
           if (emailProvider.isLoggedIn &&
               emailProvider.user?.providerData[0].providerId == 'password')
             ListTile(
-              contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
+              contentPadding: EdgeInsets.only(
+                  left: OrientationHelper.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.security_outlined,
                 size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
@@ -267,7 +270,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               );
             },
             child: ListTile(
-              contentPadding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.w : 30.w),
+              contentPadding: EdgeInsets.only(
+                  left: OrientationHelper.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.language,
                 size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
