@@ -21,8 +21,7 @@ Future<void> configureRevenueCat(BuildContext context) async {
       ); 
     } else if (Platform.isAndroid) {
       await Purchases.configure(
-        //TODO: Get the public key from RevenueCat
-        PurchasesConfiguration("")
+        PurchasesConfiguration("goog_sNwjgbXxjhOpDHOUHrgBMmYuDID")
           ..appUserID = userId,
       );
     }
