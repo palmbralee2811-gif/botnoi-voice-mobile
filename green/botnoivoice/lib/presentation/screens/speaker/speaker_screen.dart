@@ -413,14 +413,25 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   List<Widget> buildLanguageFilters(
       BuildContext context, StateSetter setState) {
     final languages = [
-      {'text': 'Thai (Thailand) - ไทย', 'image': 'assets/images/national_flag/thai.png', 'code': 'TH'},
-      {'text': 'English (UK) - อังกฤษ', 'image': 'assets/images/national_flag/english.png', 'code': 'EN'},
+      {
+        'thaiName': 'ไทย', 
+        'englishName':'Thai (Thailand)',
+        'image': 'assets/images/national_flag/thai.png', 
+        'code': 'TH'
+      },
+      {
+        'thaiName': 'อังกฤษ', 
+        'englishName':'English (UK)',
+        'image': 'assets/images/national_flag/english.png', 
+        'code': 'EN'
+      },
       // ... Add other languages here
     ];
 
     return languages.map((lang) {
       return _buildLanguageFilter(
-        lang['text']!,
+        lang['thaiName']!,
+        lang['englishName']!,
         lang['image']!,
         lang['code']!,
         context,
@@ -470,15 +481,15 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
-  Widget _buildLanguageFilter(String text, String imagePath, String lang,
+Widget _buildLanguageFilter(String thaiName, String englishName, String imagePath, String lang,
       BuildContext context, StateSetter setState) {
-    String displayText = text;
+    String displayText = thaiName;
     String languageCode = Localizations.localeOf(context).languageCode;
 
     if (languageCode == 'th') {
-      displayText = _getThaiLanguageName(lang);
+      displayText = thaiName;
     } else if (languageCode == 'en') {
-      displayText = _getEnglishLanguageName(lang);
+      displayText = englishName;
     }
 
     return InkWell(
@@ -492,30 +503,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       },
       child: buildFilterOption(context, imagePath, displayText),
     );
-  }
-
-  String _getThaiLanguageName(String lang) {
-    switch (lang) {
-      case 'TH':
-        return 'ไทย';
-      case 'EN':
-        return 'อังกฤษ';
-      // ... Add other cases here
-      default:
-        return lang;
-    }
-  }
-
-  String _getEnglishLanguageName(String lang) {
-    switch (lang) {
-      case 'TH':
-        return 'Thai (Thailand)';
-      case 'EN':
-        return 'English (UK)';
-      // ... Add other cases here
-      default:
-        return lang;
-    }
   }
 
   Widget _buildGenderFilter(String text, String imagePath, String gen,
