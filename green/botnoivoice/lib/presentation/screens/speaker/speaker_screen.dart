@@ -666,7 +666,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     return filteredSpeakers;
   }
 
-  // TODO: แก้ไขโค้ดให้รองรับโมเดลใหม่ Frank
   Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -705,9 +704,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                   .setNationalFlagPath(selectedLanguageImage);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
-
-              // Example usage of NetworkImageWidget
-              NetworkImageWidget(imageUrl: speakerItem.squareImage);
 
               setState(() {
                 if (selectedIndex.contains(index)) {
