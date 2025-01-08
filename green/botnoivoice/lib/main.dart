@@ -1,4 +1,5 @@
 import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
+import 'package:botnoivoice/data/models/speaker_models_new.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
@@ -29,6 +30,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SpeakerModel.loadSpeakers();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LineSDK.instance.setup("1656375389").then((_) {
     print("LineSDK Prepared");

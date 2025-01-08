@@ -100,3 +100,4 @@ flutter:
     - assets/images/splash_screen/
     - assets/square_image/
     - assets/langs/       #assets สำหรับเปลี่ยนภาษาแอป
+    - assets/data/response.json     #asset สำหรับเก็บข้อมูลจาก json ที่ได้จาก API

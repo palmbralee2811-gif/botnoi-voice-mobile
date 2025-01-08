@@ -1,5 +1,7 @@
-import 'package:botnoivoice/data/models/speaker_model.dart';
+// import 'package:botnoivoice/data/functions/loading_json_to_list.dart';
+// import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
+import 'package:botnoivoice/data/models/speaker_models_new.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -15,6 +17,7 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String? _nationalFlagName;
   String? _nationalFlagPath;
   String? _language;
+  bool _isJsonLoaded = false; // ตัวแปรเก็บสถานะการโหลด JSON
 
   String? get speakerId => _speakerId;
   String? get speakerName => _speakerName;
@@ -23,6 +26,7 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String? get nationalFlagName => _nationalFlagName;
   String? get nationalFlagPath => _nationalFlagPath;
   String? get language => _language;
+  bool get isJsonLoaded => _isJsonLoaded;
 
   void setSpeakerId(String id) {
     _speakerId = id;
@@ -89,5 +93,19 @@ class SpeakerRepositoryImpl with ChangeNotifier {
 
     String locale = Localizations.localeOf(context).languageCode;
     return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
+  }
+
+  // Function to load JSON data and update the loading state
+  Future<void> loadJsonData() async {
+    try {
+      await SpeakerModel.loadSpeakers();
+      _isJsonLoaded = true;
+      notifyListeners(); // Notify listeners that JSON is loaded
+      logger.d('JSON file loaded successfully');
+    } catch (e) {
+      _isJsonLoaded = false;
+      notifyListeners(); // Notify listeners that JSON loading failed
+      logger.e('Error loading JSON file: $e');
+    }
   }
 }

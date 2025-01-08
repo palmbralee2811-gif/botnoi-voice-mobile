@@ -62,7 +62,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
               }
             },
             child: Padding(
-              padding: EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
+              padding:
+                  EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
               child: GradientIcon(
                 icon: isPlaying
                     ? Icons.pause_circle_outline
@@ -86,15 +87,24 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.all( OrientationHelper.isLandscape ? 2.w : 8.w),
+                padding:
+                    EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
                 child: Row(
                   children: [
+                    // CircleAvatar(
+                    //   radius: OrientationHelper.isLandscape ? 22.r : 14.r,
+                    //   backgroundImage: speakerProvider.speakerImagePath != null
+                    //       ? AssetImage(speakerProvider.speakerImagePath!)
+                    //       : const AssetImage(
+                    //           "assets/square_image/square_ava.webp"),
+                    // ),
                     CircleAvatar(
                       radius: OrientationHelper.isLandscape ? 22.r : 14.r,
                       backgroundImage: speakerProvider.speakerImagePath != null
-                          ? AssetImage(speakerProvider.speakerImagePath!)
+                          ? NetworkImage(speakerProvider.speakerImagePath!)
                           : const AssetImage(
-                              "assets/square_image/square_ava.webp"),
+                                  "assets/square_image/square_ava.webp")
+                              as ImageProvider,
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
@@ -123,12 +133,12 @@ class _AppBarBottomState extends State<AppBarBottom> {
                           : const AssetImage(
                               "assets/images/national_flag/thai.png"),
                     ),
-                    SizedBox(width:  OrientationHelper.isLandscape ? 4.w : 8.w),
+                    SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
                     Text(
                       speakerProvider.nationalFlagName ??
                           'appbar_bottom.thai'.tr(),
                       style: GoogleFonts.prompt(
-                        fontSize:  OrientationHelper.isLandscape ? 7.sp : 10.sp,
+                        fontSize: OrientationHelper.isLandscape ? 7.sp : 10.sp,
                         color: const Color(0xFF323130),
                       ),
                     ),
@@ -141,7 +151,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         color: const Color(0xFF323130),
                       ),
                     ),
-                    SizedBox(width: OrientationHelper.isLandscape ? 10.w : 16.w),
+                    SizedBox(
+                        width: OrientationHelper.isLandscape ? 10.w : 16.w),
                   ],
                 ),
               ),

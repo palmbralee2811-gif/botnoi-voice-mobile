@@ -1,13 +1,15 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/constants/genders_list.dart';
 import 'package:botnoivoice/data/constants/languages_list.dart';
-import 'package:botnoivoice/data/models/speaker_model.dart';
+// import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
+import 'package:botnoivoice/data/models/speaker_models_new.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_filter_button.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
+import 'package:botnoivoice/presentation/widgets/image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -664,6 +666,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     return filteredSpeakers;
   }
 
+  // TODO: แก้ไขโค้ดให้รองรับโมเดลใหม่ Frank
   Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -703,6 +706,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
 
+              // Example usage of NetworkImageWidget
+              NetworkImageWidget(imageUrl: speakerItem.squareImage);
+
               setState(() {
                 if (selectedIndex.contains(index)) {
                   if (audioPlayer.state == PlayerState.playing) {
@@ -736,8 +742,16 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                             ),
                     ),
                     borderRadius: BorderRadius.circular(8.r),
+                    // image: DecorationImage(
+                    //   image: AssetImage(
+                    //     speakerItem.squareImage,
+                    //   ),
+                    //   onError: (exception, stackTrace) => const AssetImage(
+                    //       'assets/images/default-profile-picture.jpg'),
+                    //   fit: BoxFit.cover,
+                    // ),
                     image: DecorationImage(
-                      image: AssetImage(
+                      image: NetworkImage(
                         speakerItem.squareImage,
                       ),
                       onError: (exception, stackTrace) => const AssetImage(
