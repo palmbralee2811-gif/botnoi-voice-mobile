@@ -21,7 +21,7 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
   State<AppBarTop> createState() => _AppBarTopState();
 
   @override
-  Size get preferredSize => Size.fromHeight(135.h);
+  Size get preferredSize => Size.fromHeight(OrientationHelper.isLandscape ? 135.h : 100.h);
 }
 
 class _AppBarTopState extends State<AppBarTop> {
@@ -37,7 +37,7 @@ class _AppBarTopState extends State<AppBarTop> {
       elevation: 4.0,
       leading: SizedBox(
         width: double.infinity,
-        height: OrientationHelper.isLandscape ? 150.h : 140.h,
+        height: OrientationHelper.isLandscape ? 150.h : 58.h,
         child: IconButton(
           icon: Icon(
             Icons.menu_rounded,
@@ -116,7 +116,7 @@ class _AppBarTopState extends State<AppBarTop> {
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(30.h),
         child: const AppBarBottom(),
-      ),
+        ),
     );
   }
 }
