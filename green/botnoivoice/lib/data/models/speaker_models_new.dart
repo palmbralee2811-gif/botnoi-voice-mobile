@@ -10,7 +10,7 @@ class SpeakerModel {
     try {
       // โหลด JSON จาก assets
       String jsonString =
-          await rootBundle.loadString('assets/data/response.json');
+          await rootBundle.loadString('assets/data/local_image_data.json');
 
       // แปลง JSON String -> Map
       Map<String, dynamic> jsonMap = json.decode(jsonString);

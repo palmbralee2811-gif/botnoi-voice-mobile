@@ -1,35 +1,38 @@
 import re
+import json
 
-# Load the existing Dart code
-dart_file_path = '/mnt/data/SpeakerModel_camelCase.dart'
-with open(dart_file_path, 'r', encoding='utf-8') as dart_file:
-    dart_code_content = dart_file.read()
+# โหลดโค้ด JSON ที่มีอยู่
+json_file_path = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/response.json'
+with open(json_file_path, 'r', encoding='utf-8') as json_file:
+    json_code_content = json_file.read()
+    json_data = json.loads(json_code_content)
 
-# Update the regex function to handle cases with spaces or special characters in the URL paths
+# สร้างพจนานุกรมเพื่อจับคู่ URL ของภาพกับ speaker ID
+url_to_speaker_id = {speaker['square_image']: speaker['speaker_id'] for speaker in json_data['data']}
+
+# อัปเดตฟังก์ชัน regex เพื่อจัดการกับกรณีที่มีช่องว่างหรืออักขระพิเศษในเส้นทาง URL
 def update_square_image_path_extended(match):
     """
-    This function updates squareImage URLs by generating the corresponding local assets path,
-    handling spaces and other special characters in the URLs.
+    ฟังก์ชันนี้จะอัปเดต URL ของ squareImage โดยการสร้างเส้นทางของไฟล์ในเครื่องที่สอดคล้องกัน,
+    โดยจัดการกับช่องว่างและอักขระพิเศษอื่น ๆ ใน URL
     """
     url = match.group(1)
-    # Extract the image name from the URL, handling spaces or special characters
-    image_name_match = re.search(r'square_([\w\s\(\)-]+)\.webp', url)
-    if image_name_match:
-        # Clean up the extracted name by replacing spaces with underscores to match local asset naming convention
-        image_name = image_name_match.group(1).replace(" ", "_")
-        return f"squareImage: 'assets/square_image/square_{image_name}.webp',"
-    return match.group(0)  # Return the original if no match is found
+    speaker_id = url_to_speaker_id.get(url)
+    if speaker_id:
+        return f'"assets/square_image/{speaker_id}.webp"'
+    return match.group(0)  # คืนค่าเดิมถ้าไม่พบการจับคู่
 
-# Apply the updated regex substitution to handle extended cases with spaces and special characters
-updated_dart_code_content_extended = re.sub(
-    r'squareImage:\s*\'(https?://[^,]+)\',',
-    update_square_image_path_extended,
-    dart_code_content
+# ใช้การแทนที่ regex ที่อัปเดตเพื่อจัดการกับกรณีที่มีช่องว่างและอักขระพิเศษ
+updated_json_code_content_extended = re.sub(
+    r'"square_image":\s*"(https?://[^,]+square_[\w\s\(\)-\u0E00-\u0E7F]+\.webp)"',
+    lambda match: f'"square_image": {update_square_image_path_extended(match)}',
+    json_code_content,
+    flags=re.UNICODE
 )
 
-# Save the further modified Dart code
-updated_dart_file_path_extended = '/mnt/data/Updated_SpeakerModel_camelCase_Extended.dart'
-with open(updated_dart_file_path_extended, 'w', encoding='utf-8') as updated_dart_file_extended:
-    updated_dart_file_extended.write(updated_dart_code_content_extended)
+# บันทึกโค้ด JSON ที่แก้ไขเพิ่มเติม
+updated_json_file_path_extended = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/local_image_data.json'
+with open(updated_json_file_path_extended, 'w', encoding='utf-8') as updated_json_file_extended:
+    updated_json_file_extended.write(updated_json_code_content_extended)
 
-updated_dart_file_path_extended
+updated_json_file_path_extended

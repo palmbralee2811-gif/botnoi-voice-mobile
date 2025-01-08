@@ -742,16 +742,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                             ),
                     ),
                     borderRadius: BorderRadius.circular(8.r),
-                    // image: DecorationImage(
-                    //   image: AssetImage(
-                    //     speakerItem.squareImage,
-                    //   ),
-                    //   onError: (exception, stackTrace) => const AssetImage(
-                    //       'assets/images/default-profile-picture.jpg'),
-                    //   fit: BoxFit.cover,
-                    // ),
                     image: DecorationImage(
-                      image: NetworkImage(
+                      image: AssetImage(
                         speakerItem.squareImage,
                       ),
                       onError: (exception, stackTrace) => const AssetImage(

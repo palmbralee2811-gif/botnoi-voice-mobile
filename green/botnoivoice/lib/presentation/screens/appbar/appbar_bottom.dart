@@ -91,20 +91,12 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
                 child: Row(
                   children: [
-                    // CircleAvatar(
-                    //   radius: OrientationHelper.isLandscape ? 22.r : 14.r,
-                    //   backgroundImage: speakerProvider.speakerImagePath != null
-                    //       ? AssetImage(speakerProvider.speakerImagePath!)
-                    //       : const AssetImage(
-                    //           "assets/square_image/square_ava.webp"),
-                    // ),
                     CircleAvatar(
                       radius: OrientationHelper.isLandscape ? 22.r : 14.r,
                       backgroundImage: speakerProvider.speakerImagePath != null
-                          ? NetworkImage(speakerProvider.speakerImagePath!)
+                          ? AssetImage(speakerProvider.speakerImagePath!)
                           : const AssetImage(
-                                  "assets/square_image/square_ava.webp")
-                              as ImageProvider,
+                              "assets/square_image/1.webp"),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
