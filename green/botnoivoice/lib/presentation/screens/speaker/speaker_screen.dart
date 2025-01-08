@@ -706,9 +706,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
 
-              // Example usage of NetworkImageWidget
-              NetworkImageWidget(imageUrl: speakerItem.squareImage);
-
               setState(() {
                 if (selectedIndex.contains(index)) {
                   if (audioPlayer.state == PlayerState.playing) {
