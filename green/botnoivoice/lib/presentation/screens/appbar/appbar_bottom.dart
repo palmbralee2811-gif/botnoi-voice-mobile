@@ -39,7 +39,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     return SizedBox(
       width: double.infinity,
-      height: OrientationHelper.isLandscape ? 80.h : 42.h,
+      height: OrientationHelper.isLandscape ? 80.h : 60.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
