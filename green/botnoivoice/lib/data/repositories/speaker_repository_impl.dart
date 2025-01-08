@@ -1,7 +1,7 @@
 // import 'package:botnoivoice/data/functions/loading_json_to_list.dart';
 // import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
-import 'package:botnoivoice/data/models/speaker_models_new.dart';
+import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 

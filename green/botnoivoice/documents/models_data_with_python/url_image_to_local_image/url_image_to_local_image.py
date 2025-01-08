@@ -2,7 +2,7 @@ import re
 import json
 
 # โหลดโค้ด JSON ที่มีอยู่
-json_file_path = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/response.json'
+json_file_path = 'assets/data/response.json'
 with open(json_file_path, 'r', encoding='utf-8') as json_file:
     json_code_content = json_file.read()
     json_data = json.loads(json_code_content)
@@ -31,7 +31,7 @@ updated_json_code_content_extended = re.sub(
 )
 
 # บันทึกโค้ด JSON ที่แก้ไขเพิ่มเติม
-updated_json_file_path_extended = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/local_image_data.json'
+updated_json_file_path_extended = 'assets/data/local_image_data.json'
 with open(updated_json_file_path_extended, 'w', encoding='utf-8') as updated_json_file_extended:
     updated_json_file_extended.write(updated_json_code_content_extended)
 

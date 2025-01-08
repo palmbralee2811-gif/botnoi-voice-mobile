@@ -1,5 +1,5 @@
 import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
-import 'package:botnoivoice/data/models/speaker_models_new.dart';
+import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';

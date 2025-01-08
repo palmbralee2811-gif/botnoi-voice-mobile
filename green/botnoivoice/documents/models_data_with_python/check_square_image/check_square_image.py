@@ -1,7 +1,7 @@
 import json
 
 # โหลดโค้ด JSON ที่มีอยู่
-json_file_path = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/local_image_data.json'
+json_file_path = 'assets/data/local_image_data.json'
 with open(json_file_path, 'r', encoding='utf-8') as json_file:
     json_data = json.load(json_file)
 

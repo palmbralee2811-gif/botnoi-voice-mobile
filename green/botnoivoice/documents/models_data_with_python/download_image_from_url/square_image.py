@@ -4,7 +4,7 @@ import time
 import json
 
 # Path to JSON file
-json_file_path = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/response.json'
+json_file_path = 'assets/data/response.json'
 
 # Read the JSON file with UTF-8 encoding
 with open(json_file_path, 'r', encoding='utf-8') as file:
