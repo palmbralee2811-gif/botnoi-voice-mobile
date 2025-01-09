@@ -28,47 +28,98 @@ class NotificationDialog {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
+        String languageCode = Localizations.localeOf(context).languageCode;
+
+        double dialogHeight;
+        if (languageCode == 'en') {
+          dialogHeight = OrientationHelper.isLandscape ? 500.h : 310.h;
+        } else {
+          dialogHeight = OrientationHelper.isLandscape ? 410.h : 235.h;
+        }
+
+        Widget content = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            icon,
+            SizedBox(height: 16.h),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: OrientationHelper.isLandscape ? 14.sp : 16.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: OrientationHelper.isLandscape ? 56.h : 16.h),
+            Padding(
+              padding: EdgeInsets.only(left: 30.w, right: 30.w),
+              child: GradientTextButton(
+                text: 'notification.close'.tr(), // Close
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close dialog
+                  (onPressed ?? () {})(); // Call onPressed if provided
+                },
+              ),
+            ),
+          ],
+        );
+
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
           child: SizedBox(
-            height: 500.h,
+            height: dialogHeight,
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(32.r),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    icon,
-                    SizedBox(height: 16.h),
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: OrientationHelper.isLandscape ? 14.sp : 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: OrientationHelper.isLandscape ? 106.h : 16.h),
-                    Padding(
-                      padding: EdgeInsets.only(left: 30.w, right: 30.w),
-                      child: GradientTextButton(
-                        text: 'notification.close'.tr(), //ปิด
-                        onPressed: () {
-                          Navigator.of(context).pop(); // ปิด dialog
-                          (onPressed ??
-                              () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                child: content,
               ),
             ),
           ),
         );
+        // return Dialog(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(16.r),
+        //   ),
+        //   child: SizedBox(
+        //     height: OrientationHelper.isLandscape ? 500.h : 310.h,
+        //     child: SingleChildScrollView(
+        //       child: Padding(
+        //         padding: EdgeInsets.all(32.r),
+        //         child: Column(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: [
+        //             icon,
+        //             SizedBox(height: 16.h),
+        //             Text(
+        //               text,
+        //               style: TextStyle(
+        //                 fontSize: OrientationHelper.isLandscape ? 14.sp : 16.sp,
+        //                 fontWeight: FontWeight.w600,
+        //                 color: Colors.black,
+        //               ),
+        //               textAlign: TextAlign.center,
+        //             ),
+        //             SizedBox(height: OrientationHelper.isLandscape ? 106.h : 16.h),
+        //             Padding(
+        //               padding: EdgeInsets.only(left: 30.w, right: 30.w),
+        //               child: GradientTextButton(
+        //                 text: 'notification.close'.tr(), //ปิด
+        //                 onPressed: () {
+        //                   Navigator.of(context).pop(); // ปิด dialog
+        //                   (onPressed ??
+        //                       () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
+        //                 },
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // );
       },
     );
   }
