@@ -279,13 +279,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return SizedBox(
-                  width: 600.w,
                   child: SingleChildScrollView(
-                    child: Row(
-                      children: [
-                        buildLanguageButton(context, setState),
-                      ],
-                    ),
+                    child: buildLanguageButton(context, setState),
                   ),
                 );
               },
