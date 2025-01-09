@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 
 class SpeakerModel {
   static List<SpeakerEntity> speakerItem = [];
+  static final Logger _logger = Logger();
 
   // ฟังก์ชันโหลดข้อมูล JSON และเพิ่มใน speakerItem
   static Future<void> loadSpeakers() async {
@@ -21,10 +23,10 @@ class SpeakerModel {
       // แปลง JSON เป็น List<SpeakerEntity>
       speakerItem =
           jsonList.map((json) => SpeakerEntity.fromJson(json)).toList();
-      print('Speakers loaded successfully: ${speakerItem.length}');
+      _logger.d('Speakers loaded successfully: ${speakerItem.length}');
     } catch (e) {
       // จัดการข้อผิดพลาด
-      print('Error loading speakers: $e');
+      _logger.e('Error loading speakers: $e');
       speakerItem = [];
     }
   }

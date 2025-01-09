@@ -9,52 +9,43 @@ import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-/// Check if the user is authenticated
 class AuthChecker extends StatelessWidget {
-  AuthChecker({super.key});
+  final Logger _logger = Logger();
 
-  final Logger _logger = Logger(); // For debugging
+  AuthChecker({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<AppleLoginProvider, GoogleLoginProvider, LineLoginProvider,
-        EmailLoginProvider>(
-      builder: (context, appleProvider, googleProvider, lineProvider,
-          emailProvider, child) {
-        // ตรวจสอบ provider ที่ล็อกอิน
-        String? loginProvider;
+    return Consumer4<AppleLoginProvider, GoogleLoginProvider, LineLoginProvider, EmailLoginProvider>(
+      builder: (context, appleProvider, googleProvider, lineProvider, emailProvider, child) {
+        String? loginProvider = _getLoginProvider(appleProvider, googleProvider, lineProvider, emailProvider);
 
-        if (emailProvider.isAuthenticated &&
-            emailProvider.user?.providerData[0].providerId == 'password') {
-          // ตรวจสอบสถานะการยืนยันอีเมล
-          if (!emailProvider.user!.emailVerified) {
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              emailProvider.signOutWithEmail(
-                  context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
-            });
-            loginProvider = null;
-          } else {
-            loginProvider = 'email';
-          }
-        } else if (lineProvider.isAuthenticated) {
-          loginProvider = 'line';
-        } else if (googleProvider.isAuthenticated &&
-            googleProvider.user?.providerData[0].providerId == 'google.com') {
-          loginProvider = 'google';
-        } else if (appleProvider.isAuthenticated &&
-            appleProvider.user?.providerData[0].providerId == 'apple.com') {
-          loginProvider = 'apple';
-        }
-
-        // ตรวจสอบสถานะการล็อกอิน
         if (loginProvider != null) {
-          _logger.d("Authenticated $loginProvider");
+          _logger.d('Authenticated with $loginProvider');
+          if (loginProvider == 'email' && !emailProvider.user!.emailVerified) {
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              emailProvider.signOutWithEmail(context);
+            });
+          }
           return const InitScreen();
         } else {
-          _logger.d("Not Authenticated");
+          _logger.d('Not Authenticated');
           return const LoginScreen();
         }
       },
     );
+  }
+
+  String? _getLoginProvider(
+    AppleLoginProvider appleProvider,
+    GoogleLoginProvider googleProvider,
+    LineLoginProvider lineProvider,
+    EmailLoginProvider emailProvider,
+  ) {
+    if (appleProvider.isAuthenticated && appleProvider.user?.providerData[0].providerId == 'apple.com') return 'apple';
+    if (googleProvider.isAuthenticated && googleProvider.user?.providerData[0].providerId == 'google.com') return 'google';
+    if (lineProvider.isAuthenticated) return 'line';
+    if (emailProvider.isAuthenticated && emailProvider.user?.providerData[0].providerId == 'password') return 'email';
+    return null;
   }
 }

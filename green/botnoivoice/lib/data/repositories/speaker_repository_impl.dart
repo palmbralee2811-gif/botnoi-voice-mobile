@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 
 /// Repository for Speaker operations
 class SpeakerRepositoryImpl with ChangeNotifier {
-  final Logger logger = Logger(); // Logger for Debugging mode
+  final Logger _logger = Logger(); // Logger for Debugging mode
   SpeakerEntity? currentSpeaker; // ตัวแปรเก็บ Speaker ปัจจุบัน
 
   String? _speakerId;
@@ -30,43 +30,43 @@ class SpeakerRepositoryImpl with ChangeNotifier {
 
   void setSpeakerId(String id) {
     _speakerId = id;
-    logger.d("SpeakerProvider -> setSpeakerId: $speakerId");
+    _logger.d("SpeakerProvider -> setSpeakerId: $speakerId");
     notifyListeners();
   }
 
   void setSpeakerName(String name) {
     _speakerName = name;
-    logger.d("SpeakerProvider -> setSpeakerName: $speakerName");
+    _logger.d("SpeakerProvider -> setSpeakerName: $speakerName");
     notifyListeners();
   }
 
   void setSpeakerAudio(String audio) {
     _speakerAudio = audio;
-    logger.d("SpeakerProvider -> setSpeakerAudio: $speakerAudio");
+    _logger.d("SpeakerProvider -> setSpeakerAudio: $speakerAudio");
     notifyListeners();
   }
 
   void setSpeakerImagePath(String path) {
     _speakerImagePath = path;
-    logger.d("SpeakerProvider -> setSpeakerImagePath: $speakerImagePath");
+    _logger.d("SpeakerProvider -> setSpeakerImagePath: $speakerImagePath");
     notifyListeners();
   }
 
   void setNationalFlagName(String name) {
     _nationalFlagName = name;
-    logger.d("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
+    _logger.d("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
     notifyListeners();
   }
 
   void setNationalFlagPath(String path) {
     _nationalFlagPath = path;
-    logger.d("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
+    _logger.d("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
     notifyListeners();
   }
 
   void setLanguage(String language) {
     _language = language;
-    logger.d("SpeakerProvider -> setLanguage: $language");
+    _logger.d("SpeakerProvider -> setLanguage: $language");
     notifyListeners();
   }
 
@@ -83,12 +83,12 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String getName(BuildContext context) {
     // ตรวจสอบว่า currentSpeaker มีค่าไม่เป็น null
     if (currentSpeaker == null) {
-      print("Current Speaker: No speaker selected");
+      _logger.e("Current Speaker: No speaker selected");
       return 'Default Name'; // ถ้าไม่มี speaker ให้ใช้ Default Name
     }
 
     // ถ้ามี speaker ให้แสดงชื่อของ speaker คนปัจจุบัน
-    print(
+    _logger.d(
         "Current Speaker: ${currentSpeaker!.thaiName}"); // หรือ engName ก็ได้ตามต้องการ
 
     String locale = Localizations.localeOf(context).languageCode;
@@ -101,11 +101,11 @@ class SpeakerRepositoryImpl with ChangeNotifier {
       await SpeakerModel.loadSpeakers();
       _isJsonLoaded = true;
       notifyListeners(); // Notify listeners that JSON is loaded
-      logger.d('JSON file loaded successfully');
+      _logger.d('JSON file loaded successfully');
     } catch (e) {
       _isJsonLoaded = false;
       notifyListeners(); // Notify listeners that JSON loading failed
-      logger.e('Error loading JSON file: $e');
+      _logger.e('Error loading JSON file: $e');
     }
   }
 }

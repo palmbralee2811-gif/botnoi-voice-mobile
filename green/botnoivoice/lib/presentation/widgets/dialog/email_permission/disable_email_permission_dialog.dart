@@ -51,7 +51,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'disable_email_permission.email_access_disabled_warning'.tr().tr(), //หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้
+                  'disable_email_permission.email_access_disabled_warning'.tr(), //หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้
                   style: GoogleFonts.prompt(
                     fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                     fontWeight: FontWeight.w400,
