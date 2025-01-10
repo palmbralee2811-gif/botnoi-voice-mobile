@@ -91,8 +91,8 @@ final languages = [
   },
   {
     'thaiName': 'เกาหลี',
-    'englishName': 'Korea',
-    'image': 'assets/images/national_flag/korea.png',
+    'englishName': 'Korean',
+    'image': 'assets/images/national_flag/korean.png',
     'code': 'KO'
   },
   {
