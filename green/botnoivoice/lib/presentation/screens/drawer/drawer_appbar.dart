@@ -1,9 +1,12 @@
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
@@ -51,11 +54,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     // Fetch user data from Database (API)
+    var appleTokenProvider = Provider.of<AppleTokenProvider>(context, listen: false);
+    var googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
+    var lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
     var emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       String? lineDisplayName = lineProvider.getDisplayName;
-      String? lineUid = lineProvider.getLineUserId;
+      String? lineUid = lineTokenProvider.getUserID;
       String? lineProfilePictureUrl = lineProvider.getProfilePictureUrl;
 
       setState(() {
@@ -67,14 +73,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
         appleProvider.user?.providerData[0].providerId == 'apple.com') {
       setState(() {
         displayName = appleProvider.user?.displayName ?? 'Apple User';
-        uid = appleProvider.user?.uid ?? 'No uid found';
+        uid = appleTokenProvider.getUserID ?? 'No uid found';
         profilePictureUrl = appleProvider.user?.photoURL ?? '';
       });
     } else if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
       setState(() {
         displayName = googleProvider.user?.displayName ?? 'No Name';
-        uid = googleProvider.user?.uid ?? 'No uid found';
+        uid = googleTokenProvider.getUserID ?? 'No uid found';
         profilePictureUrl = googleProvider.user?.photoURL ?? '';
       });
     } else if (emailProvider.isLoggedIn &&

@@ -1,12 +1,15 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
@@ -59,24 +62,27 @@ class _AccountScreenState extends State<AccountScreen> {
     var userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
 
     // Fetch user data from Database (API)
+    var appleTokenProvider = Provider.of<AppleTokenProvider>(context, listen: false);
+    var googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
+    var lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
     var emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "Line User";
-      userId = lineProvider.getLineUserId ?? "No UID";
+      userId = lineTokenProvider.getUserID ?? "No UID";
       email = lineProvider.getLineEmail ?? "No email found";
       isLineLoggedIn = true;
     } else if (appleProvider.isLoggedIn &&
         appleProvider.user?.providerData[0].providerId == 'apple.com') {
       displayName = appleProvider.user?.displayName ?? 'Apple User';
-      userId = appleProvider.user?.uid ?? 'No UID';
+      userId = appleTokenProvider.getUserID ?? 'No UID';
       email =
           getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
       isAppleLoggedIn = true;
     } else if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
       displayName = googleProvider.user?.displayName ?? 'Google User';
-      userId = googleProvider.user?.uid ?? 'No UID';
+      userId = googleTokenProvider.getUserID ?? 'No UID';
       email =
           getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
       isGoogleLoggedIn = true;
@@ -149,7 +155,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return email; // เปิดเผยอีเมลเต็มเมื่อ isEmailHidden เป็น false
   }
 
-  // / ฟังก์ชันสำหรับตัด UID ให้แสดง 15 ตัวอักษรแรก
+  /// ฟังก์ชันสำหรับตัด UID ให้แสดง 15 ตัวอักษรแรก
   String getDisplayUID(String uid) {
     if (uid.length > 15) {
       return '${uid.substring(0, 15)}...'; // แสดงเฉพาะ 15 ตัวอักษรแรก
@@ -280,10 +286,7 @@ class _AccountScreenState extends State<AccountScreen> {
               SizedBox(height: 24.h), // ปรับระยะห่างระหว่างแถวให้เหมาะสม
               UserInfoRow(
                 title: 'UID',
-
                 value: getDisplayUID(userId),
-                // value: userId,
-
                 icon: Icons.copy,
                 onIconPressed: _copyUID,
                 isValueOverflow: true, // จัดการข้อความยาวให้แสดง ...

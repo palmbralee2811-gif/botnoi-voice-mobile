@@ -9,10 +9,14 @@ import 'package:provider/provider.dart';
 
 /// Provider and interface to the main server
 class LineTokenProvider extends ChangeNotifier {
+  String? _userID;
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
   final Logger _logger = Logger(); // For debugging
+
+  /// Getter for the user ID from Database after login
+  String? get getUserID => _userID;
 
   /// Getter for the remaining credits
   String? get getRemainingCredits => _remainingCredits;
@@ -22,6 +26,7 @@ class LineTokenProvider extends ChangeNotifier {
 
   /// Clear all the tokens
   void clearTokens() {
+    _userID = null;
     _jwtToken = null;
     _remainingCredits = null;
     _credentialsToken = null;
@@ -82,8 +87,10 @@ class LineTokenProvider extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
+        _userID = data['data']['uid'].toString();
         _remainingCredits = data['data']['credits'].toString();
         notifyListeners();
+        _logger.i('User ID successfully loaded: $_userID');
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');
       } else {
         _logger
