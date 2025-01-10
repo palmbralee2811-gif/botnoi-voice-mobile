@@ -1,5 +1,6 @@
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -43,11 +44,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   }
 
   Future<void> _loadUserInfo() async {
+    // Fetch user data from Firebase
     var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+
+    // Fetch user data from Database (API)
+    var emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       String? lineDisplayName = lineProvider.getDisplayName;
@@ -76,11 +80,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
     } else if (emailProvider.isLoggedIn &&
         emailProvider.user?.providerData[0].providerId == 'password') {
       setState(() {
-        displayName =
-            Provider.of<EmailUsernameApiProvider>(context, listen: false)
-                    .getUsername ??
-                "Unknown";
-        uid = emailProvider.user?.uid ?? "No UID";
+        displayName = Provider.of<EmailUsernameApiProvider>(context, listen: false).getUsername ?? "Unknown";
+        uid = emailTokenProvider.getUserID ?? "No UID";        
         profilePictureUrl = emailProvider.user?.photoURL ?? '';
       });
     }
@@ -165,7 +166,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                               fontWeight: FontWeight.w400,
                               color: const Color(0xFF323130),
                             ),
-                            maxLines: 1,
+                            maxLines: 5,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
