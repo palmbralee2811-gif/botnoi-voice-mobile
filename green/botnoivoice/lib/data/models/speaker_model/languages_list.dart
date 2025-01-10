@@ -13,8 +13,8 @@ final languages = [
   },
   {
     'thaiName': 'อินโดนีเซีย',
-    'englishName': 'Indonesia',
-    'image': 'assets/images/national_flag/indonesia.png',
+    'englishName': 'Indonesian',
+    'image': 'assets/images/national_flag/indonesian.png',
     'code': 'ID'
   },
   {
@@ -97,8 +97,8 @@ final languages = [
   },
   {
     'thaiName': 'มาเลเซีย',
-    'englishName': 'Malaysia',
-    'image': 'assets/images/national_flag/malaysia.png',
+    'englishName': 'Malaysian',
+    'image': 'assets/images/national_flag/malaysian.png',
     'code': 'MS'
   },
   {
