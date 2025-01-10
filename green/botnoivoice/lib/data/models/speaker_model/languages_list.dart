@@ -25,8 +25,8 @@ final languages = [
   },
   {
     'thaiName': 'ลาว',
-    'englishName': 'Laos',
-    'image': 'assets/images/national_flag/laos.png',
+    'englishName': 'Lao',
+    'image': 'assets/images/national_flag/lao.png',
     'code': 'LO'
   },
   {
@@ -109,8 +109,8 @@ final languages = [
   },
   {
     'thaiName': 'รัสเซีย',
-    'englishName': 'Russia',
-    'image': 'assets/images/national_flag/russia.png',
+    'englishName': 'Russian',
+    'image': 'assets/images/national_flag/russian.png',
     'code': 'RU'
   },
   {
@@ -128,7 +128,7 @@ final languages = [
   {
     'thaiName': 'ตุรกี',
     'englishName': 'Turkish',
-    'image': 'assets/images/national_flag/turkey.png',
+    'image': 'assets/images/national_flag/turkish.png',
     'code': 'TR'
   },
   // ... Add other languages here
