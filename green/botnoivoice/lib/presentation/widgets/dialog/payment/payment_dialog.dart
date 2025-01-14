@@ -8,7 +8,7 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -41,9 +41,9 @@ class _PaymentBottomSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = Provider.of<PaymentProvider>(context);
+    final applePaymentProvider = Provider.of<ApplePaymentProvider>(context);
 
-    return paymentProvider.isLoading
+    return applePaymentProvider.isLoading
         ? Container(
             color: Colors.black54,
             child: const Center(
@@ -51,7 +51,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: EdgeInsets.all( OrientationHelper.isLandscape ? 8.w : 16.w),
+            padding: EdgeInsets.all(OrientationHelper.isLandscape ? 8.w : 16.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -121,7 +121,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
 
   Future<void> _handlePurchase(BuildContext context, String title) async {
     final paymentProvider =
-        Provider.of<PaymentProvider>(context, listen: false);
+        Provider.of<ApplePaymentProvider>(context, listen: false);
 
     try {
       await paymentProvider.handlePurchase(product);

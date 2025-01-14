@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';
 
-class PaymentProvider with ChangeNotifier {
+class ApplePaymentProvider with ChangeNotifier {
   final Logger _logger = Logger();
   String? _errorMessage;
   bool _isLoading = false;
