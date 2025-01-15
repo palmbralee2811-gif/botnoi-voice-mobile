@@ -3,6 +3,7 @@
     "thai": "ไทย",
     "english": "อังกฤษ",
     "gender": "เพศ",
+    "mw": "ช/ญ",
     "style": "สไตล์",
     "style_plural": "{count} สไตล์",
     "category": "หมวดหมู่",
@@ -10,6 +11,7 @@
     "confirm": "ตกลง",
     "reset": "รีเซ็ท",
     "share": "แชร์",
+    "select": "เลือก",
     "welcome_message": {
         "line1": "เปลี่ยนข้อความเป็นเสียง",
         "line2": "บอทน้อย",

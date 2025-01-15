@@ -5,6 +5,7 @@ import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.da
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/apple_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
@@ -149,7 +150,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.only(left: 24.w, right: 24.w),
+                padding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 38.w : 24.w, 
+                right: OrientationHelper.isLandscape ? 38.w : 24.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -165,12 +168,12 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 20.sp,
+                          fontSize: OrientationHelper.isLandscape ? 16.sp : 20.sp,
                           decoration: TextDecoration.none,
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 4.h : 8.h),
                       GradientTextAlign(
                         'sign_in.welcome_message'
                             .tr(), //สวัสดี, Botnoi Voice ยินดีต้อนรับ
@@ -182,33 +185,36 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
+                          fontSize: OrientationHelper.isLandscape ? 12.sp : 14.sp,
                           decoration: TextDecoration.none,
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: 32.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 22.h : 32.h),
                       TextFormField(
                         controller: _emailOrUsernameController,
                         style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                            fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'sign_in.username_or_email'
                               .tr(), //ชื่อผู้ใช้งานหรืออีเมล
                           labelStyle: TextStyle(
-                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                              fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                              fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide.none,
                           ),
-                          errorStyle: TextStyle(fontSize: 14.sp),
+                          errorStyle:
+                              TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                           errorMaxLines: 5,
                           suffixIcon: IconButton(
                             icon: Icon(
                               null,
-                              size: 24.w,
+                              size: OrientationHelper.isLandscape ? 16.w : 24.w,
                             ),
                             onPressed: null,
                           ),
@@ -221,29 +227,33 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 14.h : 16.h),
                       TextFormField(
                         controller: _passwordController,
                         style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                            fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'sign_in.password'.tr(), //รหัสผ่าน
                           labelStyle: TextStyle(
-                              fontSize: 16.sp, fontWeight: FontWeight.w400),
+                              fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                              fontWeight: FontWeight.w400),
                           fillColor: Colors.white,
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide.none,
                           ),
-                          errorStyle: TextStyle(fontSize: 14.sp),
+                          errorStyle:
+                              TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                           errorMaxLines: 5,
                           suffixIcon: IconButton(
                             icon: Icon(
                               _isPasswordVisible
                                   ? Icons.visibility
                                   : Icons.visibility_off,
-                              size: 24.w, // Adjust icon size
+                              size:
+                                  OrientationHelper.isLandscape ? 16.w : 24.w, // Adjust icon size
                             ),
                             onPressed: () {
                               setState(() {
@@ -257,7 +267,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             ? 'sign_in.please_enter_password'.tr()
                             : null, //โปรดใส่รหัสผ่านของคุณ
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 14.h : 12.h),
                       _isLoading
                           ? const Center(
                               child:
@@ -266,7 +276,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                               text: 'auth.sign_in'.tr(),
                               onPressed: _loginUser,
                             ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 14.h : 16.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment
                             .spaceBetween, // จัดตำแหน่งปุ่มในแนวนอน
@@ -283,7 +293,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             child: Text(
                               'sign_in.register'.tr(), //สมัครใช้งาน
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: OrientationHelper.isLandscape ? 9.sp : 14.sp,
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -301,14 +311,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             child: Text(
                               'sign_in.forgot_password'.tr(), //ลืมรหัสผ่าน?
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: OrientationHelper.isLandscape ? 9.sp : 14.sp,
                                 color: Colors.grey.shade600,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 13.h : 16.h),
                       Row(
                         children: [
                           const Expanded(
@@ -322,7 +332,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             child: Text(
                               'sign_in.or'.tr(), //หรือ
                               style: TextStyle(
-                                  fontSize: 14.sp,
+                                  fontSize: OrientationHelper.isLandscape ? 9.sp : 14.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey.shade600),
                             ),
@@ -335,29 +345,35 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 14.h : 16.h),
                       Padding(
-                        padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                        padding: EdgeInsets.only(
+                            left: OrientationHelper.isLandscape ? 40.w : 15.w,
+                            right: OrientationHelper.isLandscape ? 40.w : 15.w),
                         child: LineLoginButton(onPressed: () {
                           _openLineLogin();
                         }),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 14.h : 16.h),
                       Padding(
-                        padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                        padding: EdgeInsets.only(
+                            left: OrientationHelper.isLandscape ? 40.w : 15.w,
+                            right: OrientationHelper.isLandscape ? 40.w : 15.w),
                         child: GoogleLoginButton(onPressed: () {
                           _openGoogleLogin();
                         }),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 14.h : 16.h),
                       if (Platform.isIOS)
                         Padding(
-                          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+                          padding: EdgeInsets.only(
+                              left: OrientationHelper.isLandscape ? 40.w : 15.w,
+                              right: OrientationHelper.isLandscape ? 40.w : 15.w),
                           child: AppleLoginButton(onPressed: () {
                             _openAppleLogin();
                           }),
                         ),
-                      SizedBox(height: 140.h),
+                      SizedBox(height: OrientationHelper.isLandscape ? 100.h : 140.h),
                     ],
                   ),
                 ),

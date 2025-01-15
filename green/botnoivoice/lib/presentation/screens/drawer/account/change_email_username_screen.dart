@@ -1,6 +1,7 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -82,6 +83,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          iconSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
           onPressed: () {
             Navigator.pop(context);
           },
@@ -117,7 +119,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 20.sp,
+                      fontSize: OrientationHelper.isLandscape ? 16.sp : 20.sp,
                       decoration: TextDecoration.none,
                     ),
                     textAlign: TextAlign.left,
@@ -133,7 +135,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 14.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                       decoration: TextDecoration.none,
                     ),
                     textAlign: TextAlign.left,
@@ -142,18 +144,18 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
                   TextFormField(
                     controller: _usernameController,
                     style:
-                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        TextStyle(fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp, fontWeight: FontWeight.w400),
                     decoration: InputDecoration(
                       labelText: 'change_email_username.new_username'.tr(), //ชื่อผู้ใช้งานใหม่
                       labelStyle: TextStyle(
-                          fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp, fontWeight: FontWeight.w400),
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
                       ),
-                      errorStyle: TextStyle(fontSize: 14.sp),
+                      errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                       errorMaxLines: 5,
                     ),
                     validator: (value) {
@@ -170,18 +172,18 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
                   TextFormField(
                     controller: _confirmUsernameController,
                     style:
-                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        TextStyle(fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp, fontWeight: FontWeight.w400),
                     decoration: InputDecoration(
                       labelText: 'change_email_username.confirm_new_username'.tr(), //ยืนยันชื่อผู้ใช้งานใหม่
                       labelStyle: TextStyle(
-                          fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp, fontWeight: FontWeight.w400),
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide.none,
                       ),
-                      errorStyle: TextStyle(fontSize: 14.sp),
+                      errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                       errorMaxLines: 5,
                     ),
                     validator: (value) {

@@ -2,6 +2,7 @@ import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -151,7 +152,7 @@ class _ConfirmDeleteAccountScreenState
                       ),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 20.sp,
+                        fontSize: OrientationHelper.isLandscape ? 16.sp : 20.sp,
                         decoration: TextDecoration.none,
                       ),
                       textAlign: TextAlign.left,
@@ -167,7 +168,7 @@ class _ConfirmDeleteAccountScreenState
                       ),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14.sp,
+                        fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                         decoration: TextDecoration.none,
                       ),
                       textAlign: TextAlign.left,
@@ -176,25 +177,25 @@ class _ConfirmDeleteAccountScreenState
                     TextFormField(
                       controller: _passwordController,
                       style: TextStyle(
-                          fontSize: 16.sp, fontWeight: FontWeight.w400),
+                          fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp, fontWeight: FontWeight.w400),
                       decoration: InputDecoration(
                         labelText: 'confirm_delete_account.confirm_password'.tr(), //ยืนยันรหัสผ่าน
                         labelStyle: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w400),
+                            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp, fontWeight: FontWeight.w400),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
                           borderSide: BorderSide.none,
                         ),
-                        errorStyle: TextStyle(fontSize: 14.sp),
+                        errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                         errorMaxLines: 5,
                         suffixIcon: IconButton(
                           icon: Icon(
                             isPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
-                            size: 24.w,
+                            size: OrientationHelper.isLandscape ? 16.w : 24.w,
                           ),
                           onPressed: () {
                             setState(() {

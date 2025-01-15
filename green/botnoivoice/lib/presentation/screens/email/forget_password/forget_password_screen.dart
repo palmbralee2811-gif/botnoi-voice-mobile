@@ -1,5 +1,6 @@
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/confirm_forget_password_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -85,7 +86,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 40.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 20.h : 40.h),
                 GradientTextAlign(
                   'forget_password.forgot_password'.tr(),
                   gradient: const LinearGradient(
@@ -96,7 +97,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 20.sp,
+                    fontSize: OrientationHelper.isLandscape ? 14.sp : 20.sp,
                     decoration: TextDecoration.none,
                   ),
                   textAlign: TextAlign.left,
@@ -112,7 +113,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                     decoration: TextDecoration.none,
                   ),
                   textAlign: TextAlign.left,
@@ -121,18 +122,18 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 TextFormField(
                   controller: _emailController,
                   style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                      TextStyle(fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                     labelText: 'forget_password.email'.tr(),
                     labelStyle:
-                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        TextStyle(fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide.none,
                     ),
-                    errorStyle: TextStyle(fontSize: 14.sp),
+                    errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                     errorMaxLines: 5,
                   ),
                   keyboardType: TextInputType.emailAddress,

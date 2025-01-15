@@ -13,6 +13,7 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
@@ -149,11 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: buildTextBox(),
+              child: buildTextBox(),
           ),
           Container(
             width: double.infinity,
             color: Colors.white,
+            height: OrientationHelper.isLandscape ? 75.h : 90.h,
             child: buildGenerateButton(context),
           ),
         ],
@@ -164,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildTextBox() {
     return Container(
       width: 320.w,
+      height: 80.h,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
@@ -175,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.all(10.w),
         child: Center(
           child: Container(
-            width: 288.w,
+            width: OrientationHelper.isLandscape ? 250.w : 288.w,
             decoration: BoxDecoration(
               boxShadow: const [
                 BoxShadow(
@@ -187,14 +190,17 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(14.r),
             ),
             child: Padding(
-              padding: EdgeInsets.only(left: 25.w, right: 10.w, top: 20.w),
+              padding: EdgeInsets.only(
+                  left: OrientationHelper.isLandscape ? 20.w : 30.w,
+                  right: OrientationHelper.isLandscape ? 0.w : 10.w,
+                  top: OrientationHelper.isLandscape ? 5.w : 20.w),
               child: Column(
                 children: [
                   Expanded(
                     child: TextField(
                       cursorColor: const Color(0xFF000000),
                       style: GoogleFonts.prompt(
-                        fontSize: 14.sp,
+                        fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         color: const Color(0xFF323130),
                       ),
                       maxLines: null,
@@ -220,8 +226,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
-                          fontStyle:
-                              GoogleFonts.prompt(fontSize: 14.sp).fontStyle,
+                          fontStyle: GoogleFonts.prompt(
+                                  fontSize: OrientationHelper.isLandscape
+                                      ? 8.sp
+                                      : 14.sp)
+                              .fontStyle,
                         ),
                         hintMaxLines: 1,
                       ),
@@ -239,7 +248,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildBottomTextBox() {
     return Padding(
-      padding: EdgeInsets.only(right: 25.w),
+      padding:
+          EdgeInsets.only(right: OrientationHelper.isLandscape ? 15.w : 25.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -251,7 +261,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                            textStyle: TextStyle(
+                                fontSize: OrientationHelper.isLandscape
+                                    ? 5.sp
+                                    : 10.sp)),
                         onPressed: () {
                           setState(() {
                             _textController.clear();
@@ -260,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                         child: GradientIcon(
                           icon: Icons.close_sharp,
-                          size: 20.sp,
+                          size: OrientationHelper.isLandscape ? 10.sp : 20.sp,
                           gradient: const LinearGradient(
                             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                             begin: Alignment.topLeft,
@@ -273,11 +286,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 10.sp)),
+                            textStyle: TextStyle(
+                                fontSize: OrientationHelper.isLandscape
+                                    ? 12.sp
+                                    : 10.sp)),
                         onPressed: () {},
                         child: Icon(
                           Icons.close_sharp,
-                          size: 20.sp,
+                          size: OrientationHelper.isLandscape ? 10.sp : 20.sp,
                           color: Colors.transparent,
                         ),
                       ),
@@ -289,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
               GradientText(
                 text: '${_textController.text.length}',
                 style: GoogleFonts.prompt(
-                  fontSize: 14.sp,
+                  fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                   color: const Color(0xFFA19F9D),
                 ),
                 gradient: const LinearGradient(
@@ -299,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 ' / 1000',
                 style: GoogleFonts.prompt(
-                  fontSize: 14.sp,
+                  fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                   color: const Color(0xFFA19F9D),
                 ),
               ),
@@ -312,8 +328,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildGenerateButton(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: 20.w, top: 15.h, right: 20.w, bottom: 15.h),
+      padding: EdgeInsets.only(
+          left: OrientationHelper.isLandscape ? 60.w : 20.w,
+          top: OrientationHelper.isLandscape ? 10.h : 15.h,
+          right: OrientationHelper.isLandscape ? 60.w : 20.w,
+          bottom: OrientationHelper.isLandscape ? 10.h : 15.h),
       child: GradientRow(
         onPressed: isGenerateAudio ? () {} : () async => await _generateAudio(),
         child: isGenerateAudio
@@ -326,19 +345,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text('home_screen.create_sound'.tr(), //สร้างเสียง
                       style: GoogleFonts.prompt(
                           color: Colors.white,
-                          fontSize: 16.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 11.sp : 16.sp,
                           fontWeight: FontWeight.w600)),
-                  SizedBox(width: 10.w),
+                  SizedBox(width: OrientationHelper.isLandscape ? 5.w : 10.w),
                   SvgPicture.asset(
                     'assets/images/logo/credit-icon.svg',
-                    height: 20.h,
-                    width: 20.w,
+                    height: OrientationHelper.isLandscape ? 40.h : 20.h,
+                    width: OrientationHelper.isLandscape ? 40.w : 20.w,
                   ),
                   SizedBox(width: 5.w),
                   Text('${_textController.text.length}',
                       style: GoogleFonts.prompt(
                           color: Colors.white,
-                          fontSize: 16.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 11.sp : 16.sp,
                           fontWeight: FontWeight.w600)),
                 ],
               ),

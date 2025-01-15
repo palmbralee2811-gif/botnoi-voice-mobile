@@ -3,6 +3,7 @@
     "thai": "Thai",
     "english": "English",
     "gender": "Gender",
+    "mw": "M/W",
     "style": "Style",
     "style_plural": "{count} Style",
     "category": "Category",
@@ -10,6 +11,7 @@
     "confirm": "Confirm",
     "reset": "Reset",
     "share": "Share",
+    "select": "Select",
     "welcome_message": {
         "line1": "Convert Text to Speech",
         "line2": "BOTNOI",

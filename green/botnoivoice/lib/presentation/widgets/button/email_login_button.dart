@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +17,9 @@ class EmailLoginButton extends StatelessWidget {
       children: [
         Center(
           child: Padding(
-            padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            padding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 65.w : 30.w,
+                right: OrientationHelper.isLandscape ? 65.w : 30.w),
             child: ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
@@ -29,21 +32,22 @@ class EmailLoginButton extends StatelessWidget {
                   ),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(224.w, 48.h),
+                minimumSize:
+                    OrientationHelper.isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
                     'assets/images/auth_screen/email-icon.svg',
-                    height: 20.h,
-                    width: 20.w,
+                    height: OrientationHelper.isLandscape ? 35.h : 20.h,
+                    width: OrientationHelper.isLandscape ? 20.w : 20.w,
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: OrientationHelper.isLandscape ? 12.w : 16.w),
                   Text(
                     'auth.sign_in_with_username_email'.tr(),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp,
                       color: kDark,
                       decoration: TextDecoration.none,
                     ),

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/models/googleplay_product_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -8,7 +11,9 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/googleplay_payment_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -19,7 +24,9 @@ import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
   final appleProducts = AppleProductModel.getAppleProductData();
-  final product = appleProducts.first;
+  final googlePlayProducts = GoogleplayProductModel.getGooglePlayProductData();
+  final product =
+      Platform.isIOS ? appleProducts.first : googlePlayProducts.first;
 
   showModalBottomSheet(
     context: context,
@@ -40,9 +47,9 @@ class _PaymentBottomSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = Provider.of<PaymentProvider>(context);
+    final applePaymentProvider = Provider.of<ApplePaymentProvider>(context);
 
-    return paymentProvider.isLoading
+    return applePaymentProvider.isLoading
         ? Container(
             color: Colors.black54,
             child: const Center(
@@ -50,7 +57,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(OrientationHelper.isLandscape ? 8.w : 16.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -60,7 +67,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                     Text(
                       'payment.buy_points'.tr(), //ซื้อพ้อยท์
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -68,7 +75,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: Icon(
                         Icons.close,
-                        size: 24.sp,
+                        size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
                         color: Colors.black,
                       ),
                     ),
@@ -78,7 +85,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 Text(
                   "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
                   style: TextStyle(
-                    fontSize: 45.sp,
+                    fontSize: OrientationHelper.isLandscape ? 25.sp : 45.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -89,8 +96,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       'assets/images/logo/credit-icon.svg',
-                      width: 24.w,
-                      height: 24.h,
+                      width: OrientationHelper.isLandscape ? 44.w : 24.w,
+                      height: OrientationHelper.isLandscape ? 44.h : 24.h,
                     ),
                     SizedBox(width: 8.w),
                     Text(
@@ -98,7 +105,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                         'productTitle': product.title
                       }), //ได้ ${product.title} พ้อยท์
                       style: TextStyle(
-                        fontSize: 24.sp,
+                        fontSize: OrientationHelper.isLandscape ? 13.sp : 22.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
@@ -109,18 +116,31 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
                   onPressed: () async {
-                    await _handlePurchase(context, product.title);
+                    if (Platform.isIOS) {
+                      // ใช้ Apple Payment หรือ Google Payment (เลือกตามที่เหมาะสม)
+                      await _handleApplePurchase(context, product.title);
+                    } else if (Platform.isAndroid) {
+                      // ใช้ Google Payment เท่านั้นบน Android
+                      await _handleGooglePurchase(context, product.title);
+                    } else {
+                      // กรณีที่ไม่รองรับแพลตฟอร์ม
+                      NotificationDialog(
+                              context: context,
+                              text: 'payment.error_user_not_logged_in'.tr(),
+                              onPressed: () {})
+                          .showErrorModal(context);
+                    }
                   },
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 10.h : 20.h),
               ],
             ),
           );
   }
 
-  Future<void> _handlePurchase(BuildContext context, String title) async {
+  Future<void> _handleApplePurchase(BuildContext context, String title) async {
     final paymentProvider =
-        Provider.of<PaymentProvider>(context, listen: false);
+        Provider.of<ApplePaymentProvider>(context, listen: false);
 
     try {
       await paymentProvider.handlePurchase(product);
@@ -141,6 +161,43 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         NotificationDialog(
           context: context,
           text: paymentProvider.errorMessage!,
+          onPressed: () {},
+        ).showErrorModal(context);
+      }
+    } catch (e) {
+      NotificationDialog(
+        context: context,
+        text: "${'payment.error_occurred'.tr()} $e", //เกิดข้อผิดพลาด
+        onPressed: () {},
+      ).showErrorModal(context);
+    } finally {
+      await _loadRemainingCredits(context);
+    }
+  }
+
+  Future<void> _handleGooglePurchase(BuildContext context, String title) async {
+    final googlePaymentProvider =
+        Provider.of<GooglePlayPaymentProvider>(context, listen: false);
+
+    try {
+      await googlePaymentProvider.handlePurchase(product);
+
+      if (googlePaymentProvider.errorMessage == null) {
+        await _loadRemainingCredits(context);
+        NotificationDialog(
+          context: context,
+          text: 'payment.received_points'.tr(namedArgs: {
+            'pointsTitle': title
+          }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
+          onPressed: () async {
+            /// Refresh Points After In-App Purchase: IAP
+            await _loadRemainingCredits(context);
+          },
+        ).showCheckmarkModalWithAction(context);
+      } else {
+        NotificationDialog(
+          context: context,
+          text: googlePaymentProvider.errorMessage!,
           onPressed: () {},
         ).showErrorModal(context);
       }

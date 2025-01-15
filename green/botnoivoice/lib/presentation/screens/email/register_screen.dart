@@ -9,6 +9,7 @@ import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/apple_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
@@ -165,7 +166,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.only(left: 24.w, right: 24.w),
+                padding: EdgeInsets.only(
+                    left: OrientationHelper.isLandscape ? 42.w : 24.w,
+                    right: OrientationHelper.isLandscape ? 42.w : 24.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -216,24 +219,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       {bool isPassword = false, bool isConfirmPassword = false}) {
     return TextFormField(
       controller: controller,
-      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+      style: TextStyle(
+          fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+        labelStyle: TextStyle(
+            fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide.none,
         ),
-        errorStyle: TextStyle(fontSize: 14.sp),
+        errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
         errorMaxLines: 5,
         suffixIcon: IconButton(
           icon: Icon(
             isPassword || isConfirmPassword
                 ? (_isPasswordVisible ? Icons.visibility : Icons.visibility_off)
                 : null,
-            size: 24.w,
+            size: OrientationHelper.isLandscape ? 16.w : 24.w,
           ),
           onPressed: isPassword || isConfirmPassword
               ? () {
@@ -270,22 +275,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       {bool isConfirmPassword = false}) {
     return TextFormField(
       controller: controller,
-      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+      style: TextStyle(
+          fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+        labelStyle: TextStyle(
+            fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide.none,
         ),
-        errorStyle: TextStyle(fontSize: 14.sp),
+        errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
         errorMaxLines: 5,
         suffixIcon: IconButton(
           icon: Icon(
             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            size: 24.w,
+            size: OrientationHelper.isLandscape ? 16.w : 24.w,
           ),
           onPressed: () {
             setState(() {
@@ -315,7 +322,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         text,
         gradient: const LinearGradient(
             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
-        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.sp),
+        style: TextStyle(
+            fontWeight: FontWeight.w600, fontSize: OrientationHelper.isLandscape ? 16.sp : 20.sp),
       ),
     );
   }
@@ -328,7 +336,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Align(
         alignment: Alignment.center,
         child: Text('register.back_to_sign_in'.tr(),
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 14.sp)),
+            style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: OrientationHelper.isLandscape ? 9.w : 14.sp)),
       ),
     );
   }
@@ -344,7 +354,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             text,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 14.sp,
+                fontSize: OrientationHelper.isLandscape ? 9.sp : 14.sp,
                 color: Colors.grey.shade600),
           ),
         ),
@@ -358,18 +368,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+          padding: EdgeInsets.only(
+              left: OrientationHelper.isLandscape ? 35.w : 15.w,
+              right: OrientationHelper.isLandscape ? 35.w : 15.w),
           child: LineLoginButton(onPressed: _openLineLogin),
         ),
         SizedBox(height: 16.h),
         Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w),
+          padding: EdgeInsets.only(
+              left: OrientationHelper.isLandscape ? 35.w : 15.w,
+              right: OrientationHelper.isLandscape ? 35.w : 15.w),
           child: GoogleLoginButton(onPressed: _openGoogleLogin),
         ),
         SizedBox(height: 16.h),
         if (Platform.isIOS)
           Padding(
-            padding: EdgeInsets.only(left: 15.w, right: 15.w),
+            padding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 35.w : 15.w,
+                right: OrientationHelper.isLandscape ? 35.w : 15.w),
             child: AppleLoginButton(onPressed: _openAppleLogin),
           ),
       ],
@@ -385,7 +401,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             Text(
               "term.read".tr(), //I have read and accepted the
-              style: TextStyle(fontSize: 12.sp, color: kDark),
+              style: TextStyle(fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp, color: kDark),
             ),
             GestureDetector(
               onTap: () {
@@ -398,12 +414,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 "term.use".tr(), //Terms of USE
                 gradient: const LinearGradient(
                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
-                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
+                style: TextStyle(fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp, fontWeight: FontWeight.w400),
               ),
             ),
             Text(
               "term.and".tr(), // and
-              style: TextStyle(fontSize: 12.sp, color: kDark),
+              style: TextStyle(fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp, color: kDark),
             ),
             GestureDetector(
               onTap: () {
@@ -416,7 +432,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 "term.policy".tr(), //Private Policy.
                 gradient: const LinearGradient(
                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
-                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
+                style: TextStyle(fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp, fontWeight: FontWeight.w400),
               ),
             ),
           ],

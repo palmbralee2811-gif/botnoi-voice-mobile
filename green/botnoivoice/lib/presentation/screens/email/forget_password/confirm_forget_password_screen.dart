@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/screens/email/forget_password/new_password_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -49,6 +50,7 @@ class _ConfirmForgetPasswordScreenState
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          iconSize: OrientationHelper.isLandscape ? 10.sp : 16.sp,
           onPressed: () {
             Navigator.pop(context);
           },
@@ -63,7 +65,7 @@ class _ConfirmForgetPasswordScreenState
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(24.w),
+          padding: EdgeInsets.all( OrientationHelper.isLandscape ? 20.w : 24.w),
           child: Form(
             key: _formKey,
             child: Column(
@@ -81,7 +83,7 @@ class _ConfirmForgetPasswordScreenState
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 20.sp,
+                    fontSize: OrientationHelper.isLandscape ? 14.sp : 20.sp,
                     decoration: TextDecoration.none,
                   ),
                   textAlign: TextAlign.left,
@@ -97,7 +99,7 @@ class _ConfirmForgetPasswordScreenState
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                     decoration: TextDecoration.none,
                   ),
                   textAlign: TextAlign.left,
@@ -106,23 +108,25 @@ class _ConfirmForgetPasswordScreenState
                 TextFormField(
                   controller: _codeController,
                   style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                      TextStyle(fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                     labelText: 'confirm_forget_password.link'.tr(),
                     labelStyle:
-                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400),
+                        TextStyle(fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide.none,
                     ),
-                    errorStyle: TextStyle(fontSize: 14.sp),
+                    errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
                     errorMaxLines: 5,
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) =>
-                      value!.isEmpty ? 'confirm_forget_password.please_enter_link_from_email'.tr() : null,
+                  validator: (value) => value!.isEmpty
+                      ? 'confirm_forget_password.please_enter_link_from_email'
+                          .tr()
+                      : null,
                 ),
                 SizedBox(height: 16.h),
                 GradientTextButton(
@@ -143,7 +147,8 @@ class _ConfirmForgetPasswordScreenState
                       } else {
                         NotificationDialog(
                           context: context,
-                          text: "confirm_forget_password.link_invalid_try_again".tr(),
+                          text: "confirm_forget_password.link_invalid_try_again"
+                              .tr(),
                         ).showErrorModal(context);
                       }
                     }

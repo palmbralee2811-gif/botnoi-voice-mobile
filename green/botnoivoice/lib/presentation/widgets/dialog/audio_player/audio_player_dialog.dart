@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player/share_file.dart';
 import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/ios_file_repository.dart';
@@ -208,10 +209,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all( OrientationHelper.isLandscape ? 12.w : 16.w),
         child: isLoading
             ? SizedBox(
-                height: 150.h,
+                height: OrientationHelper.isLandscape ? 180.h : 150.h,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -223,7 +224,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     'audio_player.audio_created_successfully'
                         .tr(), //สร้างเสียงสำเร็จ
                     style: GoogleFonts.prompt(
-                      fontSize: 20.sp,
+                      fontSize: OrientationHelper.isLandscape ? 14.sp : 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -231,7 +232,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   Text(
                     'File: ${widget.filePath.split('/').last}',
                     style: GoogleFonts.prompt(
-                      fontSize: 14.sp,
+                      fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                       color: Colors.black,
                     ),
                     textAlign: TextAlign.center,
@@ -241,12 +242,12 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        iconSize: 30.sp,
+                        iconSize: OrientationHelper.isLandscape ? 15.sp : 30.sp,
                         icon: GradientIcon(
                           icon: isPlaying
                               ? Icons.pause_circle_outline
                               : Icons.play_circle_outline,
-                          size: 30.sp,
+                          size: OrientationHelper.isLandscape ? 15.sp : 30.sp,
                           gradient: const LinearGradient(
                             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                             begin: Alignment.topLeft,
@@ -287,7 +288,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
                   GradientRow(
                     onPressed: () async {
                       if (Platform.isIOS) {
@@ -304,7 +305,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                       children: [
                         Icon(
                           Icons.file_download_outlined,
-                          size: 25.sp,
+                          size: OrientationHelper.isLandscape ? 15.sp : 25.sp,
                           color: Colors.white,
                         ),
                         SizedBox(width: 8.w),
@@ -312,14 +313,14 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           'audio_player.download'.tr(), //ดาวน์โหลด
                           style: GoogleFonts.prompt(
                             color: Colors.white,
-                            fontSize: 16.sp,
+                            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: OrientationHelper.isLandscape ? 20.h : 10.h),
                   Builder(
                     builder: (BuildContext context) {
                       return GradientRow(
@@ -331,7 +332,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           children: [
                             Icon(
                               Icons.share,
-                              size: 25.sp,
+                              size: OrientationHelper.isLandscape ? 15.sp : 25.sp,
                               color: Colors.white,
                             ),
                             SizedBox(width: 8.w),
@@ -339,7 +340,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                               'share'.tr(), //แชร์
                               style: GoogleFonts.prompt(
                                 color: Colors.white,
-                                fontSize: 16.sp,
+                                fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -348,7 +349,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                       );
                     },
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: OrientationHelper.isLandscape ? 20.h : 10.h),
                   GradientCloseButton(
                     text: 'audio_player.close'.tr(), //ปิด
                     onPressed: () {

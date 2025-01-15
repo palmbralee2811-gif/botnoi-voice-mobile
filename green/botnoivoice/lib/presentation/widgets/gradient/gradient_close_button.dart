@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +18,7 @@ class GradientCloseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 50.h,
+      height: OrientationHelper.isLandscape ? 75.h : 50.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.r),
       ),
@@ -50,7 +51,7 @@ class GradientCloseButton extends StatelessWidget {
                 child: GradientText(
                   text: text,
                   style: GoogleFonts.prompt(
-                    fontSize: 16.sp,
+                    fontSize: OrientationHelper.isLandscape ? 13.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFFA19F9D),
                   ),

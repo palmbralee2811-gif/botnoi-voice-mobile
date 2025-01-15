@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +12,7 @@ class GoogleLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   const GoogleLoginButton({super.key, required this.onPressed});
 
-  @override  
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -31,21 +32,22 @@ class GoogleLoginButton extends StatelessWidget {
                   ),
                 ),
                 padding: EdgeInsets.zero,
-                minimumSize: Size(224.w, 48.h),
+                minimumSize:
+                    OrientationHelper.isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
                     'assets/images/auth_screen/google-icon.svg',
-                    height: 32.h,
-                    width: 32.w,
+                    height: OrientationHelper.isLandscape ? 52.h : 32.h,
+                    width: OrientationHelper.isLandscape ? 32.w : 32.w,
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: OrientationHelper.isLandscape ? 12.w : 16.w),
                   Text(
                     'auth.sign_in_with_google'.tr(),
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp,
                       color: kDark,
                       decoration: TextDecoration.none,
                     ),

@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -21,7 +22,7 @@ class EmailPermissionDialog extends StatelessWidget {
       ),
       child: SizedBox(
         width: 288.w,
-        height: 510.h,
+        height: OrientationHelper.isLandscape ? 600.h : 510.h,
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16.w),
@@ -31,13 +32,13 @@ class EmailPermissionDialog extends StatelessWidget {
                 SvgPicture.asset(
                   'assets/images/icon/shield-check.svg',
                   width: 54.w,
-                  height: 54.h,
+                  height: OrientationHelper.isLandscape ? 84.h : 54.h,
                 ),
                 SizedBox(height: 16.h),
                 Text(
                   'email_permission_dialog.request_email_permission'.tr(), //ขออนุญาตในการเก็บข้อมูลอีเมล
                   style: GoogleFonts.prompt(
-                    fontSize: 16.sp,
+                    fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                     color: kDark,
                   ),
@@ -47,7 +48,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 Text(
                   'email_permission_dialog.email_permission_info'.tr(), //เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณตามเงื่อนไขการเก็บข้อมูลอีเมลของคุณ โดยข้อมูลนี้จะถูกเก็บรักษาอย่างปลอดภัยและไม่ใช้เพื่อวัตถุประสงค์ทางโฆษณาโดยไม่ได้รับความยินยอม
                   style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                     fontWeight: FontWeight.w400,
                     color: kGray,
                   ),
@@ -57,7 +58,7 @@ class EmailPermissionDialog extends StatelessWidget {
                 Text(
                   'email_permission_dialog.revoke_permission_later'.tr(), //คุณสามารถยกเลิกการอนุญาตได้ในภายหลัง
                   style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                     fontWeight: FontWeight.w400,
                     color: kDark,
                   ),
@@ -71,7 +72,7 @@ class EmailPermissionDialog extends StatelessWidget {
                     onPressed();
                   },
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 22.h : 12.h),
                 GradientCloseButton(
                   text: 'email_permission_dialog.disagree'.tr(), //ไม่ยินยอม
                   onPressed: () {

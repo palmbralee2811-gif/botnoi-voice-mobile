@@ -1,6 +1,9 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/data/models/speaker_model.dart';
+import 'package:botnoivoice/data/models/speaker_model/genders_list.dart';
+import 'package:botnoivoice/data/models/speaker_model/languages_list.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
+import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_filter_button.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
@@ -22,11 +25,11 @@ class SpeakerScreen extends StatefulWidget {
 }
 
 class _SpeakerScreenState extends State<SpeakerScreen> {
-  final Logger logger = Logger(); // Logger for Debugging mode
-  bool ishover = false; // ต้องการให้ข้อมูล ishover เก็บไว้ใน cache ของเครื่อง
+  final Logger logger = Logger();
+  bool ishover = false;
   String? speakerId;
-  String? language; // เลือกภาษา
-  String? gender; // เลือกเพศ
+  String? language;
+  String? gender;
   Set<int> selectedIndex = <int>{};
   AudioPlayer audioPlayer = AudioPlayer();
   List<SpeakerEntity>? speakerItem;
@@ -34,106 +37,90 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   String selectedLanguage = 'thai'.tr();
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   bool isExpanded = false;
-
-  ///เลือกเพศ
-  String selectedGender = 'ช/ญ';
+  String selectedGender = 'mw'.tr();
   String selectedGenderImage = 'assets/images/gender/all.svg';
-
-  /// เลือกเพศ
   bool changeIcon = false;
-
-  //เพิ่มหมวดหมู่
-  Set<String> selectedCategories = {}; // เก็บหมวดหมู่ที่เลือก
-
-  //เพิ่มสไตล์เสียง
+  Set<String> selectedCategories = {};
   Set<String> selectedStyles = {};
-  String selectedVoiceStyle = ''; // ตัวแปรเก็บเสียงที่ผู้ใช้เลือก
-  String selectedStyle = ''; // สไตล์เสียงที่เลือก
-
-List<String> _getVoiceStyles(BuildContext context) {
-  Set<String> voiceStylesSet = {};
-  String languageCode = Localizations.localeOf(context).languageCode;
-
-  for (var speaker in SpeakerModel.speakerItem) {
-    // ตรวจสอบหมวดหมู่ที่เลือก
-    if (selectedCategories.isNotEmpty) {
-      if (languageCode == 'th') {
-        // กรองสไตล์ที่มีหมวดหมู่ที่เลือก
-        if (speaker.speechStyle
-            .any((category) => selectedCategories.contains(category))) {
-          voiceStylesSet.addAll(speaker.voiceStyle);
-        }
-      } else {
-        if (speaker.engSpeechStyle
-            .any((category) => selectedCategories.contains(category))) {
-          voiceStylesSet.addAll(speaker.engVoiceStyle);
-        }
-      }
-    } else {
-      // ถ้าไม่ได้เลือกหมวดหมู่ ให้แสดงทุกสไตล์
-      if (languageCode == 'th') {
-        voiceStylesSet.addAll(speaker.voiceStyle);
-      } else {
-        voiceStylesSet.addAll(speaker.engVoiceStyle);
-      }
-    }
-  }
-
-  return voiceStylesSet.toList();
-}
-
-List<String> _getSpeechStyles(BuildContext context) {
-  Set<String> speechStylesSet = {};
-  String languageCode = Localizations.localeOf(context).languageCode;
-
-  for (var speaker in SpeakerModel.speakerItem) {
-    // ตรวจสอบสไตล์ที่เลือก
-    if (selectedStyles.isNotEmpty) {
-      if (languageCode == 'th') {
-        // กรองหมวดหมู่ที่มีสไตล์ที่เลือก
-        if (speaker.voiceStyle
-            .any((style) => selectedStyles.contains(style))) {
-          speechStylesSet.addAll(speaker.speechStyle);
-        }
-      } else {
-        if (speaker.engVoiceStyle
-            .any((style) => selectedStyles.contains(style))) {
-          speechStylesSet.addAll(speaker.engSpeechStyle);
-        }
-      }
-    } else {
-      // ถ้าไม่ได้เลือกสไตล์ ให้แสดงทุกหมวดหมู่
-      if (languageCode == 'th') {
-        speechStylesSet.addAll(speaker.speechStyle);
-      } else {
-        speechStylesSet.addAll(speaker.engSpeechStyle);
-      }
-    }
-  }
-
-  return speechStylesSet.toList();
-}
-
+  String selectedVoiceStyle = '';
+  String selectedStyle = '';
 
   @override
   void initState() {
     super.initState();
-    language = 'TH'; //กำหนดภาษาเริ่มต้นเป็นไทย
-    gender = ''; // กำหนดให้เริ่มต้นแสดงทุกเพศ
+    language = 'TH';
+    gender = '';
+  }
+
+  List<String> _getVoiceStyles(BuildContext context) {
+    Set<String> voiceStylesSet = {};
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    for (var speaker in SpeakerModel.speakerItem) {
+      if (selectedCategories.isNotEmpty) {
+        if (languageCode == 'th') {
+          if (speaker.speechStyle
+              .any((category) => selectedCategories.contains(category))) {
+            voiceStylesSet.addAll(speaker.voiceStyle);
+          }
+        } else {
+          if (speaker.engSpeechStyle
+              .any((category) => selectedCategories.contains(category))) {
+            voiceStylesSet.addAll(speaker.engVoiceStyle);
+          }
+        }
+      } else {
+        if (languageCode == 'th') {
+          voiceStylesSet.addAll(speaker.voiceStyle);
+        } else {
+          voiceStylesSet.addAll(speaker.engVoiceStyle);
+        }
+      }
+    }
+
+    return voiceStylesSet.toList();
+  }
+
+  List<String> _getSpeechStyles(BuildContext context) {
+    Set<String> speechStylesSet = {};
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    for (var speaker in SpeakerModel.speakerItem) {
+      if (selectedStyles.isNotEmpty) {
+        if (languageCode == 'th') {
+          if (speaker.voiceStyle
+              .any((style) => selectedStyles.contains(style))) {
+            speechStylesSet.addAll(speaker.speechStyle);
+          }
+        } else {
+          if (speaker.engVoiceStyle
+              .any((style) => selectedStyles.contains(style))) {
+            speechStylesSet.addAll(speaker.engSpeechStyle);
+          }
+        }
+      } else {
+        if (languageCode == 'th') {
+          speechStylesSet.addAll(speaker.speechStyle);
+        } else {
+          speechStylesSet.addAll(speaker.engSpeechStyle);
+        }
+      }
+    }
+
+    return speechStylesSet.toList();
   }
 
   @override
-  // build: ฟังก์ชันหลักที่แสดงหน้าจอทั้งหมด รวมถึง AppBar และ body ที่เรียกใช้ buildFilterNavbar
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
         title: Align(
-          alignment: const FractionalOffset(0.4, 0.6),
+          alignment: const FractionalOffset(0.49, 0.6),
           child: SvgPicture.asset(
             'assets/images/logo/appbar-icon.svg',
-            width: 30.w,
-            height: 34.h,
+            width: OrientationHelper.isLandscape ? 50.w : 30.w,
+            height: OrientationHelper.isLandscape ? 54.h : 34.h,
           ),
         ),
       ),
@@ -141,300 +128,111 @@ List<String> _getSpeechStyles(BuildContext context) {
     );
   }
 
-// buildFilterNavbar: ส่วนหลักของหน้าจอ แบ่งเป็นแถวต่างๆ เช่น แถวสำหรับปุ่มภาษา เพศ Favorite
-// และแถวสำหรับปุ่มตัวกรอง (สไตล์และหมวดหมู่) รวมถึงส่วนแสดงลำโพงและปุ่มยืนยัน
-// เพิ่มการแสดง AlertDialog เมื่อเลือกเสียง
-Widget buildFilterNavbar(BuildContext context) {
-  return Column(
-    children: [
-      // กรอบ Filter Navbar ที่ปรับขนาดความสูง
-      Container(
-        height: 110.h, // ความสูงกรอบ Filter
-        width: double.infinity,
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // แถวแรกสำหรับปุ่มภาษา, เพศ และ Favorite
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                buildLanguageButtonTrigger(context),
-                SizedBox(width: 10.w),
-                buildGenderButtonTrigger(context),
-                SizedBox(width: 10.w),
-                Expanded(child: buildFavoriteButton()),
-              ],
-            ),
-            SizedBox(height: 10.h), // ระยะห่างระหว่างแถว
-            // แถวที่สองสำหรับปุ่มสไตล์และหมวดหมู่
-            Row(
-              children: [
-                Flexible(
-                  flex: 4,
-                  child: buildFilterButton(
-                    context,
-                    title: selectedStyles.isEmpty
-                        ? 'style'.tr()
-                        : 'style_plural'.tr(namedArgs: {
-                            'count': selectedStyles.length.toString()
-                          }), // แสดงจำนวนสไตล์
-                    items: _getVoiceStyles(
-                        context), // ดึงข้อมูล voiceStyle จาก SpeakerModel
-                    selectedItems: selectedStyles,
-                    onConfirm: (newSelected) {
-                      setState(() {
-                        selectedStyles = newSelected;
-                        // อัปเดตหมวดหมู่ที่สัมพันธ์กับสไตล์
-                        selectedCategories = selectedCategories
-                            .where((category) =>
-                                _getSpeechStyles(context).contains(category))
-                            .toSet();
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Flexible(
-                  flex: 4,
-                  child: buildFilterButton(
-                    context,
-                    title: selectedCategories.isEmpty
-                        ? 'category'.tr()
-                        : 'category_plural'.tr(namedArgs: {
-                            'count': selectedCategories.length.toString()
-                          }), // แสดงจำนวนหมวดหมู่
-                    items: _getSpeechStyles(
-                        context), // ดึงข้อมูล speechStyle จาก SpeakerModel
-                    selectedItems: selectedCategories,
-                    onConfirm: (newSelected) {
-                      setState(() {
-                        selectedCategories = newSelected;
-                        // อัปเดตสไตล์ที่สัมพันธ์กับหมวดหมู่
-                        selectedStyles = selectedStyles
-                            .where((style) =>
-                                _getVoiceStyles(context).contains(style))
-                            .toSet();
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      // ส่วนที่เลื่อนของ Speaker
-      Expanded(
-        child: Container(
-          color: const Color(0xFFFFFFFF),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ishover
-                    ? buildFavoriteFilter(context)
-                    : buildMultipleSpeaker(context),
-              ],
+  Widget buildFilterNavbar(BuildContext context) {
+    return Column(
+      children: [
+        buildFilterContainer(context),
+        Expanded(
+          child: Container(
+            color: const Color(0xFFFFFFFF),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ishover
+                      ? buildFavoriteFilter(context)
+                      : buildMultipleSpeaker(context),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      // Spacer เพื่อเลื่อนปุ่มขึ้น
-      SizedBox(height: 20.h), // เพิ่มระยะว่าง
-      // ปุ่ม "ตกลง" ที่เลื่อนขึ้นมา
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: SizedBox(
-          height: 50.h,
-          child: GradientTextButton(
-            text: 'confirm'.tr(), //ตกลง
-            onPressed: () {
-              if (audioPlayer.state == PlayerState.playing) {
-                audioPlayer.stop();
-              }
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      ),
-      SizedBox(height: 40.h), // เพิ่มระยะห่างด้านล่าง
-    ],
-  );
-}
+        SizedBox(height: OrientationHelper.isLandscape ? 25.h : 20.h),
+        buildBottomNavbarButton(),
+        SizedBox(height: OrientationHelper.isLandscape ? 25.h : 40.h),
+      ],
+    );
+  }
 
-// buildLanguageButton: แสดง Modal สำหรับเลือกภาษา พร้อมรายการตัวเลือกของภาษาที่รองรับ
-  Widget buildLanguageButton(BuildContext context, StateSetter setState) {
-    return Padding(
-      padding: EdgeInsets.all(20.w),
+  Widget buildFilterContainer(BuildContext context) {
+    return Container(
+      height: OrientationHelper.isLandscape ? 150.h : 110.h,
+      width: double.infinity,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: Colors.transparent,
-            width: 280.w,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'language'.tr(),
-                      style: GoogleFonts.prompt(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.close,
-                        size: 24.sp,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 15.h,
-                ),
-                _buildLanguageFilter(
-                    'Thai (Thailand) - ไทย',
-                    'assets/images/national_flag/thai.png',
-                    'TH',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'English (UK) - อังกฤษ',
-                    'assets/images/national_flag/english.png',
-                    'EN',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Indonesia - อินโดนีเซีย',
-                    'assets/images/national_flag/indonesia.png',
-                    'ID',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Japanese - ญี่ปุ่น',
-                    'assets/images/national_flag/japanese.png',
-                    'JA',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Laos - ลาว',
-                    'assets/images/national_flag/laos.png',
-                    'LO',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Burmese - เมียนมาร์',
-                    'assets/images/national_flag/burmese.png',
-                    'MY',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Vietnamese - เวียดนาม',
-                    'assets/images/national_flag/vietnamese.png',
-                    'VI',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Chinese (Simplified) - จีน',
-                    'assets/images/national_flag/chinese.png',
-                    'ZH',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Cambodia - กัมพูชา',
-                    'assets/images/national_flag/cambodia.png',
-                    'KM',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Filipino - ฟิลิปปินส์',
-                    'assets/images/national_flag/filipino.png',
-                    'FIL',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Arabic - อาหรับ',
-                    'assets/images/national_flag/arabic.png',
-                    'AR',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'German - เยอรมัน',
-                    'assets/images/national_flag/german.png',
-                    'DE',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Spanish - สเปน',
-                    'assets/images/national_flag/spanish.png',
-                    'ES',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'French - ฝรั่งเศส',
-                    'assets/images/national_flag/french.png',
-                    'FR',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Dutch - ดัตช์',
-                    'assets/images/national_flag/dutch.png',
-                    'NL',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Korea - เกาหลี',
-                    'assets/images/national_flag/korea.png',
-                    'KO',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Malaysia - มาเลเซีย',
-                    'assets/images/national_flag/malaysia.png',
-                    'MS',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Portuguese - โปรตุเกส',
-                    'assets/images/national_flag/portuguese.png',
-                    'PT-BR',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Russia - รัสเซีย',
-                    'assets/images/national_flag/russia.png',
-                    'RU',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Hindi - ฮินดู',
-                    'assets/images/national_flag/hindi.png',
-                    'HI',
-                    context,
-                    setState),
-                _buildLanguageFilter(
-                    'Italian - อิตาลี',
-                    'assets/images/national_flag/italian.png',
-                    'IT',
-                    context,
-                    setState),
-              ],
-            ),
-          ),
+          buildFilterRow1(context),
+          SizedBox(height: OrientationHelper.isLandscape ? 20.h : 10.h),
+          buildFilterRow2(context),
         ],
       ),
     );
   }
 
-// buildFavoriteButton: ปุ่ม Favorite (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด/ปิดการแสดงผลลำโพงที่ผู้ใช้ Favorite ไว้
+  Widget buildFilterRow1(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        buildLanguageButtonTrigger(context),
+        SizedBox(width: 10.w),
+        buildGenderButtonTrigger(context),
+        SizedBox(width: 10.w),
+        Expanded(child: buildFavoriteButton()),
+      ],
+    );
+  }
+
+  Widget buildFilterRow2(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          flex: 4,
+          child: buildFilterButton(
+            context,
+            title: selectedStyles.isEmpty
+                ? 'style'.tr()
+                : 'style_plural'
+                    .tr(namedArgs: {'count': selectedStyles.length.toString()}),
+            items: _getVoiceStyles(context),
+            selectedItems: selectedStyles,
+            onConfirm: (newSelected) {
+              setState(() {
+                selectedStyles = newSelected;
+                selectedCategories = selectedCategories
+                    .where((category) =>
+                        _getSpeechStyles(context).contains(category))
+                    .toSet();
+              });
+            },
+          ),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          flex: 4,
+          child: buildFilterButton(
+            context,
+            title: selectedCategories.isEmpty
+                ? 'category'.tr()
+                : 'category_plural'.tr(
+                    namedArgs: {'count': selectedCategories.length.toString()}),
+            items: _getSpeechStyles(context),
+            selectedItems: selectedCategories,
+            onConfirm: (newSelected) {
+              setState(() {
+                selectedCategories = newSelected;
+                selectedStyles = selectedStyles
+                    .where((style) => _getVoiceStyles(context).contains(style))
+                    .toSet();
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildFavoriteButton() {
     return InkWell(
       onTap: () {
@@ -442,335 +240,340 @@ Widget buildFilterNavbar(BuildContext context) {
           ishover = !ishover;
         });
       },
-      child: Favorite(ishover: ishover),
-    );
-  }
-
-// buildGenderButton: แสดง Modal สำหรับเลือกเพศ พร้อมรายการตัวเลือกของเพศที่รองรับ
-  Widget buildGenderButton(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      width: 280.w,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'gender'.tr(),
-                style: GoogleFonts.prompt(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  Icons.close,
-                  size: 24.sp,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 15.h,
-          ),
-          _buildGenderFilter(
-              'ชาย/หญิง', 'assets/images/gender/all.svg', '', context),
-          _buildGenderFilter(
-              'หญิง', 'assets/images/gender/woman.svg', 'ผู้หญิง', context),
-          _buildGenderFilter(
-              'ชาย', 'assets/images/gender/man.svg', 'ผู้ชาย', context)
-        ],
+      child: SizedBox(
+        height: OrientationHelper.isLandscape ? 55.h : 35.h,
+        child: Favorite(ishover: ishover),
       ),
     );
   }
 
-// buildBottomNavbarButton: ปุ่ม "ตกลง" (อยู่ที่ด้านล่างของหน้าจอ) ใช้สำหรับยืนยันการกระทำและปิดหน้าจอ
   Widget buildBottomNavbarButton() {
-    return SizedBox(
-      height: 60.h,
-      width: 320.w,
-      child: Padding(
-        padding:
-            EdgeInsets.only(left: 20.w, top: 10.h, right: 20.w, bottom: 10.h),
-        child: SizedBox(
-          child: GradientTextButton(
-            text: 'confirm'.tr(), //ตกลง
-            onPressed: () {
-              if (audioPlayer.state == PlayerState.playing) {
-                audioPlayer.stop();
-              }
-              Navigator.pop(context);
-            },
-          ),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: OrientationHelper.isLandscape ? 40.w : 20.w),
+      child: SizedBox(
+        height: OrientationHelper.isLandscape ? 70.h : 50.h,
+        child: GradientTextButton(
+          text: 'confirm'.tr(),
+          onPressed: () {
+            if (audioPlayer.state == PlayerState.playing) {
+              audioPlayer.stop();
+            }
+            Navigator.pop(context);
+          },
         ),
       ),
     );
   }
 
-// _buildLanguageFilter: สร้างรายการตัวเลือกภาษาแต่ละตัวใน Modal ภาษา
-  Widget _buildLanguageFilter(String text, String imagePath, String lang,
+  Widget buildLanguageButtonTrigger(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isExpanded = true;
+        });
+        showModalBottomSheet(
+          backgroundColor: Colors.white,
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return SizedBox(
+                  child: SingleChildScrollView(
+                    child: buildLanguageButton(context, setState),
+                  ),
+                );
+              },
+            );
+          },
+        ).whenComplete(() {
+          setState(() {
+            isExpanded = false;
+          });
+        });
+      },
+      child: buildButtonContainer(
+        context,
+        selectedLanguageImage,
+        selectedLanguage,
+        isExpanded,
+      ),
+    );
+  }
+
+  Widget buildGenderButtonTrigger(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          changeIcon = !changeIcon;
+        });
+        showModalBottomSheet(
+          backgroundColor: Colors.white,
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+                return SizedBox(
+                  height: OrientationHelper.isLandscape ? 440.h : 220.h,
+                  child: SingleChildScrollView(
+                      child: buildGenderButton(context, setModalState)),
+                );
+              },
+            );
+          },
+        ).whenComplete(() {
+          setState(() {
+            changeIcon = false;
+          });
+        });
+      },
+      child: buildButtonContainer(
+        context,
+        selectedGenderImage,
+        selectedGender,
+        changeIcon,
+      ),
+    );
+  }
+
+  Widget buildButtonContainer(
+      BuildContext context, String imagePath, String text, bool isExpanded) {
+    return Container(
+      width: OrientationHelper.isLandscape ? 90.w : 100.w,
+      height: OrientationHelper.isLandscape ? 55.h : 35.h,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        border: Border.all(color: const Color(0xFFE2E3E9), width: 1),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          imagePath.endsWith('.svg')
+              ? SvgPicture.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 18.w : 28.w,
+                  height: OrientationHelper.isLandscape ? 48.h : 28.h,
+                )
+              : Image.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 18.w : 28.w,
+                  height: OrientationHelper.isLandscape ? 48.h : 28.h,
+                ),
+          SizedBox(width: OrientationHelper.isLandscape ? 5.w : 6.w),
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                text,
+                style: GoogleFonts.prompt(
+                    fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp),
+              ),
+            ),
+          ),
+          Icon(
+            isExpanded
+                ? Icons.keyboard_arrow_up_sharp
+                : Icons.keyboard_arrow_down_sharp,
+            size: OrientationHelper.isLandscape ? 30 : 20,
+            color: const Color(0xFF323130),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildLanguageButton(BuildContext context, StateSetter setState) {
+    return Padding(
+      padding: EdgeInsets.all(OrientationHelper.isLandscape ? 10.w : 20.w),
+      child: Column(
+        children: [
+          Container(
+            color: Colors.transparent,
+            width: OrientationHelper.isLandscape ? 140.w : 280.w,
+            child: Column(
+              children: [
+                buildModalHeader(context, 'language'.tr()),
+                SizedBox(height: OrientationHelper.isLandscape ? 10.h : 15.h),
+                ...buildLanguageFilters(context, setState),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> buildLanguageFilters(
       BuildContext context, StateSetter setState) {
-    String displayText = text;
+    return languages.map((lang) {
+      return _buildLanguageFilter(
+        lang['thaiName']!,
+        lang['englishName']!,
+        lang['image']!,
+        lang['code']!,
+        context,
+        setState,
+      );
+    }).toList();
+  }
+
+  Widget buildGenderButton(BuildContext context, StateSetter setState) {
+    return Padding(
+      padding: EdgeInsets.all(OrientationHelper.isLandscape ? 10.w : 20.w),
+      child: Column(
+        children: [
+          Container(
+            color: Colors.transparent,
+            width: OrientationHelper.isLandscape ? 140.w : 280.w,
+            child: Column(
+              children: [
+                buildModalHeader(context, 'gender'.tr()),
+                SizedBox(height: OrientationHelper.isLandscape ? 10.h : 15.h),
+                ...buildGenderFilters(context, setState),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> buildGenderFilters(BuildContext context, StateSetter setState) {
+    return genders.map((gender) {
+      return _buildGenderFilter(
+        gender['thaiName']!,
+        gender['englishName']!,
+        gender['image']!,
+        gender['code']!,
+        context,
+        setState,
+      );
+    }).toList();
+  }
+
+  Widget _buildLanguageFilter(
+      String thaiName,
+      String englishName,
+      String imagePath,
+      String lang,
+      BuildContext context,
+      StateSetter setState) {
+    String displayText = thaiName;
     String languageCode = Localizations.localeOf(context).languageCode;
 
     if (languageCode == 'th') {
-      switch (lang) {
-        case 'TH':
-          displayText = 'ไทย';
-          break;
-        case 'EN':
-          displayText = 'อังกฤษ';
-          break;
-        case 'ID':
-          displayText = 'อินโดนีเซีย';
-          break;
-        case 'JA':
-          displayText = 'ญี่ปุ่น';
-          break;
-        case 'LO':
-          displayText = 'ลาว';
-          break;
-        case 'MY':
-          displayText = 'เมียนมาร์';
-          break;
-        case 'VI':
-          displayText = 'เวียดนาม';
-          break;
-        case 'ZH':
-          displayText = 'จีน';
-          break;
-        case 'KM':
-          displayText = 'กัมพูชา';
-          break;
-        case 'FIL':
-          displayText = 'ฟิลิปปินส์';
-          break;
-        case 'AR':
-          displayText = 'อาหรับ';
-          break;
-        case 'DE':
-          displayText = 'เยอรมัน';
-          break;
-        case 'ES':
-          displayText = 'สเปน';
-          break;
-        case 'FR':
-          displayText = 'ฝรั่งเศส';
-          break;
-        case 'NL':
-          displayText = 'ดัตช์';
-          break;
-        case 'KO':
-          displayText = 'เกาหลี';
-          break;
-        case 'MS':
-          displayText = 'มาเลเซีย';
-          break;
-        case 'PT-BR':
-          displayText = 'โปรตุเกส';
-          break;
-        case 'RU':
-          displayText = 'รัสเซีย';
-          break;
-        case 'HI':
-          displayText = 'ฮินดู';
-          break;
-        case 'IT':
-          displayText = 'อิตาลี';
-          break;
-        default:
-          displayText = text;
-      }
+      displayText = thaiName;
     } else if (languageCode == 'en') {
-      switch (lang) {
-        case 'TH':
-          displayText = 'Thai (Thailand)';
-          break;
-        case 'EN':
-          displayText = 'English (UK)';
-          break;
-        case 'ID':
-          displayText = 'Indonesia';
-          break;
-        case 'JA':
-          displayText = 'Japanese';
-          break;
-        case 'LO':
-          displayText = 'Laos';
-          break;
-        case 'MY':
-          displayText = 'Burmese';
-          break;
-        case 'VI':
-          displayText = 'Vietnamese';
-          break;
-        case 'ZH':
-          displayText = 'Chinese (Simplified)';
-          break;
-        case 'KM':
-          displayText = 'Cambodia';
-          break;
-        case 'FIL':
-          displayText = 'Filipino';
-          break;
-        case 'AR':
-          displayText = 'Arabic';
-          break;
-        case 'DE':
-          displayText = 'German';
-          break;
-        case 'ES':
-          displayText = 'Spanish';
-          break;
-        case 'FR':
-          displayText = 'French';
-          break;
-        case 'NL':
-          displayText = 'Dutch';
-          break;
-        case 'KO':
-          displayText = 'Korea';
-          break;
-        case 'MS':
-          displayText = 'Malaysia';
-          break;
-        case 'PT-BR':
-          displayText = 'Portuguese';
-          break;
-        case 'RU':
-          displayText = 'Russia';
-          break;
-        case 'HI':
-          displayText = 'Hindi';
-          break;
-        case 'IT':
-          displayText = 'Italian';
-          break;
-        default:
-          displayText = text;
-      }
+      displayText = englishName;
     }
 
     return InkWell(
       onTap: () {
         setState(() {
-          // เซ็ตค่า language ตาม lang ที่ส่งเข้ามา
           language = lang;
           selectedLanguage = displayText;
           selectedLanguageImage = imagePath;
         });
         Navigator.pop(context);
       },
-      child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
-        width: 320.w,
-        color: const Color(0xFFFFFFFF),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset(
-                  imagePath,
-                  width: 23.w,
-                  height: 23.h,
-                ),
-                SizedBox(
-                  width: 20.w,
-                ),
-                Text(
-                  displayText,
-                  style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
-                    fontWeight: selectedLanguage == displayText
-                        ? FontWeight.w600
-                        : FontWeight.normal,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      child: buildFilterOption(context, imagePath, displayText),
     );
   }
 
-// _buildGenderFilter: สร้างรายการตัวเลือกเพศแต่ละตัวใน Modal เพศ
-  String genderNameDefaultThai = "ชาย/หญิง";
-  String genderNameDefaultEnglish = "Man/Woman";
-  String genderNameManThai = "ชาย";
-  String genderNameManEnglish = "Man";
-  String genderNameWomanThai = "หญิง";
-  String genderNameWomanEnglish = "Woman";
-
   Widget _buildGenderFilter(
-      String text,
+      String thaiName,
+      String englishName,
       String imagePath,
-      String gen, ///// เลือกเพศ
-      BuildContext context) {
-    String displayText;
-    if (text == 'ชาย/หญิง' || text == 'Man/Woman') {
-      displayText = Localizations.localeOf(context).languageCode == 'th'
-          ? genderNameDefaultThai
-          : genderNameDefaultEnglish;
-    } else if (text == 'ชาย' || text == 'Man') {
-      displayText = Localizations.localeOf(context).languageCode == 'th'
-          ? genderNameManThai
-          : genderNameManEnglish;
-    } else if (text == 'หญิง' || text == 'Woman') {
-      displayText = Localizations.localeOf(context).languageCode == 'th'
-          ? genderNameWomanThai
-          : genderNameWomanEnglish;
-    } else {
-      displayText = text;
+      String gen,
+      BuildContext context,
+      StateSetter setState) {
+    String displayText = thaiName;
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    if (languageCode == 'th') {
+      displayText = thaiName;
+    } else if (languageCode == 'en') {
+      displayText = englishName;
     }
 
     return InkWell(
       onTap: () {
-        selectedGender = displayText;
-        selectedGenderImage = imagePath;
-        gender = gen;
+        setState(() {
+          selectedGender = displayText;
+          selectedGenderImage = imagePath;
+          gender = gen;
+        });
         Navigator.pop(context);
       },
-      child: Container(
-        padding: EdgeInsets.only(left: 10.w),
-        height: 42.h,
-        width: 320.w,
-        color: const Color(0xFFFFFFFF),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SvgPicture.asset(
-              imagePath,
-              width: 23.w,
-              height: 23.h,
+      child: buildFilterOption(context, imagePath, displayText),
+    );
+  }
+
+  Widget buildFilterOption(
+      BuildContext context, String imagePath, String text) {
+    return Container(
+      padding:
+          EdgeInsets.only(left: OrientationHelper.isLandscape ? 0.w : 10.w),
+      height: OrientationHelper.isLandscape ? 82.h : 42.h,
+      width: 320.w,
+      color: const Color(0xFFFFFFFF),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          imagePath.endsWith('.svg')
+              ? SvgPicture.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 13.w : 23.w,
+                  height: OrientationHelper.isLandscape ? 43.h : 23.h,
+                )
+              : Image.asset(
+                  imagePath,
+                  width: OrientationHelper.isLandscape ? 13.w : 23.w,
+                  height: OrientationHelper.isLandscape ? 43.h : 23.h,
+                ),
+          SizedBox(width: OrientationHelper.isLandscape ? 10.w : 20.w),
+          Text(
+            text,
+            style: GoogleFonts.prompt(
+              fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
+              fontWeight: (selectedLanguage == text || selectedGender == text)
+                  ? FontWeight.w600
+                  : FontWeight.normal,
             ),
-            SizedBox(width: 20.w),
-            Text(
-              displayText,
-              style: GoogleFonts.prompt(
-                fontSize: 14.sp,
-                fontWeight: selectedGender == displayText
-                    ? FontWeight.w600
-                    : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-// buildMultipleSpeaker: แสดงรายการลำโพงทั้งหมด (อยู่ในส่วนเนื้อหาหลักของหน้าจอ) โดยจะใช้ข้อมูลที่กรองจาก _filterSpeakers
+  Widget buildModalHeader(BuildContext context, String title) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.prompt(
+            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.close,
+            size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+            color: Colors.black,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildMultipleSpeaker(BuildContext context) {
-    final filteredItems = _filterSpeakers(); // ดึงรายการที่ผ่านการกรอง
+    final filteredItems = _filterSpeakers();
 
     if (filteredItems.isEmpty) {
       return Center(
@@ -781,17 +584,16 @@ Widget buildFilterNavbar(BuildContext context) {
       );
     }
 
-    // ใช้ SingleChildScrollView เพื่อให้กริดสามารถเลื่อนได้
     return SingleChildScrollView(
       child: SizedBox(
-        height: 420.h, // ใช้ ScreenUtil เพื่อปรับขนาดตามหน้าจอ
-        width: 320.w, // ใช้ ScreenUtil เพื่อปรับขนาดตามหน้าจอ
+        height: 420.h,
+        width: 320.w,
         child: GridView.builder(
           itemCount: filteredItems.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, // จำนวนคอลัมน์ในกริด
+            crossAxisCount: 3,
             crossAxisSpacing: 0,
-            childAspectRatio: 0.8, // ปรับอัตราส่วนของ child แต่ละตัว
+            childAspectRatio: 0.8,
           ),
           itemBuilder: (context, index) {
             final data = filteredItems[index];
@@ -802,70 +604,61 @@ Widget buildFilterNavbar(BuildContext context) {
     );
   }
 
-  // _filterSpeakers: ฟังก์ชันกรองลำโพงตามเงื่อนไขที่ผู้ใช้เลือก เช่น ภาษา เพศ สไตล์เสียง หรือหมวดหมู่
-List<SpeakerEntity> _filterSpeakers() {
-  List<SpeakerEntity> filteredSpeakers = [];
-  String languageCode = Localizations.localeOf(context).languageCode;
+  List<SpeakerEntity> _filterSpeakers() {
+    List<SpeakerEntity> filteredSpeakers = [];
+    String languageCode = Localizations.localeOf(context).languageCode;
 
-  // เริ่มต้นด้วยการกรองตามภาษา
-  filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-    return item.language == language;
-  }).toList();
-
-  if (filteredSpeakers.isEmpty) {
-    // หากไม่มีลำโพงที่ตรงกับภาษาหลัก ให้กรองจาก availableLanguage
     filteredSpeakers = SpeakerModel.speakerItem.where((item) {
-      return item.availableLanguage.contains(language?.toLowerCase()) &&
-          item.language != language;
+      return item.language == language;
     }).toList();
+
+    if (filteredSpeakers.isEmpty) {
+      filteredSpeakers = SpeakerModel.speakerItem.where((item) {
+        return item.availableLanguage.contains(language?.toLowerCase()) &&
+            item.language != language;
+      }).toList();
+    }
+
+    if (gender != null && gender!.isNotEmpty) {
+      filteredSpeakers =
+          filteredSpeakers.where((item) => item.gender == gender).toList();
+    }
+
+    if (selectedStyles.isNotEmpty) {
+      filteredSpeakers = filteredSpeakers.where((item) {
+        if (languageCode == 'th') {
+          return item.voiceStyle.isNotEmpty &&
+              item.voiceStyle.any((style) => selectedStyles.contains(style));
+        } else {
+          return item.engVoiceStyle.isNotEmpty &&
+              item.engVoiceStyle.any((style) => selectedStyles.contains(style));
+        }
+      }).toList();
+    }
+
+    if (selectedCategories.isNotEmpty) {
+      filteredSpeakers = filteredSpeakers.where((item) {
+        if (languageCode == 'th') {
+          return item.speechStyle.isNotEmpty &&
+              item.speechStyle
+                  .any((category) => selectedCategories.contains(category));
+        } else {
+          return item.engSpeechStyle.isNotEmpty &&
+              item.engSpeechStyle
+                  .any((category) => selectedCategories.contains(category));
+        }
+      }).toList();
+    }
+
+    if (filteredSpeakers.isEmpty) {
+      logger.w("No speakers match all filters.");
+      return [];
+    }
+
+    logger.i("Total speakers after filtering: ${filteredSpeakers.length}");
+    return filteredSpeakers;
   }
 
-  // กรองตามเพศ (ถ้ามีการเลือก)
-  if (gender != null && gender!.isNotEmpty) {
-    filteredSpeakers =
-        filteredSpeakers.where((item) => item.gender == gender).toList();
-  }
-
-  // กรองตามสไตล์เสียง
-  if (selectedStyles.isNotEmpty) {
-    filteredSpeakers = filteredSpeakers.where((item) {
-      if (languageCode == 'th') {
-        return item.voiceStyle.isNotEmpty &&
-            item.voiceStyle.any((style) => selectedStyles.contains(style));
-      } else {
-        return item.engVoiceStyle.isNotEmpty &&
-            item.engVoiceStyle.any((style) => selectedStyles.contains(style));
-      }
-    }).toList();
-  }
-
-  // กรองตามหมวดหมู่เสียง
-  if (selectedCategories.isNotEmpty) {
-    filteredSpeakers = filteredSpeakers.where((item) {
-      if (languageCode == 'th') {
-        return item.speechStyle.isNotEmpty &&
-            item.speechStyle
-                .any((category) => selectedCategories.contains(category));
-      } else {
-        return item.engSpeechStyle.isNotEmpty &&
-            item.engSpeechStyle
-                .any((category) => selectedCategories.contains(category));
-      }
-    }).toList();
-  }
-
-  // หากลำโพงที่ผ่านการกรองเป็นศูนย์ ให้คืนค่าว่าง (ไม่แสดงลำโพง)
-  if (filteredSpeakers.isEmpty) {
-    logger.w("No speakers match all filters.");
-    return [];
-  }
-
-  logger.i("Total speakers after filtering: ${filteredSpeakers.length}");
-  return filteredSpeakers;
-}
-
-// buildSingleSpeaker: สร้างการ์ดแสดงลำโพงแต่ละตัว (เรียกใช้ใน buildMultipleSpeaker และ buildFavoriteFilter)
-// พร้อมปุ่มสำหรับเล่นเสียงและ Favorite
   Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -888,8 +681,7 @@ List<SpeakerEntity> _filterSpeakers() {
 
               final speakerProvider =
                   Provider.of<SpeakerRepositoryImpl>(context, listen: false);
-              speakerProvider.setSpeaker(
-                  speakerItem); // ตั้งค่า currentSpeaker ให้เป็น speakerItem
+              speakerProvider.setSpeaker(speakerItem);
 
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setLanguage(speakerItem.language.toLowerCase());
@@ -921,8 +713,8 @@ List<SpeakerEntity> _filterSpeakers() {
             child: Column(
               children: [
                 Container(
-                  width: 100.w,
-                  height: 113.h,
+                  width: OrientationHelper.isLandscape ? 120.w : 100.w,
+                  height: OrientationHelper.isLandscape ? 313.h : 113.h,
                   decoration: BoxDecoration(
                     border: GradientBoxBorder(
                       width: 3.w,
@@ -940,7 +732,6 @@ List<SpeakerEntity> _filterSpeakers() {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      //TODO: Update Speaker Data
                       image: AssetImage(
                         speakerItem.squareImage,
                       ),
@@ -953,7 +744,7 @@ List<SpeakerEntity> _filterSpeakers() {
                         blurRadius: 10,
                         spreadRadius: 1,
                         color: selectedIndex.contains(index)
-                            ? const Color(0xFF9340FF).withOpacity(0.6) //new
+                            ? const Color(0xFF9340FF).withOpacity(0.6)
                             : Colors.transparent,
                         offset: const Offset(0, 4),
                       ),
@@ -983,7 +774,9 @@ List<SpeakerEntity> _filterSpeakers() {
                               child: selectedIndex.contains(index)
                                   ? Container(
                                       width: 31.w,
-                                      height: 17.h,
+                                      height: OrientationHelper.isLandscape
+                                          ? 30.h
+                                          : 17.h,
                                       decoration: BoxDecoration(
                                         gradient: const LinearGradient(
                                           colors: [
@@ -992,16 +785,21 @@ List<SpeakerEntity> _filterSpeakers() {
                                           ],
                                         ),
                                         color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
+                                        borderRadius: BorderRadius.circular(
+                                            OrientationHelper.isLandscape
+                                                ? 16.r
+                                                : 8.r),
                                       ),
                                       child: Center(
-                                        child: Text('เลือก',
+                                        child: Text('select'.tr(),
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontStyle: GoogleFonts.prompt()
                                                   .fontStyle,
-                                              fontSize: 10.sp,
+                                              fontSize:
+                                                  OrientationHelper.isLandscape
+                                                      ? 6.sp
+                                                      : 8.sp,
                                               fontWeight: FontWeight.bold,
                                             )),
                                       ),
@@ -1039,14 +837,22 @@ List<SpeakerEntity> _filterSpeakers() {
                                         },
                                         child: SvgPicture.asset(
                                           'assets/images/icon/heart-on.svg',
-                                          width: 20.w,
-                                          height: 20.h,
+                                          width: OrientationHelper.isLandscape
+                                              ? 50.w
+                                              : 20.w,
+                                          height: OrientationHelper.isLandscape
+                                              ? 50.h
+                                              : 20.h,
                                         ),
                                       )
                                     : SvgPicture.asset(
                                         'assets/images/icon/heart-off.svg',
-                                        width: 20.w,
-                                        height: 20.h,
+                                        width: OrientationHelper.isLandscape
+                                            ? 50.w
+                                            : 20.w,
+                                        height: OrientationHelper.isLandscape
+                                            ? 50.h
+                                            : 20.h,
                                       ),
                               ),
                             )
@@ -1071,26 +877,32 @@ List<SpeakerEntity> _filterSpeakers() {
                                     },
                                     child: SvgPicture.asset(
                                       'assets/images/icon/play-on.svg',
-                                      width: 16.h,
-                                      height: 16.w,
+                                      width: OrientationHelper.isLandscape
+                                          ? 12.h
+                                          : 16.h,
+                                      height: OrientationHelper.isLandscape
+                                          ? 12.w
+                                          : 16.w,
                                     ),
                                   )
                                 : SvgPicture.asset(
                                     'assets/images/icon/play-off.svg',
-                                    width: 16.h,
-                                    height: 16.w,
+                                    width: OrientationHelper.isLandscape
+                                        ? 12.h
+                                        : 16.h,
+                                    height: OrientationHelper.isLandscape
+                                        ? 12.w
+                                        : 16.w,
                                   ),
                             SizedBox(
                               width: 3.w,
                             ),
                             Expanded(
                                 child: Text(
-                              // speakerItem.thaiName,
                               Localizations.localeOf(context).languageCode ==
                                       'th'
-                                  ? speakerItem.thaiName // แสดงชื่อไทย
-                                  : speakerItem
-                                      .engName, // แสดงชื่ออังกฤษหากเปลี่ยน
+                                  ? speakerItem.thaiName
+                                  : speakerItem.engName,
                               style: GoogleFonts.prompt(
                                 fontSize: 10.sp,
                                 color: Colors.white,
@@ -1111,8 +923,6 @@ List<SpeakerEntity> _filterSpeakers() {
     );
   }
 
-// buildFavoriteFilter: แสดงรายการลำโพงที่ Favorite ไว้ (อยู่ในส่วนเนื้อหาหลักของหน้าจอ)
-// แสดงผลเมื่อผู้ใช้เปิดโหมด Favorite
   Widget buildFavoriteFilter(BuildContext context) {
     return SizedBox(
       height: 420.h,
@@ -1138,175 +948,6 @@ List<SpeakerEntity> _filterSpeakers() {
 
           return buildSingleSpeaker(data, index);
         },
-      ),
-    );
-  }
-
-// buildLanguageButtonTrigger: ปุ่มเลือกภาษา (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal
-// เพื่อให้ผู้ใช้สามารถเลือกภาษาที่ต้องการ
-  Widget buildLanguageButtonTrigger(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          isExpanded = true;
-        });
-        showModalBottomSheet(
-          backgroundColor: Colors.white,
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return SingleChildScrollView(
-                  child: Row(
-                    children: [
-                      buildLanguageButton(context, setState),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        ).whenComplete(() {
-          setState(() {
-            isExpanded = false;
-          });
-        });
-      },
-      child: Container(
-        width: 100.w,
-        height: 35.h,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              selectedLanguageImage,
-              width: 28.w,
-              height: 28.h,
-            ),
-            SizedBox(width: 6.w),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  selectedLanguage,
-                  style: GoogleFonts.prompt(fontSize: 16.sp),
-                ),
-              ),
-            ),
-            Icon(
-              isExpanded
-                  ? Icons.keyboard_arrow_up_sharp
-                  : Icons.keyboard_arrow_down_sharp,
-              size: 20,
-              color: const Color(0xFF323130),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-// buildGenderButtonTrigger: ปุ่มเลือกเพศ (อยู่ในแถวแรกของหน้าจอ) ใช้สำหรับเปิด Modal
-// เพื่อให้ผู้ใช้สามารถเลือกเพศที่ต้องการกรองลำโพง
-  Widget buildGenderButtonTrigger(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          changeIcon = !changeIcon;
-        });
-        showModalBottomSheet(
-          backgroundColor: Colors.white,
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-                return SizedBox(
-                  height: 220.h,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      children: [
-                        buildGenderButton(context),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ).whenComplete(() {
-          setState(() {
-            changeIcon = false;
-          });
-        });
-      },
-      child: Container(
-        width: 100.w,
-        height: 35.h,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(4),
-          ),
-          border: Border.all(
-            color: const Color(0xFFE2E3E9),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: 3.w),
-                SvgPicture.asset(
-                  selectedGenderImage,
-                  width: 28.w,
-                  height: 28.h,
-                ),
-                SizedBox(width: 6.w),
-                if (gender == '')
-                  Text(
-                    Localizations.localeOf(context).languageCode == 'th'
-                        ? 'ช/ญ'
-                        : 'M/W',
-                    style: GoogleFonts.prompt(
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                if (gender.toString() != '')
-                  Text(
-                    selectedGender,
-                    style: GoogleFonts.prompt(
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                changeIcon
-                    ? const Icon(
-                        Icons.keyboard_arrow_up_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
-                      )
-                    : const Icon(
-                        Icons.keyboard_arrow_down_sharp,
-                        size: 20,
-                        color: Color(0xFF323130),
-                      ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

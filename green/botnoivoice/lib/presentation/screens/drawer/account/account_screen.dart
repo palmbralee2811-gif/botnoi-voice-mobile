@@ -1,14 +1,19 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -49,40 +54,41 @@ class _AccountScreenState extends State<AccountScreen> {
 
   /// ฟังก์ชันสำหรับโหลดข้อมูลผู้ใช้
   Future<void> _loadUserInfo() async {
+    // Fetch user data from Firebase
     var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-    var userInfoProvider =
-        Provider.of<UserInfoProvider>(context, listen: false);
+    var userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
+
+    // Fetch user data from Database (API)
+    var appleTokenProvider = Provider.of<AppleTokenProvider>(context, listen: false);
+    var googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
+    var lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
+    var emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "Line User";
-      userId = lineProvider.getLineUserId ?? "No UID";
+      userId = lineTokenProvider.getUserID ?? "No UID";
       email = lineProvider.getLineEmail ?? "No email found";
       isLineLoggedIn = true;
     } else if (appleProvider.isLoggedIn &&
         appleProvider.user?.providerData[0].providerId == 'apple.com') {
       displayName = appleProvider.user?.displayName ?? 'Apple User';
-      userId = appleProvider.user?.uid ?? 'No UID';
+      userId = appleTokenProvider.getUserID ?? 'No UID';
       email =
           getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
       isAppleLoggedIn = true;
     } else if (googleProvider.isLoggedIn &&
         googleProvider.user?.providerData[0].providerId == 'google.com') {
       displayName = googleProvider.user?.displayName ?? 'Google User';
-      userId = googleProvider.user?.uid ?? 'No UID';
+      userId = googleTokenProvider.getUserID ?? 'No UID';
       email =
           getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
       isGoogleLoggedIn = true;
-    } else if (emailProvider.isLoggedIn &&
-        emailProvider.user?.providerData[0].providerId == 'password') {
-      userId = emailProvider.user?.uid ?? "No UID";
-      displayName =
-          Provider.of<EmailUsernameApiProvider>(context, listen: false)
-                  .getUsername ??
-              "Email/Username User";
+    } else if (emailProvider.isLoggedIn && emailProvider.user?.providerData[0].providerId == 'password') {
+      userId = emailTokenProvider.getUserID ?? "No UID";
+      displayName = Provider.of<EmailUsernameApiProvider>(context, listen: false).getUsername ?? "Email/Username User";
 
       // ตรวจสอบการอนุญาตในการแสดงอีเมล
       if (userInfoProvider.isShowEmail) {
@@ -189,7 +195,7 @@ class _AccountScreenState extends State<AccountScreen> {
         title: Text(
           'account.profile'.tr(), //ข้อมูลส่วนตัว
           style: GoogleFonts.prompt(
-              fontSize: 16.sp,
+              fontSize: OrientationHelper.isLandscape ? 12.sp : 12.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF323130)),
         ),
@@ -198,159 +204,162 @@ class _AccountScreenState extends State<AccountScreen> {
           icon: Icon(
             Icons.arrow_back_ios,
             color: const Color(0xFF323130),
-            size: 24.sp,
+            size: OrientationHelper.isLandscape ? 10.sp : 24.sp,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20.h),
-            Row(
-              // จัดข้อความและไอคอนให้อยู่ในแนวเดียวกัน
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  'account.login_with'.tr(), //เข้าสู่ระบบด้วย
-                  style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF323130),
-                  ),
-                ),
-                SizedBox(width: 30.w), // ระยะห่างระหว่างข้อความและไอคอน
-                SvgPicture.asset(
-                  'assets/images/auth_screen/email-icon.svg',
-                  width: 20.w,
-                  height: 20.h,
-                  colorFilter: isEmailLoggedIn
-                      ? null
-                      : const ColorFilter.mode(
-                          kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
-                ),
-                SizedBox(width: 10.w),
-                Container(
-                  width: 32.w,
-                  height: 32.h,
-                  decoration: BoxDecoration(
-                    color: isLineLoggedIn
-                        ? kGreen
-                        : kGray, // เปลี่ยนเป็นสีเทาถ้าไม่ใช่ LINE
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Center(
-                    // ทำให้ไอคอนอยู่ตรงกลาง
-                    child: SvgPicture.asset(
-                      'assets/images/auth_screen/line-icon.svg',
-                      width: 24.w, // ปรับขนาดไอคอนให้เล็กลง
-                      height: 24.h, // ปรับขนาดไอคอนให้เล็กลง
-                      fit: BoxFit
-                          .contain, // ทำให้ไอคอนถูกย่อให้พอดีกับพื้นที่ที่กำหนด
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
+              Row(
+                // จัดข้อความและไอคอนให้อยู่ในแนวเดียวกัน
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'account.login_with'.tr(), //เข้าสู่ระบบด้วย
+                    style: GoogleFonts.prompt(
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF323130),
                     ),
                   ),
-                ),
-                SizedBox(width: 10.w),
-                SvgPicture.asset(
-                  'assets/images/auth_screen/google-icon.svg',
-                  width: 32.w,
-                  height: 32.h,
-                  colorFilter: isGoogleLoggedIn
-                      ? null
-                      : const ColorFilter.mode(
-                          kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
-                ),
-                SizedBox(width: 10.w),
-                SvgPicture.asset(
-                  'assets/images/auth_screen/apple-icon.svg',
-                  width: 32.w,
-                  height: 32.h,
-                  colorFilter: isAppleLoggedIn
-                      ? null
-                      : const ColorFilter.mode(
-                          kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
-                ),
-              ],
-            ),
-            SizedBox(height: 24.h), // ปรับระยะห่างระหว่างแถวให้เหมาะสม
-            UserInfoRow(
-              title: 'UID',
-              value: getDisplayUID(userId),
-              icon: Icons.copy,
-              onIconPressed: _copyUID,
-              isValueOverflow: true, // จัดการข้อความยาวให้แสดง ...
-            ),
-            SizedBox(height: 16.h),
-            UserInfoRow(
-              title: 'account.email'.tr(), //อีเมล
-              value: getMaskedEmail(),
-              icon: isEmailHidden ? Icons.visibility_off : Icons.visibility,
-              onIconPressed: () {
-                setState(() {
-                  isEmailHidden = !isEmailHidden;
-                });
-              },
-            ),
-            SizedBox(height: 16.h),
-            emailProvider.isLoggedIn &&
-                    emailProvider.user?.providerData[0].providerId == 'password'
-                ? UserInfoRow(
-                    title: 'account.username'.tr(), //ชื่อผู้ใช้
-                    value: displayName,
-                    icon: Icons.edit_rounded,
-                    onIconPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const ChangeEmailUsernameScreen(),
-                        ),
-                      );
-                    },
-                  )
-                : UserInfoRow(
-                    title: 'account.username'.tr(), //ชื่อผู้ใช้
-                    value: displayName,
+                  SizedBox(width: OrientationHelper.isLandscape ? 60.w : 30.w), // ระยะห่างระหว่างข้อความและไอคอน
+                  SvgPicture.asset(
+                    'assets/images/auth_screen/email-icon.svg',
+                    width: OrientationHelper.isLandscape ? 40.w : 20.w,
+                    height: OrientationHelper.isLandscape ? 40.h : 20.h,
+                    colorFilter: isEmailLoggedIn
+                        ? null
+                        : const ColorFilter.mode(
+                            kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
-            emailProvider.isLoggedIn &&
-                    emailProvider.user?.providerData[0].providerId == 'password'
-                ? UserInfoRow(
-                    title: 'account.password'.tr(), //รหัสผ่าน
-                    value: '********',
-                    icon: Icons.edit_rounded,
-                    onIconPressed: () async {
-                      final hasPermission = await _checkEmailPermission();
-                      if (hasPermission) {
+                  SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
+                  Container(
+                    width: OrientationHelper.isLandscape ? 42.w : 32.w,
+                    height: OrientationHelper.isLandscape ? 42.h : 32.h,
+                    decoration: BoxDecoration(
+                      color: isLineLoggedIn
+                          ? kGreen
+                          : kGray, // เปลี่ยนเป็นสีเทาถ้าไม่ใช่ LINE
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Center(
+                      // ทำให้ไอคอนอยู่ตรงกลาง
+                      child: SvgPicture.asset(
+                        'assets/images/auth_screen/line-icon.svg',
+                        width: OrientationHelper.isLandscape ? 34.w : 24.w, // ปรับขนาดไอคอนให้เล็กลง
+                        height: OrientationHelper.isLandscape ? 34.h : 24.h, // ปรับขนาดไอคอนให้เล็กลง
+                        fit: BoxFit
+                            .contain, // ทำให้ไอคอนถูกย่อให้พอดีกับพื้นที่ที่กำหนด
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
+                  SvgPicture.asset(
+                    'assets/images/auth_screen/google-icon.svg',
+                    width: OrientationHelper.isLandscape ? 42.w : 32.w,
+                    height: OrientationHelper.isLandscape ? 42.h : 32.h,
+                    colorFilter: isGoogleLoggedIn
+                        ? null
+                        : const ColorFilter.mode(
+                            kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
+                  ),
+                  SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
+                  SvgPicture.asset(
+                    'assets/images/auth_screen/apple-icon.svg', 
+                    width: OrientationHelper.isLandscape ? 52.w : 32.w,
+                    height: OrientationHelper.isLandscape ? 52.h : 32.h,
+                    colorFilter: isAppleLoggedIn
+                        ? null
+                        : const ColorFilter.mode(
+                            kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
+                  ),
+                ],
+              ),
+              SizedBox(height: 24.h), // ปรับระยะห่างระหว่างแถวให้เหมาะสม
+              UserInfoRow(
+                title: 'UID',
+                value: getDisplayUID(userId),
+                icon: Icons.copy,
+                onIconPressed: _copyUID,
+                isValueOverflow: true, // จัดการข้อความยาวให้แสดง ...
+              ),
+              SizedBox(height: 16.h),
+              UserInfoRow(
+                title: 'account.email'.tr(), //อีเมล
+                value: getMaskedEmail(),
+                icon: isEmailHidden ? Icons.visibility_off : Icons.visibility,
+                onIconPressed: () {
+                  setState(() {
+                    isEmailHidden = !isEmailHidden;
+                  });
+                },
+              ),
+              SizedBox(height: 16.h),
+              emailProvider.isLoggedIn &&
+                      emailProvider.user?.providerData[0].providerId == 'password'
+                  ? UserInfoRow(
+                      title: 'account.username'.tr(), //ชื่อผู้ใช้
+                      value: displayName,
+                      icon: Icons.edit_rounded,
+                      onIconPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ForgetPasswordScreen(),
+                            builder: (context) =>
+                                const ChangeEmailUsernameScreen(),
                           ),
                         );
-                      }
-                    },
-                  )
-                : const UserInfoRow(
-                    title: '', //ชื่อผู้ใช้
-                    value: '',
-                  ),
-            const Spacer(),
-            GradientTextButton(
-              text: 'account.logout'.tr(), //ออกจากระบบ
-              onPressed: () async {
-                await _signOut(context);
-              },
-            ),
-            SizedBox(height: 16.h),
-            if (emailProvider.isLoggedIn &&
-                emailProvider.user?.providerData[0].providerId == 'password')
-              const EmailDeleteAccountButton(),
-            SizedBox(height: 16.h),
-          ],
+                      },
+                    )
+                  : UserInfoRow(
+                      title: 'account.username'.tr(), //ชื่อผู้ใช้
+                      value: displayName,
+                    ),
+              emailProvider.isLoggedIn &&
+                      emailProvider.user?.providerData[0].providerId == 'password'
+                  ? UserInfoRow(
+                      title: 'account.password'.tr(), //รหัสผ่าน
+                      value: '********',
+                      icon: Icons.edit_rounded,
+                      onIconPressed: () async {
+                        final hasPermission = await _checkEmailPermission();
+                        if (hasPermission) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgetPasswordScreen(),
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  : const UserInfoRow(
+                      title: '', //ชื่อผู้ใช้
+                      value: '',
+                    ),
+              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 165.h),
+              // const Spacer(),
+              GradientTextButton(
+                text: 'account.logout'.tr(), //ออกจากระบบ
+                onPressed: () async {
+                  await _signOut(context);
+                },
+              ),
+              SizedBox(height: OrientationHelper.isLandscape ? 6.h : 16.h),
+              if (emailProvider.isLoggedIn &&
+                  emailProvider.user?.providerData[0].providerId == 'password')
+                const EmailDeleteAccountButton(),
+              SizedBox(height: OrientationHelper.isLandscape ? 8.h : 16.h),
+            ],
+          ),
         ),
       ),
     );
@@ -383,7 +392,7 @@ class UserInfoRow extends StatelessWidget {
           Text(
             title,
             style: GoogleFonts.prompt(
-              fontSize: 14.sp,
+              fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF323130),
             ),
@@ -397,7 +406,7 @@ class UserInfoRow extends StatelessWidget {
                   child: Text(
                     value,
                     style: GoogleFonts.prompt(
-                      fontSize: 14.sp,
+                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                       color: const Color(0xFFBBBFC4),
                     ),
                     overflow: isValueOverflow ? TextOverflow.ellipsis : null,
@@ -408,7 +417,7 @@ class UserInfoRow extends StatelessWidget {
                 if (icon != null) ...[
                   SizedBox(width: 8.w),
                   IconButton(
-                    icon: Icon(icon, size: 18.sp),
+                    icon: Icon(icon, size: OrientationHelper.isLandscape ? 12.sp : 18.sp),
                     onPressed: onIconPressed,
                   ),
                 ]

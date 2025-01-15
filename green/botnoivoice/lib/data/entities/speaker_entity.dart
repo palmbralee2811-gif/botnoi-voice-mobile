@@ -68,4 +68,42 @@ class SpeakerEntity {
     required this.languageCode,
     required this.price,
   });
+
+  factory SpeakerEntity.fromJson(Map<String, dynamic> json) {
+    return SpeakerEntity(
+      speakerId: json['speaker_id'],
+      speakerName: json['speaker_name'],
+      engName: json['eng_name'],
+      thaiName: json['thai_name'],
+      image: json['image'],
+      faceImage: json['face_image'],
+      horizontalFaceImage: json['horizontal_face_image'],
+      squareImage: json['square_image'],
+      audio: json['audio'],
+      voiceStyle: List<String>.from(json['voice_style']),
+      ageStyle: json['age_style'],
+      speechStyle: List<String>.from(json['speech_style']),
+      speed: json['speed'],
+      popularity: json['popularity'],
+      type: json['type'],
+      language: json['language'],
+      status: json['status'],
+      gender: json['gender'],
+      allowUid: List<String>.from(json['allow_uid']),
+      availableLanguage: List<String>.from(json['available_language']),
+      premier: json['premier'],
+      engAgeStyle: json['eng_age_style'],
+      engGender: json['eng_gender'],
+      engPopularity: json['eng_popularity'],
+      engSpeechStyle: List<String>.from(json['eng_speech_style']),
+      engSpeed: json['eng_speed'],
+      engVoiceStyle: List<String>.from(json['eng_voice_style']),
+      canSold: json['can_sold'],
+      priceThb: json['price_thb'],
+      priceUsd: json['price_usd'],
+      userId: json['user_id'],
+      languageCode: json['language_code'],
+      price: json['price'],
+    );
+  }
 }

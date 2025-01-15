@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
@@ -34,9 +35,9 @@ class NotificationPopup {
             Icon(
               Icons.error_outline_rounded,
               color: Colors.white,
-              size: 30.h,
+              size: OrientationHelper.isLandscape ? 60.h : 30.h,
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 10.h),
             Flexible(
               child: Text(
                 text,
@@ -45,7 +46,7 @@ class NotificationPopup {
                 maxLines: 3,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18.h,
+                  fontSize: OrientationHelper.isLandscape ? 28.h : 18.h,
                 ),
               ),
             ),
@@ -82,9 +83,9 @@ class NotificationPopup {
             Icon(
               Icons.check_rounded,
               color: Colors.white,
-              size: 30.h,
+              size: OrientationHelper.isLandscape ? 60.h : 30.h,
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 10.h),
             Flexible(
               child: Text(
                 text,
@@ -93,7 +94,7 @@ class NotificationPopup {
                 maxLines: 3,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18.h,
+                  fontSize: OrientationHelper.isLandscape ? 28.h : 18.h,
                 ),
               ),
             ),

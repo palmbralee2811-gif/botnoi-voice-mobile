@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -40,12 +41,12 @@ class Favorite extends StatelessWidget {
               ishover
                   ? Icon(
                       Icons.favorite,
-                      size: 20.sp, // ขนาดของไอคอนให้เหมาะสม
+                      size: OrientationHelper.isLandscape ? 13.sp : 20.sp, // ขนาดของไอคอนให้เหมาะสม
                       color: Colors.white,
                     )
                   : Icon(
                       Icons.favorite_border,
-                      size: 20.sp, // ขนาดของไอคอนให้เหมาะสม
+                      size: OrientationHelper.isLandscape ? 13.sp : 20.sp, // ขนาดของไอคอนให้เหมาะสม
                       color: Colors.black,
                     ),
             ],

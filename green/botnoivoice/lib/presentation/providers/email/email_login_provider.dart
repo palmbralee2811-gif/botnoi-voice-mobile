@@ -82,7 +82,7 @@ class EmailLoginProvider with ChangeNotifier {
         // ส่งอีเมลยืนยันหากยังไม่ได้รับการยืนยัน
         try {
           await userCredential.user?.sendEmailVerification();
-          _errorMessage = "'login_provider.please_verify_email'.tr() $email"; //กรุณายืนยันอีเมล:
+          _errorMessage = '${'login_provider.please_verify_email'.tr()} $email'; //กรุณายืนยันอีเมล:
           _logger.i("Verification email sent to: $email");
         } on FirebaseAuthException catch (e) {
           _errorMessage = e.message;

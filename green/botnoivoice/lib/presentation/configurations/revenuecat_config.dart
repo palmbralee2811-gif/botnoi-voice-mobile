@@ -21,8 +21,7 @@ Future<void> configureRevenueCat(BuildContext context) async {
       ); 
     } else if (Platform.isAndroid) {
       await Purchases.configure(
-        //TODO: Get the public key from RevenueCat
-        PurchasesConfiguration("")
+        PurchasesConfiguration("goog_sNwjgbXxjhOpDHOUHrgBMmYuDID")
           ..appUserID = userId,
       );
     }
@@ -32,7 +31,7 @@ Future<void> configureRevenueCat(BuildContext context) async {
   }
 }
 
-/// Get the current user ID from available providers
+/// Get the current user ID from Firebase
 Future<String> getUserId(BuildContext context) async {
   try {
     // Try LINE login provider

@@ -1,4 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -26,7 +27,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
       ),
       child: SizedBox(
         width: 288.w,
-        height: 400.h,
+        height: OrientationHelper.isLandscape ? 600.h : 400.h,
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16.w),
@@ -35,14 +36,14 @@ class DisableEmailPermissionDialog extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   'assets/images/icon/question-mark.svg',
-                  width: 54.w,
-                  height: 54.h,
+                  width: OrientationHelper.isLandscape ? 74.w : 54.w,
+                  height: OrientationHelper.isLandscape ? 74.h : 54.h,
                 ),
                 SizedBox(height: 16.h),
                 Text(
                   'disable_email_permission.disable_email_access'.tr(), //ปิดใช้งานการเข้าถึงข้อมูลอีเมล
                   style: GoogleFonts.prompt(
-                    fontSize: 16.sp,
+                    fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
                     fontWeight: FontWeight.w600,
                     color: kDark,
                   ),
@@ -50,9 +51,9 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'disable_email_permission.email_access_disabled_warning'.tr().tr(), //หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้
+                  'disable_email_permission.email_access_disabled_warning'.tr(), //หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้
                   style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                     fontWeight: FontWeight.w400,
                     color: kGray,
                   ),
@@ -62,7 +63,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 Text(
                   'disable_email_permission.do_you_want_to_disable'.tr(), //คุณต้องการที่จะปิดใช้งานหรือไม่
                   style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
+                    fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                     fontWeight: FontWeight.w400,
                     color: kDark,
                   ),
@@ -76,7 +77,7 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                     onConfirm();
                   },
                 ),
-                SizedBox(height: 12.h),
+                SizedBox(height: OrientationHelper.isLandscape ? 22.h : 12.h),
                 GradientCloseButton(
                   text: 'disable_email_permission.no'.tr(), //ไม่ต้องการ
                   onPressed: () {

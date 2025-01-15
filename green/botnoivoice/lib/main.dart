@@ -1,4 +1,5 @@
 import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
+import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
@@ -14,9 +15,11 @@ import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/googleplay_payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +32,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // บังคับ Orientation เป็นแนวตั้งเท่านั้น
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
+  await SpeakerModel.loadSpeakers();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LineSDK.instance.setup("1656375389").then((_) {
     print("LineSDK Prepared");
@@ -49,10 +46,7 @@ void main() async {
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [
-        Locale('en'),
-        Locale('th')
-      ], // Supported locales
+      supportedLocales: const [Locale('en'), Locale('th')], // Supported locales
       path: 'assets/langs', // Path to your localization files
       fallbackLocale: const Locale(
           'th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
@@ -87,13 +81,16 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailUsernameApiProvider()),
         ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
-        ChangeNotifierProvider(create: (_) => PaymentProvider()),
+        ChangeNotifierProvider(create: (_) => ApplePaymentProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
+        ChangeNotifierProvider(create: (_) => GooglePlayPaymentProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
         splitScreenMode: true,
         builder: (context, child) {
+          // เรียก OrientationHelper.init ก่อนเริ่มแสดง UI
+          OrientationHelper.init(context);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Botnoi Voice",
