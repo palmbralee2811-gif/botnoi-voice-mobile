@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:botnoivoice/data/entities/googleplay_product_entity.dart';
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 import 'package:botnoivoice/data/models/googleplay_product_model.dart';
@@ -25,8 +26,8 @@ import 'package:provider/provider.dart';
 void showPaymentDialog(BuildContext context) {
   final appleProducts = AppleProductModel.getAppleProductData();
   final googlePlayProducts = GoogleplayProductModel.getGooglePlayProductData();
-  final product =
-      Platform.isIOS ? appleProducts.first : googlePlayProducts.first;
+  final product = appleProducts.first;
+  final googleproduct = googlePlayProducts.first;
 
   showModalBottomSheet(
     context: context,
@@ -35,19 +36,26 @@ void showPaymentDialog(BuildContext context) {
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
     ),
     builder: (context) {
-      return _PaymentBottomSheetContent(product: product);
+      return _PaymentBottomSheetContent(
+        product: product,
+        googleproduct: googleproduct,
+        );
     },
   );
 }
 
 class _PaymentBottomSheetContent extends StatelessWidget {
   final AppleProduct product;
+  final GooglePlayProduct googleproduct;
 
-  const _PaymentBottomSheetContent({required this.product});
+  const _PaymentBottomSheetContent({
+    required this.product,
+    required this.googleproduct,
+    });
 
   @override
   Widget build(BuildContext context) {
-    final applePaymentProvider = Provider.of<ApplePaymentProvider>(context);
+    final applePaymentProvider = Provider.of<GooglePlayPaymentProvider>(context);
 
     return applePaymentProvider.isLoading
         ? Container(
@@ -180,7 +188,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         Provider.of<GooglePlayPaymentProvider>(context, listen: false);
 
     try {
-      await googlePaymentProvider.handlePurchase(product);
+      await googlePaymentProvider.handlePurchase(googleproduct);
 
       if (googlePaymentProvider.errorMessage == null) {
         await _loadRemainingCredits(context);

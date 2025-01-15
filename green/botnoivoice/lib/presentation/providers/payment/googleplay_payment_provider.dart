@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/entities/googleplay_product_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';
@@ -11,14 +11,14 @@ class GooglePlayPaymentProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> handlePurchase(AppleProduct product) async {
+  Future<void> handlePurchase(GooglePlayProduct product) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       _logger.i("Fetching product for ID: ${product.productId}");
-      final products = await Purchases.getProducts([product.productId]);
+      final products = await Purchases.getProducts(['mobile_100']);
 
       if (products.isNotEmpty) {
         _logger.i("Purchasing product: ${products.first.identifier}");

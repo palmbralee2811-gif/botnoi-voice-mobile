@@ -1,9 +1,9 @@
-import 'package:botnoivoice/data/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/entities/googleplay_product_entity.dart';
 
 class GoogleplayProductModel {
-  static List<AppleProduct> getGooglePlayProductData() {
+  static List<GooglePlayProduct> getGooglePlayProductData() {
     return [
-      AppleProduct(
+      GooglePlayProduct(
         id: 1,
         title: '5,000',
         productId: 'mobile_100',
@@ -12,3 +12,5 @@ class GoogleplayProductModel {
     ];
   }
 }
+
+
