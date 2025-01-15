@@ -21,13 +21,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
   final appleProducts = AppleProductModel.getAppleProductData();
   final googlePlayProducts = GoogleplayProductModel.getGooglePlayProductData();
   final product = appleProducts.first;
-  final googleproduct = googlePlayProducts.first;
+  final gproduct = googlePlayProducts.first;
 
   showModalBottomSheet(
     context: context,
@@ -38,24 +39,24 @@ void showPaymentDialog(BuildContext context) {
     builder: (context) {
       return _PaymentBottomSheetContent(
         product: product,
-        googleproduct: googleproduct,
-        );
+        gproduct: gproduct,
+      );
     },
   );
 }
 
 class _PaymentBottomSheetContent extends StatelessWidget {
   final AppleProduct product;
-  final GooglePlayProduct googleproduct;
+  final GooglePlayProduct gproduct;
 
   const _PaymentBottomSheetContent({
     required this.product,
-    required this.googleproduct,
-    });
+    required this.gproduct,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final applePaymentProvider = Provider.of<GooglePlayPaymentProvider>(context);
+    final applePaymentProvider = Provider.of<ApplePaymentProvider>(context);
 
     return applePaymentProvider.isLoading
         ? Container(
@@ -124,14 +125,20 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
                   onPressed: () async {
+                    Logger().i("Buy Now button pressed for: ${product.title}");
+
                     if (Platform.isIOS) {
                       // ใช้ Apple Payment หรือ Google Payment (เลือกตามที่เหมาะสม)
+                      Logger().i("Using Apple Payment...");
                       await _handleApplePurchase(context, product.title);
                     } else if (Platform.isAndroid) {
                       // ใช้ Google Payment เท่านั้นบน Android
+                      Logger().i("Using Google Payment...");
                       await _handleGooglePurchase(context, product.title);
                     } else {
                       // กรณีที่ไม่รองรับแพลตฟอร์ม
+                      Logger()
+                          .w("Unsupported platform. Showing error dialog...");
                       NotificationDialog(
                               context: context,
                               text: 'payment.error_user_not_logged_in'.tr(),
@@ -188,21 +195,32 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         Provider.of<GooglePlayPaymentProvider>(context, listen: false);
 
     try {
-      await googlePaymentProvider.handlePurchase(googleproduct);
+      // Log ก่อนเริ่มการซื้อ
+      Logger().i("Starting Google purchase for: $title");
+
+      await googlePaymentProvider.purchaseProduct(
+        gproduct,
+        customTitle: title, // ส่งข้อมูลเพิ่มเติมไปยัง purchaseProduct
+      );
 
       if (googlePaymentProvider.errorMessage == null) {
+        Logger().i("Purchase successful. Updating credits...");
+
         await _loadRemainingCredits(context);
+
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
-            'pointsTitle': title
-          }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
+            'pointsTitle': title,
+          }), // แสดงข้อความว่าผู้ใช้ได้รับพ้อยท์
           onPressed: () async {
-            /// Refresh Points After In-App Purchase: IAP
             await _loadRemainingCredits(context);
           },
         ).showCheckmarkModalWithAction(context);
       } else {
+        Logger().w(
+            "Purchase failed with error: ${googlePaymentProvider.errorMessage}");
+
         NotificationDialog(
           context: context,
           text: googlePaymentProvider.errorMessage!,
@@ -210,12 +228,16 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         ).showErrorModal(context);
       }
     } catch (e) {
+      Logger().e("An error occurred during the purchase: $e");
+
       NotificationDialog(
         context: context,
-        text: "${'payment.error_occurred'.tr()} $e", //เกิดข้อผิดพลาด
+        text: "${'payment.error_occurred'.tr()} $e", // แสดงข้อความข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
+      // Log ขั้นตอนสุดท้าย
+      Logger().i("Reloading remaining credits after purchase...");
       await _loadRemainingCredits(context);
     }
   }
