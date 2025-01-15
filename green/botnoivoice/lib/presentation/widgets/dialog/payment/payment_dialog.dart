@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
+import 'package:botnoivoice/data/models/googleplay_product_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -23,7 +24,9 @@ import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
   final appleProducts = AppleProductModel.getAppleProductData();
-  final product = appleProducts.first;
+  final googlePlayProducts = GoogleplayProductModel.getGooglePlayProductData();
+  final product =
+      Platform.isIOS ? appleProducts.first : googlePlayProducts.first;
 
   showModalBottomSheet(
     context: context,
@@ -113,24 +116,14 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
                   onPressed: () async {
-                    final isAppleUser =
-                        Provider.of<AppleLoginProvider>(context, listen: false)
-                            .isLoggedIn;
-                    final isGoogleUser =
-                        Provider.of<GoogleLoginProvider>(context, listen: false)
-                            .isLoggedIn;
-                    final isEmailUser =
-                        Provider.of<EmailLoginProvider>(context, listen: false)
-                            .isLoggedIn;
-
-                    if (isAppleUser) {
+                    if (Platform.isIOS) {
+                      // ใช้ Apple Payment หรือ Google Payment (เลือกตามที่เหมาะสม)
                       await _handleApplePurchase(context, product.title);
-                    } else if (isGoogleUser ||
-                        isEmailUser && Platform.isAndroid) {
-                      await _handleGooglePurchase(context, product.title);
-                    } else if (isEmailUser && Platform.isIOS) {
+                    } else if (Platform.isAndroid) {
+                      // ใช้ Google Payment เท่านั้นบน Android
                       await _handleGooglePurchase(context, product.title);
                     } else {
+                      // กรณีที่ไม่รองรับแพลตฟอร์ม
                       NotificationDialog(
                               context: context,
                               text: 'payment.error_user_not_logged_in'.tr(),
@@ -187,7 +180,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         Provider.of<GooglePlayPaymentProvider>(context, listen: false);
 
     try {
-      await googlePaymentProvider.handlePurchaseOffering('mobile_100');
+      await googlePaymentProvider.handlePurchase(product);
 
       if (googlePaymentProvider.errorMessage == null) {
         await _loadRemainingCredits(context);

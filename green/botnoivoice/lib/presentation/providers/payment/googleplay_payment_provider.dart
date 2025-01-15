@@ -11,26 +11,24 @@ class GooglePlayPaymentProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> handlePurchaseOffering(String offeringIdentifier) async {
+  Future<void> handlePurchase(AppleProduct product) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _logger.i("Fetching offerings");
-      final offerings = await Purchases.getOfferings();
+      _logger.i("Fetching product for ID: ${product.productId}");
+      final products = await Purchases.getProducts([product.productId]);
 
-      final offering = offerings.getOffering(offeringIdentifier);
-      if (offering != null && offering.availablePackages.isNotEmpty) {
-        _logger.i("Purchasing package from offering: $offeringIdentifier");
+      if (products.isNotEmpty) {
+        _logger.i("Purchasing product: ${products.first.identifier}");
         final purchaseResult =
-            await Purchases.purchasePackage(offering.availablePackages.first);
+            await Purchases.purchaseStoreProduct(products.first);
 
         _logger.i("Purchase successful: $purchaseResult");
       } else {
-        _logger
-            .w("No available package found for offering: $offeringIdentifier");
-        _errorMessage = "No packages available for this offering.";
+        _logger.w("No product found for ID: ${product.productId}");
+        _errorMessage = "Product not found.";
       }
     } catch (e) {
       _logger.e("Error during purchase: $e");
