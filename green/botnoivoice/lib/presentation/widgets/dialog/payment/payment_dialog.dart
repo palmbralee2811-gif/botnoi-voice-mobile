@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
@@ -9,6 +11,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/googleplay_payment_provider.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -110,7 +113,30 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
                   onPressed: () async {
-                    await _handlePurchase(context, product.title);
+                    final isAppleUser =
+                        Provider.of<AppleLoginProvider>(context, listen: false)
+                            .isLoggedIn;
+                    final isGoogleUser =
+                        Provider.of<GoogleLoginProvider>(context, listen: false)
+                            .isLoggedIn;
+                    final isEmailUser =
+                        Provider.of<EmailLoginProvider>(context, listen: false)
+                            .isLoggedIn;
+
+                    if (isAppleUser) {
+                      await _handleApplePurchase(context, product.title);
+                    } else if (isGoogleUser ||
+                        isEmailUser && Platform.isAndroid) {
+                      await _handleGooglePurchase(context, product.title);
+                    } else if (isEmailUser && Platform.isIOS) {
+                      await _handleGooglePurchase(context, product.title);
+                    } else {
+                      NotificationDialog(
+                              context: context,
+                              text: 'payment.error_user_not_logged_in'.tr(),
+                              onPressed: () {})
+                          .showErrorModal(context);
+                    }
                   },
                 ),
                 SizedBox(height: OrientationHelper.isLandscape ? 10.h : 20.h),
@@ -119,7 +145,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
           );
   }
 
-  Future<void> _handlePurchase(BuildContext context, String title) async {
+  Future<void> _handleApplePurchase(BuildContext context, String title) async {
     final paymentProvider =
         Provider.of<ApplePaymentProvider>(context, listen: false);
 
@@ -142,6 +168,43 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         NotificationDialog(
           context: context,
           text: paymentProvider.errorMessage!,
+          onPressed: () {},
+        ).showErrorModal(context);
+      }
+    } catch (e) {
+      NotificationDialog(
+        context: context,
+        text: "${'payment.error_occurred'.tr()} $e", //เกิดข้อผิดพลาด
+        onPressed: () {},
+      ).showErrorModal(context);
+    } finally {
+      await _loadRemainingCredits(context);
+    }
+  }
+
+  Future<void> _handleGooglePurchase(BuildContext context, String title) async {
+    final googlePaymentProvider =
+        Provider.of<GooglePlayPaymentProvider>(context, listen: false);
+
+    try {
+      await googlePaymentProvider.handlePurchaseOffering('mobile_100');
+
+      if (googlePaymentProvider.errorMessage == null) {
+        await _loadRemainingCredits(context);
+        NotificationDialog(
+          context: context,
+          text: 'payment.received_points'.tr(namedArgs: {
+            'pointsTitle': title
+          }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
+          onPressed: () async {
+            /// Refresh Points After In-App Purchase: IAP
+            await _loadRemainingCredits(context);
+          },
+        ).showCheckmarkModalWithAction(context);
+      } else {
+        NotificationDialog(
+          context: context,
+          text: googlePaymentProvider.errorMessage!,
           onPressed: () {},
         ).showErrorModal(context);
       }
