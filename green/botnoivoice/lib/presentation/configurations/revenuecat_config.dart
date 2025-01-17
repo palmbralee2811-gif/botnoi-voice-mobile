@@ -12,6 +12,12 @@ final _logger = Logger();
 
 /// Configure RevenueCat with the current user ID
 Future<void> configureRevenueCat(BuildContext context) async {
+
+  //TODO: Deubgging
+  // Set log level for debugging
+  await Purchases.setLogLevel(LogLevel.debug);
+  // await Purchases.setLogLevel(LogLevel.info);
+
   try {
     final userId = await getUserId(context);
     if (Platform.isIOS) {
