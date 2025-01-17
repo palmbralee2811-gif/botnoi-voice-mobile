@@ -7,4 +7,4 @@ String _productionUrl = "https://api-voice.botnoi.ai";
 String _stagingUrl = "https://api-voice-staging.botnoi.ai";
 
 /// Returns the API URL for the current environment (Production or Staging)
-String get apiUrl => _productionUrl;
+String get apiUrl => _stagingUrl;
