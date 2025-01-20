@@ -127,7 +127,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                     } else if (Platform.isAndroid) {
                       // ใช้ Google Payment เท่านั้นบน Android
                       Logger().i("Using Google Payment...");
-                      await _handleGooglePurchase(context, 'mobile_100');
+                      await _handleGooglePurchase(context, product.title);
                     } else {
                       // กรณีที่ไม่รองรับแพลตฟอร์ม
                       Logger()
@@ -183,33 +183,39 @@ class _PaymentBottomSheetContent extends StatelessWidget {
     }
   }
 
-  Future<void> _handleGooglePurchase(BuildContext context, String offeringIdentifier) async {
-    final googlePaymentProvider = Provider.of<GooglePaymentProvider>(context, listen: false);
+  Future<void> _handleGooglePurchase(
+      BuildContext context, String offeringIdentifier) async {
+    // ดึง instance ของ GooglePaymentProvider
+    final googlePaymentProvider =
+        Provider.of<GooglePaymentProvider>(context, listen: false);
 
     try {
       Logger()
           .i("Initiating Google purchase for offering: $offeringIdentifier");
 
-      // Call the provider's method to handle the purchase via offerings
+      // เรียกใช้งาน GooglePaymentProvider เพื่อเริ่มการซื้อ
       await googlePaymentProvider.handlePurchaseOffering(offeringIdentifier);
 
-      // Check for errors
+      // ตรวจสอบผลลัพธ์
       if (googlePaymentProvider.errorMessage == null) {
         Logger().i("Purchase successful. Updating credits...");
-        await _loadRemainingCredits(context);
+        await _loadRemainingCredits(context); // โหลดเครดิตที่เหลือใหม่
 
+        // แสดงข้อความแจ้งว่าซื้อสำเร็จ
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
-            'pointsTitle': offeringIdentifier,
+            'pointsTitle': offeringIdentifier, // ชื่อสินค้า (mobile_100)
           }),
           onPressed: () async {
-            await _loadRemainingCredits(context);
+            await _loadRemainingCredits(context); // อัปเดตเครดิตในหน้าจอ
           },
         ).showCheckmarkModalWithAction(context);
       } else {
         Logger().w(
             "Purchase failed with error: ${googlePaymentProvider.errorMessage}");
+
+        // แสดงข้อความแจ้งว่าซื้อล้มเหลว
         NotificationDialog(
           context: context,
           text: googlePaymentProvider.errorMessage!,
@@ -218,6 +224,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       }
     } catch (e) {
       Logger().e("An error occurred during the purchase: $e");
+
+      // แสดงข้อความแจ้งเมื่อเกิดข้อผิดพลาด
       NotificationDialog(
         context: context,
         text: "${'payment.error_occurred'.tr()} $e",
@@ -225,7 +233,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       ).showErrorModal(context);
     } finally {
       Logger().i("Reloading remaining credits after purchase...");
-      await _loadRemainingCredits(context);
+      await _loadRemainingCredits(context); // โหลดเครดิตใหม่อีกครั้งในทุกกรณี
     }
   }
 
