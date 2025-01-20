@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:botnoivoice/api_key_token.dart';
+import 'package:botnoivoice/presentation/configurations/api_key_config.dart';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +27,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
     };
 
     Map<String, String> headers = {
-      'X-API-BOTNOI': emailUsernameApiToken,
+      'X-API-BOTNOI': emailUsernameApiKey,
       'Content-Type': 'application/json'
     };
 
@@ -56,7 +56,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
   Future<void> getEmailByUsername(String? usernameId) async {
     String url = '$apiUrl/api/dashboard/get_email_mobile?username=$usernameId';
     Map<String, String> headers = {
-      'X-API-BOTNOI': emailUsernameApiToken,
+      'X-API-BOTNOI': emailUsernameApiKey,
       'Content-Type': 'application/json'
     };
 
@@ -91,7 +91,7 @@ class EmailUsernameApiProvider extends ChangeNotifier {
   Future<void> getUsernameByEmail(String? email) async {
     String url = '$apiUrl/api/dashboard/get_username_id?email=$email';
     Map<String, String> headers = {
-      'X-API-BOTNOI': emailUsernameApiToken,
+      'X-API-BOTNOI': emailUsernameApiKey,
       'Content-Type': 'application/json'
     };
 

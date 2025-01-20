@@ -1,4 +1,4 @@
-import 'package:botnoivoice/api_key_token.dart';
+import 'package:botnoivoice/presentation/configurations/api_key_config.dart';
 import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
@@ -13,7 +13,7 @@ import 'package:botnoivoice/presentation/providers/email/email_username_api_prov
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/firebase_options.dart';
+import 'package:botnoivoice/presentation/configurations/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
@@ -34,7 +34,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SpeakerModel.loadSpeakers();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await LineSDK.instance.setup(lineSdkToken).then((_) {
+  await LineSDK.instance.setup(lineSdkChannelId).then((_) {
     print("LineSDK Prepared");
   });
 
