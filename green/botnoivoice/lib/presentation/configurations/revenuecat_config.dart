@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:botnoivoice/api_key_token.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
@@ -22,12 +23,12 @@ Future<void> configureRevenueCat(BuildContext context) async {
     final userId = await getUserId(context);
     if (Platform.isIOS) {
       await Purchases.configure(
-        PurchasesConfiguration("appl_mImKODlZTfTPWctkaQrVLpkMUuz")
+        PurchasesConfiguration(appleRevenueCatApiKey)
           ..appUserID = userId,
       ); 
     } else if (Platform.isAndroid) {
       await Purchases.configure(
-        PurchasesConfiguration("goog_sNwjgbXxjhOpDHOUHrgBMmYuDID")
+        PurchasesConfiguration(googleRevenueCatApiKey)
           ..appUserID = userId,
       );
     }
