@@ -44,10 +44,9 @@ class GooglePaymentProvider with ChangeNotifier {
       } else {
         _logger.e("No offerings available.");
       }
-    } catch (e) {
-      if (e is PlatformException &&
-          e.code == PurchasesErrorCode.purchaseCancelledError) {
-        _logger.w("Purchase cancelled by user.");
+    } on PlatformException catch (e) {
+      if (e.code == PurchasesErrorCode.purchaseCancelledError.name) {
+        _logger.w("Purchase cancelled by user. Error: $e");
       } else {
         _logger.e("Error during purchase: $e");
       }
