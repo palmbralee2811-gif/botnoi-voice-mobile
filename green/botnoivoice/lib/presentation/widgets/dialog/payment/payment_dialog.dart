@@ -13,7 +13,7 @@ import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/google_payment_provider.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

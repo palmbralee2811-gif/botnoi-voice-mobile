@@ -16,7 +16,7 @@ import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';

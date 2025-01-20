@@ -6,7 +6,7 @@ import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.d
 import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

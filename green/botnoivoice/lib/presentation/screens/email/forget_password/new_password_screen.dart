@@ -2,7 +2,7 @@ import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
