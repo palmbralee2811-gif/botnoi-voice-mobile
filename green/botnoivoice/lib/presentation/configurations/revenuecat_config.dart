@@ -13,29 +13,28 @@ final _logger = Logger();
 
 /// Configure RevenueCat with the current user ID
 Future<void> configureRevenueCat(BuildContext context) async {
-
   //TODO: Deubgging
-  // Set log level for debugging
   await Purchases.setLogLevel(LogLevel.debug);
   // await Purchases.setLogLevel(LogLevel.info);
 
   try {
     final userId = await getUserId(context);
-    if (Platform.isIOS) {
-      await Purchases.configure(
-        PurchasesConfiguration(appleRevenueCatApiKey)
-          ..appUserID = userId,
-      ); 
-    } else if (Platform.isAndroid) {
-      await Purchases.configure(
-        PurchasesConfiguration(googleRevenueCatApiKey)
-          ..appUserID = userId,
-      );
-    }
+
+    await Purchases.configure(
+      PurchasesConfiguration(getRevenueCatApiKey())..appUserID = userId,
+    );
+
     _logger.d("RevenueCat configured with user ID: $userId");
   } catch (error) {
     _logger.e("Error configuring RevenueCat", error: error);
   }
+}
+
+/// Get the RevenueCat API key based on the platform
+String getRevenueCatApiKey() {
+  if (Platform.isIOS) return appleRevenueCatApiKey;
+  if (Platform.isAndroid) return googleRevenueCatApiKey;
+  throw UnsupportedError('Unsupported platform');
 }
 
 /// Get the current user ID from Firebase
