@@ -183,8 +183,10 @@ class _PaymentBottomSheetContent extends StatelessWidget {
     }
   }
 
-  Future<void> _handleGooglePurchase(BuildContext context, String offeringIdentifier) async {
-    final googlePaymentProvider = Provider.of<GooglePaymentProvider>(context, listen: false);
+  Future<void> _handleGooglePurchase(
+      BuildContext context, String offeringIdentifier) async {
+    final googlePaymentProvider =
+        Provider.of<GooglePaymentProvider>(context, listen: false);
 
     try {
       Logger()

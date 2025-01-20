@@ -1,4 +1,4 @@
-import 'package:botnoivoice/data/entities/googleplay_product_entity.dart';
+import 'package:botnoivoice/data/entities/google_product_entity.dart';
 
 class GoogleProductModel {
   static List<GoogleProduct> getGoogleProductData() {
