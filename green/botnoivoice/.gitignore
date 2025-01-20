@@ -49,3 +49,6 @@ models.jsonc
 # Ignore the specific directory
 *.history/green/botnoivoice/
 
+# Don't upload customer's data to GitHub
+*.csv
+*.csv.gz

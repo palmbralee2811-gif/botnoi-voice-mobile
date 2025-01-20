@@ -2,25 +2,30 @@
 
 ## การติดตั้งและการใช้งาน
 
+0. เข้าถึงตำแหน่งไฟล์
+   ```bash
+   cd /Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/documents/payment
+   ```
+
 1. สร้าง virtual environment:
-    ```bash
-    python3 -m venv venv
-    ```
+```bash
+python3 -m venv venv
+```
 
 2. เปิดใช้งาน virtual environment:
-    ```bash
-    source venv/bin/activate
-    ```
+```bash
+source venv/bin/activate
+```
 
 3. ติดตั้ง dependencies ที่จำเป็น:
-    ```bash
-    pip install pandas
-    ```
+```bash
+pip install pandas
+```
 
 4. รันสคริปต์ `main.py`:
-    ```bash
-    python /Users/kawin101/Desktop/payment/main.py
-    ```
+```bash
+python /Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/documents/payment/main.py
+```
 
 ## คำอธิบายสคริปต์
 

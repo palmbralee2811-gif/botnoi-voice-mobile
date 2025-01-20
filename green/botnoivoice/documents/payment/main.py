@@ -1,7 +1,7 @@
 import pandas as pd
 
 # อ่านไฟล์ CSV
-df = pd.read_csv('/Users/kawin101/Desktop/payment/non_subscription.csv', delimiter=';')
+df = pd.read_csv('/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/documents/payment/data/non_subscription.csv', delimiter=';')
 
 # เลือกเฉพาะคอลัมน์ที่ต้องการ
 df_filtered = df[['most_recent_purchase_at', 'total_spent', 'app_user_id']]
@@ -13,7 +13,7 @@ df_filtered['most_recent_purchase_at'] = pd.to_datetime(df_filtered['most_recent
 df_filtered['total_spent'] = df_filtered['total_spent'].round(2)
 
 # บันทึกผลลัพธ์ลงไฟล์ CSV
-df_filtered.to_csv('/Users/kawin101/Desktop/payment/filtered_non_subscription.csv', index=False)
+df_filtered.to_csv('/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/documents/payment/data/filtered_non_subscription.csv', index=False)
 
 # แสดงผลลัพธ์
 print(df_filtered)
