@@ -82,7 +82,8 @@
     "app_drawer": {
         "profile": "Profile",
         "buy_points": "Buy Points",
-        "security": "Security"
+        "security": "Security",
+        "redeem": "Earn points daily"
     },
     "account": {
         "uid_copy_success": "UID copied successfully",
@@ -240,5 +241,13 @@
         "use": "Terms of USE",
         "and": " and ",
         "policy": "Private Policy."
+    },
+    "redeem": {
+        "time_remaining": "Only {Timeout} hours left",
+        "description": "Free 100 points",
+        "time": "08:00 AM, {currentDate}",
+        "get_points": "Get {points} points",
+        "daily_coupon_title": "Get Coupon Daily {thaiDate}",
+        "use_now": "Get Points"
     }
 }

@@ -8,6 +8,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
@@ -49,15 +50,20 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
   Future<void> _loadUserInfo() async {
     // Fetch user data from Firebase
     var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
 
     // Fetch user data from Database (API)
-    var appleTokenProvider = Provider.of<AppleTokenProvider>(context, listen: false);
-    var googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
-    var lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
-    var emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
+    var appleTokenProvider =
+        Provider.of<AppleTokenProvider>(context, listen: false);
+    var googleTokenProvider =
+        Provider.of<GoogleTokenProvider>(context, listen: false);
+    var lineTokenProvider =
+        Provider.of<LineTokenProvider>(context, listen: false);
+    var emailTokenProvider =
+        Provider.of<EmailTokenProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       String? lineDisplayName = lineProvider.getDisplayName;
@@ -86,8 +92,11 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
     } else if (emailProvider.isLoggedIn &&
         emailProvider.user?.providerData[0].providerId == 'password') {
       setState(() {
-        displayName = Provider.of<EmailUsernameApiProvider>(context, listen: false).getUsername ?? "Unknown";
-        uid = emailTokenProvider.getUserID ?? "No UID";        
+        displayName =
+            Provider.of<EmailUsernameApiProvider>(context, listen: false)
+                    .getUsername ??
+                "Unknown";
+        uid = emailTokenProvider.getUserID ?? "No UID";
         profilePictureUrl = emailProvider.user?.photoURL ?? '';
       });
     }
@@ -205,6 +214,33 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AccountScreen(),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: 10.h),
+          // if (Platform.isIOS)
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 20.w : 30.w),
+            leading: Icon(
+              Icons.card_giftcard_outlined,
+              size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'app_drawer.redeem'.tr(), //ซื้อพ้อยท์
+              style: GoogleFonts.prompt(
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF323130),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RedeemCoupon(),
                 ),
               );
             },

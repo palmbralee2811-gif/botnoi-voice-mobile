@@ -82,7 +82,8 @@
     "app_drawer": {
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพ้อยท์",
-        "security": "ความปลอดภัย"
+        "security": "ความปลอดภัย",
+        "redeem": "รับพอยท์รายวัน"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -240,5 +241,13 @@
         "use": "ข้อกำหนดการใช้บริการ",
         "and": " และ ",
         "policy": "นโยบายความเป็นส่วนตัว"
+    },
+    "redeem": {
+        "time_remaining": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
+        "description": "รับเลย 100 พอยท์ ง่ายๆ แค่เปิดหน้า ราคาและกด คูปอง",
+        "time": "08:00 น., {currentDate}",
+        "get_points": "รับเลย {points} พอยท์",
+        "daily_coupon_title": "คูปองพอยท์ฟรีรายวัน {thaiDate}",
+        "use_now": "รับพอยท์"
     }
 }
