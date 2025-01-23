@@ -1,9 +1,12 @@
+import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
+import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
 
 class RedeemCoupon extends StatelessWidget {
   const RedeemCoupon({super.key});
@@ -20,11 +23,14 @@ class RedeemCoupon extends StatelessWidget {
       Intl.defaultLocale = 'en_US';
     }
     // Intl.defaultLocale = 'th_TH';
-    final String thaiDate = DateFormat('dd MMMM yyyy', 'th').format(localizedNow);
-    final String englishDate = DateFormat('dd MMM yyyy', 'en').format(localizedNow);
+    final String thaiDate =
+        DateFormat('dd MMMM yyyy', 'th').format(localizedNow);
+    final String englishDate =
+        DateFormat('dd MMM yyyy', 'en').format(localizedNow);
 
     String currentDate;
-    if (localizedNow.isAfter(DateTime(localizedNow.year, localizedNow.month, localizedNow.day, 8))) {
+    if (localizedNow.isAfter(
+        DateTime(localizedNow.year, localizedNow.month, localizedNow.day, 8))) {
       currentDate = languageCode == 'th' ? thaiDate : englishDate;
     } else {
       currentDate = languageCode == 'en' ? thaiDate : englishDate;
@@ -55,7 +61,8 @@ class RedeemCoupon extends StatelessWidget {
             children: [
               Text(
                 // 'คูปองพอยท์ฟรีรายวัน $thaiDate',
-                'redeem.daily_coupon_title'.tr(namedArgs: {'thaiDate': thaiDate}),
+                'redeem.daily_coupon_title'
+                    .tr(namedArgs: {'thaiDate': thaiDate}),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: isTablet ? (isLandscape ? 48 : 40) : 24,
@@ -66,7 +73,8 @@ class RedeemCoupon extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 //'08:00 AM',
-                'redeem.time'.tr(namedArgs: {'currentDate': currentDate.toString()}),
+                'redeem.time'
+                    .tr(namedArgs: {'currentDate': currentDate.toString()}),
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
@@ -90,7 +98,8 @@ class RedeemCoupon extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       // 'รับเลย $points พอยท์'.tr(),
-                      'redeem.get_points'.tr(namedArgs: {'points': points.toString()}),
+                      'redeem.get_points'
+                          .tr(namedArgs: {'points': points.toString()}),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
@@ -110,7 +119,8 @@ class RedeemCoupon extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       // 'เหลือเวลาถึงเที่ยง $timeout ชั่วโมง'.tr(),
-                      'redeem.time_remaining'.tr(namedArgs: {'Timeout': timeout.toString()}),
+                      'redeem.time_remaining'
+                          .tr(namedArgs: {'Timeout': timeout.toString()}),
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
@@ -124,12 +134,12 @@ class RedeemCoupon extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                left: isTablet ? (isLandscape ? 60.w : 20.w) : 10.w, 
-                right: isTablet ? (isLandscape ? 60.w : 20.w) : 10.w),
+                    left: isTablet ? (isLandscape ? 60.w : 20.w) : 10.w,
+                    right: isTablet ? (isLandscape ? 60.w : 20.w) : 10.w),
                 child: GradientTextButton(
                   text: 'redeem.use_now'.tr(),
-                  onPressed: () {
-                    // Handle button press
+                  onPressed: () async {
+                    await _handleCouponRedemption(context);
                   },
                 ),
               ),
@@ -138,5 +148,37 @@ class RedeemCoupon extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleCouponRedemption(BuildContext context) async {
+    final couponProvider = Provider.of<CouponProvider>(context, listen: false);
+
+    try {
+      await couponProvider.checkCoupon(context);
+
+      if (couponProvider.errorMessage == null) {
+        NotificationDialog(
+          context: context,
+          text: couponProvider.successMessage!,
+          onPressed: () {
+            callLoadCreditsApi(context);
+          },
+        ).showCheckmarkModalWithAction(context);
+      } else {
+        NotificationDialog(
+          context: context,
+          text: couponProvider.errorMessage!,
+          onPressed: () {},
+        ).showErrorModal(context);
+      }
+    } catch (e) {
+      NotificationDialog(
+        context: context,
+        text: "${'เกิดข้อผิดพลาด'.tr()} $e",
+        onPressed: () {},
+      ).showErrorModal(context);
+    } finally {
+      callLoadCreditsApi(context);
+    }
   }
 }

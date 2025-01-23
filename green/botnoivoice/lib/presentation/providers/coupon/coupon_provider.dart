@@ -38,8 +38,8 @@ import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:botnoivoice/presentation/providers/user/get_user_id.dart';
 import 'package:botnoivoice/presentation/providers/user/get_id_token.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class CouponProvider with ChangeNotifier {
   final _logger = Logger();
@@ -55,54 +55,90 @@ class CouponProvider with ChangeNotifier {
 
   String url = '$apiUrl/api/coupon/check_coupon';
 
-  Future<void> checkCoupon(BuildContext context, String couponCode) async {
+  Future<void> checkCoupon(BuildContext context) async {
     try {
-      final userId = await getUserIdAll(context);
-      _logger.d('User ID: $userId');
+      final idToken = await _fetchIdToken(context);
+      if (idToken == null) return;
 
-      final idToken = await getIdTokenAll(context);
-      if (idToken == null) {
-        _errorMessage = 'Failed to fetch ID token';
-        _logger.e(_errorMessage);
-        notifyListeners();
-        return;
-      }
+      final couponCode = await _getCouponCodeForToday();
+      if (couponCode == null) return;
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $idToken',
-        },
-        body: jsonEncode({'coupon_code': couponCode}),
-      );
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        final message = responseBody['message'];
-
-        if (message == 'Use Coupon Success') {
-          _successMessage = 'เติมคูปองสำเร็จแล้ว';
-          _logger.d(_successMessage);
-        } else if (message == 'already in use') {
-          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว';
-          _logger.w(_errorMessage);
-        } else if (message == 'Incorrect Coupon') {
-          _errorMessage = 'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง';
-          _logger.w(_errorMessage);
-        } else {
-          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว';
-          _logger.w(_errorMessage);
-        }
-      } else {
-        _errorMessage = 'เกิดข้อผิดพลาดในการเรียก API: ${response.statusCode}';
-        _logger.e(_errorMessage);
-      }
+      await _callCheckCouponApi(idToken, couponCode);
     } catch (e) {
       _errorMessage = 'เกิดข้อผิดพลาด: $e';
       _logger.e(_errorMessage);
-    } finally {
       notifyListeners();
     }
+  }
+
+  Future<String?> _fetchIdToken(BuildContext context) async {
+    final idToken = await getIdTokenAll(context);
+    if (idToken == null) {
+      _errorMessage = 'Failed to fetch ID token';
+      _logger.e(_errorMessage);
+      notifyListeners();
+    }
+    return idToken;
+  }
+
+  Future<String?> _getCouponCodeForToday() async {
+    try {
+      String jsonString = await rootBundle.loadString('assets/data/coupon.json');
+      List<dynamic> coupons = jsonDecode(jsonString);
+
+      DateTime now = DateTime.now().toUtc().add(const Duration(hours: 7)); // Convert to Bangkok time
+      String todayString = now.toIso8601String().split('T')[0];
+
+      for (var coupon in coupons) {
+        if (coupon['datetime'].startsWith(todayString)) {
+          return coupon['coupon_name'];
+        }
+      }
+
+      _errorMessage = 'No coupon available for today';
+      _logger.w(_errorMessage);
+      notifyListeners();
+      return null;
+    } catch (e) {
+      _errorMessage = 'Failed to load coupon codes: $e';
+      _logger.e(_errorMessage);
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<void> _callCheckCouponApi(String idToken, String couponCode) async {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken',
+      },
+      body: jsonEncode({'coupon_code': couponCode}),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      final message = responseBody['message'];
+
+      if (message == 'Use Coupon Success') {
+        _successMessage = 'เติมคูปองสำเร็จแล้ว';
+        _logger.d(_successMessage);
+      } else if (message == 'already in use') {
+        _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว';
+        _logger.w(_errorMessage);
+      } else if (message == 'Incorrect Coupon') {
+        _errorMessage = 'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง';
+        _logger.w(_errorMessage);
+      } else {
+        _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว';
+        _logger.w(_errorMessage);
+      }
+    } else {
+      _errorMessage = 'เกิดข้อผิดพลาดในการเรียก API: ${response.statusCode}';
+      _logger.e(_errorMessage);
+    }
+
+    notifyListeners();
   }
 }

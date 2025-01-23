@@ -2,16 +2,9 @@ import 'dart:io';
 
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/google_payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -154,7 +147,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       await paymentProvider.handlePurchase(product);
 
       if (paymentProvider.errorMessage == null) {
-        await _loadRemainingCredits(context);
+        await callLoadCreditsApi(context);
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
@@ -162,7 +155,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
           }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
           onPressed: () async {
             /// Refresh Points After In-App Purchase: IAP
-            await _loadRemainingCredits(context);
+            await callLoadCreditsApi(context);
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -179,7 +172,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      await _loadRemainingCredits(context);
+      await callLoadCreditsApi(context);
     }
   }
 
@@ -199,7 +192,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       // ตรวจสอบผลลัพธ์
       if (googlePaymentProvider.errorMessage == null) {
         Logger().i("Purchase successful. Updating credits...");
-        await _loadRemainingCredits(context); // โหลดเครดิตที่เหลือใหม่
+        await callLoadCreditsApi(context); // โหลดเครดิตที่เหลือใหม่
 
         // แสดงข้อความแจ้งว่าซื้อสำเร็จ
         NotificationDialog(
@@ -208,7 +201,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
             'pointsTitle': offeringIdentifier, // ชื่อสินค้า (mobile_100)
           }),
           onPressed: () async {
-            await _loadRemainingCredits(context); // อัปเดตเครดิตในหน้าจอ
+            await callLoadCreditsApi(context); // อัปเดตเครดิตในหน้าจอ
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -233,40 +226,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       ).showErrorModal(context);
     } finally {
       Logger().i("Reloading remaining credits after purchase...");
-      await _loadRemainingCredits(context); // โหลดเครดิตใหม่อีกครั้งในทุกกรณี
-    }
-  }
-
-  Future<void> _loadRemainingCredits(BuildContext context) async {
-    final appleProvider =
-        Provider.of<AppleLoginProvider>(context, listen: false);
-    final googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
-    final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    final emailProvider =
-        Provider.of<EmailLoginProvider>(context, listen: false);
-
-    if (appleProvider.isLoggedIn &&
-        appleProvider.user?.providerData[0].providerId == 'apple.com') {
-      await Provider.of<AppleTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
-    }
-
-    if (googleProvider.isLoggedIn &&
-        googleProvider.user?.providerData[0].providerId == 'google.com') {
-      await Provider.of<GoogleTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
-    }
-
-    if (lineProvider.isLoggedIn) {
-      await Provider.of<LineTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
-    }
-
-    if (emailProvider.isLoggedIn &&
-        emailProvider.user?.providerData[0].providerId == 'password') {
-      await Provider.of<EmailTokenProvider>(context, listen: false)
-          .loadRemainingCredits();
+      await callLoadCreditsApi(context); // โหลดเครดิตใหม่อีกครั้งในทุกกรณี
     }
   }
 }
