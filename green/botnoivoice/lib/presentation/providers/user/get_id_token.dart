@@ -85,7 +85,11 @@ Future<String?> getIdTokenApple(BuildContext context) async {
   return _getIdTokenFromProvider(context, appleProvider, 'apple.com');
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
 =======
 }
 >>>>>>> Stashed changes
