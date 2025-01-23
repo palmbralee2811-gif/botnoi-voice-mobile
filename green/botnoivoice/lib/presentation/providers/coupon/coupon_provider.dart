@@ -34,8 +34,26 @@ class CouponProvider with ChangeNotifier {
         return;
       }
 
-      //TODO: ทดสอบ พรุ่งนี้ 10:00 น. ระบบคูปอง 
+      //TODO: ทดสอบ พรุ่งนี้ 10:00 น. ระบบคูปอง
       // String? couponCode = Provider.of<CouponNameProvider>(context, listen: false).getCouponName;
+
+      /*
+        //TODO: เวลา 12.47 ไม่มีคู่ปอง จะต้อง UI เป็น dynamic
+        // 1. ถ้ามีคูปอง ให้แสดง UI ว่ามีคูปอง
+        // 2. ถ้าไม่มีคูปอง ให้แสดง UI ว่าไม่มีคูปอง
+
+        //TODO: 12:47 reponse ไม่มีข้อมูล คือต้องเฉพาะเวลา 08:00 AM. ของทุกวันใช่ไหม???
+
+        {
+          "message": "success",
+          "data": {
+              "user_id": "ybcnHeHNbTNZpR6tLckDV2g9CfN2",
+              "notifs": [],
+              "start_date": "2025-01-24T00:51:04.375645618Z"
+          }
+        }
+
+      */
 
       _logger.d(
           'Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
@@ -96,8 +114,7 @@ class CouponProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _callCheckCouponApi(
-      String jwtToken, String couponName) async {
+  Future<void> _callCheckCouponApi(String jwtToken, String couponName) async {
     try {
       _logger.d('Sending POST request to $url with couponCode: $couponName');
       final response = await http.post(

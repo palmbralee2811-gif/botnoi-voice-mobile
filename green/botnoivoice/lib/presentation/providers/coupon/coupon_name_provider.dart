@@ -14,8 +14,24 @@ class CouponNameProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get getCouponName => _couponName;
 
+
   String urlGetNotification =
       '$apiUrl/api/warning/notification/get_notification';
+
+  /*
+    //TODO: 12:47 reponse ไม่มีข้อมูล คือต้องเฉพาะเวลา 08:00 AM. ของทุกวันใช่ไหม???
+
+    {
+      "message": "success",
+      "data": {
+          "user_id": "ybcnHeHNbTNZpR6tLckDV2g9CfN2",
+          "notifs": [],
+          "start_date": "2025-01-24T00:51:04.375645618Z"
+      }
+    }
+  */
+
+
   String urlGetNotificationDetail =
       '$apiUrl/api/warning/notification/get_notification_detail';
 
