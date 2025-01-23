@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player/share_file.dart';
-import 'package:botnoivoice/data/repositories/file_repository_impl.dart';
 import 'package:botnoivoice/data/repositories/ios_file_repository.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/android_permission_dialog.dart';
@@ -12,7 +11,6 @@ import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:botnoivoice/presentation/widgets/popup/notification_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,10 +65,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
           .showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
-        _downloadFileToCustomPath().whenComplete(() {
           OpenFile.open(widget.filePath);
         });
-      });
     }
   }
 
@@ -160,7 +156,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     }
   }
 
-  /// Start downloading the file using FlutterDownloader (Don't working on Android 10)
+  /// Start the download using FlutterDownloader
   Future<void> _startDownload() async {
     String folderPath = "";
     if (Platform.isAndroid) {
@@ -177,22 +173,6 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       showNotification: true,
       openFileFromNotification: true,
     );
-  }
-
-  //TODO: TN Mobile โต ปรับปรุงฟังก์ชันเลือกโฟลเดอร์ดาวโหลดไฟล์เสียง
-  //Error: Android 11
-  //PASS: Android 9, 10,
-  Future<void> _downloadFileToCustomPath() async {
-    FileRepositoryImpl fileRepository = FileRepositoryImpl();
-    bool isSaved = await fileRepository.saveFileCustomPath(widget.filePath);
-    if (isSaved == false) {
-      NotificationPopup(
-              context: context,
-              text: fileRepository.errorMessage ??
-                  'audio_player.unable_to_save_file'
-                      .tr()) //ไม่สามารถบันทึกไฟล์ได้
-          .showAsError();
-    }
   }
 
   @override

@@ -1,9 +1,8 @@
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
+import 'package:botnoivoice/presentation/providers/user/get_user_id.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 /// Provider for managing user information
 class UserInfoProvider with ChangeNotifier {
@@ -16,25 +15,10 @@ class UserInfoProvider with ChangeNotifier {
   bool get isShowEmail => _isShowEmail;
   String? get errorMessage => _errorMessage;
 
-  /// Fetch User ID from Email Provider
-  Future<String> getUserId(BuildContext context) async {
-    final emailProvider =
-        Provider.of<EmailLoginProvider>(context, listen: false);
-
-    if (emailProvider.isLoggedIn &&
-        emailProvider.user?.providerData[0].providerId == 'password') {
-      return emailProvider.user!.uid; // Return user ID if logged in
-    }
-
-    // Handle case where user is not logged in
-    _setError("User is not logged in.");
-    throw Exception(_errorMessage);
-  }
-
   /// Fetch user information
   Future<void> getUserInfoShowMail(BuildContext context) async {
     try {
-      final userId = await getUserId(context);
+      final userId = await getUserIdEmail(context);
       final response = await _dio
           .get('$apiUrl/api/dashboard/get_user_info_un_auth?user_id=$userId');
 
@@ -55,7 +39,7 @@ class UserInfoProvider with ChangeNotifier {
   Future<void> updateUserInfoShowMail(
       BuildContext context, bool showEmail) async {
     try {
-      final userId = await getUserId(context);
+      final userId = await getUserIdEmail(context);
       // DO NOT CHANGE THIS METHOD, GET IS CORRECT!!!
       final response = await _dio.get(
           '$apiUrl/api/dashboard/users_info_show_email?user_id=$userId&show_email=$showEmail');
