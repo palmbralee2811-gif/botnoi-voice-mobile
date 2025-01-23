@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
-import 'package:botnoivoice/presentation/providers/coupon/get_coupon_name.dart';
+import 'package:botnoivoice/presentation/providers/coupon/coupon_name_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -28,17 +28,18 @@ class CouponProvider with ChangeNotifier {
 
       _logger.d('Fetched ID token: $jwtToken');
 
-      // final couponCode = await _getCouponCodeForToday();
-      // if (couponCode == null) {
-      //   _logger.e('Coupon code is null');
-      //   return;
-      // }
+      final couponCode = await _getCouponCodeForToday();
+      if (couponCode == null) {
+        _logger.e('Coupon code is null');
+        return;
+      }
 
-      String? couponCode = Provider.of<CouponNameProvider>(context, listen: false).getCouponName;
+      //TODO: ทดสอบ พรุ่งนี้ 10:00 น. ระบบคูปอง 
+      // String? couponCode = Provider.of<CouponNameProvider>(context, listen: false).getCouponName;
 
       _logger.d(
           'Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
-      await _callCheckCouponApi(jwtToken, couponCode!);
+      await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
       _errorMessage = 'เกิดข้อผิดพลาด: $e';
       _logger.e(_errorMessage);

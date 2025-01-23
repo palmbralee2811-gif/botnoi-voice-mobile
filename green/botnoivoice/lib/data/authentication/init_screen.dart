@@ -1,6 +1,7 @@
 import 'package:botnoivoice/presentation/configurations/revenuecat_config.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/coupon/coupon_name_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -9,7 +10,6 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
-import 'package:botnoivoice/presentation/providers/coupon/get_coupon_name.dart'; // Import CouponNameProvider
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';

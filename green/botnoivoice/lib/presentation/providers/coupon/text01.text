@@ -1,0 +1,61 @@
+/*
+https://api-voice.botnoi.ai/api/warning/notification/get_notification
+Request Method: GET
+
+authorization:
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc3MDUxMDEsImlhdCI6MTczNzYxODcwMSwibmJmIjoxNzM3NjE4NzAxLCJ1aWQiOiJhMmZkMjk0Ni01MWZiLTU0ZWEtODY3NC00YjkyYjNiNjNlZDUiLCJ1c2VyX2lkIjoieWJjbkhlSE5iVE5acFI2dExja0RWMmc5Q2ZOMiJ9.iQf-LYIuqb3IaUCGBKb8fK-phABKCWCJqvgoFu-j_Ic
+
+{
+    "message": "success",
+    "data": {
+        "user_id": "ybcnHeHNbTNZpR6tLckDV2g9CfN2",
+        "notifs": [
+            {
+                "notif_id": "notif-1380",
+                "read_status": true,
+                "remove_status": false,
+                "expire": "2025-01-24T00:00:00Z",
+                "type": "coupon",
+                "title": "คูปองพอยท์ฟรีรายวัน 23 มกราคม",
+                "title_sub": "รับเลย จำนวนจำกัด",
+                "start_at": "2025-01-23T08:00:00Z"
+            }
+        ],
+        "start_date": "2025-01-23T21:38:35.753Z"
+    }
+}
+
+
+
+https://api-voice.botnoi.ai/api/warning/notification/get_notification_detail?notif_id=notif-1380
+
+Request Method: GET
+
+authorization:
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc3MDUxMDEsImlhdCI6MTczNzYxODcwMSwibmJmIjoxNzM3NjE4NzAxLCJ1aWQiOiJhMmZkMjk0Ni01MWZiLTU0ZWEtODY3NC00YjkyYjNiNjNlZDUiLCJ1c2VyX2lkIjoieWJjbkhlSE5iVE5acFI2dExja0RWMmc5Q2ZOMiJ9.iQf-LYIuqb3IaUCGBKb8fK-phABKCWCJqvgoFu-j_Ic
+
+{
+    "message": "success",
+    "data": {
+        "notif_id": "notif-1380",
+        "title": "คูปองพอยท์ฟรีรายวัน 23 มกราคม",
+        "title_sub": "รับเลย จำนวนจำกัด",
+        "message": "\u003cdiv\u003eโบนัสพิเศษ แบบใหม่ พอยท์ฟรีรายวัน\u003c/div\u003e\u003cdiv\u003eรับเลย 100 พอยท์ ง่ายๆ แค่ไปที่หน้า ราคาและกด คูปอง \u003c/div\u003e\n\u003cdiv class='noti-text-bold'\u003e✨ XC0809 ✨\u003cbr/\u003e\u003c/div\u003e\u003cdiv\u003eรีบเลย จำนวนจำกัด!!\u003c/div\u003e",
+        "type": "coupon",
+        "image_url": "",
+        "redirect_url": "/payment?page=4",
+        "updated_at": "2025-01-06T13:13:09.36Z",
+        "public": true,
+        "type_template": "2",
+        "expire": "2025-01-24T00:00:00Z",
+        "start_at": "2025-01-23T08:00:00Z",
+        "package_id": "",
+        "sale_code_name": ""
+    }
+}
+
+
+TODO: get notif_id from the first API response
+TODO: Call the second API with notif_id to get coupon code
+TODO: Extract coupon code from message in response
+*/
