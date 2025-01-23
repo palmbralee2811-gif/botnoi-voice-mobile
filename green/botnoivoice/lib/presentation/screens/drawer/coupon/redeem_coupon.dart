@@ -47,7 +47,10 @@ class RedeemCoupon extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+              Icons.arrow_back_ios,
+              color: const Color(0xFF323130),
+              size: OrientationHelper.isLandscape ? 10.sp : 24.sp),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -159,7 +162,7 @@ class RedeemCoupon extends StatelessWidget {
       if (couponProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: couponProvider.successMessage!,
+          text: "เติมคูปองสำเร็จแล้ว",
           onPressed: () {
             callLoadCreditsApi(context);
           },

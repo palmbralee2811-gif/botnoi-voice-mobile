@@ -18,6 +18,9 @@ class LineTokenProvider extends ChangeNotifier {
   /// Getter for the user ID from Database after login
   String? get getUserID => _userID;
 
+  /// Getter for the json web token after login
+  String? get getJwtToken => _jwtToken;
+
   /// Getter for the remaining credits
   String? get getRemainingCredits => _remainingCredits;
 
