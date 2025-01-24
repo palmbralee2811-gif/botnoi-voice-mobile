@@ -27,6 +27,7 @@ Future<void> configureRevenueCat(BuildContext context) async {
 /// Get the RevenueCat API key based on the platform
 String getRevenueCatApiKey() {
   if (Platform.isIOS) return appleRevenueCatApiKey;
-  if (Platform.isAndroid) return googleRevenueCatApiKey;
+  //TODO: Payment for Android
+  // if (Platform.isAndroid) return googleRevenueCatApiKey;
   throw UnsupportedError('Unsupported platform');
 }

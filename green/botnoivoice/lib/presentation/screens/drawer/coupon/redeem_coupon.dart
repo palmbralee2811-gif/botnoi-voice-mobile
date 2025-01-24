@@ -1,4 +1,5 @@
-import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/screens/drawer/coupon/time_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -8,38 +9,42 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
 
-class RedeemCoupon extends StatelessWidget {
+class RedeemCoupon extends StatefulWidget {
   const RedeemCoupon({super.key});
 
   @override
+  _RedeemCouponState createState() => _RedeemCouponState();
+}
+
+class _RedeemCouponState extends State<RedeemCoupon> {
+  String? currentDate;
+  String? hoursUntilMidnight;
+
+  @override
+  void initState() {
+    super.initState();
+    updateCurrentDate();
+    updateHoursUntilMidnight();
+  }
+
+  void updateCurrentDate() {
+    final currentDateInBangkok = getCurrentBangkokDate();
+    setState(() {
+      currentDate = currentDateInBangkok;
+    });
+  }
+
+  void updateHoursUntilMidnight() {
+    final durationUntilMidnight = getTimeUntilMidnightInBangkok();
+    setState(() {
+      hoursUntilMidnight = durationUntilMidnight.inHours.toString();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String languageCode = Localizations.localeOf(context).languageCode;
-    final DateTime localizedNow = DateTime.now()
-        .toUtc()
-        .add(const Duration(hours: 7)); // Adjust to Thailand timezone (UTC+7)
-    if (languageCode == 'th') {
-      Intl.defaultLocale = 'th_TH';
-    } else {
-      Intl.defaultLocale = 'en_US';
-    }
-    // Intl.defaultLocale = 'th_TH';
-    final String thaiDate =
-        DateFormat('dd MMMM yyyy', 'th').format(localizedNow);
-    final String englishDate =
-        DateFormat('dd MMM yyyy', 'en').format(localizedNow);
-
-    String currentDate;
-    if (localizedNow.isAfter(
-        DateTime(localizedNow.year, localizedNow.month, localizedNow.day, 8))) {
-      currentDate = languageCode == 'th' ? thaiDate : englishDate;
-    } else {
-      currentDate = languageCode == 'en' ? thaiDate : englishDate;
-    }
-
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = OrientationHelper.isLandscape;
-    int timeout = 12;
-    int points = 100;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -47,8 +52,7 @@ class RedeemCoupon extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-              Icons.arrow_back_ios,
+          icon: Icon(Icons.arrow_back_ios,
               color: const Color(0xFF323130),
               size: OrientationHelper.isLandscape ? 10.sp : 24.sp),
           onPressed: () {
@@ -58,14 +62,13 @@ class RedeemCoupon extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                // 'คูปองพอยท์ฟรีรายวัน $thaiDate',
                 'redeem.daily_coupon_title'
-                    .tr(namedArgs: {'thaiDate': thaiDate}),
+                    .tr(namedArgs: {'thaiDate': currentDate ?? 'N/A'}),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: isTablet ? (isLandscape ? 48 : 40) : 24,
@@ -73,23 +76,18 @@ class RedeemCoupon extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
-              Text(
-                //'08:00 AM',
-                'redeem.time'
-                    .tr(namedArgs: {'currentDate': currentDate.toString()}),
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(isTablet ? 16 : 16),
-                  border: Border.all(color: Colors.black, width: 1),
+              SizedBox(height: 40.h),
+              ElevatedButton(
+                onPressed: () {
+                  _handleCouponRedemption(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(isTablet ? 16 : 16),
+                    side: BorderSide(color: Colors.black, width: 1.w),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -98,32 +96,21 @@ class RedeemCoupon extends StatelessWidget {
                       color: Colors.green,
                       size: isTablet ? (isLandscape ? 100 : 120) : 60,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
-                      // 'รับเลย $points พอยท์'.tr(),
                       'redeem.get_points'
-                          .tr(namedArgs: {'points': points.toString()}),
+                          .tr(namedArgs: {'points': '100'}),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 16.h),
                     Text(
-                      // 'รับเลย 100 พอยท์ ง่ายๆ แค่เปิดหน้า ราคาและกด คูปอง'.tr(),
-                      'redeem.description'.tr(),
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      // 'เหลือเวลาถึงเที่ยง $timeout ชั่วโมง'.tr(),
-                      'redeem.time_remaining'
-                          .tr(namedArgs: {'Timeout': timeout.toString()}),
+                      'redeem.time_remaining'.tr(namedArgs: {
+                        'Timeout': hoursUntilMidnight.toString()
+                      }),
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
@@ -133,7 +120,52 @@ class RedeemCoupon extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: isLandscape ? 80 : (isTablet ? 500 : 295),
+                height: isLandscape ? 80 : (isTablet ? 250 : 120),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  //TODO: call mobile100 api
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(isTablet ? 16 : 16),
+                    side: BorderSide(color: Colors.black, width: 1.w),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.card_giftcard,
+                      color: Colors.yellow,
+                      size: isTablet ? (isLandscape ? 100 : 120) : 60,
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'redeem.get_points'
+                          .tr(namedArgs: {'points': '1,000'}),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'redeem.time_remaining'.tr(namedArgs: {
+                        'Timeout': hoursUntilMidnight.toString()
+                      }),
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: isLandscape ? 40 : (isTablet ? 250 : 150),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -141,9 +173,7 @@ class RedeemCoupon extends StatelessWidget {
                     right: isTablet ? (isLandscape ? 60.w : 20.w) : 10.w),
                 child: GradientTextButton(
                   text: 'redeem.use_now'.tr(),
-                  onPressed: () async {
-                    await _handleCouponRedemption(context);
-                  },
+                  onPressed: () {},
                 ),
               ),
             ],

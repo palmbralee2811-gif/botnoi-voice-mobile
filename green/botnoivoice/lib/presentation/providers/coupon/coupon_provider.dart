@@ -101,6 +101,7 @@ class CouponProvider with ChangeNotifier {
     }
   }
 
+  //TODO: สร้างฟังก์ชัน ยิง API เติมคูปอง ด้วย couponName = mobile1000
   Future<void> _callCheckCouponApi(String jwtToken, String couponName) async {
     try {
       _logger.d('Sending POST request to $url with couponCode: $couponName');
@@ -119,6 +120,7 @@ class CouponProvider with ChangeNotifier {
         final message = responseBody['message'];
         _logger.d('Response body: $responseBody');
 
+        //TODO: เพิ่ม ภาษาอังกฤษของ error message
         if (message == 'Use Coupon Success') {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');

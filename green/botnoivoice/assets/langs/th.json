@@ -81,9 +81,9 @@
     },
     "app_drawer": {
         "profile": "ข้อมูลส่วนตัว",
-        "buy_points": "ซื้อพ้อยท์",
+        "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "redeem": "รับพอยท์รายวัน"
+        "redeem": "รับพอยต์ฟรี"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -109,7 +109,7 @@
     "delete_account": {
         "delete_account": "ลบบัญชี",
         "please_read": "โปรดอ่าน",
-        "account_deletion_warning": "การลบบัญชีเป็นการกระทำที่ไม่สามารถย้อนกลับได้ คุณจะไม่สามารถใช้บัญชีนี้กับผลิตภัณฑ์และบริการ พ้อยท์คงเหลือหรือแพ็คเกจที่สมัคร สิทธิพิเศษและโปรโมชั่นที่ได้รับอีกต่อไป โปรดระมัดระวัง",
+        "account_deletion_warning": "การลบบัญชีเป็นการกระทำที่ไม่สามารถย้อนกลับได้ คุณจะไม่สามารถใช้บัญชีนี้กับผลิตภัณฑ์และบริการ พอยต์คงเหลือหรือแพ็คเกจที่สมัคร สิทธิพิเศษและโปรโมชั่นที่ได้รับอีกต่อไป โปรดระมัดระวัง",
         "confirm_account_deletion": "หากยืนยันที่จะลบบัญชีต่อ กรุณากดปุ่ม",
         "confirm_account_deletion_button": "ยืนยันลบบัญชี",
         "cancel": "ยกเลิก",
@@ -132,12 +132,12 @@
         "email_access_description": "เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณ"
     },
     "payment": {
-        "buy_points": "ซื้อพ้อยท์",
+        "buy_points": "ซื้อพอยต์",
         "price": "100",
         "currency": "บาท",
-        "get_points": "ได้รับ {productTitle} พ้อยท์",
+        "get_points": "ได้รับ {productTitle} พอยต์",
         "buy_now": "ซื้อตอนนี้",
-        "received_points": "ได้รับพ้อยท์จำนวน {pointsTitle} พ้อยท์",
+        "received_points": "ได้รับพอยต์จำนวน {pointsTitle} พอยต์",
         "error_occurred": "เกิดข้อผิดพลาด"
     },
     "change_username_provider": {
@@ -244,10 +244,8 @@
     },
     "redeem": {
         "time_remaining": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
-        "description": "",
-        "time": "08:00 น., {currentDate}",
-        "get_points": "รับเลย {points} พอยท์",
-        "daily_coupon_title": "คูปองพอยท์ฟรีรายวัน {thaiDate}",
-        "use_now": "รับพอยท์"
+        "get_points": "รับเลย {points} พอยต์",
+        "daily_coupon_title": "รับพอยต์ฟรี {thaiDate}",
+        "use_now": "รับพอยต์"
     }
 }

@@ -4,6 +4,7 @@ import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
+import 'package:botnoivoice/presentation/providers/credits/credits_povider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -18,7 +19,6 @@ import 'package:botnoivoice/presentation/configurations/firebase_options.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/google_payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/coupon/test_coupon.dart';
@@ -84,8 +84,8 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
         ChangeNotifierProvider(create: (_) => ApplePaymentProvider()),
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-        ChangeNotifierProvider(create: (_) => GooglePaymentProvider()),
         ChangeNotifierProvider(create: (_) => CouponProvider()),
+        ChangeNotifierProvider(create: (_) => CreditsProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),

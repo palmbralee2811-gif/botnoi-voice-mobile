@@ -65,8 +65,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
           .showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
-          OpenFile.open(widget.filePath);
-        });
+        OpenFile.open(widget.filePath);
+      });
     }
   }
 
@@ -127,11 +127,13 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
   /// Initialize the downloader using FlutterDownloader
   Future<void> _initializeDownloader() async {
-    await FlutterDownloader.initialize(
-      debug: true,
-      ignoreSsl: true,
-    );
-    _initDownloader();
+    if (!FlutterDownloader.initialized) {
+      await FlutterDownloader.initialize(
+        debug: true,
+        ignoreSsl: true,
+      );
+      _initDownloader();
+    }
   }
 
   /// Initialize the downloader using FlutterDownloader
@@ -189,7 +191,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Padding(
-        padding: EdgeInsets.all( OrientationHelper.isLandscape ? 12.w : 16.w),
+        padding: EdgeInsets.all(OrientationHelper.isLandscape ? 12.w : 16.w),
         child: isLoading
             ? SizedBox(
                 height: OrientationHelper.isLandscape ? 180.h : 150.h,
@@ -293,7 +295,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           'audio_player.download'.tr(), //ดาวน์โหลด
                           style: GoogleFonts.prompt(
                             color: Colors.white,
-                            fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+                            fontSize:
+                                OrientationHelper.isLandscape ? 12.sp : 16.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -312,7 +315,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           children: [
                             Icon(
                               Icons.share,
-                              size: OrientationHelper.isLandscape ? 15.sp : 25.sp,
+                              size:
+                                  OrientationHelper.isLandscape ? 15.sp : 25.sp,
                               color: Colors.white,
                             ),
                             SizedBox(width: 8.w),
@@ -320,7 +324,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                               'share'.tr(), //แชร์
                               style: GoogleFonts.prompt(
                                 color: Colors.white,
-                                fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+                                fontSize: OrientationHelper.isLandscape
+                                    ? 12.sp
+                                    : 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

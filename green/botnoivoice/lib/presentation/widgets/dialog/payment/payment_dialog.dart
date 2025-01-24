@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/google_payment_provider.dart';
-import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -12,7 +9,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
@@ -111,27 +107,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
                   onPressed: () async {
-                    Logger().i("Buy Now button pressed for: ${product.title}");
-
-                    if (Platform.isIOS) {
-                      // ใช้ Apple Payment หรือ Google Payment (เลือกตามที่เหมาะสม)
-                      Logger().i("Using Apple Payment...");
                       await _handleApplePurchase(context, product.title);
-                    } else if (Platform.isAndroid) {
-                      // ใช้ Google Payment เท่านั้นบน Android
-                      Logger().i("Using Google Payment...");
-                      await _handleGooglePurchase(context, product.title);
-                    } else {
-                      // กรณีที่ไม่รองรับแพลตฟอร์ม
-                      Logger()
-                          .w("Unsupported platform. Showing error dialog...");
-                      NotificationDialog(
-                              context: context,
-                              text: 'payment.error_user_not_logged_in'.tr(),
-                              onPressed: () {})
-                          .showErrorModal(context);
-                    }
-                  },
+                    },
                 ),
                 SizedBox(height: OrientationHelper.isLandscape ? 10.h : 20.h),
               ],
@@ -173,60 +150,6 @@ class _PaymentBottomSheetContent extends StatelessWidget {
       ).showErrorModal(context);
     } finally {
       await callLoadCreditsApi(context);
-    }
-  }
-
-  Future<void> _handleGooglePurchase(
-      BuildContext context, String offeringIdentifier) async {
-    // ดึง instance ของ GooglePaymentProvider
-    final googlePaymentProvider =
-        Provider.of<GooglePaymentProvider>(context, listen: false);
-
-    try {
-      Logger()
-          .i("Initiating Google purchase for offering: $offeringIdentifier");
-
-      // เรียกใช้งาน GooglePaymentProvider เพื่อเริ่มการซื้อ
-      await googlePaymentProvider.handlePurchaseOffering(offeringIdentifier);
-
-      // ตรวจสอบผลลัพธ์
-      if (googlePaymentProvider.errorMessage == null) {
-        Logger().i("Purchase successful. Updating credits...");
-        await callLoadCreditsApi(context); // โหลดเครดิตที่เหลือใหม่
-
-        // แสดงข้อความแจ้งว่าซื้อสำเร็จ
-        NotificationDialog(
-          context: context,
-          text: 'payment.received_points'.tr(namedArgs: {
-            'pointsTitle': offeringIdentifier, // ชื่อสินค้า (mobile_100)
-          }),
-          onPressed: () async {
-            await callLoadCreditsApi(context); // อัปเดตเครดิตในหน้าจอ
-          },
-        ).showCheckmarkModalWithAction(context);
-      } else {
-        Logger().w(
-            "Purchase failed with error: ${googlePaymentProvider.errorMessage}");
-
-        // แสดงข้อความแจ้งว่าซื้อล้มเหลว
-        NotificationDialog(
-          context: context,
-          text: googlePaymentProvider.errorMessage!,
-          onPressed: () {},
-        ).showErrorModal(context);
-      }
-    } catch (e) {
-      Logger().e("An error occurred during the purchase: $e");
-
-      // แสดงข้อความแจ้งเมื่อเกิดข้อผิดพลาด
-      NotificationDialog(
-        context: context,
-        text: "${'payment.error_occurred'.tr()} $e",
-        onPressed: () {},
-      ).showErrorModal(context);
-    } finally {
-      Logger().i("Reloading remaining credits after purchase...");
-      await callLoadCreditsApi(context); // โหลดเครดิตใหม่อีกครั้งในทุกกรณี
     }
   }
 }

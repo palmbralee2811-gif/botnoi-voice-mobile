@@ -83,7 +83,7 @@
         "profile": "Profile",
         "buy_points": "Buy Points",
         "security": "Security",
-        "redeem": "Earn points daily"
+        "redeem": "Get Free Points"
     },
     "account": {
         "uid_copy_success": "UID copied successfully",
@@ -244,10 +244,8 @@
     },
     "redeem": {
         "time_remaining": "Only {Timeout} hours left",
-        "description": "Free 100 points",
-        "time": "08:00 AM, {currentDate}",
         "get_points": "Get {points} points",
-        "daily_coupon_title": "Get Coupon Daily {thaiDate}",
+        "daily_coupon_title": "Get Free Points {thaiDate}",
         "use_now": "Get Points"
     }
 }
