@@ -1,7 +1,7 @@
 name: botnoivoice
 description: "Botnoi Voice Mobile"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+21 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
+version: 1.0.1+1 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
