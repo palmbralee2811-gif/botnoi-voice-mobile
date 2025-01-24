@@ -1,10 +1,7 @@
 import 'dart:io';
-
-import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
+import 'package:botnoivoice/presentation/providers/credits/credits_povider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
+import 'package:botnoivoice/presentation/providers/credits/credits_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +25,18 @@ class _AppBarTopState extends State<AppBarTop> {
   @override
   void initState() {
     super.initState();
+    _loadCredits();
+  }
+
+  Future<void> _loadCredits() async {
+    var credits = await getRemainingCredits(context);
+    Provider.of<CreditsProvider>(context, listen: false).setRemainingCredits(credits);
   }
 
   @override
   Widget build(BuildContext context) {
+    var remainingCredits = Provider.of<CreditsProvider>(context).remainingCredits;
+
     return AppBar(
       backgroundColor: const Color(0xFFFFFFFF),
       elevation: 4.0,
@@ -100,7 +105,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  " ${Provider.of<LineTokenProvider>(context).getRemainingCredits ?? Provider.of<AppleTokenProvider>(context).getRemainingCredits ?? Provider.of<GoogleTokenProvider>(context).getRemainingCredits ?? Provider.of<EmailTokenProvider>(context).getRemainingCredits ?? " N/A"}",
+                  remainingCredits.toString(),
                   style: GoogleFonts.prompt(
                     fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                     fontWeight: FontWeight.bold,
@@ -116,7 +121,7 @@ class _AppBarTopState extends State<AppBarTop> {
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(30.h),
         child: const AppBarBottom(),
-        ),
+      ),
     );
   }
 }

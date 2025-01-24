@@ -1,7 +1,7 @@
 import 'package:botnoivoice/data/models/apple_product_model.dart';
 import 'package:botnoivoice/data/entities/apple_product_entity.dart';
 import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
-import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';

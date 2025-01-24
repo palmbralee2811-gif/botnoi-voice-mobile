@@ -1,5 +1,3 @@
-
-
 import 'package:botnoivoice/data/authentication/init_screen.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';

@@ -231,7 +231,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             ),
             title: Text(
               //TODO: แก้ไขข้อความ ไทย และอังกฤษ
-              'app_drawer.redeem'.tr(), //รับพ้อยท์รายวัน
+              'app_drawer.redeem'.tr(), //รับพอยต์ฟรี
               style: GoogleFonts.prompt(
                 fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                 fontWeight: FontWeight.w600,

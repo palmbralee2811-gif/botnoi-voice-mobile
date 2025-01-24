@@ -1,4 +1,5 @@
-import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/screens/drawer/coupon/time_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -8,38 +9,42 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
 
-class RedeemCoupon extends StatelessWidget {
+class RedeemCoupon extends StatefulWidget {
   const RedeemCoupon({super.key});
 
   @override
+  _RedeemCouponState createState() => _RedeemCouponState();
+}
+
+class _RedeemCouponState extends State<RedeemCoupon> {
+  String? currentDate;
+  String? hoursUntilMidnight;
+
+  @override
+  void initState() {
+    super.initState();
+    updateCurrentDate();
+    updateHoursUntilMidnight();
+  }
+
+  void updateCurrentDate() {
+    final currentDateInBangkok = getCurrentBangkokDate();
+    setState(() {
+      currentDate = currentDateInBangkok;
+    });
+  }
+
+  void updateHoursUntilMidnight() {
+    final durationUntilMidnight = getTimeUntilMidnightInBangkok();
+    setState(() {
+      hoursUntilMidnight = durationUntilMidnight.inHours.toString();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String languageCode = Localizations.localeOf(context).languageCode;
-    final DateTime localizedNow = DateTime.now()
-        .toUtc()
-        .add(const Duration(hours: 7)); // Adjust to Thailand timezone (UTC+7)
-    if (languageCode == 'th') {
-      Intl.defaultLocale = 'th_TH';
-    } else {
-      Intl.defaultLocale = 'en_US';
-    }
-    // Intl.defaultLocale = 'th_TH';
-    final String thaiDate =
-        DateFormat('dd MMMM yyyy', 'th').format(localizedNow);
-    final String englishDate =
-        DateFormat('dd MMM yyyy', 'en').format(localizedNow);
-
-    //TODO: วันที่แสดงเป็น ภาษาไทย หรือ ภาษาอังกฤษ ตามภาษาที่เลือก
-    String currentDate;
-    if (localizedNow.isAfter(
-        DateTime(localizedNow.year, localizedNow.month, localizedNow.day, 8))) {
-      currentDate = languageCode == 'th' ? thaiDate : englishDate;
-    } else {
-      currentDate = languageCode == 'en' ? thaiDate : englishDate;
-    }
-
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = OrientationHelper.isLandscape;
-    int timeout = 12;
     int points = 100;
 
     return Scaffold(
@@ -48,8 +53,7 @@ class RedeemCoupon extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-              Icons.arrow_back_ios,
+          icon: Icon(Icons.arrow_back_ios,
               color: const Color(0xFF323130),
               size: OrientationHelper.isLandscape ? 10.sp : 24.sp),
           onPressed: () {
@@ -64,25 +68,14 @@ class RedeemCoupon extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                // 'คูปองพอยท์ฟรีรายวัน $thaiDate',
                 'redeem.daily_coupon_title'
-                    .tr(namedArgs: {'thaiDate': thaiDate}),
+                    .tr(namedArgs: {'thaiDate': currentDate ?? 'N/A'}),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: isTablet ? (isLandscape ? 48 : 40) : 24,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                //'08:00 AM',
-                'redeem.time'
-                    .tr(namedArgs: {'currentDate': currentDate.toString()}),
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
-                ),
               ),
               const SizedBox(height: 40),
               Container(
@@ -101,7 +94,6 @@ class RedeemCoupon extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      // 'รับเลย $points พอยท์'.tr(),
                       'redeem.get_points'
                           .tr(namedArgs: {'points': points.toString()}),
                       style: TextStyle(
@@ -110,21 +102,10 @@ class RedeemCoupon extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      // 'รับเลย 100 พอยท์ ง่ายๆ แค่เปิดหน้า ราคาและกด คูปอง'.tr(),
-                      'redeem.description'.tr(),
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
                     const SizedBox(height: 16),
                     Text(
-                      // 'เหลือเวลาถึงเที่ยง $timeout ชั่วโมง'.tr(),
                       'redeem.time_remaining'
-                          .tr(namedArgs: {'Timeout': timeout.toString()}),
+                          .tr(namedArgs: {'Timeout': hoursUntilMidnight.toString()}),
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,

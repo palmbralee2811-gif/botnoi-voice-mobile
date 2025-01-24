@@ -8,7 +8,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/data/functions/random_string.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/user/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
