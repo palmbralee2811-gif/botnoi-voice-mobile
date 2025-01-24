@@ -28,7 +28,7 @@ class CouponProvider with ChangeNotifier {
 
       _logger.d('Fetched ID token: $jwtToken');
 
-      final couponCode = await _getCouponCodeForToday();
+      final couponCode = await _getCouponNameForToday();
       if (couponCode == null) {
         _logger.e('Coupon code is null');
         return;
@@ -82,7 +82,16 @@ class CouponProvider with ChangeNotifier {
     }
   }
 
-  Future<String?> _getCouponCodeForToday() async {
+  Future<String?> _getCouponNameForToday() async {
+    //TODO: ทดสอบ วันที่ 24 มกราคม 2025 เวลา 08:00 น.
+    //TF7930
+    
+    //TODO: ทดสอบ วันที่ 25 มกราคม 2025 เวลา 08:00 น.
+    //LL4961
+
+    //TODO: ทดสอบ วันที่ 26 มกราคม 2025 เวลา 08:00 น.
+    //UF1745
+
     try {
       String jsonString =
           await rootBundle.loadString('assets/data/coupon.json');

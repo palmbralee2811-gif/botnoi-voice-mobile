@@ -64,6 +64,8 @@ dependencies:
 
   # RevenueCat: In-App Purchase (IAP) Platform supports iOS, Android, Flutter, React Native, Unity and etc.
   purchases_flutter: ^8.2.1
+
+  mockito: ^5.0.0
   
 dev_dependencies:
   flutter_test:

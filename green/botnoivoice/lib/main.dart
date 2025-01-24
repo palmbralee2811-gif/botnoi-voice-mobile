@@ -86,7 +86,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
         ChangeNotifierProvider(create: (_) => GooglePaymentProvider()),
         ChangeNotifierProvider(create: (_) => CouponProvider()),
-        ChangeNotifierProvider(create: (_) => CouponNameProvider()),
+        // ChangeNotifierProvider(create: (_) => CouponNameProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
