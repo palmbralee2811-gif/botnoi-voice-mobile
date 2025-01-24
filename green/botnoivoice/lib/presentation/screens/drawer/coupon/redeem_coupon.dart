@@ -77,7 +77,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
               const SizedBox(height: 40),
               CouponRedeemButton(
                 text: 'redeem.get_points'.tr(namedArgs: {'points': '100'}),
-                text2: 'Click Here',
+                text2: 'redeem.click_here'.tr(), 
                 text3: 'redeem.time_remaining'.tr(
                   namedArgs: {
                     'Timeout': hoursUntilMidnight.toString(),
@@ -100,9 +100,9 @@ class _RedeemCouponState extends State<RedeemCoupon> {
               ),
               const SizedBox(height: 20),
               CouponRedeemButton(
-                text: 'Welcome Mobile Bonus',
-                text2: 'รับเลย 1,000 พอยต์',
-                text3: 'redeem.time_remaining'.tr(namedArgs: {'Timeout': hoursUntilMidnight.toString()}),
+                text: 'redeem.welcome_bonus'.tr(), 
+                text2: 'redeem.get_now_1000'.tr(), 
+                text3: '',
                 textColor: Colors.black,
                 textColor2: Colors.green,
                 textColor3: Colors.red,

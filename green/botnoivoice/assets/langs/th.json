@@ -246,6 +246,9 @@
         "time_remaining": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
         "get_points": "รับเลย {points} พอยต์",
         "daily_coupon_title": "รับพอยต์ฟรี {thaiDate}",
-        "use_now": "รับพอยต์"
+        "use_now": "รับพอยต์",
+        "get_now_1000": "รับเลย 1,000 พอยต์",
+        "welcome_bonus": "โบนัสต้อนรับสำหรับมือถือ",
+        "click_here": "คลิกที่นี่"
     }
 }
