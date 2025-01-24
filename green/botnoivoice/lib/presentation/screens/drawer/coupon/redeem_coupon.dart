@@ -45,7 +45,6 @@ class _RedeemCouponState extends State<RedeemCoupon> {
   Widget build(BuildContext context) {
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = OrientationHelper.isLandscape;
-    int points = 100;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -63,7 +62,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -77,13 +76,18 @@ class _RedeemCouponState extends State<RedeemCoupon> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 40),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(isTablet ? 16 : 16),
-                  border: Border.all(color: Colors.black, width: 1),
+              SizedBox(height: 40.h),
+              ElevatedButton(
+                onPressed: () {
+                  _handleCouponRedemption(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(isTablet ? 16 : 16),
+                    side: BorderSide(color: Colors.black, width: 1.w),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -92,20 +96,21 @@ class _RedeemCouponState extends State<RedeemCoupon> {
                       color: Colors.green,
                       size: isTablet ? (isLandscape ? 100 : 120) : 60,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       'redeem.get_points'
-                          .tr(namedArgs: {'points': points.toString()}),
+                          .tr(namedArgs: {'points': '100'}),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
-                      'redeem.time_remaining'
-                          .tr(namedArgs: {'Timeout': hoursUntilMidnight.toString()}),
+                      'redeem.time_remaining'.tr(namedArgs: {
+                        'Timeout': hoursUntilMidnight.toString()
+                      }),
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
@@ -115,7 +120,52 @@ class _RedeemCouponState extends State<RedeemCoupon> {
                 ),
               ),
               SizedBox(
-                height: isLandscape ? 80 : (isTablet ? 500 : 295),
+                height: isLandscape ? 80 : (isTablet ? 250 : 120),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  //TODO: call mobile100 api
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(isTablet ? 16 : 16),
+                    side: BorderSide(color: Colors.black, width: 1.w),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.card_giftcard,
+                      color: Colors.yellow,
+                      size: isTablet ? (isLandscape ? 100 : 120) : 60,
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'redeem.get_points'
+                          .tr(namedArgs: {'points': '1,000'}),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'redeem.time_remaining'.tr(namedArgs: {
+                        'Timeout': hoursUntilMidnight.toString()
+                      }),
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: isLandscape ? 40 : (isTablet ? 250 : 150),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -123,9 +173,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
                     right: isTablet ? (isLandscape ? 60.w : 20.w) : 10.w),
                 child: GradientTextButton(
                   text: 'redeem.use_now'.tr(),
-                  onPressed: () async {
-                    await _handleCouponRedemption(context);
-                  },
+                  onPressed: () {},
                 ),
               ),
             ],
