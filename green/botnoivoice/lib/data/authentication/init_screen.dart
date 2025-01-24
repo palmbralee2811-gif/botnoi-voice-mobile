@@ -1,3 +1,5 @@
+
+
 import 'package:botnoivoice/presentation/configurations/revenuecat_config.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
@@ -14,6 +16,7 @@ import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Check how the user logs in (Google, LINE, or Email)
 class InitScreen extends StatefulWidget {
   const InitScreen({super.key});
 
@@ -26,67 +29,135 @@ class _InitScreenState extends State<InitScreen> {
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => initApp());
+    super.initState();
   }
 
+  /// Function to check how the user logs in and loading data
   Future<void> initApp() async {
-    final appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    final appleProvider =
+        Provider.of<AppleLoginProvider>(context, listen: false);
+    final googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+    final emailProvider =
+        Provider.of<EmailLoginProvider>(context, listen: false);
 
-    if (appleProvider.isLoggedIn && appleProvider.user?.providerData[0].providerId == 'apple.com') {
-      await _loadCredentials(appleProvider, Provider.of<AppleTokenProvider>(context, listen: false));
-    } else if (googleProvider.isLoggedIn && googleProvider.user?.providerData[0].providerId == 'google.com') {
-      await _loadCredentials(googleProvider, Provider.of<GoogleTokenProvider>(context, listen: false));
-    } else if (lineProvider.isLoggedIn) {
-      await _loadCredentials(lineProvider, Provider.of<LineTokenProvider>(context, listen: false));
-    } else if (emailProvider.isLoggedIn && emailProvider.user?.providerData[0].providerId == 'password') {
-      await _loadEmailCredentials(emailProvider);
-    } else {
-      setState(() {
-        _initialized = true;
-      });
+    /// Check if the user logs in with Apple
+    if (appleProvider.isLoggedIn &&
+        appleProvider.user?.providerData[0].providerId == 'apple.com') {
+      await _loadAppleCredentials();
+      return;
     }
 
+    /// Check if the user logs in with Google
+    if (googleProvider.isLoggedIn &&
+        googleProvider.user?.providerData[0].providerId == 'google.com') {
+      await _loadGoogleCredentials();
+      return;
+    }
+
+    /// Check if the user logs in with LINE
+    if (lineProvider.isLoggedIn) {
+      await _loadLineCredentials();
+      return;
+    }
+
+    /// Check if the user logs in with Email
+    if (emailProvider.isLoggedIn &&
+        emailProvider.user?.providerData[0].providerId == 'password') {
+      await _loadEmailCredentials();
+      return;
+    }
+
+    /// If no login is found from any provider
+    setState(() {
+      _initialized = true;
+    });
   }
 
-  Future<void> _loadCredentials(dynamic provider, dynamic tokenProvider) async {
-    if (!mounted) return;
-    await tokenProvider.loadJwtToken(context);
-    await tokenProvider.loadCredentials();
-    await tokenProvider.loadRemainingCredits();
+  /// Load data when logging in with Apple
+  Future<void> _loadAppleCredentials() async {
+    final appleTokenProvider =
+        Provider.of<AppleTokenProvider>(context, listen: false);
+    await appleTokenProvider.loadJwtToken(context);
+    await appleTokenProvider.loadCredentials();
+    await appleTokenProvider.loadRemainingCredits();
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
     await configureRevenueCat(context);
 
-    if (mounted) {
-      setState(() {
-        _initialized = true;
-      });
-    }
+    setState(() {
+      _initialized = true;
+    });
   }
 
-  Future<void> _loadEmailCredentials(EmailLoginProvider emailProvider) async {
-    if (!mounted) return;
-    final emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
+  /// Load data when logging in with Google
+  Future<void> _loadGoogleCredentials() async {
+    final googleTokenProvider =
+        Provider.of<GoogleTokenProvider>(context, listen: false);
+    await googleTokenProvider.loadJwtToken(context);
+    await googleTokenProvider.loadCredentials();
+    await googleTokenProvider.loadRemainingCredits();
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
+    await configureRevenueCat(context);
+
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  /// Load data when logging in with LINE
+  Future<void> _loadLineCredentials() async {
+    final lineTokenProvider =
+        Provider.of<LineTokenProvider>(context, listen: false);
+    await lineTokenProvider.loadJwtToken(context);
+    await lineTokenProvider.loadCredentials();
+    await lineTokenProvider.loadRemainingCredits();
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
+    await configureRevenueCat(context);
+
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  /// Load data when logging in with Email
+  Future<void> _loadEmailCredentials() async {
+    final emailTokenProvider =
+        Provider.of<EmailTokenProvider>(context, listen: false);
     await emailTokenProvider.loadJwtToken(context);
     await emailTokenProvider.loadCredentials();
     await emailTokenProvider.loadRemainingCredits();
 
-    final email = emailProvider.getUserEmail;
-    await Provider.of<EmailUsernameApiProvider>(context, listen: false).loadGetUsername(email);
-    await Provider.of<UserInfoProvider>(context, listen: false).getUserInfoShowMail(context);
+    /// Load get username by email
+    String? email =
+        Provider.of<EmailLoginProvider>(context, listen: false).getUserEmail;
+    await Provider.of<EmailUsernameApiProvider>(context, listen: false)
+        .loadGetUsername(email);
+
+    /// Load user info show mail (email permission)
+    await Provider.of<UserInfoProvider>(context, listen: false)
+        .getUserInfoShowMail(context);
+
+    /// Configure RevenueCat with User ID for In-App Purchase (IAP)
     await configureRevenueCat(context);
 
-    if (mounted) {
-      setState(() {
-        _initialized = true;
-      });
-    }
+    setState(() {
+      _initialized = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _initialized ? const HomeScreen() : const SplashScreen();
+    if (_initialized) {
+      return const HomeScreen();
+
+      /// Return to HomeScreen when successfully loaded
+    } else {
+      return const SplashScreen(); // Loading Screen
+    }
   }
 }
