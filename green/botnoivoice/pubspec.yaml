@@ -65,8 +65,12 @@ dependencies:
   # RevenueCat: In-App Purchase (IAP) Platform supports iOS, Android, Flutter, React Native, Unity and etc.
   purchases_flutter: ^8.2.1
 
-  mockito: ^5.0.0
-  
+  # Timezone
+  timezone: ^0.10.0
+
+  # Provides internationalization and localization facilities, including message translation, plurals and genders, date/number formatting and parsing, and bidirectional text.
+  intl: ^0.19.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

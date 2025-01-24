@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
-import 'package:botnoivoice/presentation/providers/coupon/coupon_name_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:botnoivoice/presentation/providers/user/get_jwt_token.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class CouponProvider with ChangeNotifier {
   final _logger = Logger();
@@ -33,27 +35,6 @@ class CouponProvider with ChangeNotifier {
         _logger.e('Coupon code is null');
         return;
       }
-
-      //TODO: ทดสอบ พรุ่งนี้ 10:00 น. ระบบคูปอง
-      // String? couponCode = Provider.of<CouponNameProvider>(context, listen: false).getCouponName;
-
-      /*
-        //TODO: เวลา 12.47 ไม่มีคู่ปอง จะต้อง UI เป็น dynamic
-        // 1. ถ้ามีคูปอง ให้แสดง UI ว่ามีคูปอง
-        // 2. ถ้าไม่มีคูปอง ให้แสดง UI ว่าไม่มีคูปอง
-
-        //TODO: 12:47 reponse ไม่มีข้อมูล คือต้องเฉพาะเวลา 08:00 AM. ของทุกวันใช่ไหม???
-
-        {
-          "message": "success",
-          "data": {
-              "user_id": "ybcnHeHNbTNZpR6tLckDV2g9CfN2",
-              "notifs": [],
-              "start_date": "2025-01-24T00:51:04.375645618Z"
-          }
-        }
-
-      */
 
       _logger.d(
           'Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
@@ -83,31 +64,28 @@ class CouponProvider with ChangeNotifier {
   }
 
   Future<String?> _getCouponNameForToday() async {
-    //TODO: ทดสอบ วันที่ 24 มกราคม 2025 เวลา 08:00 น.
-    //TF7930
-    
-    //TODO: ทดสอบ วันที่ 25 มกราคม 2025 เวลา 08:00 น.
-    //LL4961
-
-    //TODO: ทดสอบ วันที่ 26 มกราคม 2025 เวลา 08:00 น.
-    //UF1745
-
     try {
       String jsonString =
           await rootBundle.loadString('assets/data/coupon.json');
       List<dynamic> coupons = jsonDecode(jsonString);
 
-      DateTime now = DateTime.now()
-          .toUtc()
-          .add(const Duration(hours: 7)); // Convert to Bangkok time
-      String todayString = now.toIso8601String().split('T')[0];
+      // Initialize timezone data
+      tz.initializeTimeZones();
+      final bangkok = tz.getLocation('Asia/Bangkok');
+      DateTime now = tz.TZDateTime.now(bangkok);
+      String todayString = DateFormat('yyyy-MM-dd').format(now);
 
       _logger.d('Current date (Bangkok time): $todayString');
 
       for (var coupon in coupons) {
-        if (coupon['datetime'].startsWith(todayString)) {
-          _logger.d('Coupon found for today: ${coupon['coupon_name']}');
-          return coupon['coupon_name'];
+        if (coupon.containsKey('datetime') &&
+            coupon.containsKey('coupon_name')) {
+          if (coupon['datetime'].startsWith(todayString)) {
+            _logger.d('Coupon found for today: ${coupon['coupon_name']}');
+            return coupon['coupon_name'];
+          }
+        } else {
+          _logger.w('Invalid coupon data: $coupon');
         }
       }
 
@@ -115,8 +93,8 @@ class CouponProvider with ChangeNotifier {
       _logger.w(_errorMessage);
       notifyListeners();
       return null;
-    } catch (e) {
-      _errorMessage = 'Failed to load coupon codes: $e';
+    } catch (e, stackTrace) {
+      _errorMessage = 'Failed to load coupon codes: $e\n$stackTrace';
       _logger.e(_errorMessage);
       notifyListeners();
       return null;

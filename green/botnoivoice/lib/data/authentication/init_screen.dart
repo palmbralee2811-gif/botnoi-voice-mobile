@@ -1,7 +1,6 @@
 import 'package:botnoivoice/presentation/configurations/revenuecat_config.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/coupon/coupon_name_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
@@ -36,7 +35,6 @@ class _InitScreenState extends State<InitScreen> {
     final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
     final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-    // final couponNameProvider = Provider.of<CouponNameProvider>(context, listen: false); // Get CouponNameProvider
 
     if (appleProvider.isLoggedIn && appleProvider.user?.providerData[0].providerId == 'apple.com') {
       await _loadCredentials(appleProvider, Provider.of<AppleTokenProvider>(context, listen: false));
@@ -52,8 +50,6 @@ class _InitScreenState extends State<InitScreen> {
       });
     }
 
-    // Load coupon code name
-    // await couponNameProvider.loadCodeName(context);
   }
 
   Future<void> _loadCredentials(dynamic provider, dynamic tokenProvider) async {

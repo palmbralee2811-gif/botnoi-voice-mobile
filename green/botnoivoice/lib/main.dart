@@ -3,7 +3,6 @@ import 'package:botnoivoice/data/authentication/language_selection_checker.dart'
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/coupon/coupon_name_provider.dart';
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
@@ -86,7 +85,6 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserInfoProvider()),
         ChangeNotifierProvider(create: (_) => GooglePaymentProvider()),
         ChangeNotifierProvider(create: (_) => CouponProvider()),
-        // ChangeNotifierProvider(create: (_) => CouponNameProvider()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
