@@ -21,6 +21,7 @@ import 'package:botnoivoice/presentation/providers/payment/apple_payment_provide
 import 'package:botnoivoice/presentation/providers/payment/google_payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/drawer/coupon/test_coupon.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -103,7 +104,7 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            // home: const LanguageSelectionScreen(),
+            // home: const TestCoupon(),
             home: const LanguageSelectionChecker(),
             // home: HomeScreen(),
             // Add localization delegate
