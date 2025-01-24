@@ -28,6 +28,7 @@ class RedeemCoupon extends StatelessWidget {
     final String englishDate =
         DateFormat('dd MMM yyyy', 'en').format(localizedNow);
 
+    //TODO: วันที่แสดงเป็น ภาษาไทย หรือ ภาษาอังกฤษ ตามภาษาที่เลือก
     String currentDate;
     if (localizedNow.isAfter(
         DateTime(localizedNow.year, localizedNow.month, localizedNow.day, 8))) {
