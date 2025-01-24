@@ -9,8 +9,7 @@ class CouponRedeemButton extends StatelessWidget {
   final Color textColor;
   final Color textColor2;
   final Color textColor3;
-  final int points;
-  final int timeout;
+  final String points;
   final VoidCallback onTap;
 
   const CouponRedeemButton({
@@ -23,7 +22,6 @@ class CouponRedeemButton extends StatelessWidget {
     required this.textColor2,
     required this.textColor3,
     required this.points,
-    required this.timeout,
   });
 
   @override
