@@ -146,14 +146,14 @@ class CouponProvider with ChangeNotifier {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
         } else if (message == 'already in use') {
-          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว $couponName';
+          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว';
           _logger.e(_errorMessage);
         } else if (message == 'Incorrect Coupon') {
           _errorMessage =
-              'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง $couponName';
+              'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง';
           _logger.e(_errorMessage);
         } else {
-          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว $couponName';
+          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว';
           _logger.e(_errorMessage);
         }
       } else {
@@ -191,14 +191,14 @@ class CouponProvider with ChangeNotifier {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
         } else if (message == 'already in use') {
-          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว $couponName';
+          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว';
           _logger.e(_errorMessage);
         } else if (message == 'Incorrect Coupon') {
           _errorMessage =
-              'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง $couponName';
+              'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง';
           _logger.e(_errorMessage);
         } else {
-          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว $couponName';
+          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว';
           _logger.e(_errorMessage);
         }
       } else {
