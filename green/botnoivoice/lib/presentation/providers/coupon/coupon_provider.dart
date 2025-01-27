@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:botnoivoice/main.dart';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -40,7 +42,7 @@ class CouponProvider with ChangeNotifier {
           'Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
       await _callCheckCouponApi100(jwtToken, couponCode);
     } catch (e) {
-      _errorMessage = 'เกิดข้อผิดพลาด: $e';
+      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e'; //เกิดข้อผิดพลาด:
       _logger.e(_errorMessage);
       notifyListeners();
     }
@@ -61,7 +63,7 @@ class CouponProvider with ChangeNotifier {
       _logger.d('Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
       await _callCheckCouponApi1K(jwtToken, couponCode);
     } catch (e) {
-      _errorMessage = 'เกิดข้อผิดพลาด: $e';
+      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e'; //เกิดข้อผิดพลาด:
       _logger.e(_errorMessage);
       notifyListeners();
     }
@@ -146,18 +148,18 @@ class CouponProvider with ChangeNotifier {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
         } else if (message == 'already in use') {
-          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว';
+          _errorMessage = 'redeem_provider.coupon_already_used'.tr(); //คูปองของคุณถูกใช้งานแล้ว
           _logger.e(_errorMessage);
         } else if (message == 'Incorrect Coupon') {
           _errorMessage =
-              'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง';
+              'redeem_provider.coupon_not_found'.tr(); //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
           _logger.e(_errorMessage);
         } else {
-          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว';
+          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'.tr(); //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
           _logger.e(_errorMessage);
         }
       } else {
-        _errorMessage = 'เกิดข้อผิดพลาดในการเรียก API: ${response.statusCode}';
+        _errorMessage = '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; //เกิดข้อผิดพลาดในการเรียก API:
         _logger.e(_errorMessage);
       }
     } catch (e) {
@@ -191,18 +193,18 @@ class CouponProvider with ChangeNotifier {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
         } else if (message == 'already in use') {
-          _errorMessage = 'คูปองของคุณถูกใช้งานแล้ว';
+          _errorMessage = 'redeem_provider.coupon_already_used'.tr(); //คูปองของคุณถูกใช้งานแล้ว
           _logger.e(_errorMessage);
         } else if (message == 'Incorrect Coupon') {
           _errorMessage =
-              'ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง';
+              'redeem_provider.coupon_not_found'.tr(); //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
           _logger.e(_errorMessage);
         } else {
-          _errorMessage = 'ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว';
+          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'.tr(); //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
           _logger.e(_errorMessage);
         }
       } else {
-        _errorMessage = 'เกิดข้อผิดพลาดในการเรียก API: ${response.statusCode}';
+        _errorMessage = '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; //เกิดข้อผิดพลาดในการเรียก API:
         _logger.e(_errorMessage);
       }
     } catch (e) {
