@@ -143,7 +143,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "${'has_error'.tr()} $e",
+        text: "${'redeem.has_error'.tr()} $e", //เกิดข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
@@ -175,7 +175,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "${'has_error'.tr()} $e", //เกิดข้อผิดพลาด
+        text: "${'redeem.has_error'.tr()} $e", //เกิดข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
