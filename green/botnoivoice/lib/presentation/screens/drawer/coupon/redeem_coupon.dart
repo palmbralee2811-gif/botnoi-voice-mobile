@@ -128,7 +128,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
       if (couponProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: 'redeem.redeem_success'.tr(),
+          text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             callLoadCreditsApi(context);
           },
@@ -160,7 +160,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
       if (couponProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: "redeem.redeem_success".tr(), //เติมคูปองสำเร็จแล้ว
+          text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             callLoadCreditsApi(context);
           },
