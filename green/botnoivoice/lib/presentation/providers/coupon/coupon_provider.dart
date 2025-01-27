@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:botnoivoice/main.dart';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
