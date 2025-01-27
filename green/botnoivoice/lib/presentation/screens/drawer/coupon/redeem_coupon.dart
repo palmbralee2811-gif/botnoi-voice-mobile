@@ -128,7 +128,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
       if (couponProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: "เติมคูปองสำเร็จแล้ว",
+          text: "redeem_success".tr(),
           onPressed: () {
             callLoadCreditsApi(context);
           },
@@ -143,7 +143,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "${'เกิดข้อผิดพลาด'.tr()} $e",
+        text: "${'has_error'.tr()} $e",
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
@@ -160,7 +160,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
       if (couponProvider.errorMessage == null) {
         NotificationDialog(
           context: context,
-          text: "เติมคูปองสำเร็จแล้ว",
+          text: "redeem_success".tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             callLoadCreditsApi(context);
           },
@@ -175,7 +175,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "${'เกิดข้อผิดพลาด'.tr()} $e",
+        text: "${'has_error'.tr()} $e", //เกิดข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
