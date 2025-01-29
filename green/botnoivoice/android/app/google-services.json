@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:822010349951:android:845129c345fbf6a09db24a",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.bow_backup_project1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "822010349951-qmqtd49474c26tnee82tj1hiu59vf65t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPbJ5D41zoyRTZNbkh49T2Gjn47HLXNWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "822010349951-qmqtd49474c26tnee82tj1hiu59vf65t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "822010349951-3bru1dkr2noookdn7n3ln3j80j976lfn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.botnoimobile.botnoivoice"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:822010349951:android:247f6d9a593845889db24a",
         "android_client_info": {
           "package_name": "com.mobile.botnoivoice"
@@ -52,6 +88,14 @@
           "android_info": {
             "package_name": "com.mobile.botnoivoice",
             "certificate_hash": "98530b37f786206db22a595abfc0a2ba5c4b08d3"
+          }
+        },
+        {
+          "client_id": "822010349951-r5i6u9lt66plmt03riadm1l4oc516hko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile.botnoivoice",
+            "certificate_hash": "f56415bfbcc1f31fe940ab9c180667c8a69695ef"
           }
         },
         {

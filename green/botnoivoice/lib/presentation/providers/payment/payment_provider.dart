@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:botnoivoice/data/models/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';
 
@@ -14,51 +13,42 @@ class PaymentProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   final product = ProductModel.getAppleProductData().first;
+  final productAndroid = "mobile_100";
 
   Future<void> handlePurchase() async {
-    if (Platform.isAndroid) {
-      return await androidPayment();
-    } else if (Platform.isIOS) {
-      return await iosPayment();
-    }
+    if (Platform.isAndroid) return await androidPayment();
+    if (Platform.isIOS) return await iosPayment();
   }
-
+  
   //TODO: fix error: product not found
   //TODO: Use new method for offering products from TN Frank
   //TODO: เปลี่ยน ท่าใหม่เป็น เรียกใช้ product จาก offering ของน้อง TN
-  Future<void> androidPayment( ) async {
-    _isLoading = true;
+  //TODO: fix error: This version of the application is not configured for billing through Google Play. Check the help center for more information.
+
+  Future<void> androidPayment() async {
+        _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _logger.i("Fetching product for ID: ${product.productId}");
-      final products = await Purchases.getProducts([product.productId]);
+      _logger.i("Fetching offerings");
+      final offerings = await Purchases.getOfferings();
 
-      if (products.isNotEmpty) {
-        _logger.i("Purchasing product: ${products.first.identifier}");
-        try {
-          final purchaseResult =
-              await Purchases.purchaseStoreProduct(products.first);
+      final offering = offerings.getOffering(productAndroid);
+      if (offering != null && offering.availablePackages.isNotEmpty) {
+        _logger.i("Purchasing package from offering: $productAndroid");
+        final purchaseResult =
+            await Purchases.purchasePackage(offering.availablePackages.first);
 
-          _logger.i("Purchase successful: $purchaseResult");
-        } on PlatformException catch (e) {
-          if (PurchasesErrorHelper.getErrorCode(e) ==
-              PurchasesErrorCode.purchaseCancelledError) {
-            _logger.w("Purchase cancelled by user.");
-            _errorMessage = "Purchase cancelled.";
-          } else {
-            _logger.e("Error during purchase: $e");
-            _errorMessage = "Purchase failed: $e";
-          }
-        }
+        _logger.i("Purchase successful: $purchaseResult");
       } else {
-        _logger.w("No product found for ID: ${product.productId}");
-        _errorMessage = "Product not found.";
+        _logger
+            .w("No available package found for offering: $productAndroid");
+        _errorMessage = "No packages available for this offering.";
       }
     } catch (e) {
-      _logger.e("Error fetching products: $e");
-      _errorMessage = "Failed to fetch products: $e";
+      _logger.e("Error during purchase: $e");
+      _errorMessage = "Purchase failed: $e";
     } finally {
       _isLoading = false;
       notifyListeners();
