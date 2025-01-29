@@ -13,6 +13,17 @@ import 'package:provider/provider.dart';
 
 final _logger = Logger();
 
+//TODO: fix this error
+/*
+│ #0   callLoadCreditsApi (package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart:51:13)
+I/flutter ( 1346): │ #1   <asynchronous suspension>
+I/flutter ( 1346): ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+I/flutter ( 1346): │ ⛔ Failed to load credits: Looking up a deactivated widget's ancestor is unsafe.
+I/flutter ( 1346): │ ⛔ At this point the state of the widget's element tree is no longer stable.
+I/flutter ( 1346): │ ⛔ To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.
+*/
+
+
 /// Call the load remaining credits API for all the providers
 Future<void> callLoadCreditsApi(context) async {
   final appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);

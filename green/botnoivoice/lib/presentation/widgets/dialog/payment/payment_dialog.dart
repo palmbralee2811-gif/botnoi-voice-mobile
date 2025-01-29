@@ -1,6 +1,4 @@
-import 'package:botnoivoice/data/models/apple_product_model.dart';
-import 'package:botnoivoice/data/entities/apple_product_entity.dart';
-import 'package:botnoivoice/presentation/providers/payment/apple_payment_provider.dart';
+import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
 import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -12,9 +10,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
-  final appleProducts = AppleProductModel.getAppleProductData();
-  final product = appleProducts.first;
-
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -22,23 +17,15 @@ void showPaymentDialog(BuildContext context) {
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
     ),
     builder: (context) {
-      return _PaymentBottomSheetContent(
-        product: product,
-      );
+      return _PaymentBottomSheetContent();
     },
   );
 }
 
 class _PaymentBottomSheetContent extends StatelessWidget {
-  final AppleProduct product;
-
-  const _PaymentBottomSheetContent({
-    required this.product,
-  });
-
   @override
   Widget build(BuildContext context) {
-    final applePaymentProvider = Provider.of<ApplePaymentProvider>(context);
+    final applePaymentProvider = Provider.of<PaymentProvider>(context);
 
     return applePaymentProvider.isLoading
         ? Container(
@@ -93,7 +80,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                     SizedBox(width: 8.w),
                     Text(
                       'payment.get_points'.tr(namedArgs: {
-                        'productTitle': product.title
+                        'productTitle': '5,000'
                       }), //ได้ ${product.title} พ้อยท์
                       style: TextStyle(
                         fontSize: OrientationHelper.isLandscape ? 13.sp : 22.sp,
@@ -107,8 +94,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
                   onPressed: () async {
-                      await _handleApplePurchase(context, product.title);
-                    },
+                    await _handlePurchase(context);
+                  },
                 ),
                 SizedBox(height: OrientationHelper.isLandscape ? 10.h : 20.h),
               ],
@@ -116,19 +103,20 @@ class _PaymentBottomSheetContent extends StatelessWidget {
           );
   }
 
-  Future<void> _handleApplePurchase(BuildContext context, String title) async {
+  Future<void> _handlePurchase(BuildContext context) async {
     final paymentProvider =
-        Provider.of<ApplePaymentProvider>(context, listen: false);
+        Provider.of<PaymentProvider>(context, listen: false);
 
     try {
-      await paymentProvider.handlePurchase(product);
+      //TODO: Don't remove this line
+      await paymentProvider.handlePurchase();
 
       if (paymentProvider.errorMessage == null) {
         await callLoadCreditsApi(context);
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
-            'pointsTitle': title
+            'pointsTitle': '5,000'
           }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
           onPressed: () async {
             /// Refresh Points After In-App Purchase: IAP

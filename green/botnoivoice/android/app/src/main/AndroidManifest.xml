@@ -5,10 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Google Play Billing Permissions -->
-    <!-- <uses-permission android:name="com.android.vending.BILLING" /> -->
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <!-- For .APK File ONLY! -->
-    <!-- <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <!-- External Storage Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

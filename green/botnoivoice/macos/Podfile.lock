@@ -169,12 +169,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
-  audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
-  audioplayers_darwin: dcad41de4fbd0099cb3749f7ab3b0cb8f70b810c
-  device_info_plus: ce1b7762849d3ec103d0e0517299f2db7ad60720
+  audio_session: 48ab6500f7a5e7c64363e206565a5dfe5a0c1441
+  audioplayers_darwin: 761f2948df701d05b5db603220c384fb55720012
+  device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
   Firebase: 7fd5466678d964be78fbf536d8a3385da19c4828
-  firebase_auth: 85ed6c80b24da60af13391f9cdc0e566440b1963
-  firebase_core: d95c4a2225d7b6ed46bc31fb2a6f421fc7c8285b
+  firebase_auth: b2053dbf68fe28ed702bf9fa969643ff5491c64f
+  firebase_core: 5235a039bae1d526520162a2e5e3e57e872f0b39
   FirebaseAppCheckInterop: d265d9f4484e7ec1c591086408840fdd383d1213
   FirebaseAuth: c359af98bd703cbf4293eec107a40de08ede6ce6
   FirebaseAuthInterop: 1219bee9b23e6ebe84c256a0d95adab53d11c331
@@ -182,20 +182,20 @@ SPEC CHECKSUMS:
   FirebaseCoreExtension: f1bc67a4702931a7caa097d8e4ac0a1b0d16720e
   FirebaseCoreInternal: f47dd28ae7782e6a4738aad3106071a8fe0af604
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
+  google_sign_in_ios: 0ab078e60da6dfe23cbc55c83502b52bba1aad63
   GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  just_audio: 9b67ca7b97c61cfc9784ea23cd8cc55eb226d489
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  purchases_flutter: 048fffeb2d50e7eba6a572b29c1a7a55b002a125
+  just_audio: eb8b016ac4493159ab24db4f7215e55303b39a84
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  purchases_flutter: 42f88534ce51c3466beebb5da87ff5523fd3fee3
   PurchasesHybridCommon: bfd5bcf640a5c0a137d09287cdffcb4cf28fc12f
   RevenueCat: fd13e14159aefb128a8e822451d08418e04fdda3
-  share_plus: 1fa619de8392a4398bfaf176d441853922614e89
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sign_in_with_apple: a9e97e744e8edc36aefc2723111f652102a7a727
-  url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
+  share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sign_in_with_apple: 6673c03c9e3643f6c8d33601943fbfa9ae99f94e
+  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
 
 PODFILE CHECKSUM: aa790ec80df8f5bd50cbf3e41a17124beba890df
 

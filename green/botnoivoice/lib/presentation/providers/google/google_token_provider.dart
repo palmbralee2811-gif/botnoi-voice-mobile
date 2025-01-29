@@ -101,6 +101,7 @@ class GoogleTokenProvider extends ChangeNotifier {
         _userID = data['data']['uid'].toString();
         _remainingCredits = data['data']['credits'].toString();
         //TODO: get user daily quota to generate voice.
+        _logger.d('Daily Quota: ${data.toString()}');
         notifyListeners();
         _logger.i('User ID successfully loaded: $_userID');
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');

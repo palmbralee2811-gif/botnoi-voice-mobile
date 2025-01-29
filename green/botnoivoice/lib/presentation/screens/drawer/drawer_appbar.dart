@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -230,7 +228,6 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: const Color(0xFF323130),
             ),
             title: Text(
-              //TODO: แก้ไขข้อความ ไทย และอังกฤษ
               'app_drawer.redeem'.tr(), //รับพอยต์ฟรี
               style: GoogleFonts.prompt(
                 fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
@@ -248,28 +245,27 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             },
           ),
           SizedBox(height: 10.h),
-          if (Platform.isIOS)
-            ListTile(
-              contentPadding: EdgeInsets.only(
-                  left: OrientationHelper.isLandscape ? 20.w : 30.w),
-              leading: Icon(
-                Icons.credit_card,
-                size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 20.w : 30.w),
+            leading: Icon(
+              Icons.credit_card,
+              size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+              color: const Color(0xFF323130),
+            ),
+            title: Text(
+              'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
+              style: GoogleFonts.prompt(
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
                 color: const Color(0xFF323130),
               ),
-              title: Text(
-                'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
-                style: GoogleFonts.prompt(
-                  fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
-                ),
-              ),
-              onTap: () {
-                showPaymentDialog(context);
-              },
             ),
-          if (Platform.isIOS) SizedBox(height: 10.h),
+            onTap: () {
+              showPaymentDialog(context);
+            },
+          ),
+          SizedBox(height: 10.h),
           if (emailProvider.isLoggedIn &&
               emailProvider.user?.providerData[0].providerId == 'password')
             ListTile(

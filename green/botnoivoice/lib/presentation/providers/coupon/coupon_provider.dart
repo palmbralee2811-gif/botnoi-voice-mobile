@@ -142,7 +142,6 @@ class CouponProvider with ChangeNotifier {
         final message = responseBody['message'];
         _logger.d('Response body: $responseBody');
 
-        //TODO: เพิ่ม ภาษาอังกฤษของ error message
         if (message == 'Use Coupon Success') {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
@@ -187,7 +186,6 @@ class CouponProvider with ChangeNotifier {
         final message = responseBody['message'];
         _logger.d('Response body: $responseBody');
 
-        //TODO: เพิ่ม ภาษาอังกฤษของ error message
         if (message == 'Use Coupon Success') {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
