@@ -3,6 +3,8 @@ import 'package:botnoivoice/data/models/speaker_model/genders_list.dart';
 import 'package:botnoivoice/data/models/speaker_model/languages_list.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_top2.dart';
+import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_filter_button.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
@@ -111,22 +113,15 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        title: Align(
-          alignment: const FractionalOffset(0.49, 0.6),
-          child: SvgPicture.asset(
-            'assets/images/logo/appbar-icon.svg',
-            width: OrientationHelper.isLandscape ? 50.w : 30.w,
-            height: OrientationHelper.isLandscape ? 54.h : 34.h,
-          ),
-        ),
-      ),
-      body: buildFilterNavbar(context),
-    );
-  }
+
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: const AppBarTop(), // เรียกใช้ AppBarTop แทน AppBar เดิม
+    drawer: const DrawerAppbar(),
+    body: buildFilterNavbar(context),
+    
+  );
+}
 
   Widget buildFilterNavbar(BuildContext context) {
     return Column(

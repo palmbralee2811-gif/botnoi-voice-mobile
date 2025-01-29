@@ -10,124 +10,99 @@ void showLanguageBottomSheet({
   required BuildContext context,
   required Function(String) onLanguageSelected,
 }) async {
-  // Load the previously selected language
+  // โหลดภาษาที่เลือกไว้ก่อนหน้า
   String selectedLanguage = await loadSelectedLanguage();
 
   showModalBottomSheet(
     context: context,
+    isScrollControlled: true, // ✅ ให้ Bottom Sheet ขยายเต็มความกว้าง
     builder: (BuildContext context) {
       return Container(
-        color: Colors.transparent,
-        width: 280.w,
-        height: OrientationHelper.isLandscape ? 280.h : 180.h,
-        padding: const EdgeInsets.all(16),
+        width: double.infinity, // ✅ ทำให้ Bottom Sheet กว้างเต็มจอ
+        height: OrientationHelper.isLandscape ? 180.h : 200.h, // ✅ คงความสูงเดิม
+        decoration: const BoxDecoration(
+          color: Colors.white, // ✅ ตั้งสีพื้นหลังให้เหมือน AppBar
+          borderRadius: BorderRadius.vertical(top: Radius.circular(12)), // ✅ ทำให้มุมบนโค้ง
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'language'.tr(),
-                  style: GoogleFonts.prompt(
-                    fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
-                    fontWeight: FontWeight.w600,
+            // แถบหัวข้อ
+            Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'language'.tr(),
+                    style: GoogleFonts.prompt(
+                      fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context); // Close the bottom sheet
-                  },
-                  child: Icon(
-                    Icons.close,
-                    size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-                    color: Colors.black,
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // ปิด Bottom Sheet
+                    },
+                    child: Icon(
+                      Icons.close,
+                      size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 15.h),
+
+            // ปุ่มเลือกภาษาไทย
             InkWell(
               onTap: () async {
-                // On selecting Thai language
                 await saveSelectedLanguage('th');
                 onLanguageSelected('th');
                 context.setLocale(const Locale('th'));
-
-                // Refresh the current screen by navigating to it again
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const HomeScreen(),
-                  ),
-                );
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const HomeScreen()));
               },
               child: Container(
-                padding: EdgeInsets.only(
-                    left: OrientationHelper.isLandscape ? 0.w : 10.w),
-                height: OrientationHelper.isLandscape ? 62.h : 42.h,
+                height: 50.h,
                 width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/images/national_flag/thai.png',
-                      width: OrientationHelper.isLandscape ? 44.w : 23.w,
-                      height: OrientationHelper.isLandscape ? 44.h : 23.h,
-                    ),
-                    SizedBox(
-                        width: OrientationHelper.isLandscape ? 10.w : 20.w),
+                    Image.asset('assets/images/national_flag/thai.png', width: 30.w, height: 30.h),
+                    SizedBox(width: 10.w),
                     Text(
                       'ไทย',
                       style: GoogleFonts.prompt(
-                        fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
-                        fontWeight: selectedLanguage == 'th'
-                            ? FontWeight.w600
-                            : FontWeight.w400,
+                        fontSize: 16.sp,
+                        fontWeight: selectedLanguage == 'th' ? FontWeight.w600 : FontWeight.w400,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: OrientationHelper.isLandscape ? 20.h : 15.h),
+
+            // ปุ่มเลือกภาษาอังกฤษ
             InkWell(
               onTap: () async {
-                // On selecting English language
                 await saveSelectedLanguage('en');
                 onLanguageSelected('en');
                 context.setLocale(const Locale('en'));
-
-                // Refresh the current screen by navigating to it again
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const HomeScreen(),
-                  ),
-                );
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const HomeScreen()));
               },
               child: Container(
-                padding: EdgeInsets.only(
-                    left: OrientationHelper.isLandscape ? 0.w : 10.w),
-                height: OrientationHelper.isLandscape ? 62.h : 42.h,
+                height: 50.h,
                 width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/images/national_flag/english.png',
-                      width: OrientationHelper.isLandscape ? 44.w : 23.w,
-                      height: OrientationHelper.isLandscape ? 44.h : 23.h,
-                    ),
-                    SizedBox(
-                        width: OrientationHelper.isLandscape ? 10.w : 20.w),
+                    Image.asset('assets/images/national_flag/english.png', width: 30.w, height: 30.h),
+                    SizedBox(width: 10.w),
                     Text(
                       'English',
                       style: GoogleFonts.prompt(
-                        fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
-                        fontWeight: selectedLanguage == 'en'
-                            ? FontWeight.w600
-                            : FontWeight.w400,
+                        fontSize: 16.sp,
+                        fontWeight: selectedLanguage == 'en' ? FontWeight.w600 : FontWeight.w400,
                       ),
                     ),
                   ],
@@ -140,3 +115,4 @@ void showLanguageBottomSheet({
     },
   );
 }
+
