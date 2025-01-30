@@ -13,6 +13,7 @@ class AppleTokenProvider extends ChangeNotifier {
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
+  String? _quotaDownload;
   final Logger _logger = Logger(); // For debugging
 
   /// Getter for the User ID from Database after login
@@ -26,6 +27,9 @@ class AppleTokenProvider extends ChangeNotifier {
 
   /// Getter for the credentials token
   String? get getCredentialsToken => _credentialsToken;
+
+  /// Getter for the user daily quota
+  String? get getQuotaDownload => _quotaDownload;
 
   /// Clear all the tokens
   void clearTokens() {
@@ -100,10 +104,11 @@ class AppleTokenProvider extends ChangeNotifier {
         var data = json.decode(response.body);
         _userID = data['data']['uid'].toString();
         _remainingCredits = data['data']['credits'].toString();
-        //TODO: get user daily quota to generate voice.
+        _quotaDownload = data['data']['quota_download'].toString();
         notifyListeners();
         _logger.i('User ID successfully loaded: $_userID');
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');
+        _logger.i('Quota download successfully loaded: $_quotaDownload');
       } else {
         _logger
             .e("Failed to retrieve remaining credits: ${response.statusCode}");

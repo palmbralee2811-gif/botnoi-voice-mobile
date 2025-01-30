@@ -1,5 +1,5 @@
+import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
-import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
@@ -25,9 +25,9 @@ void showPaymentDialog(BuildContext context) {
 class _PaymentBottomSheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final applePaymentProvider = Provider.of<PaymentProvider>(context);
+    final paymentProvider = Provider.of<PaymentProvider>(context);
 
-    return applePaymentProvider.isLoading
+    return paymentProvider.isLoading
         ? Container(
             color: Colors.black54,
             child: const Center(
@@ -107,12 +107,14 @@ class _PaymentBottomSheetContent extends StatelessWidget {
     final paymentProvider =
         Provider.of<PaymentProvider>(context, listen: false);
 
+    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+
     try {
       //TODO: Don't remove this line
       await paymentProvider.handlePurchase();
 
       if (paymentProvider.errorMessage == null) {
-        await callLoadCreditsApi(context);
+        await creditsProvider.callLoadCreditsApi(context);
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
@@ -120,7 +122,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
           }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
           onPressed: () async {
             /// Refresh Points After In-App Purchase: IAP
-            await callLoadCreditsApi(context);
+            await creditsProvider.callLoadCreditsApi(context);
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -137,7 +139,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      await callLoadCreditsApi(context);
+      await creditsProvider.callLoadCreditsApi(context);
     }
   }
 }

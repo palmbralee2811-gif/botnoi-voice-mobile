@@ -1,5 +1,5 @@
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
-import 'package:botnoivoice/presentation/providers/credits/call_load_credits_api.dart';
+import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/coupon/time_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -121,6 +121,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
 
   Future<void> _handleCouponRedemption100(BuildContext context) async {
     final couponProvider = Provider.of<CouponProvider>(context, listen: false);
+    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
 
     try {
       await couponProvider.checkCoupon100(context);
@@ -130,7 +131,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
           context: context,
           text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
-            callLoadCreditsApi(context);
+            creditsProvider.callLoadCreditsApi(context);
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -147,12 +148,13 @@ class _RedeemCouponState extends State<RedeemCoupon> {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      callLoadCreditsApi(context);
+      creditsProvider.callLoadCreditsApi(context);
     }
   }
 
   Future<void> _handleCouponRedemption1K(BuildContext context) async {
     final couponProvider = Provider.of<CouponProvider>(context, listen: false);
+    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
 
     try {
       await couponProvider.checkCoupon1K(context);
@@ -162,7 +164,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
           context: context,
           text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
-            callLoadCreditsApi(context);
+            creditsProvider.callLoadCreditsApi(context);
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -179,7 +181,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      callLoadCreditsApi(context);
+      creditsProvider.callLoadCreditsApi(context);
     }
   }
 }

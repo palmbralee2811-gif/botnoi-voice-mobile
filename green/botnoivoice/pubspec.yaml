@@ -1,8 +1,8 @@
 name: botnoivoice
 description: "Botnoi Voice Mobile"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.0.1+21 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
-# android 1.0.1+21
+version: 1.0.1+22 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
+# android 1.0.1+22
 # ios 1.0.1+2
 
 environment:
@@ -36,7 +36,6 @@ dependencies:
 
   # Audio Player
   http: ^1.2.1
-  url_launcher: ^6.0.0
   audioplayers: ^6.1.0
   just_audio: ^0.9.39
   

@@ -1,7 +1,5 @@
-import 'dart:io';
-import 'package:botnoivoice/presentation/providers/credits/credits_povider.dart';
+import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
-import 'package:botnoivoice/presentation/providers/credits/credits_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
   const AppBarTop({super.key});
@@ -18,24 +15,32 @@ class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
   State<AppBarTop> createState() => _AppBarTopState();
 
   @override
-  Size get preferredSize => Size.fromHeight(OrientationHelper.isLandscape ? 135.h : 100.h);
+  Size get preferredSize =>
+      Size.fromHeight(OrientationHelper.isLandscape ? 135.h : 100.h);
 }
 
 class _AppBarTopState extends State<AppBarTop> {
   @override
   void initState() {
     super.initState();
-    _loadCredits();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRemainingCredits();
+    });
   }
 
-  Future<void> _loadCredits() async {
-    var credits = await getRemainingCredits(context);
-    Provider.of<CreditsProvider>(context, listen: false).setRemainingCredits(credits);
+  //TODO: แสดงข้อความ daily quote สร้างเสียงรายวัน
+  //TODO: แสดงแจ้งเตือน ก่อนลูกค้ากดปุ่ม สร้างเสียง
+  //TODO: แสดง modal แจ้งเตือน ว่า สร้างเสียงครบ 10 ครั้ง/วันแล้ว ครั้งต่อไปจะเสียพอยต์
+
+  Future<void> _loadRemainingCredits() async {
+    await Provider.of<CreditsProvider>(context, listen: false)
+        .callLoadCreditsApi(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    var remainingCredits = Provider.of<CreditsProvider>(context).remainingCredits;
+    var remainingCredits =
+        Provider.of<CreditsProvider>(context).remainingCredits;
 
     return AppBar(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -80,13 +85,8 @@ class _AppBarTopState extends State<AppBarTop> {
           ),
           margin: EdgeInsets.only(right: 10.w),
           child: InkWell(
-            onTap: () async {
-              if (Platform.isAndroid) {
-                await launchUrlString('https://voice.botnoi.ai/payment',
-                    mode: LaunchMode.platformDefault);
-              } else if (Platform.isIOS) {
-                showPaymentDialog(context);
-              }
+            onTap: () {
+              showPaymentDialog(context);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,7 +105,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  remainingCredits.toString(),
+                  remainingCredits ?? 'N/A',
                   style: GoogleFonts.prompt(
                     fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                     fontWeight: FontWeight.bold,

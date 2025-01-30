@@ -20,13 +20,8 @@ class PaymentProvider with ChangeNotifier {
     if (Platform.isIOS) return await iosPayment();
   }
   
-  //TODO: fix error: product not found
-  //TODO: Use new method for offering products from TN Frank
-  //TODO: เปลี่ยน ท่าใหม่เป็น เรียกใช้ product จาก offering ของน้อง TN
-  //TODO: fix error: This version of the application is not configured for billing through Google Play. Check the help center for more information.
-
   Future<void> androidPayment() async {
-        _isLoading = true;
+    _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
@@ -37,13 +32,11 @@ class PaymentProvider with ChangeNotifier {
       final offering = offerings.getOffering(productAndroid);
       if (offering != null && offering.availablePackages.isNotEmpty) {
         _logger.i("Purchasing package from offering: $productAndroid");
-        final purchaseResult =
-            await Purchases.purchasePackage(offering.availablePackages.first);
+        final purchaseResult = await Purchases.purchasePackage(offering.availablePackages.first);
 
         _logger.i("Purchase successful: $purchaseResult");
       } else {
-        _logger
-            .w("No available package found for offering: $productAndroid");
+        _logger.w("No available package found for offering: $productAndroid");
         _errorMessage = "No packages available for this offering.";
       }
     } catch (e) {
