@@ -35,7 +35,7 @@ class EmailPermissionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const BotnoiAppBar(title: "ความปลอดภัย"),
+      appBar: BotnoiAppBar(title: 'app_drawer.security'.tr()),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Consumer<UserInfoProvider>(
@@ -62,7 +62,8 @@ class EmailPermissionScreen extends StatelessWidget {
                             : tr('email_permission.off'),
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
-                          fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 10.sp : 14.sp,
                           color: kDark,
                         ),
                       ),
@@ -75,7 +76,8 @@ class EmailPermissionScreen extends StatelessWidget {
                           width: OrientationHelper.isLandscape ? 30.w : 50.w,
                           height: OrientationHelper.isLandscape ? 45.h : 30.h,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular( OrientationHelper.isLandscape ? 35.r : 20.r),
+                            borderRadius: BorderRadius.circular(
+                                OrientationHelper.isLandscape ? 35.r : 20.r),
                             gradient: LinearGradient(
                               colors: userInfoProvider.isShowEmail
                                   ? [
@@ -97,8 +99,10 @@ class EmailPermissionScreen extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.all(2.w),
                               child: Container(
-                                width: OrientationHelper.isLandscape ? 10.w : 24.w,
-                                height: OrientationHelper.isLandscape ? 34.h : 24.h,
+                                width:
+                                    OrientationHelper.isLandscape ? 10.w : 24.w,
+                                height:
+                                    OrientationHelper.isLandscape ? 34.h : 24.h,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Colors.white,

@@ -191,7 +191,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const BotnoiAppBar(title: "ข้อมูลส่วนตัว"),
+      appBar: BotnoiAppBar(title: 'app_drawer.profile'.tr()),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),

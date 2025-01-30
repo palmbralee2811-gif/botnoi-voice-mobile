@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:botnoivoice/presentation/providers/credits/credits_povider.dart';
-import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:botnoivoice/presentation/providers/credits/credits_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
@@ -45,8 +44,8 @@ class _AppBarTopState extends State<AppBarTop> {
           elevation: 0, // ✅ เอาเงาออก
           shadowColor: Colors.transparent, // ✅ ป้องกันเงา
           leading: IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Color(0xFF323130)),
-            iconSize: OrientationHelper.isLandscape ? 12.sp : 25.sp,
+            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF323130)),
+            iconSize: OrientationHelper.isLandscape ? 10.sp : 16.sp,
             onPressed: () => Scaffold.of(context).openDrawer(),
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           ),
