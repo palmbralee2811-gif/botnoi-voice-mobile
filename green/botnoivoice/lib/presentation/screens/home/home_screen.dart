@@ -100,11 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (creditsProvider.remainingQuotaDownload == "0" && !hasShownQuotaDialog) {
       hasShownQuotaDialog = true; // Show dialog only once
       NotificationDialog(
-              context: context,
-              //TODO: แปลงข้อความเป็น ภาษาอังกฤษ
-              text:'คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน',
-              onPressed: () {})
-          .showCheckmarkModalWithAction(context);
+        context: context,
+        //TODO: แปลงข้อความเป็น ภาษาอังกฤษ
+        text:
+            'คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน',
+        onPressed: () {},
+      ).showCheckmarkModalWithAction(context);
     } else {
       await _generateAudioConfirmed();
     }
