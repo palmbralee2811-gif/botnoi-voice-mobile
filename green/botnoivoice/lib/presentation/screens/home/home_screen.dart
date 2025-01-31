@@ -12,6 +12,7 @@ import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart
 import 'package:botnoivoice/presentation/screens/appbar/appbar_top.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text.dart';
@@ -56,6 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Duration duration = Duration.zero;
   Duration currentPosition = Duration.zero;
 
+  // Show Quota Download Dialog Before Generating Audio
+  bool hasShownQuotaDialog = false;
+
   @override
   void initState() {
     super.initState();
@@ -75,7 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _generateAudio() async {
-    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+    final creditsProvider =
+        Provider.of<CreditsProvider>(context, listen: false);
     setState(() {
       isGenerateAudio = true;
     });
@@ -92,6 +97,27 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
+    if (creditsProvider.remainingQuotaDownload == "0" && !hasShownQuotaDialog) {
+      hasShownQuotaDialog = true; // Show dialog only once
+      NotificationDialog(
+              context: context,
+              text:
+                  'คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน',
+              onPressed: () {})
+          .showCheckmarkModalWithAction(context);
+    } else {
+      await _generateAudioConfirmed();
+    }
+
+    setState(() {
+      isGenerateAudio = false;
+    });
+  }
+
+  Future<void> _generateAudioConfirmed() async {
+    final creditsProvider =
+        Provider.of<CreditsProvider>(context, listen: false);
+
     if (_textController.text.isNotEmpty) {
       final audioUrl = await generateAudio(_textController.text);
       await creditsProvider.callLoadCreditsApi(context);
@@ -101,10 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
             fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
       }
     }
-
-    setState(() {
-      isGenerateAudio = false;
-    });
   }
 
   @override
@@ -116,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Expanded(
-              child: buildTextBox(),
+            child: buildTextBox(),
           ),
           Container(
             width: double.infinity,

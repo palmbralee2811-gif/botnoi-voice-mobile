@@ -40,7 +40,9 @@ class _AppBarTopState extends State<AppBarTop> {
   @override
   Widget build(BuildContext context) {
     var remainingCredits =
-        Provider.of<CreditsProvider>(context).remainingCredits;
+        Provider.of<CreditsProvider>(context).remainingCredits ?? 'N/A';
+    var remainingQuotaDownload =
+        Provider.of<CreditsProvider>(context).remainingQuotaDownload ?? 'N/A';
 
     return AppBar(
       backgroundColor: const Color(0xFFFFFFFF),
@@ -105,7 +107,53 @@ class _AppBarTopState extends State<AppBarTop> {
                   ),
                 ),
                 Text(
-                  remainingCredits ?? 'N/A',
+                  remainingCredits,
+                  style: GoogleFonts.prompt(
+                    fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF323130),
+                  ),
+                ),
+                SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          height: OrientationHelper.isLandscape ? 35.h : 30.h,
+          decoration: BoxDecoration(
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromARGB(255, 224, 221, 221),
+                blurRadius: 3.0,
+              ),
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+          margin: EdgeInsets.only(right: 10.w),
+          child: InkWell(
+            onTap: () {
+              // Add your onTap functionality here
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
+                SizedBox(
+                  height: OrientationHelper.isLandscape ? 40.h : 20.h,
+                  width: OrientationHelper.isLandscape ? 10.w : 20.w,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: SvgPicture.asset(
+                      'assets/images/icon/free-icon.svg',
+                      width: OrientationHelper.isLandscape ? 30.w : 20.w,
+                      height: OrientationHelper.isLandscape ? 30.h : 20.h,
+                    ),
+                  ),
+                ),
+                Text(
+                  '$remainingQuotaDownload/10',
                   style: GoogleFonts.prompt(
                     fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                     fontWeight: FontWeight.bold,

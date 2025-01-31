@@ -14,11 +14,17 @@ final _logger = Logger();
 
 class CreditsProvider with ChangeNotifier {
   String? _remainingCredits;
+  String? _remainingQuotaDownload;
 
+  /// Get the remaining credits
   String? get remainingCredits => _remainingCredits;
 
-  void setRemainingCredits(String? credits) {
+  /// Get the remaining download quota for generating voice daily (10/10)
+  String? get remainingQuotaDownload => _remainingQuotaDownload;
+
+  void setRemainingCredits(String? credits, String? quotaDownload) {
     _remainingCredits = credits;
+    _remainingQuotaDownload = quotaDownload;
     notifyListeners();
   }
 
@@ -54,7 +60,8 @@ class CreditsProvider with ChangeNotifier {
 
       // After getting the credits, update the CreditsProvider
       final credits = await _getRemainingCredits(context);
-      setRemainingCredits(credits);
+      final quotaDownload = await _getRemainingQuotaDownload(context);
+      setRemainingCredits(credits, quotaDownload);
     } catch (e) {
       _logger.e('Failed to load credits: $e');
     }
@@ -69,36 +76,63 @@ class CreditsProvider with ChangeNotifier {
     try {
       if (appleProvider.isLoggedIn && appleProvider.user?.providerData[0].providerId == 'apple.com') {
         _logger.d('User logged in with Apple');
-        final credits = Provider.of<AppleTokenProvider>(context, listen: false).getRemainingCredits;
-        _logger.d('Remaining credits from Apple: $credits');
-        return credits;
+        return Provider.of<AppleTokenProvider>(context, listen: false).getRemainingCredits;
       }
 
       if (googleProvider.isLoggedIn && googleProvider.user?.providerData[0].providerId == 'google.com') {
         _logger.d('User logged in with Google');
-        final credits = Provider.of<GoogleTokenProvider>(context, listen: false).getRemainingCredits;
-        _logger.d('Remaining credits from Google: $credits');
-        return credits;
+        return Provider.of<GoogleTokenProvider>(context, listen: false).getRemainingCredits;
       }
 
       if (lineProvider.isLoggedIn) {
         _logger.d('User logged in with LINE');
-        final credits = Provider.of<LineTokenProvider>(context, listen: false).getRemainingCredits;
-        _logger.d('Remaining credits from LINE: $credits');
-        return credits;
+        return Provider.of<LineTokenProvider>(context, listen: false).getRemainingCredits;
       }
 
       if (emailProvider.isLoggedIn && emailProvider.user?.providerData[0].providerId == 'password') {
         _logger.d('User logged in with Email');
-        final credits = Provider.of<EmailTokenProvider>(context, listen: false).getRemainingCredits;
-        _logger.d('Remaining credits from Email: $credits');
-        return credits;
+        return Provider.of<EmailTokenProvider>(context, listen: false).getRemainingCredits;
       }
 
       _logger.w('No valid login provider found');
       return "N/A";
     } catch (e) {
       _logger.e('Failed to get remaining credits', error: e);
+      return "N/A";
+    }
+  }
+
+  Future<String?> _getRemainingQuotaDownload(BuildContext context) async {
+    final appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
+    final googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
+    final emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
+
+    try {
+      if (appleProvider.isLoggedIn && appleProvider.user?.providerData[0].providerId == 'apple.com') {
+        _logger.d('User logged in with Apple');
+        return Provider.of<AppleTokenProvider>(context, listen: false).getQuotaDownload;
+      }
+
+      if (googleProvider.isLoggedIn && googleProvider.user?.providerData[0].providerId == 'google.com') {
+        _logger.d('User logged in with Google');
+        return Provider.of<GoogleTokenProvider>(context, listen: false).getQuotaDownload;
+      }
+
+      if (lineProvider.isLoggedIn) {
+        _logger.d('User logged in with LINE');
+        return Provider.of<LineTokenProvider>(context, listen: false).getQuotaDownload;
+      }
+
+      if (emailProvider.isLoggedIn && emailProvider.user?.providerData[0].providerId == 'password') {
+        _logger.d('User logged in with Email');
+        return Provider.of<EmailTokenProvider>(context, listen: false).getQuotaDownload;
+      }
+
+      _logger.w('No valid login provider found');
+      return "N/A";
+    } catch (e) {
+      _logger.e('Failed to get remaining quota download', error: e);
       return "N/A";
     }
   }
