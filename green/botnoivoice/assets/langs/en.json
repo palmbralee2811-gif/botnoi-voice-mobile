@@ -259,5 +259,8 @@
         "coupon_not_found": "Coupon not found. The coupon may no longer be valid or the coupon you entered is incorrect.",
         "coupon_expired_or_not_found": "Coupon not found in the system or the coupon has expired.",
         "api_call_error": "An error occurred while calling the API:"
+    },
+    "free_quota_use": {
+        "ten_time_perday": "You have reached your daily limit of 10 free uses. From now on, the system will deduct points based on your usage."
     }
 }

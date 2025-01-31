@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         //TODO: แปลงข้อความเป็น ภาษาอังกฤษ
         text:
-            'คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน',
+            tr('free_quota_use.ten_time_perday'), //คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน
         onPressed: () {},
       ).showCheckmarkModalWithAction(context);
     } else {
