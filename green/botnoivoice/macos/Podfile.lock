@@ -101,8 +101,6 @@ PODS:
     - FlutterMacOS
   - sign_in_with_apple (0.0.1):
     - FlutterMacOS
-  - url_launcher_macos (0.0.1):
-    - FlutterMacOS
 
 DEPENDENCIES:
   - audio_session (from `Flutter/ephemeral/.symlinks/plugins/audio_session/macos`)
@@ -118,7 +116,6 @@ DEPENDENCIES:
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos`)
-  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
 
 SPEC REPOS:
   trunk:
@@ -164,8 +161,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sign_in_with_apple:
     :path: Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos
-  url_launcher_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
@@ -195,7 +190,6 @@ SPEC CHECKSUMS:
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sign_in_with_apple: 6673c03c9e3643f6c8d33601943fbfa9ae99f94e
-  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
 
 PODFILE CHECKSUM: aa790ec80df8f5bd50cbf3e41a17124beba890df
 

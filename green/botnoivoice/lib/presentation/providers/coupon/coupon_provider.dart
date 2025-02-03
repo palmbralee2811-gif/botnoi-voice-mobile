@@ -31,6 +31,8 @@ class CouponProvider with ChangeNotifier {
 
       _logger.d('Fetched ID token: $jwtToken');
 
+      //TODO: Get `coupon_name` from API
+      //TODO: Call API to check `coupon_name`
       final couponCode = await _getCouponNameForToday();
       if (couponCode == null) {
         _logger.e('Coupon code is null');
@@ -39,7 +41,7 @@ class CouponProvider with ChangeNotifier {
 
       _logger.d(
           'Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
-      await _callCheckCouponApi100(jwtToken, couponCode);
+      await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
       _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e'; //เกิดข้อผิดพลาด:
       _logger.e(_errorMessage);
@@ -60,7 +62,7 @@ class CouponProvider with ChangeNotifier {
 
       const couponCode = 'mobile1000';
       _logger.d('Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
-      await _callCheckCouponApi1K(jwtToken, couponCode);
+      await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
       _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e'; //เกิดข้อผิดพลาด:
       _logger.e(_errorMessage);
@@ -123,52 +125,8 @@ class CouponProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _callCheckCouponApi100(
+  Future<void> _callCheckCouponApi(
       String jwtToken, String couponName) async {
-    try {
-      _logger.d('Sending POST request to $url with couponCode: $couponName');
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': "Bearer $jwtToken",
-        },
-        body: jsonEncode({'coupon_name': couponName}),
-      );
-
-      _logger.d('Received response with status code: ${response.statusCode}');
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        final message = responseBody['message'];
-        _logger.d('Response body: $responseBody');
-
-        if (message == 'Use Coupon Success') {
-          _errorMessage = null;
-          _logger.d('Coupon redeemed successfully $couponName');
-        } else if (message == 'already in use') {
-          _errorMessage = 'redeem_provider.coupon_already_used'.tr(); //คูปองของคุณถูกใช้งานแล้ว
-          _logger.e(_errorMessage);
-        } else if (message == 'Incorrect Coupon') {
-          _errorMessage =
-              'redeem_provider.coupon_not_found'.tr(); //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
-          _logger.e(_errorMessage);
-        } else {
-          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'.tr(); //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
-          _logger.e(_errorMessage);
-        }
-      } else {
-        _errorMessage = '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; //เกิดข้อผิดพลาดในการเรียก API:
-        _logger.e(_errorMessage);
-      }
-    } catch (e) {
-      _errorMessage = 'Exception occurred: $e';
-      _logger.e(_errorMessage);
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> _callCheckCouponApi1K(String jwtToken, String couponName) async {
     try {
       _logger.d('Sending POST request to $url with couponCode: $couponName');
       final response = await http.post(

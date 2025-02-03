@@ -28,13 +28,22 @@ class _AppBarTopState extends State<AppBarTop> {
     });
   }
 
-  //TODO: แสดงข้อความ daily quote สร้างเสียงรายวัน
-  //TODO: แสดงแจ้งเตือน ก่อนลูกค้ากดปุ่ม สร้างเสียง
-  //TODO: แสดง modal แจ้งเตือน ว่า สร้างเสียงครบ 10 ครั้ง/วันแล้ว ครั้งต่อไปจะเสียพอยต์
-
   Future<void> _loadRemainingCredits() async {
     await Provider.of<CreditsProvider>(context, listen: false)
         .callLoadCreditsApi(context);
+  }
+
+  String getFreeIconPath(BuildContext context) {
+    String languageCode = Localizations.localeOf(context).languageCode;
+    switch (languageCode) {
+      //TODO: Uncomment this code when the indonesian icon is ready
+      // case 'id':
+      //   return 'assets/images/icon/free-icon-indonesian.svg';
+      case 'en':
+        return 'assets/images/icon/free-icon-english.svg';
+      default:
+        return 'assets/images/icon/free-icon.svg';
+    }
   }
 
   @override
@@ -141,17 +150,26 @@ class _AppBarTopState extends State<AppBarTop> {
               children: [
                 SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
                 SizedBox(
+                  // height: OrientationHelper.isLandscape ? 40.h : 30.h,
+                  // width: OrientationHelper.isLandscape ? 30.w : 40.w,
+                  // child: Padding(
+                  //   padding: EdgeInsets.all(OrientationHelper.isLandscape ? 1.w : 3.w),
+                  //   child: GradientFreeButton(
+                  //     onPressed: () {},
+                  //   ),
+                  // ),
                   height: OrientationHelper.isLandscape ? 40.h : 20.h,
                   width: OrientationHelper.isLandscape ? 10.w : 20.w,
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: SvgPicture.asset(
-                      'assets/images/icon/free-icon.svg',
+                      getFreeIconPath(context),
                       width: OrientationHelper.isLandscape ? 30.w : 20.w,
                       height: OrientationHelper.isLandscape ? 30.h : 20.h,
                     ),
                   ),
                 ),
+                SizedBox(width: 2.w),
                 Text(
                   '$remainingQuotaDownload/10',
                   style: GoogleFonts.prompt(

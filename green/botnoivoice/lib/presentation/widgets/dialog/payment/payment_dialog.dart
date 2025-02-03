@@ -110,7 +110,6 @@ class _PaymentBottomSheetContent extends StatelessWidget {
     final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
 
     try {
-      //TODO: Don't remove this line
       await paymentProvider.handlePurchase();
 
       if (paymentProvider.errorMessage == null) {
