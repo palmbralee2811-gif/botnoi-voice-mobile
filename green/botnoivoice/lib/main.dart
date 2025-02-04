@@ -47,7 +47,7 @@ void main() async {
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('th')], // Supported locales
+      supportedLocales: const [Locale('en'), Locale('th'), Locale('id')],  // Supported locales
       path: 'assets/langs', // Path to your localization files
       fallbackLocale: const Locale(
           'th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา

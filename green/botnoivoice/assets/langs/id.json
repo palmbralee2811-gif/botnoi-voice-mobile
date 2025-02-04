@@ -133,7 +133,7 @@
     },
     "payment": {
         "buy_points": "Beli Poin",
-        "price": "49,000.00",
+        "price": "49,000",
         "currency": "IDR",
         "get_points": "Dapatkan {productTitle} poin",
         "buy_now": "Beli Sekarang",
