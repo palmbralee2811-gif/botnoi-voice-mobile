@@ -1,6 +1,4 @@
-import 'dart:io';
-import 'package:botnoivoice/presentation/providers/credits/credits_povider.dart';
-import 'package:botnoivoice/presentation/providers/credits/credits_helper.dart';
+import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
   const AppBarTop({super.key});
@@ -24,23 +21,27 @@ class _AppBarTopState extends State<AppBarTop> {
   @override
   void initState() {
     super.initState();
-    _loadCredits();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRemainingCredits();
+    });
   }
 
-  Future<void> _loadCredits() async {
-    var credits = await getRemainingCredits(context);
-    Provider.of<CreditsProvider>(context, listen: false).setRemainingCredits(credits);
+  Future<void> _loadRemainingCredits() async {
+    await Provider.of<CreditsProvider>(context, listen: false)
+        .callLoadCreditsApi(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    var remainingCredits = Provider.of<CreditsProvider>(context).remainingCredits;
+    var remainingCredits =
+        Provider.of<CreditsProvider>(context).remainingCredits ?? 'N/A';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         AppBar(
-          backgroundColor: const Color(0xFFFFFFFF), // ✅ เปลี่ยนพื้นหลังเป็นสีขาว
+          backgroundColor:
+              const Color(0xFFFFFFFF), // ✅ เปลี่ยนพื้นหลังเป็นสีขาว
           elevation: 0, // ✅ เอาเงาออก
           shadowColor: Colors.transparent, // ✅ ป้องกันเงา
           leading: IconButton(
@@ -77,13 +78,8 @@ class _AppBarTopState extends State<AppBarTop> {
               ),
               margin: EdgeInsets.only(right: 10.w),
               child: InkWell(
-                onTap: () async {
-                  if (Platform.isAndroid) {
-                    await launchUrlString('https://voice.botnoi.ai/payment',
-                        mode: LaunchMode.platformDefault);
-                  } else if (Platform.isIOS) {
-                    showPaymentDialog(context);
-                  }
+                onTap: () {
+                  showPaymentDialog(context);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -94,13 +90,16 @@ class _AppBarTopState extends State<AppBarTop> {
                       width: OrientationHelper.isLandscape ? 30.w : 20.w,
                       height: OrientationHelper.isLandscape ? 30.h : 20.h,
                     ),
-                    SizedBox(width: 8.w), // ✅ เพิ่มระยะห่างระหว่างไอคอนกับตัวเลข
+                    SizedBox(
+                        width: 8.w), // ✅ เพิ่มระยะห่างระหว่างไอคอนกับตัวเลข
                     Text(
-                      remainingCredits.toString(),
+                      remainingCredits,
                       style: GoogleFonts.prompt(
-                        fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
+                        fontSize:
+                            OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF6D6D6D), // ✅ เปลี่ยนสีตัวเลขเป็นสีเทา
+                        color: const Color(
+                            0xFF6D6D6D), // ✅ เปลี่ยนสีตัวเลขเป็นสีเทา
                       ),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
