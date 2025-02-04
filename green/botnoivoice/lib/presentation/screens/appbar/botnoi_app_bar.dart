@@ -6,7 +6,7 @@ class BotnoiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBackPressed;
   final String? title; 
 
-  const BotnoiAppBar({Key? key, this.onBackPressed, this.title}) : super(key: key);
+  const BotnoiAppBar({super.key, this.onBackPressed, this.title});
 
   @override
   Widget build(BuildContext context) {

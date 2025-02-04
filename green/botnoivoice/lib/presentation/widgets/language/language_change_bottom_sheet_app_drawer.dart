@@ -18,8 +18,8 @@ void showLanguageBottomSheet({
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
       return GestureDetector(
-        onTap: () => Navigator.pop(context), 
-        behavior: HitTestBehavior.opaque, 
+        onTap: () => Navigator.pop(context),
+        behavior: HitTestBehavior.opaque,
         child: Container(
           width: double.infinity,
           height: OrientationHelper.isLandscape ? 280.h : 180.h,
@@ -55,16 +55,12 @@ void showLanguageBottomSheet({
                   ],
                 ),
               ),
-
-
               Flexible(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       SizedBox(height: 16.h),
-
-                     
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -73,31 +69,38 @@ void showLanguageBottomSheet({
                             onLanguageSelected('th');
                             context.setLocale(const Locale('th'));
 
-                            
                             Navigator.of(context).pop(); // ปิด Bottom Sheet
-                            Navigator.of(context).popUntil((route) => route.isFirst); // ปิด Drawer
-                            
-                            
+                            Navigator.of(context).popUntil(
+                                (route) => route.isFirst); // ปิด Drawer
+
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => const HomeScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeScreen()),
                             );
                           },
                           highlightColor: Colors.grey[300],
                           splashColor: Colors.transparent,
                           borderRadius: BorderRadius.circular(8.r),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.h, horizontal: 20.w),
                             child: Row(
                               children: [
-                                Image.asset('assets/images/national_flag/thai.png',
-                                    width: 26.w, height: 26.h),
+                                Image.asset(
+                                    'assets/images/national_flag/thai.png',
+                                    width: 26.w,
+                                    height: 26.h),
                                 SizedBox(width: 12.w),
                                 Text(
                                   'ไทย',
                                   style: GoogleFonts.prompt(
-                                    fontSize: OrientationHelper.isLandscape ? 12.sp : 14.sp,
-                                    fontWeight: selectedLanguage == 'th' ? FontWeight.w600 : FontWeight.w400,
+                                    fontSize: OrientationHelper.isLandscape
+                                        ? 12.sp
+                                        : 14.sp,
+                                    fontWeight: selectedLanguage == 'th'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
                                   ),
                                 ),
                               ],
@@ -105,10 +108,7 @@ void showLanguageBottomSheet({
                           ),
                         ),
                       ),
-
                       SizedBox(height: 16.h),
-
-                  
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -117,31 +117,38 @@ void showLanguageBottomSheet({
                             onLanguageSelected('en');
                             context.setLocale(const Locale('en'));
 
-                            
                             Navigator.of(context).pop(); // ปิด Bottom Sheet
-                            Navigator.of(context).popUntil((route) => route.isFirst); // ปิด Drawer
-                            
-                        
+                            Navigator.of(context).popUntil(
+                                (route) => route.isFirst); // ปิด Drawer
+
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => const HomeScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeScreen()),
                             );
                           },
                           highlightColor: Colors.grey[300],
                           splashColor: Colors.transparent,
                           borderRadius: BorderRadius.circular(8.r),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.h, horizontal: 20.w),
                             child: Row(
                               children: [
-                                Image.asset('assets/images/national_flag/english.png',
-                                    width: 26.w, height: 26.h),
+                                Image.asset(
+                                    'assets/images/national_flag/english.png',
+                                    width: 26.w,
+                                    height: 26.h),
                                 SizedBox(width: 12.w),
                                 Text(
                                   'English',
                                   style: GoogleFonts.prompt(
-                                    fontSize: OrientationHelper.isLandscape ? 12.sp : 14.sp,
-                                    fontWeight: selectedLanguage == 'en' ? FontWeight.w600 : FontWeight.w400,
+                                    fontSize: OrientationHelper.isLandscape
+                                        ? 12.sp
+                                        : 14.sp,
+                                    fontWeight: selectedLanguage == 'en'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
                                   ),
                                 ),
                               ],
@@ -149,7 +156,54 @@ void showLanguageBottomSheet({
                           ),
                         ),
                       ),
+                      SizedBox(height: 16.h),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () async {
+                            await saveSelectedLanguage('id');
+                            onLanguageSelected('id');
+                            context.setLocale(const Locale('id'));
 
+                            Navigator.of(context).pop(); // ปิด Bottom Sheet
+                            Navigator.of(context).popUntil(
+                                (route) => route.isFirst); // ปิด Drawer
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeScreen()),
+                            );
+                          },
+                          highlightColor: Colors.grey[300],
+                          splashColor: Colors.transparent,
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.h, horizontal: 20.w),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                    'assets/images/national_flag/indonesian.png',
+                                    width: 26.w,
+                                    height: 26.h),
+                                SizedBox(width: 12.w),
+                                Text(
+                                  'English',
+                                  style: GoogleFonts.prompt(
+                                    fontSize: OrientationHelper.isLandscape
+                                        ? 12.sp
+                                        : 14.sp,
+                                    fontWeight: selectedLanguage == 'id'
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 16.h),
                     ],
                   ),
