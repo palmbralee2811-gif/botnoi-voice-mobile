@@ -1,56 +1,20 @@
-import 'package:botnoivoice/presentation/constants/styles.dart';
-import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:botnoivoice/presentation/widgets/button/social_login_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 
+/// ปุ่มล็อกอินด้วย Line ใช้ SocialLoginButton
 class LineLoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   const LineLoginButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Padding(
-            padding: EdgeInsets.zero,
-            child: ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kGreen,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                padding: EdgeInsets.zero,
-                minimumSize:
-                    OrientationHelper.isLandscape ? Size(224.w, 88.h) : Size(224.w, 48.h),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/auth_screen/line-icon.svg',
-                    height: OrientationHelper.isLandscape ? 52.h : 32.h,
-                    width: OrientationHelper.isLandscape ? 32.w : 32.w,
-                  ),
-                  SizedBox(width: OrientationHelper.isLandscape ? 12.w : 16.w),
-                  Text(
-                    'auth.sign_in_with_line'.tr(),
-                    style: TextStyle(
-                      fontSize: OrientationHelper.isLandscape ? 9.sp : 12.sp,
-                      color: Colors.white,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
+    return SocialLoginButton(
+      onPressed: onPressed,
+      backgroundColor: kGreen, // สีพื้นหลังสีเขียวของ Line
+      textColor: Colors.white, // สีข้อความขาว
+      iconPath: 'assets/images/auth_screen/line-icon.svg', // ไอคอน Line
+      buttonText: 'auth.sign_in_with_line', // ข้อความ
     );
   }
 }

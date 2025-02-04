@@ -1,5 +1,6 @@
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
 import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
+import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
 import 'package:botnoivoice/presentation/screens/drawer/coupon/time_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -45,11 +46,8 @@ class _RedeemCouponState extends State<RedeemCoupon> {
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = OrientationHelper.isLandscape;
 
-    return Scaffold(
-      appBar: AppBar(
-        //TODO: empty string
-        title: const Text(""),
-      ),
+    return Scaffold(  
+      appBar: const BotnoiAppBar(),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
