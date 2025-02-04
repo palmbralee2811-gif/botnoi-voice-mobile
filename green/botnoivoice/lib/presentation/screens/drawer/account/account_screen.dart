@@ -11,6 +11,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
+import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
@@ -190,27 +191,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'account.profile'.tr(), //ข้อมูลส่วนตัว
-          style: GoogleFonts.prompt(
-              fontSize: OrientationHelper.isLandscape ? 12.sp : 12.sp,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF323130)),
-        ),
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: const Color(0xFF323130),
-            size: OrientationHelper.isLandscape ? 10.sp : 24.sp,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: BotnoiAppBar(title: 'app_drawer.profile'.tr()),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),

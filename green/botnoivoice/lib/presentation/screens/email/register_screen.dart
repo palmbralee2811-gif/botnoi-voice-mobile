@@ -6,6 +6,7 @@ import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.da
 import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
+import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/policy/privacy_policy_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/policy/terms_service_screen.dart';
@@ -144,16 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: const BotnoiAppBar(),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
