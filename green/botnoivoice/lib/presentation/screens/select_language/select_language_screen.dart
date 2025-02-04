@@ -37,7 +37,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
               children: [
                 // GradientText: ข้อความ "Languages"
                 Container(
-                  width: OrientationHelper.isLandscape ? 300.w : 256.w, // ปรับตาม orientation
+                  width: OrientationHelper.isLandscape
+                      ? 300.w
+                      : 256.w, // ปรับตาม orientation
                   height: OrientationHelper.isLandscape ? 90.h : 56.h,
                   alignment: Alignment.center,
                   child: GradientText(
@@ -50,12 +52,17 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     ),
                     style: TextStyle(
                       fontWeight: FontWeight.w600, // กึ่งหนา
-                      fontSize: OrientationHelper.isLandscape ? 16.sp : 22.sp, // ปรับขนาดฟอนต์
+                      fontSize: OrientationHelper.isLandscape
+                          ? 16.sp
+                          : 22.sp, // ปรับขนาดฟอนต์
                       decoration: TextDecoration.none,
                     ),
                   ),
                 ),
-                SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h), // ปรับระยะห่าง
+                SizedBox(
+                    height: OrientationHelper.isLandscape
+                        ? 40.h
+                        : 20.h), // ปรับระยะห่าง
                 // ปุ่มสำหรับเลือกภาษา English
                 LanguageButton(
                   flagAsset: 'assets/images/national_flag/english.png',
@@ -100,6 +107,33 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                   onTap: () async {
                     await LanguageHelper.saveSelectedLanguage('th');
                     context.setLocale(const Locale('th'));
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AuthChecker(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: OrientationHelper.isLandscape ? 15.h : 10.h),
+                // ปุ่มสำหรับเลือกภาษาอินโดนีเซีย
+                LanguageButton(
+                  flagAsset: 'assets/images/national_flag/indonesian.png',
+                  language: 'Indonesian',
+                  width: OrientationHelper.isLandscape ? 300.w : 256.w,
+                  height: OrientationHelper.isLandscape ? 70.h : 48.h,
+                  fontSize: OrientationHelper.isLandscape ? 12.sp : 16.sp,
+                  flagWidth: OrientationHelper.isLandscape
+                      ? 30.w
+                      : 30.w, // กำหนดขนาดของธงตาม orientation
+                  flagHeight: OrientationHelper.isLandscape
+                      ? 40.h
+                      : 20.h, // กำหนดขนาดของธงตาม orientation
+                  isSelected: selectedLanguage == 'Indonesian',
+                  onTap: () async {
+                    await LanguageHelper.saveSelectedLanguage('id');
+                    context.setLocale(const Locale('id'));
 
                     Navigator.push(
                       context,

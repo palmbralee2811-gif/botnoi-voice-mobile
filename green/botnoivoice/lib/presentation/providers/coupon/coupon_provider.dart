@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 import 'package:botnoivoice/presentation/providers/user/get_jwt_token.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
