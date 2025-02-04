@@ -6,7 +6,7 @@ import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.d
 import 'package:botnoivoice/presentation/widgets/dialog/audio_player/share_file.dart';
 import 'package:botnoivoice/data/repositories/ios_file_repository.dart';
 import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/android_permission_dialog.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/android_permission/android_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_row.dart';

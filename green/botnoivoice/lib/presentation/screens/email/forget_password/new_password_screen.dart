@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
@@ -66,7 +66,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const BotnoiAppBar(),
+      appBar: const AppBarTemplate(),
       body: SizedBox.expand(
         child: Container(
           decoration: const BoxDecoration(

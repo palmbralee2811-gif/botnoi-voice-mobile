@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 // import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
@@ -95,8 +96,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       radius: OrientationHelper.isLandscape ? 22.r : 14.r,
                       backgroundImage: speakerProvider.speakerImagePath != null
                           ? AssetImage(speakerProvider.speakerImagePath!)
-                          : const AssetImage(
-                              "assets/square_image/1.webp"),
+                          : const AssetImage("assets/square_image/1.webp"),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
@@ -105,7 +105,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF323130),
+                        color: kDark,
                       ),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
@@ -131,7 +131,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                           'appbar_bottom.thai'.tr(),
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 7.sp : 10.sp,
-                        color: const Color(0xFF323130),
+                        color: kDark,
                       ),
                     ),
                     const Spacer(),
@@ -140,7 +140,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF323130),
+                        color: kDark,
                       ),
                     ),
                     SizedBox(

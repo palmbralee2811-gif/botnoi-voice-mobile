@@ -1,12 +1,11 @@
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_modal_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
-// buildFilterButton: ปุ่มเลือกตัวกรอง (สไตล์หรือหมวดหมู่) (อยู่ในแถวที่สองของหน้าจอ)
+// ปุ่มเลือกตัวกรอง (สไตล์หรือหมวดหมู่) (อยู่ในแถวที่สองของหน้าจอ)
 // ใช้สำหรับเปิด Modal ให้ผู้ใช้เลือกสไตล์เสียงหรือหมวดหมู่เสียงที่ต้องการ
 Widget buildFilterButton(
   BuildContext context, {
@@ -64,7 +63,8 @@ Widget buildFilterButton(
             children: [
               Text(
                 title,
-                style: GoogleFonts.prompt(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
+                style: GoogleFonts.prompt(
+                    fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
               ),
               SizedBox(width: 6.w),
               Icon(
@@ -72,7 +72,7 @@ Widget buildFilterButton(
                     ? Icons.keyboard_arrow_up_sharp // ^ when expanded
                     : Icons.keyboard_arrow_down_sharp, // v when collapsed
                 size: OrientationHelper.isLandscape ? 30 : 20,
-                color: const Color(0xFF323130),
+                color: kDark,
               ),
             ],
           ),

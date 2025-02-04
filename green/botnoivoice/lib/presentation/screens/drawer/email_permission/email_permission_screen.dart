@@ -1,6 +1,6 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
-import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/disable_email_permission_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/email_permission/enable_email_permission_dialog.dart';
@@ -35,7 +35,7 @@ class EmailPermissionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: BotnoiAppBar(title: 'app_drawer.security'.tr()),
+      appBar: AppBarTemplate(title: 'app_drawer.security'.tr()),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Consumer<UserInfoProvider>(

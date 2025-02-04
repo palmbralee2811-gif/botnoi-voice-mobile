@@ -1,4 +1,5 @@
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
@@ -11,7 +12,7 @@ import 'package:botnoivoice/presentation/providers/google/google_token_provider.
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
-import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
@@ -57,16 +58,22 @@ class _AccountScreenState extends State<AccountScreen> {
   Future<void> _loadUserInfo() async {
     // Fetch user data from Firebase
     var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
+    var googleProvider =
+        Provider.of<GoogleLoginProvider>(context, listen: false);
     var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
     var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-    var userInfoProvider = Provider.of<UserInfoProvider>(context, listen: false);
+    var userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
 
     // Fetch user data from Database (API)
-    var appleTokenProvider = Provider.of<AppleTokenProvider>(context, listen: false);
-    var googleTokenProvider = Provider.of<GoogleTokenProvider>(context, listen: false);
-    var lineTokenProvider = Provider.of<LineTokenProvider>(context, listen: false);
-    var emailTokenProvider = Provider.of<EmailTokenProvider>(context, listen: false);
+    var appleTokenProvider =
+        Provider.of<AppleTokenProvider>(context, listen: false);
+    var googleTokenProvider =
+        Provider.of<GoogleTokenProvider>(context, listen: false);
+    var lineTokenProvider =
+        Provider.of<LineTokenProvider>(context, listen: false);
+    var emailTokenProvider =
+        Provider.of<EmailTokenProvider>(context, listen: false);
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.getDisplayName ?? "Line User";
@@ -87,9 +94,13 @@ class _AccountScreenState extends State<AccountScreen> {
       email =
           getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
       isGoogleLoggedIn = true;
-    } else if (emailProvider.isLoggedIn && emailProvider.user?.providerData[0].providerId == 'password') {
+    } else if (emailProvider.isLoggedIn &&
+        emailProvider.user?.providerData[0].providerId == 'password') {
       userId = emailTokenProvider.getUserID ?? "No UID";
-      displayName = Provider.of<EmailUsernameApiProvider>(context, listen: false).getUsername ?? "Email/Username User";
+      displayName =
+          Provider.of<EmailUsernameApiProvider>(context, listen: false)
+                  .getUsername ??
+              "Email/Username User";
 
       // ตรวจสอบการอนุญาตในการแสดงอีเมล
       if (userInfoProvider.isShowEmail) {
@@ -191,7 +202,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: BotnoiAppBar(title: 'app_drawer.profile'.tr()),
+      appBar: AppBarTemplate(title: 'app_drawer.profile'.tr()),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -208,18 +219,21 @@ class _AccountScreenState extends State<AccountScreen> {
                     style: GoogleFonts.prompt(
                       fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF323130),
+                      color: kDark,
                     ),
                   ),
-                  SizedBox(width: OrientationHelper.isLandscape ? 60.w : 30.w), // ระยะห่างระหว่างข้อความและไอคอน
+                  SizedBox(
+                      width: OrientationHelper.isLandscape
+                          ? 60.w
+                          : 30.w), // ระยะห่างระหว่างข้อความและไอคอน
                   SvgPicture.asset(
                     'assets/images/auth_screen/email-icon.svg',
                     width: OrientationHelper.isLandscape ? 40.w : 20.w,
                     height: OrientationHelper.isLandscape ? 40.h : 20.h,
                     colorFilter: isEmailLoggedIn
                         ? null
-                        : const ColorFilter.mode(
-                            kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
+                        : const ColorFilter.mode(kGray,
+                            BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
                   SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
                   Container(
@@ -235,8 +249,12 @@ class _AccountScreenState extends State<AccountScreen> {
                       // ทำให้ไอคอนอยู่ตรงกลาง
                       child: SvgPicture.asset(
                         'assets/images/auth_screen/line-icon.svg',
-                        width: OrientationHelper.isLandscape ? 34.w : 24.w, // ปรับขนาดไอคอนให้เล็กลง
-                        height: OrientationHelper.isLandscape ? 34.h : 24.h, // ปรับขนาดไอคอนให้เล็กลง
+                        width: OrientationHelper.isLandscape
+                            ? 34.w
+                            : 24.w, // ปรับขนาดไอคอนให้เล็กลง
+                        height: OrientationHelper.isLandscape
+                            ? 34.h
+                            : 24.h, // ปรับขนาดไอคอนให้เล็กลง
                         fit: BoxFit
                             .contain, // ทำให้ไอคอนถูกย่อให้พอดีกับพื้นที่ที่กำหนด
                       ),
@@ -249,18 +267,18 @@ class _AccountScreenState extends State<AccountScreen> {
                     height: OrientationHelper.isLandscape ? 42.h : 32.h,
                     colorFilter: isGoogleLoggedIn
                         ? null
-                        : const ColorFilter.mode(
-                            kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
+                        : const ColorFilter.mode(kGray,
+                            BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
                   SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
                   SvgPicture.asset(
-                    'assets/images/auth_screen/apple-icon.svg', 
+                    'assets/images/auth_screen/apple-icon.svg',
                     width: OrientationHelper.isLandscape ? 52.w : 32.w,
                     height: OrientationHelper.isLandscape ? 52.h : 32.h,
                     colorFilter: isAppleLoggedIn
                         ? null
-                        : const ColorFilter.mode(
-                            kGray, BlendMode.srcIn), // ใช้ colorFilter แทน color
+                        : const ColorFilter.mode(kGray,
+                            BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
                 ],
               ),
@@ -285,7 +303,8 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
               SizedBox(height: 16.h),
               emailProvider.isLoggedIn &&
-                      emailProvider.user?.providerData[0].providerId == 'password'
+                      emailProvider.user?.providerData[0].providerId ==
+                          'password'
                   ? UserInfoRow(
                       title: 'account.username'.tr(), //ชื่อผู้ใช้
                       value: displayName,
@@ -305,7 +324,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       value: displayName,
                     ),
               emailProvider.isLoggedIn &&
-                      emailProvider.user?.providerData[0].providerId == 'password'
+                      emailProvider.user?.providerData[0].providerId ==
+                          'password'
                   ? UserInfoRow(
                       title: 'account.password'.tr(), //รหัสผ่าน
                       value: '********',
@@ -316,7 +336,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ForgetPasswordScreen(),
+                              builder: (context) =>
+                                  const ForgetPasswordScreen(),
                             ),
                           );
                         }
@@ -375,7 +396,7 @@ class UserInfoRow extends StatelessWidget {
             style: GoogleFonts.prompt(
               fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF323130),
+              color: kDark,
             ),
           ),
           Expanded(
@@ -398,7 +419,8 @@ class UserInfoRow extends StatelessWidget {
                 if (icon != null) ...[
                   SizedBox(width: 8.w),
                   IconButton(
-                    icon: Icon(icon, size: OrientationHelper.isLandscape ? 12.sp : 18.sp),
+                    icon: Icon(icon,
+                        size: OrientationHelper.isLandscape ? 12.sp : 18.sp),
                     onPressed: onIconPressed,
                   ),
                 ]

@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/new_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -46,7 +46,7 @@ class _ConfirmForgetPasswordScreenState
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const BotnoiAppBar(),
+      appBar: const AppBarTemplate(),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -56,7 +56,7 @@ class _ConfirmForgetPasswordScreenState
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all( OrientationHelper.isLandscape ? 20.w : 24.w),
+          padding: EdgeInsets.all(OrientationHelper.isLandscape ? 20.w : 24.w),
           child: Form(
             key: _formKey,
             child: Column(
@@ -98,19 +98,23 @@ class _ConfirmForgetPasswordScreenState
                 SizedBox(height: 32.h),
                 TextFormField(
                   controller: _codeController,
-                  style:
-                      TextStyle(fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                      fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                     labelText: 'confirm_forget_password.link'.tr(),
-                    labelStyle:
-                        TextStyle(fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp, fontWeight: FontWeight.w400),
+                    labelStyle: TextStyle(
+                        fontSize: OrientationHelper.isLandscape ? 11.sp : 16.sp,
+                        fontWeight: FontWeight.w400),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide.none,
                     ),
-                    errorStyle: TextStyle(fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp),
+                    errorStyle: TextStyle(
+                        fontSize:
+                            OrientationHelper.isLandscape ? 10.sp : 14.sp),
                     errorMaxLines: 5,
                   ),
                   keyboardType: TextInputType.emailAddress,

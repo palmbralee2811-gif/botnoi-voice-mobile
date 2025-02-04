@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
@@ -189,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       cursorColor: const Color(0xFF000000),
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
-                        color: const Color(0xFF323130),
+                        color: kDark,
                       ),
                       maxLines: null,
                       keyboardType: TextInputType.multiline,

@@ -17,7 +17,6 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String? _nationalFlagName;
   String? _nationalFlagPath;
   String? _language;
-  bool _isJsonLoaded = false; // ตัวแปรเก็บสถานะการโหลด JSON
 
   String? get speakerId => _speakerId;
   String? get speakerName => _speakerName;
@@ -26,7 +25,6 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String? get nationalFlagName => _nationalFlagName;
   String? get nationalFlagPath => _nationalFlagPath;
   String? get language => _language;
-  bool get isJsonLoaded => _isJsonLoaded;
 
   void setSpeakerId(String id) {
     _speakerId = id;
@@ -93,19 +91,21 @@ class SpeakerRepositoryImpl with ChangeNotifier {
 
     String locale = Localizations.localeOf(context).languageCode;
     return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
-  }
-
-  // Function to load JSON data and update the loading state
-  Future<void> loadJsonData() async {
-    try {
-      await SpeakerModel.loadSpeakers();
-      _isJsonLoaded = true;
-      notifyListeners(); // Notify listeners that JSON is loaded
-      _logger.d('JSON file loaded successfully');
-    } catch (e) {
-      _isJsonLoaded = false;
-      notifyListeners(); // Notify listeners that JSON loading failed
-      _logger.e('Error loading JSON file: $e');
+    /*
+    //TODO: เปลี่ยนไปใช้ switch case แทน if else
+    //TODO: ตัวอย่างการใช้ switch case แทน if else
+    String getFreeIconPath(BuildContext context) {
+      String languageCode = Localizations.localeOf(context).languageCode;
+      switch (languageCode) {
+        //TODO: Uncomment this code when the indonesian icon is ready
+        // case 'id':
+        //   return 'assets/images/icon/free-icon-indonesian.svg';
+        case 'en':
+          return 'assets/images/icon/free-icon-english.svg';
+        default:
+          return 'assets/images/icon/free-icon.svg';
+      }
     }
+    */
   }
 }

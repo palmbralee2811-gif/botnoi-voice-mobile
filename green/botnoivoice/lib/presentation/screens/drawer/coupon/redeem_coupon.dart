@@ -1,6 +1,6 @@
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
 import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
-import 'package:botnoivoice/presentation/screens/appbar/botnoi_app_bar.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
 import 'package:botnoivoice/presentation/screens/drawer/coupon/time_helper.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart';
@@ -46,8 +46,8 @@ class _RedeemCouponState extends State<RedeemCoupon> {
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = OrientationHelper.isLandscape;
 
-    return Scaffold(  
-      appBar: const BotnoiAppBar(),
+    return Scaffold(
+      appBar: const AppBarTemplate(),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -75,7 +75,7 @@ class _RedeemCouponState extends State<RedeemCoupon> {
               const SizedBox(height: 40),
               CouponRedeemButton(
                 text: 'redeem.get_points'.tr(namedArgs: {'points': '100'}),
-                text2: 'redeem.click_here'.tr(), 
+                text2: 'redeem.click_here'.tr(),
                 text3: 'redeem.time_remaining'.tr(
                   namedArgs: {
                     'Timeout': hoursUntilMidnight.toString(),
@@ -98,8 +98,8 @@ class _RedeemCouponState extends State<RedeemCoupon> {
               ),
               const SizedBox(height: 20),
               CouponRedeemButton(
-                text: 'redeem.welcome_bonus'.tr(), 
-                text2: 'redeem.get_now_1000'.tr(), 
+                text: 'redeem.welcome_bonus'.tr(),
+                text2: 'redeem.get_now_1000'.tr(),
                 text3: '',
                 textColor: Colors.black,
                 textColor2: Colors.green,
@@ -119,7 +119,8 @@ class _RedeemCouponState extends State<RedeemCoupon> {
 
   Future<void> _handleCouponRedemption100(BuildContext context) async {
     final couponProvider = Provider.of<CouponProvider>(context, listen: false);
-    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+    final creditsProvider =
+        Provider.of<CreditsProvider>(context, listen: false);
 
     try {
       await couponProvider.checkCoupon100(context);
@@ -152,7 +153,8 @@ class _RedeemCouponState extends State<RedeemCoupon> {
 
   Future<void> _handleCouponRedemption1K(BuildContext context) async {
     final couponProvider = Provider.of<CouponProvider>(context, listen: false);
-    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+    final creditsProvider =
+        Provider.of<CreditsProvider>(context, listen: false);
 
     try {
       await couponProvider.checkCoupon1K(context);

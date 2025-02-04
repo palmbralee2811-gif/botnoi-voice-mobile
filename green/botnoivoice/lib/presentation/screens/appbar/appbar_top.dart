@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
@@ -54,7 +55,7 @@ class _AppBarTopState extends State<AppBarTop> {
         Provider.of<CreditsProvider>(context).remainingQuotaDownload ?? 'N/A';
 
     return AppBar(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: kWhite,
       elevation: 4.0,
       leading: SizedBox(
         width: double.infinity,
@@ -63,7 +64,7 @@ class _AppBarTopState extends State<AppBarTop> {
           icon: Icon(
             Icons.menu_rounded,
             size: OrientationHelper.isLandscape ? 12.sp : 25.sp,
-            color: const Color(0xFF323130),
+            color: kDark,
           ),
           onPressed: () => Scaffold.of(context).openDrawer(),
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
@@ -120,7 +121,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   style: GoogleFonts.prompt(
                     fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF323130),
+                    color: kDark,
                   ),
                 ),
                 SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
@@ -150,14 +151,6 @@ class _AppBarTopState extends State<AppBarTop> {
               children: [
                 SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),
                 SizedBox(
-                  // height: OrientationHelper.isLandscape ? 40.h : 30.h,
-                  // width: OrientationHelper.isLandscape ? 30.w : 40.w,
-                  // child: Padding(
-                  //   padding: EdgeInsets.all(OrientationHelper.isLandscape ? 1.w : 3.w),
-                  //   child: GradientFreeButton(
-                  //     onPressed: () {},
-                  //   ),
-                  // ),
                   height: OrientationHelper.isLandscape ? 40.h : 20.h,
                   width: OrientationHelper.isLandscape ? 10.w : 20.w,
                   child: Padding(
@@ -175,7 +168,7 @@ class _AppBarTopState extends State<AppBarTop> {
                   style: GoogleFonts.prompt(
                     fontSize: OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF323130),
+                    color: kDark,
                   ),
                 ),
                 SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),

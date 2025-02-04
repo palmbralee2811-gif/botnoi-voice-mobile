@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
@@ -12,7 +13,7 @@ import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dar
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet_app_drawer.dart';
+import 'package:botnoivoice/presentation/widgets/language/language_selection_drawer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -146,7 +147,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                       },
                       child: Icon(
                         Icons.menu_sharp,
-                        color: const Color(0xFF323130),
+                        color: kDark,
                         size: OrientationHelper.isLandscape ? 22.sp : 32.sp,
                       ),
                     ),
@@ -166,7 +167,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                               fontSize:
                                   OrientationHelper.isLandscape ? 16.sp : 24.sp,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF323130),
+                              color: kDark,
                             ),
                             softWrap: true,
                             overflow: TextOverflow.ellipsis,
@@ -179,7 +180,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                               fontSize:
                                   OrientationHelper.isLandscape ? 8.sp : 14.sp,
                               fontWeight: FontWeight.w400,
-                              color: const Color(0xFF323130),
+                              color: kDark,
                             ),
                             maxLines: 5,
                             overflow: TextOverflow.ellipsis,
@@ -199,14 +200,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             leading: Icon(
               Icons.account_circle_outlined,
               size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-              color: const Color(0xFF323130),
+              color: kDark,
             ),
             title: Text(
               'app_drawer.profile'.tr(), //ข้อมูลส่วนตัว
               style: GoogleFonts.prompt(
                 fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
+                color: kDark,
               ),
             ),
             onTap: () {
@@ -225,14 +226,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             leading: Icon(
               Icons.card_giftcard_outlined,
               size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-              color: const Color(0xFF323130),
+              color: kDark,
             ),
             title: Text(
               'app_drawer.redeem'.tr(), //รับพอยต์ฟรี
               style: GoogleFonts.prompt(
                 fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
+                color: kDark,
               ),
             ),
             onTap: () {
@@ -251,14 +252,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             leading: Icon(
               Icons.credit_card,
               size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-              color: const Color(0xFF323130),
+              color: kDark,
             ),
             title: Text(
               'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
               style: GoogleFonts.prompt(
                 fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF323130),
+                color: kDark,
               ),
             ),
             onTap: () {
@@ -274,14 +275,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               leading: Icon(
                 Icons.security_outlined,
                 size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-                color: const Color(0xFF323130),
+                color: kDark,
               ),
               title: Text(
                 'app_drawer.security'.tr(), //ความปลอดภัย
                 style: GoogleFonts.prompt(
                   fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
+                  color: kDark,
                 ),
               ),
               onTap: () {
@@ -315,14 +316,14 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               leading: Icon(
                 Icons.language,
                 size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-                color: const Color(0xFF323130),
+                color: kDark,
               ),
               title: Text(
                 'language'.tr(),
                 style: GoogleFonts.prompt(
                   fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323130),
+                  color: kDark,
                 ),
               ),
             ),

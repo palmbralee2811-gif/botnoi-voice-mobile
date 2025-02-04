@@ -1,3 +1,4 @@
+import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
@@ -7,17 +8,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
-  const AppBarTop({super.key});
+class AppBarSpeakerScreen extends StatefulWidget
+    implements PreferredSizeWidget {
+  const AppBarSpeakerScreen({super.key});
 
   @override
-  State<AppBarTop> createState() => _AppBarTopState();
+  State<AppBarSpeakerScreen> createState() => _AppBarSpeakerScreenState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _AppBarTopState extends State<AppBarTop> {
+class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
   @override
   void initState() {
     super.initState();
@@ -40,14 +42,13 @@ class _AppBarTopState extends State<AppBarTop> {
       mainAxisSize: MainAxisSize.min,
       children: [
         AppBar(
-          backgroundColor:
-              const Color(0xFFFFFFFF), // ✅ เปลี่ยนพื้นหลังเป็นสีขาว
+          backgroundColor: kWhite, // ✅ เปลี่ยนพื้นหลังเป็นสีขาว
           elevation: 0, // ✅ เอาเงาออก
-          shadowColor: Colors.transparent, // ✅ ป้องกันเงา
+          shadowColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF323130)),
             iconSize: OrientationHelper.isLandscape ? 10.sp : 16.sp,
-            onPressed: () => Scaffold.of(context).openDrawer(),
+            onPressed: () => Navigator.pop(context),
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           ),
           leadingWidth: OrientationHelper.isLandscape ? 35.w : 60.w,
@@ -66,7 +67,7 @@ class _AppBarTopState extends State<AppBarTop> {
             Container(
               height: OrientationHelper.isLandscape ? 35.h : 30.h,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF), // ✅ ทำให้พื้นหลังเป็นสีขาว
+                color: kWhite,
                 borderRadius: BorderRadius.circular(15.r),
                 boxShadow: [
                   BoxShadow(
@@ -90,16 +91,14 @@ class _AppBarTopState extends State<AppBarTop> {
                       width: OrientationHelper.isLandscape ? 30.w : 20.w,
                       height: OrientationHelper.isLandscape ? 30.h : 20.h,
                     ),
-                    SizedBox(
-                        width: 8.w), // ✅ เพิ่มระยะห่างระหว่างไอคอนกับตัวเลข
+                    SizedBox(width: 8.w),
                     Text(
                       remainingCredits,
                       style: GoogleFonts.prompt(
                         fontSize:
                             OrientationHelper.isLandscape ? 7.5.sp : 12.sp,
                         fontWeight: FontWeight.bold,
-                        color: const Color(
-                            0xFF6D6D6D), // ✅ เปลี่ยนสีตัวเลขเป็นสีเทา
+                        color: kDark,
                       ),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 3.w : 5.w),

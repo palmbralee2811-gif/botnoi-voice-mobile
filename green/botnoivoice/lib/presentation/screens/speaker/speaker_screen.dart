@@ -3,8 +3,8 @@ import 'package:botnoivoice/data/models/speaker_model/genders_list.dart';
 import 'package:botnoivoice/data/models/speaker_model/languages_list.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
-import 'package:botnoivoice/presentation/screens/appbar/appbar_top2.dart';
-import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar.dart';
+import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_speaker_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/speaker/filter_widgets/speaker_filter_button.dart';
 import 'package:botnoivoice/presentation/widgets/filter/favorite.dart';
@@ -113,15 +113,12 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   @override
-
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: const AppBarTop(), // เรียกใช้ AppBarTop แทน AppBar เดิม
-    drawer: const DrawerAppbar(),
-    body: buildFilterNavbar(context),
-    
-  );
-}
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const AppBarSpeakerScreen(),
+      body: buildFilterNavbar(context),
+    );
+  }
 
   Widget buildFilterNavbar(BuildContext context) {
     return Column(
@@ -129,7 +126,7 @@ Widget build(BuildContext context) {
         buildFilterContainer(context),
         Expanded(
           child: Container(
-            color: const Color(0xFFFFFFFF),
+            color: kWhite,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -371,7 +368,7 @@ Widget build(BuildContext context) {
                 ? Icons.keyboard_arrow_up_sharp
                 : Icons.keyboard_arrow_down_sharp,
             size: OrientationHelper.isLandscape ? 30 : 20,
-            color: const Color(0xFF323130),
+            color: kDark,
           ),
         ],
       ),
@@ -512,7 +509,7 @@ Widget build(BuildContext context) {
           EdgeInsets.only(left: OrientationHelper.isLandscape ? 0.w : 10.w),
       height: OrientationHelper.isLandscape ? 82.h : 42.h,
       width: 320.w,
-      color: const Color(0xFFFFFFFF),
+      color: kWhite,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
