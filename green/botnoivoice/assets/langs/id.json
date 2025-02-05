@@ -100,7 +100,7 @@
         "set_new_username_for_login": "Tetapkan nama pengguna baru untuk masuk",
         "new_username": "Nama pengguna baru",
         "please_enter_your_username": "Silakan masukkan nama pengguna Anda",
-        "invalid_username": "Nama pengguna tidak valid. Harap gunakan huruf a-z, A-Z, angka, serta simbol underscore (_) atau tanda hubung (-).",
+        "invalid_username": "Nama pengguna tidak valid. Harap gunakan huruf a-z, A-Z, angka, serta simbol garis bawah (_) atau tanda hubung (-).",
         "confirm_new_username": "Konfirmasi nama pengguna baru",
         "please_confirm_your_username": "Silakan konfirmasi nama pengguna Anda",
         "usernames_must_match": "Kedua kolom nama pengguna harus sama",
@@ -169,7 +169,7 @@
         "please_verify_email": "Silakan verifikasi alamat email Anda:",
         "invalid_email": "Alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
         "incorrect_password": "Kata sandi yang Anda masukkan salah. Silakan coba lagi",
-        "account_suspended": "Akun ini telah ditangguhkan. Silakan hubungi dukungan untuk bantuan",
+        "account_suspended": "Akun ini terkena suspensi. Silakan hubungi support untuk bantuan",
         "username_or_password_incorrect": "Nama pengguna atau kata sandi yang Anda masukkan salah. Silakan coba lagi"
     },
     "register_provider": {
@@ -182,18 +182,18 @@
         "email_used_by_another_account": "Alamat email ini sudah terkait dengan akun lain",
         "invalid_email_format": "Format alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
         "password_not_strong_enough": "Kata sandi Anda tidak cukup kuat. Silakan pilih kata sandi yang lebih kuat",
-        "action_not_allowed": "Tindakan ini tidak diizinkan. Silakan hubungi dukungan jika Anda yakin ini adalah kesalahan",
+        "action_not_allowed": "Tindakan ini tidak diizinkan. Silakan hubungi support jika Anda yakin ini adalah kesalahan",
         "error_registering": "Terjadi kesalahan saat mendaftarkan akun Anda. Silakan coba lagi",
         "no_uid_or_username": "Tidak ada UID atau nama pengguna yang diberikan. Silakan periksa input Anda dan coba lagi"
     },
     "android_permission": {
-        "permission_denied": "Izin ditolak",
+        "permission_denied": "Izin akses ditolak",
         "go_to_settings_to_enable_permission": "Silakan pergi ke pengaturan untuk mengaktifkan izin akses file",
         "go_to_settings_page": "Pergi ke halaman pengaturan",
         "cancel": "Batal"
     },
     "audio_player": {
-        "permission_denied": "Izin ditolak. Silakan pergi ke pengaturan.",
+        "permission_denied": "Izin akses ditolak. Silakan pergi ke pengaturan.",
         "audio_file_not_found": "File audio tidak ditemukan atau file kosong.",
         "error_playing_audio": "Kesalahan saat memutar file audio:",
         "unable_to_save_file": "Tidak dapat menyimpan file.",

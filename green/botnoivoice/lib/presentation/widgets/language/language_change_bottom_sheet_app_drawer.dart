@@ -189,7 +189,7 @@ void showLanguageBottomSheet({
                                     height: 26.h),
                                 SizedBox(width: 12.w),
                                 Text(
-                                  'English',
+                                  'Indonesian',
                                   style: GoogleFonts.prompt(
                                     fontSize: OrientationHelper.isLandscape
                                         ? 12.sp
