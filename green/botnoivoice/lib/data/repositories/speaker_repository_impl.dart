@@ -1,5 +1,3 @@
-// import 'package:botnoivoice/data/functions/loading_json_to_list.dart';
-// import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +15,6 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String? _nationalFlagName;
   String? _nationalFlagPath;
   String? _language;
-  bool _isJsonLoaded = false; // ตัวแปรเก็บสถานะการโหลด JSON
 
   String? get speakerId => _speakerId;
   String? get speakerName => _speakerName;
@@ -26,7 +23,6 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   String? get nationalFlagName => _nationalFlagName;
   String? get nationalFlagPath => _nationalFlagPath;
   String? get language => _language;
-  bool get isJsonLoaded => _isJsonLoaded;
 
   void setSpeakerId(String id) {
     _speakerId = id;
@@ -74,12 +70,14 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     // ตั้งค่า Speaker คนแรกเป็นค่าเริ่มต้น
     currentSpeaker = SpeakerModel.speakerItem[0];
   }
+
   // ฟังก์ชันที่ตั้งค่า currentSpeaker
   void setSpeaker(SpeakerEntity speaker) {
     currentSpeaker = speaker;
     notifyListeners(); // แจ้งให้ widget รีเฟรชเมื่อข้อมูลเปลี่ยนแปลง
   }
 
+  // ฟังก์ชันที่ใช้ในการดึงชื่อของ speaker ตามภาษาที่เลือก
   String getName(BuildContext context) {
     // ตรวจสอบว่า currentSpeaker มีค่าไม่เป็น null
     if (currentSpeaker == null) {
@@ -88,24 +86,17 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     }
 
     // ถ้ามี speaker ให้แสดงชื่อของ speaker คนปัจจุบัน
-    _logger.d(
-        "Current Speaker: ${currentSpeaker!.thaiName}"); // หรือ engName ก็ได้ตามต้องการ
+    _logger.d("Current Speaker: ${currentSpeaker!.thaiName}");
 
-    String locale = Localizations.localeOf(context).languageCode;
-    return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
-  }
-
-  // Function to load JSON data and update the loading state
-  Future<void> loadJsonData() async {
-    try {
-      await SpeakerModel.loadSpeakers();
-      _isJsonLoaded = true;
-      notifyListeners(); // Notify listeners that JSON is loaded
-      _logger.d('JSON file loaded successfully');
-    } catch (e) {
-      _isJsonLoaded = false;
-      notifyListeners(); // Notify listeners that JSON loading failed
-      _logger.e('Error loading JSON file: $e');
+    String languageCode = Localizations.localeOf(context).languageCode;
+    
+    switch (languageCode) {
+      case 'en':
+        return currentSpeaker!.engName;  // ชื่อภาษาอังกฤษ
+      // case 'id':
+      //   return currentSpeaker!.indonesianName ?? 'Indonesian Name';  // ชื่อภาษาอินโดนีเซีย (ถ้ามี)
+      default:
+        return currentSpeaker!.thaiName;  // ชื่อภาษาไทย
     }
   }
 }
