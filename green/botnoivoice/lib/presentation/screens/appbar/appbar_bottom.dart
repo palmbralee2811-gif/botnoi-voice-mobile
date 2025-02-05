@@ -1,11 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
-import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom_data/appbar_bottom_data.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,18 @@ class _AppBarBottomState extends State<AppBarBottom> {
   @override
   Widget build(BuildContext context) {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
+    String language = Localizations.localeOf(context).languageCode;
+
+    // หา index ของภาษาที่เลือกจาก speakerData
+    final speakerInfo = speakerData.firstWhere((speaker) => speaker['language'] == language);
+
+    // ใช้ getName เพื่อดึงชื่อจาก speakerProvider
+    final speakerName = speakerProvider.getName(context);  // เปลี่ยนจาก speakerProvider.speakerName
+    final speakerImagePath = speakerProvider.speakerImagePath ?? speakerInfo['image'];
+    final speakerAudio = speakerProvider.speakerAudio ?? speakerInfo['audio'];
+    final nationalFlagName = speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
+    final nationalFlagPath = speakerProvider.nationalFlagPath ?? speakerInfo['flagPath'];
+
     return SizedBox(
       width: double.infinity,
       height: OrientationHelper.isLandscape ? 80.h : 60.h,
@@ -44,16 +57,14 @@ class _AppBarBottomState extends State<AppBarBottom> {
         children: [
           InkWell(
             onTap: () async {
-              String? audioURL = speakerProvider.speakerAudio ??
-                  "https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/ava/sound_ava.wav";
               if (isPlaying) {
                 await audioPlayer.stop();
                 setState(() {
                   isPlaying = false;
                 });
               } else {
-                if (audioURL.isNotEmpty) {
-                  await audioPlayer.play(UrlSource(audioURL));
+                if (speakerAudio != null && speakerAudio.isNotEmpty) {
+                  await audioPlayer.play(UrlSource(speakerAudio));
                   setState(() {
                     isPlaying = true;
                   });
@@ -61,8 +72,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
               }
             },
             child: Padding(
-              padding:
-                  EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
+              padding: EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
               child: GradientIcon(
                 icon: isPlaying
                     ? Icons.pause_circle_outline
@@ -82,24 +92,20 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const SpeakerScreen()),
+                      builder: (context) => const SpeakerScreen(speakerName: '')),
                 );
               },
               child: Padding(
-                padding:
-                    EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
+                padding: EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
                 child: Row(
                   children: [
                     CircleAvatar(
                       radius: OrientationHelper.isLandscape ? 22.r : 14.r,
-                      backgroundImage: speakerProvider.speakerImagePath != null
-                          ? AssetImage(speakerProvider.speakerImagePath!)
-                          : const AssetImage("assets/square_image/1.webp"),
+                      backgroundImage: AssetImage(speakerImagePath!),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
-                      speakerProvider.getName(context),
-                      // speakerProvider.speakerName ?? 'เอวา',
+                      speakerName,
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,
@@ -118,15 +124,11 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     CircleAvatar(
                       radius: OrientationHelper.isLandscape ? 16.r : 7.r,
-                      backgroundImage: speakerProvider.nationalFlagPath != null
-                          ? AssetImage(speakerProvider.nationalFlagPath!)
-                          : const AssetImage(
-                              "assets/images/national_flag/thai.png"),
+                      backgroundImage: AssetImage(nationalFlagPath!),
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 4.w : 8.w),
                     Text(
-                      speakerProvider.nationalFlagName ??
-                          'appbar_bottom.thai'.tr(),
+                      nationalFlagName!,
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 7.sp : 10.sp,
                         color: kDark,

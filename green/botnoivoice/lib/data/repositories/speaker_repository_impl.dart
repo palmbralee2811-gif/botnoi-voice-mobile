@@ -77,6 +77,7 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     notifyListeners(); // แจ้งให้ widget รีเฟรชเมื่อข้อมูลเปลี่ยนแปลง
   }
 
+  // ฟังก์ชันที่ใช้ในการดึงชื่อของ speaker ตามภาษาที่เลือก
   String getName(BuildContext context) {
     // ตรวจสอบว่า currentSpeaker มีค่าไม่เป็น null
     if (currentSpeaker == null) {
@@ -85,10 +86,17 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     }
 
     // ถ้ามี speaker ให้แสดงชื่อของ speaker คนปัจจุบัน
-    _logger.d(
-        "Current Speaker: ${currentSpeaker!.thaiName}"); // หรือ engName ก็ได้ตามต้องการ
+    _logger.d("Current Speaker: ${currentSpeaker!.thaiName}");
 
-    String locale = Localizations.localeOf(context).languageCode;
-    return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
+    String languageCode = Localizations.localeOf(context).languageCode;
+    
+    switch (languageCode) {
+      case 'en':
+        return currentSpeaker!.engName;  // ชื่อภาษาอังกฤษ
+      // case 'id':
+      //   return currentSpeaker!.indonesianName ?? 'Indonesian Name';  // ชื่อภาษาอินโดนีเซีย (ถ้ามี)
+      default:
+        return currentSpeaker!.thaiName;  // ชื่อภาษาไทย
+    }
   }
 }

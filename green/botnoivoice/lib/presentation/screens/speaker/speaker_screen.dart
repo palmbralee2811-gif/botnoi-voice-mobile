@@ -20,7 +20,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class SpeakerScreen extends StatefulWidget {
-  const SpeakerScreen({super.key});
+  const SpeakerScreen({super.key, required String speakerName});
 
   @override
   State<SpeakerScreen> createState() => _SpeakerScreenState();
