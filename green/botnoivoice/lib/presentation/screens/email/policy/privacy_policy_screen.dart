@@ -1,4 +1,6 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,23 +18,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        //TODO: [Fix] เปลี่ยนไปใช้ AppbarTemplate
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          //TODO: แปลเฉพาะ `Privacy Policy` เป็นภาษาไทย, อังกฤษ, อินโดนีเซีย 
-          title: Text(
-            'Privacy Policy',
-            style: GoogleFonts.prompt(
-                fontSize: 16.sp, fontWeight: FontWeight.bold),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
+        appBar: AppBarTemplate(title: 'term.policy'.tr()),
         body: SingleChildScrollView(
           child: SizedBox(
             child: Column(

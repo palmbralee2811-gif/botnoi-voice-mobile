@@ -402,6 +402,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       return _buildLanguageFilter(
         lang['thaiName']!,
         lang['englishName']!,
+        lang['indonesianName']!,
         lang['image']!,
         lang['code']!,
         context,
@@ -436,6 +437,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       return _buildGenderFilter(
         gender['thaiName']!,
         gender['englishName']!,
+        gender['indonesianName']!,
         gender['image']!,
         gender['code']!,
         context,
@@ -447,6 +449,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   Widget _buildLanguageFilter(
     String thaiName,
     String englishName,
+    String indonesianName,
     String imagePath,
     String lang,
     BuildContext context,
@@ -458,7 +461,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     Map<String, String> languageMap = {
       'th': thaiName,
       'en': englishName,
-      'id': englishName,
+      'id': indonesianName,
     };
 
     String displayText = languageMap[languageCode]?.isNotEmpty == true
@@ -481,6 +484,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   Widget _buildGenderFilter(
     String thaiName,
     String englishName,
+    String indonesianName,
     String imagePath,
     String gen,
     BuildContext context,
@@ -492,7 +496,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     Map<String, String> languageMap = {
       'th': thaiName,
       'en': englishName,
-      'id': englishName,
+      'id': indonesianName,
     };
 
     String displayText = languageMap[languageCode]?.isNotEmpty == true

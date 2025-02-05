@@ -32,6 +32,14 @@ class Favorite extends StatelessWidget {
           width: 1.w,
         ),
       ),
+      //TODO: [Bug] UI Overflow in Favorite Button
+      /*
+════════ Exception caught by rendering library ═════════════════════════════════
+A RenderFlex overflowed by 0.541 pixels on the bottom.
+The relevant error-causing widget was:
+    Column Column:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/widgets/filter/favorite.dart:35:14
+════════════════════════════════════════════════════════════════════════════════
+      */
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

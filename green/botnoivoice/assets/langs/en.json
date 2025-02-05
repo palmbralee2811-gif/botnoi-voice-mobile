@@ -238,9 +238,9 @@
     },
     "term": {
         "read": "I have read and accepted the ",
-        "use": "Terms of USE",
+        "service": "Terms of Service",
         "and": " and ",
-        "policy": "Private Policy."
+        "policy": "Privacy Policy."
     },
     "redeem": {
         "time_remaining": "Only {Timeout} hours left",

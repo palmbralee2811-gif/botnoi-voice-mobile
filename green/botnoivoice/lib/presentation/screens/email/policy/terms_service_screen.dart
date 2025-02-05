@@ -1,4 +1,6 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
+import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,23 +18,7 @@ class _TreamsofService extends State<TermsServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      //TODO: [Fix] เปลี่ยนไปใช้ AppbarTemplate
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        //TODO: แปลงเฉพาะ `Terms of Service` เป็นภาษาไทย, อังกฤษ, อินโดนีเซีย
-        title: Text(
-          'Terms of Service',
-          style:
-              GoogleFonts.prompt(fontSize: 16.sp, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: AppBarTemplate(title: 'term.service'.tr()),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(8.w),

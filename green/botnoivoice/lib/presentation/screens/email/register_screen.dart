@@ -412,7 +412,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         builder: (context) => const TermsServiceScreen()));
               },
               child: GradientTextStyle(
-                "term.use".tr(), //Terms of USE
+                "term.service".tr(), //Terms of USE
                 gradient: const LinearGradient(
                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
                 style: TextStyle(

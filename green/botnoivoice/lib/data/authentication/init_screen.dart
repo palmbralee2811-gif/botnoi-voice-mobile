@@ -31,7 +31,7 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
   }
 
-  //TODO: fix this error
+  //TODO: [Bug] Error in Init Screen State
   /*
    [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: This widget has been unmounted, so the State no longer has a context (and should be considered defunct).
     E/flutter (26127): Consider canceling any active work during "dispose" or using the "mounted" getter to determine if the State is still active.
