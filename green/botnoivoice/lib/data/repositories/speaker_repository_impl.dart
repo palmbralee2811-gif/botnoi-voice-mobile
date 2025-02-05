@@ -55,6 +55,7 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   }
 
   void setNationalFlagPath(String path) {
+    //TODO: TN Mobile S ชื่อของธงชาติไม่เปลี่ยนเป็น ไทย, อังกฤษ 
     _nationalFlagPath = path;
     _logger.d("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
     notifyListeners();
@@ -91,12 +92,14 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     String languageCode = Localizations.localeOf(context).languageCode;
     
     switch (languageCode) {
+      case 'th':
+        return currentSpeaker!.thaiName;  // ชื่อภาษาไทย
       case 'en':
         return currentSpeaker!.engName;  // ชื่อภาษาอังกฤษ
-      // case 'id':
-      //   return currentSpeaker!.indonesianName ?? 'Indonesian Name';  // ชื่อภาษาอินโดนีเซีย (ถ้ามี)
+      case 'id':
+        return currentSpeaker!.engName;  // ชื่อภาษาอินโดนีเซีย
       default:
-        return currentSpeaker!.thaiName;  // ชื่อภาษาไทย
+        return currentSpeaker!.engName;  // ชื่อภาษาไทย
     }
   }
 }

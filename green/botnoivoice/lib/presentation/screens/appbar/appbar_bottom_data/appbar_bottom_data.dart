@@ -1,4 +1,4 @@
-const speakerData = [
+final speakerData = [
   {
     'language': 'th',
     'name': 'เอวา',
@@ -17,11 +17,11 @@ const speakerData = [
   },
 
   {
-    'language': 'ID',
+    'language': 'id',
     'name': 'Dia',
     'image': 'assets/square_image/65.webp',
     'audio': 'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/dia/sound_dia.wav',
-    'flagName': 'English',
+    'flagName': 'Indonesia',
     'flagPath': 'assets/images/national_flag/indonesian.png',
   }
 ];

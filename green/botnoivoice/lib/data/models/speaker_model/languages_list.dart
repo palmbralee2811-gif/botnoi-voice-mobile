@@ -1,4 +1,5 @@
 //TODO: TN Mobile S แปลข้อความเป็นภาษาอินโดนีเซีย ใช้หลัการแปล English -> Indonesian
+//TODO: 'indonesianName': 'XYZ0123',
 final languages = [
   {
     'thaiName': 'ไทย',
