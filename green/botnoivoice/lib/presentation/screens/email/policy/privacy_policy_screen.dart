@@ -16,9 +16,11 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
+        //TODO: [Fix] เปลี่ยนไปใช้ AppbarTemplate
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.white,
+          //TODO: แปลเฉพาะ `Privacy Policy` เป็นภาษาไทย, อังกฤษ, อินโดนีเซีย 
           title: Text(
             'Privacy Policy',
             style: GoogleFonts.prompt(

@@ -16,9 +16,11 @@ class _TreamsofService extends State<TermsServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      //TODO: [Fix] เปลี่ยนไปใช้ AppbarTemplate
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
+        //TODO: แปลงเฉพาะ `Terms of Service` เป็นภาษาไทย, อังกฤษ, อินโดนีเซีย
         title: Text(
           'Terms of Service',
           style:

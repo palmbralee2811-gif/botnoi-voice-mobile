@@ -210,6 +210,14 @@ class _AccountScreenState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
+              //TODO: [Bug] UI Overflow in Account Screen
+              /*
+════════ Exception caught by rendering library ═════════════════════════════════
+A RenderFlex overflowed by 9.8 pixels on the right.
+The relevant error-causing widget was:
+    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/drawer/account/account_screen.dart:213:15
+════════════════════════════════════════════════════════════════════════════════
+              */
               Row(
                 // จัดข้อความและไอคอนให้อยู่ในแนวเดียวกัน
                 mainAxisAlignment: MainAxisAlignment.start,

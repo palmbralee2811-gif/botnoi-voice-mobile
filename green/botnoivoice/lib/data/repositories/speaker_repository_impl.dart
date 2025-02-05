@@ -1,5 +1,3 @@
-// import 'package:botnoivoice/data/functions/loading_json_to_list.dart';
-// import 'package:botnoivoice/data/models/speaker_model.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +70,7 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     // ตั้งค่า Speaker คนแรกเป็นค่าเริ่มต้น
     currentSpeaker = SpeakerModel.speakerItem[0];
   }
+
   // ฟังก์ชันที่ตั้งค่า currentSpeaker
   void setSpeaker(SpeakerEntity speaker) {
     currentSpeaker = speaker;
@@ -91,21 +90,5 @@ class SpeakerRepositoryImpl with ChangeNotifier {
 
     String locale = Localizations.localeOf(context).languageCode;
     return locale == 'th' ? currentSpeaker!.thaiName : currentSpeaker!.engName;
-    /*
-    //TODO: เปลี่ยนไปใช้ switch case แทน if else
-    //TODO: ตัวอย่างการใช้ switch case แทน if else
-    String getFreeIconPath(BuildContext context) {
-      String languageCode = Localizations.localeOf(context).languageCode;
-      switch (languageCode) {
-        //TODO: Uncomment this code when the indonesian icon is ready
-        // case 'id':
-        //   return 'assets/images/icon/free-icon-indonesian.svg';
-        case 'en':
-          return 'assets/images/icon/free-icon-english.svg';
-        default:
-          return 'assets/images/icon/free-icon.svg';
-      }
-    }
-    */
   }
 }

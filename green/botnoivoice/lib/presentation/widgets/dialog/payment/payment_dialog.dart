@@ -69,6 +69,14 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.h),
+                //TODO: [Bug] UI Overflow in Payment Dialog
+                /*
+════════ Exception caught by rendering library ═════════════════════════════════
+A RenderFlex overflowed by 138 pixels on the right.
+The relevant error-causing widget was:
+    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/widgets/dialog/payment/payment_dialog.dart:72:17
+════════════════════════════════════════════════════════════════════════════════
+                */
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
