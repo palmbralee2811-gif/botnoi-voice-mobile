@@ -445,20 +445,25 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   Widget _buildLanguageFilter(
-      String thaiName,
-      String englishName,
-      String imagePath,
-      String lang,
-      BuildContext context,
-      StateSetter setState) {
-    String displayText = thaiName;
+    String thaiName,
+    String englishName,
+    String imagePath,
+    String lang,
+    BuildContext context,
+    StateSetter setState,
+  ) {
     String languageCode = Localizations.localeOf(context).languageCode;
+    languageCode = languageCode.isNotEmpty ? languageCode : 'en';
 
-    if (languageCode == 'th') {
-      displayText = thaiName;
-    } else if (languageCode == 'en') {
-      displayText = englishName;
-    }
+    Map<String, String> languageMap = {
+      'th': thaiName,
+      'en': englishName,
+      'id': englishName,
+    };
+
+    String displayText = languageMap[languageCode]?.isNotEmpty == true
+        ? languageMap[languageCode]!
+        : englishName;
 
     return InkWell(
       onTap: () {
@@ -474,20 +479,25 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   Widget _buildGenderFilter(
-      String thaiName,
-      String englishName,
-      String imagePath,
-      String gen,
-      BuildContext context,
-      StateSetter setState) {
-    String displayText = thaiName;
+    String thaiName,
+    String englishName,
+    String imagePath,
+    String gen,
+    BuildContext context,
+    StateSetter setState,
+  ) {
     String languageCode = Localizations.localeOf(context).languageCode;
+    languageCode = languageCode.isNotEmpty ? languageCode : 'en';
 
-    if (languageCode == 'th') {
-      displayText = thaiName;
-    } else if (languageCode == 'en') {
-      displayText = englishName;
-    }
+    Map<String, String> languageMap = {
+      'th': thaiName,
+      'en': englishName,
+      'id': englishName,
+    };
+
+    String displayText = languageMap[languageCode]?.isNotEmpty == true
+        ? languageMap[languageCode]!
+        : englishName;
 
     return InkWell(
       onTap: () {

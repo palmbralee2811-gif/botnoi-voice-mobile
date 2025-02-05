@@ -64,9 +64,10 @@ class _RedeemCouponState extends State<RedeemCoupon> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
+              //TODO: Description in Redeem Coupon Screen
+              //TODO: Empty Text
               Text(
-                //TODO: empty string
-                "",
+                '',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,

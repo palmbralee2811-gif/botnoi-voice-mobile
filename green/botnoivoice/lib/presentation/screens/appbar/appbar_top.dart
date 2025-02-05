@@ -37,13 +37,14 @@ class _AppBarTopState extends State<AppBarTop> {
   String getFreeIconPath(BuildContext context) {
     String languageCode = Localizations.localeOf(context).languageCode;
     switch (languageCode) {
-      //TODO: Uncomment this code when the indonesian icon is ready
-      // case 'id':
-      //   return 'assets/images/icon/free-icon-indonesian.svg';
+      case 'th':
+        return 'assets/images/icon/free-icon-thai.svg';
       case 'en':
         return 'assets/images/icon/free-icon-english.svg';
+      case 'id':
+        return 'assets/images/icon/free-icon-english.svg';
       default:
-        return 'assets/images/icon/free-icon.svg';
+        return 'assets/images/icon/free-icon-english.svg';
     }
   }
 

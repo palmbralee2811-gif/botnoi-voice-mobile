@@ -358,6 +358,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Generate audio from text
   Future<String> generateAudio(String text) async {
+    //TODO: TN Mobile S
+    //TODO: กำหนดค่าเริ่มต้น เป็นตัวแปรใหม่ เช่น defaultSpeakerId, defaultLanguage ให้รองรับการเปลี่ยนภาษาเป็น 'th', 'en', 'id'
     speakerId =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
             '1';
