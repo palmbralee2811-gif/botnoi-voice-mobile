@@ -36,6 +36,13 @@ class _AppBarBottomState extends State<AppBarBottom> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO: TN Mobile S
+    //TODO: [Bug] Function Error
+    /*
+      1.เปิดแอปครั้งแรกทำงานได้ปกติ แต่ถ้ากด เล่นเสียงตัวอย่างของ `เอวา` แล้วเปลี่ยนไปเป็นภาษาอังกฤษ
+      สิ่งที่ต้องการคือ เปลี่ยนเป็น Nadir แต่สิ่งที่ได้คือ `Ava` และ ลองเปลี่ยนกลับมาเป็นภาษาอินโดนีเซีย ก็จะเป็น `Ava` เหมือนเดิม
+      2.เปลี่ยนเสียงพากย์ ในหน้า Speaker Screen เป็น อลัน แต่ กดเปลี่ยนภาษา เป็นภาษาอังกฤษ แล้วยังเป็น `อลัน` สิ่งที่ต้องการคือ `Nadir`
+    */
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     String language = Localizations.localeOf(context).languageCode;
 
