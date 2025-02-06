@@ -210,7 +210,6 @@ class _AccountScreenState extends State<AccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
-              //TODO: [Finish] UI Overflow in Account Screen
               Row(
                 // จัดข้อความและไอคอนให้อยู่ในแนวเดียวกัน
                 mainAxisAlignment: MainAxisAlignment.start,

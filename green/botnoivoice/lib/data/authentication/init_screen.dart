@@ -31,18 +31,6 @@ class _InitScreenState extends State<InitScreen> {
     super.initState();
   }
 
-  //TODO: [Bug] Error in Init Screen State
-  /*
-   [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: This widget has been unmounted, so the State no longer has a context (and should be considered defunct).
-    E/flutter (26127): Consider canceling any active work during "dispose" or using the "mounted" getter to determine if the State is still active.
-    E/flutter (26127): #0      State.context.<anonymous closure> (package:flutter/src/widgets/framework.dart:951:9)
-    E/flutter (26127): #1      State.context (package:flutter/src/widgets/framework.dart:957:6)
-    E/flutter (26127): #2      _InitScreenState._loadGoogleCredentials (package:botnoivoice/data/authentication/init_screen.dart:102:31)
-    E/flutter (26127): <asynchronous suspension>
-    E/flutter (26127): #3      _InitScreenState.initApp (package:botnoivoice/data/authentication/init_screen.dart:54:7)
-    E/flutter (26127): <asynchronous suspension>
-  */
-
   /// Function to check how the user logs in and loading data
   Future<void> initApp() async {
     final appleProvider =

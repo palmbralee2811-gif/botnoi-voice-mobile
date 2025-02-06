@@ -35,7 +35,6 @@ class EmailLoginButton extends StatelessWidget {
                     ? Size(224.w, 99.h)
                     : Size(224.w, 48.h),
               ),
-              //TODO: [Finish] UI Overflow in Email Login Button
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

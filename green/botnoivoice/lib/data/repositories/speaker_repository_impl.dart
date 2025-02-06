@@ -49,7 +49,7 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   }
 
   void setNationalFlagName(String name) {
-    //TODO: TN Mobile S ชื่อของธงชาติไม่เปลี่ยนเป็น ไทย, อังกฤษ, languageCode == `id` -> setNationalFlagName = englishName;
+    //TODO: Mobile Green ชื่อของธงชาติไม่เปลี่ยนเป็น ไทย, อังกฤษ, languageCode == `id` -> setNationalFlagName = englishName;
     _nationalFlagName = name;
     _logger.d("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
     notifyListeners();

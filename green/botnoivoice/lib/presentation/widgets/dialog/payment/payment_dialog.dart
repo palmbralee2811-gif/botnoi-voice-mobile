@@ -74,7 +74,6 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                //TODO: [Finish] UI Overflow in Payment Dialog
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

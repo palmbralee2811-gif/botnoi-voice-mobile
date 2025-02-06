@@ -525,57 +525,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       height: OrientationHelper.isLandscape ? 82.h : 42.h,
       width: 320.w,
       color: kWhite,
-      //TODO: TN Mobile Frank
-      //TODO: [Bug] UI Overflow in Speaker Screen
-      /*
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 43 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 30 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 11 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 35 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 1.1 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 8.4 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 15 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 12 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/speaker/speaker_screen.dart:528:14
-════════════════════════════════════════════════════════════════════════════════
-      */
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
