@@ -455,6 +455,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     BuildContext context,
     StateSetter setState,
   ) {
+    //TODO: ทำเป็นฟังก์ชันแยก เรียกใช้ ตอน setNationalFlagName
     String languageCode = Localizations.localeOf(context).languageCode;
     languageCode = languageCode.isNotEmpty ? languageCode : 'en';
 
