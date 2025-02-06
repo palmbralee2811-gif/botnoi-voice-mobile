@@ -49,12 +49,12 @@ The relevant error-causing widget was:
               ishover
                   ? Icon(
                       Icons.favorite,
-                      size: OrientationHelper.isLandscape ? 13.sp : 20.sp, // ขนาดของไอคอนให้เหมาะสม
+                      size: OrientationHelper.isLandscape ? 12.sp : 16.sp, // ขนาดของไอคอนให้เหมาะสม
                       color: Colors.white,
                     )
                   : Icon(
                       Icons.favorite_border,
-                      size: OrientationHelper.isLandscape ? 13.sp : 20.sp, // ขนาดของไอคอนให้เหมาะสม
+                      size: OrientationHelper.isLandscape ? 12.sp : 16.sp, // ขนาดของไอคอนให้เหมาะสม
                       color: Colors.black,
                     ),
             ],

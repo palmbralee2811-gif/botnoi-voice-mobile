@@ -377,7 +377,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   Widget buildLanguageButton(BuildContext context, StateSetter setState) {
     return Padding(
-      padding: EdgeInsets.all(OrientationHelper.isLandscape ? 10.w : 20.w),
+      padding: EdgeInsets.all(OrientationHelper.isLandscape ? 10.w : 12.w),
       child: Column(
         children: [
           Container(
