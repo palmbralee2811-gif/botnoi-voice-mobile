@@ -49,13 +49,13 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   }
 
   void setNationalFlagName(String name) {
+    //TODO: TN Mobile S ชื่อของธงชาติไม่เปลี่ยนเป็น ไทย, อังกฤษ, languageCode == `id` -> setNationalFlagName = englishName;
     _nationalFlagName = name;
     _logger.d("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
     notifyListeners();
   }
 
   void setNationalFlagPath(String path) {
-    //TODO: TN Mobile S ชื่อของธงชาติไม่เปลี่ยนเป็น ไทย, อังกฤษ 
     _nationalFlagPath = path;
     _logger.d("SpeakerProvider -> setNationalFlagPath: $nationalFlagPath");
     notifyListeners();
@@ -90,16 +90,16 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     _logger.d("Current Speaker: ${currentSpeaker!.thaiName}");
 
     String languageCode = Localizations.localeOf(context).languageCode;
-    
+
     switch (languageCode) {
       case 'th':
-        return currentSpeaker!.thaiName;  // ชื่อภาษาไทย
+        return currentSpeaker!.thaiName; // ชื่อภาษาไทย
       case 'en':
-        return currentSpeaker!.engName;  // ชื่อภาษาอังกฤษ
+        return currentSpeaker!.engName; // ชื่อภาษาอังกฤษ
       case 'id':
-        return currentSpeaker!.engName;  // ชื่อภาษาอินโดนีเซีย
+        return currentSpeaker!.engName; // ชื่อภาษาอินโดนีเซีย
       default:
-        return currentSpeaker!.engName;  // ชื่อภาษาไทย
+        return currentSpeaker!.engName; // ชื่อภาษาไทย
     }
   }
 }
