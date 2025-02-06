@@ -3,7 +3,7 @@
     "thai": "ไทย",
     "english": "อังกฤษ",
     "gender": "เพศ",
-    "mw": "ช/ญ",
+    "male_female": "ช/ญ",
     "style": "สไตล์",
     "style_plural": "{count} สไตล์",
     "category": "หมวดหมู่",

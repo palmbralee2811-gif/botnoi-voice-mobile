@@ -1,22 +1,22 @@
 final genders = [
   {
     'thaiName': 'ช/ญ',
-    'englishName': 'M/W',
+    'englishName': 'M/F',
     'indonesianName': 'L/P',
     'image': 'assets/images/gender/all.svg',
     'code': ''
   },
   {
     'thaiName': 'หญิง',
-    'englishName': 'Woman',
+    'englishName': 'Female',
     'indonesianName': 'Perempuan',
     'image': 'assets/images/gender/woman.svg',
     'code': 'ผู้หญิง'
   },
   {
     'thaiName': 'ชาย',
-    'englishName': 'Man',
-    'indonesianName': 'Pria',
+    'englishName': 'Male',
+    'indonesianName': 'Laki-laki',
     'image': 'assets/images/gender/man.svg',
     'code': 'ผู้ชาย'
   },

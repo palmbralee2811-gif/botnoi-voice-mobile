@@ -3,7 +3,7 @@
     "thai": "Thai",
     "english": "English",
     "gender": "Gender",
-    "mw": "M/W",
+    "male_female": "M/F",
     "style": "Style",
     "style_plural": "{count} Style",
     "category": "Category",

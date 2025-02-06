@@ -3,7 +3,7 @@
     "thai": "Thai",
     "english": "Inggris",
     "gender": "Jenis Kelamin",
-    "mw": "L/P",
+    "male_female": "L/P",
     "style": "Gaya",
     "style_plural": "{count} Gaya",
     "category": "Kategori",

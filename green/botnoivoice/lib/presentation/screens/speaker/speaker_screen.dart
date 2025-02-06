@@ -39,7 +39,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   String selectedLanguage = 'thai'.tr();
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   bool isExpanded = false;
-  String selectedGender = 'mw'.tr();
+  String selectedGender = 'male_female'.tr();
   String selectedGenderImage = 'assets/images/gender/all.svg';
   bool changeIcon = false;
   Set<String> selectedCategories = {};
