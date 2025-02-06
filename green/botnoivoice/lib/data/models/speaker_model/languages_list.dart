@@ -1,5 +1,3 @@
-//TODO: TN Mobile S แปลข้อความเป็นภาษาอินโดนีเซีย ใช้หลัการแปล English -> Indonesian
-//TODO: 'indonesianName': 'XYZ0123',
 final languages = [
   {
     'thaiName': 'ไทย',
@@ -52,7 +50,7 @@ final languages = [
   },
   {
     'thaiName': 'จีน',
-    'englishName': 'Chinese',
+    'englishName': 'Chinese (Simplified)',
     'indonesianName': 'Bahasa Mandarin',
     'image': 'assets/images/national_flag/chinese.png',
     'code': 'ZH'
