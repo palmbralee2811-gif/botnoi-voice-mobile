@@ -60,23 +60,21 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 20.h),
-                Text(
-                  "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
-                  style: TextStyle(
-                    fontSize: OrientationHelper.isLandscape ? 25.sp : 45.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
+                      style: TextStyle(
+                        fontSize: OrientationHelper.isLandscape ? 25.sp : 45.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 10.h),
-                //TODO: [Bug] UI Overflow in Payment Dialog
-                /*
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 138 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/widgets/dialog/payment/payment_dialog.dart:72:17
-════════════════════════════════════════════════════════════════════════════════
-                */
+                //TODO: [Finish] UI Overflow in Payment Dialog
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -86,14 +84,20 @@ The relevant error-causing widget was:
                       height: OrientationHelper.isLandscape ? 44.h : 24.h,
                     ),
                     SizedBox(width: 8.w),
-                    Text(
-                      'payment.get_points'.tr(namedArgs: {
-                        'productTitle': '5,000'
-                      }), //ได้ ${product.title} พ้อยท์
-                      style: TextStyle(
-                        fontSize: OrientationHelper.isLandscape ? 13.sp : 22.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'payment.get_points'.tr(namedArgs: {
+                            'productTitle': '5,000'
+                          }), //ได้ ${product.title} พ้อยท์
+                          style: TextStyle(
+                            fontSize:
+                                OrientationHelper.isLandscape ? 13.sp : 22.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -115,7 +119,8 @@ The relevant error-causing widget was:
     final paymentProvider =
         Provider.of<PaymentProvider>(context, listen: false);
 
-    final creditsProvider = Provider.of<CreditsProvider>(context, listen: false);
+    final creditsProvider =
+        Provider.of<CreditsProvider>(context, listen: false);
 
     try {
       await paymentProvider.handlePurchase();
