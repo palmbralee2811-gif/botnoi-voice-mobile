@@ -44,14 +44,6 @@ class CouponRedeemButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(42),
           border: Border.all(color: Colors.blue[700]!, width: 3),
         ),
-        //TODO: [Bug] UI Overflow in Coupon Redeem Button
-        /*
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 27 pixels on the bottom.
-The relevant error-causing widget was:
-    Column Column:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/widgets/button/coupon_redeem_button.dart:47:16
-════════════════════════════════════════════════════════════════════════════════
-        */
         child: Column(
           children: [
             Icon(
@@ -60,31 +52,43 @@ The relevant error-causing widget was:
               size: isTablet ? (isLandscape ? 100 : 120) : 75,
             ),
             const SizedBox(height: 12),
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: isTablet ? (isLandscape ? 30 : 44) : 18,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              text2,
-              style: TextStyle(
-                color: textColor2,
-                fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  text2,
+                  style: TextStyle(
+                    color: textColor2,
+                    fontSize: isTablet ? (isLandscape ? 30 : 44) : 18,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              text3,
-              style: TextStyle(
-                color: textColor3,
-                fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+            Flexible(
+              child: Text(
+                text3,
+                style: TextStyle(
+                  color: textColor3,
+                  fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
