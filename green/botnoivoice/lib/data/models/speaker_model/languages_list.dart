@@ -52,7 +52,7 @@ final languages = [
   },
   {
     'thaiName': 'จีน',
-    'englishName': 'Chinese',
+    'englishName': 'Chinese (Simplified)',
     'indonesianName': 'XYZ0123',
     'image': 'assets/images/national_flag/chinese.png',
     'code': 'ZH'
