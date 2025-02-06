@@ -205,19 +205,12 @@ class _AccountScreenState extends State<AccountScreen> {
       appBar: AppBarTemplate(title: 'app_drawer.profile'.tr()),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          padding: EdgeInsets.symmetric(horizontal: 15.w), //Frank แก้ไข
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: OrientationHelper.isLandscape ? 40.h : 20.h),
-              //TODO: [Bug] UI Overflow in Account Screen
-              /*
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 9.8 pixels on the right.
-The relevant error-causing widget was:
-    Row Row:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/screens/drawer/account/account_screen.dart:213:15
-════════════════════════════════════════════════════════════════════════════════
-              */
+              //TODO: [Finish] UI Overflow in Account Screen
               Row(
                 // จัดข้อความและไอคอนให้อยู่ในแนวเดียวกัน
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -232,7 +225,7 @@ The relevant error-causing widget was:
                   ),
                   SizedBox(
                       width: OrientationHelper.isLandscape
-                          ? 60.w
+                          ? 50.w
                           : 30.w), // ระยะห่างระหว่างข้อความและไอคอน
                   SvgPicture.asset(
                     'assets/images/auth_screen/email-icon.svg',
@@ -355,7 +348,7 @@ The relevant error-causing widget was:
                       title: '', //ชื่อผู้ใช้
                       value: '',
                     ),
-              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 165.h),
+              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 245.h),
               // const Spacer(),
               GradientTextButton(
                 text: 'account.logout'.tr(), //ออกจากระบบ

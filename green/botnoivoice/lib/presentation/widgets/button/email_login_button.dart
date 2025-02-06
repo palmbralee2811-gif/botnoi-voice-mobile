@@ -35,7 +35,7 @@ class EmailLoginButton extends StatelessWidget {
                     ? Size(224.w, 99.h)
                     : Size(224.w, 48.h),
               ),
-              //TODO: [Bug] UI Overflow in Email Login Button
+              //TODO: [Finish] UI Overflow in Email Login Button
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -45,9 +45,9 @@ class EmailLoginButton extends StatelessWidget {
                     width: OrientationHelper.isLandscape ? 20.w : 20.w,
                   ),
                   SizedBox(width: OrientationHelper.isLandscape ? 12.w : 16.w),
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
+                  Flexible( //Frank เพิ่ม
+                    child: FittedBox( //---> เพิ่ม
+                      fit: BoxFit.scaleDown, //---> เพิ่ม
                       child: Text(
                         'auth.sign_in_with_username_email'.tr(),
                         style: TextStyle(

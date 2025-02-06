@@ -50,7 +50,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
     final speakerInfo = speakerData.firstWhere((speaker) => speaker['language'] == language);
 
     // ใช้ getName เพื่อดึงชื่อจาก speakerProvider
-    final speakerName = speakerProvider.getName(context);  // เปลี่ยนจาก speakerProvider.speakerName
+    // final speakerName = speakerProvider.getName(context);  // เปลี่ยนจาก speakerProvider.speakerName
+    final speakerName = speakerProvider.speakerName ?? speakerInfo['name'];  // เปลี่ยนจาก speakerProvider.speakerName //Frank แก้ไข
     final speakerImagePath = speakerProvider.speakerImagePath ?? speakerInfo['image'];
     final speakerAudio = speakerProvider.speakerAudio ?? speakerInfo['audio'];
     final nationalFlagName = speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
@@ -112,7 +113,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
-                      speakerName,
+                      speakerName!, //Frank แก้ไข
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,

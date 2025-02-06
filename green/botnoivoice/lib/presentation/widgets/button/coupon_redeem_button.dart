@@ -52,31 +52,43 @@ class CouponRedeemButton extends StatelessWidget {
               size: isTablet ? (isLandscape ? 100 : 120) : 75,
             ),
             const SizedBox(height: 12),
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: isTablet ? (isLandscape ? 30 : 44) : 18,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              text2,
-              style: TextStyle(
-                color: textColor2,
-                fontSize: isTablet ? (isLandscape ? 40 : 44) : 18,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  text2,
+                  style: TextStyle(
+                    color: textColor2,
+                    fontSize: isTablet ? (isLandscape ? 30 : 44) : 18,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              text3,
-              style: TextStyle(
-                color: textColor3,
-                fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+            Flexible(
+              child: Text(
+                text3,
+                style: TextStyle(
+                  color: textColor3,
+                  fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
