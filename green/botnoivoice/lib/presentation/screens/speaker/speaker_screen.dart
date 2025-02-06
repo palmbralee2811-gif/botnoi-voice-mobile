@@ -701,6 +701,10 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                   .setSpeakerImagePath(speakerItem.squareImage);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagPath(selectedLanguageImage);
+              
+              //TODO: TN Mobile S 
+              //TODO: [Bug] Function Error in Speaker Screen
+              //TODO: ต้องดึงข้อมูล ชื่อธงชาติมาจากไฟล์ /lib/data/models/speaker_model/languages_list.dart
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
 
