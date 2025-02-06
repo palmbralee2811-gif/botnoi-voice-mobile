@@ -44,14 +44,6 @@ class CouponRedeemButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(42),
           border: Border.all(color: Colors.blue[700]!, width: 3),
         ),
-        //TODO: [Bug] UI Overflow in Coupon Redeem Button
-        /*
-════════ Exception caught by rendering library ═════════════════════════════════
-A RenderFlex overflowed by 27 pixels on the bottom.
-The relevant error-causing widget was:
-    Column Column:file:///Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/lib/presentation/widgets/button/coupon_redeem_button.dart:47:16
-════════════════════════════════════════════════════════════════════════════════
-        */
         child: Column(
           children: [
             Icon(
