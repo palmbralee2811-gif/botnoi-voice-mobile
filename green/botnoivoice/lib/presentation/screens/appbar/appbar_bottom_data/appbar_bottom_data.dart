@@ -21,7 +21,7 @@ final speakerData = [
     'name': 'Dia',
     'image': 'assets/square_image/65.webp',
     'audio': 'https://botnoi-voice.s3.ap-southeast-1.amazonaws.com/picture/dia/sound_dia.wav',
-    'flagName': 'Indonesia',
+    'flagName': 'Bahasa Indonesia',
     'flagPath': 'assets/images/national_flag/indonesian.png',
   }
 ];

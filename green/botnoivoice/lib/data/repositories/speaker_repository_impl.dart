@@ -1,12 +1,9 @@
-import 'package:botnoivoice/data/entities/speaker_entity.dart';
-import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 /// Repository for Speaker operations
 class SpeakerRepositoryImpl with ChangeNotifier {
-  final Logger _logger = Logger(); // Logger for Debugging mode
-  SpeakerEntity? currentSpeaker; // ตัวแปรเก็บ Speaker ปัจจุบัน
+  final Logger _logger = Logger();
 
   String? _speakerId;
   String? _speakerName;
@@ -49,7 +46,6 @@ class SpeakerRepositoryImpl with ChangeNotifier {
   }
 
   void setNationalFlagName(String name) {
-    //TODO: Mobile Green ชื่อของธงชาติไม่เปลี่ยนเป็น ไทย, อังกฤษ, languageCode == `id` -> setNationalFlagName = englishName;
     _nationalFlagName = name;
     _logger.d("SpeakerProvider -> setNationalFlagName: $nationalFlagName");
     notifyListeners();
@@ -65,41 +61,5 @@ class SpeakerRepositoryImpl with ChangeNotifier {
     _language = language;
     _logger.d("SpeakerProvider -> setLanguage: $language");
     notifyListeners();
-  }
-
-  SpeakerRepositoryImpl() {
-    // ตั้งค่า Speaker คนแรกเป็นค่าเริ่มต้น
-    currentSpeaker = SpeakerModel.speakerItem[0];
-  }
-
-  // ฟังก์ชันที่ตั้งค่า currentSpeaker
-  void setSpeaker(SpeakerEntity speaker) {
-    currentSpeaker = speaker;
-    notifyListeners(); // แจ้งให้ widget รีเฟรชเมื่อข้อมูลเปลี่ยนแปลง
-  }
-
-  // ฟังก์ชันที่ใช้ในการดึงชื่อของ speaker ตามภาษาที่เลือก
-  String getName(BuildContext context) {
-    // ตรวจสอบว่า currentSpeaker มีค่าไม่เป็น null
-    if (currentSpeaker == null) {
-      _logger.e("Current Speaker: No speaker selected");
-      return 'Default Name'; // ถ้าไม่มี speaker ให้ใช้ Default Name
-    }
-
-    // ถ้ามี speaker ให้แสดงชื่อของ speaker คนปัจจุบัน
-    _logger.d("Current Speaker: ${currentSpeaker!.thaiName}");
-
-    String languageCode = Localizations.localeOf(context).languageCode;
-
-    switch (languageCode) {
-      case 'th':
-        return currentSpeaker!.thaiName; // ชื่อภาษาไทย
-      case 'en':
-        return currentSpeaker!.engName; // ชื่อภาษาอังกฤษ
-      case 'id':
-        return currentSpeaker!.engName; // ชื่อภาษาอินโดนีเซีย
-      default:
-        return currentSpeaker!.engName; // ชื่อภาษาไทย
-    }
   }
 }

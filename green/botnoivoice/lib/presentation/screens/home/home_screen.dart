@@ -130,6 +130,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String _getDefaultSpeakerId() {
+    String languageCode = Localizations.localeOf(context).languageCode;
+    languageCode = languageCode.isNotEmpty ? languageCode : 'en';
+    switch (languageCode) {
+      case 'th':
+        return '1';
+      case 'en':
+        return '9';
+      case 'id':
+        return '65';
+      default:
+        return '9';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -360,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<String> generateAudio(String text) async {
     speakerId =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).speakerId ??
-            '1';
+            _getDefaultSpeakerId();
     String language =
         Provider.of<SpeakerRepositoryImpl>(context, listen: false).language ??
             'th';

@@ -3,10 +3,10 @@ import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom_data/appbar_bottom_data.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_icon.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -37,25 +37,19 @@ class _AppBarBottomState extends State<AppBarBottom> {
   @override
   Widget build(BuildContext context) {
     //TODO: TN Mobile S
-    //TODO: [Bug] Function Error in AppBar Bottom
-    /*
-      1.เปิดแอปครั้งแรกทำงานได้ปกติ แต่ถ้ากด เล่นเสียงตัวอย่างของ `เอวา` แล้วเปลี่ยนไปเป็นภาษาอังกฤษ
-      สิ่งที่ต้องการคือ เปลี่ยนเป็น Nadir แต่สิ่งที่ได้คือ `Ava` และ ลองเปลี่ยนกลับมาเป็นภาษาอินโดนีเซีย ก็จะเป็น `Ava` เหมือนเดิม
-      2.เปลี่ยนเสียงพากย์ ในหน้า Speaker Screen เป็น อลัน แต่ กดเปลี่ยนภาษา เป็นภาษาอังกฤษ แล้วยังเป็น `อลัน` สิ่งที่ต้องการคือ `Nadir`
-    */
+    //TODO: [Bug] Fix this function
+  
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     String language = Localizations.localeOf(context).languageCode;
 
-    // หา index ของภาษาที่เลือกจาก speakerData
     final speakerInfo = speakerData.firstWhere((speaker) => speaker['language'] == language);
 
-    // ใช้ getName เพื่อดึงชื่อจาก speakerProvider
-    final speakerName = speakerProvider.getName(context);  // เปลี่ยนจาก speakerProvider.speakerName
+    final speakerName = speakerProvider.speakerName ?? speakerInfo['name'];
     final speakerImagePath = speakerProvider.speakerImagePath ?? speakerInfo['image'];
     final speakerAudio = speakerProvider.speakerAudio ?? speakerInfo['audio'];
     final nationalFlagName = speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
     final nationalFlagPath = speakerProvider.nationalFlagPath ?? speakerInfo['flagPath'];
-
+    
     return SizedBox(
       width: double.infinity,
       height: OrientationHelper.isLandscape ? 80.h : 60.h,
@@ -70,7 +64,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                   isPlaying = false;
                 });
               } else {
-                if (speakerAudio != null && speakerAudio.isNotEmpty) {
+                if (speakerAudio != null &&speakerAudio.isNotEmpty) {
                   await audioPlayer.play(UrlSource(speakerAudio));
                   setState(() {
                     isPlaying = true;
@@ -79,7 +73,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
               }
             },
             child: Padding(
-              padding: EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
+              padding:
+                  EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
               child: GradientIcon(
                 icon: isPlaying
                     ? Icons.pause_circle_outline
@@ -99,11 +94,12 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const SpeakerScreen(speakerName: '')),
+                      builder: (context) => const SpeakerScreen()),
                 );
               },
               child: Padding(
-                padding: EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
+                padding:
+                    EdgeInsets.all(OrientationHelper.isLandscape ? 2.w : 8.w),
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -112,7 +108,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     ),
                     SizedBox(width: OrientationHelper.isLandscape ? 6.w : 8.w),
                     Text(
-                      speakerName,
+                      speakerName!,
                       style: GoogleFonts.prompt(
                         fontSize: OrientationHelper.isLandscape ? 8.sp : 14.sp,
                         fontWeight: FontWeight.w600,

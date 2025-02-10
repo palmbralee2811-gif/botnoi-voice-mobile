@@ -20,7 +20,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class SpeakerScreen extends StatefulWidget {
-  const SpeakerScreen({super.key, required String speakerName});
+  const SpeakerScreen({super.key});
 
   @override
   State<SpeakerScreen> createState() => _SpeakerScreenState();
@@ -455,7 +455,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     BuildContext context,
     StateSetter setState,
   ) {
-    //TODO: ทำเป็นฟังก์ชันแยก เรียกใช้ ตอน setNationalFlagName
     String languageCode = Localizations.localeOf(context).languageCode;
     languageCode = languageCode.isNotEmpty ? languageCode : 'en';
 
@@ -686,26 +685,37 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
               await playAudio();
 
-              final speakerProvider =
-                  Provider.of<SpeakerRepositoryImpl>(context, listen: false);
-              speakerProvider.setSpeaker(speakerItem);
+              String languageCode =
+                  Localizations.localeOf(context).languageCode;
+              String speakerName;
+
+              switch (languageCode) {
+                case 'th':
+                  speakerName = speakerItem.thaiName;
+                  break;
+                case 'en':
+                  speakerName = speakerItem.engName;
+                  break;
+                case 'id':
+                  speakerName = speakerItem.engName;
+                  break;
+                default:
+                  speakerName = speakerItem.engName;
+                  break;
+              }
 
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setLanguage(speakerItem.language.toLowerCase());
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerId(speakerItem.speakerId);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
-                  .setSpeakerName(speakerItem.thaiName);
+                  .setSpeakerName(speakerName);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerAudio(speakerItem.audio);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setSpeakerImagePath(speakerItem.squareImage);
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagPath(selectedLanguageImage);
-              
-              //TODO: Mobile Green
-              //TODO: [Bug] Function Error in Speaker Screen
-              //TODO: ต้องดึงข้อมูล ชื่อธงชาติมาจากไฟล์ /lib/data/models/speaker_model/languages_list.dart
               Provider.of<SpeakerRepositoryImpl>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
 
