@@ -17,7 +17,10 @@ class LanguageSelectionScreen extends StatefulWidget {
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
-  //TODO: เลือกภาษาแอปเริ่มต้นอัตโนมัติ ด้วยการดึงค่า countryCode จาก Location Provider
+  //TODO: ใช้ระบบ time zone กำหนดภาษาเริ่มต้นของแอป อัตโนมัติ
+  //await LanguageHelper.saveSelectedLanguage('en');
+  //context.setLocale(const Locale('en'));
+
   /*
     // country_code = "id";
     // langcode = "id";

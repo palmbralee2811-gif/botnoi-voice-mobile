@@ -35,10 +35,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    //TODO: TN Mobile S
-    //TODO: [Bug] Fix this function
-  
+  Widget build(BuildContext context) { 
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     String language = Localizations.localeOf(context).languageCode;
 
