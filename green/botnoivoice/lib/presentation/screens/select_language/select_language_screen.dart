@@ -17,6 +17,27 @@ class LanguageSelectionScreen extends StatefulWidget {
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
+  //TODO: เลือกภาษาแอปเริ่มต้นอัตโนมัติ ด้วยการดึงค่า countryCode จาก Location Provider
+  /*
+    // country_code = "id";
+    // langcode = "id";
+
+    String _getDefaultSpeakerId() {
+      String languageCode = Localizations.localeOf(context).languageCode;
+      languageCode = languageCode.isNotEmpty ? languageCode : 'en';
+      switch (languageCode) {
+        case 'th':
+          return '1';
+        case 'en':
+          return '9';
+        case 'id':
+          return '65';
+        default:
+          return '9';
+      }
+    }
+  */
+
   String selectedLanguage = ''; // ตัวแปรสำหรับเก็บภาษาที่เลือก
 
   @override
