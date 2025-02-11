@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 
+
+//TODO: ถ้าข้อมูล ภาษาของมือถือ ยังโหลดไม่เสร็จให้แสดงหน้า `splash_screen.dart` โหลดเสร็จแล้วไป `auth_checker.dart`
+
 class LanguageSelectionChecker extends StatelessWidget {
   const LanguageSelectionChecker({super.key});
 

@@ -17,6 +17,7 @@ class LanguageSelectionScreen extends StatefulWidget {
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
+  //TODO: สามารถใช้ `device_info_plus` เพื่อดึงข้อมูล ภาษาของมือถือแต่ละเครื่องได้ไหม?
   //TODO: ใช้ระบบ time zone กำหนดภาษาเริ่มต้นของแอป อัตโนมัติ
   //await LanguageHelper.saveSelectedLanguage('en');
   //context.setLocale(const Locale('en'));

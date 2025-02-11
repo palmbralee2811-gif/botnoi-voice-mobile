@@ -349,6 +349,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
               SizedBox(height: OrientationHelper.isLandscape ? 24.h : 245.h),
               // const Spacer(),
+              //TODO: ย้ายปุ่ม Logout ไป Drawer ที่เดียวกับ Payment
               GradientTextButton(
                 text: 'account.logout'.tr(), //ออกจากระบบ
                 onPressed: () async {
