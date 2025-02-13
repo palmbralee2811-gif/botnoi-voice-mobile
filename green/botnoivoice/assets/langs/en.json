@@ -1,9 +1,8 @@
 {
     "language": "Language",
-    "default_language_filter": "English",
+    "default_language_filter_name": "English",
     "default_language_filter_image_path": "assets/images/national_flag/english.png",
     "default_language_filter_code": "EN",
-    "english": "English",
     "gender": "Gender",
     "male_female": "M/F",
     "style": "Style",

@@ -1,9 +1,8 @@
 {
     "language": "Bahasa",
-    "default_language_filter": "Bahasa Indonesia",
+    "default_language_filter_name": "Bahasa Indonesia",
     "default_language_filter_image_path": "assets/images/national_flag/indonesian.png",
     "default_language_filter_code": "ID",
-    "english": "Inggris",
     "gender": "Jenis Kelamin",
     "male_female": "L/P",
     "style": "Gaya",

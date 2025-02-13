@@ -13,7 +13,7 @@ import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dar
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
-import 'package:botnoivoice/presentation/widgets/language/language_change_bottom_sheet_app_drawer.dart';
+import 'package:botnoivoice/presentation/widgets/language/language_in_app_drawer.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

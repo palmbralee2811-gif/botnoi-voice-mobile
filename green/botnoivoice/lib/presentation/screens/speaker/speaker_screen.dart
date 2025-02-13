@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/data/models/speaker_model/genders_list.dart';
-import 'package:botnoivoice/data/models/speaker_model/languages_list.dart';
+import 'package:botnoivoice/data/models/speaker_model/genders_filter.dart';
+import 'package:botnoivoice/data/models/speaker_model/languages_filter.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
@@ -27,31 +27,31 @@ class SpeakerScreen extends StatefulWidget {
 }
 
 class _SpeakerScreenState extends State<SpeakerScreen> {
-  final Logger logger = Logger();
-  bool ishover = false;
+  final Logger _logger = Logger();
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  
   String? speakerId;
   String? language;
   String? gender;
   Set<int> selectedIndex = <int>{};
-  AudioPlayer audioPlayer = AudioPlayer();
+
   List<SpeakerEntity>? speakerItem;
   List<String> selectedIndexFavorites = [];
 
-  String selectedLanguage = 'default_language_filter'.tr();
-
+  String selectedLanguage = tr('default_language_filter_name');
   String selectedLanguageImage = tr('default_language_filter_image_path');
-
-  bool isExpanded = false;
-
   String selectedGender = 'male_female'.tr();
-
   String selectedGenderImage = 'assets/images/gender/all.svg';
 
-  bool changeIcon = false;
   Set<String> selectedCategories = {};
   Set<String> selectedStyles = {};
   String selectedVoiceStyle = '';
   String selectedStyle = '';
+
+  bool ishover = false;
+  bool isExpanded = false;
+  bool changeIcon = false;
 
   @override
   void initState() {
@@ -685,11 +685,11 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     }
 
     if (filteredSpeakers.isEmpty) {
-      logger.w("No speakers match all filters.");
+      _logger.w("No speakers match all filters.");
       return [];
     }
 
-    logger.i("Total speakers after filtering: ${filteredSpeakers.length}");
+    _logger.i("Total speakers after filtering: ${filteredSpeakers.length}");
     return filteredSpeakers;
   }
 
