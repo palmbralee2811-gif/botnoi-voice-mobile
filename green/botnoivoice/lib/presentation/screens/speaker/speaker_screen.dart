@@ -36,11 +36,17 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   List<SpeakerEntity>? speakerItem;
   List<String> selectedIndexFavorites = [];
-  String selectedLanguage = 'thai'.tr();
-  String selectedLanguageImage = 'assets/images/national_flag/thai.png';
+
+  String selectedLanguage = 'default_language_filter'.tr();
+
+  String selectedLanguageImage = tr('default_language_filter_image_path');
+
   bool isExpanded = false;
+
   String selectedGender = 'male_female'.tr();
+
   String selectedGenderImage = 'assets/images/gender/all.svg';
+
   bool changeIcon = false;
   Set<String> selectedCategories = {};
   Set<String> selectedStyles = {};
@@ -50,7 +56,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   @override
   void initState() {
     super.initState();
-    language = 'TH';
+    language = tr('default_language_filter_code');
     gender = '';
   }
 
@@ -396,9 +402,31 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
+  List<Map<String, dynamic>> updateLanguageId(String langCode) {
+    List<Map<String, dynamic>> updatedLanguages = List.from(languages);
+
+    updatedLanguages.forEach((lang) {
+      if (lang['code']!.toLowerCase() == langCode.toLowerCase()) {
+        lang['id'] = 1; // กำหนด id เป็น 1 ถ้า code ตรงกับ langCode
+      } else {
+        lang['id'] = updatedLanguages.indexOf(lang) +
+            2; // ให้ id เริ่มจาก 2 สำหรับภาษาอื่น
+      }
+    });
+
+    // จัดเรียงตาม id
+    updatedLanguages.sort((a, b) => a['id'].compareTo(b['id']));
+
+    return updatedLanguages;
+  }
+
   List<Widget> buildLanguageFilters(
       BuildContext context, StateSetter setState) {
-    return languages.map((lang) {
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    List<Map<String, dynamic>> sortedLanguages = updateLanguageId(languageCode);
+
+    return sortedLanguages.map((lang) {
       return _buildLanguageFilter(
         lang['thaiName']!,
         lang['englishName']!,

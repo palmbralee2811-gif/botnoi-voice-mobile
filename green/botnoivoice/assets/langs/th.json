@@ -1,6 +1,8 @@
 {
     "language": "ภาษา",
-    "thai": "ไทย",
+    "default_language_filter": "ไทย",
+    "default_language_filter_image_path": "assets/images/national_flag/thai.png",
+    "default_language_filter_code": "TH",
     "english": "อังกฤษ",
     "gender": "เพศ",
     "male_female": "ช/ญ",

@@ -1,5 +1,6 @@
 final languages = [
   {
+    'id': 1,
     'thaiName': 'ไทย',
     'englishName': 'Thai',
     'indonesianName': 'Bahasa Thai',
@@ -7,6 +8,7 @@ final languages = [
     'code': 'TH'
   },
   {
+    'id': 2, 
     'thaiName': 'อังกฤษ',
     'englishName': 'English',
     'indonesianName': 'Bahasa Inggris',
@@ -14,6 +16,7 @@ final languages = [
     'code': 'EN'
   },
   {
+    'id': 3,
     'thaiName': 'อินโดนีเซีย',
     'englishName': 'Indonesian',
     'indonesianName': 'Bahasa Indonesia',
@@ -21,6 +24,7 @@ final languages = [
     'code': 'ID'
   },
   {
+    'id': 4,
     'thaiName': 'ญี่ปุ่น',
     'englishName': 'Japanese',
     'indonesianName': 'Bahasa Jepang',
@@ -28,6 +32,7 @@ final languages = [
     'code': 'JA'
   },
   {
+    'id': 5,
     'thaiName': 'ลาว',
     'englishName': 'Lao',
     'indonesianName': 'Bahasa Lao',
@@ -35,6 +40,7 @@ final languages = [
     'code': 'LO'
   },
   {
+    'id': 6,
     'thaiName': 'เมียนมาร์',
     'englishName': 'Burmese',
     'indonesianName': 'Bahasa Myanmar',
@@ -42,6 +48,7 @@ final languages = [
     'code': 'MY'
   },
   {
+    'id': 7,
     'thaiName': 'เวียดนาม',
     'englishName': 'Vietnamese',
     'indonesianName': 'Bahasa Vietnam',
@@ -49,6 +56,7 @@ final languages = [
     'code': 'VI'
   },
   {
+    'id': 8,
     'thaiName': 'จีน',
     'englishName': 'Chinese (Simplified)',
     'indonesianName': 'Bahasa Mandarin',
@@ -56,6 +64,7 @@ final languages = [
     'code': 'ZH'
   },
   {
+    'id': 9,
     'thaiName': 'กัมพูชา',
     'englishName': 'Cambodia',
     'indonesianName': 'Bahasa Khmer',
@@ -63,6 +72,7 @@ final languages = [
     'code': 'KM'
   },
   {
+    'id': 10,
     'thaiName': 'ฟิลิปปินส์',
     'englishName': 'Filipino',
     'indonesianName': 'Bahasa Filipino',
@@ -70,6 +80,7 @@ final languages = [
     'code': 'FIL'
   },
   {
+    'id': 11,
     'thaiName': 'อาหรับ',
     'englishName': 'Arabic',
     'indonesianName': 'Bahasa Arab',
@@ -77,6 +88,7 @@ final languages = [
     'code': 'AR'
   },
   {
+    'id': 12,
     'thaiName': 'เยอรมัน',
     'englishName': 'German',
     'indonesianName': 'Bahasa Jerman',
@@ -84,6 +96,7 @@ final languages = [
     'code': 'DE'
   },
   {
+    'id': 13,
     'thaiName': 'สเปน',
     'englishName': 'Spanish',
     'indonesianName': 'Bahasa Spanyol',
@@ -91,6 +104,7 @@ final languages = [
     'code': 'ES'
   },
   {
+    'id': 14,
     'thaiName': 'ฝรั่งเศส',
     'englishName': 'French',
     'indonesianName': 'Bahasa Prancis',
@@ -98,6 +112,7 @@ final languages = [
     'code': 'FR'
   },
   {
+    'id': 15,
     'thaiName': 'ดัตช์',
     'englishName': 'Dutch',
     'indonesianName': 'Bahasa Belanda',
@@ -105,6 +120,7 @@ final languages = [
     'code': 'NL'
   },
   {
+    'id': 16,
     'thaiName': 'เกาหลี',
     'englishName': 'Korean',
     'indonesianName': 'Bahasa Korea',
@@ -112,6 +128,7 @@ final languages = [
     'code': 'KO'
   },
   {
+    'id': 17,
     'thaiName': 'มาเลเซีย',
     'englishName': 'Malaysian',
     'indonesianName': 'Bahasa Malaysia',
@@ -119,6 +136,7 @@ final languages = [
     'code': 'MS'
   },
   {
+    'id': 18,
     'thaiName': 'โปรตุเกส',
     'englishName': 'Portuguese',
     'indonesianName': 'Bahasa Portugis',
@@ -126,6 +144,7 @@ final languages = [
     'code': 'PT-BR'
   },
   {
+    'id': 19,
     'thaiName': 'รัสเซีย',
     'englishName': 'Russian',
     'indonesianName': 'Bahasa Rusia',
@@ -133,6 +152,7 @@ final languages = [
     'code': 'RU'
   },
   {
+    'id': 20,
     'thaiName': 'ฮินดี',
     'englishName': 'Hindi',
     'indonesianName': 'Bahasa Hindi',
@@ -140,6 +160,7 @@ final languages = [
     'code': 'HI'
   },
   {
+    'id': 21,
     'thaiName': 'อิตาลี',
     'englishName': 'Italian',
     'indonesianName': 'Bahasa Italia',
@@ -147,6 +168,7 @@ final languages = [
     'code': 'IT'
   },
   {
+    'id': 22,
     'thaiName': 'ตุรกี',
     'englishName': 'Turkish',
     'indonesianName': 'Bahasa Turki',
