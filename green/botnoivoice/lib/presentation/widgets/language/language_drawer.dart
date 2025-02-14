@@ -1,7 +1,7 @@
 import 'package:botnoivoice/presentation/screens/home/home_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/screens/select_language/select_language_screen.dart';
-import 'package:botnoivoice/data/models/language_model/languages_in_app.dart';
+import 'package:botnoivoice/data/models/languages_drawer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +36,7 @@ Future<void> showLanguageBottomSheet({
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Column(
-                    children: languagesInApp.map((lang) {
+                    children: languagesDrawerModel.map((lang) {
                       return _buildLanguageOption(
                         context,
                         onLanguageSelected,

@@ -3,7 +3,7 @@ import 'package:botnoivoice/presentation/providers/email/email_login_provider.da
 import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen/account_screen_helpers.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen/user_info_row.dart';
-import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/change_username_screen/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';

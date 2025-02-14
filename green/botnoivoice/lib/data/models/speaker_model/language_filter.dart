@@ -1,4 +1,4 @@
-final languages = [
+final languageFilter = [
   {
     'id': 1,
     'thaiName': 'ไทย',
@@ -8,7 +8,7 @@ final languages = [
     'code': 'TH'
   },
   {
-    'id': 2, 
+    'id': 2,
     'thaiName': 'อังกฤษ',
     'englishName': 'English',
     'indonesianName': 'Bahasa Inggris',

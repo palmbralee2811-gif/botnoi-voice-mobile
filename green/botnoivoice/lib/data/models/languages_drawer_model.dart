@@ -1,4 +1,4 @@
-final languagesInApp = [
+final languagesDrawerModel = [
   {
     'code': 'th',
     'name': 'ไทย',

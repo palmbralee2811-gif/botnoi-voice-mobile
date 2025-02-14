@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
-import 'package:botnoivoice/presentation/screens/appbar/appbar_bottom_data/appbar_bottom_data.dart';
+import 'package:botnoivoice/data/models/appbar_bottom_model.dart';
 import 'package:botnoivoice/presentation/screens/speaker/speaker_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -35,18 +35,22 @@ class _AppBarBottomState extends State<AppBarBottom> {
   }
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     final speakerProvider = Provider.of<SpeakerRepositoryImpl>(context);
     String language = Localizations.localeOf(context).languageCode;
 
-    final speakerInfo = speakerData.firstWhere((speaker) => speaker['language'] == language);
+    final speakerInfo = appbarBottomModel
+        .firstWhere((speaker) => speaker['language'] == language);
 
     final speakerName = speakerProvider.speakerName ?? speakerInfo['name'];
-    final speakerImagePath = speakerProvider.speakerImagePath ?? speakerInfo['image'];
+    final speakerImagePath =
+        speakerProvider.speakerImagePath ?? speakerInfo['image'];
     final speakerAudio = speakerProvider.speakerAudio ?? speakerInfo['audio'];
-    final nationalFlagName = speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
-    final nationalFlagPath = speakerProvider.nationalFlagPath ?? speakerInfo['flagPath'];
-    
+    final nationalFlagName =
+        speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
+    final nationalFlagPath =
+        speakerProvider.nationalFlagPath ?? speakerInfo['flagPath'];
+
     return SizedBox(
       width: double.infinity,
       height: OrientationHelper.isLandscape ? 80.h : 60.h,
@@ -61,7 +65,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                   isPlaying = false;
                 });
               } else {
-                if (speakerAudio != null &&speakerAudio.isNotEmpty) {
+                if (speakerAudio != null && speakerAudio.isNotEmpty) {
                   await audioPlayer.play(UrlSource(speakerAudio));
                   setState(() {
                     isPlaying = true;

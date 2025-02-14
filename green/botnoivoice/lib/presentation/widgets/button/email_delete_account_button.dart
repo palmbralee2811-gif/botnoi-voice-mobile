@@ -1,4 +1,4 @@
-import 'package:botnoivoice/presentation/screens/drawer/account/delete_account_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/change_username_screen/delete_account_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-final genders = [
+final genderFilter = [
   {
     'thaiName': 'ช/ญ',
     'englishName': 'M/F',

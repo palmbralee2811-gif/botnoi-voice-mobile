@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:botnoivoice/data/models/speaker_model/genders_filter.dart';
-import 'package:botnoivoice/data/models/speaker_model/languages_filter.dart';
+import 'package:botnoivoice/data/models/speaker_model/gender_filter.dart';
+import 'package:botnoivoice/data/models/speaker_model/language_filter.dart';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
@@ -30,7 +30,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   final Logger _logger = Logger();
 
   AudioPlayer audioPlayer = AudioPlayer();
-  
+
   String? speakerId;
   String? language;
   String? gender;
@@ -403,7 +403,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   List<Map<String, dynamic>> updateLanguageId(String langCode) {
-    List<Map<String, dynamic>> updatedLanguages = List.from(languages);
+    List<Map<String, dynamic>> updatedLanguages = List.from(languageFilter);
 
     for (var lang in updatedLanguages) {
       if (lang['code']!.toLowerCase() == langCode.toLowerCase()) {
@@ -461,7 +461,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   List<Widget> buildGenderFilters(BuildContext context, StateSetter setState) {
-    return genders.map((gender) {
+    return genderFilter.map((gender) {
       return _buildGenderFilter(
         gender['thaiName']!,
         gender['englishName']!,
