@@ -17,31 +17,6 @@ class LanguageSelectionScreen extends StatefulWidget {
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
-  //TODO: สามารถใช้ `device_info_plus` เพื่อดึงข้อมูล ภาษาของมือถือแต่ละเครื่องได้ไหม?
-  //TODO: ใช้ระบบ time zone กำหนดภาษาเริ่มต้นของแอป อัตโนมัติ
-  //await LanguageHelper.saveSelectedLanguage('en');
-  //context.setLocale(const Locale('en'));
-
-  /*
-    // country_code = "id";
-    // langcode = "id";
-
-    String _getDefaultSpeakerId() {
-      String languageCode = Localizations.localeOf(context).languageCode;
-      languageCode = languageCode.isNotEmpty ? languageCode : 'en';
-      switch (languageCode) {
-        case 'th':
-          return '1';
-        case 'en':
-          return '9';
-        case 'id':
-          return '65';
-        default:
-          return '9';
-      }
-    }
-  */
-
   String selectedLanguage = ''; // ตัวแปรสำหรับเก็บภาษาที่เลือก
 
   @override

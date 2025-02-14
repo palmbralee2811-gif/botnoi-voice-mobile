@@ -1,7 +1,7 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
-import 'package:botnoivoice/presentation/screens/drawer/account/account_screen/account_screen_helpers.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/account_screen/account_screen_helper.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen/user_info_row.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_username_screen/change_email_username_screen.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
