@@ -1,5 +1,5 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
-import 'package:botnoivoice/presentation/screens/drawer/account/change_username_screen/confirm_delete_account_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
