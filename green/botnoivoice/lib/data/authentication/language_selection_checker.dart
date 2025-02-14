@@ -1,20 +1,21 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
-import 'package:flutter/widgets.dart'; // สำหรับ WidgetsBindingObserver
+
 
 class LanguageSelectionChecker extends StatefulWidget {
   const LanguageSelectionChecker({super.key});
 
   @override
-  _LanguageSelectionCheckerState createState() => _LanguageSelectionCheckerState();
+  _LanguageSelectionCheckerState createState() =>
+      _LanguageSelectionCheckerState();
 }
 
-class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker> with WidgetsBindingObserver {
-  late String _localeCode;
-
+class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker>
+    with WidgetsBindingObserver {
   // โหลดภาษาที่บันทึกไว้
   Future<String> loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -24,9 +25,31 @@ class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker> wit
   // ฟังก์ชันเพื่อตั้งค่าภาษาเครื่อง
   Future<void> setDeviceLanguage(BuildContext context) async {
     String localeCode = await loadSelectedLanguage();
-    Locale initialLocale = localeCode.isNotEmpty
-        ? Locale(localeCode) // ใช้ภาษาที่เลือกไว้
-        : Locale(WidgetsBinding.instance.window.locale.languageCode); // ใช้ภาษาของเครื่อง
+    Locale initialLocale;
+
+    if (localeCode.isNotEmpty) {
+      initialLocale = Locale(localeCode); // หากเลือกภาษาจาก SharedPreferences
+    } else {
+      // หากไม่ได้เลือกภาษา, ตรวจสอบภาษาเครื่อง
+      String deviceLanguage = PlatformDispatcher.instance.locales.first.languageCode;
+
+      // ใช้ switch-case เพื่อตรวจสอบภาษา
+      switch (deviceLanguage) {
+        case 'th': // ภาษาไทย
+          initialLocale = const Locale('th');
+          break;
+        case 'en': // ภาษาอังกฤษ
+          initialLocale = const Locale('en');
+          break;
+        case 'id': // ภาษาอินโดนีเซีย
+          initialLocale = const Locale('id');
+          break;
+        default:
+          // ถ้าภาษาเครื่องไม่ใช่ th, en, id ให้ใช้ภาษาอังกฤษ (en)
+          initialLocale = const Locale('en');
+          break;
+      }
+    }
 
     EasyLocalization.of(context)!.setLocale(initialLocale); // ตั้งค่าภาษาให้ตรงกับเครื่อง
   }
@@ -56,9 +79,9 @@ class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker> wit
 
   // ฟังก์ชันเริ่มต้นเพื่อโหลดภาษาเริ่มต้น
   _initializeLocale() async {
-    String localeCode = await loadSelectedLanguage();
     setState(() {
-      _localeCode = localeCode.isNotEmpty ? localeCode : WidgetsBinding.instance.window.locale.languageCode;
+      // ไม่มีการใช้ _localeCode แล้ว จึงไม่ต้องเก็บค่า
+      setDeviceLanguage(context); // เรียกฟังก์ชันที่ตั้งค่าภาษา
     });
   }
 
@@ -69,15 +92,15 @@ class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker> wit
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // ระหว่างโหลด แสดงหน้า splash screen
-          return SplashScreen(); // เพิ่มหน้าจอ SplashScreen ขณะโหลด
+          return const SplashScreen(); // เพิ่มหน้าจอ SplashScreen ขณะโหลด
         } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           // หากเลือกภาษาไว้แล้ว, ไปที่ AuthChecker พร้อมกับภาษาเครื่อง
           setDeviceLanguage(context);
-          return AuthChecker();
+          return  AuthChecker();
         } else {
           // หากยังไม่เลือกภาษา, ไปที่หน้าจอ LanguageSelectionScreen
           setDeviceLanguage(context);
-          return AuthChecker(); // เมื่อโหลดเสร็จแล้ว ไปที่ AuthChecker
+          return  AuthChecker(); // เมื่อโหลดเสร็จแล้ว ไปที่ AuthChecker
         }
       },
     );
