@@ -8,7 +8,7 @@ import 'package:botnoivoice/presentation/providers/google/google_login_provider.
 import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/account_screen/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
@@ -327,6 +327,27 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 ),
               ),
             ),
+          ),
+          SizedBox(height: 10.h),
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: OrientationHelper.isLandscape ? 20.w : 30.w),
+            leading: Icon(
+              Icons.logout_outlined,
+              size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
+              color: kDark,
+            ),
+            title: Text(
+              'account.logout'.tr(), //ออกจากระบบ
+              style: GoogleFonts.prompt(
+                fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              //TODO: Implement logout function
+            },
           ),
         ],
       ),

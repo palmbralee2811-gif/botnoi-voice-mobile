@@ -405,14 +405,14 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   List<Map<String, dynamic>> updateLanguageId(String langCode) {
     List<Map<String, dynamic>> updatedLanguages = List.from(languages);
 
-    updatedLanguages.forEach((lang) {
+    for (var lang in updatedLanguages) {
       if (lang['code']!.toLowerCase() == langCode.toLowerCase()) {
         lang['id'] = 1; // กำหนด id เป็น 1 ถ้า code ตรงกับ langCode
       } else {
         lang['id'] = updatedLanguages.indexOf(lang) +
             2; // ให้ id เริ่มจาก 2 สำหรับภาษาอื่น
       }
-    });
+    }
 
     // จัดเรียงตาม id
     updatedLanguages.sort((a, b) => a['id'].compareTo(b['id']));
