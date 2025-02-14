@@ -264,27 +264,6 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
           ),
-          SizedBox(height: 80.h),
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: OrientationHelper.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.logout_outlined,
-              size: OrientationHelper.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'account.logout'.tr(), //ออกจากระบบ
-              style: GoogleFonts.prompt(
-                fontSize: OrientationHelper.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () async {
-              await drawerAppbarSignOut(context);
-            },
-          ),
         ],
       ),
     );

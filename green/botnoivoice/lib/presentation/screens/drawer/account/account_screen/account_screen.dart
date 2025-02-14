@@ -7,6 +7,7 @@ import 'package:botnoivoice/presentation/screens/drawer/account/change_email_use
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
+import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -197,7 +198,15 @@ class _AccountScreenState extends State<AccountScreen> {
                       title: '', //ชื่อผู้ใช้
                       value: '',
                     ),
-              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 200.h),
+              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 150.h),
+              // const Spacer(),
+              GradientTextButton(
+                text: 'account.logout'.tr(), //ออกจากระบบ
+                onPressed: () async {
+                  await signOut(context);
+                },
+              ),
+              SizedBox(height: OrientationHelper.isLandscape ? 6.h : 16.h),
               if (emailProvider.isLoggedIn &&
                   emailProvider.user?.providerData[0].providerId == 'password')
                 const EmailDeleteAccountButton(),
