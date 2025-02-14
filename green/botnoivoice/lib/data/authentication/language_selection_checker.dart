@@ -5,12 +5,11 @@ import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
-
 class LanguageSelectionChecker extends StatefulWidget {
   const LanguageSelectionChecker({super.key});
 
   @override
-  _LanguageSelectionCheckerState createState() =>
+  State<LanguageSelectionChecker> createState() =>
       _LanguageSelectionCheckerState();
 }
 
@@ -31,7 +30,8 @@ class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker>
       initialLocale = Locale(localeCode); // หากเลือกภาษาจาก SharedPreferences
     } else {
       // หากไม่ได้เลือกภาษา, ตรวจสอบภาษาเครื่อง
-      String deviceLanguage = PlatformDispatcher.instance.locales.first.languageCode;
+      String deviceLanguage =
+          PlatformDispatcher.instance.locales.first.languageCode;
 
       // ใช้ switch-case เพื่อตรวจสอบภาษา
       switch (deviceLanguage) {
@@ -51,13 +51,15 @@ class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker>
       }
     }
 
-    EasyLocalization.of(context)!.setLocale(initialLocale); // ตั้งค่าภาษาให้ตรงกับเครื่อง
+    EasyLocalization.of(context)!
+        .setLocale(initialLocale); // ตั้งค่าภาษาให้ตรงกับเครื่อง
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this); // เพิ่ม Observer เพื่อตรวจจับการเปลี่ยนแปลง
+    WidgetsBinding.instance
+        .addObserver(this); // เพิ่ม Observer เพื่อตรวจจับการเปลี่ยนแปลง
     _initializeLocale();
   }
 
@@ -96,11 +98,11 @@ class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker>
         } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           // หากเลือกภาษาไว้แล้ว, ไปที่ AuthChecker พร้อมกับภาษาเครื่อง
           setDeviceLanguage(context);
-          return  AuthChecker();
+          return AuthChecker();
         } else {
           // หากยังไม่เลือกภาษา, ไปที่หน้าจอ LanguageSelectionScreen
           setDeviceLanguage(context);
-          return  AuthChecker(); // เมื่อโหลดเสร็จแล้ว ไปที่ AuthChecker
+          return AuthChecker(); // เมื่อโหลดเสร็จแล้ว ไปที่ AuthChecker
         }
       },
     );
