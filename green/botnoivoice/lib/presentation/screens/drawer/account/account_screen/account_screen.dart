@@ -22,17 +22,15 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String displayName = "Loading...";
-  String userId = "Loading...";
-  String email = "Loading...";
-  bool isEmailHidden = true;
-  static const kGreen = Color(0xFF00B900);
-  static const kGray = Colors.grey;
+  ValueNotifier<String> displayName = ValueNotifier("Loading...");
+  ValueNotifier<String> userId = ValueNotifier("Loading...");
+  ValueNotifier<String> email = ValueNotifier("Loading...");
+  ValueNotifier<bool> isEmailHidden = ValueNotifier(true);
 
-  bool isEmailLoggedIn = false;
-  bool isAppleLoggedIn = false;
-  bool isGoogleLoggedIn = false;
-  bool isLineLoggedIn = false;
+  ValueNotifier<bool> isEmailLoggedIn = ValueNotifier(false);
+  ValueNotifier<bool> isAppleLoggedIn = ValueNotifier(false);
+  ValueNotifier<bool> isGoogleLoggedIn = ValueNotifier(false);
+  ValueNotifier<bool> isLineLoggedIn = ValueNotifier(false);
 
   @override
   void initState() {
@@ -77,9 +75,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     'assets/images/auth_screen/email-icon.svg',
                     width: OrientationHelper.isLandscape ? 40.w : 20.w,
                     height: OrientationHelper.isLandscape ? 40.h : 20.h,
-                    colorFilter: isEmailLoggedIn
+                    colorFilter: isEmailLoggedIn.value
                         ? null
-                        : const ColorFilter.mode(kGray,
+                        : ColorFilter.mode(kGray,
                             BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
                   SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
@@ -87,7 +85,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     width: OrientationHelper.isLandscape ? 42.w : 32.w,
                     height: OrientationHelper.isLandscape ? 42.h : 32.h,
                     decoration: BoxDecoration(
-                      color: isLineLoggedIn
+                      color: isLineLoggedIn.value
                           ? kGreen
                           : kGray, // เปลี่ยนเป็นสีเทาถ้าไม่ใช่ LINE
                       borderRadius: BorderRadius.circular(8.r),
@@ -112,9 +110,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     'assets/images/auth_screen/google-icon.svg',
                     width: OrientationHelper.isLandscape ? 42.w : 32.w,
                     height: OrientationHelper.isLandscape ? 42.h : 32.h,
-                    colorFilter: isGoogleLoggedIn
+                    colorFilter: isGoogleLoggedIn.value
                         ? null
-                        : const ColorFilter.mode(kGray,
+                        : ColorFilter.mode(kGray,
                             BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
                   SizedBox(width: OrientationHelper.isLandscape ? 10.w : 10.w),
@@ -122,9 +120,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     'assets/images/auth_screen/apple-icon.svg',
                     width: OrientationHelper.isLandscape ? 52.w : 32.w,
                     height: OrientationHelper.isLandscape ? 52.h : 32.h,
-                    colorFilter: isAppleLoggedIn
+                    colorFilter: isAppleLoggedIn.value
                         ? null
-                        : const ColorFilter.mode(kGray,
+                        : ColorFilter.mode(kGray,
                             BlendMode.srcIn), // ใช้ colorFilter แทน color
                   ),
                 ],
@@ -132,21 +130,23 @@ class _AccountScreenState extends State<AccountScreen> {
               SizedBox(height: 24.h), // ปรับระยะห่างระหว่างแถวให้เหมาะสม
               UserInfoRow(
                 title: 'UID',
-                value: getDisplayUID(userId),
+                value: getDisplayUID(userId.value),
                 icon: Icons.copy,
                 onIconPressed: () {
-                  copyUID(context, userId);
+                  copyUID(context, userId.value);
                 },
                 isValueOverflow: true, // จัดการข้อความยาวให้แสดง ...
               ),
               SizedBox(height: 16.h),
               UserInfoRow(
                 title: 'account.email'.tr(), //อีเมล
-                value: getMaskedEmail(isEmailHidden, email),
-                icon: isEmailHidden ? Icons.visibility_off : Icons.visibility,
+                value: getMaskedEmail(isEmailHidden.value, email.value),
+                icon: isEmailHidden.value
+                    ? Icons.visibility_off
+                    : Icons.visibility,
                 onIconPressed: () {
                   setState(() {
-                    isEmailHidden = !isEmailHidden;
+                    isEmailHidden.value = !isEmailHidden.value;
                   });
                 },
               ),
@@ -156,7 +156,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           'password'
                   ? UserInfoRow(
                       title: 'account.username'.tr(), //ชื่อผู้ใช้
-                      value: displayName,
+                      value: displayName.value,
                       icon: Icons.edit_rounded,
                       onIconPressed: () {
                         Navigator.push(
@@ -170,7 +170,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     )
                   : UserInfoRow(
                       title: 'account.username'.tr(), //ชื่อผู้ใช้
-                      value: displayName,
+                      value: displayName.value,
                     ),
               emailProvider.isLoggedIn &&
                       emailProvider.user?.providerData[0].providerId ==
@@ -197,7 +197,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       title: '', //ชื่อผู้ใช้
                       value: '',
                     ),
-              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 245.h),
+              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 200.h),
               if (emailProvider.isLoggedIn &&
                   emailProvider.user?.providerData[0].providerId == 'password')
                 const EmailDeleteAccountButton(),

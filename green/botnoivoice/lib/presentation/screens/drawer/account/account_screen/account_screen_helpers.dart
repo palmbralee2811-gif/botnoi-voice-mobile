@@ -19,13 +19,13 @@ import 'package:provider/provider.dart';
 /// ฟังก์ชันสำหรับโหลดข้อมูลผู้ใช้
 Future<void> loadUserInfo(
     BuildContext context,
-    String displayName,
-    String userId,
-    String email,
-    bool isLineLoggedIn,
-    bool isAppleLoggedIn,
-    bool isGoogleLoggedIn,
-    bool isEmailLoggedIn) async {
+    ValueNotifier<String> displayNameNotifier,
+    ValueNotifier<String> userIdNotifier,
+    ValueNotifier<String> emailNotifier,
+    ValueNotifier<bool> isLineLoggedInNotifier,
+    ValueNotifier<bool> isAppleLoggedInNotifier,
+    ValueNotifier<bool> isGoogleLoggedInNotifier,
+    ValueNotifier<bool> isEmailLoggedInNotifier) async {
   // Fetch user data from Firebase
   var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
   var googleProvider = Provider.of<GoogleLoginProvider>(context, listen: false);
@@ -44,36 +44,40 @@ Future<void> loadUserInfo(
       Provider.of<EmailTokenProvider>(context, listen: false);
 
   if (lineProvider.isLoggedIn) {
-    displayName = lineProvider.getDisplayName ?? "Line User";
-    userId = lineTokenProvider.getUserID ?? "No UID";
-    email = lineProvider.getLineEmail ?? "No email found";
-    isLineLoggedIn = true;
+    displayNameNotifier.value = lineProvider.getDisplayName ?? "Line User";
+    userIdNotifier.value = lineTokenProvider.getUserID ?? "No UID";
+    emailNotifier.value = lineProvider.getLineEmail ?? "No email found";
+    isLineLoggedInNotifier.value = true;
   } else if (appleProvider.isLoggedIn &&
       appleProvider.user?.providerData[0].providerId == 'apple.com') {
-    displayName = appleProvider.user?.displayName ?? 'Apple User';
-    userId = appleTokenProvider.getUserID ?? 'No UID';
-    email = getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
-    isAppleLoggedIn = true;
+    displayNameNotifier.value = appleProvider.user?.displayName ?? 'Apple User';
+    userIdNotifier.value = appleTokenProvider.getUserID ?? 'No UID';
+    emailNotifier.value =
+        getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
+    isAppleLoggedInNotifier.value = true;
   } else if (googleProvider.isLoggedIn &&
       googleProvider.user?.providerData[0].providerId == 'google.com') {
-    displayName = googleProvider.user?.displayName ?? 'Google User';
-    userId = googleTokenProvider.getUserID ?? 'No UID';
-    email = getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
-    isGoogleLoggedIn = true;
+    displayNameNotifier.value =
+        googleProvider.user?.displayName ?? 'Google User';
+    userIdNotifier.value = googleTokenProvider.getUserID ?? 'No UID';
+    emailNotifier.value =
+        getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
+    isGoogleLoggedInNotifier.value = true;
   } else if (emailProvider.isLoggedIn &&
       emailProvider.user?.providerData[0].providerId == 'password') {
-    userId = emailTokenProvider.getUserID ?? "No UID";
-    displayName = Provider.of<EmailUsernameApiProvider>(context, listen: false)
-            .getUsername ??
-        "Email/Username User";
+    userIdNotifier.value = emailTokenProvider.getUserID ?? "No UID";
+    displayNameNotifier.value =
+        Provider.of<EmailUsernameApiProvider>(context, listen: false)
+                .getUsername ??
+            "Email/Username User";
 
     // ตรวจสอบการอนุญาตในการแสดงอีเมล
     if (userInfoProvider.isShowEmail) {
-      email = emailProvider.user?.email ?? "No email found";
+      emailNotifier.value = emailProvider.user?.email ?? "No email found";
     } else {
-      email = "Email Permission is Disabled.";
+      emailNotifier.value = "Email Permission is Disabled.";
     }
-    isEmailLoggedIn = true;
+    isEmailLoggedInNotifier.value = true;
   }
 
   if (context.mounted) {
@@ -114,12 +118,11 @@ void copyUID(BuildContext context, String userId) {
   );
 }
 
-  /// Function to check if the user has permission to view the email
-  Future<bool> checkEmailPermission(BuildContext context) async {
-    final emailForgetPassword =
-        Provider.of<EmailForgetPasswordProvider>(context, listen: false);
+/// Function to check if the user has permission to view the email
+Future<bool> checkEmailPermission(BuildContext context) async {
+  final emailForgetPassword =
+      Provider.of<EmailForgetPasswordProvider>(context, listen: false);
 
-    final hasEmailPermission =
-        await emailForgetPassword.checkShowEmail(context);
-    return hasEmailPermission; // Return TRUE or FALSE
-  }
+  final hasEmailPermission = await emailForgetPassword.checkShowEmail(context);
+  return hasEmailPermission; // Return TRUE or FALSE
+}
