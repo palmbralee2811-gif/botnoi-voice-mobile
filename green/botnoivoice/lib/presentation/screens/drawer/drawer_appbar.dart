@@ -1,16 +1,9 @@
 import 'package:botnoivoice/presentation/constants/styles.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
-import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dart';
+import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar_logic.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/language/language_drawer.dart';
@@ -19,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerAppbar extends StatefulWidget {
   const DrawerAppbar({super.key});
@@ -29,78 +21,28 @@ class DrawerAppbar extends StatefulWidget {
 }
 
 class _DrawerAppbarState extends State<DrawerAppbar> {
+  final DrawerAppbarLogic _logic = DrawerAppbarLogic();
   String displayName = "Loading...";
   String uid = "Loading...";
   String profilePictureUrl = "";
-  String selectedLanguage = 'th'; // ภาษาดั้งเดิมคือ ไทย
+  String selectedLanguage = 'th'; // Default language
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) async => await _loadUserInfo());
-  }
-
-  // บันทึกภาษาที่เลือกไว้ไปยัง SharedPreferences
-  _saveLanguage(String language) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selected_language', language);
-  }
-
-  Future<void> _loadUserInfo() async {
-    // Fetch user data from Firebase
-    var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
-    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-
-    // Fetch user data from Database (API)
-    var appleTokenProvider =
-        Provider.of<AppleTokenProvider>(context, listen: false);
-    var googleTokenProvider =
-        Provider.of<GoogleTokenProvider>(context, listen: false);
-    var lineTokenProvider =
-        Provider.of<LineTokenProvider>(context, listen: false);
-    var emailTokenProvider =
-        Provider.of<EmailTokenProvider>(context, listen: false);
-
-    if (lineProvider.isLoggedIn) {
-      String? lineDisplayName = lineProvider.getDisplayName;
-      String? lineUid = lineTokenProvider.getUserID;
-      String? lineProfilePictureUrl = lineProvider.getProfilePictureUrl;
-
-      setState(() {
-        displayName = lineDisplayName ?? 'No Name';
-        uid = lineUid ?? 'No uid found';
-        profilePictureUrl = lineProfilePictureUrl ?? '';
-      });
-    } else if (appleProvider.isLoggedIn &&
-        appleProvider.user?.providerData[0].providerId == 'apple.com') {
-      setState(() {
-        displayName = appleProvider.user?.displayName ?? 'Apple User';
-        uid = appleTokenProvider.getUserID ?? 'No uid found';
-        profilePictureUrl = appleProvider.user?.photoURL ?? '';
-      });
-    } else if (googleProvider.isLoggedIn &&
-        googleProvider.user?.providerData[0].providerId == 'google.com') {
-      setState(() {
-        displayName = googleProvider.user?.displayName ?? 'No Name';
-        uid = googleTokenProvider.getUserID ?? 'No uid found';
-        profilePictureUrl = googleProvider.user?.photoURL ?? '';
-      });
-    } else if (emailProvider.isLoggedIn &&
-        emailProvider.user?.providerData[0].providerId == 'password') {
-      setState(() {
-        displayName =
-            Provider.of<EmailUsernameApiProvider>(context, listen: false)
-                    .getUsername ??
-                "Unknown";
-        uid = emailTokenProvider.getUserID ?? "No UID";
-        profilePictureUrl = emailProvider.user?.photoURL ?? '';
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _logic.loadUserInfo(
+        context: context,
+        onUpdateState: (String newDisplayName, String newUid,
+            String newProfilePictureUrl) {
+          setState(() {
+            displayName = newDisplayName;
+            uid = newUid;
+            profilePictureUrl = newProfilePictureUrl;
+          });
+        },
+      );
+    });
   }
 
   @override
@@ -306,7 +248,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                   setState(() {
                     selectedLanguage = language; // Update the selected language
                   });
-                  _saveLanguage(language); // Save the language if needed
+                  _logic.saveLanguage(language); // Save the language if needed
                 },
               );
             },

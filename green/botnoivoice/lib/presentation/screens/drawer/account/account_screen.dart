@@ -1,27 +1,15 @@
-import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/constants/styles.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
 import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/get_user_email.dart';
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
 import 'package:botnoivoice/presentation/screens/appbar/appbar_template.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/account_screen_logic.dart';
 import 'package:botnoivoice/presentation/screens/drawer/account/change_email_username_screen.dart';
+import 'package:botnoivoice/presentation/screens/drawer/account/user_info_row.dart';
 import 'package:botnoivoice/presentation/screens/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_delete_account_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,6 +23,7 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  final AccountScreenLogic _logic = AccountScreenLogic();
   String displayName = "Loading...";
   String userId = "Loading..."; // UID ที่จะแสดงผล
   String email = "Loading...";
@@ -50,149 +39,28 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) async => await _loadUserInfo());
-  }
-
-  /// ฟังก์ชันสำหรับโหลดข้อมูลผู้ใช้
-  Future<void> _loadUserInfo() async {
-    // Fetch user data from Firebase
-    var appleProvider = Provider.of<AppleLoginProvider>(context, listen: false);
-    var googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
-    var lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    var emailProvider = Provider.of<EmailLoginProvider>(context, listen: false);
-    var userInfoProvider =
-        Provider.of<UserInfoProvider>(context, listen: false);
-
-    // Fetch user data from Database (API)
-    var appleTokenProvider =
-        Provider.of<AppleTokenProvider>(context, listen: false);
-    var googleTokenProvider =
-        Provider.of<GoogleTokenProvider>(context, listen: false);
-    var lineTokenProvider =
-        Provider.of<LineTokenProvider>(context, listen: false);
-    var emailTokenProvider =
-        Provider.of<EmailTokenProvider>(context, listen: false);
-
-    if (lineProvider.isLoggedIn) {
-      displayName = lineProvider.getDisplayName ?? "Line User";
-      userId = lineTokenProvider.getUserID ?? "No UID";
-      email = lineProvider.getLineEmail ?? "No email found";
-      isLineLoggedIn = true;
-    } else if (appleProvider.isLoggedIn &&
-        appleProvider.user?.providerData[0].providerId == 'apple.com') {
-      displayName = appleProvider.user?.displayName ?? 'Apple User';
-      userId = appleTokenProvider.getUserID ?? 'No UID';
-      email =
-          getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
-      isAppleLoggedIn = true;
-    } else if (googleProvider.isLoggedIn &&
-        googleProvider.user?.providerData[0].providerId == 'google.com') {
-      displayName = googleProvider.user?.displayName ?? 'Google User';
-      userId = googleTokenProvider.getUserID ?? 'No UID';
-      email =
-          getUserEmail(FirebaseAuth.instance.currentUser) ?? 'No email found';
-      isGoogleLoggedIn = true;
-    } else if (emailProvider.isLoggedIn &&
-        emailProvider.user?.providerData[0].providerId == 'password') {
-      userId = emailTokenProvider.getUserID ?? "No UID";
-      displayName =
-          Provider.of<EmailUsernameApiProvider>(context, listen: false)
-                  .getUsername ??
-              "Email/Username User";
-
-      // ตรวจสอบการอนุญาตในการแสดงอีเมล
-      if (userInfoProvider.isShowEmail) {
-        email = emailProvider.user?.email ?? "No email found";
-      } else {
-        email = "Email Permission is Disabled.";
-      }
-      isEmailLoggedIn = true;
-    }
-
-    setState(() {}); // อัพเดต UI เมื่อข้อมูลถูกโหลดเสร็จสิ้น
-  }
-
-  /// ฟังก์ชันสำหรับการออกจากระบบ
-  Future<void> _signOut(BuildContext context) async {
-    final appleProvider =
-        Provider.of<AppleLoginProvider>(context, listen: false);
-    final googleProvider =
-        Provider.of<GoogleLoginProvider>(context, listen: false);
-    final lineProvider = Provider.of<LineLoginProvider>(context, listen: false);
-    final emailProvider =
-        Provider.of<EmailLoginProvider>(context, listen: false);
-
-    if (appleProvider.isLoggedIn &&
-        appleProvider.user?.providerData[0].providerId == 'apple.com') {
-      await appleProvider.signOutWithApple(context);
-    }
-
-    if (googleProvider.isLoggedIn &&
-        googleProvider.user?.providerData[0].providerId == 'google.com') {
-      await googleProvider.signOutWithGoogle(context);
-    }
-
-    if (lineProvider.isLoggedIn) {
-      await lineProvider.signOutWithLine(context);
-    }
-
-    if (emailProvider.isLoggedIn &&
-        emailProvider.user?.providerData[0].providerId == 'password') {
-      await emailProvider.signOutWithEmail(context);
-    }
-
-    // Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AuthChecker(),
-      ),
-      (Route<dynamic> route) => false,
-    );
-  }
-
-  /// ฟังก์ชันสำหรับซ่อนอีเมล
-  String getMaskedEmail() {
-    if (isEmailHidden) {
-      var atIndex = email.indexOf('@'); // หาตำแหน่งของ '@'
-      if (atIndex > 0) {
-        // ซ่อนทุกตัวอักษรก่อน '@' โดยใช้จำนวน '*' เท่ากับจำนวนตัวอักษรใน username
-        return '*' * atIndex + email.substring(atIndex);
-      } else {
-        return "********"; // กรณีที่ไม่สามารถหาตำแหน่ง '@' ได้
-      }
-    }
-    return email; // เปิดเผยอีเมลเต็มเมื่อ isEmailHidden เป็น false
-  }
-
-  /// ฟังก์ชันสำหรับตัด UID ให้แสดง 15 ตัวอักษรแรก
-  String getDisplayUID(String uid) {
-    if (uid.length > 15) {
-      return '${uid.substring(0, 15)}...'; // แสดงเฉพาะ 15 ตัวอักษรแรก
-    }
-    return uid; // แสดง UID ปกติหากไม่เกิน 15 ตัวอักษร
-  }
-
-  /// ฟังก์ชันคัดลอก UID
-  void _copyUID() {
-    Clipboard.setData(ClipboardData(text: userId));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          content:
-              Text('account.uid_copy_success'.tr())), //UID คัดลอกเรียบร้อยแล้ว
-    );
-  }
-
-  /// Function to check if the user has permission to view the email
-  Future<bool> _checkEmailPermission() async {
-    final emailForgetPassword =
-        Provider.of<EmailForgetPasswordProvider>(context, listen: false);
-
-    final hasEmailPermission =
-        await emailForgetPassword.checkShowEmail(context);
-    return hasEmailPermission; // Return TRUE or FALSE
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _logic.loadUserInfo(
+        context: context,
+        onUpdateState: (String newDisplayName,
+            String newUserId,
+            String newEmail,
+            bool emailLoggedIn,
+            bool appleLoggedIn,
+            bool googleLoggedIn,
+            bool lineLoggedIn) {
+          setState(() {
+            displayName = newDisplayName;
+            userId = newUserId;
+            email = newEmail;
+            isEmailLoggedIn = emailLoggedIn;
+            isAppleLoggedIn = appleLoggedIn;
+            isGoogleLoggedIn = googleLoggedIn;
+            isLineLoggedIn = lineLoggedIn;
+          });
+        },
+      );
+    });
   }
 
   @override
@@ -225,7 +93,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   SizedBox(
                       width: OrientationHelper.isLandscape
                           ? 50.w
-                          : 30.w), // ระยะห่างระหว่างข้อความและไอคอน
+                          : 25.w), // ระยะห่างระหว่างข้อความและไอคอน
                   SvgPicture.asset(
                     'assets/images/auth_screen/email-icon.svg',
                     width: OrientationHelper.isLandscape ? 40.w : 20.w,
@@ -285,15 +153,17 @@ class _AccountScreenState extends State<AccountScreen> {
               SizedBox(height: 24.h), // ปรับระยะห่างระหว่างแถวให้เหมาะสม
               UserInfoRow(
                 title: 'UID',
-                value: getDisplayUID(userId),
+                value: _logic.getDisplayUID(userId),
                 icon: Icons.copy,
-                onIconPressed: _copyUID,
+                onIconPressed: () {
+                  _logic.copyUID(context, userId);
+                },
                 isValueOverflow: true, // จัดการข้อความยาวให้แสดง ...
               ),
               SizedBox(height: 16.h),
               UserInfoRow(
                 title: 'account.email'.tr(), //อีเมล
-                value: getMaskedEmail(),
+                value: _logic.getMaskedEmail(isEmailHidden, email),
                 icon: isEmailHidden ? Icons.visibility_off : Icons.visibility,
                 onIconPressed: () {
                   setState(() {
@@ -331,7 +201,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       value: '********',
                       icon: Icons.edit_rounded,
                       onIconPressed: () async {
-                        final hasPermission = await _checkEmailPermission();
+                        final hasPermission =
+                            await _logic.checkEmailPermission(context);
                         if (hasPermission) {
                           Navigator.push(
                             context,
@@ -347,12 +218,12 @@ class _AccountScreenState extends State<AccountScreen> {
                       title: '', //ชื่อผู้ใช้
                       value: '',
                     ),
-              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 245.h),
+              SizedBox(height: OrientationHelper.isLandscape ? 24.h : 150.h),
               // const Spacer(),
               GradientTextButton(
                 text: 'account.logout'.tr(), //ออกจากระบบ
                 onPressed: () async {
-                  await _signOut(context);
+                  await _logic.signOut(context);
                 },
               ),
               SizedBox(height: OrientationHelper.isLandscape ? 6.h : 16.h),
@@ -363,71 +234,6 @@ class _AccountScreenState extends State<AccountScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class UserInfoRow extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData? icon;
-  final VoidCallback? onIconPressed;
-  final bool isValueOverflow;
-
-  const UserInfoRow({
-    super.key,
-    required this.title,
-    required this.value,
-    this.icon,
-    this.onIconPressed,
-    this.isValueOverflow = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.prompt(
-              fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
-              fontWeight: FontWeight.w600,
-              color: kDark,
-            ),
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(width: 24.w),
-                Expanded(
-                  child: Text(
-                    value,
-                    style: GoogleFonts.prompt(
-                      fontSize: OrientationHelper.isLandscape ? 10.sp : 14.sp,
-                      color: const Color(0xFFBBBFC4),
-                    ),
-                    overflow: isValueOverflow ? TextOverflow.ellipsis : null,
-                    maxLines: value.length > 15 ? 5 : 1,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-                if (icon != null) ...[
-                  SizedBox(width: 8.w),
-                  IconButton(
-                    icon: Icon(icon,
-                        size: OrientationHelper.isLandscape ? 12.sp : 18.sp),
-                    onPressed: onIconPressed,
-                  ),
-                ]
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
