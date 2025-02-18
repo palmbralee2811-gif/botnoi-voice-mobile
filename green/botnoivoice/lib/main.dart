@@ -1,6 +1,7 @@
 import 'package:botnoivoice/presentation/configurations/api_key_config.dart';
 import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
 import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
 import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
@@ -93,7 +94,7 @@ class BotnoiVoiceApp extends StatelessWidget {
           // เรียก OrientationHelper.init ก่อนเริ่มแสดง UI
           OrientationHelper.init(context);
           return MaterialApp(
-            debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: isDebuggingMode,
             title: "Botnoi Voice",
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

@@ -55,6 +55,13 @@ class EmailTokenProvider extends ChangeNotifier {
       return; // หยุดการทำงานถ้าไม่มี idToken
     }
 
+    //TODO: [Email] update response message to get the JWT Token
+    /*
+      Get data: {token: "tokenJWT123456"}
+      Data loaded: {message: https://voice-staging.botnoi.ai/auth/redirect?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk5MzM4NjgsImlhdCI6MTczOTg0NzQ2OCwibmJmIjoxNzM5ODQ3NDY4LCJ1aWQiOiJmZTM3ZmJhYy0xOWVhLTU0YzgtYjg0Yy1mOTJiZTRkYzNmZDgiLCJ1c2VyX2lkIjoiY3ZuMFBsQXBxYVZKSFpXRlcxdEJQczVxZU56MiJ9.30jcJ7bXxj-wx4DXexumxuZDuaNH2Rb1bMRxHhpmhCU, 
+      data: {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk5MzM4NjgsImlhdCI6MTczOTg0NzQ2OCwibmJmIjoxNzM5ODQ3NDY4LCJ1aWQiOiJmZTM3ZmJhYy0xOWVhLTU0YzgtYjg0Yy1mOTJiZTRkYzNmZDgiLCJ1c2VyX2lkIjoiY3ZuMFBsQXBxYVZKSFpXRlcxdEJQczVxZU56MiJ9.30jcJ7bXxj-wx4DXexumxuZDuaNH2Rb1bMRxHhpmhCU, url: https://voice-staging.botnoi.ai/auth/redirect}}<…>
+    */
+
     // Get the _jwtToken from the Firebase API
     String url = '$apiUrl/api/dashboard/sign_in';
 
@@ -66,6 +73,7 @@ class EmailTokenProvider extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
+        _logger.e('data: $data');
         var message = data['message'];
         var tokenIndex = message.indexOf('token=');
 
