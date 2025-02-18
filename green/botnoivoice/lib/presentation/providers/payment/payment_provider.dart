@@ -41,7 +41,7 @@ class PaymentProvider with ChangeNotifier {
         _errorMessage = "No packages available for this offering.";
       }
     } catch (e) {
-      if (e is PlatformException && e.details['readableErrorCode'] == 'PURCHASE_CANCELLED') {
+      if (e is PlatformException && e.details['readableErrorCode'] == 'PurchaseCancelledError') {
         _logger.e("Purchase cancelled: $e");
         _errorMessage = "Purchase Cancelled";
       } else {
