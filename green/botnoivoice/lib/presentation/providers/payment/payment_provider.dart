@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:botnoivoice/data/models/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';
 
@@ -40,8 +41,13 @@ class PaymentProvider with ChangeNotifier {
         _errorMessage = "No packages available for this offering.";
       }
     } catch (e) {
-      _logger.e("Error during purchase: $e");
-      _errorMessage = "Purchase failed: $e";
+      if (e is PlatformException && e.details['readableErrorCode'] == 'PURCHASE_CANCELLED') {
+        _logger.e("Purchase cancelled: $e");
+        _errorMessage = "Purchase Cancelled";
+      } else {
+        _logger.e("Error during purchase: $e");
+        _errorMessage = "Purchase failed: $e";
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -68,8 +74,13 @@ class PaymentProvider with ChangeNotifier {
         _errorMessage = "Product not found.";
       }
     } catch (e) {
-      _logger.e("Error during purchase: $e");
-      _errorMessage = "Purchase failed: $e";
+      if (e is PlatformException && e.details['readableErrorCode'] == 'PURCHASE_CANCELLED') {
+        _logger.e("Purchase cancelled: $e");
+        _errorMessage = "Purchase Cancelled";
+      } else {
+        _logger.e("Error during purchase: $e");
+        _errorMessage = "Purchase failed: $e";
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
