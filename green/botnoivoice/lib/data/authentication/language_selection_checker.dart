@@ -5,7 +5,7 @@ import 'package:botnoivoice/data/authentication/auth_checker.dart';
 import 'package:botnoivoice/presentation/screens/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
-class LanguageSelectionChecker extends StatelessWidget {
+class LanguageSelectionChecker extends StatefulWidget {
   const LanguageSelectionChecker({super.key});
 
   @override
