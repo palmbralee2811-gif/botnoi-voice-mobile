@@ -61,6 +61,7 @@ class LineTokenProvider extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
+        _logger.i("Response data: $data");
         var message = data['message'];
         var tokenIndex = message.indexOf('token=');
 

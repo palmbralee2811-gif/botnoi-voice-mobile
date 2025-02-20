@@ -55,13 +55,6 @@ class EmailTokenProvider extends ChangeNotifier {
       return; // หยุดการทำงานถ้าไม่มี idToken
     }
 
-    //TODO: [Email] update response message to get the JWT Token
-    /*
-      Get data: {token: "tokenJWT123456"}
-      Data loaded: {message: https://voice-staging.botnoi.ai/auth/redirect?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk5MzM4NjgsImlhdCI6MTczOTg0NzQ2OCwibmJmIjoxNzM5ODQ3NDY4LCJ1aWQiOiJmZTM3ZmJhYy0xOWVhLTU0YzgtYjg0Yy1mOTJiZTRkYzNmZDgiLCJ1c2VyX2lkIjoiY3ZuMFBsQXBxYVZKSFpXRlcxdEJQczVxZU56MiJ9.30jcJ7bXxj-wx4DXexumxuZDuaNH2Rb1bMRxHhpmhCU, 
-      data: {token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk5MzM4NjgsImlhdCI6MTczOTg0NzQ2OCwibmJmIjoxNzM5ODQ3NDY4LCJ1aWQiOiJmZTM3ZmJhYy0xOWVhLTU0YzgtYjg0Yy1mOTJiZTRkYzNmZDgiLCJ1c2VyX2lkIjoiY3ZuMFBsQXBxYVZKSFpXRlcxdEJQczVxZU56MiJ9.30jcJ7bXxj-wx4DXexumxuZDuaNH2Rb1bMRxHhpmhCU, url: https://voice-staging.botnoi.ai/auth/redirect}}<…>
-    */
-
     // Get the _jwtToken from the Firebase API
     String url = '$apiUrl/api/dashboard/sign_in';
 
@@ -69,22 +62,19 @@ class EmailTokenProvider extends ChangeNotifier {
       'firebase-token': 'Bearer $idToken',
       'Content-Type': 'application/json'
     };
+
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        _logger.e('data: $data');
-        var message = data['message'];
-        var tokenIndex = message.indexOf('token=');
+        _logger.i('Response data: $data');
 
-        // Check if the token was found
-        if (tokenIndex != -1) {
-          var tokenStartIndex = tokenIndex + 'token='.length;
-          _jwtToken = message.substring(tokenStartIndex);
+        if (data['data'] != null && data['data']['token'] != null) {
+          _jwtToken = data['data']['token'];
           notifyListeners();
           _logger.i('JWT Token successfully loaded.');
         } else {
-          _logger.w('Token not found in response message: $message');
+          _logger.w('Token not found in response data.');
         }
       } else {
         _logger.e('Failed to load data: ${response.statusCode}');
