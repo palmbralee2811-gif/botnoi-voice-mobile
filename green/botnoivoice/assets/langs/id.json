@@ -13,6 +13,7 @@
     "reset": "Atur Ulang",
     "share": "Bagikan",
     "select": "Pilih",
+    "no_internet_connection": "Tidak Ada Koneksi Internet",
     "welcome_message": {
         "line1": "Konversi Teks ke Ucapan",
         "line2": "BOTNOI",

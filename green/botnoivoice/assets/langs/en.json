@@ -13,6 +13,7 @@
     "reset": "Reset",
     "share": "Share",
     "select": "Select",
+    "no_internet_connection": "No Internet Connection",
     "welcome_message": {
         "line1": "Convert Text to Speech",
         "line2": "BOTNOI",

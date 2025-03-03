@@ -1,5 +1,5 @@
+import 'dart:async'; // สำหรับ StreamSubscription
 import 'dart:io';
-
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
@@ -10,15 +10,56 @@ import 'package:botnoivoice/presentation/widgets/button/email_login_button.dart'
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
+import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart'; //สำหรับแสดง dialog
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart'; // สำหรับเช็ค Internet
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget { // เปลี่ยนเป็น StatefulWidget
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late StreamSubscription<InternetStatus> _listener; // ตัวแปรสำหรับ StreamSubscription
+  bool _isInternetAvailable = true; // ตัวแปรสำหรับเก็บสถานะ internet
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startListeningToInternetChanges(); // เรียกฟังก์ชันเริ่มฟังการเปลี่ยนแปลงของ Internet
+    });
+  }
+
+  @override
+  void dispose() {
+    _listener.cancel(); // ยกเลิกการฟังเมื่อ widget ถูกทำลาย
+    super.dispose();
+  }
+
+  void _startListeningToInternetChanges() {
+    _listener = InternetConnection().onStatusChange.listen((status) {
+      final isAvailable = status == InternetStatus.connected; // เช็คว่ามีการเชื่อมต่อ internet หรือไม่
+      if (_isInternetAvailable != isAvailable) { // เช็คว่าสถานะ internet เปลี่ยนไปจากเดิมหรือไม่
+        setState(() {
+          _isInternetAvailable = isAvailable; // อัปเดตสถานะ internet
+        });
+        if (!_isInternetAvailable) { // ถ้าไม่มี internet
+          NotificationDialog( // แสดง Notification Dialog
+            context: context,
+            text: 'No Internet Connection', // ข้อความแจ้งเตือน
+          ).showErrorModal(context);//เเสดง Dialog เเบบ Error
+        }
+      }
+    });
+  }
 
   void _openEmailLogin(context) async {
     Navigator.push(context,
@@ -160,43 +201,6 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //     left: 20.w,
-                //     bottom: 13.h,
-                //   ),
-                //   child: GradientTextStyle(
-                //     'welcome_message.line2'.tr(), //บอทน้อย
-                //     gradient: const LinearGradient(
-                //       colors: [
-                //         Color(0xFF9340FF),
-                //         Color(0xFF34BDFA),
-                //       ],
-                //     ),
-                //     style: GoogleFonts.prompt(
-                //       fontWeight: FontWeight.bold,
-                //       fontSize: OrientationHelper.isLandscape ? 32.sp : 56.sp,
-                //       decoration: TextDecoration.none,
-                //     ),
-                //   ),
-                // ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: OrientationHelper.isLandscape ? 20.sp : 20.w),
-                //   child: GradientTextStyle(
-                //     'welcome_message.line3'.tr(), //ว้อยส์
-                //     gradient: const LinearGradient(
-                //       colors: [
-                //         Color(0xFF9340FF),
-                //         Color(0xFF34BDFA),
-                //       ],
-                //     ),
-                //     style: GoogleFonts.prompt(
-                //       fontWeight: FontWeight.bold,
-                //       fontSize: OrientationHelper.isLandscape ? 28.sp : 48.sp,
-                //       decoration: TextDecoration.none,
-                //     ),
-                //   ),
-                // ),
                 OrientationHelper.isLandscape
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.start,

@@ -30,6 +30,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'dart:async';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,6 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final Logger logger = Logger();
   bool isGenerateAudio = false;
+  late StreamSubscription<InternetStatus>
+      _listener; // ตัวแปรสำหรับ StreamSubscription
+  bool _isInternetAvailable = true; // ตัวแปรสำหรับเก็บสถานะ internet
 
   // Generate Audio
   String response = '';
@@ -64,6 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startListeningToInternetChanges(); // เรียกฟังก์ชันเริ่มฟังการเปลี่ยนแปลงของ Internet
+    });
   }
 
   @override
@@ -76,7 +84,29 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _textController.dispose();
     audioPlayer.dispose();
+    _listener.cancel(); // ยกเลิกการฟังเมื่อ widget ถูกทำลาย
     super.dispose();
+  }
+
+  void _startListeningToInternetChanges() {
+    _listener = InternetConnection().onStatusChange.listen((status) {
+      final isAvailable = status ==
+          InternetStatus.connected; // เช็คว่ามีการเชื่อมต่อ internet หรือไม่
+      if (_isInternetAvailable != isAvailable) {
+        // เช็คว่าสถานะ internet เปลี่ยนไปจากเดิมหรือไม่
+        setState(() {
+          _isInternetAvailable = isAvailable; // อัปเดตสถานะ internet
+        });
+        if (!_isInternetAvailable) {
+          // ถ้าไม่มี internet
+          NotificationDialog(
+            // แสดง Notification Dialog
+            context: context,
+            text: 'no_internet_connection'.tr(),// เปลี่ยนข้อความเป็น .tr()
+          ).showErrorModal(context); //เเสดง Dialog เเบบ Error
+        }
+      }
+    });
   }
 
   Future<void> _generateAudio() async {
