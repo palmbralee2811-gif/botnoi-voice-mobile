@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (!_isInternetAvailable) { // ถ้าไม่มี internet
           NotificationDialog( // แสดง Notification Dialog
             context: context,
-            text: 'No Internet Connection', // ข้อความแจ้งเตือน
+            text: 'no_internet_connection'.tr(),// เปลี่ยนข้อความเป็น .tr()
           ).showErrorModal(context);//เเสดง Dialog เเบบ Error
         }
       }
