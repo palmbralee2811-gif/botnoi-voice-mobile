@@ -1,25 +1,24 @@
-import 'dart:async'; // สำหรับ StreamSubscription
 import 'dart:io';
 import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
 import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
 import 'package:botnoivoice/presentation/screens/email/email_login_screen.dart';
+import 'package:botnoivoice/data/functions/internet_checker.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/button/apple_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/email_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/google_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/button/line_login_button.dart';
 import 'package:botnoivoice/presentation/widgets/gradient/gradient_text_style.dart';
-import 'package:botnoivoice/presentation/widgets/dialog/notification/notification_dialog.dart'; //สำหรับแสดง dialog
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart'; // สำหรับเช็ค Internet
 
-class LoginScreen extends StatefulWidget { // เปลี่ยนเป็น StatefulWidget
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
@@ -27,38 +26,23 @@ class LoginScreen extends StatefulWidget { // เปลี่ยนเป็น 
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late StreamSubscription<InternetStatus> _listener; // ตัวแปรสำหรับ StreamSubscription
-  bool _isInternetAvailable = true; // ตัวแปรสำหรับเก็บสถานะ internet
+  final InternetChecker _internetChecker = InternetChecker();
+  final Logger logger = Logger();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startListeningToInternetChanges(); // เรียกฟังก์ชันเริ่มฟังการเปลี่ยนแปลงของ Internet
+      _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
+        logger.d("internet change in login : $isAvailable");
+      });
     });
   }
 
   @override
   void dispose() {
-    _listener.cancel(); // ยกเลิกการฟังเมื่อ widget ถูกทำลาย
+    _internetChecker.cancelListener();
     super.dispose();
-  }
-
-  void _startListeningToInternetChanges() {
-    _listener = InternetConnection().onStatusChange.listen((status) {
-      final isAvailable = status == InternetStatus.connected; // เช็คว่ามีการเชื่อมต่อ internet หรือไม่
-      if (_isInternetAvailable != isAvailable) { // เช็คว่าสถานะ internet เปลี่ยนไปจากเดิมหรือไม่
-        setState(() {
-          _isInternetAvailable = isAvailable; // อัปเดตสถานะ internet
-        });
-        if (!_isInternetAvailable) { // ถ้าไม่มี internet
-          NotificationDialog( // แสดง Notification Dialog
-            context: context,
-            text: 'no_internet_connection'.tr(),// เปลี่ยนข้อความเป็น .tr()
-          ).showErrorModal(context);//เเสดง Dialog เเบบ Error
-        }
-      }
-    });
   }
 
   void _openEmailLogin(context) async {
@@ -194,7 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         style: GoogleFonts.prompt(
                           fontWeight: FontWeight.w500,
-                          fontSize: OrientationHelper.isLandscape ? 15.sp : 20.sp,
+                          fontSize:
+                              OrientationHelper.isLandscape ? 15.sp : 20.sp,
                           decoration: TextDecoration.none,
                         ),
                       ),
