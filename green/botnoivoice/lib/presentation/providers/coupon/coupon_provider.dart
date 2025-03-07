@@ -5,167 +5,177 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:botnoivoice/presentation/providers/user/get_jwt_token.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter/services.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class CouponProvider with ChangeNotifier {
   final _logger = Logger();
   String? _errorMessage;
+  bool _isLoading = false; // ตัวแปรเช็คสถานะกำลังโหลด
 
-  /// Getter for the error message
+  /// Getter for error message
   String? get errorMessage => _errorMessage;
 
-  String url = '$apiUrl/api/coupon/check_coupon';
+  /// Getter for loading status
+  bool get isLoading => _isLoading;
 
+  /// ฟังก์ชันเซ็ตค่า `isLoading` และแจ้งให้ UI อัปเดต
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  /// ฟังก์ชันตรวจสอบและใช้คูปอง 100 เครดิต
   Future<void> checkCoupon100(BuildContext context) async {
+    _setLoading(true); // เริ่มโหลด
     try {
-      _logger.d('Starting checkCoupon');
+      _logger.d('Starting checkCoupon100');
       final jwtToken = await _fetchJwtToken(context);
-      if (jwtToken == null) {
-        _logger.e('ID token is null');
-        return;
-      }
+      if (jwtToken == null) return;
 
-      _logger.d('Fetched ID token: $jwtToken');
-
-      //TODO: Get `coupon_name` from API
-      //TODO: Call API to check `coupon_name`
       final couponCode = await _getCouponNameForToday();
-      if (couponCode == null) {
-        _logger.e('Coupon code is null');
-        return;
-      }
+      if (couponCode == null) return;
 
-      _logger.d(
-          'Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
+      _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
       await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
-      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e'; //เกิดข้อผิดพลาด:
+      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e';
       _logger.e(_errorMessage);
-      notifyListeners();
+    } finally {
+      _setLoading(false); // โหลดเสร็จ
     }
   }
 
+  /// ฟังก์ชันตรวจสอบและใช้คูปอง 1,000 เครดิต
   Future<void> checkCoupon1K(BuildContext context) async {
+    _setLoading(true);
     try {
-      _logger.d('Starting checkCoupon');
+      _logger.d('Starting checkCoupon1K');
       final jwtToken = await _fetchJwtToken(context);
-      if (jwtToken == null) {
-        _logger.e('ID token is null');
-        return;
-      }
+      if (jwtToken == null) return;
 
-      _logger.d('Fetched ID token: $jwtToken');
-
+      // Set the coupon code to redeem
       const couponCode = 'mobile1000';
-      _logger.d('Calling _callCheckCouponApi with jwtToken: $jwtToken and couponCode: $couponCode');
+      _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
       await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
-      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e'; //เกิดข้อผิดพลาด:
+      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e';
       _logger.e(_errorMessage);
-      notifyListeners();
+    } finally {
+      _setLoading(false);
     }
   }
 
-  Future<String?> _fetchJwtToken(context) async {
+  /// ฟังก์ชันดึง JWT Token
+  Future<String?> _fetchJwtToken(BuildContext context) async {
     try {
       final jwtToken = await getJwtTokenAll(context);
       if (jwtToken == null) {
         _errorMessage = 'Failed to fetch ID token';
         _logger.e(_errorMessage);
-        notifyListeners();
       }
       return jwtToken;
     } catch (e) {
       _errorMessage = 'Exception occurred while fetching ID token: $e';
       _logger.e(_errorMessage);
-      notifyListeners();
       return null;
     }
   }
 
+  /// ฟังก์ชันดึงชื่อคูปองที่ใช้ได้ในวันนี้
   Future<String?> _getCouponNameForToday() async {
+    _setLoading(true); // เริ่มโหลด
     try {
-      String jsonString =
-          await rootBundle.loadString('assets/data/coupon.json');
-      List<dynamic> coupons = jsonDecode(jsonString);
+      // เรียก API เพื่อดึงข้อมูลคูปอง
+      final response =
+          await http.get(Uri.parse('$apiUrl/api/coupon/get_coupon_daily'));
 
-      // Initialize timezone data
-      tz.initializeTimeZones();
-      final bangkok = tz.getLocation('Asia/Bangkok');
-      DateTime now = tz.TZDateTime.now(bangkok);
-      String todayString = DateFormat('yyyy-MM-dd').format(now);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
 
-      _logger.d('Current date (Bangkok time): $todayString');
-
-      for (var coupon in coupons) {
-        if (coupon.containsKey('datetime') &&
-            coupon.containsKey('coupon_name')) {
-          if (coupon['datetime'].startsWith(todayString)) {
-            _logger.d('Coupon found for today: ${coupon['coupon_name']}');
-            return coupon['coupon_name'];
-          }
-        } else {
-          _logger.w('Invalid coupon data: $coupon');
+        // ดึง `coupon_name` มาใช้งานโดยตรง
+        final String? couponName = data['coupon_name'];
+        if (couponName != null) {
+          _logger.d('Coupon name: $couponName');
+          return couponName;
         }
+      } else {
+        _logger.e('Failed to fetch coupon: ${response.statusCode}');
       }
-
-      _errorMessage = 'No coupon available for today';
-      _logger.w(_errorMessage);
-      notifyListeners();
-      return null;
-    } catch (e, stackTrace) {
-      _errorMessage = 'Failed to load coupon codes: $e\n$stackTrace';
+    } catch (e) {
+      _errorMessage = 'Error fetching coupon: $e';
       _logger.e(_errorMessage);
-      notifyListeners();
-      return null;
+    } finally {
+      _setLoading(false); // โหลดเสร็จ
     }
+    return null;
   }
 
-  Future<void> _callCheckCouponApi(
-      String jwtToken, String couponName) async {
+  Future<void> _callCheckCouponApi(String jwtToken, String couponName) async {
+    _setLoading(true);
     try {
+      // Set up the API URL
+      String url = '$apiUrl/api/coupon/check_coupon';
+
+      // Log the request details
       _logger.d('Sending POST request to $url with couponCode: $couponName');
+
+      // Send the POST request
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': "Bearer $jwtToken",
         },
+        // Send the coupon name as JSON
         body: jsonEncode({'coupon_name': couponName}),
       );
 
+      // Log the response status code
       _logger.d('Received response with status code: ${response.statusCode}');
+
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
+
+        // Log the response body
         final message = responseBody['message'];
         _logger.d('Response body: $responseBody');
 
+        // Testcase when coupon was successfully redeemed
         if (message == 'Use Coupon Success') {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
+
+          // Testcase when coupon was already redeemed
         } else if (message == 'already in use') {
-          _errorMessage = 'redeem_provider.coupon_already_used'.tr(); //คูปองของคุณถูกใช้งานแล้ว
+          _errorMessage = 'redeem_provider.coupon_already_used'
+              .tr(); //คูปองของคุณถูกใช้งานแล้ว
           _logger.e(_errorMessage);
+
+          // Testcase when coupon was not found
         } else if (message == 'Incorrect Coupon') {
-          _errorMessage =
-              'redeem_provider.coupon_not_found'.tr(); //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
+          _errorMessage = 'redeem_provider.coupon_not_found'
+              .tr(); //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
           _logger.e(_errorMessage);
+
+          // Testcase when coupon was expired
         } else {
-          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'.tr(); //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
+          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'
+              .tr(); //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
           _logger.e(_errorMessage);
         }
+
+        // Testcase when API call failed
       } else {
-        _errorMessage = '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; //เกิดข้อผิดพลาดในการเรียก API:
+        _errorMessage =
+            '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; //เกิดข้อผิดพลาดในการเรียก API:
         _logger.e(_errorMessage);
       }
+
+      // Cathing exceptions logging the error message
     } catch (e) {
       _errorMessage = 'Exception occurred: $e';
       _logger.e(_errorMessage);
+    } finally {
+      _setLoading(false);
     }
-
-    notifyListeners();
   }
 }

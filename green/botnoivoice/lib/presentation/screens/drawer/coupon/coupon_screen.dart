@@ -9,14 +9,14 @@ import 'package:botnoivoice/presentation/widgets/button/coupon_redeem_button.dar
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
-class RedeemCoupon extends StatefulWidget {
-  const RedeemCoupon({super.key});
+class CouponScreen extends StatefulWidget {
+  const CouponScreen({super.key});
 
   @override
-  State<RedeemCoupon> createState() => _RedeemCouponState();
+  State<CouponScreen> createState() => _CouponScreenState();
 }
 
-class _RedeemCouponState extends State<RedeemCoupon> {
+class _CouponScreenState extends State<CouponScreen> {
   String? currentDate;
   String? hoursUntilMidnight;
 
@@ -43,75 +43,98 @@ class _RedeemCouponState extends State<RedeemCoupon> {
 
   @override
   Widget build(BuildContext context) {
+    // Get data from provider
+    final couponProvider = Provider.of<CouponProvider>(context);
+
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = OrientationHelper.isLandscape;
 
     return Scaffold(
       appBar: const AppBarTemplate(),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'redeem.daily_coupon_title'
-                    .tr(namedArgs: {'thaiDate': currentDate ?? 'N/A'}),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: isTablet ? (isLandscape ? 48 : 40) : 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
+      body: Stack(
+        children: [
+          // เนื้อหา UI หลัก
+          Center(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'redeem.daily_coupon_title'
+                        .tr(namedArgs: {'thaiDate': currentDate ?? 'N/A'}),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: isTablet ? (isLandscape ? 48 : 40) : 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  CouponRedeemButton(
+                    text: 'redeem.get_points'.tr(namedArgs: {'points': '100'}),
+                    text2: 'redeem.click_here'.tr(),
+                    text3: 'redeem.time_remaining'.tr(
+                      namedArgs: {
+                        'Timeout': hoursUntilMidnight.toString(),
+                      },
+                    ),
+                    textColor: Colors.black,
+                    textColor2: Colors.blue[700]!,
+                    textColor3: Colors.red,
+                    points: "100",
+                    onTap: () {
+                      _handleCouponRedemption100(context);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 1,
+                    indent: 20,
+                    endIndent: 20,
+                  ),
+                  const SizedBox(height: 20),
+                  CouponRedeemButton(
+                    text: 'redeem.welcome_bonus'.tr(),
+                    text2: 'redeem.get_now_1000'.tr(),
+                    text3: '',
+                    textColor: Colors.black,
+                    textColor2: Colors.green,
+                    textColor3: Colors.red,
+                    points: "1,000",
+                    onTap: () {
+                      _handleCouponRedemption1K(context);
+                    },
+                  ),
+                  const SizedBox(height: 60),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                '',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
-                ),
-              ),
-              const SizedBox(height: 40),
-              CouponRedeemButton(
-                text: 'redeem.get_points'.tr(namedArgs: {'points': '100'}),
-                text2: 'redeem.click_here'.tr(),
-                text3: 'redeem.time_remaining'.tr(
-                  namedArgs: {
-                    'Timeout': hoursUntilMidnight.toString(),
-                  },
-                ),
-                textColor: Colors.black,
-                textColor2: Colors.blue[700]!,
-                textColor3: Colors.red,
-                points: "100",
-                onTap: () {
-                  _handleCouponRedemption100(context);
-                },
-              ),
-              const SizedBox(height: 20),
-              const Divider(
-                color: Colors.grey, // Set the color of the divider
-                thickness: 1, // Set the thickness of the divider
-                indent: 20, // Set the left indent
-                endIndent: 20, // Set the right indent
-              ),
-              const SizedBox(height: 20),
-              CouponRedeemButton(
-                text: 'redeem.welcome_bonus'.tr(),
-                text2: 'redeem.get_now_1000'.tr(),
-                text3: '',
-                textColor: Colors.black,
-                textColor2: Colors.green,
-                textColor3: Colors.red,
-                points: "1,000",
-                onTap: () {
-                  _handleCouponRedemption1K(context);
-                },
-              ),
-              const SizedBox(height: 60),
-            ],
+            ),
           ),
-        ),
+
+          // วงกลมโหลด (Fullscreen Loading Overlay)
+          if (couponProvider.isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5), // พื้นหลังมืดโปร่งแสง
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white), // สีของ Loading
+                    strokeWidth: 4.0, // ขนาดเส้นวงกลม
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

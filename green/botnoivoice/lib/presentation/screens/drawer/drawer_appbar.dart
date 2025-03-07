@@ -3,7 +3,7 @@ import 'package:botnoivoice/presentation/providers/email/email_login_provider.da
 import 'package:botnoivoice/presentation/screens/drawer/account/account_screen.dart';
 import 'package:botnoivoice/presentation/screens/drawer/drawer_appbar_logic.dart';
 import 'package:botnoivoice/presentation/screens/drawer/email_permission/email_permission_screen.dart';
-import 'package:botnoivoice/presentation/screens/drawer/coupon/redeem_coupon.dart';
+import 'package:botnoivoice/presentation/screens/drawer/coupon/coupon_screen.dart';
 import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
 import 'package:botnoivoice/presentation/widgets/dialog/payment/payment_dialog.dart';
 import 'package:botnoivoice/presentation/widgets/language/language_drawer.dart';
@@ -182,7 +182,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const RedeemCoupon(),
+                  builder: (context) => const CouponScreen(),
                 ),
               );
             },

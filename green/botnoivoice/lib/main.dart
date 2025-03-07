@@ -50,8 +50,7 @@ void main() async {
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('th'), Locale('id')],  // Supported locales
       path: 'assets/langs', // Path to your localization files
-      fallbackLocale: const Locale(
-          'th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
+      fallbackLocale: const Locale('th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
       // startLocale: const Locale('th', 'TH'), //ภาษาเริ่มต้น
       // startLocale: const Locale('en', 'US'), //ภาษาเริ่มต้น
       startLocale: initialLocale, //ภาษาเริ่มต้น
