@@ -112,65 +112,47 @@ class CouponProvider with ChangeNotifier {
   Future<void> _callCheckCouponApi(String jwtToken, String couponName) async {
     _setLoading(true);
     try {
-      // Set up the API URL
       String url = '$apiUrl/api/coupon/check_coupon';
 
-      // Log the request details
       _logger.d('Sending POST request to $url with couponCode: $couponName');
 
-      // Send the POST request
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': "Bearer $jwtToken",
         },
-        // Send the coupon name as JSON
         body: jsonEncode({'coupon_name': couponName}),
       );
 
-      // Log the response status code
       _logger.d('Received response with status code: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
-
-        // Log the response body
         final message = responseBody['message'];
         _logger.d('Response body: $responseBody');
 
-        // Testcase when coupon was successfully redeemed
         if (message == 'Use Coupon Success') {
           _errorMessage = null;
           _logger.d('Coupon redeemed successfully $couponName');
-
-          // Testcase when coupon was already redeemed
         } else if (message == 'already in use') {
-          _errorMessage = 'redeem_provider.coupon_already_used'
-              .tr(); //คูปองของคุณถูกใช้งานแล้ว
+          //คูปองของคุณถูกใช้งานแล้ว
+          _errorMessage = 'redeem_provider.coupon_already_used'.tr(); 
           _logger.e(_errorMessage);
-
-          // Testcase when coupon was not found
         } else if (message == 'Incorrect Coupon') {
-          _errorMessage = 'redeem_provider.coupon_not_found'
-              .tr(); //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
+          //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
+          _errorMessage = 'redeem_provider.coupon_not_found'.tr(); 
           _logger.e(_errorMessage);
-
-          // Testcase when coupon was expired
         } else {
-          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'
-              .tr(); //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
+          //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
+          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'.tr(); 
           _logger.e(_errorMessage);
         }
-
-        // Testcase when API call failed
       } else {
-        _errorMessage =
-            '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; //เกิดข้อผิดพลาดในการเรียก API:
+        //เกิดข้อผิดพลาดในการเรียก API:
+        _errorMessage ='${'redeem_provider.api_call_error'.tr()} ${response.statusCode}'; 
         _logger.e(_errorMessage);
       }
-
-      // Cathing exceptions logging the error message
     } catch (e) {
       _errorMessage = 'Exception occurred: $e';
       _logger.e(_errorMessage);
