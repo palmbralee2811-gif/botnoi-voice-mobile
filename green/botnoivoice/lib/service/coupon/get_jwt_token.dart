@@ -10,6 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 
+/// DO NOT REMOVE THIS LINE
+/// Get JWT Token from all providers
+/// Using in `coupon_service.dart`
+
 final _logger = Logger();
 
 Future<String?> _getTokenFromProvider(
