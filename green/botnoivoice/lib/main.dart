@@ -1,29 +1,29 @@
-import 'package:botnoivoice/presentation/configurations/api_key_config.dart';
-import 'package:botnoivoice/data/authentication/language_selection_checker.dart';
-import 'package:botnoivoice/data/models/speaker_model/speaker_model.dart';
-import 'package:botnoivoice/presentation/configurations/api_url_config.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/apple/apple_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/coupon/coupon_provider.dart';
-import 'package:botnoivoice/presentation/providers/credits/credits_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_change_username_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_delete_account_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_register_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_forget_password_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/email/email_username_api_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/google/google_token_provider.dart';
-import 'package:botnoivoice/data/repositories/speaker_repository_impl.dart';
-import 'package:botnoivoice/presentation/configurations/firebase_options.dart';
-import 'package:botnoivoice/presentation/providers/line/line_login_provider.dart';
-import 'package:botnoivoice/presentation/providers/line/line_token_provider.dart';
-import 'package:botnoivoice/presentation/providers/payment/payment_provider.dart';
-import 'package:botnoivoice/presentation/providers/permission/permission_provider.dart';
-import 'package:botnoivoice/presentation/providers/user/user_info_provider.dart';
-import 'package:botnoivoice/presentation/screens/responsive/orientation_helper.dart';
-import 'package:botnoivoice/presentation/screens/select_language/language_helper.dart';
+import 'package:botnoivoice/config/api_key_config.dart';
+import 'package:botnoivoice/auth/app_language_selection_checker.dart';
+import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/service/login/apple_login.dart';
+import 'package:botnoivoice/service/token/apple_token.dart';
+import 'package:botnoivoice/service/coupon/coupon_service.dart';
+import 'package:botnoivoice/service/get/call_reload_data.dart';
+import 'package:botnoivoice/service/email/email_change_username.dart';
+import 'package:botnoivoice/service/email/email_delete_account.dart';
+import 'package:botnoivoice/service/login/email_login.dart';
+import 'package:botnoivoice/service/email/email_register.dart';
+import 'package:botnoivoice/service/email/email_forget_password.dart';
+import 'package:botnoivoice/service/token/email_token.dart';
+import 'package:botnoivoice/service/email/email_username_api.dart';
+import 'package:botnoivoice/service/login/google_login.dart';
+import 'package:botnoivoice/service/token/google_token.dart';
+import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
+import 'package:botnoivoice/firebase_options.dart';
+import 'package:botnoivoice/service/login/line_login.dart';
+import 'package:botnoivoice/service/token/line_token.dart';
+import 'package:botnoivoice/service/payment/payment_service.dart';
+import 'package:botnoivoice/service/permission/android_permission.dart';
+import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
+import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
+import 'package:botnoivoice/ui/screen/app_language/app_language_function.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,16 +41,21 @@ void main() async {
   });
 
   // โหลดภาษาเริ่มต้นจาก LanguageHelper
-  String localeCode = await LanguageHelper.loadSelectedLanguage();
+  String localeCode = await AppLanguageFunction.loadSelectedLanguage();
   Locale initialLocale = localeCode.isNotEmpty
       ? Locale(localeCode) // ใช้ภาษาที่เลือกไว้
       : const Locale('th'); // ค่าเริ่มต้นเป็นภาษาไทย
 
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('th'), Locale('id')],  // Supported locales
+      supportedLocales: const [
+        Locale('en'),
+        Locale('th'),
+        Locale('id')
+      ], // Supported locales
       path: 'assets/langs', // Path to your localization files
-      fallbackLocale: const Locale('th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
+      fallbackLocale: const Locale(
+          'th'), // ตั้งภาษาเริ่มต้นเป็นภาษาไทย หากไม่มีการเลือกภาษา
       // startLocale: const Locale('th', 'TH'), //ภาษาเริ่มต้น
       // startLocale: const Locale('en', 'US'), //ภาษาเริ่มต้น
       startLocale: initialLocale, //ภาษาเริ่มต้น
@@ -66,32 +71,32 @@ class BotnoiVoiceApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AppleLoginProvider()),
-        ChangeNotifierProvider(create: (_) => AppleTokenProvider()),
-        ChangeNotifierProvider(create: (_) => GoogleLoginProvider()),
-        ChangeNotifierProvider(create: (_) => GoogleTokenProvider()),
-        ChangeNotifierProvider(create: (_) => SpeakerRepositoryImpl()),
-        ChangeNotifierProvider(create: (_) => PermissionProvider()),
-        ChangeNotifierProvider(create: (_) => LineLoginProvider()),
-        ChangeNotifierProvider(create: (_) => LineTokenProvider()),
-        ChangeNotifierProvider(create: (_) => EmailLoginProvider()),
-        ChangeNotifierProvider(create: (_) => EmailRegisterProvider()),
-        ChangeNotifierProvider(create: (_) => EmailForgetPasswordProvider()),
-        ChangeNotifierProvider(create: (_) => EmailTokenProvider()),
-        ChangeNotifierProvider(create: (_) => EmailUsernameApiProvider()),
-        ChangeNotifierProvider(create: (_) => EmailDeleteAccountProvider()),
-        ChangeNotifierProvider(create: (_) => EmailChangeUsernameProvider()),
-        ChangeNotifierProvider(create: (_) => PaymentProvider()),
-        ChangeNotifierProvider(create: (_) => UserInfoProvider()),
-        ChangeNotifierProvider(create: (_) => CouponProvider()),
-        ChangeNotifierProvider(create: (_) => CreditsProvider()),
+        ChangeNotifierProvider(create: (_) => AppleLogin()),
+        ChangeNotifierProvider(create: (_) => AppleToken()),
+        ChangeNotifierProvider(create: (_) => GoogleLogin()),
+        ChangeNotifierProvider(create: (_) => GoogleToken()),
+        ChangeNotifierProvider(create: (_) => HomeSpeakerDataManagement()),
+        ChangeNotifierProvider(create: (_) => AndroidPermission()),
+        ChangeNotifierProvider(create: (_) => LineLogin()),
+        ChangeNotifierProvider(create: (_) => LineToken()),
+        ChangeNotifierProvider(create: (_) => EmailLogin()),
+        ChangeNotifierProvider(create: (_) => EmailRegister()),
+        ChangeNotifierProvider(create: (_) => EmailForgetPassword()),
+        ChangeNotifierProvider(create: (_) => EmailToken()),
+        ChangeNotifierProvider(create: (_) => EmailUsernameApi()),
+        ChangeNotifierProvider(create: (_) => EmailDeleteAccount()),
+        ChangeNotifierProvider(create: (_) => EmailChangeUsername()),
+        ChangeNotifierProvider(create: (_) => PaymentService()),
+        ChangeNotifierProvider(create: (_) => CheckUserIsShowEmail()),
+        ChangeNotifierProvider(create: (_) => CouponService()),
+        ChangeNotifierProvider(create: (_) => CallReloadData()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(320, 684),
         splitScreenMode: true,
         builder: (context, child) {
           // เรียก OrientationHelper.init ก่อนเริ่มแสดง UI
-          OrientationHelper.init(context);
+          ResponsiveDesignOrientation.init(context);
           return MaterialApp(
             debugShowCheckedModeBanner: isDebuggingMode,
             title: "Botnoi Voice",
