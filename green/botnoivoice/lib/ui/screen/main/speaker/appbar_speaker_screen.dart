@@ -1,5 +1,5 @@
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/service/get/call_reload_data.dart';
+import 'package:botnoivoice/ui/screen/main/call_reload_data.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';

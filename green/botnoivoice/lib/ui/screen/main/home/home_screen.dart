@@ -4,7 +4,7 @@ import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
-import 'package:botnoivoice/service/get/call_reload_data.dart';
+import 'package:botnoivoice/ui/screen/main/call_reload_data.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/function/random_string.dart';
@@ -30,7 +30,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:botnoivoice/function/internet_checker.dart';
+import 'package:botnoivoice/auth/internet_checker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

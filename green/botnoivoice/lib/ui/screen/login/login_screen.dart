@@ -3,7 +3,7 @@ import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/ui/screen/email/email_login_screen.dart';
-import 'package:botnoivoice/function/internet_checker.dart';
+import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
 import 'package:botnoivoice/ui/widget/button/email_login_button.dart';

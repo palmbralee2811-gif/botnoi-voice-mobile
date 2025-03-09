@@ -91,8 +91,7 @@ class AccountScreenLogic {
     final emailProvider = Provider.of<EmailLogin>(context, listen: false);
 
     if (appleProvider.isLoggedIn) await appleProvider.signOutWithApple(context);
-    if (googleProvider.isLoggedIn)
-      await googleProvider.signOutWithGoogle(context);
+    if (googleProvider.isLoggedIn) await googleProvider.signOutWithGoogle(context);
     if (lineProvider.isLoggedIn) await lineProvider.signOutWithLine(context);
     if (emailProvider.isLoggedIn) await emailProvider.signOutWithEmail(context);
 

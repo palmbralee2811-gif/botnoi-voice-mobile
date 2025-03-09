@@ -5,7 +5,7 @@ import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/coupon/coupon_service.dart';
-import 'package:botnoivoice/service/get/call_reload_data.dart';
+import 'package:botnoivoice/ui/screen/main/call_reload_data.dart';
 import 'package:botnoivoice/service/email/email_change_username.dart';
 import 'package:botnoivoice/service/email/email_delete_account.dart';
 import 'package:botnoivoice/service/login/email_login.dart';

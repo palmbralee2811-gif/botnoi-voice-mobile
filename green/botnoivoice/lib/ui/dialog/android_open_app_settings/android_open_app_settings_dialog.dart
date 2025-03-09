@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AndroidPermissionDialog {
-  AndroidPermissionDialog({
+/// Android Open App Settings Dialog
+class AndroidOpenAppSettingsDialog {
+  AndroidOpenAppSettingsDialog({
     required this.context,
     required this.text,
   });
@@ -22,7 +23,8 @@ class AndroidPermissionDialog {
           style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
         ),
         content: Text(
-          'android_permission.go_to_settings_to_enable_permission'.tr(), //กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การเข้าถึงไฟล์.
+          'android_permission.go_to_settings_to_enable_permission'
+              .tr(), //กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การเข้าถึงไฟล์.
           style: TextStyle(fontSize: 14.sp),
         ),
         actions: [

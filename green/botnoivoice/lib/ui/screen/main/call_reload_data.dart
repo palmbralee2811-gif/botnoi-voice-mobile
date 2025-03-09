@@ -10,6 +10,21 @@ import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 
+/*
+TODO: Fix the following error:
+
+flutter: \^[[38;5;196m┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────<…>
+flutter: \^[[38;5;196m│ #0   CallReloadData.callLoadCreditsApi (package:botnoivoice/service/get/call_reload_data.dart:66:15)<…>
+flutter: \^[[38;5;196m│ #1   <asynchronous suspension><…>
+flutter: \^[[38;5;196m├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄<…>
+flutter: \^[[38;5;196m│ ⛔ Failed to load credits: Looking up a deactivated widget's ancestor is unsafe.<…>
+flutter: \^[[38;5;196m│ ⛔ At this point the state of the widget's element tree is no longer stable.<…>
+flutter: \^[[38;5;196m│ ⛔ To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.<…>
+flutter: \^[[38;5;196m└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+*/
+
+
 final _logger = Logger();
 
 class CallReloadData with ChangeNotifier {
