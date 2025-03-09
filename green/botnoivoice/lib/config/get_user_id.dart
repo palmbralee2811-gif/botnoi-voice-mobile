@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 
+/// DO NOT REMOVE THIS LINE
+/// Get User Id from all providers
+/// Using in `revenuecat_config.dart`
+
 final _logger = Logger();
 
-/// Get the user ID from the provider
 Future<String> _getUserIdFromProvider(
     BuildContext context, dynamic provider, String providerId) async {
   if (provider.isLoggedIn &&
@@ -20,7 +23,7 @@ Future<String> _getUserIdFromProvider(
   throw Exception("User is not logged in.");
 }
 
-/// Get the current user ID from all providers
+/// Fetch User ID from all providers
 Future<String> getUserIdAll(BuildContext context) async {
   try {
     final lineProvider = Provider.of<LineLogin>(context, listen: false);

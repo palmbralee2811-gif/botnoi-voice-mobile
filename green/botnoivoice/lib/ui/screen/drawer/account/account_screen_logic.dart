@@ -5,7 +5,7 @@ import 'package:botnoivoice/service/email/email_forget_password.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
-import 'package:botnoivoice/service/get/get_user_email.dart';
+import 'package:botnoivoice/ui/screen/drawer/account/get_user_email.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/login/line_login.dart';

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+/// DO NOT REMOVE THIS LINE
+/// Share Audio File such as MP3 file to other apps
+/// Using in `audio_player_dialog.dart`
+
 Future<void> shareAudioFile(BuildContext context, String mp3FilePath) async {
   final box = context.findRenderObject() as RenderBox?;
   final scaffoldMessenger = ScaffoldMessenger.of(context);
