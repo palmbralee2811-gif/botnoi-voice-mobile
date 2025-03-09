@@ -1,5 +1,5 @@
 import 'package:botnoivoice/service/coupon/coupon_service.dart';
-import 'package:botnoivoice/ui/screen/main/call_reload_data.dart';
+import 'package:botnoivoice/call_reload_data.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/ui/screen/drawer/coupon/coupon_time_logic.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';

@@ -4,7 +4,7 @@ import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
-import 'package:botnoivoice/ui/screen/main/call_reload_data.dart';
+import 'package:botnoivoice/call_reload_data.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/function/random_string.dart';
