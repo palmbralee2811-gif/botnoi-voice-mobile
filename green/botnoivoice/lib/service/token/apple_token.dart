@@ -37,6 +37,7 @@ class AppleToken extends ChangeNotifier {
     _jwtToken = null;
     _remainingCredits = null;
     _credentialsToken = null;
+    _quotaDownload = null;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
