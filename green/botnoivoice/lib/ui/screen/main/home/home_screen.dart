@@ -89,7 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    if (creditsProvider.remainingQuotaDownload == "0" && !_hasShownQuotaDialog) {
+    if (creditsProvider.remainingQuotaDownload == "0" &&
+        !_hasShownQuotaDialog) {
       _hasShownQuotaDialog = true; // Show dialog only once
       NotificationDialog(
         context: context,
@@ -358,13 +359,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         ResponsiveDesignOrientation.isLandscape ? 40.w : 20.w,
                   ),
                   SizedBox(width: 5.w),
-                  Text('${_textController.text.length}',
-                      style: GoogleFonts.prompt(
-                          color: Colors.white,
-                          fontSize: ResponsiveDesignOrientation.isLandscape
-                              ? 11.sp
-                              : 16.sp,
-                          fontWeight: FontWeight.w600)),
+                  Text(
+                    '${_textController.text.length}',
+                    style: GoogleFonts.prompt(
+                        color: Colors.white,
+                        fontSize: ResponsiveDesignOrientation.isLandscape
+                            ? 11.sp
+                            : 16.sp,
+                        fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
       ),
