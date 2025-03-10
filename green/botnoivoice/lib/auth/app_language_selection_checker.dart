@@ -1,6 +1,6 @@
 import 'dart:ui';
+import 'package:botnoivoice/function/app_language_function.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/ui/screen/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
@@ -15,11 +15,8 @@ class AppLanguageSelectionChecker extends StatefulWidget {
 
 class _AppLanguageSelectionCheckerState
     extends State<AppLanguageSelectionChecker> with WidgetsBindingObserver {
-  // โหลดภาษาที่บันทึกไว้
-  Future<String> loadSelectedLanguage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selected_language') ?? ''; // ค่าเริ่มต้นเป็นค่าว่าง
-  }
+
+
 
   // ฟังก์ชันเพื่อตั้งค่าภาษาเครื่อง
   Future<void> setDeviceLanguage(BuildContext context) async {

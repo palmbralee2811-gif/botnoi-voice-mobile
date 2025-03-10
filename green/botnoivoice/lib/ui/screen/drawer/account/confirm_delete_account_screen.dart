@@ -1,3 +1,4 @@
+import 'package:botnoivoice/function/open_logout_function.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/email/email_delete_account.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
@@ -43,7 +44,8 @@ class _ConfirmDeleteAccountScreenState
         emailProvider.user?.providerData[0].providerId != 'password') {
       NotificationDialog(
         context: context,
-        text: 'confirm_delete_account.unable_to_delete_account'.tr(), //ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยอีเมล
+        text: 'confirm_delete_account.unable_to_delete_account'
+            .tr(), //ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยอีเมล
       ).showErrorModal(context);
       setState(() {
         isDeleting = false;
@@ -58,7 +60,9 @@ class _ConfirmDeleteAccountScreenState
     if (!isPasswordValid) {
       NotificationDialog(
         context: context,
-        text: emailDeleteAccountProvider.errorMessage ?? 'confirm_delete_account.incorrect_password'.tr(), //รหัสผ่านไม่ถูกต้อง
+        text: emailDeleteAccountProvider.errorMessage ??
+            'confirm_delete_account.incorrect_password'
+                .tr(), //รหัสผ่านไม่ถูกต้อง
       ).showErrorModal(context);
       setState(() {
         isDeleting = false;
@@ -82,10 +86,9 @@ class _ConfirmDeleteAccountScreenState
       }
 
       await emailDeleteAccountProvider.deleteUserAccountWithFirebase(context);
-      await Provider.of<EmailLogin>(context, listen: false).signOutWithEmail(context);
 
-      // Redirect to AuthChecker
-      context.go('/auth');
+      /// Logout and Redirect to AuthChecker
+      openEmailLogout(context);
     } catch (error) {
       NotificationPopup(
         context: context,
@@ -140,7 +143,8 @@ class _ConfirmDeleteAccountScreenState
                   children: [
                     SizedBox(height: 40.h),
                     GradientTextAlign(
-                      'confirm_delete_account.confirm_password'.tr(), //ยืนยันรหัสผ่าน
+                      'confirm_delete_account.confirm_password'
+                          .tr(), //ยืนยันรหัสผ่าน
                       gradient: const LinearGradient(
                         colors: [
                           Color(0xFF9340FF),
@@ -158,7 +162,8 @@ class _ConfirmDeleteAccountScreenState
                     ),
                     SizedBox(height: 8.h),
                     GradientTextAlign(
-                      'confirm_delete_account.confirm_password_to_delete'.tr(), //ยืนยันรหัสผ่านของคุณเพื่อดำเนินการลบบัญชี
+                      'confirm_delete_account.confirm_password_to_delete'
+                          .tr(), //ยืนยันรหัสผ่านของคุณเพื่อดำเนินการลบบัญชี
                       gradient: const LinearGradient(
                         colors: [
                           Color(0xFF9340FF),
@@ -183,7 +188,8 @@ class _ConfirmDeleteAccountScreenState
                               : 16.sp,
                           fontWeight: FontWeight.w400),
                       decoration: InputDecoration(
-                        labelText: 'confirm_delete_account.confirm_password'.tr(), //ยืนยันรหัสผ่าน
+                        labelText: 'confirm_delete_account.confirm_password'
+                            .tr(), //ยืนยันรหัสผ่าน
                         labelStyle: TextStyle(
                             fontSize: ResponsiveDesignOrientation.isLandscape
                                 ? 12.sp
@@ -219,7 +225,8 @@ class _ConfirmDeleteAccountScreenState
                       obscureText: !isPasswordVisible,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'confirm_delete_account.please_enter_your_password'.tr(); //โปรดใส่รหัสผ่านของคุณ
+                          return 'confirm_delete_account.please_enter_your_password'
+                              .tr(); //โปรดใส่รหัสผ่านของคุณ
                         }
                         return null;
                       },

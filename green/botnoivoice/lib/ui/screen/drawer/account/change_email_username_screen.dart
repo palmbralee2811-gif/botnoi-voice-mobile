@@ -1,5 +1,6 @@
+import 'package:botnoivoice/function/is_vaild_data.dart';
+import 'package:botnoivoice/function/open_logout_function.dart';
 import 'package:botnoivoice/service/email/email_change_username.dart';
-import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
@@ -23,14 +24,7 @@ class ChangeEmailUsernameScreen extends StatefulWidget {
 class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _confirmUsernameController =
-      TextEditingController();
-
-  bool isValidUsername(String username) {
-    if (username.length < 3) return false;
-    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
-    return usernameRegex.hasMatch(username);
-  }
+  final TextEditingController _confirmUsernameController = TextEditingController();
 
   void submitUsernameChangeRequest() async {
     final changeUsername =
@@ -51,14 +45,10 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
       } else {
         NotificationDialog(
           context: context,
-          text: 'change_email_username.username_changed_successfully'
-              .tr(), //ตั้งชื่อผู้ใช้งานใหม่สำเร็จ
+          text: 'change_email_username.username_changed_successfully'.tr(), //ตั้งชื่อผู้ใช้งานใหม่สำเร็จ
           onPressed: () async {
-            await Provider.of<EmailLogin>(context, listen: false)
-                .signOutWithEmail(context);
-
-            // Redirect to AuthChecker
-            context.go('/auth');
+            /// Logout and Redirect to AuthChecker
+            openEmailLogout(context);
           },
         ).showCheckmarkModalWithAction(context);
       }

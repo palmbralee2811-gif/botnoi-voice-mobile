@@ -1,12 +1,9 @@
+import 'package:botnoivoice/function/is_vaild_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
-import 'package:email_validator/email_validator.dart';
 
 /// Unit Testing for Email Validator
 /// 90%
-bool isValidEmail(String email) {
-  return EmailValidator.validate(email);
-}
 
 void main() {
   final logger = Logger();

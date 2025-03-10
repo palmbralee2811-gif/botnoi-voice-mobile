@@ -518,7 +518,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           selectedLanguageImage = imagePath;
         });
 
-        // Close Language Filter
+        // Close Language Filter Dialog
         context.pop();
       },
       child: buildFilterOption(context, imagePath, displayText),
@@ -555,7 +555,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           gender = gen;
         });
 
-        // Close Gender Filter
+        // Close Gender Filter Dialog
         context.pop();
       },
       child: buildFilterOption(context, imagePath, displayText),
@@ -613,7 +613,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         ),
         InkWell(
           onTap: () {
-            // Close Modal Header
+            // Close Modal Header Dialog
             context.pop();
           },
           child: Icon(

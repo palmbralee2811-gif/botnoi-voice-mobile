@@ -1,15 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
+import 'package:botnoivoice/function/generate_audio.dart';
+import 'package:botnoivoice/function/open_audio_player.dart';
 import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
-import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/call_reload_data.dart';
-import 'package:botnoivoice/service/token/email_token.dart';
-import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/function/random_string.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:botnoivoice/ui/screen/main/home/appbar_top.dart';
 import 'package:botnoivoice/ui/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
@@ -17,18 +11,14 @@ import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_icon.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_row.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text.dart';
-import 'package:botnoivoice/ui/screen/main/audio_player/audio_player_dialog.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_popup.dart';
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:botnoivoice/auth/internet_checker.dart';
 
@@ -42,33 +32,64 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final InternetChecker _internetChecker = InternetChecker();
-  final Logger logger = Logger();
-  bool isGenerateAudio = false;
 
-  // Generate Audio
-  String response = '';
-  String audioUrl = '';
-  String? speakerId;
+  /// For debugging
+  final _logger = Logger();
 
-  // Show Clear Icon
+  /// Generate Audio
+  String _audioUrl = '';
+  String _speakerId = '';
+
+  /// Show Clear Icon
   bool isShowClearIcon = false;
 
-  // Play Example Audio
+  /// Generate Audio
+  bool _isGenerateAudio = false;
+
+  /// Play Example Audio
   AudioPlayer audioPlayer = AudioPlayer();
 
-  // Show Audio Player
+  /// Show Audio Player
   Duration duration = Duration.zero;
   Duration currentPosition = Duration.zero;
 
-  // Show Quota Download Dialog Before Generating Audio
+  /// Show Quota Download Dialog Before Generating Audio
   bool hasShownQuotaDialog = false;
+
+  /// Getter Audio Url
+  String get audioUrl => _audioUrl;
+
+  /// Getter Generate Audio
+  bool get isGenerateAudio => _isGenerateAudio;
+
+  /// Getter Speaker Id
+  String get speakerId => _speakerId;
+
+  /// Setter Audio Url
+  set audioUrl(String url) {
+    _audioUrl = url;
+    _logger.d("AudioManager -> setAudioUrl: $audioUrl");
+  }
+
+  /// Setter Generate Audio
+  set isGenerateAudio(bool isGenerateAudio) {
+    _isGenerateAudio = isGenerateAudio;
+    _logger.d("AudioManager -> setGenerateAudio: $isGenerateAudio");
+  }
+
+  /// Setter Speaker Id
+  set speakerId(String speakerId) {
+    // _speakerId = speakerId;
+    _speakerId = Provider.of<HomeSpeakerDataManagement>(context).speakerId!;
+    _logger.d("Home Screen -> setSpeakerId: $speakerId");
+  }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
-        logger.d("internet change in home : $isAvailable");
+        _logger.d("internet change in home : $isAvailable");
       });
     });
   }
@@ -76,7 +97,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    speakerId = Provider.of<HomeSpeakerDataManagement>(context).speakerId;
   }
 
   @override
@@ -88,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _generateAudio() async {
     final creditsProvider = Provider.of<CallReloadData>(context, listen: false);
     setState(() {
-      isGenerateAudio = true;
+      _isGenerateAudio = true;
     });
 
     await audioPlayer.stop();
@@ -98,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
               text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
           .showAsError();
       setState(() {
-        isGenerateAudio = false;
+        _isGenerateAudio = false;
       });
       return;
     }
@@ -116,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     setState(() {
-      isGenerateAudio = false;
+      _isGenerateAudio = false;
     });
   }
 
@@ -124,28 +144,22 @@ class _HomeScreenState extends State<HomeScreen> {
     final creditsProvider = Provider.of<CallReloadData>(context, listen: false);
 
     if (_textController.text.isNotEmpty) {
-      final audioUrl = await generateAudio(_textController.text);
+      final audioUrl = await generateAudio(
+        context,
+        _textController.text,
+        _speakerId,
+        _audioUrl,
+        _isGenerateAudio,
+      );
       await creditsProvider.callLoadCreditsApi(context);
       if (audioUrl.isNotEmpty) {
         await openAudioPlayerDialog(
-            url: audioUrl,
-            fileName: "BotnoiVoice${randomStringOfNumbers(6)}.mp3");
+          context,
+          audioUrl,
+          "BotnoiVoice${randomStringOfNumbers(6)}.mp3",
+          audioUrl,
+        );
       }
-    }
-  }
-
-  String _getDefaultSpeakerId() {
-    String languageCode = Localizations.localeOf(context).languageCode;
-    languageCode = languageCode.isNotEmpty ? languageCode : 'en';
-    switch (languageCode) {
-      case 'th':
-        return '1';
-      case 'en':
-        return '9';
-      case 'id':
-        return '65';
-      default:
-        return '9';
     }
   }
 
@@ -353,8 +367,9 @@ class _HomeScreenState extends State<HomeScreen> {
           right: ResponsiveDesignOrientation.isLandscape ? 60.w : 20.w,
           bottom: ResponsiveDesignOrientation.isLandscape ? 10.h : 15.h),
       child: GradientRow(
-        onPressed: isGenerateAudio ? () {} : () async => await _generateAudio(),
-        child: isGenerateAudio
+        onPressed:
+            _isGenerateAudio ? () {} : () async => await _generateAudio(),
+        child: _isGenerateAudio
             ? const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               )
@@ -390,147 +405,5 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
       ),
     );
-  }
-
-  /// Generate audio from text
-  Future<String> generateAudio(String text) async {
-    speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-            .speakerId ??
-        _getDefaultSpeakerId();
-    String language =
-        Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                .language ??
-            'th';
-    String? appleCredentialsToken =
-        Provider.of<AppleToken>(context, listen: false).getCredentialsToken;
-    String? googleCredentialsToken =
-        Provider.of<GoogleToken>(context, listen: false).getCredentialsToken;
-    String? lineCredentialsToken =
-        Provider.of<LineToken>(context, listen: false).getCredentialsToken;
-    String? emailCredentialsToken =
-        Provider.of<EmailToken>(context, listen: false).getCredentialsToken;
-
-    logger.i("speakerId: $speakerId");
-    logger.i("language: $language");
-    logger.i("Apple-credentialsToken: $appleCredentialsToken");
-    logger.i("Google-credentialsToken: $googleCredentialsToken");
-    logger.i("LINE-credentialsToken: $lineCredentialsToken");
-    logger.i("Email-credentialsToken: $emailCredentialsToken");
-
-    String url = "$apiUrl/openapi/v1/generate_audio";
-    Map<String, dynamic> payload = {
-      "text": text,
-      "speaker": speakerId,
-      "volume": 1,
-      "speed": 1,
-      "type_media": "mp3",
-      "save_file": true,
-      "language": language,
-      "page": "mobile"
-    };
-
-    // Determine which token to use in the headers
-    String? selectedToken;
-    if (Provider.of<LineLogin>(context, listen: false).isLoggedIn) {
-      selectedToken = lineCredentialsToken;
-    } else if (appleCredentialsToken != null &&
-        appleCredentialsToken.isNotEmpty) {
-      selectedToken = appleCredentialsToken;
-    } else if (googleCredentialsToken != null &&
-        googleCredentialsToken.isNotEmpty) {
-      selectedToken = googleCredentialsToken;
-    } else if (emailCredentialsToken != null &&
-        emailCredentialsToken.isNotEmpty) {
-      selectedToken = emailCredentialsToken;
-    } else {
-      selectedToken = ''; // Default or fallback if no token is found
-    }
-
-    Map<String, String> headers = {
-      'Botnoi-Token': selectedToken ?? '',
-      'Content-Type': 'application/json'
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: jsonEncode(payload),
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        audioUrl = jsonData['audio_url'];
-        logger.i("generateAudio -> $audioUrl");
-      } else {
-        setState(() {
-          isGenerateAudio = false;
-          audioUrl = '';
-        });
-        logger.e("Failed to generate audio: ${response.statusCode}");
-        if (mounted) {
-          NotificationPopup(
-                  context: context,
-                  text: 'home_screen.unable_to_create_sound'
-                      .tr()) //ไม่สามารสร้างเสียงได้
-              .showAsError();
-        }
-      }
-    } catch (e) {
-      logger.e("Error on generateAudio: $e");
-    }
-    return audioUrl;
-  }
-
-  /// Request Permission, Call download function, Open audio player, and open audio file
-  Future openAudioPlayerDialog({required String url, String? fileName}) async {
-    try {
-      final name = fileName ?? url.split("/").last;
-      final file = await downloadFileToTemporaryDirectory(url, name);
-      if (file == null) return;
-      logger.i("Path: ${file.path}");
-
-      await showDialog(
-        context: context,
-        builder: (context) =>
-            AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
-      );
-    } catch (e) {
-      logger.e("Failed to open file: $e");
-    }
-  }
-
-  /// Download file and save to temporary directory
-  Future<File?> downloadFileToTemporaryDirectory(
-      String url, String name) async {
-    try {
-      final downloadFolder = await getTemporaryDirectory();
-      final String downloadDirectory = downloadFolder.path;
-      final file = File("$downloadDirectory/$name");
-      final response = await Dio().get(
-        url,
-        options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          receiveTimeout: const Duration(seconds: 60),
-        ),
-      );
-      if (response.statusCode == 200) {
-        final raf = file.openSync(mode: FileMode.write);
-        raf.writeFromSync(response.data);
-        await raf.close();
-        if (await file.exists() && await file.length() > 0) {
-          logger.i("File downloaded successfully: ${file.path}");
-          return file;
-        } else {
-          throw Exception("File download failed, file is empty.");
-        }
-      } else {
-        throw Exception("Failed to download file: ${response.statusCode}");
-      }
-    } catch (e) {
-      logger.e("Download file error: $e");
-      return null;
-    }
   }
 }

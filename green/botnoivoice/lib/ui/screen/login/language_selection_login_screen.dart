@@ -29,9 +29,11 @@
 
 //   // Function to load the selected language from SharedPreferences
 //   void _loadLanguage() async {
+//     // Load selected language from SharedPreferences
 //     SharedPreferences prefs = await SharedPreferences.getInstance();
 //     String languageCode = prefs.getString('selectedLanguage') ?? 'th';
-//     _updateLanguage(languageCode); // Update the language and flag
+//     // Update the language and flag
+//     _updateLanguage(languageCode); 
 //   }
 
 //   // Function to update language and flag

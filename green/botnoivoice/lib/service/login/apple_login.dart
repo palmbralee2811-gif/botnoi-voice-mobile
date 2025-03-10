@@ -1,7 +1,9 @@
+import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 /// Apple Login and interface for authentication
@@ -64,6 +66,7 @@ class AppleLogin extends ChangeNotifier {
   /// Sign out and Check if the user is signed out
   Future<void> signOutWithApple(BuildContext context) async {
     try {
+      Provider.of<AppleToken>(context, listen: false).clearTokens();
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false; // User's sign out
       _logger.i("User signed out successfully.");

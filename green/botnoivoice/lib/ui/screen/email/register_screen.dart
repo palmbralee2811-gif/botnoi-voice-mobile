@@ -1,9 +1,8 @@
 import 'dart:io';
+import 'package:botnoivoice/function/is_vaild_data.dart';
+import 'package:botnoivoice/function/open_login_function.dart';
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/email/email_register.dart';
-import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
@@ -14,7 +13,6 @@ import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -37,18 +35,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
-
-  /// ฟังก์ชันตรวจสอบรูปแบบอีเมล
-  bool isValidEmail(String email) {
-    return EmailValidator.validate(email);
-  }
-
-  /// ตรวจสอบชื่อผู้ใช้งานว่าถูกต้องหรือไม่
-  bool isValidUsername(String username) {
-    if (username.length < 3) return false;
-    final RegExp usernameRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
-    return usernameRegex.hasMatch(username);
-  }
 
   /// ฟังก์ชันสมัครสมาชิก
   Future<void> _registerUser() async {
@@ -109,27 +95,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
       );
     }
-  }
-
-  // แสดงหน้าจอ Apple Login
-  Future<void> _openAppleLogin() async {
-    await Provider.of<AppleLogin>(context, listen: false).signInWithApple();
-    // Redirect to AuthChecker
-    context.go('/auth');
-  }
-
-  /// แสดงหน้าจอ Google Login
-  Future<void> _openGoogleLogin() async {
-    await Provider.of<GoogleLogin>(context, listen: false).signInWithGoogle();
-    // Redirect to AuthChecker
-    context.go('/auth');
-  }
-
-  /// แสดงหน้าจอ Line Login
-  Future<void> _openLineLogin() async {
-    await Provider.of<LineLogin>(context, listen: false).signInWithLine();
-    // Redirect to AuthChecker
-    context.go('/auth');
   }
 
   @override
@@ -301,6 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (value == null || value.isEmpty) {
           return 'register.please_enter_password'.tr();
         } else if (value.length < 6) {
+          // Password charecter more than 6 digits
           return 'register.password_minimum_length'.tr();
         } else if (isConfirmPassword && value != _passwordController.text) {
           return 'register.password_mismatch'.tr();
@@ -327,8 +293,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildBackToLoginButton() {
     return TextButton(
       onPressed: () {
-        // Close Register Screen
-        context.pop();
+        // Redirect to Email Login Screen
+        context.go('/email-login');
       },
       child: Align(
         alignment: Alignment.center,
@@ -370,14 +336,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w,
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
-          child: LineLoginButton(onPressed: _openLineLogin),
+          child: LineLoginButton(
+            onPressed: () {
+              openLineLogin(context);
+            },
+          ),
         ),
         SizedBox(height: 16.h),
         Padding(
           padding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w,
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
-          child: GoogleLoginButton(onPressed: _openGoogleLogin),
+          child: GoogleLoginButton(
+            onPressed: () {
+              openGoogleLogin(context);
+            },
+          ),
         ),
         SizedBox(height: 16.h),
         if (Platform.isIOS)
@@ -385,7 +359,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             padding: EdgeInsets.only(
                 left: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w,
                 right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
-            child: AppleLoginButton(onPressed: _openAppleLogin),
+            child: AppleLoginButton(
+              onPressed: () {
+                openAppleLogin(context);
+              },
+            ),
           ),
       ],
     );

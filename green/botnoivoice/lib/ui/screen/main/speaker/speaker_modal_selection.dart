@@ -52,7 +52,7 @@ Future<void> showModalSelection({
                       color: Colors.black, // กำหนดสีไอคอน
                     ),
                     onPressed: () {
-                      // Close Speaker Modal Selection
+                      // Close Speaker Modal Selection Dialog
                       context.pop();
                     },
                   ),
@@ -163,7 +163,7 @@ Future<void> showModalSelection({
                       onTap: () {
                         onConfirm(tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
 
-                        // Close Speaker Modal Selection
+                        // Close Speaker Modal Selection Dialog
                         context.pop();
                       },
                       child: Container(

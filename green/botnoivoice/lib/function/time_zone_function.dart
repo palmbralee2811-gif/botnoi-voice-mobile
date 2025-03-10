@@ -2,8 +2,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:intl/intl.dart';
 
-
-
 String getCurrentBangkokDate() {
   tz.initializeTimeZones();
   final bangkok = tz.getLocation('Asia/Bangkok');

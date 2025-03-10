@@ -21,6 +21,8 @@ import 'package:botnoivoice/ui/screen/main/speaker/speaker_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
+  // debugLogDiagnostics: true,
+  // initialLocation: '/',
   routes: [
     GoRoute(
       // First screen to show when the app is open

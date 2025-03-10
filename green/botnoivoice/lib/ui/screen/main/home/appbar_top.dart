@@ -1,3 +1,4 @@
+import 'package:botnoivoice/function/get_free_icon_path.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/call_reload_data.dart';
 import 'package:botnoivoice/ui/screen/main/home/appbar_bottom.dart';
@@ -32,20 +33,6 @@ class _AppBarTopState extends State<AppBarTop> {
   Future<void> _loadRemainingCredits() async {
     await Provider.of<CallReloadData>(context, listen: false)
         .callLoadCreditsApi(context);
-  }
-
-  String getFreeIconPath(BuildContext context) {
-    String languageCode = Localizations.localeOf(context).languageCode;
-    switch (languageCode) {
-      case 'th':
-        return 'assets/images/icon/free-icon-thai.svg';
-      case 'en':
-        return 'assets/images/icon/free-icon-english.svg';
-      case 'id':
-        return 'assets/images/icon/free-icon-english.svg';
-      default:
-        return 'assets/images/icon/free-icon-english.svg';
-    }
   }
 
   @override
@@ -164,11 +151,10 @@ class _AppBarTopState extends State<AppBarTop> {
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: SvgPicture.asset(
+                      /// Get Free Icon Path
                       getFreeIconPath(context),
-                      width:
-                          ResponsiveDesignOrientation.isLandscape ? 30.w : 20.w,
-                      height:
-                          ResponsiveDesignOrientation.isLandscape ? 30.h : 20.h,
+                      width: ResponsiveDesignOrientation.isLandscape ? 30.w : 20.w,
+                      height: ResponsiveDesignOrientation.isLandscape ? 30.h : 20.h,
                     ),
                   ),
                 ),

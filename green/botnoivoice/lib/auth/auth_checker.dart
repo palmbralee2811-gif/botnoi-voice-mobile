@@ -1,4 +1,5 @@
 import 'package:botnoivoice/auth/token_checker.dart';
+import 'package:botnoivoice/function/open_logout_function.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
@@ -28,8 +29,8 @@ class AuthChecker extends StatelessWidget {
           // ตรวจสอบสถานะการยืนยันอีเมล
           if (!emailProvider.user!.emailVerified) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              emailProvider.signOutWithEmail(
-                  context); // ออกจากระบบหากยังไม่ได้ยืนยันอีเมล
+              // Logout and Redirect to AuthChecker
+              openEmailLogout(context);
             });
             loginProvider = null;
           } else {

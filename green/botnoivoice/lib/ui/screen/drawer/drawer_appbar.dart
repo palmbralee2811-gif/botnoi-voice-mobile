@@ -1,3 +1,4 @@
+import 'package:botnoivoice/function/app_language_function.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/ui/screen/drawer/drawer_appbar_logic.dart';
@@ -244,7 +245,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                   setState(() {
                     selectedLanguage = language; // Update the selected language
                   });
-                  _logic.saveLanguage(language); // Save the language if needed
+                  saveSelectedLanguage(language); // Save the selected language
                 },
               );
             },

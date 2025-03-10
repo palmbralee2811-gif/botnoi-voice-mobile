@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
-import 'package:botnoivoice/ui/screen/main/audio_player/share_audio_file.dart';
+import 'package:botnoivoice/function/share_audio_file.dart';
 import 'package:botnoivoice/function/create_ios_app_folder.dart';
 import 'package:botnoivoice/service/permission/android_permission.dart';
 import 'package:botnoivoice/ui/dialog/android_open_app_settings/android_open_app_settings_dialog.dart';

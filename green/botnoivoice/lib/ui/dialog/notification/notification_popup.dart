@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 /// shows different messages: Error, Success, and Info.
+/// 
 /// Each message has its own color and animation, then closes after 5 seconds.
 class NotificationPopup {
   NotificationPopup({

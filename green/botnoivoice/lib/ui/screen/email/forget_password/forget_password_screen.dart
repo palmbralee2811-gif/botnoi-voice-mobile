@@ -1,3 +1,4 @@
+import 'package:botnoivoice/function/is_vaild_data.dart';
 import 'package:botnoivoice/service/email/email_forget_password.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
@@ -5,7 +6,6 @@ import 'package:botnoivoice/ui/widget/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,10 +22,6 @@ class ForgetPasswordScreen extends StatefulWidget {
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-
-  bool isValidEmail(String email) {
-    return EmailValidator.validate(email);
-  }
 
   void sendPasswordResetEmail() async {
     final emailForgetPassword =

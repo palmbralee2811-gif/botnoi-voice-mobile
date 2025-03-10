@@ -1,3 +1,4 @@
+import 'package:botnoivoice/function/get_code_from_link.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
 
 class ConfirmForgetPasswordScreen extends StatefulWidget {
   const ConfirmForgetPasswordScreen({super.key});
@@ -18,22 +18,9 @@ class ConfirmForgetPasswordScreen extends StatefulWidget {
       _ConfirmForgetPasswordScreenState();
 }
 
-class _ConfirmForgetPasswordScreenState
-    extends State<ConfirmForgetPasswordScreen> {
+class _ConfirmForgetPasswordScreenState extends State<ConfirmForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _codeController = TextEditingController();
-  final Logger _logger = Logger(); // For debugging
-
-  // นำฟังก์ชันจากไฟล์ 2 มาใช้
-  String _extractCodeFromLink(String link) {
-    try {
-      Uri uri = Uri.parse(link);
-      return uri.queryParameters['oobCode'] ?? '';
-    } catch (e) {
-      _logger.e("Error parsing reset link: $e");
-      return '';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +130,7 @@ class _ConfirmForgetPasswordScreenState
                     if (_formKey.currentState != null &&
                         _formKey.currentState!.validate()) {
                       // ดึงรหัสจากลิงก์ที่ผู้ใช้ป้อน
-                      String code = _extractCodeFromLink(_codeController.text);
+                      String code = extractCodeFromLink(_codeController.text);
                       if (code.isNotEmpty) {
                         // Redirect to NewPasswordScreen
                         context.go('/new-password/$code');

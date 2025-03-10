@@ -1,6 +1,7 @@
 import 'package:botnoivoice/config/api_key_config.dart';
 import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/function/app_language_function.dart';
 import 'package:botnoivoice/routing.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
@@ -23,7 +24,6 @@ import 'package:botnoivoice/service/payment/payment_service.dart';
 import 'package:botnoivoice/service/permission/android_permission.dart';
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
-import 'package:botnoivoice/ui/screen/app_language/app_language_function.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,7 +41,7 @@ void main() async {
   });
 
   // โหลดภาษาเริ่มต้นจาก LanguageHelper
-  String localeCode = await AppLanguageFunction.loadSelectedLanguage();
+  String localeCode = await loadSelectedLanguage();
   Locale initialLocale = localeCode.isNotEmpty
       ? Locale(localeCode) // ใช้ภาษาที่เลือกไว้
       : const Locale('th'); // ค่าเริ่มต้นเป็นภาษาไทย

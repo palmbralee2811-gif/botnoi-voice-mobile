@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/auth/internet_checker.dart';
+import 'package:botnoivoice/function/open_login_function.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
 import 'package:botnoivoice/ui/widget/button/email_login_button.dart';
@@ -13,10 +11,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,23 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _internetChecker.cancelListener();
     super.dispose();
-  }
-
-  void _openEmailLogin() {
-    // Redirect to EmailLoginScreen
-    context.go('/email-login');
-  }
-
-  void _openLineLogin(context) {
-    Provider.of<LineLogin>(context, listen: false).signInWithLine();
-  }
-
-  void _openGoogleLogin(context) {
-    Provider.of<GoogleLogin>(context, listen: false).signInWithGoogle();
-  }
-
-  void _openAppleLogin(context) {
-    Provider.of<AppleLogin>(context, listen: false).signInWithApple();
   }
 
   @override
@@ -115,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ResponsiveDesignOrientation.isLandscape ? 75.h : 95.h),
               EmailLoginButton(
                 onPressed: () {
-                  _openEmailLogin();
+                  openEmailLogin(context);
                 },
               ),
               SizedBox(
@@ -128,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
                 child: LineLoginButton(
                   onPressed: () {
-                    _openLineLogin(context);
+                    openLineLogin(context);
                   },
                 ),
               ),
@@ -142,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
                 child: GoogleLoginButton(
                   onPressed: () {
-                    _openGoogleLogin(context);
+                    openGoogleLogin(context);
                   },
                 ),
               ),
@@ -159,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           : 30.w),
                   child: AppleLoginButton(
                     onPressed: () {
-                      _openAppleLogin(context);
+                      openAppleLogin(context);
                     },
                   ),
                 ),

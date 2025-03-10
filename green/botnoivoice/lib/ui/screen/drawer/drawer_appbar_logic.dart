@@ -9,7 +9,6 @@ import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerAppbarLogic {
   Future<void> loadUserInfo({
@@ -54,10 +53,5 @@ class DrawerAppbarLogic {
     }
 
     onUpdateState(displayName, uid, profilePictureUrl);
-  }
-
-  Future<void> saveLanguage(String language) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selected_language', language);
   }
 }

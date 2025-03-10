@@ -1,5 +1,5 @@
+import 'package:botnoivoice/function/app_language_function.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
-import 'package:botnoivoice/ui/screen/app_language/app_select_language_screen.dart';
 import 'package:botnoivoice/data/model/languages_drawer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';

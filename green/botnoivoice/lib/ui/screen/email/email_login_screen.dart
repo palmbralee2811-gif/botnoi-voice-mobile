@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
+import 'package:botnoivoice/function/open_login_function.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
 import 'package:botnoivoice/ui/widget/button/google_login_button.dart';
@@ -81,30 +79,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         });
       }
     }
-  }
-
-  // Open Apple Login and Close Email Login Screen
-  void _openAppleLogin() async {
-    await Provider.of<AppleLogin>(context, listen: false).signInWithApple().whenComplete(() {
-      // Close Email Login Screen
-      context.pop();
-    });
-  }
-
-  /// Open Google Login and Close Email Login Screen
-  void _openGoogleLogin() async {
-    await Provider.of<GoogleLogin>(context, listen: false).signInWithGoogle().whenComplete(() {
-      // Close Email Login Screen
-      context.pop();
-    });
-  }
-
-  /// Open Line Login and Close Email Login Screen
-  void _openLineLogin() async {
-    await Provider.of<LineLogin>(context, listen: false).signInWithLine().whenComplete(() {
-      // Close Email Login Screen
-      context.pop();
-    });
   }
 
   @override
@@ -381,9 +355,11 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             right: ResponsiveDesignOrientation.isLandscape
                                 ? 40.w
                                 : 15.w),
-                        child: LineLoginButton(onPressed: () {
-                          _openLineLogin();
-                        }),
+                        child: LineLoginButton(
+                          onPressed: () {
+                            openLineLogin(context);
+                          },
+                        ),
                       ),
                       SizedBox(
                           height: ResponsiveDesignOrientation.isLandscape
@@ -397,9 +373,11 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                             right: ResponsiveDesignOrientation.isLandscape
                                 ? 40.w
                                 : 15.w),
-                        child: GoogleLoginButton(onPressed: () {
-                          _openGoogleLogin();
-                        }),
+                        child: GoogleLoginButton(
+                          onPressed: () {
+                            openGoogleLogin(context);
+                          },
+                        ),
                       ),
                       SizedBox(
                           height: ResponsiveDesignOrientation.isLandscape
@@ -414,9 +392,11 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                               right: ResponsiveDesignOrientation.isLandscape
                                   ? 40.w
                                   : 15.w),
-                          child: AppleLoginButton(onPressed: () {
-                            _openAppleLogin();
-                          }),
+                          child: AppleLoginButton(
+                            onPressed: () {
+                              openAppleLogin(context);
+                            },
+                          ),
                         ),
                       SizedBox(
                           height: ResponsiveDesignOrientation.isLandscape
