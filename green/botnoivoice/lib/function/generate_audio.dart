@@ -24,7 +24,7 @@ Future<String> generateAudio(
   String audioUrl,
   bool isGenerateAudio,
 ) async {
-  final speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+  String speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false)
           .speakerId ??
       getDefaultSpeakerId(context);
   String language =
