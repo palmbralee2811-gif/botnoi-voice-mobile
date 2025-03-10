@@ -7,6 +7,7 @@ import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/ui/widget/button/coupon_redeem_button.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CouponScreen extends StatefulWidget {
@@ -50,7 +51,12 @@ class _CouponScreenState extends State<CouponScreen> {
     final bool isLandscape = ResponsiveDesignOrientation.isLandscape;
 
     return Scaffold(
-      appBar: const AppBarTemplate(),
+      appBar: AppBarTemplate(
+        onPressed: () {
+          // Redirect to HomeScreen
+          context.go('/home');
+        },
+      ),
       body: Stack(
         children: [
           // เนื้อหา UI หลัก

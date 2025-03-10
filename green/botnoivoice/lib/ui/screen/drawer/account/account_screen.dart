@@ -2,9 +2,7 @@ import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/ui/screen/drawer/account/account_screen_logic.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/ui/screen/drawer/account/user_info_row.dart';
-import 'package:botnoivoice/ui/screen/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/email_delete_account_button.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
@@ -12,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +68,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBarTemplate(title: 'app_drawer.profile'.tr()),
+      appBar: AppBarTemplate(
+        title: 'app_drawer.profile'.tr(),
+        onPressed: () {
+          // Redirect to HomeScreen
+          context.go('/home');
+        },
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w), //Frank แก้ไข
@@ -200,43 +205,13 @@ class _AccountScreenState extends State<AccountScreen> {
                       value: displayName,
                       icon: Icons.edit_rounded,
                       onIconPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const ChangeEmailUsernameScreen(),
-                          ),
-                        );
+                        // Redirect to ChangeEmailUsernameScreen
+                        context.go('/change-email-username');
                       },
                     )
                   : UserInfoRow(
                       title: 'account.username'.tr(), //ชื่อผู้ใช้
                       value: displayName,
-                    ),
-              emailProvider.isLoggedIn &&
-                      emailProvider.user?.providerData[0].providerId ==
-                          'password'
-                  ? UserInfoRow(
-                      title: 'account.password'.tr(), //รหัสผ่าน
-                      value: '********',
-                      icon: Icons.edit_rounded,
-                      onIconPressed: () async {
-                        final hasPermission =
-                            await _logic.checkEmailPermission(context);
-                        if (hasPermission) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ForgetPasswordScreen(),
-                            ),
-                          );
-                        }
-                      },
-                    )
-                  : const UserInfoRow(
-                      title: '', //ชื่อผู้ใช้
-                      value: '',
                     ),
               SizedBox(
                   height:

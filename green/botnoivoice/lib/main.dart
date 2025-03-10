@@ -1,7 +1,7 @@
 import 'package:botnoivoice/config/api_key_config.dart';
-import 'package:botnoivoice/auth/app_language_selection_checker.dart';
 import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/routing.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/coupon/coupon_service.dart';
@@ -97,7 +97,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         builder: (context, child) {
           // เรียก OrientationHelper.init ก่อนเริ่มแสดง UI
           ResponsiveDesignOrientation.init(context);
-          return MaterialApp(
+          return MaterialApp.router(
             debugShowCheckedModeBanner: isDebuggingMode,
             title: "Botnoi Voice",
             theme: ThemeData(
@@ -108,13 +108,11 @@ class BotnoiVoiceApp extends StatelessWidget {
               ),
             ),
             // Home should be wrapped with the EasyLocalization
-            // home: const TestCoupon(),
-            home: const LanguageSelectionChecker(),
-            // home: HomeScreen(),
             // Add localization delegate
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
+            routerConfig: router,
           );
         },
       ),

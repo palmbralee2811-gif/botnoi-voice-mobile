@@ -24,7 +24,6 @@ flutter: \^[[38;5;196m└──────────────────�
 
 */
 
-
 final _logger = Logger();
 
 class CallReloadData with ChangeNotifier {

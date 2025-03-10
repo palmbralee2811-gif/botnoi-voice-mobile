@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TermsServiceScreen extends StatefulWidget {
@@ -18,7 +19,13 @@ class _TreamsofService extends State<TermsServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBarTemplate(title: 'term.service'.tr()),
+      appBar: AppBarTemplate(
+        title: 'term.service'.tr(),
+        onPressed: () {
+          // Redirect to RegisterScreen
+          context.go('/register');
+        },
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(8.w),

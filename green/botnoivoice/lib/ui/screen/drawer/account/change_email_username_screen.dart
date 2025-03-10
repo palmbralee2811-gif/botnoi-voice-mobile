@@ -1,4 +1,3 @@
-import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/service/email/email_change_username.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
@@ -9,8 +8,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+/// Change Username for Email Account
 class ChangeEmailUsernameScreen extends StatefulWidget {
   const ChangeEmailUsernameScreen({super.key});
 
@@ -55,13 +56,9 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
           onPressed: () async {
             await Provider.of<EmailLogin>(context, listen: false)
                 .signOutWithEmail(context);
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AuthChecker(),
-              ),
-              (Route<dynamic> route) => false,
-            );
+
+            // Redirect to AuthChecker
+            context.go('/auth');
           },
         ).showCheckmarkModalWithAction(context);
       }
@@ -86,7 +83,8 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           iconSize: ResponsiveDesignOrientation.isLandscape ? 12.sp : 16.sp,
           onPressed: () {
-            Navigator.pop(context);
+            // Redirect to Account Screen
+            context.go('/account');
           },
         ),
       ),

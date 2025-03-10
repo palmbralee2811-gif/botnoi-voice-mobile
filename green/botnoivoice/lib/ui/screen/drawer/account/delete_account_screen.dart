@@ -1,11 +1,11 @@
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -38,7 +38,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
             size: ResponsiveDesignOrientation.isLandscape ? 10.sp : 24.sp,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            // Redirect to AccountScreen
+            context.go('/account');
           },
         ),
       ),
@@ -132,7 +133,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               GradientTextButton(
                 text: 'delete_account.cancel'.tr(), //ยกเลิก
                 onPressed: () {
-                  Navigator.pop(context);
+                  // Redirect to AccountScreen
+                  context.push('/account');
                 },
               ),
               SizedBox(
@@ -140,12 +142,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                       ResponsiveDesignOrientation.isLandscape ? 16.h : 16.h),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ConfirmDeleteAccountScreen(),
-                    ),
-                  );
+                  // Redirect to ConfirmDeleteAccountScreen
+                  context.go('/confirm-delete-account');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

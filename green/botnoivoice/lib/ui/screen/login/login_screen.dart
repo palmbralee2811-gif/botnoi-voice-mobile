@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/ui/screen/email/email_login_screen.dart';
 import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
@@ -14,6 +13,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -45,20 +45,20 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _openEmailLogin(context) async {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const EmailLoginScreen()));
+  void _openEmailLogin() {
+    // Redirect to EmailLoginScreen
+    context.go('/email-login');
   }
 
-  void _openLineLogin(context) async {
+  void _openLineLogin(context) {
     Provider.of<LineLogin>(context, listen: false).signInWithLine();
   }
 
-  void _openGoogleLogin(context) async {
+  void _openGoogleLogin(context) {
     Provider.of<GoogleLogin>(context, listen: false).signInWithGoogle();
   }
 
-  void _openAppleLogin(context) async {
+  void _openAppleLogin(context) {
     Provider.of<AppleLogin>(context, listen: false).signInWithApple();
   }
 
@@ -113,20 +113,10 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                   height:
                       ResponsiveDesignOrientation.isLandscape ? 75.h : 95.h),
-              EmailLoginButton(onPressed: () {
-                _openEmailLogin(context);
-              }),
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 10.h : 20.h),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w,
-                    right:
-                        ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
-                child: LineLoginButton(onPressed: () {
-                  _openLineLogin(context);
-                }),
+              EmailLoginButton(
+                onPressed: () {
+                  _openEmailLogin();
+                },
               ),
               SizedBox(
                   height:
@@ -136,9 +126,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     left: ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w,
                     right:
                         ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
-                child: GoogleLoginButton(onPressed: () {
-                  _openGoogleLogin(context);
-                }),
+                child: LineLoginButton(
+                  onPressed: () {
+                    _openLineLogin(context);
+                  },
+                ),
+              ),
+              SizedBox(
+                  height:
+                      ResponsiveDesignOrientation.isLandscape ? 10.h : 20.h),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w,
+                    right:
+                        ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
+                child: GoogleLoginButton(
+                  onPressed: () {
+                    _openGoogleLogin(context);
+                  },
+                ),
               ),
               SizedBox(
                   height:
@@ -151,9 +157,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       right: ResponsiveDesignOrientation.isLandscape
                           ? 65.w
                           : 30.w),
-                  child: AppleLoginButton(onPressed: () {
-                    _openAppleLogin(context);
-                  }),
+                  child: AppleLoginButton(
+                    onPressed: () {
+                      _openAppleLogin(context);
+                    },
+                  ),
                 ),
               SizedBox(
                   height:

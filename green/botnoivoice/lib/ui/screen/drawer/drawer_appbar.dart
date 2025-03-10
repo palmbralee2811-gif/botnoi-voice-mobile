@@ -1,15 +1,13 @@
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/account_screen.dart';
 import 'package:botnoivoice/ui/screen/drawer/drawer_appbar_logic.dart';
-import 'package:botnoivoice/ui/screen/drawer/email_permission/email_permission_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/coupon/coupon_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/payment/payment_dialog.dart';
 import 'package:botnoivoice/ui/screen/drawer/drawer_app_language_selection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -88,7 +86,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                         textStyle: TextStyle(fontSize: 10.sp),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        // Close Drawer
+                        context.pop();
                       },
                       child: Icon(
                         Icons.menu_sharp,
@@ -161,12 +160,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AccountScreen(),
-                ),
-              );
+              context.go('/account');
             },
           ),
           SizedBox(height: 10.h),
@@ -188,12 +182,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CouponScreen(),
-                ),
-              );
+              context.go('/coupon');
             },
           ),
           SizedBox(height: 10.h),
@@ -239,12 +228,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
                 ),
               ),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EmailPermissionScreen(),
-                  ),
-                );
+                // Redirect EmailPermissionScreen
+                context.go('/email-permission');
               },
             ),
           if (emailProvider.isLoggedIn &&

@@ -5,6 +5,7 @@ import 'package:botnoivoice/ui/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +49,10 @@ class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF323130)),
             iconSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 16.sp,
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              // Redirect to HomeScreen
+              context.go('/home');
+            },
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           ),
           leadingWidth: ResponsiveDesignOrientation.isLandscape ? 35.w : 60.w,

@@ -2,6 +2,7 @@ import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.d
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // แสดง Modal สำหรับเลือกตัวกรอง (สไตล์หรือหมวดหมู่) โดยมีรายการตัวเลือก
@@ -50,7 +51,10 @@ Future<void> showModalSelection({
                           : 24.sp, // กำหนดขนาดไอคอน
                       color: Colors.black, // กำหนดสีไอคอน
                     ),
-                    onPressed: () => Navigator.pop(context), // ปิด Modal
+                    onPressed: () {
+                      // Close Speaker Modal Selection
+                      context.pop();
+                    },
                   ),
                 ],
               ),
@@ -157,9 +161,10 @@ Future<void> showModalSelection({
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        onConfirm(
-                            tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
-                        Navigator.pop(context); // ปิด Modal
+                        onConfirm(tempSelectedItems); // ส่งค่าที่เลือกไปที่ onConfirm
+
+                        // Close Speaker Modal Selection
+                        context.pop();
                       },
                       child: Container(
                         decoration: BoxDecoration(

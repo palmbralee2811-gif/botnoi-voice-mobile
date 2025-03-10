@@ -3,6 +3,7 @@ import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,7 +19,13 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBarTemplate(title: 'term.policy'.tr()),
+        appBar: AppBarTemplate(
+          title: 'term.policy'.tr(),
+          onPressed: () {
+            // Redirect to RegisterScreen
+            context.go('/register');
+          },
+          ),
         body: SingleChildScrollView(
           child: SizedBox(
             child: Column(

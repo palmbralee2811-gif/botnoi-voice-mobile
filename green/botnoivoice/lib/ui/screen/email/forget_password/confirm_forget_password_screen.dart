@@ -1,5 +1,4 @@
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
-import 'package:botnoivoice/ui/screen/email/forget_password/new_password_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_align.dart';
@@ -8,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
 class ConfirmForgetPasswordScreen extends StatefulWidget {
@@ -46,7 +46,12 @@ class _ConfirmForgetPasswordScreenState
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const AppBarTemplate(),
+      appBar: AppBarTemplate(
+        onPressed: () {
+          // Redirect to ForgetPasswordScreen
+          context.go('/forget-password');
+        },
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -140,18 +145,12 @@ class _ConfirmForgetPasswordScreenState
                       // ดึงรหัสจากลิงก์ที่ผู้ใช้ป้อน
                       String code = _extractCodeFromLink(_codeController.text);
                       if (code.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                NewPasswordScreen(resetCode: code),
-                          ),
-                        );
+                        // Redirect to NewPasswordScreen
+                        context.go('/new-password/$code');
                       } else {
                         NotificationDialog(
                           context: context,
-                          text: "confirm_forget_password.link_invalid_try_again"
-                              .tr(),
+                          text: "confirm_forget_password.link_invalid_try_again".tr(),
                         ).showErrorModal(context);
                       }
                     }

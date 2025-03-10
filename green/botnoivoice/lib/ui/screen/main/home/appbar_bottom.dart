@@ -2,12 +2,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/data/model/appbar_bottom_model.dart';
-import 'package:botnoivoice/ui/screen/main/speaker/speaker_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_icon.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -92,11 +92,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
           Expanded(
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SpeakerScreen()),
-                );
+                // Redirect to SpeakerScreen
+                context.go('/speaker');
               },
               child: Padding(
                 padding: EdgeInsets.all(

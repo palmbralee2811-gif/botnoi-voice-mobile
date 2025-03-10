@@ -13,6 +13,7 @@ import 'package:botnoivoice/ui/widget/gradient/gradient_row.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:logger/logger.dart';
@@ -115,7 +116,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       }
     } catch (e) {
       if (mounted) {
-        Navigator.pop(context);
+        // Close Audio Player Dialog
+        context.pop();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(

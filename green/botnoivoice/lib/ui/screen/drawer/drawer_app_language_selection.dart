@@ -1,10 +1,10 @@
-import 'package:botnoivoice/ui/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/screen/app_language/app_select_language_screen.dart';
 import 'package:botnoivoice/data/model/languages_drawer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> showLanguageBottomSheet({
@@ -19,7 +19,10 @@ Future<void> showLanguageBottomSheet({
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
       return GestureDetector(
-        onTap: () => Navigator.pop(context),
+        onTap: () {
+          // Close Drawer App Language Selection Dialog
+          context.pop();
+        },
         behavior: HitTestBehavior.opaque,
         child: Container(
           width: double.infinity,
@@ -71,7 +74,10 @@ Widget _buildHeader(BuildContext context) {
           ),
         ),
         InkWell(
-          onTap: () => Navigator.pop(context),
+          onTap: () {
+            // Close Drawer App Language Selection Dialog
+            context.pop();
+          },
           child: Icon(
             Icons.close,
             size: ResponsiveDesignOrientation.isLandscape ? 14.sp : 24.sp,
@@ -141,15 +147,22 @@ Future<void> _onLanguageSelected(
   Function(String) onLanguageSelected,
   String languageCode,
 ) async {
-  await saveSelectedLanguage(languageCode);
+  saveSelectedLanguage(languageCode);
   onLanguageSelected(languageCode);
   context.setLocale(Locale(languageCode));
 
-  Navigator.of(context).pop(); // ปิด Bottom Sheet
-  Navigator.of(context).popUntil((route) => route.isFirst); // ปิด Drawer
+  if (context.mounted) {
+    // Close Drawer App Language Selection Dialog
+    context.pop(); 
+  }
 
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => const HomeScreen()),
-  );
+  if (context.mounted) {
+    // Close Drawer
+    context.pop();
+  }
+
+  if (context.mounted) {
+    // Redirect to HomeScreen
+    context.go('/home');
+  }
 }

@@ -1,15 +1,10 @@
 import 'dart:io';
-
-import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/email/email_register.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
-import 'package:botnoivoice/ui/screen/email/email_login_screen.dart';
-import 'package:botnoivoice/ui/screen/email/policy/privacy_policy_screen.dart';
-import 'package:botnoivoice/ui/screen/email/policy/terms_service_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
 import 'package:botnoivoice/ui/widget/button/google_login_button.dart';
@@ -22,6 +17,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -87,10 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context: context,
           text: resultMessage,
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
-            );
+            // Redirect to Email Login Screen
+            context.go('/email-login');
           },
         ).showCheckmarkModalWithAction(context);
       }
@@ -120,29 +114,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // แสดงหน้าจอ Apple Login
   Future<void> _openAppleLogin() async {
     await Provider.of<AppleLogin>(context, listen: false).signInWithApple();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => AuthChecker()));
+    // Redirect to AuthChecker
+    context.go('/auth');
   }
 
   /// แสดงหน้าจอ Google Login
   Future<void> _openGoogleLogin() async {
     await Provider.of<GoogleLogin>(context, listen: false).signInWithGoogle();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => AuthChecker()));
+    // Redirect to AuthChecker
+    context.go('/auth');
   }
 
   /// แสดงหน้าจอ Line Login
   Future<void> _openLineLogin() async {
     await Provider.of<LineLogin>(context, listen: false).signInWithLine();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => AuthChecker()));
+    // Redirect to AuthChecker
+    context.go('/auth');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const AppBarTemplate(),
+      appBar: AppBarTemplate(
+        onPressed: () {
+          // Redirect to Email Login Screen
+          context.go('/email-login');
+        },
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -328,7 +327,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildBackToLoginButton() {
     return TextButton(
       onPressed: () {
-        Navigator.pop(context);
+        // Close Register Screen
+        context.pop();
       },
       child: Align(
         alignment: Alignment.center,
@@ -407,10 +407,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const TermsServiceScreen()));
+                // Redirect to TermsServiceScreen
+                context.go('/terms-service');
               },
               child: GradientTextStyle(
                 "term.service".tr(), //Terms of USE
@@ -431,10 +429,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PrivacyPolicyScreen()));
+                // Redirect to PrivacyPolicyScreen
+                context.go('/privacy-policy');
               },
               child: GradientTextStyle(
                 "term.policy".tr(), //Private Policy.

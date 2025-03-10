@@ -7,6 +7,7 @@ import 'package:botnoivoice/ui/dialog/email_permission/enable_email_permission_d
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class EmailPermissionScreen extends StatelessWidget {
@@ -35,7 +36,13 @@ class EmailPermissionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBarTemplate(title: 'app_drawer.security'.tr()),
+      appBar: AppBarTemplate(
+        title: 'app_drawer.security'.tr(),
+        onPressed: () {
+          // Redirect to HomeScreen
+          context.go('/home');
+        },
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Consumer<CheckUserIsShowEmail>(

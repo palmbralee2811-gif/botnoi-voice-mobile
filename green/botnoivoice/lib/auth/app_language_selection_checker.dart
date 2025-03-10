@@ -5,16 +5,16 @@ import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/ui/screen/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
-class LanguageSelectionChecker extends StatefulWidget {
-  const LanguageSelectionChecker({super.key});
+class AppLanguageSelectionChecker extends StatefulWidget {
+  const AppLanguageSelectionChecker({super.key});
 
   @override
-  State<LanguageSelectionChecker> createState() =>
-      _LanguageSelectionCheckerState();
+  State<AppLanguageSelectionChecker> createState() =>
+      _AppLanguageSelectionCheckerState();
 }
 
-class _LanguageSelectionCheckerState extends State<LanguageSelectionChecker>
-    with WidgetsBindingObserver {
+class _AppLanguageSelectionCheckerState
+    extends State<AppLanguageSelectionChecker> with WidgetsBindingObserver {
   // โหลดภาษาที่บันทึกไว้
   Future<String> loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

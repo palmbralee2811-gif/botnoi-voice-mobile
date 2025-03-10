@@ -7,13 +7,14 @@ import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/ui/screen/main/speaker/appbar_speaker_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/screen/main/speaker/speaker_filter_button.dart';
-import 'package:botnoivoice/ui/widget/button/favorite_button.dart';
+import 'package:botnoivoice/ui/screen/main/speaker/favorite_button.dart';
 import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:logger/logger.dart';
@@ -232,6 +233,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
+  //TODO: Fix Error เวลากดปุ่มแล้ว แสดงภาษาทั้งหมด สิ่งที่ต้องการคือ แสดงเฉพาะ ภาษาที่กดถูกใจเท่านั้น
   Widget buildFavoriteButton() {
     return InkWell(
       onTap: () {
@@ -258,7 +260,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             if (audioPlayer.state == PlayerState.playing) {
               audioPlayer.stop();
             }
-            Navigator.pop(context);
+
+            // Redirect to Home Screen
+            context.go('/home');
           },
         ),
       ),
@@ -513,7 +517,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           selectedLanguage = displayText;
           selectedLanguageImage = imagePath;
         });
-        Navigator.pop(context);
+
+        // Close Language Filter
+        context.pop();
       },
       child: buildFilterOption(context, imagePath, displayText),
     );
@@ -548,7 +554,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           selectedGenderImage = imagePath;
           gender = gen;
         });
-        Navigator.pop(context);
+
+        // Close Gender Filter
+        context.pop();
       },
       child: buildFilterOption(context, imagePath, displayText),
     );
@@ -605,7 +613,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         ),
         InkWell(
           onTap: () {
-            Navigator.pop(context);
+            // Close Modal Header
+            context.pop();
           },
           child: Icon(
             Icons.close,

@@ -1,5 +1,4 @@
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
-import 'package:botnoivoice/ui/screen/email/email_login_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
@@ -7,6 +6,7 @@ import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/service/email/email_forget_password.dart';
 
@@ -40,10 +40,8 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
           context: context,
           text: "new_password.password_reset_success".tr(),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
-            );
+            // Redirect to EmailLoginScreen
+            context.go('/email-login');
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -66,7 +64,12 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const AppBarTemplate(),
+      appBar: AppBarTemplate(
+        onPressed: () {
+          // Redirect to ConfirmForgetPasswordScreen
+          context.go('/confirm-forget-password');
+        },
+      ),
       body: SizedBox.expand(
         child: Container(
           decoration: const BoxDecoration(

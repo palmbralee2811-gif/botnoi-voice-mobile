@@ -1,11 +1,8 @@
 import 'dart:io';
-
-import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
-import 'package:botnoivoice/ui/screen/email/forget_password/forget_password_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/widget/button/apple_login_button.dart';
 import 'package:botnoivoice/ui/widget/button/google_login_button.dart';
@@ -17,9 +14,9 @@ import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
-import 'package:botnoivoice/ui/screen/email/register_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailLoginScreen extends StatefulWidget {
@@ -69,12 +66,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
             text: errorMessage,
           ).showErrorModal(context);
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AuthChecker(),
-            ),
-          );
+          // Redirect to AuthChecker
+          context.go('/auth');
         }
       } catch (error) {
         NotificationPopup(
@@ -92,28 +85,25 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
   // Open Apple Login and Close Email Login Screen
   void _openAppleLogin() async {
-    await Provider.of<AppleLogin>(context, listen: false)
-        .signInWithApple()
-        .whenComplete(() {
-      Navigator.pop(context);
+    await Provider.of<AppleLogin>(context, listen: false).signInWithApple().whenComplete(() {
+      // Close Email Login Screen
+      context.pop();
     });
   }
 
   /// Open Google Login and Close Email Login Screen
   void _openGoogleLogin() async {
-    await Provider.of<GoogleLogin>(context, listen: false)
-        .signInWithGoogle()
-        .whenComplete(() {
-      Navigator.pop(context);
+    await Provider.of<GoogleLogin>(context, listen: false).signInWithGoogle().whenComplete(() {
+      // Close Email Login Screen
+      context.pop();
     });
   }
 
   /// Open Line Login and Close Email Login Screen
   void _openLineLogin() async {
-    await Provider.of<LineLogin>(context, listen: false)
-        .signInWithLine()
-        .whenComplete(() {
-      Navigator.pop(context);
+    await Provider.of<LineLogin>(context, listen: false).signInWithLine().whenComplete(() {
+      // Close Email Login Screen
+      context.pop();
     });
   }
 
@@ -128,7 +118,12 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const AppBarTemplate(),
+      appBar: AppBarTemplate(
+        onPressed: () {
+          // Redirect to LoginScreen
+          context.go('/login');
+        },
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -309,12 +304,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         children: [
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const RegisterScreen(),
-                                ),
-                              );
+                              // Redirect to RegisterScreen
+                              context.go('/register');
                             },
                             child: Text(
                               'sign_in.register'.tr(), //สมัครใช้งาน
@@ -329,13 +320,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ForgetPasswordScreen(),
-                                ),
-                              );
+                              // Redirect to ForgetPasswordScreen
+                              context.go('/forget-password');
                             },
                             child: Text(
                               'sign_in.forgot_password'.tr(), //ลืมรหัสผ่าน?

@@ -1,4 +1,3 @@
-import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/screen/app_language/app_language_button.dart';
 import 'package:botnoivoice/ui/screen/app_language/app_language_function.dart';
@@ -6,6 +5,7 @@ import 'package:botnoivoice/ui/widget/gradient/gradient_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLanguageSelectionScreen extends StatefulWidget {
@@ -84,12 +84,8 @@ class _AppLanguageSelectionScreenState
                     await AppLanguageFunction.saveSelectedLanguage('en');
                     context.setLocale(const Locale('en'));
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => AuthChecker(),
-                      ),
-                    );
+                    // Redirect to AuthChecker
+                    context.go('/auth');
                   },
                 ),
                 SizedBox(
@@ -115,12 +111,8 @@ class _AppLanguageSelectionScreenState
                     await AppLanguageFunction.saveSelectedLanguage('th');
                     context.setLocale(const Locale('th'));
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => AuthChecker(),
-                      ),
-                    );
+                    // Redirect to AuthChecker
+                    context.go('/auth');
                   },
                 ),
                 SizedBox(
@@ -146,12 +138,8 @@ class _AppLanguageSelectionScreenState
                     await AppLanguageFunction.saveSelectedLanguage('id');
                     context.setLocale(const Locale('id'));
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => AuthChecker(),
-                      ),
-                    );
+                    // Redirect to AuthChecker
+                    context.go('/auth');
                   },
                 ),
               ],

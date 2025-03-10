@@ -1,7 +1,7 @@
-// import 'package:botnoivoice/auth/auth_checker.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:go_router/go_router.dart';
 // import 'package:google_fonts/google_fonts.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -129,7 +129,8 @@
 //                 ),
 //                 InkWell(
 //                   onTap: () {
-//                     Navigator.pop(context); // Close the bottom sheet
+//                     // Close Language Selection Login Screen
+//                     context.pop();
 //                   },
 //                   child: Icon(
 //                     Icons.close,
@@ -146,14 +147,8 @@
 //                 onLanguageSelected('th');
 //                 context.setLocale(const Locale('th'));
 
-//                 // Refresh the current screen by navigating to it again
-//                 Navigator.pushReplacement(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (BuildContext context) =>
-//                         AuthChecker(), // Replace with your current page widget
-//                   ),
-//                 );
+//                 // Redirect to AuthChecker
+//                 context.go('/auth');
 //               },
 //               child: Container(
 //                 padding: EdgeInsets.only(left: 10.w),
@@ -187,14 +182,8 @@
 //                 onLanguageSelected('en');
 //                 context.setLocale(const Locale('en'));
 
-//                 // Refresh the current screen by navigating to it again
-//                 Navigator.pushReplacement(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (BuildContext context) =>
-//                         AuthChecker(), // Replace with your current page widget
-//                   ),
-//                 );
+//                 // Redirect to AuthChecker
+//                 context.go('/auth');
 //               },
 //               child: Container(
 //                 padding: EdgeInsets.only(left: 10.w),

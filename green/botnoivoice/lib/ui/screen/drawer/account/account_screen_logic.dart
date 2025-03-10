@@ -1,4 +1,3 @@
-import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/email/email_forget_password.dart';
@@ -15,6 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class AccountScreenLogic {
@@ -95,11 +95,8 @@ class AccountScreenLogic {
     if (lineProvider.isLoggedIn) await lineProvider.signOutWithLine(context);
     if (emailProvider.isLoggedIn) await emailProvider.signOutWithEmail(context);
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => AuthChecker()),
-      (route) => false,
-    );
+    // Redirect to AuthChecker
+    context.go('/auth');
   }
 
   /// ฟังก์ชันสำหรับซ่อนอีเมล
