@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Alert Modal for displaying messages
@@ -79,7 +80,8 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 GradientTextButton(
                   text: 'disable_email_permission.yes'.tr(), //ต้องการ
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    // Close Disable Email Permission Dialog
+                    context.pop();
                     onConfirm();
                   },
                 ),
@@ -89,7 +91,8 @@ class DisableEmailPermissionDialog extends StatelessWidget {
                 GradientCloseButton(
                   text: 'disable_email_permission.no'.tr(), //ไม่ต้องการ
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    // Close Disable Email Permission Dialog
+                    context.pop();
                     onCancel();
                   },
                 ),

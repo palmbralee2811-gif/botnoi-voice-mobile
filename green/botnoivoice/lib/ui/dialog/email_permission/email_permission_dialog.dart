@@ -6,9 +6,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Alert Modal for displaying messages
+/// Email Permission Dialog on RegisterScreen
 class EmailPermissionDialog extends StatelessWidget {
   const EmailPermissionDialog({super.key, required this.onPressed});
 
@@ -74,7 +75,8 @@ class EmailPermissionDialog extends StatelessWidget {
                 GradientTextButton(
                   text: 'email_permission_dialog.agree'.tr(), //ยินยอม
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    // Close Email Permission Dialog on `register.dart`
+                    context.pop();
                     onPressed();
                   },
                 ),
@@ -84,7 +86,8 @@ class EmailPermissionDialog extends StatelessWidget {
                 GradientCloseButton(
                   text: 'email_permission_dialog.disagree'.tr(), //ไม่ยินยอม
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    // Close Email Permission Dialog on `register.dart`
+                    context.pop();
                   },
                 ),
               ],

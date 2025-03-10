@@ -3,6 +3,7 @@
 // import 'package:easy_localization/easy_localization.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:go_router/go_router.dart';
 
 // /// Alert Modal for displaying messages
 // class AppSelectLanguageDialog extends StatelessWidget {
@@ -27,7 +28,8 @@
 //               GradientTextButton(
 //                 text: 'email_permission_dialog.agree'.tr(), //ยินยอม
 //                 onPressed: () {
-//                   Navigator.of(context).pop();
+//                   // Close App Select Language Dialog
+//                   context.pop();
 //                   onPressed();
 //                 },
 //               ),
@@ -35,11 +37,8 @@
 //               GradientCloseButton(
 //                 text: 'email_permission_dialog.disagree'.tr(), //ไม่ยินยอม
 //                 onPressed: () {
-//                   // DO
-//                   // context.pop(); or context.go(/home);
-
-//                   // DO NOT
-//                   // Navigator.of(context).pop();
+//                   // Close App Select Language Dialog
+//                   context.pop();
 //                 },
 //               ),
 //             ],

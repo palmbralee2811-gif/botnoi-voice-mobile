@@ -1,8 +1,8 @@
-import 'package:botnoivoice/ui/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EmailDeleteAccountButton extends StatefulWidget {
@@ -31,10 +31,8 @@ class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
           shadowColor: Colors.transparent,
         ),
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => const DeleteAccountScreen()),
-          );
+          // Redirect to Delete Account Screen
+          context.go('/delete-account');
         },
         child: Text("auth.delete_account_button".tr(), //"ลบบัญชี"
             style: GoogleFonts.prompt(

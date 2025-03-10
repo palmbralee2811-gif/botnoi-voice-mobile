@@ -21,11 +21,10 @@ final _logger = Logger();
 Future<String> generateAudio(
   BuildContext context,
   String text,
-  String speakerId,
   String audioUrl,
   bool isGenerateAudio,
 ) async {
-  speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+  final speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false)
           .speakerId ??
       getDefaultSpeakerId(context);
   String language =

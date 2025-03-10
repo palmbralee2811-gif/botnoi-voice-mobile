@@ -365,7 +365,8 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                   GradientCloseButton(
                     text: 'audio_player.close'.tr(), //ปิด
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      // Close Audio Player Dialog
+                      context.pop();
                     },
                   )
                 ],

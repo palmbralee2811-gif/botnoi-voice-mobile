@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 /// Alert Modal for displaying messages
 class NotificationDialog {
@@ -61,8 +62,11 @@ class NotificationDialog {
               child: GradientTextButton(
                 text: 'notification.close'.tr(), // Close
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
-                  (onPressed ?? () {})(); // Call onPressed if provided
+                  // Close This Notification Dialog
+                  context.pop();
+
+                  // Call onPressed if provided
+                  (onPressed ?? () {})(); 
                 },
               ),
             ),
@@ -83,48 +87,6 @@ class NotificationDialog {
             ),
           ),
         );
-        
-        // return Dialog(
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(16.r),
-        //   ),
-        //   child: SizedBox(
-        //     height: OrientationHelper.isLandscape ? 500.h : 310.h,
-        //     child: SingleChildScrollView(
-        //       child: Padding(
-        //         padding: EdgeInsets.all(32.r),
-        //         child: Column(
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: [
-        //             icon,
-        //             SizedBox(height: 16.h),
-        //             Text(
-        //               text,
-        //               style: TextStyle(
-        //                 fontSize: OrientationHelper.isLandscape ? 14.sp : 16.sp,
-        //                 fontWeight: FontWeight.w600,
-        //                 color: Colors.black,
-        //               ),
-        //               textAlign: TextAlign.center,
-        //             ),
-        //             SizedBox(height: OrientationHelper.isLandscape ? 106.h : 16.h),
-        //             Padding(
-        //               padding: EdgeInsets.only(left: 30.w, right: 30.w),
-        //               child: GradientTextButton(
-        //                 text: 'notification.close'.tr(), //ปิด
-        //                 onPressed: () {
-        //                   Navigator.of(context).pop(); // ปิด dialog
-        //                   (onPressed ??
-        //                       () {})(); // เรียก onPressed หากมีค่า ไม่เช่นนั้นไม่ทำอะไร
-        //                 },
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // );
       },
     );
   }

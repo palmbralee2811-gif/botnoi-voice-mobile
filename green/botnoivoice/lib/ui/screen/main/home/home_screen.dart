@@ -1,6 +1,5 @@
 import 'package:botnoivoice/function/generate_audio.dart';
 import 'package:botnoivoice/function/open_audio_player.dart';
-import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/call_reload_data.dart';
 import 'package:botnoivoice/function/random_string.dart';
@@ -36,52 +35,28 @@ class _HomeScreenState extends State<HomeScreen> {
   /// For debugging
   final _logger = Logger();
 
-  /// Generate Audio
+  /// Audio URL
   String _audioUrl = '';
-  String _speakerId = '';
 
   /// Show Clear Icon
-  bool isShowClearIcon = false;
+  bool _isShowClearIcon = false;
 
   /// Generate Audio
   bool _isGenerateAudio = false;
 
   /// Play Example Audio
-  AudioPlayer audioPlayer = AudioPlayer();
-
-  /// Show Audio Player
-  Duration duration = Duration.zero;
-  Duration currentPosition = Duration.zero;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   /// Show Quota Download Dialog Before Generating Audio
-  bool hasShownQuotaDialog = false;
+  bool _hasShownQuotaDialog = false;
 
-  /// Getter Audio Url
+  /// Getter Audio URL
   String get audioUrl => _audioUrl;
 
-  /// Getter Generate Audio
-  bool get isGenerateAudio => _isGenerateAudio;
-
-  /// Getter Speaker Id
-  String get speakerId => _speakerId;
-
-  /// Setter Audio Url
-  set audioUrl(String url) {
-    _audioUrl = url;
-    _logger.d("AudioManager -> setAudioUrl: $audioUrl");
-  }
-
-  /// Setter Generate Audio
-  set isGenerateAudio(bool isGenerateAudio) {
-    _isGenerateAudio = isGenerateAudio;
-    _logger.d("AudioManager -> setGenerateAudio: $isGenerateAudio");
-  }
-
-  /// Setter Speaker Id
-  set speakerId(String speakerId) {
-    // _speakerId = speakerId;
-    _speakerId = Provider.of<HomeSpeakerDataManagement>(context).speakerId!;
-    _logger.d("Home Screen -> setSpeakerId: $speakerId");
+  /// Setter Audio URL
+  set audioUrl(String value) {
+    _audioUrl = value;
+    _logger.d("audioUrl: $audioUrl");
   }
 
   @override
@@ -111,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _isGenerateAudio = true;
     });
 
-    await audioPlayer.stop();
+    await _audioPlayer.stop();
     if (_textController.text.isEmpty) {
       NotificationPopup(
               context: context,
@@ -123,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    if (creditsProvider.remainingQuotaDownload == "0" && !hasShownQuotaDialog) {
-      hasShownQuotaDialog = true; // Show dialog only once
+    if (creditsProvider.remainingQuotaDownload == "0" && !_hasShownQuotaDialog) {
+      _hasShownQuotaDialog = true; // Show dialog only once
       NotificationDialog(
         context: context,
         text: tr(
@@ -147,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final audioUrl = await generateAudio(
         context,
         _textController.text,
-        _speakerId,
         _audioUrl,
         _isGenerateAudio,
       );
@@ -240,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }
                         setState(() {
-                          isShowClearIcon = _textController.text.isNotEmpty;
+                          _isShowClearIcon = _textController.text.isNotEmpty;
                         });
                       },
                       decoration: InputDecoration(
@@ -281,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              isShowClearIcon
+              _isShowClearIcon
                   ? Padding(
                       padding: EdgeInsets.only(right: 1.w),
                       child: TextButton(
@@ -294,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () {
                           setState(() {
                             _textController.clear();
-                            isShowClearIcon = false;
+                            _isShowClearIcon = false;
                           });
                         },
                         child: GradientIcon(
