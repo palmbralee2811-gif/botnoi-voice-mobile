@@ -25,8 +25,7 @@ class AudioPlayerDialog extends StatefulWidget {
   final String filePath;
   final String audioUrl;
 
-  const AudioPlayerDialog(
-      {super.key, required this.filePath, required this.audioUrl});
+  const AudioPlayerDialog({super.key, required this.filePath, required this.audioUrl});
 
   @override
   State<AudioPlayerDialog> createState() => _AudioPlayerDialogState();

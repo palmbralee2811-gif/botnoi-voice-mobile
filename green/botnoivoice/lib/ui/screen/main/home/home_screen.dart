@@ -32,11 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final InternetChecker _internetChecker = InternetChecker();
 
+  // Audio URL
+  final String _audioUrl = '';
+
   /// For debugging
   final _logger = Logger();
-
-  /// Audio URL
-  String _audioUrl = '';
 
   /// Show Clear Icon
   bool _isShowClearIcon = false;
@@ -49,15 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Show Quota Download Dialog Before Generating Audio
   bool _hasShownQuotaDialog = false;
-
-  /// Getter Audio URL
-  String get audioUrl => _audioUrl;
-
-  /// Setter Audio URL
-  set audioUrl(String value) {
-    _audioUrl = value;
-    _logger.d("audioUrl: $audioUrl");
-  }
 
   @override
   void initState() {
@@ -119,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final creditsProvider = Provider.of<CallReloadData>(context, listen: false);
 
     if (_textController.text.isNotEmpty) {
-      final audioUrl = await generateAudio(
+      final String audioUrl = await generateAudio(
         context,
         _textController.text,
         _audioUrl,
@@ -131,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
           context,
           audioUrl,
           "BotnoiVoice${randomStringOfNumbers(6)}.mp3",
-          audioUrl,
         );
       }
     }

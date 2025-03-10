@@ -24,20 +24,13 @@ Future<String> generateAudio(
   String audioUrl,
   bool isGenerateAudio,
 ) async {
-  String speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-          .speakerId ??
-      getDefaultSpeakerId(context);
-  String language =
-      Provider.of<HomeSpeakerDataManagement>(context, listen: false).language ??
-          'th';
-  String? appleCredentialsToken =
-      Provider.of<AppleToken>(context, listen: false).getCredentialsToken;
-  String? googleCredentialsToken =
-      Provider.of<GoogleToken>(context, listen: false).getCredentialsToken;
-  String? lineCredentialsToken =
-      Provider.of<LineToken>(context, listen: false).getCredentialsToken;
-  String? emailCredentialsToken =
-      Provider.of<EmailToken>(context, listen: false).getCredentialsToken;
+  // Get Data from Home Speaker Data Management
+  String speakerId = Provider.of<HomeSpeakerDataManagement>(context, listen: false).speakerId ?? getDefaultSpeakerId(context);
+  String language = Provider.of<HomeSpeakerDataManagement>(context, listen: false).language ?? 'th';
+  String? appleCredentialsToken = Provider.of<AppleToken>(context, listen: false).getCredentialsToken;
+  String? googleCredentialsToken = Provider.of<GoogleToken>(context, listen: false).getCredentialsToken;
+  String? lineCredentialsToken = Provider.of<LineToken>(context, listen: false).getCredentialsToken;
+  String? emailCredentialsToken = Provider.of<EmailToken>(context, listen: false).getCredentialsToken;
 
   _logger.i("speakerId: $speakerId");
   _logger.i("language: $language");
@@ -89,19 +82,20 @@ Future<String> generateAudio(
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
+      // Set Audio URL from response
       audioUrl = jsonData['audio_url'];
       _logger.i("generateAudio -> $audioUrl");
     } else {
       isGenerateAudio = false;
+      // Set Audio URL to empty string when failed to generate audio
       audioUrl = '';
       _logger.e("Failed to generate audio: ${response.statusCode}");
 
       if (context.mounted) {
         NotificationPopup(
-                context: context,
-                text: 'home_screen.unable_to_create_sound'
-                    .tr()) //ไม่สามารสร้างเสียงได้
-            .showAsError();
+          context: context,
+          //ไม่สามารสร้างเสียงได้
+          text: 'home_screen.unable_to_create_sound'.tr()).showAsError();
       }
     }
   } catch (e) {

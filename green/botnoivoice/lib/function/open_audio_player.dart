@@ -8,20 +8,21 @@ final _logger = Logger();
 /// Request Permission, Call download function, Open audio player, and open audio file
 Future openAudioPlayerDialog(
   BuildContext context,
-  String url,
-  String? fileName,
   String audioUrl,
+  String? fileName,
 ) async {
   try {
-    final name = fileName ?? url.split("/").last;
-    final file = await downloadFileToTemporaryDirectory(url, name);
+    // Set Audio File Name from Audio URL
+    final name = fileName ?? audioUrl.split("/").last;
+    // Save Audio File to Temporary Directory
+    final file = await downloadFileToTemporaryDirectory(audioUrl, name);
     if (file == null) return;
     _logger.i("Path: ${file.path}");
 
+    // Open Audio Player Dialog with `file.path` and `audioUrl`
     await showDialog(
       context: context,
-      builder: (context) =>
-          AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
+      builder: (context) => AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
     );
   } catch (e) {
     _logger.e("Failed to open file: $e");
