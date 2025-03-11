@@ -48,7 +48,6 @@ class OfflineEmailPermissionDialog extends StatelessWidget {
                 GradientTextButton(
                   text: 'offline_email_permission.understood'.tr(), //เข้าใจแล้ว
                   onPressed: () {
-                    //TODO: testing this
                     // Close Offline Email Permission Dialog
                     context.pop();
                   },

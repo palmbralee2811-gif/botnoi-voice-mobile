@@ -5,6 +5,12 @@ import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/ui/screen/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
 import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
+
+/// Auto Detection Android and iOS on Device Primary Language (Thai, English, Indonesia).
+/// 
+/// ตรวจสอบภาษาเครื่องอัตโนมัติบน Android และ iOS (ไทย, อังกฤษ, อินโดนีเซีย)
+/// 
+/// ตรวจสอบภาษาเครื่องอัตโนมัติและเลือกภาษาเริ่มต้น
 class AppLanguageSelectionChecker extends StatefulWidget {
   const AppLanguageSelectionChecker({super.key});
 

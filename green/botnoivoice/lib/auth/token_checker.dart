@@ -31,7 +31,10 @@ token_checker.dart:51
 <asynchronous suspension>
 */
 
-// Token Management for Google, Apple, LINE, and Email
+
+/// Token Management for Google, Apple, LINE, and Email. | Json Web Token (JWT),  User Data Profile, and User Credentials.
+///
+/// การจัดการ Token สำหรับ Google, Apple, LINE, และ Email | Json Web Token (JWT), ข้อมูลโปรไฟล์ผู้ใช้, และข้อมูลของผู้ใช้
 class TokenChecker extends StatefulWidget {
   const TokenChecker({super.key});
 

@@ -10,7 +10,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-/// Check if the user is authenticated
+/// Check if the user is authenticated.
+/// Who is User Login with Email, Google, Apple, or LINE.
+/// 
+/// ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือยัง
+/// ใครเป็นผู้ใช้ที่ล็อกอินด้วยอีเมล, กูเกิ้ล, แอปเปิ้ล, หรือไลน์
 class AuthChecker extends StatelessWidget {
   AuthChecker({super.key});
 

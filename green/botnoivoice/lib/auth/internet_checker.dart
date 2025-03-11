@@ -4,6 +4,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
+/// Check if the internet connection is available on `login_screen.dart` and `home_screen.dart`
+/// 
+/// ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตใน `login_screen.dart` และ `home_screen.dart`
 class InternetChecker { // เปลี่ยนชื่อคลาส
   late StreamSubscription<InternetStatus> _listener;
   bool _isInternetAvailable = true;
