@@ -9,12 +9,15 @@ String getCurrentBangkokDate() {
   return DateFormat('yyyy-MM-dd').format(now);
 }
 
+/// DO NOT REMOVE THIS LINE
+/// 
+/// Reset new coupon code every day at midnight such as 00:00 / 24:00 / 12:00 AM
+/// 
+/// เปลี่ยนรหัสคูปองใหม่ทุกวันที่เวลาเที่ยงคืน เช่น 00:00 น. / 24:00 / 12:00 AM
 Duration getTimeUntilMidnightInBangkok() {
   tz.initializeTimeZones();
   final bangkok = tz.getLocation('Asia/Bangkok');
   DateTime now = tz.TZDateTime.now(bangkok);
-  // เวลานับถอยหลัง ให้เป็น 00:00 ตามเวลาประเทศไทย
   DateTime midnight = tz.TZDateTime(bangkok, now.year, now.month, now.day + 1);
-  //TODO: ถามพี่เพชรให้แน่ใจว่า เวลานับถอยหลัง เปลี่ยนเป็น รหัสใหม่ ตอนเวลาไหน 00:00 หรือ 08:00 ตามเวลาประเทศไทย
   return midnight.difference(now);
 }

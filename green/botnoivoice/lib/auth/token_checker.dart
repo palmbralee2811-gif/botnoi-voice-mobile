@@ -32,9 +32,9 @@ token_checker.dart:51
 */
 
 
-/// Token Management for Google, Apple, LINE, and Email. | Json Web Token (JWT),  User Data Profile, and User Credentials.
+/// Token Management for Google, Apple, LINE, and Email. | Json Web Token (JWT),  User Profile, and User Credentials.
 ///
-/// การจัดการ Token สำหรับ Google, Apple, LINE, และ Email | Json Web Token (JWT), ข้อมูลโปรไฟล์ผู้ใช้, และข้อมูลของผู้ใช้
+/// การจัดการ Token สำหรับ Google, Apple, LINE, และ Email | Json Web Token (JWT), ข้อมูลโปรไฟล์ผู้ใช้, และข้อมูลรหัสสำหรับใช้งาน API สร้างเสียง
 class TokenChecker extends StatefulWidget {
   const TokenChecker({super.key});
 
