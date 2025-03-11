@@ -94,10 +94,12 @@ class CouponService with ChangeNotifier {
         // ดึง `coupon_name` มาใช้งานโดยตรง
         final String? couponName = data['coupon_name'];
         if (couponName != null) {
+          _errorMessage = null;
           _logger.d('Coupon name: $couponName');
           return couponName;
         }
       } else {
+        _errorMessage = 'Failed to fetch coupon';
         _logger.e('Failed to fetch coupon: ${response.statusCode}');
       }
     } catch (e) {
