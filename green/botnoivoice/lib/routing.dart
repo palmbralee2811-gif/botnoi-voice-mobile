@@ -18,7 +18,6 @@ import 'package:botnoivoice/ui/screen/email/register_screen.dart';
 import 'package:botnoivoice/ui/screen/login/login_screen.dart';
 import 'package:botnoivoice/ui/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/ui/screen/main/speaker/speaker_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/notification/notification_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -110,9 +109,5 @@ final router = GoRouter(
       path: '/confirm-delete-account',
       builder: (context, state) => const ConfirmDeleteAccountScreen(),
     ),
-    // GoRoute(
-    //   path: '/notification',
-    //   builder: (context, state) => const NotificationScreen(),
-    // ),
   ],
 );
