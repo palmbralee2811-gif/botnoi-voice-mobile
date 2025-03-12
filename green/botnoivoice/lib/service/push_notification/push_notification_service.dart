@@ -3,7 +3,21 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
 
-// Function Save Token to Database
+// DO NOT REMOVE ALL COMMENTED CODE IN THIS FILE
+// HOW TO RUN ON IOS AND UPDATE PODS
+// FOR MacOS M1/M2/M3/M4 Chip
+/*
+cd ios
+rm -rf Podfile.lock Pods
+arch -x86_64 pod repo update
+arch -x86_64 pod install --repo-update
+cd ..
+flutter clean
+flutter pub get
+flutter run
+*/
+
+//TODO: Function Save Token to Database
 // 1.UID from Firebase
 // 2.FCM TOKEN
 // 3.Email
@@ -12,9 +26,10 @@ import 'package:logger/logger.dart';
 // 6.Device Name
 // 7.Device Model
 
-// Show Local Notification on Home Screen
+//TODO: Show Local Notification on Home Screen
+// 1.เพิ่มการแจ้งเตือนในหน้า Home แสดง เป็น Local Notification
 
-// Testing on Android
+//TODO: Testing on Android
 
 class PushNotificationService {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
