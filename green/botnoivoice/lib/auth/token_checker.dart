@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /*
-//TODO: Fix the error | [DONE] 10/3/2023, 10:48 AM
+// DONE: [Error] 10/3/2023, 10:48 AM
 
 [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: This widget has been unmounted, so the State no longer has a context (and should be considered defunct).
 Consider canceling any active work during "dispose" or using the "mounted" getter to determine if the State is still active.

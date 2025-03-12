@@ -277,7 +277,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: kDark,
             ),
             title: Text(
-              'แจ้งเตือน ​(ยังไม่ใส่ .tr())', // แจ้งเตือน
+              'แจ้งเตือน (ยังไม่ใส่ .tr())', // แจ้งเตือน
               style: GoogleFonts.prompt(
                 fontSize:
                     ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,

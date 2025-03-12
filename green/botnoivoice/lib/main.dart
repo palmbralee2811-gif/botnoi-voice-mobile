@@ -4,7 +4,7 @@ import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/function/app_language_function.dart';
 import 'package:botnoivoice/routing.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/push_notification/push_notification_service.dart';
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/coupon/coupon_service.dart';
 import 'package:botnoivoice/call_reload_data.dart';
