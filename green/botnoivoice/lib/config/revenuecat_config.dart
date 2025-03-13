@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:botnoivoice/config/api_key_config.dart';
-import 'package:botnoivoice/config/get_user_id.dart';
+import 'package:botnoivoice/function/get_user_id.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';

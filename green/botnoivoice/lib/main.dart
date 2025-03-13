@@ -7,7 +7,7 @@ import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/coupon/coupon_service.dart';
-import 'package:botnoivoice/call_reload_data.dart';
+import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/service/email/email_change_username.dart';
 import 'package:botnoivoice/service/email/email_delete_account.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
@@ -42,7 +42,7 @@ void main() async {
   });
 
   // เรียกใช้งาน Push Notification Service
-  await PushNotificationService.init();
+  // await PushNotificationService.init();
 
   // โหลดภาษาเริ่มต้นจาก LanguageHelper
   String localeCode = await loadSelectedLanguage();

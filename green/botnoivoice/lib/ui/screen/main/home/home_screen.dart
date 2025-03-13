@@ -1,7 +1,7 @@
 import 'package:botnoivoice/function/generate_audio.dart';
 import 'package:botnoivoice/function/open_audio_player.dart';
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/call_reload_data.dart';
+import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/function/random_string.dart';
 import 'package:botnoivoice/ui/screen/main/home/appbar_top.dart';
 import 'package:botnoivoice/ui/screen/drawer/drawer_appbar.dart';

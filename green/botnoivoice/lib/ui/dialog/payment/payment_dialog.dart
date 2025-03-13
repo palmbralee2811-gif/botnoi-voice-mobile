@@ -1,4 +1,4 @@
-import 'package:botnoivoice/call_reload_data.dart';
+import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/service/payment/payment_service.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';

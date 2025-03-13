@@ -1,0 +1,5 @@
+chmod +x setup_and_run.sh
+
+cd /Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/mobile_app_documents/
+
+./setup_and_run.sh

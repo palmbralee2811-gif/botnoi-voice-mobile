@@ -268,28 +268,6 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
           ),
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.card_giftcard_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'แจ้งเตือน (ยังไม่ใส่ .tr())', // แจ้งเตือน
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              context.go('/notification');
-            },
-          ),
-          SizedBox(height: 10.h),
         ],
       ),
     );

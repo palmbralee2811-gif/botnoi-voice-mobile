@@ -1,6 +1,6 @@
 import 'package:botnoivoice/function/get_free_icon_path.dart';
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/call_reload_data.dart';
+import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/ui/screen/main/home/appbar_bottom.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/payment/payment_dialog.dart';
