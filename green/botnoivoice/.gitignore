@@ -52,3 +52,6 @@ models.jsonc
 # Don't upload customer's data to GitHub
 *.csv
 *.csv.gz
+
+# Don't upload the .env file to GitHub
+*.env
