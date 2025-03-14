@@ -1,10 +1,11 @@
+import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/ui/screen/drawer/account/account_screen_logic.dart';
 import 'package:botnoivoice/ui/screen/drawer/account/user_info_row.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
-import 'package:botnoivoice/ui/widget/button/email_delete_account_button.dart';
+import 'package:botnoivoice/ui/widget/button/delete_account_button.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,7 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final emailProvider = Provider.of<EmailLogin>(context, listen: false);
+    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -226,8 +228,12 @@ class _AccountScreenState extends State<AccountScreen> {
               SizedBox(
                   height: ResponsiveDesignOrientation.isLandscape ? 6.h : 16.h),
               if (emailProvider.isLoggedIn &&
-                  emailProvider.user?.providerData[0].providerId == 'password')
-                const EmailDeleteAccountButton(),
+                      emailProvider.user?.providerData[0].providerId ==
+                          'password' ||
+                  appleProvider.isLoggedIn &&
+                      appleProvider.user?.providerData[0].providerId ==
+                          'apple.com')
+                const DeleteAccountButton(),
               SizedBox(
                   height: ResponsiveDesignOrientation.isLandscape ? 8.h : 16.h),
             ],

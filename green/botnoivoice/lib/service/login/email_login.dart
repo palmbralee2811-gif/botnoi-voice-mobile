@@ -34,6 +34,7 @@ class EmailLogin with ChangeNotifier {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (user?.providerData[0].providerId == 'password') {
         this.user = user;
+        _logger.d("Email Firebase User UID: ${user?.uid}");
         _logger.i("Login with Email: $user");
         _isLoggedIn = true;
       }

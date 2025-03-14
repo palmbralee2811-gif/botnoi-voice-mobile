@@ -118,7 +118,7 @@
         "confirm_account_deletion_below": "Konfirmasi penghapusan akun di bawah ini"
     },
     "confirm_delete_account": {
-        "unable_to_delete_account": "Tidak dapat menghapus akun. Anda tidak masuk dengan email.",
+        "unable_to_delete_account": "Tidak dapat menghapus akun. Anda tidak terdaftar masuk dengan akun email atau Akun Apple.",
         "incorrect_password": "Kata sandi salah",
         "error_try_again": "Terjadi kesalahan. Silakan coba lagi.",
         "confirm_password": "Konfirmasi kata sandi",
@@ -146,6 +146,7 @@
         "username_taken": "Nama pengguna ini sudah digunakan oleh akun lain. Silakan pilih nama pengguna yang berbeda"
     },
     "delete_account_provider": {
+        "apple_signin_canceled": "Pengguna membatalkan Masuk dengan Apple.",
         "incorrect_password": "Kata sandi yang Anda masukkan salah. Silakan coba lagi",
         "error_confirming_password": "Terjadi kesalahan saat mengonfirmasi kata sandi Anda. Silakan coba lagi",
         "not_logged_in_with_username_and_password": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan",

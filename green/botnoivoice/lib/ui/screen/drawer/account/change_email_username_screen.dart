@@ -47,7 +47,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
           context: context,
           text: 'change_email_username.username_changed_successfully'.tr(), //ตั้งชื่อผู้ใช้งานใหม่สำเร็จ
           onPressed: () async {
-            /// Logout and Redirect to AuthChecker
+            /// Logout and Redirect to `login_screen.dart`
             openEmailLogout(context);
           },
         ).showCheckmarkModalWithAction(context);

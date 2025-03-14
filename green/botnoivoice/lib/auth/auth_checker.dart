@@ -33,7 +33,7 @@ class AuthChecker extends StatelessWidget {
           // ตรวจสอบสถานะการยืนยันอีเมล
           if (!emailProvider.user!.emailVerified) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              // Logout and Redirect to AuthChecker
+              // Logout and Redirect to `login_screen.dart`
               openEmailLogout(context);
             });
             loginProvider = null;

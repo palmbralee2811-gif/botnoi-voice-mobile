@@ -4,9 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 /// ***DO NOT DELETE THIS TEXT FOR ANY REASON***
 ///
+/// *Delete Account for Email/Password and Apple Sign In*
+/// 
 /// 3 Steps to Delete Account:
 /// - 1. Verify the User Password.
 /// - 2. Delete User Account Data in Database (MongoDB).
@@ -15,7 +18,7 @@ import 'package:logger/logger.dart';
 /// ***WARNING***
 /// - When you delete the user account in Firebase,
 /// it will delete the user account in both staging and production environments.
-class EmailDeleteAccount with ChangeNotifier {
+class DeleteAccount with ChangeNotifier {
   String? _errorMessage;
   final Logger _logger = Logger(); // For debugging
 
@@ -29,17 +32,49 @@ class EmailDeleteAccount with ChangeNotifier {
   }
 
   /// ฟังก์ชันตรวจสอบรหัสผ่าน
-  Future<bool> verifyPassword(String password) async {
+  ///
+  /// Method to verify the user password before deleting the account.
+  ///
+  /// - Supports: Email/Password and Apple Sign In.
+  /// - Returns: `true` if password verification is successful.
+  Future<bool> verifyPassword(String password, String providerId) async {
     final user = FirebaseAuth.instance.currentUser;
     if (isPasswordProviderUser(user)) {
       try {
-        final credential = EmailAuthProvider.credential(
-          email: user!.email!,
-          password: password,
-        );
-        await user.reauthenticateWithCredential(credential);
-        _errorMessage = null;
-        notifyListeners();
+        // Check if user login with Email/Password Account
+        if (providerId == 'password') {
+          final credential = EmailAuthProvider.credential(
+            email: user!.email!,
+            password: password,
+          );
+          await user.reauthenticateWithCredential(credential);
+          _errorMessage = null; // clear error message
+          notifyListeners(); // notify to update UI
+
+          // Check if user login with Apple Account
+        } else if (providerId == 'apple.com') {
+          final appleCredential = await SignInWithApple.getAppleIDCredential(
+            scopes: [
+              AppleIDAuthorizationScopes.email,
+              AppleIDAuthorizationScopes.fullName,
+            ],
+          );
+          final oAuthProvider = OAuthProvider('apple.com');
+          final credential = oAuthProvider.credential(
+            idToken: appleCredential.identityToken,
+            accessToken: appleCredential.authorizationCode,
+          );
+          await FirebaseAuth.instance.signInWithCredential(credential);
+          _errorMessage = null; // clear error message
+          notifyListeners(); // notify to update UI
+        } else {
+          _errorMessage = 'DO NOT SUPPORT (Only Email/Password and Apple Account)';
+          _logger.e(_errorMessage); // clear error message
+          notifyListeners(); // notify to update UI
+          return false;
+        }
+        
+        // Return true if password verification is successful
         return true;
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
@@ -68,6 +103,12 @@ class EmailDeleteAccount with ChangeNotifier {
   }
 
   /// ฟังก์ชันลบข้อมูลในฐานข้อมูล
+  ///
+  /// **API to Delete User Account in Database**
+  /// 
+  /// - Supports: Email/Password and Apple Sign In.**
+  /// - API Method: DELETE
+  /// - Database: Studio 3T MongoDB.
   Future<void> deleteUserAccountWithDatabase() async {
     final user = FirebaseAuth.instance.currentUser;
     if (isPasswordProviderUser(user)) {

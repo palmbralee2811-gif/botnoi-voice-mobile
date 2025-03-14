@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-/// Open Email Logout Function and Redirect to AuthChecker
+/// Open Email Logout Function and Redirect to `login_screen.dart`
 Future<void> openEmailLogout(BuildContext context) async {
   try {
     await Provider.of<EmailLogin>(context, listen: false).signOutWithEmail(context);
-    // Redirect to AuthChecker
-    context.go('/auth');
+    // Redirect to `login_screen.dart`
+    context.go('/login');
   } catch (e) {
     NotificationPopup(
       context: context,
@@ -21,12 +21,12 @@ Future<void> openEmailLogout(BuildContext context) async {
   }
 }
 
-/// Open Apple Logout Function and Redirect to AuthChecker
+/// Open Apple Logout Function and Redirect to `login_screen.dart`
 Future<void> openAppleLogout(BuildContext context) async {
   try {
     await Provider.of<AppleLogin>(context, listen: false).signOutWithApple(context);
-    // Redirect to AuthChecker
-    context.go('/auth');
+    // Redirect to `login_screen.dart`
+    context.go('/login');
   } catch (e) {
     NotificationPopup(
       context: context,
@@ -35,12 +35,12 @@ Future<void> openAppleLogout(BuildContext context) async {
   }
 }
 
-/// Open Google Logout Function and Redirect to AuthChecker
+/// Open Google Logout Function and Redirect to `login_screen.dart`
 Future<void> openGoogleLogout(BuildContext context) async {
   try {
     await Provider.of<GoogleLogin>(context, listen: false).signOutWithGoogle(context);
-    // Redirect to AuthChecker
-    context.go('/auth');
+    // Redirect to `login_screen.dart`
+    context.go('/login');
   } catch (e) {
     NotificationPopup(
       context: context,
@@ -49,12 +49,12 @@ Future<void> openGoogleLogout(BuildContext context) async {
   }
 }
 
-/// Open Line Logout Function and Redirect to AuthChecker
+/// Open Line Logout Function and Redirect to `login_screen.dart`
 Future<void> openLineLogout(BuildContext context) async {
   try {
     await Provider.of<LineLogin>(context, listen: false).signOutWithLine(context);
-    // Redirect to AuthChecker
-    context.go('/auth');
+    // Redirect to `login_screen.dart`
+    context.go('/login');
   } catch (e) {
     NotificationPopup(
       context: context,

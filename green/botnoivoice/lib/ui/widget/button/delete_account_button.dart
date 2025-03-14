@@ -5,15 +5,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EmailDeleteAccountButton extends StatefulWidget {
-  const EmailDeleteAccountButton({super.key});
+/// Delete Account Button for Email/Password and Apple Sign In
+class DeleteAccountButton extends StatefulWidget {
+  const DeleteAccountButton({super.key});
 
   @override
-  State<EmailDeleteAccountButton> createState() =>
-      _EmailDeleteAccountButtonState();
+  State<DeleteAccountButton> createState() => _DeleteAccountButtonState();
 }
 
-class _EmailDeleteAccountButtonState extends State<EmailDeleteAccountButton> {
+class _DeleteAccountButtonState extends State<DeleteAccountButton> {
   @override
   Widget build(BuildContext context) {
     return Container(

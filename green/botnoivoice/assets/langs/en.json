@@ -118,7 +118,7 @@
         "confirm_account_deletion_below": "Confirm account deletion below"
     },
     "confirm_delete_account": {
-        "unable_to_delete_account": "Unable to delete account. You are not logged in with an email.",
+        "unable_to_delete_account": "Unable to delete account. You are not logged in with an Email Account or Apple Account.",
         "incorrect_password": "Incorrect password",
         "error_try_again": "An error occurred. Please try again.",
         "confirm_password": "Confirm password",
@@ -146,6 +146,7 @@
         "username_taken": "This username is already in use by another account. Please choose a different username."
     },
     "delete_account_provider": {
+        "apple_signin_canceled": "User canceled Apple Sign-In.",
         "incorrect_password": "The password you entered is incorrect. Please try again.",
         "error_confirming_password": "An error occurred while confirming your password. Please try again.",
         "not_logged_in_with_username_and_password": "You are not logged in with a username and password. Please log in to proceed.",

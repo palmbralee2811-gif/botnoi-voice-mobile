@@ -118,7 +118,7 @@
         "confirm_account_deletion_below": "ยืนยันลบบัญชีด้านล่าง"
     },
     "confirm_delete_account": {
-        "unable_to_delete_account": "ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยอีเมล",
+        "unable_to_delete_account": "ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยบัญชี Email หรือ บัญชี Apple",
         "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
         "error_try_again": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.",
         "confirm_password": "ยืนยันรหัสผ่าน",
@@ -146,6 +146,7 @@
         "username_taken": "ชื่อผู้ใช้งานซ้ำกับบัญชีอื่น"
     },
     "delete_account_provider": {
+        "apple_signin_canceled": "ผู้ใช้ยกเลิกการลงชื่อเข้าใช้ด้วย Apple",
         "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
         "error_confirming_password": "เกิดข้อผิดพลาดในการยืนยันรหัสผ่าน",
         "not_logged_in_with_username_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",

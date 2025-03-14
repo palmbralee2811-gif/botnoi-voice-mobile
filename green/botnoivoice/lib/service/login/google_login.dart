@@ -26,6 +26,7 @@ class GoogleLogin extends ChangeNotifier {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (user?.providerData[0].providerId == 'google.com') {
         this.user = user;
+        _logger.d("Google Firebase User UID: ${user?.uid}");
         _logger.d("Login with Google: $user");
         _isLoggedIn = true;
       }

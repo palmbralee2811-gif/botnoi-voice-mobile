@@ -71,6 +71,7 @@ class LineLogin with ChangeNotifier {
       _lineEmail = loginResult.accessToken.email;
       _isLoggedIn = true;
       await _getProfile();
+      _logger.d("LINE Account User UID: $_idTokenRaw");
       _logger.i("User signed in with LINE successfully.");
       notifyListeners(); // Notify listeners only once when login state changes
     } on PlatformException catch (e, stackTrace) {

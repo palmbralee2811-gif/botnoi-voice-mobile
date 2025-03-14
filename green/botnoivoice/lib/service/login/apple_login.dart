@@ -26,6 +26,7 @@ class AppleLogin extends ChangeNotifier {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (user?.providerData[0].providerId == 'apple.com') {
         this.user = user;
+        _logger.d("Apple Firebase User UID: ${user?.uid}");
         _logger.d("Login with Apple: $user");
         _isLoggedIn = true;
       }
