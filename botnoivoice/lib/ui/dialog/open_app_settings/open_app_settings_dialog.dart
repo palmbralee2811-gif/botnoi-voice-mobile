@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// Android Open App Settings Dialog
-class AndroidOpenAppSettingsDialog {
-  AndroidOpenAppSettingsDialog({
+class OpenAppSettingsDialog {
+  OpenAppSettingsDialog({
     required this.context,
     required this.text,
   });
@@ -34,7 +34,7 @@ class AndroidOpenAppSettingsDialog {
             child: TextButton(
               onPressed: () {
                 // Redirect to app settings
-                openAppSettings(); 
+                openAppSettings();
               },
               child: Text(
                 'android_permission.go_to_settings_page'.tr(), //ไปหน้าตั้งค่า

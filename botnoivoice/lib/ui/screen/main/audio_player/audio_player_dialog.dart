@@ -6,7 +6,7 @@ import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.d
 import 'package:botnoivoice/function/share_audio_file.dart';
 import 'package:botnoivoice/function/create_ios_app_folder.dart';
 import 'package:botnoivoice/service/permission/android_permission.dart';
-import 'package:botnoivoice/ui/dialog/android_open_app_settings/android_open_app_settings_dialog.dart';
+import 'package:botnoivoice/ui/dialog/open_app_settings/open_app_settings_dialog.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_close_button.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_icon.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_row.dart';
@@ -25,7 +25,8 @@ class AudioPlayerDialog extends StatefulWidget {
   final String filePath;
   final String audioUrl;
 
-  const AudioPlayerDialog({super.key, required this.filePath, required this.audioUrl});
+  const AudioPlayerDialog(
+      {super.key, required this.filePath, required this.audioUrl});
 
   @override
   State<AudioPlayerDialog> createState() => _AudioPlayerDialogState();
@@ -58,7 +59,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
     // Show Alert if Permission Denied
     if (!hasPermission) {
-      AndroidOpenAppSettingsDialog(
+      OpenAppSettingsDialog(
               context: context,
               text: 'audio_player.permission_denied'
                   .tr()) //สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า

@@ -1,5 +1,6 @@
 import 'package:botnoivoice/config/revenuecat_config.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
@@ -13,24 +14,6 @@ import 'package:botnoivoice/ui/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/ui/screen/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-/*
-// DONE: [Error] 10/3/2023, 10:48 AM
-
-[ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: This widget has been unmounted, so the State no longer has a context (and should be considered defunct).
-Consider canceling any active work during "dispose" or using the "mounted" getter to determine if the State is still active.
-#0      State.context.<anonymous closure> (package:flutter/src/widgets/framework.dart:951:9)
-framework.dart:951
-#1      State.context (package:flutter/src/widgets/framework.dart:957:6)
-framework.dart:957
-#2      _TokenCheckerState._loadGoogleCredentials (package:botnoivoice/auth/token_checker.dart:98:31)
-token_checker.dart:98
-<asynchronous suspension>
-#3      _TokenCheckerState.initApp (package:botnoivoice/auth/token_checker.dart:51:7)
-token_checker.dart:51
-<asynchronous suspension>
-*/
-
 
 /// Token Management for Google, Apple, LINE, and Email. | Json Web Token (JWT),  User Profile, and User Credentials.
 ///
@@ -121,6 +104,13 @@ class _TokenCheckerState extends State<TokenChecker> {
 
     if (!_isDisposed) await configureRevenueCat(context);
 
+    /// ✅ แก้ไขการเรียก Push Notification Service ให้ตรวจสอบ mounted ก่อน
+    if (mounted) {
+      Future.delayed(Duration.zero, () async {
+        await PushNotificationService.init(context);
+      });
+    }
+
     if (mounted) {
       setState(() {
         _initialized = true;
@@ -140,6 +130,13 @@ class _TokenCheckerState extends State<TokenChecker> {
 
     if (!_isDisposed) await configureRevenueCat(context);
 
+    /// ✅ แก้ไขการเรียก Push Notification Service ให้ตรวจสอบ mounted ก่อน
+    if (mounted) {
+      Future.delayed(Duration.zero, () async {
+        await PushNotificationService.init(context);
+      });
+    }
+
     if (mounted) {
       setState(() {
         _initialized = true;
@@ -157,6 +154,13 @@ class _TokenCheckerState extends State<TokenChecker> {
     if (!_isDisposed) await lineTokenProvider.loadRemainingCredits();
 
     if (!_isDisposed) await configureRevenueCat(context);
+
+    /// ✅ แก้ไขการเรียก Push Notification Service ให้ตรวจสอบ mounted ก่อน
+    if (mounted) {
+      Future.delayed(Duration.zero, () async {
+        await PushNotificationService.init(context);
+      });
+    }
 
     if (mounted) {
       setState(() {
@@ -187,6 +191,13 @@ class _TokenCheckerState extends State<TokenChecker> {
     }
 
     if (!_isDisposed) await configureRevenueCat(context);
+
+    /// ✅ แก้ไขการเรียก Push Notification Service ให้ตรวจสอบ mounted ก่อน
+    if (mounted) {
+      Future.delayed(Duration.zero, () async {
+        await PushNotificationService.init(context);
+      });
+    }
 
     if (mounted) {
       setState(() {
