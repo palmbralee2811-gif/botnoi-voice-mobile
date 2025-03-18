@@ -1,3 +1,4 @@
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,12 @@ class AppleLogin extends ChangeNotifier {
   Future<void> signOutWithApple(BuildContext context) async {
     try {
       Provider.of<AppleToken>(context, listen: false).clearTokens();
+
+      // ❌ Unsubscribe from Topic เมื่อล็อกเอาต์
+      await PushNotificationService.unsubscribeFromTopic("default");
+      // ❌ Delete FCM Token Form Firebase Messaging and Database
+      await PushNotificationService.deleteFcmToken(context);
+
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false; // User's sign out
       _logger.i("User signed out successfully.");

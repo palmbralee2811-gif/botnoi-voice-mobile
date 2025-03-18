@@ -59,45 +59,7 @@ class PushNotificationService {
     );
 
     // 🔄 **ตรวจสอบสิทธิ์ Notification**
-    NotificationSettings settings =
-        await _firebaseMessaging.requestPermission();
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      _logger.i("✅ ผู้ใช้ยอมรับ Notification แล้ว");
-
-      // ✅ ดึง Token สำหรับ FCM
-      String? token = await _firebaseMessaging.getToken();
-      _logger.i("📲 FCM Token from Device: $token");
-
-      // ✅ อัปเดต FCM Token ไปยัง Server
-      if (token != null) {
-        final fcmService = FcmTokenService();
-        bool success = await fcmService.updateFcmToken(context, token);
-        if (success) {
-          _logger.i("✅ อัปเดต FCM Token ไปยัง Server สำเร็จ");
-        } else {
-          _logger.e("❌ อัปเดต FCM Token ไม่สำเร็จ");
-        }
-      }
-    } else {
-      _logger.w("🚫 ผู้ใช้ปฏิเสธ Notification");
-
-      /// ✅ แจ้งให้ผู้ใช้ไปเปิดสิทธิ์แจ้งเตือนเอง
-      /// 🔄 `Future.delayed(Duration.zero, () {...})`
-      /// - ใช้เพื่อ **เลื่อนการรันโค้ดไปยัง event loop ถัดไป**
-      /// - ป้องกันปัญหา `showDialog()` ถูกเรียกก่อนที่ UI จะโหลดเสร็จ
-      /// - ทำให้ `Dialog` แสดงผลได้ถูกต้อง โดยไม่มี error จาก `context`
-      Future.delayed(
-        Duration.zero,
-        () {
-          OpenAppSettingsDialog(
-            context: context,
-            //สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า
-            text: 'audio_player.permission_denied'.tr(),
-          ).showPermissionDeniedDialog();
-        },
-      );
-    }
+    await _checkNotificationPermission(context);
 
     // ✅ **Update FCM Token when user logs in from a new device**
     _firebaseMessaging.onTokenRefresh.listen((newToken) async {
@@ -128,6 +90,70 @@ class PushNotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _logger.i("🔄 เปิดแอปจาก Notification: ${message.notification?.title}");
     });
+  }
+
+  /// 🔄 **ตรวจสอบสิทธิ์ Notification**
+  static Future<void> _checkNotificationPermission(BuildContext context) async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission();
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      _logger.i("✅ ผู้ใช้ยอมรับ Notification แล้ว");
+
+      // ✅ ดึง Token และ Subscribe to Topic เมื่อแอปเปิด
+
+      // Firebase Cloud Messaging Topic Name
+      String topicNameFCM = "default";
+      await subscribeToTopic(topicNameFCM);
+
+      String? token = await _firebaseMessaging.getToken();
+      _logger.i("📲 FCM Token from Device: $token");
+
+      if (token != null) {
+        final fcmService = FcmTokenService();
+        bool success = await fcmService.updateFcmToken(context, token);
+        if (success) {
+          _logger.i("✅ อัปเดต FCM Token ไปยัง Server สำเร็จ");
+        } else {
+          _logger.e("❌ อัปเดต FCM Token ไม่สำเร็จ");
+        }
+      }
+    } else {
+      _logger.w("🚫 ผู้ใช้ปฏิเสธ Notification");
+
+      /// ✅ แจ้งให้ผู้ใช้ไปเปิดสิทธิ์แจ้งเตือนเอง
+      Future.delayed(Duration.zero, () {
+        OpenAppSettingsDialog(
+          context: context,
+          text: 'audio_player.permission_denied'.tr(),
+        ).showPermissionDeniedDialog();
+      });
+    }
+  }
+
+  /// ✅ Subscribe to FCM Topic
+  static Future<void> subscribeToTopic(String topic) async {
+    await _firebaseMessaging.subscribeToTopic(topic);
+    _logger.i("✅ Subscribed to Topic: $topic");
+  }
+
+  /// ❌ Unsubscribe from FCM Topic
+  static Future<void> unsubscribeFromTopic(String topic) async {
+    await _firebaseMessaging.unsubscribeFromTopic(topic);
+    _logger.i("❌ Unsubscribed from Topic: $topic");
+  }
+
+  ///Delete FCM Token from Firebase Messaging and Database
+  static Future<void> deleteFcmToken(BuildContext context) async {
+    _logger.i("🛠 Deleting FCM Token...");
+
+    // Delete FCM Token from Firebase Messaging
+    await _firebaseMessaging.deleteToken();
+
+    // Delete FCM Token from Database
+    final fcmService = FcmTokenService();
+    await fcmService.deleteFcmToken(context);
+
+    _logger.i("✅ FCM Token Deleted Successfully");
   }
 
   /// 🔔 แสดงแจ้งเตือนภายในแอป

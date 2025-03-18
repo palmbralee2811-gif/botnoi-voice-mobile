@@ -103,4 +103,49 @@ class FcmTokenService with ChangeNotifier {
     }
     return false;
   }
+
+  ///Delete FCM Token when user logs out
+  Future<bool> deleteFcmToken(BuildContext context) async {
+    _setLoading(true);
+    try {
+      _logger.d('Fetching User ID...');
+      final userId = await getUserIdAll(context);
+
+      if (userId.isEmpty) {
+        _errorMessage = "Error: User ID is empty";
+        _logger.e(_errorMessage);
+        return false;
+      }
+
+      final url = Uri.parse('$apiUrl/db/dashboard/update_fcm_token');
+      _logger.d('Updating FCM Token at: $url');
+
+      final response = await http.put(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "user_id": userId,
+          "fcm_token": "",
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Clear Error Message
+        _errorMessage = null;
+        _logger.d('FCM Token Deleted Successfully');
+        return true;
+      } else {
+        _errorMessage = 'Failed to delete FCM Token: ${response.statusCode}';
+        _logger.e(_errorMessage);
+      }
+    } catch (e) {
+      _errorMessage = 'Exception occurred while deleting FCM Token: $e';
+      _logger.e(_errorMessage);
+    } finally {
+      _setLoading(false);
+    }
+    return false;
+  }
 }

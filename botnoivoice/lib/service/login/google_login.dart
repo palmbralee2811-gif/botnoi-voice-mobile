@@ -1,3 +1,4 @@
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +68,12 @@ class GoogleLogin extends ChangeNotifier {
   Future<void> signOutWithGoogle(BuildContext context) async {
     try {
       Provider.of<GoogleToken>(context, listen: false).clearTokens();
+      
+      // ❌ Unsubscribe from Topic เมื่อล็อกเอาต์
+      await PushNotificationService.unsubscribeFromTopic("default");
+      // ❌ Delete FCM Token Form Firebase Messaging and Database
+      await PushNotificationService.deleteFcmToken(context);
+
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false; // User's sign out

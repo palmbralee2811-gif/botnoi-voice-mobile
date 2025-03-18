@@ -1,3 +1,4 @@
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,6 +84,12 @@ class LineLogin with ChangeNotifier {
   Future<void> signOutWithLine(BuildContext context) async {
     try {
       Provider.of<LineToken>(context, listen: false).clearTokens();
+      
+      // ❌ Unsubscribe from Topic เมื่อล็อกเอาต์
+      await PushNotificationService.unsubscribeFromTopic("default");
+      // ❌ Delete FCM Token Form Firebase Messaging and Database
+      await PushNotificationService.deleteFcmToken(context);
+
       await LineSDK.instance.logout();
       _resetUserData();
       _logger.i("User signed out successfully.");

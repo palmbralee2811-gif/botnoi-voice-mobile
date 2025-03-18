@@ -1,3 +1,4 @@
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -136,6 +137,12 @@ class EmailLogin with ChangeNotifier {
   Future<void> signOutWithEmail(BuildContext context) async {
     try {
       Provider.of<EmailToken>(context, listen: false).clearTokens();
+      
+      // ❌ Unsubscribe from Topic เมื่อล็อกเอาต์
+      await PushNotificationService.unsubscribeFromTopic("default");
+      // ❌ Delete FCM Token Form Firebase Messaging and Database
+      await PushNotificationService.deleteFcmToken(context);
+
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false;
       _logger.i("User signed out successfully");

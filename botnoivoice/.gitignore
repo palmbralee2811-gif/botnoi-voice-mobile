@@ -60,3 +60,4 @@ models.jsonc
 
 # Don't upload the .env file to GitHub
 *.env
+botnoivoice-firebase-admin-sdk.json
