@@ -7,9 +7,7 @@ import 'package:logger/logger.dart';
 
 /// DO NOT REMOVE THIS COMMENT
 ///
-/// How to get FCM Token with Postman:
-/// 
-/// 0. Method: GET
+/// How to get FCM Token:
 ///
 /// 1. Get all: 
 /// - Staging: https://api-voice-staging.botnoi.ai/db/dashboard/get_all_fcm_token
@@ -56,8 +54,18 @@ class FcmTokenService with ChangeNotifier {
     }
   }
 
-  /// ฟังก์ชันส่ง API Request
-  Future<bool> _modifyFcmToken(BuildContext context, String fcmToken) async {
+  /// ฟังก์ชันอัปเดต FCM Token
+  Future<bool> updateFcmToken(BuildContext context, String newFcmToken) async {
+    return await _updateFcmTokenRequest(context, newFcmToken);
+  }
+
+  /// ฟังก์ชันลบ FCM Token
+  Future<bool> deleteFcmToken(BuildContext context) async {
+    return await _deleteFcmTokenRequest(context);
+  }
+
+  /// ฟังก์ชันส่ง Request อัปเดต FCM Token
+  Future<bool> _updateFcmTokenRequest(BuildContext context, String fcmToken) async {
     _setLoading(true);
     try {
       final userId = await _fetchUserId(context);
@@ -67,23 +75,21 @@ class FcmTokenService with ChangeNotifier {
       final headers = {"Content-Type": "application/json"};
       final body = jsonEncode({"user_id": userId, "fcm_token": fcmToken});
 
-      _logger.d('PUT request to: $uri');
+      _logger.d('Updating FCM Token: $uri');
       final response = await http.put(uri, headers: headers, body: body);
       
       _logger.d('Response Status Code: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         _errorMessage = null;
-        _logger.d(fcmToken.isEmpty
-            ? 'FCM Token Deleted Successfully'
-            : 'FCM Token Updated Successfully');
+        _logger.d('FCM Token Updated Successfully');
         return true;
       } else {
-        _errorMessage = 'Failed to modify FCM Token';
+        _errorMessage = 'Failed to update FCM Token';
         _logger.e(_errorMessage);
       }
     } catch (e) {
-      _errorMessage = 'Error during API request: $e';
+      _errorMessage = 'Error during FCM Token update: $e';
       _logger.e(_errorMessage);
     } finally {
       _setLoading(false);
@@ -91,13 +97,36 @@ class FcmTokenService with ChangeNotifier {
     return false;
   }
 
-  /// ฟังก์ชันอัปเดต FCM Token
-  Future<bool> updateFcmToken(BuildContext context, String newFcmToken) async {
-    return await _modifyFcmToken(context, newFcmToken);
-  }
+  /// ฟังก์ชันส่ง Request ลบ FCM Token
+  Future<bool> _deleteFcmTokenRequest(BuildContext context) async {
+    _setLoading(true);
+    try {
+      final userId = await _fetchUserId(context);
+      if (userId == null) return false;
 
-  /// ฟังก์ชันลบ FCM Token
-  Future<bool> deleteFcmToken(BuildContext context) async {
-    return await _modifyFcmToken(context, "");
+      final uri = Uri.parse('$apiUrl/db/dashboard/update_fcm_token');
+      final headers = {"Content-Type": "application/json"};
+      final body = jsonEncode({"user_id": userId, "fcm_token": "null"});
+
+      _logger.d('Deleting FCM Token: $uri');
+      final response = await http.put(uri, headers: headers, body: body);
+      
+      _logger.d('Response Status Code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        _errorMessage = null;
+        _logger.d('FCM Token Deleted Successfully');
+        return true;
+      } else {
+        _errorMessage = 'Failed to delete FCM Token';
+        _logger.e(_errorMessage);
+      }
+    } catch (e) {
+      _errorMessage = 'Error during FCM Token deletion: $e';
+      _logger.e(_errorMessage);
+    } finally {
+      _setLoading(false);
+    }
+    return false;
   }
 }
