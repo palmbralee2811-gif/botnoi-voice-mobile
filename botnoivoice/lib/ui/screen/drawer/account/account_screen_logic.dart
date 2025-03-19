@@ -10,27 +10,109 @@ import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
+import 'package:botnoivoice/ui/style/style.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class AccountScreenLogic {
+  final Logger _logger = Logger(); // Debugging
+
+  /// Display Loading Dialog
+  Future<void> _showLoadingDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
+          child: Padding(
+            padding: EdgeInsets.all(20.w),
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Display Notification with Snackbar
+  void _showSnackbar(BuildContext context, String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message.tr()),
+        backgroundColor: color,
+        duration: const Duration(seconds: 5),
+      ),
+    );
+  }
+
+  /// Signs out the user from the currently active authentication provider.
+  Future<void> _signOutProvider(BuildContext context) async {
+    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
+    final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
+    final lineProvider = Provider.of<LineLogin>(context, listen: false);
+    final emailProvider = Provider.of<EmailLogin>(context, listen: false);
+
+    if (appleProvider.isLoggedIn) {
+      _logger.d("Signing out from Apple...");
+      await appleProvider.signOutWithApple(context);
+    }
+    if (googleProvider.isLoggedIn) {
+      _logger.d("Signing out from Google...");
+      await googleProvider.signOutWithGoogle(context);
+    }
+    if (lineProvider.isLoggedIn) {
+      _logger.d("Signing out from LINE...");
+      await lineProvider.signOutWithLine(context);
+    }
+    if (emailProvider.isLoggedIn) {
+      _logger.d("Signing out from Email...");
+      await emailProvider.signOutWithEmail(context);
+    }
+  }
+
+  /// Calling Sign Out Method, Dialog and Snackbar
+  Future<void> signOut(BuildContext context) async {
+    _logger.i("Sign out process started...");
+    _showLoadingDialog(context);
+
+    try {
+      await _signOutProvider(context);
+      _logger.i("User signed out successfully.");
+      context.pop(); // Close Loading Dialog
+      _showSnackbar(context, 'Sign out successfully', kDarkGray);
+      context.go('/login'); // Redirect to `login_screen.dart`
+    } catch (e) {
+      _logger.e("Error during sign out: $e");
+      context.pop(); // Close Loading Dialog
+      _showSnackbar(context, 'Sign out failed', Colors.red);
+    }
+  }
+
+  /// Loading User Information
   Future<void> loadUserInfo({
     required BuildContext context,
     required Function(
-            String displayName,
-            String userId,
-            String email,
-            bool isEmailLoggedIn,
-            bool isAppleLoggedIn,
-            bool isGoogleLoggedIn,
-            bool isLineLoggedIn)
-        onUpdateState,
+      String displayName,
+      String userId,
+      String email,
+      bool isEmailLoggedIn,
+      bool isAppleLoggedIn,
+      bool isGoogleLoggedIn,
+      bool isLineLoggedIn,
+    ) onUpdateState,
   }) async {
-    /// Fetch user data from Firebase
     var appleProvider = Provider.of<AppleLogin>(context, listen: false);
     var googleProvider = Provider.of<GoogleLogin>(context, listen: false);
     var lineProvider = Provider.of<LineLogin>(context, listen: false);
@@ -38,7 +120,6 @@ class AccountScreenLogic {
     var userInfoProvider =
         Provider.of<CheckUserIsShowEmail>(context, listen: false);
 
-    /// Fetch user data from Database (API)
     var appleTokenProvider = Provider.of<AppleToken>(context, listen: false);
     var googleTokenProvider = Provider.of<GoogleToken>(context, listen: false);
     var lineTokenProvider = Provider.of<LineToken>(context, listen: false);
@@ -80,64 +161,43 @@ class AccountScreenLogic {
       isEmailLoggedIn = true;
     }
 
-    onUpdateState(displayName, userId, email, isEmailLoggedIn, isAppleLoggedIn,
-        isGoogleLoggedIn, isLineLoggedIn);
-  }
-
-  Future<void> signOut(BuildContext context) async {
-    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
-    final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
-    final lineProvider = Provider.of<LineLogin>(context, listen: false);
-    final emailProvider = Provider.of<EmailLogin>(context, listen: false);
-
-    if (appleProvider.isLoggedIn) await appleProvider.signOutWithApple(context);
-    if (googleProvider.isLoggedIn) await googleProvider.signOutWithGoogle(context);
-    if (lineProvider.isLoggedIn) await lineProvider.signOutWithLine(context);
-    if (emailProvider.isLoggedIn) await emailProvider.signOutWithEmail(context);
-
-    // Redirect to AuthChecker
-    context.go('/auth');
-  }
-
-  /// ฟังก์ชันสำหรับซ่อนอีเมล
-  String getMaskedEmail(bool isEmailHidden, String email) {
-    if (isEmailHidden) {
-      var atIndex = email.indexOf('@'); // หาตำแหน่งของ '@'
-      if (atIndex > 0) {
-        // ซ่อนทุกตัวอักษรก่อน '@' โดยใช้จำนวน '*' เท่ากับจำนวนตัวอักษรใน username
-        return '*' * atIndex + email.substring(atIndex);
-      } else {
-        return "********"; // กรณีที่ไม่สามารถหาตำแหน่ง '@' ได้
-      }
-    }
-    return email; // เปิดเผยอีเมลเต็มเมื่อ isEmailHidden เป็น false
-  }
-
-  /// ฟังก์ชันสำหรับตัด UID ให้แสดง 15 ตัวอักษรแรก
-  String getDisplayUID(String uid) {
-    if (uid.length > 15) {
-      return '${uid.substring(0, 15)}...'; // แสดงเฉพาะ 15 ตัวอักษรแรก
-    }
-    return uid; // แสดง UID ปกติหากไม่เกิน 15 ตัวอักษร
-  }
-
-  /// ฟังก์ชันคัดลอก UID
-  void copyUID(BuildContext context, String userId) {
-    Clipboard.setData(ClipboardData(text: userId));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          content:
-              Text('account.uid_copy_success'.tr())), //UID คัดลอกเรียบร้อยแล้ว
+    onUpdateState(
+      displayName,
+      userId,
+      email,
+      isEmailLoggedIn,
+      isAppleLoggedIn,
+      isGoogleLoggedIn,
+      isLineLoggedIn,
     );
   }
 
-  /// Function to check if the user has permission to view the email
+  /// Hiden User Email
+  String getMaskedEmail(bool isEmailHidden, String email) {
+    if (isEmailHidden) {
+      var atIndex = email.indexOf('@');
+      return atIndex > 0
+          ? '*' * atIndex + email.substring(atIndex)
+          : "********";
+    }
+    return email;
+  }
+
+  /// Display UID for first 15 characters
+  String getDisplayUID(String uid) {
+    return uid.length > 15 ? '${uid.substring(0, 15)}...' : uid;
+  }
+
+  /// Copy UID to Clipboard
+  void copyUID(BuildContext context, String userId) {
+    Clipboard.setData(ClipboardData(text: userId));
+    _showSnackbar(context, 'account.uid_copy_success'.tr(), kDarkGray);
+  }
+
+  /// Check Email Permission (True/False)
   Future<bool> checkEmailPermission(BuildContext context) async {
     final emailForgetPassword =
         Provider.of<EmailForgetPassword>(context, listen: false);
-
-    final hasEmailPermission =
-        await emailForgetPassword.checkShowEmail(context);
-    return hasEmailPermission; // Return TRUE or FALSE
+    return await emailForgetPassword.checkShowEmail(context);
   }
 }

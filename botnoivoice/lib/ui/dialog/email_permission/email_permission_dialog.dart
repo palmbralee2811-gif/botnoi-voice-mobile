@@ -55,7 +55,7 @@ class EmailPermissionDialog extends StatelessWidget {
                     fontSize:
                         ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
                     fontWeight: FontWeight.w400,
-                    color: kGray,
+                    color: kDarkGray,
                   ),
                   textAlign: TextAlign.left,
                 ),

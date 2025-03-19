@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class UserInfoRow extends StatelessWidget {
+class RowUserInfoWidget extends StatelessWidget {
   final String title;
   final String value;
   final IconData? icon;
   final VoidCallback? onIconPressed;
   final bool isValueOverflow;
 
-  const UserInfoRow({
+  const RowUserInfoWidget({
     super.key,
     required this.title,
     required this.value,
