@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 # ระบุ Path ของไฟล์ .env
-env_path = "/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/mobile_app_documents/models_data_with_python/download_image_from_url/.env"
+env_path = "/Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/utils/models_data_with_python/download_image_from_url/.env"
 
 # 🔍 1️⃣ โหลดค่าจาก .env
 load_dotenv(env_path)
@@ -23,7 +23,7 @@ if not all([AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, BUCKET_NAME]):
     exit()
 
 # 🔍 3️⃣ ตรวจสอบว่า JSON ไฟล์โหลดได้หรือไม่
-json_file_path = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/data/speaker_model.json'
+json_file_path = '/Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/assets/data/speaker_model.json'
 
 if not os.path.exists(json_file_path):
     print(f"❌ ERROR: JSON file not found at {json_file_path}")
@@ -37,7 +37,7 @@ except json.JSONDecodeError as e:
     exit()
 
 # 🔍 4️⃣ ตรวจสอบว่าโฟลเดอร์สำหรับเก็บรูปอยู่หรือไม่
-folder = '/Users/kawin101/Desktop/botnoi-voice-mobile/green/botnoivoice/assets/square_image'
+folder = '/Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/assets/square_image'
 os.makedirs(folder, exist_ok=True)
 
 # 🔍 5️⃣ ตรวจสอบว่า S3 Client ใช้งานได้หรือไม่
