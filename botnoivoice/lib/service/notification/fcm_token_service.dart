@@ -22,7 +22,9 @@ import 'package:logger/logger.dart';
 class FcmTokenService with ChangeNotifier {
   final Logger _logger = Logger();
   String? _errorMessage;
-  bool _isLoading = false; // เช็คสถานะกำลังโหลด
+
+  /// Loading status
+  bool _isLoading = false;
 
   /// Getter for error message
   String? get errorMessage => _errorMessage;
@@ -30,13 +32,13 @@ class FcmTokenService with ChangeNotifier {
   /// Getter for loading status
   bool get isLoading => _isLoading;
 
-  /// ฟังก์ชันเซ็ตค่า `isLoading` และแจ้งให้ UI อัปเดต
+  /// Set `isLoading` and notify UI
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
   }
 
-  /// ฟังก์ชันดึง userId
+  /// Fetch User ID
   Future<String?> _fetchUserId(BuildContext context) async {
     try {
       _logger.d('Fetching User ID...');
@@ -54,18 +56,9 @@ class FcmTokenService with ChangeNotifier {
     }
   }
 
-  /// ฟังก์ชันอัปเดต FCM Token
-  Future<bool> updateFcmToken(BuildContext context, String newFcmToken) async {
-    return await _updateFcmTokenRequest(context, newFcmToken);
-  }
-
-  /// ฟังก์ชันลบ FCM Token
-  Future<bool> deleteFcmToken(BuildContext context) async {
-    return await _deleteFcmTokenRequest(context);
-  }
-
-  /// ฟังก์ชันส่ง Request อัปเดต FCM Token
-  Future<bool> _updateFcmTokenRequest(BuildContext context, String fcmToken) async {
+  /// Update FCM Token with PUT Method Request to Database
+  /// Set FCM Token when user login
+  Future<bool> updateFcmToken(BuildContext context, String fcmToken) async {
     _setLoading(true);
     try {
       final userId = await _fetchUserId(context);
@@ -97,8 +90,9 @@ class FcmTokenService with ChangeNotifier {
     return false;
   }
 
-  /// ฟังก์ชันส่ง Request ลบ FCM Token
-  Future<bool> _deleteFcmTokenRequest(BuildContext context) async {
+  /// Delete FCM Token with PUT Method Request to Database
+  /// Set FCM Token to `null` when user logout
+  Future<bool> deleteFcmToken(BuildContext context) async {
     _setLoading(true);
     try {
       final userId = await _fetchUserId(context);
@@ -106,6 +100,8 @@ class FcmTokenService with ChangeNotifier {
 
       final uri = Uri.parse('$apiUrl/db/dashboard/update_fcm_token');
       final headers = {"Content-Type": "application/json"};
+
+      /// Set FCM Token to `null` when user logout
       final body = jsonEncode({"user_id": userId, "fcm_token": "null"});
 
       _logger.d('Deleting FCM Token: $uri');
