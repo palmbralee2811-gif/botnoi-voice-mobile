@@ -1,15 +1,15 @@
+# Android (.apk) for Firebase App Tester Only
 cd /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/
-
 flutter clean && flutter pub get
-
-// Android (.apk) for Firebase App Tester Only
 flutter build apk --release
 
-// Android (.aap) for Google Play Store
+# Android (.aap) for Google Play Store
+cd /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/
+flutter clean && flutter pub get
 flutter build appbundle --release
 
-// Reset Firebase Config
+# Reset Firebase Config
 https://firebase.flutter.dev/docs/cli/
 
-// For Windows OS
+# For Windows OS
 keytool -list -v -alias androiddebugkey -keystore "%USERPROFILE%.android\debug.keystore" -storepass android -keypass android
