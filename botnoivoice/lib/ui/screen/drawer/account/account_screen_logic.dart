@@ -191,7 +191,7 @@ class AccountScreenLogic {
   /// Copy UID to Clipboard
   void copyUID(BuildContext context, String userId) {
     Clipboard.setData(ClipboardData(text: userId));
-    _showSnackbar(context, 'account.uid_copy_success'.tr(), kDarkGray);
+    _showSnackbar(context, 'account.uid_copy_success', kDarkGray);
   }
 
   /// Check Email Permission (True/False)
