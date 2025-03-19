@@ -7,9 +7,6 @@
     <!-- Google Play Billing Permissions -->
     <uses-permission android:name="com.android.vending.BILLING" />
 
-    <!-- For .APK File ONLY! -->
-    <!-- <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> -->
-
     <!-- External Storage Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />

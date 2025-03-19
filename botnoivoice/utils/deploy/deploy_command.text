@@ -1,3 +1,5 @@
+cd /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/
+
 flutter clean && flutter pub get
 
 // Android (.apk) for Firebase App Tester Only
