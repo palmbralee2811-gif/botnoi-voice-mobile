@@ -74,7 +74,7 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
           iconSize: ResponsiveDesignOrientation.isLandscape ? 12.sp : 16.sp,
           onPressed: () {
             // Redirect to Account Screen
-            context.go('/account');
+            context.pop();
           },
         ),
       ),

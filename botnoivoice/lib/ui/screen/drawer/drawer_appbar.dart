@@ -161,7 +161,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () {
-              context.go('/account');
+              context.push('/account');
             },
           ),
           SizedBox(height: 10.h),
@@ -183,7 +183,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () {
-              context.go('/coupon');
+              context.push('/coupon');
             },
           ),
           SizedBox(height: 10.h),
@@ -230,7 +230,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
               onTap: () {
                 // Redirect EmailPermissionScreen
-                context.go('/email-permission');
+                context.push('/email-permission');
               },
             ),
           if (emailProvider.isLoggedIn &&

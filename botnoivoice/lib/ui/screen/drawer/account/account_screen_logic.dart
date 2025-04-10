@@ -92,7 +92,7 @@ class AccountScreenLogic {
       _logger.i("User signed out successfully.");
       context.pop(); // Close Loading Dialog
       _showSnackbar(context, 'Sign out successfully', kDarkGray);
-      context.go('/login'); // Redirect to `login_screen.dart`
+      context.push('/login'); // Redirect to `login_screen.dart`
     } catch (e) {
       _logger.e("Error during sign out: $e");
       context.pop(); // Close Loading Dialog

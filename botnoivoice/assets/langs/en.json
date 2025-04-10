@@ -259,7 +259,9 @@
         "claim_exclusive_reward" : "Claim your exclusive reward from us",
         "get_free_daily_points" : "Get free daily points",
         "get_1000_for_new_user" : "Get 1000 free points exclusively for new users. Tap to claim now.",
-        "claim_free_daily_points" : "Tap to claim 100 free points Available every day here."
+        "get_points_free_new_user" : "Free points for new users",
+        "claim_free_daily_points" : "Tap to claim 100 free points Available every day here.",
+        "claim_success" : "Points claimed successfully"
     },
     "redeem_provider": {
         "error_occurred": "An error occurred:",

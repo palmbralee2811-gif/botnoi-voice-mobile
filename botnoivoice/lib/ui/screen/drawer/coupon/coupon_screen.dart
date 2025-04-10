@@ -5,11 +5,12 @@ import 'package:botnoivoice/function/time_zone_function.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:botnoivoice/ui/widget/button/coupon_redeem_button.dart';
+// import 'package:botnoivoice/ui/widget/button/coupon_redeem_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/ui/widget/card/reward_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CouponScreen extends StatefulWidget {
   const CouponScreen({super.key});
@@ -21,6 +22,7 @@ class CouponScreen extends StatefulWidget {
 class _CouponScreenState extends State<CouponScreen> {
   String? currentDate;
   String? hoursUntilMidnight;
+  bool isRedeemed = false; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
 
   @override
   void initState() {
@@ -57,7 +59,7 @@ class _CouponScreenState extends State<CouponScreen> {
         title: 'redeem.reward'.tr(),
         onPressed: () {
           // Redirect to HomeScreen
-          context.go('/home');
+          context.pop();
         },
       ),
       body: Stack(
@@ -73,7 +75,7 @@ class _CouponScreenState extends State<CouponScreen> {
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: isTablet ? (isLandscape ? 20 : 12) : 8,
+                  horizontal: isTablet ? (isLandscape ? 20.w : 12.w) : 8.w,
                 ),
                 child: Column(
                   children: [
@@ -84,15 +86,15 @@ class _CouponScreenState extends State<CouponScreen> {
                       child: SingleChildScrollView(
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.only(
-                            left: 16,
-                            right: 16,
-                            top: 16,
+                          padding:  EdgeInsets.only(
+                            left: 16.w,
+                            right: 16.w,
+                            top: 16.h,
                           ),
                           child: Column(
                             children: [
-                              const SizedBox(
-                                height: 20,
+                               SizedBox(
+                                height: 20.h,
                               ),
                               // Subtitle
                               Row(
@@ -102,9 +104,8 @@ class _CouponScreenState extends State<CouponScreen> {
                                     child: Center(
                                       child: Text(
                                         'redeem.claim_exclusive_reward'.tr(),
-                                        style: const TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontSize: 14,
+                                        style: TextStyle(
+                                          fontSize: isLandscape ? 14.sp : 16.sp,
                                           color: Color(0xFF6D6D6D),
                                           fontWeight: FontWeight.w300,
                                           letterSpacing: 0.25,
@@ -116,10 +117,12 @@ class _CouponScreenState extends State<CouponScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20,),
+                              SizedBox(
+                                height: 20.h,
+                              ),
                               // Reward cards section
                               Container(
-                                margin: const EdgeInsets.only(top: 24),
+                                margin: EdgeInsets.only(top: 24.h),
                                 width: double.infinity,
                                 child: Column(
                                   children: [
@@ -127,40 +130,49 @@ class _CouponScreenState extends State<CouponScreen> {
                                     RewardCard(
                                       iconUrl:
                                           'assets/images/logo/credit-icon.svg',
-                                      title: 'redeem.get_free_daily_points'.tr(),
-                                      description: 'redeem.claim_free_daily_points'.tr(
-                                     
-                                      ),
-                                      buttonText: 'redeem.get_points'
-                                          .tr(namedArgs: {'points': '100'}),
+                                      title:
+                                          'redeem.get_free_daily_points'.tr(),
+                                      description:
+                                          'redeem.claim_free_daily_points'.tr(),
+                                      buttonText: isRedeemed
+                                          ? 'redeem.get_points'
+                                              .tr(namedArgs: {'points': '100'})
+                                          : 'redeem.time_remaining'.tr(
+                                              namedArgs: {
+                                                'Timeout':
+                                                    hoursUntilMidnight ?? '24',
+                                              },
+                                            ),
                                       onTap: () =>
                                           _handleCouponRedemption100(context),
                                       isTablet: isTablet,
                                       isLandscape: isLandscape,
+                                      isRedeemed: isRedeemed,
                                     ),
 
-                                    const SizedBox(height: 32),
+                                    SizedBox(height: 32.h),
 
                                     // Welcome bonus card
                                     RewardCard(
                                       iconUrl:
                                           'assets/images/logo/credit-icon.svg',
-                                      title: 'redeem.welcome_bonus'.tr(),
+                                      title: 'redeem.get_points_free_new_user'.tr(),
                                       description:
                                           'redeem.get_1000_for_new_user'.tr(),
-                                      buttonText: 'redeem.get_points'
-                                          .tr(namedArgs: {'points': '1,000'}),
+                                      buttonText: isRedeemed ? 'redeem.get_points'
+                                          .tr(namedArgs: {'points': '1,000'}) : 'redeem.claim_success'.tr() ,
                                       onTap: () =>
                                           _handleCouponRedemption1K(context),
                                       isTablet: isTablet,
                                       isLandscape: isLandscape,
+                                      isRedeemed: isRedeemed,
                                     ),
                                   ],
                                 ),
                               ),
 
                               // Bottom spacing
-                              const SizedBox(height: 40),
+                              SizedBox(height: 40.h),
                             ],
                           ),
                         ),
@@ -199,6 +211,10 @@ class _CouponScreenState extends State<CouponScreen> {
       await couponProvider.checkCoupon100(context);
 
       if (couponProvider.errorMessage == null) {
+        setState(() {
+          isRedeemed = true;
+        });
+
         NotificationDialog(
           context: context,
           text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว

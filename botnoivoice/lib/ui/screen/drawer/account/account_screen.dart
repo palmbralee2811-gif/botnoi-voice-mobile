@@ -72,7 +72,7 @@ class _AccountScreenState extends State<AccountScreen> {
         title: 'app_drawer.profile'.tr(),
         onPressed: () {
           // Redirect to HomeScreen
-          context.go('/home');
+          context.pop();
         },
       ),
       body: SingleChildScrollView(
@@ -122,7 +122,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       icon: Icons.edit_rounded,
                       onIconPressed: () {
                         // Redirect to `change_email_username_screen.dart`
-                        context.go('/change-email-username');
+                        context.push('/change-email-username');
                       },
                     )
                   : RowUserInfoWidget(

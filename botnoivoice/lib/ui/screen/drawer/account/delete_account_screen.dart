@@ -39,7 +39,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           ),
           onPressed: () {
             // Redirect to AccountScreen
-            context.go('/account');
+            context.pop();
           },
         ),
       ),
@@ -134,7 +134,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 text: 'delete_account.cancel'.tr(), //ยกเลิก
                 onPressed: () {
                   // Redirect to AccountScreen
-                  context.push('/account');
+                  context.pop();
                 },
               ),
               SizedBox(
@@ -143,7 +143,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ElevatedButton(
                 onPressed: () {
                   // Redirect to ConfirmDeleteAccountScreen
-                  context.go('/confirm-delete-account');
+                  context.push('/confirm-delete-account');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

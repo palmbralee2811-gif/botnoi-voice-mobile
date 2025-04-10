@@ -259,7 +259,9 @@
         "claim_exclusive_reward" : "รับของรางวัลสุดพิเศษจากเรา",
         "get_free_daily_points" : "รับพอยต์ฟรี รายวัน",
         "get_1000_for_new_user" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
-        "claim_free_daily_points" : "กดเพื่อรับพอยท์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี้"
+        "get_points_free_new_user" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
+        "claim_free_daily_points" : "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี้",
+        "claim_success" : "รับพอยต์สำเร็จ"
     },
     "redeem_provider": {
         "error_occurred": "เกิดข้อผิดพลาด:",

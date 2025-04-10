@@ -40,7 +40,7 @@ class EmailPermissionScreen extends StatelessWidget {
         title: 'app_drawer.security'.tr(),
         onPressed: () {
           // Redirect to HomeScreen
-          context.go('/home');
+          context.pop();
         },
       ),
       body: Padding(

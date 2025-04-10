@@ -144,7 +144,7 @@ class _ConfirmDeleteAccountScreenState
           icon: Icon(Icons.arrow_back_ios_new, color: kDark),
           onPressed: () {
             // Redirect to Delete Account Screen
-            context.go('/delete-account');
+            context.pop();
           },
         ),
       ),

@@ -32,7 +32,7 @@ class _DeleteAccountButtonState extends State<DeleteAccountButton> {
         ),
         onPressed: () {
           // Redirect to Delete Account Screen
-          context.go('/delete-account');
+          context.push('/delete-account');
         },
         child: Text("auth.delete_account_button".tr(), //"ลบบัญชี"
             style: GoogleFonts.prompt(
