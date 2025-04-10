@@ -100,7 +100,7 @@ class RewardCard extends StatelessWidget {
                             child: Text(
                               title,
                               style: TextStyle(
-                                fontSize: isTablet ? 24.sp : 20.sp,
+                                fontSize: isTablet ? 18.sp : 16.sp,
                                 fontWeight: FontWeight.w700,
                                 color: const Color(0xFF01BFFB),
                               ),
@@ -141,7 +141,7 @@ class RewardCard extends StatelessWidget {
                   margin: EdgeInsets.only(top: 15.h),
                   constraints: BoxConstraints(
                     maxWidth: 350.w,
-                    minHeight: 60.h,
+                    minHeight: 55.h,
                   ),
                   width: double.infinity,
                   decoration: BoxDecoration(
