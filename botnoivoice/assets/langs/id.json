@@ -254,7 +254,12 @@
         "welcome_bonus": "Bonus Selamat Datang di Mobile",
         "click_here": "Klik di sini",
         "has_error": "Terjadi kesalahan",
-        "redeem_success": "Kupon berhasil ditukarkan"
+        "redeem_success": "Kupon berhasil ditukarkan",
+        "reward" : "Hadiah",
+        "claim_exclusive_reward" : "Klaim hadiah eksklusifmu dari kami",
+        "get_free_daily_points" : "Dapatkan poin gratis setiap hari",
+        "get_1000_for_new_user" : "Dapatkan 1000 poin gratis khusus untuk pengguna baru. Ketuk untuk klaim sekarang.",
+        "claim_free_daily_points" : "Ketuk untuk klaim 100 poin gratis Tersedia setiap hari di sini"
     },
     "redeem_provider": {
         "error_occurred": "Terjadi kesalahan:",

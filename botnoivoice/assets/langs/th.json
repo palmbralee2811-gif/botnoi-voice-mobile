@@ -254,7 +254,12 @@
         "welcome_bonus": "โบนัสต้อนรับสำหรับมือถือ",
         "click_here": "คลิกที่นี่",
         "has_error": "เกิดข้อผิดพลาด",
-        "redeem_success": "เติมคูปองสำเร็จแล้ว"
+        "redeem_success": "เติมคูปองสำเร็จแล้ว",
+        "reward" : "รางวัล",
+        "claim_exclusive_reward" : "รับของรางวัลสุดพิเศษจากเรา",
+        "get_free_daily_points" : "รับพอยต์ฟรี รายวัน",
+        "get_1000_for_new_user" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
+        "claim_free_daily_points" : "กดเพื่อรับพอยท์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี้"
     },
     "redeem_provider": {
         "error_occurred": "เกิดข้อผิดพลาด:",

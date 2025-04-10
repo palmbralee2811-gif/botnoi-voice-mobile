@@ -9,6 +9,7 @@ import 'package:botnoivoice/ui/widget/button/coupon_redeem_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:botnoivoice/ui/widget/card/reward_card.dart';
 
 class CouponScreen extends StatefulWidget {
   const CouponScreen({super.key});
@@ -51,7 +52,9 @@ class _CouponScreenState extends State<CouponScreen> {
     final bool isLandscape = ResponsiveDesignOrientation.isLandscape;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBarTemplate(
+        title: 'redeem.reward'.tr(),
         onPressed: () {
           // Redirect to HomeScreen
           context.go('/home');
@@ -59,69 +62,112 @@ class _CouponScreenState extends State<CouponScreen> {
       ),
       body: Stack(
         children: [
-          // เนื้อหา UI หลัก
-          Center(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'redeem.daily_coupon_title'
-                        .tr(namedArgs: {'thaiDate': currentDate ?? 'N/A'}),
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: isTablet ? (isLandscape ? 48 : 40) : 24,
-                      fontWeight: FontWeight.bold,
+          // Main content
+          Container(
+            alignment: Alignment.center,
+            color: Colors.white,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth:
+                    isTablet ? (isLandscape ? 900 : 720) : double.infinity,
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTablet ? (isLandscape ? 20 : 12) : 8,
+                ),
+                child: Column(
+                  children: [
+                    // Header section
+
+                    // Content section
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            top: 16,
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              // Subtitle
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        'redeem.claim_exclusive_reward'.tr(),
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 14,
+                                          color: Color(0xFF6D6D6D),
+                                          fontWeight: FontWeight.w300,
+                                          letterSpacing: 0.25,
+                                          height: 1,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20,),
+                              // Reward cards section
+                              Container(
+                                margin: const EdgeInsets.only(top: 24),
+                                width: double.infinity,
+                                child: Column(
+                                  children: [
+                                    // Daily reward card
+                                    RewardCard(
+                                      iconUrl:
+                                          'assets/images/logo/credit-icon.svg',
+                                      title: 'redeem.get_free_daily_points'.tr(),
+                                      description: 'redeem.claim_free_daily_points'.tr(
+                                     
+                                      ),
+                                      buttonText: 'redeem.get_points'
+                                          .tr(namedArgs: {'points': '100'}),
+                                      onTap: () =>
+                                          _handleCouponRedemption100(context),
+                                      isTablet: isTablet,
+                                      isLandscape: isLandscape,
+                                    ),
+
+                                    const SizedBox(height: 32),
+
+                                    // Welcome bonus card
+                                    RewardCard(
+                                      iconUrl:
+                                          'assets/images/logo/credit-icon.svg',
+                                      title: 'redeem.welcome_bonus'.tr(),
+                                      description:
+                                          'redeem.get_1000_for_new_user'.tr(),
+                                      buttonText: 'redeem.get_points'
+                                          .tr(namedArgs: {'points': '1,000'}),
+                                      onTap: () =>
+                                          _handleCouponRedemption1K(context),
+                                      isTablet: isTablet,
+                                      isLandscape: isLandscape,
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Bottom spacing
+                              const SizedBox(height: 40),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: isTablet ? (isLandscape ? 28 : 30) : 16,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  CouponRedeemButton(
-                    text: 'redeem.get_points'.tr(namedArgs: {'points': '100'}),
-                    text2: 'redeem.click_here'.tr(),
-                    text3: 'redeem.time_remaining'.tr(
-                      namedArgs: {
-                        'Timeout': hoursUntilMidnight.toString(),
-                      },
-                    ),
-                    textColor: Colors.black,
-                    textColor2: Colors.blue[700]!,
-                    textColor3: Colors.red,
-                    points: "100",
-                    onTap: () {
-                      _handleCouponRedemption100(context);
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                    indent: 20,
-                    endIndent: 20,
-                  ),
-                  const SizedBox(height: 20),
-                  CouponRedeemButton(
-                    text: 'redeem.welcome_bonus'.tr(),
-                    text2: 'redeem.get_now_1000'.tr(),
-                    text3: '',
-                    textColor: Colors.black,
-                    textColor2: Colors.green,
-                    textColor3: Colors.red,
-                    points: "1,000",
-                    onTap: () {
-                      _handleCouponRedemption1K(context);
-                    },
-                  ),
-                  const SizedBox(height: 60),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
