@@ -22,7 +22,8 @@ class CouponScreen extends StatefulWidget {
 class _CouponScreenState extends State<CouponScreen> {
   String? currentDate;
   String? hoursUntilMidnight;
-  bool isRedeemed = false; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
+  bool isRedeemed100 = true; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
+  bool isRedeemed1k = true;
 
   @override
   void initState() {
@@ -86,14 +87,14 @@ class _CouponScreenState extends State<CouponScreen> {
                       child: SingleChildScrollView(
                         child: Container(
                           width: double.infinity,
-                          padding:  EdgeInsets.only(
+                          padding: EdgeInsets.only(
                             left: 16.w,
                             right: 16.w,
                             top: 16.h,
                           ),
                           child: Column(
                             children: [
-                               SizedBox(
+                              SizedBox(
                                 height: 20.h,
                               ),
                               // Subtitle
@@ -103,7 +104,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        'redeem.claim_exclusive_reward'.tr(),
+                                        'redeem.coupon_header'.tr(),
                                         style: TextStyle(
                                           fontSize: isLandscape ? 14.sp : 16.sp,
                                           color: Color(0xFF6D6D6D),
@@ -130,11 +131,9 @@ class _CouponScreenState extends State<CouponScreen> {
                                     RewardCard(
                                       iconUrl:
                                           'assets/images/logo/credit-icon.svg',
-                                      title:
-                                          'redeem.get_free_daily_points'.tr(),
-                                      description:
-                                          'redeem.claim_free_daily_points'.tr(),
-                                      buttonText: isRedeemed
+                                      title: 'redeem.coupon_title01'.tr(),
+                                      description: 'redeem.coupon_text01'.tr(),
+                                      buttonText: isRedeemed100
                                           ? 'redeem.get_points'
                                               .tr(namedArgs: {'points': '100'})
                                           : 'redeem.time_remaining'.tr(
@@ -147,7 +146,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                           _handleCouponRedemption100(context),
                                       isTablet: isTablet,
                                       isLandscape: isLandscape,
-                                      isRedeemed: isRedeemed,
+                                      isRedeemed: isRedeemed100,
                                     ),
 
                                     SizedBox(height: 32.h),
@@ -156,16 +155,17 @@ class _CouponScreenState extends State<CouponScreen> {
                                     RewardCard(
                                       iconUrl:
                                           'assets/images/logo/credit-icon.svg',
-                                      title: 'redeem.get_points_free_new_user'.tr(),
-                                      description:
-                                          'redeem.get_1000_for_new_user'.tr(),
-                                      buttonText: isRedeemed ? 'redeem.get_points'
-                                          .tr(namedArgs: {'points': '1,000'}) : 'redeem.claim_success'.tr() ,
+                                      title: 'redeem.coupon_title02'.tr(),
+                                      description: 'redeem.coupon_text02'.tr(),
+                                      buttonText: isRedeemed1k
+                                          ? 'redeem.get_points'.tr(
+                                              namedArgs: {'points': '1,000'})
+                                          : 'redeem.claim_success'.tr(),
                                       onTap: () =>
                                           _handleCouponRedemption1K(context),
                                       isTablet: isTablet,
                                       isLandscape: isLandscape,
-                                      isRedeemed: isRedeemed,
+                                      isRedeemed: isRedeemed1k,
                                     ),
                                   ],
                                 ),
@@ -212,7 +212,7 @@ class _CouponScreenState extends State<CouponScreen> {
 
       if (couponProvider.errorMessage == null) {
         setState(() {
-          isRedeemed = true;
+          isRedeemed100 = false;
         });
 
         NotificationDialog(
@@ -223,6 +223,9 @@ class _CouponScreenState extends State<CouponScreen> {
           },
         ).showCheckmarkModalWithAction(context);
       } else {
+        setState(() {
+          isRedeemed100 = false;
+        });
         NotificationDialog(
           context: context,
           text: couponProvider.errorMessage!,
@@ -248,6 +251,10 @@ class _CouponScreenState extends State<CouponScreen> {
       await couponProvider.checkCoupon1K(context);
 
       if (couponProvider.errorMessage == null) {
+        setState(() {
+          isRedeemed1k = false;
+        });
+
         NotificationDialog(
           context: context,
           text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
@@ -256,6 +263,10 @@ class _CouponScreenState extends State<CouponScreen> {
           },
         ).showCheckmarkModalWithAction(context);
       } else {
+        setState(() {
+          isRedeemed1k = false;
+        });
+
         NotificationDialog(
           context: context,
           text: couponProvider.errorMessage!,
