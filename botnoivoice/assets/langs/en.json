@@ -246,18 +246,18 @@
         "policy": "Privacy Policy."
     },
     "redeem": {
-        "time_remaining": "Only {Timeout} hours left",
         "get_points": "Get {points} points",
         "daily_coupon_title": "Get Free Points {thaiDate}",
         "has_error": "An error occurred",
         "redeem_success": "Coupon redeemed successfully",
-        "claim_success" : "Points claimed successfully",
         "reward" : "Reward",
         "coupon_header" : "Claim your exclusive reward from us",
-        "coupon_title01" : "Get free daily points",
-        "coupon_text01" : "Tap to claim 100 free points Available every day here.",
+        "coupon_title01" : "Daily Points",
+        "coupon_text01" : "Tap to get 100 points \nAvailable every day here.",
+        "coupon_text_button01": "Only {Timeout} hours left",
         "coupon_title02" : "Free points for new users",
-        "coupon_text02" : "Get 1000 free points exclusively for new users. Tap to claim now."
+        "coupon_text02" : "Get 1,000 points only for new users. Tap to get points now.",
+        "coupon_text_button02" : "Get Points successfully"
     },
     "redeem_provider": {
         "error_occurred": "An error occurred:",

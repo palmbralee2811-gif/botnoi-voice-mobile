@@ -104,10 +104,10 @@ class _CouponScreenState extends State<CouponScreen> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        'redeem.coupon_header'.tr(),
+                                        "${'redeem.coupon_header'.tr()} \n\n$currentDate",
                                         style: TextStyle(
                                           fontSize: isLandscape ? 14.sp : 16.sp,
-                                          color: Color(0xFF6D6D6D),
+                                          color: const Color(0xFF6D6D6D),
                                           fontWeight: FontWeight.w300,
                                           letterSpacing: 0.25,
                                           height: 1,
@@ -136,7 +136,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                       buttonText: isRedeemed100
                                           ? 'redeem.get_points'
                                               .tr(namedArgs: {'points': '100'})
-                                          : 'redeem.time_remaining'.tr(
+                                          : 'redeem.coupon_text_button01'.tr(
                                               namedArgs: {
                                                 'Timeout':
                                                     hoursUntilMidnight ?? '24',
@@ -160,7 +160,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                       buttonText: isRedeemed1k
                                           ? 'redeem.get_points'.tr(
                                               namedArgs: {'points': '1,000'})
-                                          : 'redeem.claim_success'.tr(),
+                                          : 'redeem.coupon_text_button02'.tr(),
                                       onTap: () =>
                                           _handleCouponRedemption1K(context),
                                       isTablet: isTablet,

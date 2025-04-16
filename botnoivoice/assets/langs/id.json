@@ -246,18 +246,18 @@
         "policy": "Kebijakan Privasi."
     },
     "redeem": {
-        "time_remaining": "Hanya {Timeout} jam tersisa",
         "get_points": "Dapatkan {points} poin",
         "daily_coupon_title": "Dapatkan Poin Gratis {thaiDate}",
         "has_error": "Terjadi kesalahan",
         "redeem_success": "Kupon berhasil ditukarkan",
-        "claim_success" : "Poin berhasil diklaim",
         "reward" : "Hadiah",
         "coupon_header" : "Klaim hadiah eksklusifmu dari kami",
         "coupon_title01" : "Dapatkan poin gratis setiap hari",
         "coupon_text01" : "Ketuk untuk klaim 100 poin gratis Tersedia setiap hari di sini",      
+        "coupon_text_button01" : "Hanya {Timeout} jam tersisa",
         "coupon_title02" : "Point gratis untuk pengguna baru",
-        "coupon_text02" : "Dapatkan 1000 poin gratis khusus untuk pengguna baru. Ketuk untuk klaim sekarang."
+        "coupon_text02" : "Dapatkan 1000 poin gratis khusus untuk pengguna baru. Ketuk untuk klaim sekarang.",
+        "coupon_text_button02" : "Poin berhasil diklaim"
     },
     "redeem_provider": {
         "error_occurred": "Terjadi kesalahan:",
