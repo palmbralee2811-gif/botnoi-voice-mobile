@@ -249,15 +249,15 @@
         "get_points": "Dapatkan {points} poin",
         "daily_coupon_title": "Hadiah {thaiDate}",
         "has_error": "Terjadi kesalahan",
-        "redeem_success": "Kupon berhasil ditukarkan",
+        "redeem_success": "Berhasil di tukar",
         "reward" : "Hadiah",
-        "coupon_header" : "Klaim hadiah eksklusifmu dari kami",
-        "coupon_title01" : "Dapatkan poin gratis setiap hari",
-        "coupon_text01" : "Ketuk untuk klaim 100 poin gratis Tersedia setiap hari di sini",      
+        "coupon_header" : "Hadiah eksklusif dari Botnoi",
+        "coupon_title01" : "Poin Harian",
+        "coupon_text01" : "Kumpulkan 100 poin \nTersedia setiap hari",      
         "coupon_text_button01" : "Hanya {Timeout} jam tersisa",
-        "coupon_title02" : "Point gratis untuk pengguna baru",
-        "coupon_text02" : "Dapatkan 1000 poin gratis khusus untuk pengguna baru. Ketuk untuk klaim sekarang.",
-        "coupon_text_button02" : "Poin berhasil diklaim"
+        "coupon_title02" : "Eksklusif untuk pengguna baru",
+        "coupon_text02" : "Kumpulkan 1,000 poin \nKhusus pengguna baru",
+        "coupon_text_button02" : "Berhasil di tukar"
     },
     "redeem_provider": {
         "error_occurred": "Terjadi kesalahan:",
