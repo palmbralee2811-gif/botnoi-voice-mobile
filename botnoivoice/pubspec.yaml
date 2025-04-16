@@ -110,7 +110,7 @@ flutter:
     - assets/images/logo/
     - assets/images/national_flag/
     - assets/images/splash_screen/
-    - assets/images/reward/  #ภาพพื้นหลังของ card reward
+    - assets/images/coupon_screen/ #ภาพพื้นหลังของ card reward
     - assets/square_image/
     - assets/langs/ #assets สำหรับเปลี่ยนภาษาแอป
     - assets/data/ #asset สำหรับเก็บข้อมูลจาก json ที่ได้จาก API

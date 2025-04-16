@@ -64,7 +64,7 @@ class RewardCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22.5.r), // ต้องเล็กกว่าชั้นนอกเพื่อให้เห็นขอบ
           image: const DecorationImage(
-            image: AssetImage('assets/images/reward/background_card_default.png'),
+            image: AssetImage('assets/images/coupon_screen/background_card_default.png'),
             fit: BoxFit.cover, // ให้ภาพพอดีกับการ์ด
           ),
           color: Colors.white, // สี fallback หากโหลดภาพไม่ทัน

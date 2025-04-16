@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/ui/widget/card/reward_card.dart';
+import 'package:botnoivoice/ui/screen/drawer/coupon/widget/reward_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CouponScreen extends StatefulWidget {
