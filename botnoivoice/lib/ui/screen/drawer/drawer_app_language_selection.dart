@@ -163,6 +163,6 @@ Future<void> _onLanguageSelected(
 
   if (context.mounted) {
     // Redirect to HomeScreen
-    context.push('/home');
+    context.go('/home');
   }
 }
