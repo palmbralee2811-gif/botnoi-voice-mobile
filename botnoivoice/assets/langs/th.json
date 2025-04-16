@@ -85,7 +85,7 @@
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "redeem": "รับพอยต์ฟรี"
+        "redeem": "รางวัล"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -247,7 +247,7 @@
     },
     "redeem": {
         "get_points": "รับเลย {points} พอยต์",
-        "daily_coupon_title": "รับพอยต์ฟรี {thaiDate}",
+        "daily_coupon_title": "รางวัล {thaiDate}",
         "has_error": "เกิดข้อผิดพลาด",
         "redeem_success": "เติมคูปองสำเร็จแล้ว",
         "reward" : "รางวัล",

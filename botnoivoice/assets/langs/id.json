@@ -85,7 +85,7 @@
         "profile": "Profil",
         "buy_points": "Beli Poin",
         "security": "Keamanan",
-        "redeem": "Dapatkan Poin Gratis"
+        "redeem": "Hadiah"
     },
     "account": {
         "uid_copy_success": "UID berhasil disalin",
@@ -247,7 +247,7 @@
     },
     "redeem": {
         "get_points": "Dapatkan {points} poin",
-        "daily_coupon_title": "Dapatkan Poin Gratis {thaiDate}",
+        "daily_coupon_title": "Hadiah {thaiDate}",
         "has_error": "Terjadi kesalahan",
         "redeem_success": "Kupon berhasil ditukarkan",
         "reward" : "Hadiah",
