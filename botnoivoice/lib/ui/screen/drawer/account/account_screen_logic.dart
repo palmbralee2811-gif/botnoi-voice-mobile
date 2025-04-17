@@ -4,6 +4,7 @@ import 'package:botnoivoice/service/email/email_forget_password.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
+import 'package:botnoivoice/ui/dialog/notification/notification_snack_bar.dart';
 import 'package:botnoivoice/ui/screen/drawer/account/get_user_email.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
@@ -11,51 +12,15 @@ import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
 import 'package:botnoivoice/ui/style/style.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class AccountScreenLogic {
   final Logger _logger = Logger(); // Debugging
-
-  /// Display Loading Dialog
-  Future<void> _showLoadingDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
-          child: Padding(
-            padding: EdgeInsets.all(20.w),
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  /// Display Notification with Snackbar
-  void _showSnackbar(BuildContext context, String message, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message.tr()),
-        backgroundColor: color,
-        duration: const Duration(seconds: 5),
-      ),
-    );
-  }
 
   /// Signs out the user from the currently active authentication provider.
   Future<void> _signOutProvider(BuildContext context) async {
@@ -85,18 +50,38 @@ class AccountScreenLogic {
   /// Calling Sign Out Method, Dialog and Snackbar
   Future<void> signOut(BuildContext context) async {
     _logger.i("Sign out process started...");
-    _showLoadingDialog(context);
+
+    // Show Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
 
     try {
       await _signOutProvider(context);
       _logger.i("User signed out successfully.");
-      context.pop(); // Close Loading Dialog
-      _showSnackbar(context, 'Sign out successfully', kDarkGray);
-      context.go('/login'); // Redirect to `login_screen.dart`
+
+      // Close Loading Dialog
+      context.pop();
+
+      NotificationSnackBar(
+              context: context, text: 'Sign out successfully', color: kDarkGray)
+          .showSnackBar();
+
+      // Redirect to `login_screen.dart`
+      context.go('/login');
     } catch (e) {
       _logger.e("Error during sign out: $e");
-      context.pop(); // Close Loading Dialog
-      _showSnackbar(context, 'Sign out failed', Colors.red);
+
+      // Close Loading Dialog
+      context.pop();
+
+      NotificationSnackBar(
+              context: context, text: 'Sign out failed', color: Colors.red)
+          .showSnackBar();
     }
   }
 
@@ -191,7 +176,11 @@ class AccountScreenLogic {
   /// Copy UID to Clipboard
   void copyUID(BuildContext context, String userId) {
     Clipboard.setData(ClipboardData(text: userId));
-    _showSnackbar(context, 'account.uid_copy_success', kDarkGray);
+    NotificationSnackBar(
+            context: context,
+            text: 'account.uid_copy_success',
+            color: kDarkGray)
+        .showSnackBar();
   }
 
   /// Check Email Permission (True/False)

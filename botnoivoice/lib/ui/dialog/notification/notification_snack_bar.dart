@@ -1,3 +1,5 @@
+import 'package:botnoivoice/ui/style/style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 /// SnackBar Notification Builder for Multi-Platform.
@@ -7,19 +9,23 @@ class NotificationSnackBar {
     required this.text,
     this.label,
     this.onPressed, // กำหนด onPressed เป็น optional
+    this.color,
   });
 
   final String text;
   final BuildContext context;
   final String? label;
   final VoidCallback? onPressed;
+  final Color? color;
 
   /// Show Text Notification
+  /// Display Notification with Snackbar
   void showSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(text),
-        duration: const Duration(seconds: 10),
+        content: Text(text.tr()),
+        backgroundColor: color ?? kDarkGray,
+        duration: const Duration(seconds: 5),
       ),
     );
   }

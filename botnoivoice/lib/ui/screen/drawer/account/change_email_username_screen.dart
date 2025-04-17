@@ -1,7 +1,9 @@
 import 'package:botnoivoice/function/is_vaild_data.dart';
-import 'package:botnoivoice/function/open_logout_function.dart';
 import 'package:botnoivoice/service/email/email_change_username.dart';
+import 'package:botnoivoice/service/login/email_login.dart';
+import 'package:botnoivoice/ui/dialog/notification/notification_snack_bar.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
+import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_align.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
@@ -24,7 +26,8 @@ class ChangeEmailUsernameScreen extends StatefulWidget {
 class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _confirmUsernameController = TextEditingController();
+  final TextEditingController _confirmUsernameController =
+      TextEditingController();
 
   void submitUsernameChangeRequest() async {
     final changeUsername =
@@ -45,10 +48,32 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
       } else {
         NotificationDialog(
           context: context,
-          text: 'change_email_username.username_changed_successfully'.tr(), //ตั้งชื่อผู้ใช้งานใหม่สำเร็จ
+          text: 'change_email_username.username_changed_successfully'
+              .tr(), //ตั้งชื่อผู้ใช้งานใหม่สำเร็จ
           onPressed: () async {
-            /// Logout and Redirect to `login_screen.dart`
-            openEmailLogout(context);
+            // Show Loading Dialog
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+
+            await Provider.of<EmailLogin>(context, listen: false)
+                .signOutWithEmail(context);
+
+            // Close loading dialog
+            context.pop();
+
+            // Redirect to `login_screen.dart`
+            context.go('/login');
+
+            NotificationSnackBar(
+              context: context,
+              text: 'Sign out successfully',
+              color: kDarkGray,
+            ).showSnackBar();
           },
         ).showCheckmarkModalWithAction(context);
       }
