@@ -245,22 +245,21 @@
         "and": " dan ",
         "policy": "Kebijakan Privasi."
     },
-    "redeem": {
-        "get_points": "Dapatkan {points} poin",
-        "daily_coupon_title": "Hadiah {thaiDate}",
-        "has_error": "Terjadi kesalahan",
-        "redeem_success": "Berhasil di tukar",
-        "reward" : "Hadiah",
-        "coupon_header" : "Hadiah eksklusif dari Botnoi",
-        "coupon_title01" : "Poin Harian",
-        "coupon_text01" : "Dapatkan 100 poin \nTersedia setiap hari",      
-        "coupon_text_button01" : "Hanya {Timeout} jam tersisa",
-        "coupon_title02" : "Eksklusif untuk pengguna baru",
-        "coupon_text02" : "Dapatkan 1,000 poin \nKhusus pengguna baru",
-        "coupon_text_button02" : "Berhasil di tukar"
+    "reward_screen": {
+        "notification_dialog": "Berhasil di tukar",
+        "notification_dialog_error": "Terjadi kesalahan",
+        "appbar_title" : "Hadiah",
+        "text_header" : "Hadiah eksklusif dari Botnoi",
+        "widget_title01" : "Poin Harian",
+        "widget_text01" : "Dapatkan 100 poin \nTersedia setiap hari",      
+        "widget_text_button01" : "Hanya {Timeout} jam tersisa",
+        "widget_title02" : "Eksklusif untuk pengguna baru",
+        "widget_text02" : "Dapatkan 1,000 poin \nKhusus pengguna baru",
+        "widget_text_button02" : "Berhasil di tukar",
+        "widget_display_points": "Dapatkan {points} poin"
     },
-    "redeem_provider": {
-        "error_occurred": "Terjadi kesalahan:",
+    "reward_service": {
+        "error_message": "Terjadi kesalahan:",
         "coupon_already_used": "Kupon Anda sudah digunakan.",
         "coupon_not_found": "Kupon tidak ditemukan. Kupon mungkin sudah tidak berlaku atau kupon yang Anda masukkan salah.",
         "coupon_expired_or_not_found": "Kupon tidak ditemukan dalam sistem atau kupon telah kedaluwarsa.",

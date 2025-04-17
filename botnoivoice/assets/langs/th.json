@@ -245,22 +245,21 @@
         "and": " และ ",
         "policy": "นโยบายความเป็นส่วนตัว"
     },
-    "redeem": {
-        "get_points": "รับเลย {points} พอยต์",
-        "daily_coupon_title": "รางวัล {thaiDate}",
-        "has_error": "เกิดข้อผิดพลาด",
-        "redeem_success": "เติมคูปองสำเร็จแล้ว",
-        "reward" : "รางวัล",
-        "coupon_header" : "รับของรางวัลสุดพิเศษจากเรา",
-        "coupon_title01" : "รับพอยต์ฟรี รายวัน",
-        "coupon_text01" : "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี่",
-        "coupon_text_button01": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
-        "coupon_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
-        "coupon_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
-        "coupon_text_button02" : "รับพอยต์สำเร็จ"
+    "reward_screen": {
+        "notification_dialog_success": "เติมคูปองสำเร็จแล้ว",
+        "notification_dialog_error": "เกิดข้อผิดพลาด",
+        "appbar_title" : "รางวัล",
+        "text_header" : "รับของรางวัลสุดพิเศษจากเรา",
+        "widget_title01" : "รับพอยต์ฟรี รายวัน",
+        "widget_text01" : "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี่",
+        "widget_text_button01": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
+        "widget_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
+        "widget_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
+        "widget_text_button02" : "รับพอยต์สำเร็จ",
+        "widget_display_points": "รับเลย {points} พอยต์"
     },
-    "redeem_provider": {
-        "error_occurred": "เกิดข้อผิดพลาด:",
+    "reward_service": {
+        "error_message": "เกิดข้อผิดพลาด:",
         "coupon_already_used": "คูปองของคุณถูกใช้งานแล้ว",
         "coupon_not_found": "ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
         "coupon_expired_or_not_found": "ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว",

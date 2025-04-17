@@ -1,4 +1,4 @@
-import 'package:botnoivoice/service/coupon/coupon_service.dart';
+import 'package:botnoivoice/service/reward/reward_service.dart';
 import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/ui/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/function/time_zone_function.dart';
@@ -8,17 +8,17 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:botnoivoice/ui/screen/drawer/coupon/widget/reward_card.dart';
+import 'package:botnoivoice/ui/screen/drawer/reward/widget/reward_card_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CouponScreen extends StatefulWidget {
-  const CouponScreen({super.key});
+class RewardScreen extends StatefulWidget {
+  const RewardScreen({super.key});
 
   @override
-  State<CouponScreen> createState() => _CouponScreenState();
+  State<RewardScreen> createState() => _RewardScreenState();
 }
 
-class _CouponScreenState extends State<CouponScreen> {
+class _RewardScreenState extends State<RewardScreen> {
   String? currentDate;
   String? hoursUntilMidnight;
   bool isRedeemed100 = true; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
@@ -48,7 +48,7 @@ class _CouponScreenState extends State<CouponScreen> {
   @override
   Widget build(BuildContext context) {
     // Get data from provider
-    final couponProvider = Provider.of<CouponService>(context);
+    final couponProvider = Provider.of<RewardService>(context);
 
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = ResponsiveDesignOrientation.isLandscape;
@@ -56,7 +56,7 @@ class _CouponScreenState extends State<CouponScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarTemplate(
-        title: 'redeem.reward'.tr(),
+        title: 'reward_screen.appbar_title'.tr(),
         onPressed: () {
           // Redirect to HomeScreen
           context.pop();
@@ -103,7 +103,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        "${'redeem.coupon_header'.tr()} \n\n$currentDate",
+                                        "${'reward_screen.text_header'.tr()} \n\n$currentDate",
                                         style: TextStyle(
                                           fontSize: isLandscape ? 14.sp : 16.sp,
                                           color: const Color(0xFF6D6D6D),
@@ -130,12 +130,15 @@ class _CouponScreenState extends State<CouponScreen> {
                                     RewardCard(
                                       iconUrl:
                                           'assets/images/logo/credit-icon.svg',
-                                      title: 'redeem.coupon_title01'.tr(),
-                                      description: 'redeem.coupon_text01'.tr(),
+                                      title:
+                                          'reward_screen.widget_title01'.tr(),
+                                      description:
+                                          'reward_screen.widget_text01'.tr(),
                                       buttonText: isRedeemed100
-                                          ? 'redeem.get_points'
+                                          ? 'reward_screen.widget_display_points'
                                               .tr(namedArgs: {'points': '100'})
-                                          : 'redeem.coupon_text_button01'.tr(
+                                          : 'reward_screen.widget_text_button01'
+                                              .tr(
                                               namedArgs: {
                                                 'Timeout':
                                                     hoursUntilMidnight ?? '24',
@@ -154,12 +157,17 @@ class _CouponScreenState extends State<CouponScreen> {
                                     RewardCard(
                                       iconUrl:
                                           'assets/images/logo/credit-icon.svg',
-                                      title: 'redeem.coupon_title02'.tr(),
-                                      description: 'redeem.coupon_text02'.tr(),
+                                      title:
+                                          'reward_screen.widget_title02'.tr(),
+                                      description:
+                                          'reward_screen.widget_text02'.tr(),
                                       buttonText: isRedeemed1k
-                                          ? 'redeem.get_points'.tr(
-                                              namedArgs: {'points': '1,000'})
-                                          : 'redeem.coupon_text_button02'.tr(),
+                                          ? 'reward_screen.widget_display_points'
+                                              .tr(namedArgs: {
+                                              'points': '1,000'
+                                            })
+                                          : 'reward_screen.widget_text_button02'
+                                              .tr(),
                                       onTap: () =>
                                           _handleCouponRedemption1K(context),
                                       isTablet: isTablet,
@@ -203,7 +211,7 @@ class _CouponScreenState extends State<CouponScreen> {
   }
 
   Future<void> _handleCouponRedemption100(BuildContext context) async {
-    final couponProvider = Provider.of<CouponService>(context, listen: false);
+    final couponProvider = Provider.of<RewardService>(context, listen: false);
     final creditsProvider = Provider.of<CallReloadData>(context, listen: false);
 
     try {
@@ -216,7 +224,8 @@ class _CouponScreenState extends State<CouponScreen> {
 
         NotificationDialog(
           context: context,
-          text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
+          text: 'reward_screen.notification_dialog_success'
+              .tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             creditsProvider.callLoadCreditsApi(context);
           },
@@ -234,7 +243,8 @@ class _CouponScreenState extends State<CouponScreen> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "${'redeem.has_error'.tr()} $e", //เกิดข้อผิดพลาด
+        text:
+            "${'reward_screen.notification_dialog_error'.tr()} $e", //เกิดข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
@@ -243,7 +253,7 @@ class _CouponScreenState extends State<CouponScreen> {
   }
 
   Future<void> _handleCouponRedemption1K(BuildContext context) async {
-    final couponProvider = Provider.of<CouponService>(context, listen: false);
+    final couponProvider = Provider.of<RewardService>(context, listen: false);
     final creditsProvider = Provider.of<CallReloadData>(context, listen: false);
 
     try {
@@ -256,7 +266,8 @@ class _CouponScreenState extends State<CouponScreen> {
 
         NotificationDialog(
           context: context,
-          text: 'redeem.redeem_success'.tr(), //เติมคูปองสำเร็จแล้ว
+          text: 'reward_screen.notification_dialog_success'
+              .tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             creditsProvider.callLoadCreditsApi(context);
           },
@@ -275,7 +286,8 @@ class _CouponScreenState extends State<CouponScreen> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "${'redeem.has_error'.tr()} $e", //เกิดข้อผิดพลาด
+        text:
+            "${'reward_screen.notification_dialog_error'.tr()} $e", //เกิดข้อผิดพลาด
         onPressed: () {},
       ).showErrorModal(context);
     } finally {

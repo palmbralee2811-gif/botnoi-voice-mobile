@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:botnoivoice/function/get_jwt_token.dart';
 
-class CouponService with ChangeNotifier {
+class RewardService with ChangeNotifier {
   final _logger = Logger();
   String? _errorMessage;
   bool _isLoading = false; // ตัวแปรเช็คสถานะกำลังโหลด
@@ -37,7 +37,7 @@ class CouponService with ChangeNotifier {
       _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
       await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
-      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e';
+      _errorMessage = '${'reward_service.error_message'.tr()} $e';
       _logger.e(_errorMessage);
     } finally {
       _setLoading(false); // โหลดเสร็จ
@@ -57,7 +57,7 @@ class CouponService with ChangeNotifier {
       _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
       await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
-      _errorMessage = '${'redeem_provider.error_occurred'.tr()} $e';
+      _errorMessage = '${'reward_service.error_message'.tr()} $e';
       _logger.e(_errorMessage);
     } finally {
       _setLoading(false);
@@ -139,21 +139,21 @@ class CouponService with ChangeNotifier {
           _logger.d('Coupon redeemed successfully $couponName');
         } else if (message == 'already in use') {
           //คูปองของคุณถูกใช้งานแล้ว
-          _errorMessage = 'redeem_provider.coupon_already_used'.tr();
+          _errorMessage = 'reward_service.coupon_already_used'.tr();
           _logger.e(_errorMessage);
         } else if (message == 'Incorrect Coupon') {
           //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
-          _errorMessage = 'redeem_provider.coupon_not_found'.tr();
+          _errorMessage = 'reward_service.coupon_not_found'.tr();
           _logger.e(_errorMessage);
         } else {
           //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
-          _errorMessage = 'redeem_provider.coupon_expired_or_not_found'.tr();
+          _errorMessage = 'reward_service.coupon_expired_or_not_found'.tr();
           _logger.e(_errorMessage);
         }
       } else {
         //เกิดข้อผิดพลาดในการเรียก API:
         _errorMessage =
-            '${'redeem_provider.api_call_error'.tr()} ${response.statusCode}';
+            '${'reward_service.api_call_error'.tr()} ${response.statusCode}';
         _logger.e(_errorMessage);
       }
     } catch (e) {

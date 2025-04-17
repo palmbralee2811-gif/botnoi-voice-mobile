@@ -245,22 +245,21 @@
         "and": " and ",
         "policy": "Privacy Policy."
     },
-    "redeem": {
-        "get_points": "Get {points} points",
-        "daily_coupon_title": "Reward {thaiDate}",
-        "has_error": "An error occurred",
-        "redeem_success": "Successfully Redeemed",
-        "reward" : "Reward",
-        "coupon_header" : "Exclusive reward from Botnoi",
-        "coupon_title01" : "Daily Points",
-        "coupon_text01" : "Get 100 points \nAvailable every day",
-        "coupon_text_button01": "Only {Timeout} hours left",
-        "coupon_title02" : "New User Exclusive",
-        "coupon_text02" : "Get 1,000 points \nOnly for new users",
-        "coupon_text_button02" : "Successfully Redeemed"
+    "reward_screen": {
+        "notification_dialog": "Successfully Redeemed",
+        "notification_dialog_error": "An error occurred",
+        "appbar_title" : "Reward",
+        "text_header" : "Exclusive reward from Botnoi",
+        "widget_title01" : "Daily Points",
+        "widget_text01" : "Get 100 points \nAvailable every day",
+        "widget_text_button01": "Only {Timeout} hours left",
+        "widget_title02" : "New User Exclusive",
+        "widget_text02" : "Get 1,000 points \nOnly for new users",
+        "widget_text_button02" : "Successfully Redeemed",
+        "widget_display_points": "Get {points} points"
     },
-    "redeem_provider": {
-        "error_occurred": "An error occurred:",
+    "reward_service": {
+        "error_message": "An error occurred:",
         "coupon_already_used": "Your coupon has already been used.",
         "coupon_not_found": "Coupon not found. The coupon may no longer be valid or the coupon you entered is incorrect.",
         "coupon_expired_or_not_found": "Coupon not found in the system or the coupon has expired.",
