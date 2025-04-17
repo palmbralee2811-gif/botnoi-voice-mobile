@@ -174,7 +174,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               color: kDark,
             ),
             title: Text(
-              'app_drawer.redeem'.tr(), //รับพอยต์ฟรี
+              'app_drawer.reward'.tr(), //รับพอยต์ฟรี
               style: GoogleFonts.prompt(
                 fontSize:
                     ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
@@ -183,7 +183,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
               ),
             ),
             onTap: () {
-              context.push('/coupon');
+              context.push('/reward');
             },
           ),
           SizedBox(height: 10.h),

@@ -85,7 +85,7 @@
         "profile": "Profile",
         "buy_points": "Buy Points",
         "security": "Security",
-        "redeem": "Reward"
+        "reward": "Reward"
     },
     "account": {
         "uid_copy_success": "UID copied successfully",

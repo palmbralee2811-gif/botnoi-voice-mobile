@@ -93,7 +93,7 @@ final router = GoRouter(
       builder: (context, state) => const ConfirmForgetPasswordScreen(),
     ),
     GoRoute(
-      path: '/coupon',
+      path: '/reward',
       builder: (context, state) => const RewardScreen(),
     ),
     GoRoute(

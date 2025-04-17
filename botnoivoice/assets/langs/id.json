@@ -85,7 +85,7 @@
         "profile": "Profil",
         "buy_points": "Beli Poin",
         "security": "Keamanan",
-        "redeem": "Hadiah"
+        "reward": "Hadiah"
     },
     "account": {
         "uid_copy_success": "UID berhasil disalin",
@@ -251,10 +251,10 @@
         "appbar_title" : "Hadiah",
         "text_header" : "Hadiah eksklusif dari Botnoi",
         "widget_title01" : "Poin Harian",
-        "widget_text01" : "Dapatkan 100 poin \nTersedia setiap hari",      
+        "widget_text01" : "Kumpulkan 100 poin \nTersedia setiap hari",      
         "widget_text_button01" : "Hanya {Timeout} jam tersisa",
         "widget_title02" : "Eksklusif untuk pengguna baru",
-        "widget_text02" : "Dapatkan 1,000 poin \nKhusus pengguna baru",
+        "widget_text02" : "Kumpulkan 1,000 poin \nKhusus untuk pengguna baru",
         "widget_text_button02" : "Berhasil di tukar",
         "widget_display_points": "Dapatkan {points} poin"
     },

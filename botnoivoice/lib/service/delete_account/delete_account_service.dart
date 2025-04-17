@@ -63,7 +63,8 @@ class DeleteAccountService with ChangeNotifier {
             ],
           );
 
-          if (appleCredential.identityToken == null || appleCredential.authorizationCode.isEmpty) {
+          if (appleCredential.identityToken == null ||
+              appleCredential.authorizationCode.isEmpty) {
             // แจ้งว่าการยืนยันตัวตนล้มเหลว
             _setError('delete_account_provider.apple_auth_failed'.tr());
             return false;
@@ -78,12 +79,12 @@ class DeleteAccountService with ChangeNotifier {
         } on SignInWithAppleAuthorizationException catch (e) {
           if (e.code == AuthorizationErrorCode.canceled) {
             // แจ้งว่าผู้ใช้ยกเลิกการเข้าสู่ระบบ
-            _setError('delete_account_provider.apple_signin_canceled'.tr()); 
+            _setError('delete_account_provider.apple_signin_canceled'.tr());
             _logger.w("User canceled Apple Sign-In.");
             return false;
           } else {
             // แจ้งว่าการยืนยันตัวตนล้มเหลว
-            _setError('delete_account_provider.apple_auth_failed'.tr()); 
+            _setError('delete_account_provider.apple_auth_failed'.tr());
             _logger.e("Apple Sign-In failed: ${e.message}");
             return false;
           }

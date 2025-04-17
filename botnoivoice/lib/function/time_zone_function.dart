@@ -11,7 +11,7 @@ String getCurrentBangkokDate() {
 
 /// DO NOT REMOVE THIS LINE
 /// 
-/// Reset new coupon code every day at midnight such as 00:00 / 24:00 / 12:00 AM
+/// Reset new `coupon_name` every day at midnight such as 00:00 / 24:00 / 12:00 AM
 /// 
 /// เปลี่ยนรหัสคูปองใหม่ทุกวันที่เวลาเที่ยงคืน เช่น 00:00 น. / 24:00 / 12:00 AM
 Duration getTimeUntilMidnightInBangkok() {

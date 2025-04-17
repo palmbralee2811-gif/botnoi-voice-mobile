@@ -85,7 +85,7 @@
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "redeem": "รางวัล"
+        "reward": "รางวัล"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",

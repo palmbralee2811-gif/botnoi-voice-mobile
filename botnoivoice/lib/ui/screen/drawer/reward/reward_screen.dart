@@ -48,7 +48,7 @@ class _RewardScreenState extends State<RewardScreen> {
   @override
   Widget build(BuildContext context) {
     // Get data from provider
-    final couponProvider = Provider.of<RewardService>(context);
+    final rewardServiceProvider = Provider.of<RewardService>(context);
 
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = ResponsiveDesignOrientation.isLandscape;
@@ -192,7 +192,7 @@ class _RewardScreenState extends State<RewardScreen> {
           ),
 
           // วงกลมโหลด (Fullscreen Loading Overlay)
-          if (couponProvider.isLoading)
+          if (rewardServiceProvider.isLoading)
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0.5), // พื้นหลังมืดโปร่งแสง

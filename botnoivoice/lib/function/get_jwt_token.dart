@@ -12,7 +12,7 @@ import 'package:logger/logger.dart';
 
 /// DO NOT REMOVE THIS LINE
 /// Get JWT Token from all providers
-/// Using in `coupon_service.dart`
+/// Using in `reward_service.dart`
 
 final _logger = Logger();
 
