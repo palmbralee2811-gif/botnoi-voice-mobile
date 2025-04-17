@@ -68,8 +68,10 @@ class AccountScreenLogic {
       context.pop();
 
       NotificationSnackBar(
-              context: context, text: 'Sign out successfully', color: kDarkGray)
-          .showSnackBar();
+        context: context,
+        text: 'Sign out successfully',
+        color: kDarkGray,
+      ).showSnackBar();
 
       // Redirect to `login_screen.dart`
       context.go('/login');
@@ -80,8 +82,10 @@ class AccountScreenLogic {
       context.pop();
 
       NotificationSnackBar(
-              context: context, text: 'Sign out failed', color: Colors.red)
-          .showSnackBar();
+        context: context,
+        text: 'Sign out failed',
+        color: Colors.red,
+      ).showSnackBar();
     }
   }
 
@@ -177,16 +181,18 @@ class AccountScreenLogic {
   void copyUID(BuildContext context, String userId) {
     Clipboard.setData(ClipboardData(text: userId));
     NotificationSnackBar(
-            context: context,
-            text: 'account.uid_copy_success',
-            color: kDarkGray)
-        .showSnackBar();
+      context: context,
+      text: 'account.uid_copy_success',
+      color: kDarkGray,
+    ).showSnackBar();
   }
 
   /// Check Email Permission (True/False)
   Future<bool> checkEmailPermission(BuildContext context) async {
-    final emailForgetPassword =
-        Provider.of<EmailForgetPassword>(context, listen: false);
+    final emailForgetPassword = Provider.of<EmailForgetPassword>(
+      context,
+      listen: false,
+    );
     return await emailForgetPassword.checkShowEmail(context);
   }
 }
