@@ -5,7 +5,6 @@ import 'package:botnoivoice/function/time_zone_function.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
-// import 'package:botnoivoice/ui/widget/button/coupon_redeem_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
