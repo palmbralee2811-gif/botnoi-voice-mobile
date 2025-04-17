@@ -224,8 +224,7 @@ class _RewardScreenState extends State<RewardScreen> {
 
         NotificationDialog(
           context: context,
-          text: 'reward_screen.notification_dialog_success'
-              .tr(), //เติมคูปองสำเร็จแล้ว
+          text: 'reward_screen.notification_dialog_success'.tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             creditsProvider.callLoadCreditsApi(context);
           },
@@ -266,8 +265,7 @@ class _RewardScreenState extends State<RewardScreen> {
 
         NotificationDialog(
           context: context,
-          text: 'reward_screen.notification_dialog_success'
-              .tr(), //เติมคูปองสำเร็จแล้ว
+          text: 'reward_screen.notification_dialog_success'.tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
             creditsProvider.callLoadCreditsApi(context);
           },

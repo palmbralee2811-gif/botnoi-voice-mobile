@@ -246,7 +246,7 @@
         "policy": "Kebijakan Privasi."
     },
     "reward_screen": {
-        "notification_dialog": "Berhasil di tukar",
+        "notification_dialog_success": "Berhasil di tukar",
         "notification_dialog_error": "Terjadi kesalahan",
         "appbar_title" : "Hadiah",
         "text_header" : "Hadiah eksklusif dari Botnoi",

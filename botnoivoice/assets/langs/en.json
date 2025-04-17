@@ -246,7 +246,7 @@
         "policy": "Privacy Policy."
     },
     "reward_screen": {
-        "notification_dialog": "Successfully Redeemed",
+        "notification_dialog_success": "Successfully Redeemed",
         "notification_dialog_error": "An error occurred",
         "appbar_title" : "Reward",
         "text_header" : "Exclusive reward from Botnoi",
