@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
+
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
@@ -10,109 +11,122 @@ import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 
-/*
-TODO: Fix the following error:
-
-flutter: \^[[38;5;196m┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────<…>
-flutter: \^[[38;5;196m│ #0   CallReloadData.callLoadCreditsApi (package:botnoivoice/service/get/call_reload_data.dart:66:15)<…>
-flutter: \^[[38;5;196m│ #1   <asynchronous suspension><…>
-flutter: \^[[38;5;196m├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄<…>
-flutter: \^[[38;5;196m│ ⛔ Failed to load credits: Looking up a deactivated widget's ancestor is unsafe.<…>
-flutter: \^[[38;5;196m│ ⛔ At this point the state of the widget's element tree is no longer stable.<…>
-flutter: \^[[38;5;196m│ ⛔ To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.<…>
-flutter: \^[[38;5;196m└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
-*/
-
 final _logger = Logger();
 
 class CallReloadData with ChangeNotifier {
   String? _remainingCredits;
   String? _remainingQuotaDownload;
 
-  /// Get the remaining credits
+  // Getter สำหรับเครดิตคงเหลือ
   String? get remainingCredits => _remainingCredits;
 
-  /// Get the remaining download quota for generating voice daily (10/10)
+  // Getter สำหรับโควต้าดาวน์โหลดเสียงคงเหลือ
   String? get remainingQuotaDownload => _remainingQuotaDownload;
 
+  // เซ็ตค่าทั้งสองและ notifyListeners เพื่อให้ UI อัปเดต
   void setRemainingCredits(String? credits, String? quotaDownload) {
     _remainingCredits = credits;
     _remainingQuotaDownload = quotaDownload;
     notifyListeners();
   }
 
+  // ฟังก์ชันโหลดเครดิตหลักแบบปลอดภัย
   Future<void> callLoadCreditsApi(BuildContext context) async {
+    // อ่าน provider ทุกตัวให้เรียบร้อยก่อน await ใดๆ
     final appleProvider = Provider.of<AppleLogin>(context, listen: false);
     final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
     final lineProvider = Provider.of<LineLogin>(context, listen: false);
     final emailProvider = Provider.of<EmailLogin>(context, listen: false);
 
+    final appleToken = Provider.of<AppleToken>(context, listen: false);
+    final googleToken = Provider.of<GoogleToken>(context, listen: false);
+    final lineToken = Provider.of<LineToken>(context, listen: false);
+    final emailToken = Provider.of<EmailToken>(context, listen: false);
+
     try {
+      // เรียกโหลดเครดิตตาม provider ที่ล็อกอินอยู่
       if (appleProvider.isLoggedIn &&
           appleProvider.user?.providerData[0].providerId == 'apple.com') {
-        await Provider.of<AppleToken>(context, listen: false)
-            .loadRemainingCredits();
+        await appleToken.loadRemainingCredits();
       }
 
       if (googleProvider.isLoggedIn &&
           googleProvider.user?.providerData[0].providerId == 'google.com') {
-        await Provider.of<GoogleToken>(context, listen: false)
-            .loadRemainingCredits();
+        await googleToken.loadRemainingCredits();
       }
 
       if (lineProvider.isLoggedIn) {
-        await Provider.of<LineToken>(context, listen: false)
-            .loadRemainingCredits();
+        await lineToken.loadRemainingCredits();
       }
 
       if (emailProvider.isLoggedIn &&
           emailProvider.user?.providerData[0].providerId == 'password') {
-        await Provider.of<EmailToken>(context, listen: false)
-            .loadRemainingCredits();
+        await emailToken.loadRemainingCredits();
       }
 
-      // After getting the credits, update the CreditsProvider
-      final credits = await _getRemainingCredits(context);
-      final quotaDownload = await _getRemainingQuotaDownload(context);
+      // เรียก get ค่าเครดิตและโควต้าดาวน์โหลดแบบปลอดภัย
+      final credits = await _getRemainingCreditsFromToken(
+        appleProvider,
+        googleProvider,
+        lineProvider,
+        emailProvider,
+        appleToken,
+        googleToken,
+        lineToken,
+        emailToken,
+      );
+
+      final quotaDownload = await _getQuotaDownloadFromToken(
+        appleProvider,
+        googleProvider,
+        lineProvider,
+        emailProvider,
+        appleToken,
+        googleToken,
+        lineToken,
+        emailToken,
+      );
+
+      // อัปเดตสถานะใน state provider นี้
       setRemainingCredits(credits, quotaDownload);
     } catch (e) {
       _logger.e('Failed to load credits: $e');
     }
   }
 
-  Future<String?> _getRemainingCredits(BuildContext context) async {
-    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
-    final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
-    final lineProvider = Provider.of<LineLogin>(context, listen: false);
-    final emailProvider = Provider.of<EmailLogin>(context, listen: false);
-
+  // ดึงเครดิตจาก provider ที่ล็อกอินอยู่
+  Future<String?> _getRemainingCreditsFromToken(
+    AppleLogin appleProvider,
+    GoogleLogin googleProvider,
+    LineLogin lineProvider,
+    EmailLogin emailProvider,
+    AppleToken appleToken,
+    GoogleToken googleToken,
+    LineToken lineToken,
+    EmailToken emailToken,
+  ) async {
     try {
       if (appleProvider.isLoggedIn &&
           appleProvider.user?.providerData[0].providerId == 'apple.com') {
         _logger.d('User logged in with Apple');
-        return Provider.of<AppleToken>(context, listen: false)
-            .getRemainingCredits;
+        return appleToken.getRemainingCredits;
       }
 
       if (googleProvider.isLoggedIn &&
           googleProvider.user?.providerData[0].providerId == 'google.com') {
         _logger.d('User logged in with Google');
-        return Provider.of<GoogleToken>(context, listen: false)
-            .getRemainingCredits;
+        return googleToken.getRemainingCredits;
       }
 
       if (lineProvider.isLoggedIn) {
         _logger.d('User logged in with LINE');
-        return Provider.of<LineToken>(context, listen: false)
-            .getRemainingCredits;
+        return lineToken.getRemainingCredits;
       }
 
       if (emailProvider.isLoggedIn &&
           emailProvider.user?.providerData[0].providerId == 'password') {
         _logger.d('User logged in with Email');
-        return Provider.of<EmailToken>(context, listen: false)
-            .getRemainingCredits;
+        return emailToken.getRemainingCredits;
       }
 
       _logger.w('No valid login provider found');
@@ -123,41 +137,45 @@ class CallReloadData with ChangeNotifier {
     }
   }
 
-  Future<String?> _getRemainingQuotaDownload(BuildContext context) async {
-    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
-    final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
-    final lineProvider = Provider.of<LineLogin>(context, listen: false);
-    final emailProvider = Provider.of<EmailLogin>(context, listen: false);
-
+  // ดึงโควต้าดาวน์โหลดเสียงจาก provider ที่ล็อกอินอยู่
+  Future<String?> _getQuotaDownloadFromToken(
+    AppleLogin appleProvider,
+    GoogleLogin googleProvider,
+    LineLogin lineProvider,
+    EmailLogin emailProvider,
+    AppleToken appleToken,
+    GoogleToken googleToken,
+    LineToken lineToken,
+    EmailToken emailToken,
+  ) async {
     try {
       if (appleProvider.isLoggedIn &&
           appleProvider.user?.providerData[0].providerId == 'apple.com') {
         _logger.d('User logged in with Apple');
-        return Provider.of<AppleToken>(context, listen: false).getQuotaDownload;
+        return appleToken.getQuotaDownload;
       }
 
       if (googleProvider.isLoggedIn &&
           googleProvider.user?.providerData[0].providerId == 'google.com') {
         _logger.d('User logged in with Google');
-        return Provider.of<GoogleToken>(context, listen: false)
-            .getQuotaDownload;
+        return googleToken.getQuotaDownload;
       }
 
       if (lineProvider.isLoggedIn) {
         _logger.d('User logged in with LINE');
-        return Provider.of<LineToken>(context, listen: false).getQuotaDownload;
+        return lineToken.getQuotaDownload;
       }
 
       if (emailProvider.isLoggedIn &&
           emailProvider.user?.providerData[0].providerId == 'password') {
         _logger.d('User logged in with Email');
-        return Provider.of<EmailToken>(context, listen: false).getQuotaDownload;
+        return emailToken.getQuotaDownload;
       }
 
       _logger.w('No valid login provider found');
       return "N/A";
     } catch (e) {
-      _logger.e('Failed to get remaining quota download', error: e);
+      _logger.e('Failed to get quota download', error: e);
       return "N/A";
     }
   }
