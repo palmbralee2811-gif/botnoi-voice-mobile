@@ -98,7 +98,11 @@ class EmailToken extends ChangeNotifier {
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
+
+        // Logging Profile Data
         var data = json.decode(response.body);
+        _logger.i('Get Profile Data: $data');
+        
         _userID = data['data']['uid'].toString();
         _remainingCredits = data['data']['credits'].toString();
         _quotaDownload = data['data']['quota_download'].toString();
