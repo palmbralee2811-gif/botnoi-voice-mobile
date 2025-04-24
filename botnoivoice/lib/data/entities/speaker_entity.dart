@@ -32,6 +32,7 @@ class SpeakerEntity {
   final String userId;
   final String languageCode;
   final int price;
+  final String tier;
 
   const SpeakerEntity({
     required this.speakerId,
@@ -67,6 +68,7 @@ class SpeakerEntity {
     required this.userId,
     required this.languageCode,
     required this.price,
+    required this.tier
   });
 
   factory SpeakerEntity.fromJson(Map<String, dynamic> json) {
@@ -108,6 +110,7 @@ class SpeakerEntity {
       userId: json['user_id'] ?? '',
       languageCode: json['language_code'] ?? '',
       price: json['price'] ?? 0,
+      tier: json['tier'] ?? ''
     );
   }
 

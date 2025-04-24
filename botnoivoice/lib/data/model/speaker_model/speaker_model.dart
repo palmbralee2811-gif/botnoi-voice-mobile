@@ -8,10 +8,11 @@ class SpeakerModel {
   static final Logger _logger = Logger();
 
   /// ฟังก์ชันโหลดข้อมูล JSON และเพิ่มใน speakerItem
-  static Future<void> loadSpeakers() async {
+  static Future<void> loadSpeakers({required bool isSubscribed}) async {
     try {
       // โหลด JSON จาก assets
-      String jsonString = await rootBundle.loadString('assets/data/speaker_model.json');
+      String jsonString =
+          await rootBundle.loadString('assets/data/speaker_model.json');
 
       // แปลง JSON String -> Map
       Map<String, dynamic> jsonMap = json.decode(jsonString);
@@ -24,8 +25,13 @@ class SpeakerModel {
       // แปลง JSON เป็น List<SpeakerEntity>
       List<dynamic> jsonList = jsonMap['data'];
 
-      // แปลง JSON เป็น List<SpeakerEntity>
-      speakerItem = jsonList.map((json) => SpeakerEntity.fromJson(json)).toList();
+      // ใช้ isSubscribed กรอง speakers ถ้า sub อยู่จะให้แสดงทั้งหมด ถ้าไม่จะแสดงแค่ Free
+      speakerItem =
+          jsonList.map((json) => SpeakerEntity.fromJson(json)).where((speaker) {
+        final tier = speaker.tier;
+        // ให้ผ่าน speaker ถ้าเป็นสมาชิก หรือ speaker เป็น Free
+        return isSubscribed || tier == 'Free';
+      }).toList();
 
       // แสดงข้อมูล Speaker ที่โหลดได้
       _logger.d('Speakers loaded successfully: ${speakerItem.length}');

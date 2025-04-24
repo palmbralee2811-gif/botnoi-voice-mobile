@@ -1,5 +1,4 @@
 import 'package:botnoivoice/config/api_key_config.dart';
-import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/function/app_language_function.dart';
 import 'package:botnoivoice/routing.dart';
@@ -34,7 +33,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SpeakerModel.loadSpeakers();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LineSDK.instance.setup(lineSdkChannelId).then((_) {
     print("LineSDK Prepared");

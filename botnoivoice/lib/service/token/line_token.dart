@@ -14,6 +14,9 @@ class LineToken extends ChangeNotifier {
   String? _remainingCredits;
   String? _credentialsToken;
   String? _quotaDownload;
+
+  bool _isSubscription = false;
+
   final Logger _logger = Logger(); // For debugging
 
   /// Getter for the user ID from Database after login
@@ -31,6 +34,9 @@ class LineToken extends ChangeNotifier {
   /// Getter for the user daily quota
   String? get getQuotaDownload => _quotaDownload;
 
+  // Getter for the user subscription
+  bool get isSubscription => _isSubscription;
+
   /// Clear all the tokens
   void clearTokens() {
     _userID = null;
@@ -38,6 +44,7 @@ class LineToken extends ChangeNotifier {
     _remainingCredits = null;
     _credentialsToken = null;
     _quotaDownload = null;
+    _isSubscription = false;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
@@ -103,6 +110,7 @@ class LineToken extends ChangeNotifier {
         _userID = data['data']['uid'].toString();
         _remainingCredits = data['data']['credits'].toString();
         _quotaDownload = data['data']['quota_download'].toString();
+        _isSubscription = data['data']['subscription']?.toString() == 'Pro';  // Check ว่าผู้ใช้ได้ Subscription ไหม
         notifyListeners();
         _logger.i('User ID successfully loaded: $_userID');
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');
