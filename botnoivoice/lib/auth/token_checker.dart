@@ -1,15 +1,16 @@
 import 'package:botnoivoice/config/revenuecat_config.dart';
+import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
+import 'package:botnoivoice/service/email/email_username_api.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
+import 'package:botnoivoice/service/login/email_login.dart';
+import 'package:botnoivoice/service/login/google_login.dart';
+import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/notification/push_notification_service.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
-import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
-import 'package:botnoivoice/service/email/email_username_api.dart';
-import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
-import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
 import 'package:botnoivoice/ui/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/ui/screen/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,9 @@ class TokenChecker extends StatefulWidget {
 class _TokenCheckerState extends State<TokenChecker> {
   bool _initialized = false;
   bool _isDisposed = false;
+
+  /// Check is User Subscription (Free or Pro)
+  bool _isSubscribed = false;
 
   @override
   void initState() {
@@ -101,6 +105,10 @@ class _TokenCheckerState extends State<TokenChecker> {
     if (!_isDisposed) await appleTokenProvider.loadJwtToken(context);
     if (!_isDisposed) await appleTokenProvider.loadCredentials();
     if (!_isDisposed) await appleTokenProvider.loadRemainingCredits();
+    
+    // Load Speaker Data by User Subscription (Free or Pro)
+    if (!_isDisposed) _isSubscribed = appleTokenProvider.isSubscription;
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -128,6 +136,10 @@ class _TokenCheckerState extends State<TokenChecker> {
     if (!_isDisposed) await googleTokenProvider.loadCredentials();
     if (!_isDisposed) await googleTokenProvider.loadRemainingCredits();
 
+    // Load Speaker Data by User Subscription (Free or Pro)
+    if (!_isDisposed) _isSubscribed = googleTokenProvider.isSubscription;
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
+
     if (!_isDisposed) await configureRevenueCat(context);
 
     /// ✅ แก้ไขการเรียก Push Notification Service ให้ตรวจสอบ mounted ก่อน
@@ -153,6 +165,10 @@ class _TokenCheckerState extends State<TokenChecker> {
     if (!_isDisposed) await lineTokenProvider.loadCredentials();
     if (!_isDisposed) await lineTokenProvider.loadRemainingCredits();
 
+    // Load Speaker Data by User Subscription (Free or Pro)
+    if (!_isDisposed) _isSubscribed = lineTokenProvider.isSubscription;
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
+
     if (!_isDisposed) await configureRevenueCat(context);
 
     /// ✅ แก้ไขการเรียก Push Notification Service ให้ตรวจสอบ mounted ก่อน
@@ -177,6 +193,10 @@ class _TokenCheckerState extends State<TokenChecker> {
     if (!_isDisposed) await emailTokenProvider.loadJwtToken(context);
     if (!_isDisposed) await emailTokenProvider.loadCredentials();
     if (!_isDisposed) await emailTokenProvider.loadRemainingCredits();
+
+    // Load Speaker Data by User Subscription (Free or Pro)
+    if (!_isDisposed) _isSubscribed = emailTokenProvider.isSubscription;
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
 
     if (!_isDisposed) {
       /// Load get username by email

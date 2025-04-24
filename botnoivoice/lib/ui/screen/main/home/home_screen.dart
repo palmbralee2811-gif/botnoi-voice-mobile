@@ -1,34 +1,25 @@
-import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/auth/internet_checker.dart';
+import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/function/generate_audio.dart';
 import 'package:botnoivoice/function/open_audio_player.dart';
-import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/login/email_login.dart';
-import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/token/apple_token.dart';
-import 'package:botnoivoice/service/token/email_token.dart';
-import 'package:botnoivoice/service/token/google_token.dart';
-import 'package:botnoivoice/service/token/line_token.dart';
-import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/function/call_reload_data.dart';
 import 'package:botnoivoice/function/random_string.dart';
-import 'package:botnoivoice/ui/screen/main/home/appbar_top.dart';
-import 'package:botnoivoice/ui/screen/drawer/drawer_appbar.dart';
-import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
+import 'package:botnoivoice/ui/dialog/notification/notification_popup.dart';
+import 'package:botnoivoice/ui/screen/drawer/drawer_appbar.dart';
+import 'package:botnoivoice/ui/screen/main/home/appbar_top.dart';
+import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
+import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_icon.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_row.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text.dart';
-import 'package:botnoivoice/ui/dialog/notification/notification_popup.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:botnoivoice/auth/internet_checker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -67,49 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _logger.d("internet change in home : $isAvailable");
       });
     });
-    _initApp();
-  }
-
-  Future<void> _initApp() async {
-      // อ่าน provider ทุกตัวให้เรียบร้อยก่อน await ใดๆ
-    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
-    final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
-    final lineProvider = Provider.of<LineLogin>(context, listen: false);
-    final emailProvider = Provider.of<EmailLogin>(context, listen: false);
-
-    final appleToken = Provider.of<AppleToken>(context, listen: false);
-    final googleToken = Provider.of<GoogleToken>(context, listen: false);
-    final lineToken = Provider.of<LineToken>(context, listen: false);
-    final emailToken = Provider.of<EmailToken>(context, listen: false);
-    
-    bool isSubscribed = false;
-    
-    // เรียกโหลดเครดิตตาม provider ที่ล็อกอินอยู่
-      if (appleProvider.isLoggedIn &&
-          appleProvider.user?.providerData[0].providerId == 'apple.com') {
-        await appleToken.loadRemainingCredits();
-         isSubscribed = appleToken.isSubscription;
-      }
-
-      if (googleProvider.isLoggedIn &&
-          googleProvider.user?.providerData[0].providerId == 'google.com') {
-        await googleToken.loadRemainingCredits();
-        isSubscribed = googleToken.isSubscription;
-      }
-
-      if (lineProvider.isLoggedIn) {
-        await lineToken.loadRemainingCredits();
-        isSubscribed = lineToken.isSubscription;
-      }
-
-      if (emailProvider.isLoggedIn &&
-          emailProvider.user?.providerData[0].providerId == 'password') {
-        await emailToken.loadRemainingCredits();
-         isSubscribed = emailToken.isSubscription;
-      }
-    await SpeakerModel.loadSpeakers(isSubscribed: isSubscribed);
-
-    setState(() {}); // ถ้าจำเป็นให้ UI refresh หลังโหลดเสร็จ
   }
 
   @override
