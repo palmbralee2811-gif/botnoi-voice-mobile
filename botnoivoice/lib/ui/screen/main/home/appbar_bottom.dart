@@ -76,10 +76,13 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     },
                   );
                   final audioBytes = response.bodyBytes;
-                  await audioPlayer.play(BytesSource(audioBytes));
-                  setState(() {
-                    isPlaying = true;
-                  });
+                  if (audioBytes.isNotEmpty) {
+                    final mimeType = response.headers['content-type'] ?? 'audio/wav';
+                    await audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
+                    setState(() {
+                      isPlaying = true;
+                    });
+                  }
                 }
               }
             },

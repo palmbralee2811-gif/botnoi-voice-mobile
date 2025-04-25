@@ -744,7 +744,10 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                   if (response.statusCode == 200) {
                     // ใช้ BytesSource เพื่อเล่นไฟล์จากหน่วยความจำ
                     final audioBytes = response.bodyBytes;
-                    await audioPlayer.play(BytesSource(audioBytes));
+                    if (audioBytes.isNotEmpty) {
+                      final mimeType = response.headers['content-type'] ?? 'audio/wav';
+                      audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
+                    }
                   } else {
                     print('Failed to load audio: ${response.statusCode}');
                     ScaffoldMessenger.of(context).showSnackBar(
