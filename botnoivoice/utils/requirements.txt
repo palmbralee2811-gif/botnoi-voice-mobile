@@ -1,6 +1,0 @@
-requests
-boto3
-python-dotenv
-google-auth
-google-auth-oauthlib
-google-auth-httplib2

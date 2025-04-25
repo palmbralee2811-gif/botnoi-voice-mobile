@@ -1,5 +1,0 @@
-chmod +x auto_run.sh
-
-cd /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/utils/get_asset_fcm_token
-
-./auto_run.sh
