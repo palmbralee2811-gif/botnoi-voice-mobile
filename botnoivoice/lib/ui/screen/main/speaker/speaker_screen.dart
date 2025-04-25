@@ -124,7 +124,13 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarSpeakerScreen(),
+      appBar: AppBarSpeakerScreen(
+        onBackButtonPressed: (){
+          if (audioPlayer.state == PlayerState.playing) {
+            audioPlayer.stop();
+          }
+        },
+      ),
       body: buildFilterNavbar(context),
     );
   }
@@ -762,8 +768,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                 }
               }
 
-              await playAudio();
-
               String languageCode =
                   Localizations.localeOf(context).languageCode;
               String speakerName;
@@ -798,17 +802,22 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               Provider.of<HomeSpeakerDataManagement>(context, listen: false)
                   .setNationalFlagName(selectedLanguage);
 
-              setState(() {
-                if (selectedIndex.contains(index)) {
-                  if (audioPlayer.state == PlayerState.playing) {
+
+              if (selectedIndex.contains(index)) {
+                setState(() {
+                if (audioPlayer.state == PlayerState.playing) {
                     audioPlayer.stop();
-                  }
-                  selectedIndex.remove(index);
-                } else {
-                  selectedIndex.clear();
-                  selectedIndex.add(index);
                 }
-              });
+                selectedIndex.remove(index);
+                });
+              } else {
+                await playAudio();
+
+                setState(() {
+                selectedIndex.clear();
+                selectedIndex.add(index);
+                });
+              }
             },
             child: Column(
               children: [
