@@ -873,7 +873,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         await favoriteService.removeFavoriteSpeaker(speakerId, token);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Favorite removed!')), // ข้อความแจ้งเตือน
+            const SnackBar(content: Text('Favorite removed!')), // ข้อความแจ้งเตือน
           );
         }
       } else {
@@ -885,7 +885,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         await favoriteService.saveFavoriteSpeakers(listToSend, token);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Favorite added!')), // ข้อความแจ้งเตือน
+            const SnackBar(content: Text('Favorite added!')), // ข้อความแจ้งเตือน
           );
         }
       }
@@ -922,6 +922,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         });
       }
     } catch (e) {
+      _logger.e("Error loading favorite speakers: $e");
     } finally {
       if (mounted) {
         setState(() {

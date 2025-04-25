@@ -79,6 +79,8 @@ dependencies:
   # Push Notification
   firebase_messaging: ^15.2.4
   flutter_local_notifications: ^18.0.1
+
+  # Caching Image form URL
   cached_network_image: ^3.4.1
 
 dev_dependencies:
@@ -112,6 +114,4 @@ flutter:
     - assets/images/national_flag/
     - assets/images/splash_screen/
     - assets/images/reward_screen/ #ภาพพื้นหลังของ card reward
-    - assets/square_image/
     - assets/langs/ #assets สำหรับเปลี่ยนภาษาแอป
-    - assets/data/ #asset สำหรับเก็บข้อมูลจาก json ที่ได้จาก API

@@ -68,7 +68,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 });
               } else {
                 if (speakerAudio != null && speakerAudio.isNotEmpty) {
-                   // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
+                  // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
                   final response = await http.get(
                     Uri.parse(speakerAudio),
                     headers: {
@@ -77,8 +77,10 @@ class _AppBarBottomState extends State<AppBarBottom> {
                   );
                   final audioBytes = response.bodyBytes;
                   if (audioBytes.isNotEmpty) {
-                    final mimeType = response.headers['content-type'] ?? 'audio/wav';
-                    await audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
+                    final mimeType =
+                        response.headers['content-type'] ?? 'audio/wav';
+                    await audioPlayer
+                        .play(BytesSource(audioBytes, mimeType: mimeType));
                     setState(() {
                       isPlaying = true;
                     });
@@ -116,9 +118,12 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     CircleAvatar(
                       radius:
                           ResponsiveDesignOrientation.isLandscape ? 22.r : 14.r,
-                      backgroundImage: CachedNetworkImageProvider(speakerImagePath!, headers: {
+                      backgroundImage: CachedNetworkImageProvider(
+                        speakerImagePath!,
+                        headers: const {
                           'Referer': 'https://voice.botnoi.ai/',
-                        }),
+                        },
+                      ),
                     ),
                     SizedBox(
                         width: ResponsiveDesignOrientation.isLandscape

@@ -1,7 +1,6 @@
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
 import 'package:botnoivoice/ui/screen/main/speaker/widget/speaker_grid_item.dart';
-import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
