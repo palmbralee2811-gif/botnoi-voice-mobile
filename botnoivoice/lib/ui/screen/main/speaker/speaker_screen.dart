@@ -10,6 +10,7 @@ import 'package:botnoivoice/ui/screen/main/speaker/speaker_filter_button.dart';
 import 'package:botnoivoice/ui/screen/main/speaker/favorite_button.dart';
 import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -803,8 +804,11 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      image: AssetImage(
+                      image: CachedNetworkImageProvider(
                         speakerItem.squareImage,
+                        headers: {
+                          'Referer': 'https://voice.botnoi.ai/',
+                        },
                       ),
                       onError: (exception, stackTrace) => const AssetImage(
                           'assets/images/default-profile-picture.jpg'),
