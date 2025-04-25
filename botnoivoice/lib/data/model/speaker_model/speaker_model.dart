@@ -21,7 +21,7 @@ class SpeakerModel {
       }
 
       // แปลง JSON String -> Map
-      Map<String, dynamic> jsonMap = json.decode(response.body);
+      Map<String, dynamic> jsonMap = json.decode(utf8.decode(response.bodyBytes));
 
       // เข้าถึงคีย์ "data" ซึ่งเป็น List
       if (jsonMap['data'] == null || jsonMap['data'] is! List) {
@@ -30,6 +30,9 @@ class SpeakerModel {
 
       // แปลง JSON เป็น List<SpeakerEntity>
       List<dynamic> jsonList = jsonMap['data'];
+
+      _logger.d('Loading speakers...');
+      _logger.i('Speaker data loaded: ${jsonList} speakers found.');
 
       // ใช้ isSubscribed กรอง speakers ถ้า sub อยู่จะให้แสดงทั้งหมด ถ้าไม่จะแสดงแค่ Free
       speakerItem =
