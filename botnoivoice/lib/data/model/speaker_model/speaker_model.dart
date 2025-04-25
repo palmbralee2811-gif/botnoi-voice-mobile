@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:http/http.dart' as http;
 
 class SpeakerModel {
   static List<SpeakerEntity> speakerItem = [];
@@ -11,11 +12,16 @@ class SpeakerModel {
   static Future<void> loadSpeakers({required bool isSubscribed}) async {
     try {
       // โหลด JSON จาก assets
-      String jsonString =
-          await rootBundle.loadString('assets/data/speaker_model.json');
+      final url = Uri.parse('https://api-voice.botnoi.ai/api/marketplace/get_all_marketplace_demo');
+      final response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+      });
+      if (response.statusCode != 200) {
+        throw Exception("Failed to load speakers: ${response.statusCode}");
+      }
 
       // แปลง JSON String -> Map
-      Map<String, dynamic> jsonMap = json.decode(jsonString);
+      Map<String, dynamic> jsonMap = json.decode(response.body);
 
       // เข้าถึงคีย์ "data" ซึ่งเป็น List
       if (jsonMap['data'] == null || jsonMap['data'] is! List) {
