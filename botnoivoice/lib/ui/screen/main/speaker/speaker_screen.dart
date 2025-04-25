@@ -20,6 +20,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class SpeakerScreen extends StatefulWidget {
   const SpeakerScreen({super.key});
@@ -723,12 +724,38 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           child: GestureDetector(
             onTap: () async {
               String audioURL = speakerItem.audio;
+              
+
               Future<void> playAudio() async {
-                if (audioURL.isNotEmpty) {
+                try {
+                  // หยุดการเล่นหากกำลังเล่นอยู่
                   if (audioPlayer.state == PlayerState.playing) {
                     await audioPlayer.stop();
                   }
-                  await audioPlayer.play(UrlSource(audioURL));
+
+                  // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
+                  final response = await http.get(
+                    Uri.parse(audioURL),
+                    headers: {
+                      'Referer': 'https://voice.botnoi.ai/',
+                    },
+                  );
+
+                  if (response.statusCode == 200) {
+                    // ใช้ BytesSource เพื่อเล่นไฟล์จากหน่วยความจำ
+                    final audioBytes = response.bodyBytes;
+                    await audioPlayer.play(BytesSource(audioBytes));
+                  } else {
+                    print('Failed to load audio: ${response.statusCode}');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error loading audio: ${response.statusCode}')),
+                    );
+                  }
+                } catch (e) {
+                  print('Error playing audio: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $e')),
+                  );
                 }
               }
 
@@ -897,8 +924,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                                       selectedIndexFavorites
                                           .remove(speakerItem.speakerId);
                                     } else {
-                                      selectedIndexFavorites
-                                          .add(speakerItem.speakerId);
+                                      selectedIndexFavorites.add(speakerItem.speakerId);
                                     }
                                   });
                                 },
@@ -1008,6 +1034,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       ],
     );
   }
+
 
   Widget buildFavoriteFilter(BuildContext context) {
     return SizedBox(
