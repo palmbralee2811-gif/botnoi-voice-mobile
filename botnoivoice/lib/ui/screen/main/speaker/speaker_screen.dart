@@ -56,6 +56,9 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   bool isExpanded = false;
   bool changeIcon = false;
 
+  Set<String> failedImageSpeakers = {};
+
+
   @override
   void initState() {
     super.initState();
@@ -722,6 +725,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   }
 
   Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -843,14 +847,20 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider(
+                      image: failedImageSpeakers.contains(speakerItem.speakerId) ? AssetImage('assets/images/default-profile-picture.jpg') : CachedNetworkImageProvider(
                         speakerItem.squareImage,
                         headers: {
                           'Referer': 'https://voice.botnoi.ai/',
                         },
                       ),
-                      onError: (exception, stackTrace) => const AssetImage(
-                          'assets/images/default-profile-picture.jpg'),
+                      onError: (exception, stackTrace) {
+                        _logger.e('image not load');
+
+                        setState(() {
+                          failedImageSpeakers.add(speakerItem.speakerId);
+                        });
+                      },
+
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
