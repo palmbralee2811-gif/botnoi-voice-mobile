@@ -1,26 +1,28 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/model/speaker_model/gender_filter.dart';
 import 'package:botnoivoice/data/model/speaker_model/language_filter.dart';
-import 'package:botnoivoice/data/entities/speaker_entity.dart';
 import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
-import 'package:botnoivoice/ui/style/style.dart';
-import 'package:botnoivoice/ui/screen/main/speaker/appbar_speaker_screen.dart';
-import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
-import 'package:botnoivoice/ui/screen/main/speaker/speaker_filter_button.dart';
-import 'package:botnoivoice/ui/screen/main/speaker/favorite_button.dart';
+import 'package:botnoivoice/function/get_jwt_token.dart';
+import 'package:botnoivoice/service/favorite/favorite_service.dart';
 import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
+import 'package:botnoivoice/ui/screen/main/speaker/appbar_speaker_screen.dart';
+import 'package:botnoivoice/ui/screen/main/speaker/favorite_button.dart';
+import 'package:botnoivoice/ui/screen/main/speaker/speaker_filter_button.dart';
+import 'package:botnoivoice/ui/screen/main/speaker/widget/favorite_filter.dart';
+import 'package:botnoivoice/ui/screen/main/speaker/widget/speaker_grid_item.dart';
+import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
+import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/ui/widget/gradient/gradient_text_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class SpeakerScreen extends StatefulWidget {
   const SpeakerScreen({super.key});
@@ -56,12 +58,22 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   bool isExpanded = false;
   bool changeIcon = false;
 
+  bool _isLoading = true;
+
 
   @override
   void initState() {
     super.initState();
     language = tr('default_language_filter_code');
     gender = '';
+
+    _loadInitialData();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
   }
 
   List<String> _getVoiceStyles(BuildContext context) {
@@ -125,14 +137,10 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarSpeakerScreen(
-        onBackButtonPressed: (){
-          if (audioPlayer.state == PlayerState.playing) {
-            audioPlayer.stop();
-          }
-        },
-      ),
-      body: buildFilterNavbar(context),
+      appBar: const AppBarSpeakerScreen(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : buildFilterNavbar(context),
     );
   }
 
@@ -147,8 +155,15 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  // --- ส่วนที่แก้ไข ---
                   ishover
-                      ? buildFavoriteFilter(context)
+                      ? FavoriteFilter(
+                          selectedIndexFavorites: selectedIndexFavorites,
+                          selectedIndex: selectedIndex,
+                          onSpeakerTap: _handleSpeakerTap,
+                          onFavoriteToggle: _handleFavoriteToggle,
+                          currentLanguage: language ?? 'TH',
+                        )
                       : buildMultipleSpeaker(context),
                 ],
               ),
@@ -242,7 +257,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     );
   }
 
-  //TODO: Fix Error เวลากดปุ่มแล้ว แสดงภาษาทั้งหมด สิ่งที่ต้องการคือ แสดงเฉพาะ ภาษาที่กดถูกใจเท่านั้น
   Widget buildFavoriteButton() {
     return InkWell(
       onTap: () {
@@ -497,6 +511,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     }).toList();
   }
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
   Widget _buildLanguageFilter(
     String thaiName,
     String englishName,
@@ -660,7 +675,18 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           ),
           itemBuilder: (context, index) {
             final data = filteredItems[index];
-            return buildSingleSpeaker(data, index);
+            final originalIndex = SpeakerModel.speakerItem
+                .indexWhere((s) => s.speakerId == data.speakerId);
+
+            // --- ส่วนที่แก้ไข: เรียกใช้ SpeakerGridItem ---
+            return SpeakerGridItem(
+              speakerItem: data,
+              index: originalIndex, // ใช้ original index
+              isSelected: selectedIndex.contains(originalIndex),
+              isFavorite: selectedIndexFavorites.contains(data.speakerId),
+              onSpeakerTap: _handleSpeakerTap, // ส่ง Callback
+              onFavoriteToggle: _handleFavoriteToggle, // ส่ง Callback
+            );
           },
         ),
       ),
@@ -722,362 +748,186 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
     return filteredSpeakers;
   }
 
-  Widget buildSingleSpeaker(SpeakerEntity speakerItem, int index) {
+  // เพิ่ม function นี้ใน class _SpeakerScreenState
+  void _handleSpeakerTap(int index, SpeakerEntity speakerItem) async {
+    // --- โค้ดเดิมจาก onTap ของ buildSingleSpeaker ---
+    String audioURL = speakerItem.audio;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 7.h),
-          child: GestureDetector(
-            onTap: () async {
-              String audioURL = speakerItem.audio;
-              
+    Future<void> playAudio() async {
+      try {
+        // หยุดการเล่นหากกำลังเล่นอยู่
+        if (audioPlayer.state == PlayerState.playing) {
+          await audioPlayer.stop();
+        }
 
-              Future<void> playAudio() async {
-                try {
-                  // หยุดการเล่นหากกำลังเล่นอยู่
-                  if (audioPlayer.state == PlayerState.playing) {
-                    await audioPlayer.stop();
-                  }
+        // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
+        final response = await http.get(
+          Uri.parse(audioURL),
+          headers: {
+            'Referer': 'https://voice.botnoi.ai/',
+          },
+        );
 
-                  // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
-                  final response = await http.get(
-                    Uri.parse(audioURL),
-                    headers: {
-                      'Referer': 'https://voice.botnoi.ai/',
-                    },
-                  );
+        if (response.statusCode == 200) {
+          // ใช้ BytesSource เพื่อเล่นไฟล์จากหน่วยความจำ
+          final audioBytes = response.bodyBytes;
+          if (audioBytes.isNotEmpty) {
+            final mimeType = response.headers['content-type'] ?? 'audio/wav';
+            audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
+          }
+        } else {
+          print('Failed to load audio: ${response.statusCode}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Error loading audio: ${response.statusCode}')),
+          );
+        }
+      } catch (e) {
+        print('Error playing audio: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
 
-                  if (response.statusCode == 200) {
-                    // ใช้ BytesSource เพื่อเล่นไฟล์จากหน่วยความจำ
-                    final audioBytes = response.bodyBytes;
-                    if (audioBytes.isNotEmpty) {
-                      final mimeType = response.headers['content-type'] ?? 'audio/wav';
-                      audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
-                    }
-                  } else {
-                    print('Failed to load audio: ${response.statusCode}');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error loading audio: ${response.statusCode}')),
-                    );
-                  }
-                } catch (e) {
-                  print('Error playing audio: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $e')),
-                  );
-                }
-              }
+    String languageCode = Localizations.localeOf(context).languageCode;
+    String speakerName;
 
-              String languageCode =
-                  Localizations.localeOf(context).languageCode;
-              String speakerName;
+    switch (languageCode) {
+      case 'th':
+        speakerName = speakerItem.thaiName;
+        break;
+      case 'en':
+        speakerName = speakerItem.engName;
+        break;
+      case 'id':
+        speakerName = speakerItem.engName;
+        break;
+      default:
+        speakerName = speakerItem.engName;
+        break;
+    }
 
-              switch (languageCode) {
-                case 'th':
-                  speakerName = speakerItem.thaiName;
-                  break;
-                case 'en':
-                  speakerName = speakerItem.engName;
-                  break;
-                case 'id':
-                  speakerName = speakerItem.engName;
-                  break;
-                default:
-                  speakerName = speakerItem.engName;
-                  break;
-              }
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setLanguage(speakerItem.language.toLowerCase());
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setSpeakerId(speakerItem.speakerId);
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setSpeakerName(speakerName);
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setSpeakerAudio(speakerItem.audio);
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setSpeakerImagePath(speakerItem.squareImage);
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setNationalFlagPath(selectedLanguageImage);
+    Provider.of<HomeSpeakerDataManagement>(context, listen: false)
+        .setNationalFlagName(selectedLanguage);
 
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setLanguage(speakerItem.language.toLowerCase());
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setSpeakerId(speakerItem.speakerId);
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setSpeakerName(speakerName);
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setSpeakerAudio(speakerItem.audio);
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setSpeakerImagePath(speakerItem.squareImage);
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setNationalFlagPath(selectedLanguageImage);
-              Provider.of<HomeSpeakerDataManagement>(context, listen: false)
-                  .setNationalFlagName(selectedLanguage);
+    if (selectedIndex.contains(index)) {
+      setState(() {
+        if (audioPlayer.state == PlayerState.playing) {
+          audioPlayer.stop();
+        }
+        selectedIndex.remove(index);
+      });
+    } else {
+      await playAudio();
 
-
-              if (selectedIndex.contains(index)) {
-                setState(() {
-                if (audioPlayer.state == PlayerState.playing) {
-                    audioPlayer.stop();
-                }
-                selectedIndex.remove(index);
-                });
-              } else {
-                await playAudio();
-
-                setState(() {
-                selectedIndex.clear();
-                selectedIndex.add(index);
-                });
-              }
-            },
-            child: Column(
-              children: [
-                Container(
-                  width:
-                      ResponsiveDesignOrientation.isLandscape ? 120.w : 100.w,
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 313.h : 113.h,
-                  decoration: BoxDecoration(
-                    border: GradientBoxBorder(
-                      width: 3.w,
-                      gradient: selectedIndex.contains(index)
-                          ? const LinearGradient(
-                              colors: [Color(0xFF9A96F5), Color(0xFF00E0FF)],
-                            )
-                          : LinearGradient(
-                              colors: [
-                                Colors.black.withOpacity(0.9),
-                                Colors.transparent,
-                              ],
-                              begin: const Alignment(1, 1),
-                            ),
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        speakerItem.squareImage,
-                        headers: {
-                          'Referer': 'https://voice.botnoi.ai/',
-                        },
-                      ),
-                      onError: (exception, stackTrace) {
-                        _logger.e('image not load');
-                      },
-
-                      fit: BoxFit.cover,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                        color: selectedIndex.contains(index)
-                            ? const Color(0xFF9340FF).withOpacity(0.6)
-                            : Colors.transparent,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Container(
-                    width: 100.w,
-                    height: 113.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.r),
-                      gradient: LinearGradient(
-                        begin: const Alignment(1, 1),
-                        colors: [
-                          Colors.black.withOpacity(0.9),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  right: 5.w, top: 5.w, left: 5.w),
-                              child: selectedIndex.contains(index)
-                                  ? Container(
-                                      width: 31.w,
-                                      height: ResponsiveDesignOrientation
-                                              .isLandscape
-                                          ? 30.h
-                                          : 17.h,
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF9A96F5),
-                                            Color(0xFF00E0FF)
-                                          ],
-                                        ),
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                            ResponsiveDesignOrientation
-                                                    .isLandscape
-                                                ? 16.r
-                                                : 8.r),
-                                      ),
-                                      child: Center(
-                                        child: Text('select'.tr(),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontStyle: GoogleFonts.prompt()
-                                                  .fontStyle,
-                                              fontSize:
-                                                  ResponsiveDesignOrientation
-                                                          .isLandscape
-                                                      ? 6.sp
-                                                      : 8.sp,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.check,
-                                      color: Colors.transparent,
-                                    ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 5.w, top: 5.w),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (selectedIndexFavorites
-                                        .contains(speakerItem.speakerId)) {
-                                      selectedIndexFavorites
-                                          .remove(speakerItem.speakerId);
-                                    } else {
-                                      selectedIndexFavorites.add(speakerItem.speakerId);
-                                    }
-                                  });
-                                },
-                                child: selectedIndexFavorites
-                                        .contains(speakerItem.speakerId)
-                                    ? ShaderMask(
-                                        shaderCallback: (Rect bounds) {
-                                          return const LinearGradient(
-                                            colors: [
-                                              Color(0xFF9A96F5),
-                                              Color(0xFF00E0FF),
-                                            ],
-                                          ).createShader(bounds);
-                                        },
-                                        child: SvgPicture.asset(
-                                          'assets/images/icon/heart-on.svg',
-                                          width: ResponsiveDesignOrientation
-                                                  .isLandscape
-                                              ? 50.w
-                                              : 20.w,
-                                          height: ResponsiveDesignOrientation
-                                                  .isLandscape
-                                              ? 50.h
-                                              : 20.h,
-                                        ),
-                                      )
-                                    : SvgPicture.asset(
-                                        'assets/images/icon/heart-off.svg',
-                                        width: ResponsiveDesignOrientation
-                                                .isLandscape
-                                            ? 50.w
-                                            : 20.w,
-                                        height: ResponsiveDesignOrientation
-                                                .isLandscape
-                                            ? 50.h
-                                            : 20.h,
-                                      ),
-                              ),
-                            )
-                          ],
-                        ),
-                        const Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            selectedIndex.contains(index)
-                                ? ShaderMask(
-                                    shaderCallback: (Rect bounds) {
-                                      return const LinearGradient(
-                                        colors: [
-                                          Color(0xFF9A96F5),
-                                          Color(0xFF00E0FF),
-                                        ],
-                                      ).createShader(bounds);
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/images/icon/play-on.svg',
-                                      width: ResponsiveDesignOrientation
-                                              .isLandscape
-                                          ? 12.h
-                                          : 16.h,
-                                      height: ResponsiveDesignOrientation
-                                              .isLandscape
-                                          ? 12.w
-                                          : 16.w,
-                                    ),
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/images/icon/play-off.svg',
-                                    width:
-                                        ResponsiveDesignOrientation.isLandscape
-                                            ? 12.h
-                                            : 16.h,
-                                    height:
-                                        ResponsiveDesignOrientation.isLandscape
-                                            ? 12.w
-                                            : 16.w,
-                                  ),
-                            SizedBox(
-                              width: 3.w,
-                            ),
-                            Expanded(
-                                child: Text(
-                              Localizations.localeOf(context).languageCode ==
-                                      'th'
-                                  ? speakerItem.thaiName
-                                  : speakerItem.engName,
-                              style: GoogleFonts.prompt(
-                                fontSize: 10.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+      setState(() {
+        selectedIndex.clear();
+        selectedIndex.add(index);
+      });
+    }
   }
 
+  void _handleFavoriteToggle(String speakerId) async {
+    final bool isCurrentlyFavorite = selectedIndexFavorites.contains(speakerId);
+    final originalFavorites = List<String>.from(selectedIndexFavorites);
 
-  Widget buildFavoriteFilter(BuildContext context) {
-    return SizedBox(
-      height: 420.h,
-      width: 320.w,
-      child: GridView.builder(
-        itemCount: SpeakerModel.speakerItem
-            .where((item) =>
-                selectedIndexFavorites.isEmpty ||
-                selectedIndexFavorites.contains(item.speakerId))
-            .length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 0,
-          childAspectRatio: 0.8,
-        ),
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          final data = SpeakerModel.speakerItem
-              .where((item) =>
-                  selectedIndexFavorites.isEmpty ||
-                  selectedIndexFavorites.contains(item.speakerId))
-              .toList()[index];
+    setState(() {
+      if (isCurrentlyFavorite) {
+        // ถ้ากดตอนที่เป็น Favorite อยู่แล้ว = Remove
+        selectedIndexFavorites.remove(speakerId);
+        _logger.d("UI: Removed $speakerId from state");
+      } else {
+        // ถ้ากดตอนที่ยังไม่เป็น Favorite = Add
+        selectedIndexFavorites.add(speakerId);
+        _logger.d("UI: Added $speakerId to state");
+      }
+      _logger.d("UI list state is now: $selectedIndexFavorites");
+    });
 
-          return buildSingleSpeaker(data, index);
-        },
-      ),
-    );
+    // เรียก API ตามสถานการณ์
+    try {
+      final String? token = await getJwtTokenAll(context);
+      if (token == null || token.isEmpty) {
+        throw Exception('Token not found.'); // โยน Error ถ้าไม่มี Token
+      }
+
+      final favoriteService = FavoriteService(); // สร้าง Instance Service
+
+      if (isCurrentlyFavorite) {
+        // ---------- กรณี Remove ----------
+        _logger.i(">>> Calling REMOVE API for ID: $speakerId");
+        // เรียกใช้ Method ใหม่สำหรับลบ โดยส่ง ID ตัวเดียว
+        await favoriteService.removeFavoriteSpeaker(speakerId, token);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Favorite removed!')), // ข้อความแจ้งเตือน
+          );
+        }
+      } else {
+        // ---------- กรณี Add ----------
+        // สร้าง List ล่าสุดที่จะ Save (หลังจาก Add ID ใหม่เข้าไปแล้ว)
+        final listToSend = List<String>.from(selectedIndexFavorites);
+        _logger.i(">>> Calling SAVE API with list: $listToSend");
+        // เรียกใช้ Method เดิมสำหรับ Save โดยส่ง List ปัจจุบันทั้งหมด
+        await favoriteService.saveFavoriteSpeakers(listToSend, token);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Favorite added!')), // ข้อความแจ้งเตือน
+          );
+        }
+      }
+    } catch (e) {
+      _logger.e("Error in favorite toggle API call: $e");
+      // ถ้าเกิด Error ให้ Rollback การเปลี่ยนแปลง UI กลับไปเป็นเหมือนเดิม
+      if (mounted) {
+        setState(() {
+          _logger.w("Rolling back favorite state due to error: $e");
+          selectedIndexFavorites = originalFavorites; // คืนค่า State เดิม
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating favorites: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
+  Future<void> _loadInitialData() async {
+    try {
+      final String? token = await getJwtTokenAll(context);
+      if (token == null || token.isEmpty) {
+        return;
+      }
+
+      final FavoriteService favoriteService = FavoriteService();
+
+      final List<String> fetchedFavorites =
+          await favoriteService.getFavoriteSpeakers(token);
+
+      if (mounted) {
+        setState(() {
+          selectedIndexFavorites = fetchedFavorites;
+        });
+      }
+    } catch (e) {
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // เอาสถานะ Loading ออก
+        });
+      }
+    }
   }
 }
