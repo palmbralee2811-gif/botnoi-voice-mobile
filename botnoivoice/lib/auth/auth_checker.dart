@@ -1,3 +1,4 @@
+import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/auth/token_checker.dart';
 import 'package:botnoivoice/function/open_logout_function.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
@@ -19,12 +20,11 @@ class AuthChecker extends StatelessWidget {
   AuthChecker({super.key});
 
   final Logger _logger = Logger(); // For debugging
+  final _internetChecker = InternetChecker(); // For checking internet connection
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<AppleLogin, GoogleLogin, LineLogin, EmailLogin>(
-      builder: (context, appleProvider, googleProvider, lineProvider,
-          emailProvider, child) {
+    return Consumer4<AppleLogin, GoogleLogin, LineLogin, EmailLogin>(builder: (context, appleProvider, googleProvider, lineProvider, emailProvider, child) {
         // ตรวจสอบ provider ที่ล็อกอิน
         String? loginProvider;
 
@@ -53,6 +53,11 @@ class AuthChecker extends StatelessWidget {
         // ตรวจสอบสถานะการล็อกอิน
         if (loginProvider != null) {
           _logger.d("Authenticated $loginProvider");
+          _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
+            if (!isAvailable) {
+              return const LoginScreen();
+            }
+          });
           return const TokenChecker();
         } else {
           _logger.d("Not Authenticated");
