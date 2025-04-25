@@ -108,7 +108,7 @@ class _TokenCheckerState extends State<TokenChecker> {
     
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = appleTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed, jwtToken: appleTokenProvider.getJwtToken!);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -138,7 +138,7 @@ class _TokenCheckerState extends State<TokenChecker> {
 
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = googleTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed, jwtToken: googleTokenProvider.getJwtToken!);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -167,7 +167,7 @@ class _TokenCheckerState extends State<TokenChecker> {
 
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = lineTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed,    jwtToken: lineTokenProvider.getJwtToken!);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -196,7 +196,7 @@ class _TokenCheckerState extends State<TokenChecker> {
 
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = emailTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed);
+    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed, jwtToken: emailTokenProvider.getJwtToken!);
 
     if (!_isDisposed) {
       /// Load get username by email

@@ -8,12 +8,13 @@ class SpeakerModel {
   static final Logger _logger = Logger();
 
   /// ฟังก์ชันโหลดข้อมูล JSON และเพิ่มใน speakerItem
-  static Future<void> loadSpeakers({required bool isSubscribed}) async {
+  static Future<void> loadSpeakers({required bool isSubscribed, required String jwtToken}) async {
     try {
       // โหลด JSON จาก assets
-      final url = Uri.parse('https://api-voice.botnoi.ai/api/marketplace/get_all_marketplace_demo');
+      final url = Uri.parse('https://api-voice.botnoi.ai/api/marketplace/get_all_marketplace');
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $jwtToken',
       });
       if (response.statusCode != 200) {
         throw Exception("Failed to load speakers: ${response.statusCode}");
