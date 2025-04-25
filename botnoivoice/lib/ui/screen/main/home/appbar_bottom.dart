@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:botnoivoice/ui/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/ui/style/style.dart';
 import 'package:botnoivoice/data/model/appbar_bottom_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/ui/screen/responsive/responsive_design_orientation.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class AppBarBottom extends StatefulWidget {
   const AppBarBottom({
@@ -66,7 +68,15 @@ class _AppBarBottomState extends State<AppBarBottom> {
                 });
               } else {
                 if (speakerAudio != null && speakerAudio.isNotEmpty) {
-                  await audioPlayer.play(UrlSource(speakerAudio));
+                   // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
+                  final response = await http.get(
+                    Uri.parse(speakerAudio),
+                    headers: {
+                      'Referer': 'https://voice.botnoi.ai/',
+                    },
+                  );
+                  final audioBytes = response.bodyBytes;
+                  await audioPlayer.play(BytesSource(audioBytes));
                   setState(() {
                     isPlaying = true;
                   });
@@ -103,7 +113,9 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     CircleAvatar(
                       radius:
                           ResponsiveDesignOrientation.isLandscape ? 22.r : 14.r,
-                      backgroundImage: AssetImage(speakerImagePath!),
+                      backgroundImage: CachedNetworkImageProvider(speakerImagePath!, headers: {
+                          'Referer': 'https://voice.botnoi.ai/',
+                        }),
                     ),
                     SizedBox(
                         width: ResponsiveDesignOrientation.isLandscape
