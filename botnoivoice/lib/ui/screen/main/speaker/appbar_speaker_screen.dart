@@ -10,8 +10,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class AppBarSpeakerScreen extends StatefulWidget
-    implements PreferredSizeWidget {
-  const AppBarSpeakerScreen({super.key});
+  implements PreferredSizeWidget {
+  final Function()? onBackButtonPressed;
+
+  const AppBarSpeakerScreen({super.key, this.onBackButtonPressed});
 
   @override
   State<AppBarSpeakerScreen> createState() => _AppBarSpeakerScreenState();
@@ -52,6 +54,10 @@ class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
             onPressed: () {
               // Redirect to HomeScreen
               context.go('/home');
+
+              if (widget.onBackButtonPressed != null) {
+                widget.onBackButtonPressed!();
+              }
             },
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           ),
