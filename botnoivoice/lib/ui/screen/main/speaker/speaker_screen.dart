@@ -56,8 +56,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
   bool isExpanded = false;
   bool changeIcon = false;
 
-  Set<String> failedImageSpeakers = {};
-
 
   @override
   void initState() {
@@ -847,7 +845,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     image: DecorationImage(
-                      image: failedImageSpeakers.contains(speakerItem.speakerId) ? AssetImage('assets/images/default-profile-picture.jpg') : CachedNetworkImageProvider(
+                      image: CachedNetworkImageProvider(
                         speakerItem.squareImage,
                         headers: {
                           'Referer': 'https://voice.botnoi.ai/',
@@ -855,10 +853,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                       ),
                       onError: (exception, stackTrace) {
                         _logger.e('image not load');
-
-                        setState(() {
-                          failedImageSpeakers.add(speakerItem.speakerId);
-                        });
                       },
 
                       fit: BoxFit.cover,
