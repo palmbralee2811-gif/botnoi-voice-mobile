@@ -53,6 +53,26 @@ class AuthChecker extends StatelessWidget {
         // ตรวจสอบสถานะการล็อกอิน
         if (loginProvider != null) {
           _logger.d("Authenticated $loginProvider");
+
+          /*
+          TODO: Fix this error
+          [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: This BuildContext is no longer valid.
+The showDialog function context parameter is a BuildContext that is no longer valid.
+This can commonly occur when the showDialog function is called after awaiting a Future. In this situation the BuildContext might refer to a widget that has already been disposed during the await. Consider using a parent context instead.
+#0      _debugIsActive (package:flutter/src/material/dialog.dart:1499:5)
+dialog.dart:1499
+#1      showDialog (package:flutter/src/material/dialog.dart:1420:10)
+dialog.dart:1420
+#2      NotificationDialog._showModal (package:botnoivoice/ui/dialog/notification/notification_dialog.dart:28:5)
+notification_dialog.dart:28
+#3      NotificationDialog.showErrorModal (package:botnoivoice/ui/dialog/notification/notification_dialog.dart:96:5)
+notification_dialog.dart:96
+#4      InternetChecker.startListeningToInternetChanges.<anonymous closure> (package:botnoivoice/auth/internet_checker.dart:26:13)
+internet_checker.dart:26
+#5      _RootZone.runUnaryGuarded (dart:async/zone.dart:1594:10)
+zone.dart:1594
+#6      _Buffe<…>
+          */
           _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
             if (!isAvailable) {
               return const LoginScreen();
