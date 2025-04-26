@@ -1,203 +1,158 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
 
+// This class helps you save, get, and remove your favorite speakers.
+// It talks to a server using the internet.
 class FavoriteService {
-  final Logger _logger = Logger();
+  final Logger _logger;
+  final http.Client _httpClient;
 
-  //สำหรับ Save Favorite
-  Future<void> saveFavoriteSpeakers(
-    List<String> speakerIds,
-    String jwtToken,
-  ) async {
-    _logger.i('Attempting to save favorite speakers: $speakerIds');
+  // These are the server paths we need to call.
+  static const _insertEndpoint = "/api/marketplace/insert_voice_studio";
+  static const _getEndpoint = "/api/marketplace/get_voice_studio";
+  static const _deleteEndpoint = "/api/marketplace/delete_voice_studio";
 
-    if (jwtToken.isEmpty) {
-      _logger.w('Received empty token for saving.');
-      throw Exception('Authentication token provided is empty.');
+  // How long we wait before giving up (10 seconds)
+  static const Duration _timeoutDuration = Duration(seconds: 10);
+  // How many times we try if something goes wrong
+  static const int _maxRetries = 3;
+
+  // You can give a custom logger and http client, or we use the default ones.
+  FavoriteService({Logger? logger, http.Client? httpClient})
+      : _logger = logger ?? Logger(),
+        _httpClient = httpClient ?? http.Client();
+
+  // This makes headers (special notes) for our internet message.
+  Map<String, String> _buildHeaders(String token, {bool isJson = true}) {
+    if (token.isEmpty) {
+      _logger.w('Received empty token.');
+      throw Exception('Authentication token is empty.');
     }
-    _logger.d(
-        'Using provided JWT Token for save: Bearer ${jwtToken.substring(0, 10)}...');
-
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer $jwtToken',
-    };
-
-    final Map<String, dynamic> payload = {
-      'speaker_id': speakerIds,
-    };
-    final String jsonBody = jsonEncode(payload);
-    _logger.d('Save Request Body: $jsonBody');
-
-    try {
-      final response = await http.post(
-        Uri.parse("$apiUrl/api/marketplace/insert_voice_studio"),
-        headers: headers,
-        body: jsonBody,
-      );
-      _logger.i('Save API Response Status Code: ${response.statusCode}');
-      _logger.d('Save API Response Body: ${response.body}');
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        _logger.i('Successfully saved favorite speakers.');
-        return;
-      } else {
-        _logger.e(
-            'Failed to save favorites. Status Code: ${response.statusCode}, Body: ${response.body}');
-        throw Exception(
-            'Failed to save favorites: [${response.statusCode}] ${response.body}');
-      }
-    } on http.ClientException catch (e, stackTrace) {
-      _logger.e('Network error while saving favorites: $e',
-          error: e, stackTrace: stackTrace);
-      throw Exception('Network error occurred: $e');
-    } catch (e, stackTrace) {
-      _logger.e('An unexpected error occurred while saving favorites: $e',
-          error: e, stackTrace: stackTrace);
-      throw Exception('An unexpected error occurred: $e');
-    }
-  }
-
-  // ============ เพิ่ม Method นี้สำหรับ Get Favorites ============
-
-  Future<List<String>> getFavoriteSpeakers(String jwtToken) async {
-    if (jwtToken.isEmpty) {
-      throw Exception('Authentication token provided is empty.');
-    }
-    _logger
-        .d('Using provided JWT Token: Bearer ${jwtToken.substring(0, 10)}...');
-
-    final Map<String, String> headers = {
+    return {
+      if (isJson) 'Content-Type': 'application/json; charset=UTF-8',
+      'Accept-Charset': 'utf-8',
       'Accept': 'application/json',
-      'Authorization': 'Bearer $jwtToken',
+      'Authorization': 'Bearer $token',
     };
-    _logger.d('Get Request Headers: $headers');
+  }
 
-    try {
-      final response = await http.get(
-        Uri.parse("$apiUrl/api/marketplace/get_voice_studio"),
-        headers: headers,
-      );
+  // This sends a POST request (like sending a letter to the server)
+  Future<http.Response> _postRequest(String endpoint, Map<String, dynamic> body, String token) async {
+    final headers = _buildHeaders(token);
+    final url = Uri.parse("$apiUrl$endpoint");
+    final bodyJson = utf8.encode(jsonEncode(body));
 
-      _logger
-          .i('Get Favorites API Response Status Code: ${response.statusCode}');
-      _logger.d('Get Favorites API Response Body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-
-        // ===== แก้ไขส่วนนี้: ตรวจสอบ Key "data" และ Parse List =====
-        if (responseData is Map<String, dynamic> &&
-            responseData.containsKey('data')) {
-          final dynamic dataValue =
-              responseData['data']; // ดึงค่าจาก Key "data"
-
-          if (dataValue is List) {
-            final List<dynamic> rawSpeakerList = dataValue;
-            try {
-              final List<String> favoriteIds = rawSpeakerList
-                  .map((item) {
-                    if (item is Map<String, dynamic> &&
-                        item.containsKey('speaker_id')) {
-                      return item['speaker_id']?.toString() ?? '';
-                    } else {
-                      _logger.w(
-                          'Invalid item format found in favorite list: $item');
-                      return '';
-                    }
-                  })
-                  .where((id) => id.isNotEmpty)
-                  .toList();
-
-              _logger.i(
-                  'Successfully fetched and parsed favorite speakers: $favoriteIds');
-              return favoriteIds;
-            } catch (e, stackTrace) {
-              _logger.e('Error parsing speaker list items: $e',
-                  error: e, stackTrace: stackTrace);
-              throw Exception('Error parsing favorite speaker data.');
-            }
-          } else {
-            _logger.e(
-                'Get Favorites response key "data" is not a List. Found: ${dataValue.runtimeType}');
-            throw Exception('Invalid response format: "data" is not a list.');
-          }
-        } else {
-          _logger.e(
-              'Get Favorites response is not a Map or does not contain key "data". Response: $responseData');
-          throw Exception('Invalid response format from Get Favorites API.');
-        }
-      } else {
-        _logger.e(
-            'Failed to get favorites via GET. Status Code: ${response.statusCode}, Body: ${response.body}');
-        throw Exception(
-            'Failed to get favorites via GET: [${response.statusCode}] ${response.body}');
+    for (int attempt = 0; attempt < _maxRetries; attempt++) {
+      try {
+        _logger.d('POST Attempt ${attempt + 1}: $url\nHeaders: $headers\nBody: $body');
+        final response = await _httpClient
+            .post(url, headers: headers, body: bodyJson)
+            .timeout(_timeoutDuration);
+        _logResponse(response);
+        return response;
+      } on TimeoutException catch (e) {
+        _logger.w('Timeout on attempt ${attempt + 1} POST $url: $e');
+        if (attempt == _maxRetries - 1) rethrow;
+      } on http.ClientException catch (e, stackTrace) {
+        _handleException('POST', url.toString(), e, stackTrace);
+        if (attempt == _maxRetries - 1) rethrow;
+      } catch (e, stackTrace) {
+        _handleException('POST', url.toString(), e, stackTrace);
+        rethrow;
       }
-    } on http.ClientException catch (e, stackTrace) {
-      _logger.e('Network error while getting favorites: $e',
-          error: e, stackTrace: stackTrace);
-      throw Exception('Network error occurred: $e');
-    } catch (e, stackTrace) {
-      _logger.e('An unexpected error occurred while getting favorites: $e',
-          error: e, stackTrace: stackTrace);
-      throw Exception('An unexpected error occurred: $e');
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    throw Exception('POST $url failed after $_maxRetries attempts.');
+  }
+
+  // This sends a GET request (like asking for information from the server)
+  Future<http.Response> _getRequest(String endpoint, String token) async {
+    final headers = _buildHeaders(token, isJson: false);
+    final url = Uri.parse("$apiUrl$endpoint");
+
+    for (int attempt = 0; attempt < _maxRetries; attempt++) {
+      try {
+        _logger.d('GET Attempt ${attempt + 1}: $url\nHeaders: $headers');
+        final response = await _httpClient
+            .get(url, headers: headers)
+            .timeout(_timeoutDuration);
+        _logResponse(response);
+        return response;
+      } on TimeoutException catch (e) {
+        _logger.w('Timeout on attempt ${attempt + 1} GET $url: $e');
+        if (attempt == _maxRetries - 1) rethrow;
+      } on http.ClientException catch (e, stackTrace) {
+        _handleException('GET', url.toString(), e, stackTrace);
+        if (attempt == _maxRetries - 1) rethrow;
+      } catch (e, stackTrace) {
+        _handleException('GET', url.toString(), e, stackTrace);
+        rethrow;
+      }
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    throw Exception('GET $url failed after $_maxRetries attempts.');
+  }
+
+  // This shows the response (server's answer) in our log
+  void _logResponse(http.Response response) {
+    _logger.i('Response Status: ${response.statusCode}');
+    _logger.d('Response Body: ${utf8.decode(response.bodyBytes)}');
+  }
+
+  // This handles and logs any errors that happen
+  void _handleException(String method, String url, Object error, StackTrace stackTrace) {
+    _logger.e('Network error during $method $url: $error', error: error, stackTrace: stackTrace);
+  }
+
+  // This function saves the speakers you like to the server
+  Future<void> saveFavoriteSpeakers(List<String> speakerIds, String jwtToken) async {
+    final response = await _postRequest(
+      _insertEndpoint,
+      { 'speaker_id': speakerIds },
+      jwtToken,
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to save favorites: [${response.statusCode}] ${utf8.decode(response.bodyBytes)}');
     }
   }
-  // ============ จบส่วน Get Favorites ============
 
-  // ========== เพิ่ม Method นี้สำหรับ Delete Favorite ==========
+  // This function asks the server which speakers you liked
+  Future<List<String>> getFavoriteSpeakers(String jwtToken) async {
+    final response = await _getRequest(_getEndpoint, jwtToken);
 
-  Future<void> removeFavoriteSpeaker(
-    String speakerIdToRemove,
-    String jwtToken,
-  ) async {
-    if (jwtToken.isEmpty) {
-      _logger.w('Received empty token for removing favorite.');
-      throw Exception('Authentication token provided is empty.');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to get favorites: [${response.statusCode}] ${utf8.decode(response.bodyBytes)}');
     }
-    _logger.d(
-        'Using provided JWT Token for remove: Bearer ${jwtToken.substring(0, 10)}...');
 
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer $jwtToken',
-    };
-
-    final Map<String, dynamic> payload = {
-      'speaker_id': [speakerIdToRemove],
-    };
-    final String jsonBody = jsonEncode(payload);
-    _logger.d('Remove Request Body: $jsonBody');
-
-    try {
-      final response = await http.post(
-        Uri.parse("$apiUrl/api/marketplace/delete_voice_studio"),
-        headers: headers,
-        body: jsonBody,
-      );
-
-      _logger.i(
-          'Remove Favorite API Response Status Code: ${response.statusCode}');
-      _logger.d('Remove Favorite API Response Body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        _logger.i('Successfully removed favorite speaker: $speakerIdToRemove');
-        return;
-      } else {
-        _logger.e(
-            'Failed to remove favorite. Status Code: ${response.statusCode}, Body: ${response.body}');
-        throw Exception(
-            'Failed to remove favorite: [${response.statusCode}] ${response.body}');
+    final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+    if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
+      final data = responseData['data'];
+      if (data is List) {
+        return data
+            .whereType<Map<String, dynamic>>()
+            .map((item) => item['speaker_id']?.toString() ?? '')
+            .where((id) => id.isNotEmpty)
+            .toList();
       }
-    } on http.ClientException catch (e, stackTrace) {
-      _logger.e('Network error while removing favorite: $e',
-          error: e, stackTrace: stackTrace);
-      throw Exception('Network error occurred: $e');
-    } catch (e, stackTrace) {
-      _logger.e('An unexpected error occurred while removing favorite: $e',
-          error: e, stackTrace: stackTrace);
-      throw Exception('An unexpected error occurred: $e');
+      throw Exception('Invalid response format: "data" is not a list.');
+    }
+    throw Exception('Invalid response format: missing "data" key.');
+  }
+
+  // This function removes a speaker from your favorite list
+  Future<void> removeFavoriteSpeaker(String speakerId, String jwtToken) async {
+    final response = await _postRequest(
+      _deleteEndpoint,
+      { 'speaker_id': [speakerId] },
+      jwtToken,
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to remove favorite: [${response.statusCode}] ${utf8.decode(response.bodyBytes)}');
     }
   }
 }

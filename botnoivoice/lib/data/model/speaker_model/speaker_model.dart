@@ -32,7 +32,7 @@ class SpeakerModel {
       List<dynamic> jsonList = jsonMap['data'];
 
       _logger.d('Loading speakers...');
-      _logger.i('Speaker data loaded: ${jsonList} speakers found.');
+      _logger.i('Speaker data loaded: $jsonList speakers found.');
 
       // ใช้ isSubscribed กรอง speakers ถ้า sub อยู่จะให้แสดงทั้งหมด ถ้าไม่จะแสดงแค่ Free
       speakerItem =
