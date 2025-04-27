@@ -32,7 +32,7 @@ class _AppBarTopState extends State<AppBarTop> {
 
   Future<void> _loadRemainingCredits() async {
     //TODO: read or watch ??
-    await context.watch<CallReloadData>().callLoadCreditsApi(context);
+    await context.read<CallReloadData>().callLoadCreditsApi(context);
   }
 
   @override
