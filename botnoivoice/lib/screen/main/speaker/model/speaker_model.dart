@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +12,7 @@ class SpeakerModel {
   static Future<void> loadSpeakers({required bool isSubscribed, required String jwtToken}) async {
     try {
       // โหลด JSON จาก assets
-      final url = Uri.parse('https://api-voice.botnoi.ai/api/marketplace/get_all_marketplace');
+      final url = Uri.parse('$apiUrl/api/marketplace/get_all_marketplace');
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $jwtToken',
