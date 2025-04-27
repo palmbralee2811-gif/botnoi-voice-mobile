@@ -73,7 +73,7 @@ class AppleLogin extends ChangeNotifier {
       // ❌ Unsubscribe from Topic when user sign out
       await PushNotificationService.unsubscribeFromTopic("default");
       // ❌ Delete FCM Token Form Firebase Messaging and Database
-      await PushNotificationService.deleteFcmToken(context);
+      await PushNotificationService.deleteFcmToken();
 
       await FirebaseAuth.instance.signOut();
       _isLoggedIn = false; // User's sign out

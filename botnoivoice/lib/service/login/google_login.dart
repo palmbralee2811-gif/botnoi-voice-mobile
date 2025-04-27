@@ -72,7 +72,7 @@ class GoogleLogin extends ChangeNotifier {
       // ❌ Unsubscribe from Topic when user sign out
       await PushNotificationService.unsubscribeFromTopic("default");
       // ❌ Delete FCM Token Form Firebase Messaging and Database
-      await PushNotificationService.deleteFcmToken(context);
+      await PushNotificationService.deleteFcmToken();
 
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();

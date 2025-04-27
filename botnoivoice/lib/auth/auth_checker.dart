@@ -8,80 +8,85 @@ import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-/// Check if the user is authenticated.
-/// Who is User Login with Email, Google, Apple, or LINE.
-/// 
-/// ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือยัง
-/// ใครเป็นผู้ใช้ที่ล็อกอินด้วยอีเมล, กูเกิ้ล, แอปเปิ้ล, หรือไลน์
+/// Widget ตรวจสอบสถานะการล็อกอินของผู้ใช้
+/// รองรับการล็อกอินผ่าน Email, Google, Apple, และ Line
 class AuthChecker extends StatelessWidget {
   AuthChecker({super.key});
 
-  final Logger _logger = Logger(); // For debugging
-  final _internetChecker = InternetChecker(); // For checking internet connection
+  final Logger _logger = Logger(); // ตัวแปรสำหรับพิมพ์ log
+  final _internetChecker = InternetChecker(); // ใช้เช็คการเชื่อมต่ออินเทอร์เน็ต
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<AppleLogin, GoogleLogin, LineLogin, EmailLogin>(builder: (context, appleProvider, googleProvider, lineProvider, emailProvider, child) {
-        // ตรวจสอบ provider ที่ล็อกอิน
-        String? loginProvider;
+    return Consumer4<AppleLogin, GoogleLogin, LineLogin, EmailLogin>(
+      builder: (
+        context,
+        appleProvider,
+        googleProvider,
+        lineProvider,
+        emailProvider,
+        child,
+      ) {
+        String? loginProvider; // เก็บชื่อ provider ที่ผู้ใช้ล็อกอินสำเร็จ
 
+        // ตรวจสอบว่าเป็นการล็อกอินด้วย Email หรือไม่
         if (emailProvider.isAuthenticated &&
             emailProvider.user?.providerData[0].providerId == 'password') {
-          // ตรวจสอบสถานะการยืนยันอีเมล
+          // ถ้า email ยังไม่ได้ยืนยัน จะบังคับให้ logout และกลับไปที่ Login Screen
           if (!emailProvider.user!.emailVerified) {
+            // **ข้อควรระวัง**: openEmailLogout ต้องใช้ context ปลอดภัย และเรียกหลัง build เสร็จ
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              // Logout and Redirect to `login_screen.dart`
-              openEmailLogout(context);
+              if (context.mounted) {
+                openEmailLogout(context);
+              }
             });
-            loginProvider = null;
+            loginProvider = null; // ไม่นับว่าเป็นการล็อกอินสำเร็จ
           } else {
-            loginProvider = 'email';
+            loginProvider = 'email'; // ล็อกอินด้วย email และยืนยันแล้ว
           }
+
+          // ตรวจสอบการล็อกอินผ่าน Line
         } else if (lineProvider.isAuthenticated) {
           loginProvider = 'line';
+
+          // ตรวจสอบการล็อกอินผ่าน Google
         } else if (googleProvider.isAuthenticated &&
             googleProvider.user?.providerData[0].providerId == 'google.com') {
           loginProvider = 'google';
+
+          // ตรวจสอบการล็อกอินผ่าน Apple
         } else if (appleProvider.isAuthenticated &&
             appleProvider.user?.providerData[0].providerId == 'apple.com') {
           loginProvider = 'apple';
         }
 
-        // ตรวจสอบสถานะการล็อกอิน
+        // ถ้าตรวจสอบแล้วพบว่า มีการล็อกอินสำเร็จ
         if (loginProvider != null) {
           _logger.d("Authenticated $loginProvider");
 
-          /*
-          TODO: Fix this error
-          [ERROR:flutter/runtime/dart_vm_initializer.cc(41)] Unhandled Exception: This BuildContext is no longer valid.
-The showDialog function context parameter is a BuildContext that is no longer valid.
-This can commonly occur when the showDialog function is called after awaiting a Future. In this situation the BuildContext might refer to a widget that has already been disposed during the await. Consider using a parent context instead.
-#0      _debugIsActive (package:flutter/src/material/dialog.dart:1499:5)
-dialog.dart:1499
-#1      showDialog (package:flutter/src/material/dialog.dart:1420:10)
-dialog.dart:1420
-#2      NotificationDialog._showModal (package:botnoivoice/ui/dialog/notification/notification_dialog.dart:28:5)
-notification_dialog.dart:28
-#3      NotificationDialog.showErrorModal (package:botnoivoice/ui/dialog/notification/notification_dialog.dart:96:5)
-notification_dialog.dart:96
-#4      InternetChecker.startListeningToInternetChanges.<anonymous closure> (package:botnoivoice/auth/internet_checker.dart:26:13)
-internet_checker.dart:26
-#5      _RootZone.runUnaryGuarded (dart:async/zone.dart:1594:10)
-zone.dart:1594
-#6      _Buffe<…>
-          */
-          _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
-            if (!isAvailable) {
-              return const LoginScreen();
-            }
+          // เช็ค Internet หลังจาก widget สร้างเสร็จแล้ว
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            _internetChecker.startListeningToInternetChanges(context,
+                (isAvailable) {
+              if (!isAvailable) {
+                // ถ้า internet หลุด พา user ไปหน้า login ทันที
+                if (context.mounted) {
+                  context.go('/login');
+                }
+              }
+            });
           });
+
+          // เมื่อล็อกอินสำเร็จ และเช็ค internet แล้ว ให้ตรวจสอบ token ต่อ
           return const TokenChecker();
         } else {
+          // กรณีไม่ผ่านเงื่อนไขล็อกอิน
           _logger.d("Not Authenticated");
-          return const LoginScreen();
+          return const LoginScreen(); // ส่งผู้ใช้ไปยังหน้า Login ทันที
         }
       },
     );
