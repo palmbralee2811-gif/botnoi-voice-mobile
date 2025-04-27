@@ -48,8 +48,6 @@ class _RewardScreenState extends State<RewardScreen> {
   @override
   Widget build(BuildContext context) {
     // Get data from provider
-
-    //TODO: read or watch ??
     final rewardServiceProvider = context.watch<RewardService>();
 
     final bool isTablet = MediaQuery.of(context).size.width > 600;

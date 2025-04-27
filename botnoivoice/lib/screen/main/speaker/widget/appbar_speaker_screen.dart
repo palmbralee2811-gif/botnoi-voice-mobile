@@ -32,13 +32,11 @@ class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    //TODO: read or watch ??
     await context.read<CallReloadData>().callLoadCreditsApi(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    //TODO: read or watch ??
     var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
 
     return Column(

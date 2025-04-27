@@ -26,7 +26,6 @@ void showPaymentDialog(BuildContext context) {
 class _PaymentBottomSheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //TODO: context.read or context.watch ???
     final paymentProvider = context.watch<PaymentService>();
 
     return paymentProvider.isLoading
