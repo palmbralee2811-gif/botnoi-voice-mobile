@@ -107,6 +107,10 @@ class _AppBarBottomState extends State<AppBarBottom> {
           Expanded(
             child: InkWell(
               onTap: () {
+                // Stop the audio if it's playing
+                if (audioPlayer.state == PlayerState.playing) {
+                  audioPlayer.stop();
+                }
                 // Redirect to SpeakerScreen
                 context.go('/speaker');
               },
