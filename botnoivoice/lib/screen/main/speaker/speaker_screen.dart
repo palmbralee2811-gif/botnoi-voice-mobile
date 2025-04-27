@@ -572,7 +572,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
         indonesianName: gender['indonesianName']!,
         imagePath: gender['image']!,
         gender: gender['code']!,
-        onSelected: (displayText, imagePath, gen) {
+        onSelected: (displayText, imagePath, gender) {
           setState(() {
             selectedGender = displayText;
             selectedGenderImage = imagePath;
