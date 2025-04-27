@@ -13,11 +13,14 @@ Future<void> handleFavoriteToggle({
   final bool isCurrentlyFavorite = selectedIndexFavorites.contains(speakerId);
   final originalFavorites = List<String>.from(selectedIndexFavorites);
 
-  setSelectedIndexFavorites(
-    isCurrentlyFavorite
+  // ทำการ clone และแก้ไข list ใหม่
+  final updatedFavorites =  isCurrentlyFavorite
       ? (List<String>.from(selectedIndexFavorites)..remove(speakerId))
-      : (List<String>.from(selectedIndexFavorites)..add(speakerId)),
-  );
+      : (List<String>.from(selectedIndexFavorites)..add(speakerId));
+
+   // setState ให้ UI
+  setSelectedIndexFavorites(updatedFavorites);
+
 
   logger.d("UI list state is now: $selectedIndexFavorites");
 
@@ -38,7 +41,7 @@ Future<void> handleFavoriteToggle({
         );
       }
     } else {
-      final listToSend = List<String>.from(selectedIndexFavorites);
+      final listToSend = List<String>.from(updatedFavorites);
       logger.i(">>> Calling SAVE API with list: $listToSend");
       await favoriteService.saveFavoriteSpeakers(listToSend, token);
       if (context.mounted) {
