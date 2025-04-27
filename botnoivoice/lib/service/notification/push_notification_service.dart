@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:botnoivoice/service/notification/fcm_token_service.dart';
-import 'package:botnoivoice/ui/dialog/open_app_settings/open_app_settings_dialog.dart';
+import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

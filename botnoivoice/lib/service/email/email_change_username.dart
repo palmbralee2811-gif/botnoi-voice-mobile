@@ -21,8 +21,7 @@ class EmailChangeUsername extends ChangeNotifier {
       BuildContext context, String usernameNew) async {
     try {
       // เรียกใช้ getEmailByUsername เพื่อเช็คว่า username มีอยู่หรือไม่
-      final emailApiProvider =
-          Provider.of<EmailUsernameApi>(context, listen: false);
+      final emailApiProvider = context.read<EmailUsernameApi>();
 
       // ใช้ await เพื่อรอให้การเช็ค email เสร็จสิ้นก่อนดำเนินการต่อ
       await emailApiProvider.getEmailByUsername(usernameNew);
@@ -30,8 +29,7 @@ class EmailChangeUsername extends ChangeNotifier {
       // ตรวจสอบผลลัพธ์จาก EmailUsernameApiProvider
       if (emailApiProvider.result == 'email not found') {
         // ถ้า email ไม่พบ แสดงว่า username สามารถใช้ได้
-        final jwtToken =
-            Provider.of<EmailToken>(context, listen: false).getJwtToken;
+        final jwtToken = context.read<EmailToken>().getJwtToken;
         String url = '$apiUrl/api/dashboard/edit_username_id';
         Map<String, String> headers = {
           'Authorization': 'Bearer $jwtToken',

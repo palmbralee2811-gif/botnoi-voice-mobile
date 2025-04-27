@@ -46,8 +46,7 @@ class EmailLogin with ChangeNotifier {
   /// เข้าสู่ระบบด้วย `username` และ `password` พร้อมกับเรียก `get email by username`
   Future<void> loginWithUsernamePassword(
       String username, String password, BuildContext context) async {
-    final emailUsernameProvider =
-        Provider.of<EmailUsernameApi>(context, listen: false);
+    final emailUsernameProvider = context.read<EmailUsernameApi>();
 
     try {
       // เรียกใช้ฟังก์ชัน get email by username เพื่อดึง email จาก username
@@ -136,8 +135,8 @@ class EmailLogin with ChangeNotifier {
   /// Sign out for Login with Email and Password
   Future<void> signOutWithEmail(BuildContext context) async {
     try {
-      Provider.of<EmailToken>(context, listen: false).clearTokens();
-      
+      context.read<EmailToken>().clearTokens();
+
       // ❌ Unsubscribe from Topic when user sign out
       await PushNotificationService.unsubscribeFromTopic("default");
       // ❌ Delete FCM Token Form Firebase Messaging and Database

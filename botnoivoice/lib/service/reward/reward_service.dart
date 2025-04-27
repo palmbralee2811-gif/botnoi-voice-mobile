@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:botnoivoice/function/get_jwt_token.dart';
+import 'package:botnoivoice/shared/function/get_jwt_token.dart';
 
 class RewardService with ChangeNotifier {
   final _logger = Logger();

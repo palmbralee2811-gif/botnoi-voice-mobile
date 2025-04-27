@@ -1,11 +1,11 @@
 import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/auth/token_checker.dart';
-import 'package:botnoivoice/function/open_logout_function.dart';
+import 'package:botnoivoice/shared/function/open_logout_function.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/ui/screen/login/login_screen.dart';
+import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:logger/logger.dart';

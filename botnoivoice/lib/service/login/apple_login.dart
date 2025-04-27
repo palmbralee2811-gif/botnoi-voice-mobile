@@ -68,7 +68,7 @@ class AppleLogin extends ChangeNotifier {
   /// Sign out and Check if the user is signed out
   Future<void> signOutWithApple(BuildContext context) async {
     try {
-      Provider.of<AppleToken>(context, listen: false).clearTokens();
+      context.read<AppleToken>().clearTokens();
 
       // ❌ Unsubscribe from Topic when user sign out
       await PushNotificationService.unsubscribeFromTopic("default");

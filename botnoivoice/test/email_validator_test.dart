@@ -1,4 +1,4 @@
-import 'package:botnoivoice/function/is_vaild_data.dart';
+import 'package:botnoivoice/shared/function/is_vaild_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 

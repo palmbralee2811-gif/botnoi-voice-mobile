@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
-import 'package:botnoivoice/function/get_user_id.dart';
+import 'package:botnoivoice/shared/function/get_user_id.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';

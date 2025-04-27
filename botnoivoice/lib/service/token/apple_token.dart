@@ -54,9 +54,7 @@ class AppleToken extends ChangeNotifier {
   /// Get the _jwtToken from Firebase
   Future<void> loadJwtToken(BuildContext context) async {
     // Get the idToken from the Authentication provider
-    String? idToken = await Provider.of<AppleLogin>(context, listen: false)
-        .user
-        ?.getIdToken();
+    String? idToken = await context.read<AppleLogin>().user?.getIdToken();
     if (idToken == null) {
       _logger.e("Error: Apple idToken is null");
       return; // หยุดการทำงานถ้าไม่มี idToken
@@ -105,15 +103,15 @@ class AppleToken extends ChangeNotifier {
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
-
         // Logging Profile Data
         var data = json.decode(response.body);
         _logger.i('Get Profile Data: $data');
-        
+
         _userID = data['data']['uid'].toString();
         _remainingCredits = data['data']['credits'].toString();
         _quotaDownload = data['data']['quota_download'].toString();
-        _isSubscription = data['data']['subscription']?.toString() == 'Pro';  // Check ว่าผู้ใช้ได้ Subscription ไหม
+        _isSubscription = data['data']['subscription']?.toString() ==
+            'Pro'; // Check ว่าผู้ใช้ได้ Subscription ไหม
         notifyListeners();
         _logger.i('User ID successfully loaded: $_userID');
         _logger.i('Remaining credits successfully loaded: $_remainingCredits');

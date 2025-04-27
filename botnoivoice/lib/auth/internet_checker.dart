@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:botnoivoice/ui/dialog/notification/notification_dialog.dart';
+import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';

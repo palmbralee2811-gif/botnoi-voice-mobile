@@ -1,23 +1,23 @@
-import 'package:botnoivoice/auth/app_language_selection_checker.dart';
+import 'package:botnoivoice/auth/app_language_checker.dart';
 import 'package:botnoivoice/auth/auth_checker.dart';
 import 'package:botnoivoice/auth/token_checker.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/account_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/change_email_username_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/confirm_delete_account_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/delete_account_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/reward/reward_screen.dart';
-import 'package:botnoivoice/ui/screen/drawer/drawer_appbar.dart';
-import 'package:botnoivoice/ui/screen/drawer/email_permission/email_permission_screen.dart';
-import 'package:botnoivoice/ui/screen/email/email_login_screen.dart';
-import 'package:botnoivoice/ui/screen/email/forget_password/confirm_forget_password_screen.dart';
-import 'package:botnoivoice/ui/screen/email/forget_password/forget_password_screen.dart';
-import 'package:botnoivoice/ui/screen/email/forget_password/new_password_screen.dart';
-import 'package:botnoivoice/ui/screen/email/policy/privacy_policy_screen.dart';
-import 'package:botnoivoice/ui/screen/email/policy/terms_service_screen.dart';
-import 'package:botnoivoice/ui/screen/email/register_screen.dart';
-import 'package:botnoivoice/ui/screen/login/login_screen.dart';
-import 'package:botnoivoice/ui/screen/main/home/home_screen.dart';
-import 'package:botnoivoice/ui/screen/main/speaker/speaker_screen.dart';
+import 'package:botnoivoice/screen/drawer/account/account_screen.dart';
+import 'package:botnoivoice/screen/drawer/account/change_email_username_screen.dart';
+import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.dart';
+import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
+import 'package:botnoivoice/screen/drawer/reward/reward_screen.dart';
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
+import 'package:botnoivoice/screen/drawer/email_permission/email_permission_screen.dart';
+import 'package:botnoivoice/screen/email/email_login_screen.dart';
+import 'package:botnoivoice/screen/email/forget_password/confirm_forget_password_screen.dart';
+import 'package:botnoivoice/screen/email/forget_password/forget_password_screen.dart';
+import 'package:botnoivoice/screen/email/forget_password/new_password_screen.dart';
+import 'package:botnoivoice/screen/email/policy/privacy_policy_screen.dart';
+import 'package:botnoivoice/screen/email/policy/terms_service_screen.dart';
+import 'package:botnoivoice/screen/email/register_screen.dart';
+import 'package:botnoivoice/screen/login/login_screen.dart';
+import 'package:botnoivoice/screen/main/home/home_screen.dart';
+import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -27,7 +27,7 @@ final router = GoRouter(
     GoRoute(
       // First screen to show when the app is open
       path: '/',
-      builder: (context, state) => const AppLanguageSelectionChecker(),
+      builder: (context, state) => const AppLanguageChecker(),
     ),
     GoRoute(
       path: '/auth',

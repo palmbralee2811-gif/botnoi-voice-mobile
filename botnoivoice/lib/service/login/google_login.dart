@@ -67,8 +67,8 @@ class GoogleLogin extends ChangeNotifier {
   /// Sign out and Check if the user is signed out
   Future<void> signOutWithGoogle(BuildContext context) async {
     try {
-      Provider.of<GoogleToken>(context, listen: false).clearTokens();
-      
+      context.read<GoogleToken>().clearTokens();
+
       // ❌ Unsubscribe from Topic when user sign out
       await PushNotificationService.unsubscribeFromTopic("default");
       // ❌ Delete FCM Token Form Firebase Messaging and Database

@@ -1,6 +1,6 @@
 import 'package:botnoivoice/config/api_url_config.dart';
-import 'package:botnoivoice/ui/dialog/notification/notification_snack_bar.dart';
-import 'package:botnoivoice/ui/screen/drawer/account/get_user_email.dart';
+import 'package:botnoivoice/shared/dialog/notification/notification_snack_bar.dart';
+import 'package:botnoivoice/screen/drawer/account/get_user_email.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

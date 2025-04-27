@@ -1,5 +1,5 @@
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
-import 'package:botnoivoice/ui/dialog/email_permission/offline_email_permission_dialog.dart';
+import 'package:botnoivoice/shared/dialog/email_permission/offline_email_permission_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +17,7 @@ class EmailForgetPassword with ChangeNotifier {
   /// Check if the user has permission to show email
   Future<bool> checkShowEmail(BuildContext context) async {
     try {
-      final userInfoProvider =
-          Provider.of<CheckUserIsShowEmail>(context, listen: false);
+      final userInfoProvider = context.read<CheckUserIsShowEmail>();
       await userInfoProvider.getUserInfoShowMail(context);
 
       if (userInfoProvider.isShowEmail == true) {

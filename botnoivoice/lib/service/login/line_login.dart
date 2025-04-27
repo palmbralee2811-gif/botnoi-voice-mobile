@@ -83,8 +83,8 @@ class LineLogin with ChangeNotifier {
   /// Sign out with LINE Service
   Future<void> signOutWithLine(BuildContext context) async {
     try {
-      Provider.of<LineToken>(context, listen: false).clearTokens();
-      
+      context.read<LineToken>().clearTokens();
+
       // ❌ Unsubscribe from Topic when user sign out
       await PushNotificationService.unsubscribeFromTopic("default");
       // ❌ Delete FCM Token Form Firebase Messaging and Database

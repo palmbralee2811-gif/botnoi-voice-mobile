@@ -1,5 +1,5 @@
 import 'package:botnoivoice/config/api_url_config.dart';
-import 'package:botnoivoice/function/get_user_id.dart';
+import 'package:botnoivoice/shared/function/get_user_id.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';

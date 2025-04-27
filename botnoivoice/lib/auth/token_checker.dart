@@ -1,5 +1,5 @@
 import 'package:botnoivoice/config/revenuecat_config.dart';
-import 'package:botnoivoice/data/model/speaker_model/speaker_model.dart';
+import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
@@ -11,8 +11,8 @@ import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
-import 'package:botnoivoice/ui/screen/main/home/home_screen.dart';
-import 'package:botnoivoice/ui/screen/splash/splash_screen.dart';
+import 'package:botnoivoice/screen/main/home/home_screen.dart';
+import 'package:botnoivoice/screen/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,10 +53,10 @@ class _TokenCheckerState extends State<TokenChecker> {
   Future<void> initApp() async {
     if (_isDisposed) return;
 
-    final appleProvider = Provider.of<AppleLogin>(context, listen: false);
-    final googleProvider = Provider.of<GoogleLogin>(context, listen: false);
-    final lineProvider = Provider.of<LineLogin>(context, listen: false);
-    final emailProvider = Provider.of<EmailLogin>(context, listen: false);
+    final appleProvider = context.read<AppleLogin>();
+    final googleProvider = context.read<GoogleLogin>();
+    final lineProvider = context.read<LineLogin>();
+    final emailProvider = context.read<EmailLogin>();
 
     if (_isDisposed) return;
 
@@ -101,14 +101,15 @@ class _TokenCheckerState extends State<TokenChecker> {
   Future<void> _loadAppleCredentials() async {
     if (_isDisposed) return;
 
-    final appleTokenProvider = Provider.of<AppleToken>(context, listen: false);
+    final appleTokenProvider = context.read<AppleToken>();
     if (!_isDisposed) await appleTokenProvider.loadJwtToken(context);
     if (!_isDisposed) await appleTokenProvider.loadCredentials();
     if (!_isDisposed) await appleTokenProvider.loadRemainingCredits();
-    
+
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = appleTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed, jwtToken: appleTokenProvider.getJwtToken!);
+    await SpeakerModel.loadSpeakers(
+        isSubscribed: _isSubscribed, jwtToken: appleTokenProvider.getJwtToken!);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -130,15 +131,16 @@ class _TokenCheckerState extends State<TokenChecker> {
   Future<void> _loadGoogleCredentials() async {
     if (_isDisposed) return;
 
-    final googleTokenProvider =
-        Provider.of<GoogleToken>(context, listen: false);
+    final googleTokenProvider = context.read<GoogleToken>();
     if (!_isDisposed) await googleTokenProvider.loadJwtToken(context);
     if (!_isDisposed) await googleTokenProvider.loadCredentials();
     if (!_isDisposed) await googleTokenProvider.loadRemainingCredits();
 
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = googleTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed, jwtToken: googleTokenProvider.getJwtToken!);
+    await SpeakerModel.loadSpeakers(
+        isSubscribed: _isSubscribed,
+        jwtToken: googleTokenProvider.getJwtToken!);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -160,14 +162,15 @@ class _TokenCheckerState extends State<TokenChecker> {
   Future<void> _loadLineCredentials() async {
     if (_isDisposed) return;
 
-    final lineTokenProvider = Provider.of<LineToken>(context, listen: false);
+    final lineTokenProvider = context.read<LineToken>();
     if (!_isDisposed) await lineTokenProvider.loadJwtToken(context);
     if (!_isDisposed) await lineTokenProvider.loadCredentials();
     if (!_isDisposed) await lineTokenProvider.loadRemainingCredits();
 
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = lineTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed,    jwtToken: lineTokenProvider.getJwtToken!);
+    await SpeakerModel.loadSpeakers(
+        isSubscribed: _isSubscribed, jwtToken: lineTokenProvider.getJwtToken!);
 
     if (!_isDisposed) await configureRevenueCat(context);
 
@@ -189,25 +192,23 @@ class _TokenCheckerState extends State<TokenChecker> {
   Future<void> _loadEmailCredentials() async {
     if (_isDisposed) return;
 
-    final emailTokenProvider = Provider.of<EmailToken>(context, listen: false);
+    final emailTokenProvider = context.read<EmailToken>();
     if (!_isDisposed) await emailTokenProvider.loadJwtToken(context);
     if (!_isDisposed) await emailTokenProvider.loadCredentials();
     if (!_isDisposed) await emailTokenProvider.loadRemainingCredits();
 
     // Load Speaker Data by User Subscription (Free or Pro)
     if (!_isDisposed) _isSubscribed = emailTokenProvider.isSubscription;
-    await SpeakerModel.loadSpeakers(isSubscribed: _isSubscribed, jwtToken: emailTokenProvider.getJwtToken!);
+    await SpeakerModel.loadSpeakers(
+        isSubscribed: _isSubscribed, jwtToken: emailTokenProvider.getJwtToken!);
 
     if (!_isDisposed) {
       /// Load get username by email
-      String? email =
-          Provider.of<EmailLogin>(context, listen: false).getUserEmail;
-      await Provider.of<EmailUsernameApi>(context, listen: false)
-          .loadGetUsername(email);
+      String? email = context.read<EmailLogin>().getUserEmail;
+      await context.read<EmailUsernameApi>().loadGetUsername(email);
 
       /// Load user info show mail (email permission)
-      await Provider.of<CheckUserIsShowEmail>(context, listen: false)
-          .getUserInfoShowMail(context);
+      await context.read<CheckUserIsShowEmail>().getUserInfoShowMail(context);
     }
 
     if (!_isDisposed) await configureRevenueCat(context);
