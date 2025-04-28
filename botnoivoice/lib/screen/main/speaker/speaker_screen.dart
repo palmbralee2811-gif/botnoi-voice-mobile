@@ -178,6 +178,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           selectedIndex: selectedIndex,
                           currentCategories: selectedCategories,
                           currentStyles: selectedStyles,
+                          currentGender: gender ?? '',
                           onSpeakerTap: (index, speakerItem) async {
                             await handleSpeakerTap(
                               context: context,

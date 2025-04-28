@@ -13,6 +13,7 @@ class FavoriteFilter extends StatelessWidget {
   final String currentLanguage;
   final Set<String> currentCategories;
   final Set<String> currentStyles;
+  final String currentGender;
 
   const FavoriteFilter({super.key,
       required this.selectedIndexFavorites,
@@ -21,7 +22,8 @@ class FavoriteFilter extends StatelessWidget {
       required this.onFavoriteToggle,
       required this.currentLanguage,
       required this.currentCategories,
-      required this.currentStyles
+      required this.currentStyles,
+      required this.currentGender
   });
 
   @override
@@ -30,7 +32,7 @@ class FavoriteFilter extends StatelessWidget {
         .where((item) =>selectedIndexFavorites.contains(item.speakerId) 
         && item.language == currentLanguage && (currentStyles.isEmpty || item.voiceStyle.any((style) => currentStyles.contains(style)))
         && (currentCategories.isEmpty || item.speechStyle.any((style) => currentCategories.contains(style)))
-        
+        && (currentGender == '' || item.gender == currentGender)
         )
         .toList();
 
