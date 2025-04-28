@@ -14,13 +14,15 @@ Future<void> handleFavoriteToggle({
   final originalFavorites = List<String>.from(selectedIndexFavorites);
 
   // ทำการ clone และแก้ไข list ใหม่
-  final updatedFavorites =  isCurrentlyFavorite
+  final updatedFavorites = isCurrentlyFavorite
       ? (List<String>.from(selectedIndexFavorites)..remove(speakerId))
       : (List<String>.from(selectedIndexFavorites)..add(speakerId));
 
-   // setState ให้ UI
-  setSelectedIndexFavorites(updatedFavorites);
-
+  // setState ให้ UI
+  // เช็กก่อนว่า context ยัง mounted ไหม
+  if (context.mounted) {
+    setSelectedIndexFavorites(updatedFavorites);
+  }
 
   logger.d("UI list state is now: $selectedIndexFavorites");
 

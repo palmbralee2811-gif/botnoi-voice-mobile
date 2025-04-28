@@ -18,6 +18,7 @@ Future<void> loadInitialData({
 
     final FavoriteService favoriteService = FavoriteService();
     final List<String> fetchedFavorites = await favoriteService.getFavoriteSpeakers(token);
+    if (!context.mounted) return;
 
     setSelectedIndexFavorites(fetchedFavorites);
   } catch (e) {
