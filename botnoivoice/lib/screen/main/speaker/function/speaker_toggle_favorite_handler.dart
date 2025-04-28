@@ -35,6 +35,7 @@ Future<void> handleFavoriteToggle({
     if (isCurrentlyFavorite) {
       logger.i(">>> Calling REMOVE API for ID: $speakerId");
       await favoriteService.removeFavoriteSpeaker(speakerId, token);
+      if (!context.mounted) return;
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Favorite removed!')),
@@ -44,6 +45,7 @@ Future<void> handleFavoriteToggle({
       final listToSend = List<String>.from(updatedFavorites);
       logger.i(">>> Calling SAVE API with list: $listToSend");
       await favoriteService.saveFavoriteSpeakers(listToSend, token);
+      if (!context.mounted) return;
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Favorite added!')),
