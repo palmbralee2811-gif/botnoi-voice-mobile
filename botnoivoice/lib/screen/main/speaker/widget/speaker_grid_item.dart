@@ -94,44 +94,6 @@ class SpeakerGridItem extends StatelessWidget {
                               : 113.h,
                         ),
                       ),
-                      // ClipRRect(
-                      //   borderRadius: BorderRadius.circular(8.r),
-                      //   child: Image(
-                      //     image: CachedNetworkImageProvider(
-                      //       speakerItem.squareImage,
-                      //       headers: const {
-                      //         'Referer': 'https://voice.botnoi.ai/',
-                      //         'Accept': 'image/webp,*/*',
-                      //       },
-                      //     ),
-                      //     fit: BoxFit.cover,
-                      //     width: ResponsiveDesignOrientation.isLandscape
-                      //         ? 120.w
-                      //         : 100.w,
-                      //     height: ResponsiveDesignOrientation.isLandscape
-                      //         ? 313.h
-                      //         : 113.h,
-                      //     loadingBuilder: (context, child, loadingProgress) {
-                      //       if (loadingProgress == null) return child;
-                      //       return const Center(
-                      //           child: CircularProgressIndicator());
-                      //     },
-                      //     errorBuilder: (context, error, stackTrace) {
-                      //       Logger().e(
-                      //           'Image failed to load: ${speakerItem.squareImage}, error: $error');
-                      //       return Image.asset(
-                      //         'assets/images/default-profile-picture.jpg', // Fallback image
-                      //         fit: BoxFit.cover,
-                      //         width: ResponsiveDesignOrientation.isLandscape
-                      //             ? 120.w
-                      //             : 100.w,
-                      //         height: ResponsiveDesignOrientation.isLandscape
-                      //             ? 313.h
-                      //             : 113.h,
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
                       Container(
                         width: 100.w,
                         height: 113.h,
