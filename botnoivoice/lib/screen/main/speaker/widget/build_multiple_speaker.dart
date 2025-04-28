@@ -115,6 +115,7 @@ class BuildMultipleSpeaker extends StatelessWidget {
             final data = filteredItems[index];
 
             return SpeakerGridItem(
+              key: ValueKey(data.speakerId),
               speakerItem: data,
               index: index,
               isSelected: selectedIndex.contains(index),
