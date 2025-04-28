@@ -176,6 +176,8 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                       ? FavoriteFilter(
                           selectedIndexFavorites: selectedIndexFavorites,
                           selectedIndex: selectedIndex,
+                          currentCategories: selectedCategories,
+                          currentStyles: selectedStyles,
                           onSpeakerTap: (index, speakerItem) async {
                             await handleSpeakerTap(
                               context: context,

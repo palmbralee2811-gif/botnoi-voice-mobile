@@ -11,21 +11,27 @@ class FavoriteFilter extends StatelessWidget {
   final Function(int index, SpeakerEntity speaker) onSpeakerTap;
   final Function(String speakerId) onFavoriteToggle;
   final String currentLanguage;
+  final Set<String> currentCategories;
+  final Set<String> currentStyles;
 
-  const FavoriteFilter(
-      {super.key,
+  const FavoriteFilter({super.key,
       required this.selectedIndexFavorites,
       required this.selectedIndex,
       required this.onSpeakerTap,
       required this.onFavoriteToggle,
-      required this.currentLanguage});
+      required this.currentLanguage,
+      required this.currentCategories,
+      required this.currentStyles
+  });
 
   @override
   Widget build(BuildContext context) {
     final List<SpeakerEntity> favoriteSpeakers = SpeakerModel.speakerItem
-        .where((item) =>
-            selectedIndexFavorites.contains(item.speakerId) &&
-            item.language == currentLanguage)
+        .where((item) =>selectedIndexFavorites.contains(item.speakerId) 
+        && item.language == currentLanguage && (currentStyles.isEmpty || item.voiceStyle.any((style) => currentStyles.contains(style)))
+        && (currentCategories.isEmpty || item.speechStyle.any((style) => currentCategories.contains(style)))
+        
+        )
         .toList();
 
     if (favoriteSpeakers.isEmpty) {
