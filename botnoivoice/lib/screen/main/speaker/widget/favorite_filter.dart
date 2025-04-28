@@ -57,6 +57,7 @@ class FavoriteFilter extends StatelessWidget {
               .indexWhere((s) => s.speakerId == data.speakerId);
 
           return SpeakerGridItem(
+            key: ValueKey(data.speakerId),
             speakerItem: data,
             index: originalIndex,
             isSelected: selectedIndex.contains(originalIndex),
