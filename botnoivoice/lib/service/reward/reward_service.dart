@@ -23,9 +23,7 @@ class RewardService with ChangeNotifier {
 
   /// ฟังก์ชันตรวจสอบและใช้คูปอง 100 เครดิต
   Future<void> checkCoupon100(BuildContext context) async {
-    _setLoading(true); // เริ่มโหลด
-    // เคลียร์ error message เก่าของ Service ก่อนเริ่ม operation นี้
-    // เพื่อให้แน่ใจว่า error มาจากการเรียกครั้งนี้จริงๆ
+    _setLoading(true);
     this._errorMessage = null;
 
     try {
@@ -34,38 +32,28 @@ class RewardService with ChangeNotifier {
       // ถ้า _fetchJwtToken ล้มเหลว มันจะตั้ง _errorMessage และคืน null
       if (jwtToken == null) {
         _logger.e('checkCoupon100: Failed to get JWT token.');
-        // ไม่ต้องทำอะไรเพิ่ม _errorMessage ถูกตั้งแล้ว
-        return; // ออกจากฟังก์ชันทันที
+
+        return;
       }
 
-      // เรียก _getCouponNameForToday (ซึ่ง handle 404 โดยคืน null และไม่ตั้ง _errorMessage)
       final couponCode = await _getCouponNameForToday();
 
       // --- จุดแก้ไขสำคัญ ---
       if (couponCode == null) {
-        // ถ้า couponCode เป็น null ต้องตรวจสอบว่า _errorMessage ถูกตั้งค่ามาจาก
-        // _getCouponNameForToday (กรณี error จริงๆ) หรือยัง
         if (this._errorMessage == null) {
-          // ถ้า _errorMessage ยังเป็น null แสดงว่า _getCouponNameForToday คืน null
-          // เพราะ 404 หรือ 200(no data) -> นี่คือสถานะ "ไม่มีคูปองให้ Redeem"
           this._errorMessage = 'reward_service.no_daily_coupon_to_redeem'
               .tr(); // <<-- ตั้งค่า Error Message เฉพาะที่นี่
           _logger.w(
               'checkCoupon100: No daily coupon code available to redeem ($_errorMessage)');
         } else {
-          // ถ้า _errorMessage มีค่าอยู่แล้ว แสดงว่าเกิด error จริงๆ ตอนดึงชื่อคูปอง
           _logger.e(
               'checkCoupon100: Error occurred while getting coupon name: $_errorMessage');
-          // ไม่ต้องทำอะไรเพิ่ม ปล่อยให้ _errorMessage ที่มีอยู่ถูกใช้
         }
-        return; // ออกจากฟังก์ชัน ไม่ต้องไปเรียก _callCheckCouponApi
+        return;
       }
-      // --------------------
-
-      // ถ้า couponCode ไม่ใช่ null ก็ดำเนินการเรียก API Redeem ต่อไป
+      // ---------------
       _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
-      await _callCheckCouponApi(jwtToken,
-          couponCode); // _callCheckCouponApi จะจัดการ _errorMessage เอง
+      await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
       // ดักจับ Exception ที่อาจเกิดขึ้นนอกเหนือจากที่ handle ไปแล้ว
       _errorMessage = '${'reward_service.error_message'.tr()} $e';
