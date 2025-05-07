@@ -264,7 +264,8 @@
         "coupon_not_found": "Kupon tidak ditemukan. Kupon mungkin sudah tidak berlaku atau kupon yang Anda masukkan salah.",
         "coupon_expired_or_not_found": "Kupon tidak ditemukan dalam sistem atau kupon telah kedaluwarsa.",
         "api_call_error": "Terjadi kesalahan saat memanggil API:",
-        "daily_unavailable_today": "Kupon harian belum tersedia untuk hari ini"
+        
+        "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
     },
     "free_quota_use": {
         "ten_time_perday": "Anda telah mencapai batas harian 10 penggunaan gratis. Mulai sekarang, sistem akan memotong poin berdasarkan penggunaan Anda."
