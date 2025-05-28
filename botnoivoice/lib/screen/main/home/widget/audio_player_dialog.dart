@@ -40,6 +40,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
   bool isPlaying = false;
   bool isLoading = true;
 
+  double currentSliderValue = 0;
+  bool isDragging = false;
+
   final ReceivePort _port = ReceivePort();
   String? taskId;
 
@@ -79,7 +82,6 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       }
       await audioPlayer.setFilePath(widget.filePath);
 
-      // ฟัง duration
       audioPlayer.durationStream.listen((d) {
         if (mounted && d != null) {
           setState(() {
@@ -88,16 +90,18 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
         }
       });
 
-      // ฟัง position
+      // Modified position stream listener
       audioPlayer.positionStream.listen((p) {
         if (mounted) {
           setState(() {
             position = p;
+            if (!isDragging) {
+              currentSliderValue = p.inMilliseconds.toDouble();
+            }
           });
         }
       });
 
-      // ฟังสถานะการเล่น
       audioPlayer.playerStateStream.listen((state) {
         if (mounted) {
           setState(() {
@@ -119,8 +123,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text("${'audio_player.error_playing_audio'.tr()} $e")),
+          SnackBar(content: Text("${'audio_player.error_playing_audio'.tr()} $e")),
         );
       }
     }
@@ -230,16 +233,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        iconSize: ResponsiveDesignOrientation.isLandscape
-                            ? 15.sp
-                            : 30.sp,
+                        iconSize: ResponsiveDesignOrientation.isLandscape ? 15.sp : 30.sp,
                         icon: GradientIcon(
-                          icon: isPlaying
-                              ? Icons.pause_circle_outline
-                              : Icons.play_circle_outline,
-                          size: ResponsiveDesignOrientation.isLandscape
-                              ? 15.sp
-                              : 30.sp,
+                          icon: isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                          size: ResponsiveDesignOrientation.isLandscape ? 15.sp : 30.sp,
                           gradient: const LinearGradient(
                             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                             begin: Alignment.topLeft,
@@ -250,7 +247,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           if (isPlaying) {
                             await audioPlayer.pause();
                           } else {
-                            if (audioPlayer.processingState ==ProcessingState.completed) {
+                            if (audioPlayer.processingState == ProcessingState.completed) {
                               await audioPlayer.seek(Duration.zero);
                             }
                             await audioPlayer.play();
@@ -259,24 +256,30 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                       ),
                       SizedBox(width: 10.w),
                       Expanded(
-                        child: StreamBuilder<Duration>(
-                          stream: audioPlayer.positionStream,
-                          builder: (context, snapshot) {
-                            final position = snapshot.data ?? Duration.zero;
-                            return Slider(
-                              activeColor: Colors.blue,
-                              inactiveColor: Colors.grey[300],
-                              min: 0,
-                              max: duration.inMilliseconds.toDouble(),
-                              value: position.inMilliseconds
-                                  .toDouble()
-                                  .clamp(0, duration.inMilliseconds.toDouble()),
-                              onChanged: (value) async {
-                                final newPosition =
-                                    Duration(milliseconds: value.toInt());
-                                await audioPlayer.seek(newPosition);
-                              },
-                            );
+                        child: Slider(
+                          activeColor: Colors.blue,
+                          inactiveColor: Colors.grey[300],
+                          min: 0,
+                          max: duration.inMilliseconds.toDouble(),
+                          value: currentSliderValue.clamp(0, duration.inMilliseconds.toDouble()),
+                          onChangeStart: (value) {
+                            setState(() {
+                              isDragging = true;
+                            });
+                            audioPlayer.pause();
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              currentSliderValue = value.clamp(0, duration.inMilliseconds.toDouble());
+                            });
+                          },
+                          onChangeEnd: (value) {
+                            double clampedValue = value.clamp(0, duration.inMilliseconds.toDouble());
+                            setState(() {
+                              isDragging = false;
+                              currentSliderValue = clampedValue;
+                            });
+                            audioPlayer.seek(Duration(milliseconds: clampedValue.toInt()));
                           },
                         ),
                       ),
