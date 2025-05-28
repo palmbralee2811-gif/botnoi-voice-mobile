@@ -85,7 +85,8 @@
         "profile": "Profile",
         "buy_points": "Buy Points",
         "security": "Security",
-        "reward": "Reward"
+        "reward": "Reward",
+        "redeem": "Redeem Coupon"
     },
     "account": {
         "uid_copy_success": "UID copied successfully",
@@ -248,14 +249,14 @@
     "reward_screen": {
         "notification_dialog_success": "Successfully Redeemed",
         "notification_dialog_error": "An error occurred",
-        "appbar_title" : "Reward",
-        "text_header" : "Exclusive reward from Botnoi",
-        "widget_title01" : "Daily Points",
-        "widget_text01" : "Get 100 points \nAvailable every day",
+        "appbar_title": "Reward",
+        "text_header": "Exclusive reward from Botnoi",
+        "widget_title01": "Daily Points",
+        "widget_text01": "Get 100 points \nAvailable every day",
         "widget_text_button01": "Only {Timeout} hours left",
-        "widget_title02" : "New User Exclusive",
-        "widget_text02" : "Get 1,000 points \nOnly for new users",
-        "widget_text_button02" : "Successfully Redeemed",
+        "widget_title02": "New User Exclusive",
+        "widget_text02": "Get 1,000 points \nOnly for new users",
+        "widget_text_button02": "Successfully Redeemed",
         "widget_display_points": "Get {points} points"
     },
     "reward_service": {
@@ -264,10 +265,25 @@
         "coupon_not_found": "Coupon not found. The coupon may no longer be valid or the coupon you entered is incorrect.",
         "coupon_expired_or_not_found": "Coupon not found in the system or the coupon has expired.",
         "api_call_error": "An error occurred while calling the API:",
-        
-        "no_daily_coupon_to_redeem": "Daily coupon not ready for today" 
+        "no_daily_coupon_to_redeem": "Daily coupon not ready for today"
     },
     "free_quota_use": {
         "ten_time_perday": "You have reached your daily limit of 10 free uses. From now on, the system will deduct points based on your usage."
+    },
+    "redeem_coupon_dialog": {
+        "title": "Redeem Coupon",
+        "use": "Redeem",
+        "input": "Enter Coupon",
+        "success": "Coupon {coupon_name} redeem successfully"
+    },
+    "redeem_coupon_service": {
+        "error_message": "An error occurred",
+        "coupon_already_used": "Your coupon \"{coupon_name}\" has already been used.",
+        "coupon_not_found": "Coupon \"{coupon_name}\" not found. The coupon may no longer be valid or the coupon you entered is incorrect.",
+        "coupon_expired_or_not_found": "Coupon \"{coupon_name}\" not found in the system or the coupon has expired.",
+        "api_call_error": "An error occurred while calling the API:",
+        "coupon_code_empty": "Please enter a coupon",
+        "not_session": "Not Login Please Login",
+        "no_daily_coupon_to_redeem": "Daily coupon not ready for today"
     }
 }
