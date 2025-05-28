@@ -85,7 +85,8 @@
         "profile": "Profil",
         "buy_points": "Beli Poin",
         "security": "Keamanan",
-        "reward": "Hadiah"
+        "reward": "Hadiah",
+        "redeem": "Tukar Kupon"
     },
     "account": {
         "uid_copy_success": "UID berhasil disalin",
@@ -248,14 +249,14 @@
     "reward_screen": {
         "notification_dialog_success": "Berhasil di tukar",
         "notification_dialog_error": "Terjadi kesalahan",
-        "appbar_title" : "Hadiah",
-        "text_header" : "Hadiah eksklusif dari Botnoi",
-        "widget_title01" : "Poin Harian",
-        "widget_text01" : "Kumpulkan 100 poin \nTersedia setiap hari",      
-        "widget_text_button01" : "Hanya {Timeout} jam tersisa",
-        "widget_title02" : "Eksklusif untuk pengguna baru",
-        "widget_text02" : "Kumpulkan 1,000 poin \nKhusus untuk pengguna baru",
-        "widget_text_button02" : "Berhasil di tukar",
+        "appbar_title": "Hadiah",
+        "text_header": "Hadiah eksklusif dari Botnoi",
+        "widget_title01": "Poin Harian",
+        "widget_text01": "Kumpulkan 100 poin \nTersedia setiap hari",
+        "widget_text_button01": "Hanya {Timeout} jam tersisa",
+        "widget_title02": "Eksklusif untuk pengguna baru",
+        "widget_text02": "Kumpulkan 1,000 poin \nKhusus untuk pengguna baru",
+        "widget_text_button02": "Berhasil di tukar",
         "widget_display_points": "Dapatkan {points} poin"
     },
     "reward_service": {
@@ -264,10 +265,25 @@
         "coupon_not_found": "Kupon tidak ditemukan. Kupon mungkin sudah tidak berlaku atau kupon yang Anda masukkan salah.",
         "coupon_expired_or_not_found": "Kupon tidak ditemukan dalam sistem atau kupon telah kedaluwarsa.",
         "api_call_error": "Terjadi kesalahan saat memanggil API:",
-        
         "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
     },
     "free_quota_use": {
         "ten_time_perday": "Anda telah mencapai batas harian 10 penggunaan gratis. Mulai sekarang, sistem akan memotong poin berdasarkan penggunaan Anda."
+    },
+    "redeem_coupon_dialog": {
+        "title": "Tukarkan Kupon",
+        "use": "Tukarkan",
+        "input": "Masukkan Kupon",
+        "success": "Kupon {coupon_name} berhasil ditukarkan"
+    },
+    "redeem_coupon_service": {
+        "error_message": "Terjadi kesalahan:",
+        "coupon_already_used": "Kupon \"{coupon_name}\" sudah digunakan.",
+        "coupon_not_found": "Kupon \"{coupon_name}\" tidak ditemukan atau salah.",
+        "coupon_expired_or_not_found": "Kupon \"{coupon_name}\" kedaluwarsa atau tidak terdaftar.",
+        "api_call_error": "Terjadi kesalahan saat memanggil API:",
+        "coupon_code_empty": "Silakan masukkan kupon",
+        "not_session": "Pengguna belum login",
+        "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
     }
 }

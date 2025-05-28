@@ -85,7 +85,8 @@
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "reward": "รางวัล"
+        "reward": "รางวัล",
+        "redeem": "ใช้คูปอง"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -270,5 +271,21 @@
     },
     "free_quota_use": {
         "ten_time_perday": "คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน"
+    },
+    "redeem_coupon_dialog":{
+        "title": "ใช้คูปอง",
+        "use": "ใช้",
+        "input": "กรอกคูปอง",
+        "success": "ใช้คูปอง {coupon_name} สําเร็จ"
+    },
+    "redeem_coupon_service": {
+        "error_message": "เกิดข้อผิดพลาด:",
+        "coupon_already_used": "คูปอง \"{coupon_name}\" ถูกใช้งานแล้ว",
+        "coupon_not_found": "ไม่พบคูปอง \"{coupon_name}\" คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
+        "coupon_expired_or_not_found": "ไม่พบคูปอง \"{coupon_name}\" ในระบบ หรือคูปองหมดอายุไปแล้ว",
+        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
+        "coupon_code_empty": "กรุณากรอกคูปอง",
+        "not_session": "ไม่มีการเข้าสู่ระบบ",
+        "no_daily_coupon_to_redeem": "คูปอง ยังไม่พร้อมใช้งานในขณะนี้"
     }
 }

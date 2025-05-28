@@ -7,14 +7,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 /// Alert Modal for displaying messages
-class NotificationDialog {
-  NotificationDialog({
+class RedeemSuccessDialog {
+  RedeemSuccessDialog({
     required this.context,
     required this.text,
+    required this.couponName,
     this.onPressed, // กำหนด onPressed เป็น optional
   });
 
   final String text;
+  final String couponName;
   final BuildContext context;
   final VoidCallback? onPressed;
 
@@ -40,17 +42,34 @@ class NotificationDialog {
               ResponsiveDesignOrientation.isLandscape ? 410.h : 235.h;
         }
 
+        final parts = text.split(couponName);
+
         Widget content = Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             icon,
             SizedBox(height: 16.h),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: ResponsiveDesignOrientation.isLandscape ? 14.sp : 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+            RichText(
+              text: TextSpan(
+                style: TextStyle(fontSize: ResponsiveDesignOrientation.isLandscape ? 14.sp : 16.sp,),
+                children: [
+                  TextSpan(
+                    text: parts[0], // "Coupon ", "คูปอง ", or "Kupon "
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  TextSpan(
+                    text: couponName,
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: parts[
+                        1], // " redeemed successfully", " แลกสำเร็จ", or " berhasil ditukarkan"
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ],
               ),
               textAlign: TextAlign.center,
             ),
@@ -65,7 +84,7 @@ class NotificationDialog {
                   context.pop();
 
                   // Call onPressed if provided
-                  (onPressed ?? () {})(); 
+                  (onPressed ?? () {})();
                 },
               ),
             ),
@@ -87,34 +106,6 @@ class NotificationDialog {
           ),
         );
       },
-    );
-  }
-
-  /// Modal for error message
-  void showErrorModal(BuildContext context) {
-    _showModal(
-      context: context,
-      icon: Icon(
-        Icons.error_outline_rounded,
-        color: Colors.red,
-        size: ResponsiveDesignOrientation.isLandscape ? 84.h : 54.h,
-      ),
-      barrierDismissible: true,
-      onPressed: onPressed,
-    );
-  }
-
-  /// Modal for error message with action
-  void showErrorModalWithAction(BuildContext context) {
-    _showModal(
-      context: context,
-      icon: Icon(
-        Icons.error_outline_rounded,
-        color: Colors.red,
-        size: ResponsiveDesignOrientation.isLandscape ? 84.h : 54.h,
-      ),
-      barrierDismissible: false,
-      onPressed: onPressed,
     );
   }
 
