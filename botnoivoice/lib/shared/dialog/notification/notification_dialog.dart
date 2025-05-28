@@ -48,8 +48,7 @@ class NotificationDialog {
             Text(
               text,
               style: TextStyle(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 14.sp : 16.sp,
+                fontSize: ResponsiveDesignOrientation.isLandscape ? 14.sp : 16.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
