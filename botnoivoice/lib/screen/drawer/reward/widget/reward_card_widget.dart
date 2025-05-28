@@ -9,7 +9,7 @@ class RewardCard extends StatelessWidget {
   final String title;
   final String description;
   final String buttonText;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   // ตัวแปรเพื่อเช็คสภาพอุปกรณ์และสถานะการ Redeem
   final bool isTablet;
@@ -31,7 +31,8 @@ class RewardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // กำหนดขนาดการ์ดตามอุปกรณ์ (มือถือ/แท็บเล็ต และแนวนอน/แนวตั้ง)
-    double maxWidth = isTablet ? (isLandscape ? 440.w : 400.w) : double.infinity;
+    double maxWidth =
+        isTablet ? (isLandscape ? 440.w : 400.w) : double.infinity;
     double minHeight = isTablet ? 200.h : 180.h;
 
     // สีสำหรับ Gradient
@@ -62,21 +63,23 @@ class RewardCard extends StatelessWidget {
       // Container ด้านใน ที่ใส่ภาพพื้นหลังและเนื้อหา
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22.5.r), // ต้องเล็กกว่าชั้นนอกเพื่อให้เห็นขอบ
+          borderRadius: BorderRadius.circular(
+              22.5.r), // ต้องเล็กกว่าชั้นนอกเพื่อให้เห็นขอบ
           image: const DecorationImage(
-            image: AssetImage('assets/images/reward_screen/background_card_default.png'),
+            image: AssetImage(
+                'assets/images/reward_screen/background_card_default.png'),
             fit: BoxFit.cover, // ให้ภาพพอดีกับการ์ด
           ),
           color: Colors.white, // สี fallback หากโหลดภาพไม่ทัน
         ),
-        padding: EdgeInsets.all(16.w).copyWith(left: 16.w, right: 16.w), // ระยะห่างภายในการ์ด
+        padding: EdgeInsets.all(16.w)
+            .copyWith(left: 16.w, right: 16.w), // ระยะห่างภายในการ์ด
         child: Stack(
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 // ส่วนแสดงไอคอนและหัวข้อ
                 Column(
                   children: [
@@ -118,7 +121,8 @@ class RewardCard extends StatelessWidget {
                                   end: Alignment.topRight,
                                 ).createShader(bounds);
                               },
-                              blendMode: BlendMode.srcIn, // ใช้ Gradient แทนสีของตัวอักษร
+                              blendMode: BlendMode
+                                  .srcIn, // ใช้ Gradient แทนสีของตัวอักษร
                               child: Text(
                                 title,
                                 style: TextStyle(

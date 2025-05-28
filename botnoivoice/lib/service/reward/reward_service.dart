@@ -13,8 +13,6 @@ class RewardService with ChangeNotifier {
 
   /// Getter for error message
   String? get errorMessage => _errorMessage;
-
-  /// Getter for loading status
   bool get isLoading => _isLoading;
 
   /// ฟังก์ชันเซ็ตค่า `isLoading` และแจ้งให้ UI อัปเดต
@@ -25,22 +23,43 @@ class RewardService with ChangeNotifier {
 
   /// ฟังก์ชันตรวจสอบและใช้คูปอง 100 เครดิต
   Future<void> checkCoupon100(BuildContext context) async {
-    _setLoading(true); // เริ่มโหลด
+    _setLoading(true);
+    this._errorMessage = null;
+
     try {
       _logger.d('Starting checkCoupon100');
       final jwtToken = await _fetchJwtToken(context);
-      if (jwtToken == null) return;
+      // ถ้า _fetchJwtToken ล้มเหลว มันจะตั้ง _errorMessage และคืน null
+      if (jwtToken == null) {
+        _logger.e('checkCoupon100: Failed to get JWT token.');
+
+        return;
+      }
 
       final couponCode = await _getCouponNameForToday();
-      if (couponCode == null) return;
 
+      // --- จุดแก้ไขสำคัญ ---
+      if (couponCode == null) {
+        if (this._errorMessage == null) {
+          this._errorMessage = 'reward_service.no_daily_coupon_to_redeem'
+              .tr(); // <<-- ตั้งค่า Error Message เฉพาะที่นี่
+          _logger.w(
+              'checkCoupon100: No daily coupon code available to redeem ($_errorMessage)');
+        } else {
+          _logger.e(
+              'checkCoupon100: Error occurred while getting coupon name: $_errorMessage');
+        }
+        return;
+      }
+      // ---------------
       _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
       await _callCheckCouponApi(jwtToken, couponCode);
     } catch (e) {
+      // ดักจับ Exception ที่อาจเกิดขึ้นนอกเหนือจากที่ handle ไปแล้ว
       _errorMessage = '${'reward_service.error_message'.tr()} $e';
-      _logger.e(_errorMessage);
+      _logger.e('Exception in checkCoupon100: $_errorMessage');
     } finally {
-      _setLoading(false); // โหลดเสร็จ
+      _setLoading(false); // โหลดเสร็จเสมอ
     }
   }
 
@@ -82,33 +101,51 @@ class RewardService with ChangeNotifier {
 
   /// ฟังก์ชันดึงชื่อคูปองที่ใช้ได้ในวันนี้
   Future<String?> _getCouponNameForToday() async {
-    _setLoading(true); // เริ่มโหลด
+    _setLoading(true);
+    String? localErrorMessageForThisCall; // เก็บ error message เฉพาะการเรียกนี้
+
     try {
-      // เรียก API เพื่อดึงข้อมูลคูปอง
+      _logger.d(
+          'Fetching daily coupon name from $apiUrl/api/coupon/get_coupon_daily');
       final response =
           await http.get(Uri.parse('$apiUrl/api/coupon/get_coupon_daily'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-
-        // ดึง `coupon_name` มาใช้งานโดยตรง
         final String? couponName = data['coupon_name'];
-        if (couponName != null) {
-          _errorMessage = null;
-          _logger.d('Coupon name: $couponName');
+
+        if (couponName != null && couponName.isNotEmpty) {
+          _logger.i('Daily coupon name for today: $couponName');
+          this._errorMessage = null;
           return couponName;
+        } else {
+          _logger.i(
+              'No daily coupon name found (API returned 200 OK but no/empty name). This is treated as "no coupon data".');
+          this._errorMessage = null;
+          return null;
         }
+      } else if (response.statusCode == 404) {
+        _logger.i(
+            'No daily coupon set for today (API returned 404 Not Found). This is a valid "no coupon" state.');
+        this._errorMessage = null;
+        return null;
       } else {
-        _errorMessage = 'Failed to fetch coupon';
-        _logger.e('Failed to fetch coupon: ${response.statusCode}');
+        localErrorMessageForThisCall =
+            'Failed to fetch daily coupon name: ${response.statusCode} - ${response.body.substring(0, (response.body.length > 150) ? 150 : response.body.length)}';
+        _logger.e(localErrorMessageForThisCall);
+        this._errorMessage = localErrorMessageForThisCall;
+        return null;
       }
     } catch (e) {
-      _errorMessage = 'Error fetching coupon: $e';
-      _logger.e(_errorMessage);
+      // เกิด Exception ระหว่างการเรียก API
+      localErrorMessageForThisCall = 'Exception fetching daily coupon name: $e';
+      _logger.e(localErrorMessageForThisCall);
+      this._errorMessage =
+          localErrorMessageForThisCall; // ตั้งเป็น error ของ Service
+      return null;
     } finally {
-      _setLoading(false); // โหลดเสร็จ
+      _setLoading(false);
     }
-    return null;
   }
 
   Future<void> _callCheckCouponApi(String jwtToken, String couponName) async {
