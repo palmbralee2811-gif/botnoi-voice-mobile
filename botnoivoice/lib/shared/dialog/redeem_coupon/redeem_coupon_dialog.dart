@@ -1,6 +1,5 @@
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/service/redeem_coupon/redeem_coupon_service.dart';
-import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/shared/dialog/redeem_coupon/redeem_success_dialog.dart';
 import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_loading_button.dart';
