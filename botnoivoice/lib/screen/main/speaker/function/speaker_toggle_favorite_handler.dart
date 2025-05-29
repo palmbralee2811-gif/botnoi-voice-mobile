@@ -1,6 +1,7 @@
 import 'package:botnoivoice/screen/main/speaker/function/snackbar_favorites.dart';
 import 'package:botnoivoice/shared/function/get_jwt_token.dart';
 import 'package:botnoivoice/service/favorite/favorite_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -40,7 +41,7 @@ Future<void> handleFavoriteToggle({
       await favoriteService.removeFavoriteSpeaker(speakerId, token);
       if (!context.mounted) return;
       if (context.mounted) {
-        showAddSnackBar(context , 'Favorite removed!');
+        showAddSnackBar(context , 'remove_favorite'.tr());
       }
     } else {
       final listToSend = List<String>.from(updatedFavorites);
@@ -48,7 +49,7 @@ Future<void> handleFavoriteToggle({
       await favoriteService.saveFavoriteSpeakers(listToSend, token);
       if (!context.mounted) return;
       if (context.mounted) {
-        showAddSnackBar(context , 'Favorite added!');
+        showAddSnackBar(context , 'add_favorite'.tr());
       }
     }
   } catch (e) {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 int _snackBarCount = 0;
 Timer? _snackBarTimer;
 
-void showAddSnackBar(BuildContext context, text) {
+void showAddSnackBar(BuildContext context, String text) {
   _snackBarCount++;
 
 
@@ -14,7 +14,7 @@ void showAddSnackBar(BuildContext context, text) {
     // เมื่อไม่มีการกดเพิ่มใน 2 วิ → แสดงผลสุดท้าย
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${text} ${_snackBarCount}'),
+        content: Text('${text}'.replaceAll('{count}', _snackBarCount.toString())),
         duration: Duration(seconds: 1), //เวลาที่แสดง
       ),
     );
