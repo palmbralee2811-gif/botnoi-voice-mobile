@@ -41,7 +41,7 @@ Future<void> handleFavoriteToggle({
       await favoriteService.removeFavoriteSpeaker(speakerId, token);
       if (!context.mounted) return;
       if (context.mounted) {
-        showAddSnackBar(context , 'remove_favorite'.tr());
+        showAddSnackBardelete(context , 'remove_favorite'.tr());
       }
     } else {
       final listToSend = List<String>.from(updatedFavorites);
