@@ -14,6 +14,8 @@
     "share": "Bagikan",
     "select": "Pilih",
     "no_internet_connection": "Tidak Ada Koneksi Internet",
+    "add_favorite": "Anda telah menambahkan {count} favorit.",
+    "remove_favorite": "Anda telah menghapus {count} favorit.",
     "welcome_message": {
         "line1": "Konversi Teks ke Ucapan",
         "line2": "BOTNOI",

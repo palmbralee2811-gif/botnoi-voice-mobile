@@ -14,6 +14,8 @@
     "share": "แชร์",
     "select": "เลือก",
     "no_internet_connection": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+    "add_favorite": "เพิ่มรายการโปรดแล้ว {count} รายการ",
+    "remove_favorite": "ลบรายการโปรดแล้ว {count} รายการ",
     "welcome_message": {
         "line1": "เปลี่ยนข้อความเป็นเสียง",
         "line2": "บอทน้อย",
