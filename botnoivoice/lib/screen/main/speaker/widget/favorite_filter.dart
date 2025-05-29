@@ -28,13 +28,25 @@ class FavoriteFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<SpeakerEntity> favoriteSpeakers = SpeakerModel.speakerItem
-        .where((item) =>selectedIndexFavorites.contains(item.speakerId) 
+    List<SpeakerEntity> favoriteSpeakers = [];
+    String languageCode = Localizations.localeOf(context).languageCode;
+
+    if(languageCode == 'th') {
+    favoriteSpeakers = SpeakerModel.speakerItem.where((item) =>selectedIndexFavorites.contains(item.speakerId) 
         && item.language == currentLanguage && (currentStyles.isEmpty || item.voiceStyle.any((style) => currentStyles.contains(style)))
         && (currentCategories.isEmpty || item.speechStyle.any((style) => currentCategories.contains(style)))
         && (currentGender == '' || item.gender == currentGender)
         )
-        .toList();
+        .toList();  
+    }else{
+      favoriteSpeakers = SpeakerModel.speakerItem.where((item) =>selectedIndexFavorites.contains(item.speakerId) 
+        && item.language == currentLanguage && (currentStyles.isEmpty || item.engVoiceStyle.any((style) => currentStyles.contains(style)))
+        && (currentCategories.isEmpty || item.engSpeechStyle.any((style) => currentCategories.contains(style)))
+        && (currentGender == '' || item.gender == currentGender)
+        )
+        .toList();  
+    }
+    
 
     if (favoriteSpeakers.isEmpty) {
       return Center(
