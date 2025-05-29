@@ -38,6 +38,7 @@ class RowLoginIconWidget extends StatelessWidget {
             width: ResponsiveDesignOrientation.isLandscape
                 ? 50.w
                 : 25.w), // ระยะห่างระหว่างข้อความและไอคอน
+        if(isEmailLoggedIn) ...[
         SvgPicture.asset(
           'assets/images/auth_screen/email-icon.svg',
           width: ResponsiveDesignOrientation.isLandscape ? 40.w : 20.w,
@@ -49,6 +50,36 @@ class RowLoginIconWidget extends StatelessWidget {
                   BlendMode.srcIn,
                 ), // ใช้ colorFilter แทน color
         ),
+        ],
+        if(isEmailLoggedIn == false) ...[
+        Container(
+          width: ResponsiveDesignOrientation.isLandscape ? 42.w : 32.w,
+          height: ResponsiveDesignOrientation.isLandscape ? 42.h : 32.h,
+          decoration: BoxDecoration(
+            color: isEmailLoggedIn
+                ? kGreen
+                : kLightGrey, // เปลี่ยนเป็นสีเทาถ้าไม่ใช่ LINE
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Center(
+            // ทำให้ไอคอนอยู่ตรงกลาง
+            child: SvgPicture.asset(
+              'assets/images/auth_screen/email-icon02.svg',
+              width: ResponsiveDesignOrientation.isLandscape
+                  ? 34.w
+                  : 24.w, // ปรับขนาดไอคอนให้เล็กลง
+              height: ResponsiveDesignOrientation.isLandscape
+                  ? 34.h
+                  : 24.h, // ปรับขนาดไอคอนให้เล็กลง
+              fit: BoxFit.contain, // ทำให้ไอคอนถูกย่อให้พอดีกับพื้นที่ที่กำหนด
+              colorFilter: isEmailLoggedIn ? null : ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ), 
+            ),
+          ),
+        )
+        ],
         SizedBox(width: ResponsiveDesignOrientation.isLandscape ? 10.w : 10.w),
         Container(
           width: ResponsiveDesignOrientation.isLandscape ? 42.w : 32.w,
