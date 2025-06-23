@@ -23,6 +23,7 @@ class _RewardScreenState extends State<RewardScreen> {
   String? hoursUntilMidnight;
   bool isRedeemed100 = true; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
   bool isRedeemed1k = true;
+  bool isRedeemedEducation = true;
 
   @override
   void initState() {
@@ -94,7 +95,7 @@ class _RewardScreenState extends State<RewardScreen> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height: 20.h,
+                                height: 4.h,
                               ),
                               // Subtitle
                               Row(
@@ -118,7 +119,7 @@ class _RewardScreenState extends State<RewardScreen> {
                                 ],
                               ),
                               SizedBox(
-                                height: 20.h,
+                                height: 4.h,
                               ),
                               // Reward cards section
                               Container(
@@ -126,6 +127,24 @@ class _RewardScreenState extends State<RewardScreen> {
                                 width: double.infinity,
                                 child: Column(
                                   children: [
+                                    // ADDED: Education Subscription Card
+                                    RewardCard(
+                                      iconUrl:
+                                          'assets/images/logo/credit-icon.svg', // Placeholder icon
+                                      title:
+                                          'Education Subscription', // Placeholder
+                                      description:
+                                          'Get access to exclusive educational content and features.', // Placeholder
+                                      buttonText:
+                                          'Get Subscription', // Placeholder
+                                      onTap: () =>
+                                          _handleEducationSubscription(context),
+                                      isTablet: isTablet,
+                                      isLandscape: isLandscape,
+                                      isRedeemed: isRedeemedEducation,
+                                    ),
+
+                                    SizedBox(height: 12.h),
                                     // Daily reward card
                                     RewardCard(
                                       iconUrl:
@@ -151,7 +170,7 @@ class _RewardScreenState extends State<RewardScreen> {
                                       isRedeemed: isRedeemed100,
                                     ),
 
-                                    SizedBox(height: 32.h),
+                                    SizedBox(height: 12.h),
 
                                     // Welcome bonus card
                                     RewardCard(
@@ -292,6 +311,39 @@ class _RewardScreenState extends State<RewardScreen> {
       ).showErrorModal(context);
     } finally {
       creditsProvider.callLoadCreditsApi(context);
+    }
+  }
+
+  // ADDED: Handler for Education Subscription
+  Future<void> _handleEducationSubscription(BuildContext context) async {
+    final rewardProvider = context.read<RewardService>();
+
+    try {
+      await rewardProvider.getEducationSubscription(context);
+
+      if (rewardProvider.errorMessage == null) {
+        setState(() {
+          isRedeemedEducation = false; // Disable button after success
+        });
+
+        NotificationDialog(
+          context: context,
+          text: "Subscription activated successfully!", // Placeholder text
+          onPressed: () {},
+        ).showCheckmarkModalWithAction(context);
+      } else {
+        NotificationDialog(
+          context: context,
+          text: rewardProvider.errorMessage!,
+          onPressed: () {},
+        ).showErrorModal(context);
+      }
+    } catch (e) {
+      NotificationDialog(
+        context: context,
+        text: "An error occurred: $e", // Placeholder text
+        onPressed: () {},
+      ).showErrorModal(context);
     }
   }
 }
