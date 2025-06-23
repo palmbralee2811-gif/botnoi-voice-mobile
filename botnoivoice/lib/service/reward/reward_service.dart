@@ -75,8 +75,7 @@ class RewardService with ChangeNotifier {
         return;
       }
       // API Endpoint for education subscription
-      final url =
-          'https://api-voice-staging.botnoi.ai/api/stripe/get_education';
+      final url = '$apiUrl/api/stripe/get_education';
       _logger.d('Calling GET request to $url');
 
       final response = await http.get(
