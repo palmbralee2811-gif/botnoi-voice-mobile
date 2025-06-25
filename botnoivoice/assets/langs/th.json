@@ -85,7 +85,8 @@
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "reward": "รางวัล"
+        "reward": "รางวัล",
+        "education": "โครงการศึกษา"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -256,7 +257,11 @@
         "widget_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
         "widget_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
         "widget_text_button02" : "รับพอยต์สำเร็จ",
-        "widget_display_points": "รับเลย {points} พอยต์"
+        "widget_display_points": "รับเลย {points} พอยต์",
+
+        "subscription_notification": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว"
+
+        
     },
     "reward_service": {
         "error_message": "เกิดข้อผิดพลาด:",
