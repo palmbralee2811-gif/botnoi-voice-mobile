@@ -144,7 +144,10 @@
         "get_points": "ได้รับ {productTitle} พอยต์",
         "buy_now": "ซื้อตอนนี้",
         "received_points": "ได้รับพอยต์จำนวน {pointsTitle} พอยต์",
-        "error_occurred": "เกิดข้อผิดพลาด"
+        "error_occurred": "เกิดข้อผิดพลาด",
+
+        "normal_points": "พอยต์",
+        "monthly_points": "พอยต์รายเดือน"
     },
     "change_username_provider": {
         "username_taken": "ชื่อผู้ใช้งานซ้ำกับบัญชีอื่น"
@@ -269,18 +272,14 @@
         "coupon_not_found": "ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
         "coupon_expired_or_not_found": "ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว",
         "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
-        
+
         "no_daily_coupon_to_redeem": "คูปองยังไม่พร้อมใช้งานในขณะนี้",
 
         "success_get_education": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว",
         "already_subscribed": "ท่านเป็นสมาชิก Subscription อยู่แล้ว กรุณารอให้ Subscription ปัจจุบันหมดอายุ จึงจะกดรับสิทธิ์ได้อีกครั้ง",
         "failure_provider": "โครงการ Education ต้องเป็น Account ที่ล็อกอินด้วยอีเมลเท่านั้น",
         "failcase_whitelist": "อีเมลของท่านยังไม่อยู่ในลิสต์ Education กรุณาให้ Admin ของสถานศึกษาท่านอ่านรายละเอียดและติดต่อเพื่อสมัครเข้าร่วมโครงการที่เพจ FB Botnoi Voice",
-        "success_get_daily_coupon": "รับคูปองรายวันสำเร็จ",
         "failure_case": "เกิดข้อผิดพลาดในการสมัครสมาชิกโครงการ"
-
-
-
     },
     "free_quota_use": {
         "ten_time_perday": "คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน"
@@ -300,5 +299,12 @@
         "coupon_code_empty": "กรุณากรอกคูปอง",
         "not_session": "ไม่มีการเข้าสู่ระบบ",
         "no_daily_coupon_to_redeem": "คูปอง ยังไม่พร้อมใช้งานในขณะนี้"
+    },
+    "education_screen": {
+        "appbar_title": "การศึกษา",
+        "text_header": "สมัครสมาชิกเพื่อการศึกษา",
+        "widget_title01": "รับสิทธิ์เข้าถึงเนื้อหาและฟีเจอร์เพื่อการศึกษาโดยเฉพาะ",
+        "widget_button": "สมัครสมาชิก"
+        
     }
 }

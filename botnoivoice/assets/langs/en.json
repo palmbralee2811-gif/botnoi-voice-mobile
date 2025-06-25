@@ -144,7 +144,10 @@
         "get_points": "Get {productTitle} points",
         "buy_now": "Purchase Now",
         "received_points": "You have received {pointsTitle} points.",
-        "error_occurred": "An error occurred during the transaction. Please try again."
+        "error_occurred": "An error occurred during the transaction. Please try again.",
+
+        "normal_points": "Points",
+        "monthly_points": "Monthly points"
     },
     "change_username_provider": {
         "username_taken": "This username is already in use by another account. Please choose a different username."
@@ -272,7 +275,9 @@
 
         "success_get_education": "Congratulations, you have joined the project.",
         "already_subscribed": "You are already a Subscription member. Please wait for your current Subscription to expire before you can claim your rights again.",
-        "failure_case": "Your email is not yet in the Education list. Please contact us to apply for the project at the FB Botnoi Voice page."
+        "failure_provider": "Education Project must be an account logged in with email only.",
+        "failcase_whitelist": "Your email is not in the Education list yet. Please have your school's Admin read the details and contact us to apply to join the project on the Botnoi Voice FB page.",
+        "failure_case": "An error occurred while registering for the Education project."
     },
     "free_quota_use": {
         "ten_time_perday": "You have reached your daily limit of 10 free uses. From now on, the system will deduct points based on your usage."
@@ -292,5 +297,12 @@
         "coupon_code_empty": "Please enter a coupon",
         "not_session": "Not Login Please Login",
         "no_daily_coupon_to_redeem": "Daily coupon not ready for today"
+    },
+    "education_screen": {
+        "appbar_title": "Education",
+        "text_header": "Education Subscription",
+        "widget_title01": "Get access to exclusive educational content and features.",
+        "widget_button": "Get Subscription"
+        
     }
 }

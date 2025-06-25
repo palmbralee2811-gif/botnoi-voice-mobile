@@ -88,7 +88,8 @@
         "buy_points": "Beli Poin",
         "security": "Keamanan",
         "reward": "Hadiah",
-        "redeem": "Tukar Kupon"
+        "redeem": "Tukar Kupon",
+        "education": "Pendidikan"
     },
     "account": {
         "uid_copy_success": "UID berhasil disalin",
@@ -143,7 +144,10 @@
         "get_points": "Dapatkan {productTitle} poin",
         "buy_now": "Beli Sekarang",
         "received_points": "Anda telah menerima {pointsTitle} poin.",
-        "error_occurred": "Terjadi kesalahan selama transaksi. Silakan coba lagi"
+        "error_occurred": "Terjadi kesalahan selama transaksi. Silakan coba lagi",
+
+        "normal_points": "Poin",
+        "monthly_points": "Poin Bulanan"
     },
     "change_username_provider": {
         "username_taken": "Nama pengguna ini sudah digunakan oleh akun lain. Silakan pilih nama pengguna yang berbeda"
@@ -267,7 +271,15 @@
         "coupon_not_found": "Kupon tidak ditemukan. Kupon mungkin sudah tidak berlaku atau kupon yang Anda masukkan salah.",
         "coupon_expired_or_not_found": "Kupon tidak ditemukan dalam sistem atau kupon telah kedaluwarsa.",
         "api_call_error": "Terjadi kesalahan saat memanggil API:",
-        "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
+        "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini",
+
+
+        "success_get_education": "Selamat, Anda telah bergabung dengan proyek ini.",
+        "already_subscribed": "Anda sudah menjadi anggota Langganan. Mohon tunggu hingga langganan Anda saat ini berakhir sebelum dapat mengklaim hak Anda lagi.",
+        "failure_provider": "Proyek Edukasi harus menggunakan akun yang masuk dengan email saja.",
+        "failcase_whitelist": "Email Anda belum ada dalam daftar Edukasi. Mohon minta Admin sekolah Anda membaca detailnya dan menghubungi kami untuk mengajukan permohonan bergabung dengan proyek di halaman FB Botnoi Voice.",
+        "failure_case": "Terjadi kesalahan saat mendaftar untuk proyek Pendidikan."
+
     },
     "free_quota_use": {
         "ten_time_perday": "Anda telah mencapai batas harian 10 penggunaan gratis. Mulai sekarang, sistem akan memotong poin berdasarkan penggunaan Anda."
@@ -287,5 +299,12 @@
         "coupon_code_empty": "Silakan masukkan kupon",
         "not_session": "Pengguna belum login",
         "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
+    },
+    "education_screen": {
+        "appbar_title": "Pendidikan",
+        "text_header": "Langganan Pendidikan",
+        "widget_title01": "Dapatkan akses ke konten dan fitur pendidikan eksklusif.",
+        "widget_button": "Dapatkan Langganan"
+        
     }
 }

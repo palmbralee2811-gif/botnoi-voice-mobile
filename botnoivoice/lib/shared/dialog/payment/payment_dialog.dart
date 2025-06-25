@@ -10,6 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:botnoivoice/service/token/email_token.dart';
+
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -27,6 +29,10 @@ class _PaymentBottomSheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paymentProvider = context.watch<PaymentService>();
+
+    final emailToken = context.watch<EmailToken>();
+    final normalCredits = emailToken.getRemainingNormalCredits ?? 0;
+    final monthlyPoints = emailToken.getRemainingMonthlyPoints ?? 0;
 
     return paymentProvider.isLoading
         ? Container(
@@ -68,7 +74,66 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 20.h),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'payment.normal_points'.tr(), // "เครดิตปกติ"
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp),
+                          ),
+                          Text(
+                            normalCredits.toString(),
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'payment.monthly_points'.tr(), // "เครดิตรายเดือน"
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp),
+                          ),
+                          Text(
+                            monthlyPoints.toString(),
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10.h),
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,

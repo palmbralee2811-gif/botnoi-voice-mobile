@@ -11,6 +11,7 @@ import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:botnoivoice/service/login/email_login.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EducationScreen extends StatefulWidget {
   const EducationScreen({super.key});
@@ -32,8 +33,8 @@ class _EducationScreenState extends State<EducationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarTemplate(
-        title:
-            'Education', // สามารถเปลี่ยนเป็น 'education_screen.title'.tr() ได้
+        title: 'education_screen.appbar_title'
+            .tr(), // สามารถเปลี่ยนเป็น 'education_screen.title'.tr() ได้
         onPressed: () {
           context.pop();
         },
@@ -48,10 +49,9 @@ class _EducationScreenState extends State<EducationScreen> {
                 children: [
                   RewardCard(
                     iconUrl: 'assets/images/logo/credit-icon.svg',
-                    title: 'Education Subscription',
-                    description:
-                        'Get access to exclusive educational content and features.',
-                    buttonText: 'Get Subscription',
+                    title: 'education_screen.text_header'.tr(),
+                    description: 'education_screen.widget_title01'.tr(),
+                    buttonText: 'education_screen.widget_button'.tr(),
                     onTap: () => _handleEducationSubscription(context),
                     isTablet: isTablet,
                     isLandscape: isLandscape,
