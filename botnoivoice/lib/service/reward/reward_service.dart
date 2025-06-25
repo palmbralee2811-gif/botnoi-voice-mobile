@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:botnoivoice/shared/function/get_jwt_token.dart';
+import 'package:botnoivoice/shared/function/call_reload_data.dart';
+import 'package:provider/provider.dart';
 
 class RewardService with ChangeNotifier {
   final _logger = Logger();
@@ -108,6 +110,7 @@ class RewardService with ChangeNotifier {
 
       if (response.statusCode == 200) {
         _errorMessage = null;
+        await context.read<CallReloadData>().callLoadCreditsApi(context);
         _logger.d('Successfully get education subscription.');
       } else {
         // Handle errors
