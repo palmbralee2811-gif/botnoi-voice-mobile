@@ -87,7 +87,7 @@
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "reward": "รางวัล",
+        "reward": "ฟรีพอยต์",
         "redeem": "ใช้คูปอง"
     },
     "account": {
@@ -251,7 +251,7 @@
     "reward_screen": {
         "notification_dialog_success": "เติมคูปองสำเร็จแล้ว",
         "notification_dialog_error": "เกิดข้อผิดพลาด",
-        "appbar_title" : "รางวัล",
+        "appbar_title" : "ฟรีพอยต์",
         "text_header" : "รับของรางวัลสุดพิเศษจากเรา",
         "widget_title01" : "รับพอยต์ฟรี รายวัน",
         "widget_text01" : "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี่",
