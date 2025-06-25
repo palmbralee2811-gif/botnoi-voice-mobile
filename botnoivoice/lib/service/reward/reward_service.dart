@@ -112,8 +112,20 @@ class RewardService with ChangeNotifier {
       } else {
         // Handle errors
         if (response.statusCode == 403) {
-          // ถ้าเป็นสมาชิกอยู่แล้ว
-          _errorMessage = 'reward_service.already_subscribed'.tr();
+          if (response.body.contains('already have subscription')) {
+            _errorMessage = 'reward_service.already_subscribed'.tr();
+          } // ถ้าเป็นสมาชิกอยู่แล้ว
+          else if (response.body.contains('invalid sign in provider')) {
+            _errorMessage = 'reward_service.failure_provider'.tr();
+          } // ถ้าไม่ผ่านเงื่อนไข
+          else if (response.body
+              .contains('invalid domain adn whitelist education')) {
+            _errorMessage = 'reward_service.failcase_whitelist'.tr();
+          } // ถ้าไม่ได้สมัครสมาชิก
+
+          else {
+            _errorMessage = 'reward_service.failure_case'.tr();
+          }
         } else {
           // สำหรับ Error อื่นๆ
           final responseBody = jsonDecode(response.body);

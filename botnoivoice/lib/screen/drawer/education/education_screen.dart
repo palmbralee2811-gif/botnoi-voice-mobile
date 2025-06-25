@@ -10,6 +10,8 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:botnoivoice/service/login/email_login.dart';
+
 class EducationScreen extends StatefulWidget {
   const EducationScreen({super.key});
 
@@ -42,10 +44,8 @@ class _EducationScreenState extends State<EducationScreen> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
             child: SingleChildScrollView(
-              // ใช้ SingleChildScrollView เผื่อมีเนื้อหาเพิ่มในอนาคต
               child: Column(
                 children: [
-                  //--- MOVED from reward_screen.dart ---
                   RewardCard(
                     iconUrl: 'assets/images/logo/credit-icon.svg',
                     title: 'Education Subscription',
@@ -57,8 +57,6 @@ class _EducationScreenState extends State<EducationScreen> {
                     isLandscape: isLandscape,
                     isRedeemed: isRedeemedEducation,
                   ),
-
-                  // สามารถเพิ่ม Widget อื่นๆ ที่เกี่ยวกับ Education ได้ที่นี่
                 ],
               ),
             ),

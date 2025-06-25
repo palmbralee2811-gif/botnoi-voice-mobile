@@ -274,7 +274,11 @@
 
         "success_get_education": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว",
         "already_subscribed": "ท่านเป็นสมาชิก Subscription อยู่แล้ว กรุณารอให้ Subscription ปัจจุบันหมดอายุ จึงจะกดรับสิทธิ์ได้อีกครั้ง",
-        "failure_case": "อีเมลของท่านยังไม่อยู่ในลิสต์ Education กรุณาติดต่อเพื่อสมัครเข้าร่วมโครงการที่เพจ FB Botnoi Voice"
+        "failure_provider": "โครงการ Education ต้องเป็น Account ที่ล็อกอินด้วยอีเมลเท่านั้น",
+        "failcase_whitelist": "อีเมลของท่านยังไม่อยู่ในลิสต์ Education กรุณาให้ Admin ของสถานศึกษาท่านอ่านรายละเอียดและติดต่อเพื่อสมัครเข้าร่วมโครงการที่เพจ FB Botnoi Voice",
+        "success_get_daily_coupon": "รับคูปองรายวันสำเร็จ",
+        "failure_case": "เกิดข้อผิดพลาดในการสมัครสมาชิกโครงการ"
+
 
 
     },
