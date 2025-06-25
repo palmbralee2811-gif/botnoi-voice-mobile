@@ -1,3 +1,5 @@
+// reward_screen.dart (Modified)
+
 import 'package:botnoivoice/service/reward/reward_service.dart';
 import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
@@ -23,6 +25,7 @@ class _RewardScreenState extends State<RewardScreen> {
   String? hoursUntilMidnight;
   bool isRedeemed100 = true; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
   bool isRedeemed1k = true;
+  // bool isRedeemedEducation = true; // --- REMOVED ---
 
   @override
   void initState() {
@@ -94,7 +97,7 @@ class _RewardScreenState extends State<RewardScreen> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height: 20.h,
+                                height: 4.h,
                               ),
                               // Subtitle
                               Row(
@@ -118,7 +121,7 @@ class _RewardScreenState extends State<RewardScreen> {
                                 ],
                               ),
                               SizedBox(
-                                height: 20.h,
+                                height: 4.h,
                               ),
                               // Reward cards section
                               Container(
@@ -126,6 +129,8 @@ class _RewardScreenState extends State<RewardScreen> {
                                 width: double.infinity,
                                 child: Column(
                                   children: [
+                                    // --- Education Subscription Card REMOVED ---
+
                                     // Daily reward card
                                     RewardCard(
                                       iconUrl:
@@ -151,7 +156,7 @@ class _RewardScreenState extends State<RewardScreen> {
                                       isRedeemed: isRedeemed100,
                                     ),
 
-                                    SizedBox(height: 32.h),
+                                    SizedBox(height: 12.h),
 
                                     // Welcome bonus card
                                     RewardCard(
@@ -294,4 +299,6 @@ class _RewardScreenState extends State<RewardScreen> {
       creditsProvider.callLoadCreditsApi(context);
     }
   }
+
+  // --- _handleEducationSubscription REMOVED ---
 }

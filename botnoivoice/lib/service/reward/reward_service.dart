@@ -83,6 +83,47 @@ class RewardService with ChangeNotifier {
     }
   }
 
+  // ADDED: education subscription
+  Future<void> getEducationSubscription(BuildContext context) async {
+    _setLoading(true);
+    try {
+      _logger.d('Starting getEducationSubscription');
+      final jwtToken = await _fetchJwtToken(context);
+      if (jwtToken == null) {
+        _setLoading(false);
+        return;
+      }
+      // API Endpoint for education subscription
+      final url = '$apiUrl/api/stripe/get_education';
+      _logger.d('Calling GET request to $url');
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': "Bearer $jwtToken",
+        },
+      );
+
+      _logger.d('Received response with status code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        _errorMessage = null;
+        _logger.d('Successfully get education subscription.');
+      } else {
+        // Handle errors
+        final responseBody = jsonDecode(response.body);
+        _errorMessage = responseBody['detail'] ??
+            'Failed to get subscription. Status code: ${response.statusCode}';
+        _logger.e(_errorMessage);
+      }
+    } catch (e) {
+      _errorMessage = '${'reward_service.error_message'.tr()} $e';
+      _logger.e(_errorMessage);
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   /// ฟังก์ชันดึง JWT Token
   Future<String?> _fetchJwtToken(BuildContext context) async {
     try {
