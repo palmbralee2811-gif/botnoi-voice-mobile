@@ -14,8 +14,6 @@
     "share": "แชร์",
     "select": "เลือก",
     "no_internet_connection": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-    "add_favorite": "เพิ่มรายการโปรดแล้ว {count} รายการ",
-    "remove_favorite": "ลบรายการโปรดแล้ว {count} รายการ",
     "welcome_message": {
         "line1": "เปลี่ยนข้อความเป็นเสียง",
         "line2": "บอทน้อย",
@@ -88,7 +86,7 @@
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
         "reward": "รางวัล",
-        "redeem": "ใช้คูปอง"
+        "education": "โครงการศึกษา"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -259,7 +257,10 @@
         "widget_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
         "widget_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
         "widget_text_button02" : "รับพอยต์สำเร็จ",
-        "widget_display_points": "รับเลย {points} พอยต์"
+        "widget_display_points": "รับเลย {points} พอยต์",
+
+        "subscription_notification": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว"
+
         
     },
     "reward_service": {
@@ -267,27 +268,9 @@
         "coupon_already_used": "คูปองของคุณถูกใช้งานแล้ว",
         "coupon_not_found": "ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
         "coupon_expired_or_not_found": "ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว",
-        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
-        
-        "no_daily_coupon_to_redeem": "คูปองยังไม่พร้อมใช้งานในขณะนี้"
+        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:"
     },
     "free_quota_use": {
         "ten_time_perday": "คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน"
-    },
-    "redeem_coupon_dialog":{
-        "title": "ใช้คูปอง",
-        "use": "ใช้",
-        "input": "กรอกคูปอง",
-        "success": "ใช้คูปอง {coupon_name} สําเร็จ"
-    },
-    "redeem_coupon_service": {
-        "error_message": "เกิดข้อผิดพลาด:",
-        "coupon_already_used": "คูปอง \"{coupon_name}\" ถูกใช้งานแล้ว",
-        "coupon_not_found": "ไม่พบคูปอง \"{coupon_name}\" คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
-        "coupon_expired_or_not_found": "ไม่พบคูปอง \"{coupon_name}\" ในระบบ หรือคูปองหมดอายุไปแล้ว",
-        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
-        "coupon_code_empty": "กรุณากรอกคูปอง",
-        "not_session": "ไม่มีการเข้าสู่ระบบ",
-        "no_daily_coupon_to_redeem": "คูปอง ยังไม่พร้อมใช้งานในขณะนี้"
     }
 }
