@@ -110,7 +110,8 @@ class RewardService with ChangeNotifier {
 
       if (response.statusCode == 200) {
         _errorMessage = null;
-        await context.read<CallReloadData>().callLoadCreditsApi(context);
+        final creditsProvider = context.read<CallReloadData>();
+        await creditsProvider.callLoadCreditsApi(context);
         _logger.d('Successfully get education subscription.');
       } else {
         // Handle errors
