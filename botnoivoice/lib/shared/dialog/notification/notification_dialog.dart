@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 /// Alert Modal for displaying messages
 class NotificationDialog {
   NotificationDialog({
+    this.paddingHeight = 0,
     required this.context,
     required this.text,
     this.onPressed, // กำหนด onPressed เป็น optional
@@ -17,6 +18,7 @@ class NotificationDialog {
   final String text;
   final BuildContext context;
   final VoidCallback? onPressed;
+  final double paddingHeight;
 
   /// ฟังก์ชันที่ใช้สร้าง UI ของ modal
   void _showModal({
@@ -48,7 +50,8 @@ class NotificationDialog {
             Text(
               text,
               style: TextStyle(
-                fontSize: ResponsiveDesignOrientation.isLandscape ? 14.sp : 16.sp,
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 14.sp : 16.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),
@@ -65,7 +68,7 @@ class NotificationDialog {
                   context.pop();
 
                   // Call onPressed if provided
-                  (onPressed ?? () {})(); 
+                  (onPressed ?? () {})();
                 },
               ),
             ),
@@ -77,7 +80,7 @@ class NotificationDialog {
             borderRadius: BorderRadius.circular(16.r),
           ),
           child: SizedBox(
-            height: dialogHeight,
+            height: dialogHeight + paddingHeight,
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(32.r),

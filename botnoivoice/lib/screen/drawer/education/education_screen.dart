@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:go_router/go_router.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class EducationScreen extends StatefulWidget {
   const EducationScreen({super.key});
@@ -96,11 +95,12 @@ class _EducationScreenState extends State<EducationScreen> {
 
         NotificationDialog(
           context: context,
-          text: "Subscription activated successfully!", // ควรใช้ localization
+          text: '"Subscription activated successfully!"', // ควรใช้ localization
           onPressed: () {},
         ).showCheckmarkModalWithAction(context);
       } else {
         NotificationDialog(
+          paddingHeight: 60.h,
           context: context,
           text: rewardProvider.errorMessage!,
           onPressed: () {},

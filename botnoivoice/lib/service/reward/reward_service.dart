@@ -111,10 +111,15 @@ class RewardService with ChangeNotifier {
         _logger.d('Successfully get education subscription.');
       } else {
         // Handle errors
-        final responseBody = jsonDecode(response.body);
-        _errorMessage = responseBody['detail'] ??
-            'Failed to get subscription. Status code: ${response.statusCode}';
-        _logger.e(_errorMessage);
+        if (response.statusCode == 403) {
+          // ถ้าเป็นสมาชิกอยู่แล้ว
+          _errorMessage = 'reward_service.already_subscribed'.tr();
+        } else {
+          // สำหรับ Error อื่นๆ
+          final responseBody = jsonDecode(response.body);
+          _errorMessage = responseBody['detail'] ??
+              '${'reward_service.failure_case'.tr()} (Code: ${response.statusCode})';
+        }
       }
     } catch (e) {
       _errorMessage = '${'reward_service.error_message'.tr()} $e';
