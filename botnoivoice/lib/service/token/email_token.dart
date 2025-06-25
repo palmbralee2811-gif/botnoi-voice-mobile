@@ -108,7 +108,9 @@ class EmailToken extends ChangeNotifier {
         _logger.i('Get Profile Data: $data');
 
         _userID = data['data']['uid'].toString();
-        _remainingCredits = data['data']['credits'].toString();
+        int credits = data['data']['credits'] ?? 0;
+        int monthlyPoints = data['data']['monthly_point'] ?? 0;
+        _remainingCredits = (credits + monthlyPoints).toString();
         _quotaDownload = data['data']['quota_download'].toString();
         _isSubscription = data['data']['subscription']?.toString() ==
             'Pro'; // Check ว่าผู้ใช้ได้ Subscription ยัง

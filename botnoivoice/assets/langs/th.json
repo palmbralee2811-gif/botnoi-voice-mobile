@@ -88,7 +88,8 @@
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
         "reward": "ฟรีพอยต์",
-        "redeem": "ใช้คูปอง"
+        "redeem": "ใช้คูปอง",
+        "education": "การศึกษา"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
