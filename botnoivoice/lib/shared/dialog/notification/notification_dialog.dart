@@ -33,14 +33,8 @@ class NotificationDialog {
       builder: (BuildContext context) {
         String languageCode = Localizations.localeOf(context).languageCode;
 
-        double dialogHeight;
-        if (languageCode == 'en') {
-          dialogHeight =
-              ResponsiveDesignOrientation.isLandscape ? 500.h : 310.h;
-        } else {
-          dialogHeight =
-              ResponsiveDesignOrientation.isLandscape ? 410.h : 235.h;
-        }
+        double dialogHeight =
+            ResponsiveDesignOrientation.isLandscape ? 410.h : 235.h;
 
         Widget content = Column(
           mainAxisSize: MainAxisSize.min,
