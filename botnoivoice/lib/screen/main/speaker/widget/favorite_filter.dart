@@ -63,9 +63,10 @@ class FavoriteFilter extends StatelessWidget {
     if (favoriteSpeakers.isEmpty) {
       return Center(
         child: Padding(
-          padding: EdgeInsets.only(top: 50.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Text(
             'favorite_screen.background_text'.tr(),
+            textAlign: TextAlign.center,
             style: GoogleFonts.prompt(fontSize: 16.sp, color: Colors.black54),
           ),
         ),
