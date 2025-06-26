@@ -304,5 +304,8 @@
         "widget_title01": "Get access to exclusive educational content and features.",
         "widget_button": "Get Subscription"
         
+    },
+    "favorite_screen": {
+        "background_text": "There are no preferred speakers in this language."
     }
 }

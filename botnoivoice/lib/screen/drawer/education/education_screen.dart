@@ -1,5 +1,3 @@
-// education_screen.dart (New File)
-
 import 'package:botnoivoice/service/reward/reward_service.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +8,6 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class EducationScreen extends StatefulWidget {
@@ -21,7 +18,6 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
-  //--- MOVED from reward_screen.dart ---
   bool isRedeemedEducation = true;
 
   @override
@@ -33,14 +29,12 @@ class _EducationScreenState extends State<EducationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarTemplate(
-        title: 'education_screen.appbar_title'
-            .tr(), // สามารถเปลี่ยนเป็น 'education_screen.title'.tr() ได้
+        title: 'education_screen.appbar_title'.tr(),
         onPressed: () {
           context.pop();
         },
       ),
       body: Stack(
-        // เพิ่ม Stack เพื่อรองรับ Loading indicator
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
@@ -61,7 +55,6 @@ class _EducationScreenState extends State<EducationScreen> {
               ),
             ),
           ),
-          // --- Loading Indicator COPIED from reward_screen.dart ---
           if (rewardServiceProvider.isLoading)
             Positioned.fill(
               child: Container(
@@ -93,12 +86,11 @@ class _EducationScreenState extends State<EducationScreen> {
 
         NotificationDialog(
           context: context,
-          text: '"Subscription activated successfully!"', // ควรใช้ localization
+          text: '"Subscription activated successfully!"',
           onPressed: () {},
         ).showCheckmarkModalWithAction(context);
       } else {
         NotificationDialog(
-          paddingHeight: 60.h,
           context: context,
           text: rewardProvider.errorMessage!,
           onPressed: () {},
@@ -107,7 +99,7 @@ class _EducationScreenState extends State<EducationScreen> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "An error occurred: $e", // ควรใช้ localization
+        text: "An error occurred: $e",
         onPressed: () {},
       ).showErrorModal(context);
     }
