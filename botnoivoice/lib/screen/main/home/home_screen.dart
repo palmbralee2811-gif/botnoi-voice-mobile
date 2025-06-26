@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               GradientText(
-                text: '${_textController.text.length}',
+                text: '${_textController.text.replaceAll(' ', '').length}',
                 style: GoogleFonts.prompt(
                   fontSize:
                       ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
@@ -364,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(width: 5.w),
                   Text(
-                    '${_textController.text.length}',
+                    '${_textController.text.replaceAll(' ', '').length}',
                     style: GoogleFonts.prompt(
                         color: Colors.white,
                         fontSize: ResponsiveDesignOrientation.isLandscape
