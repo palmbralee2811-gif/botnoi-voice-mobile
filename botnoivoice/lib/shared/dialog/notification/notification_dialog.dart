@@ -31,11 +31,6 @@ class NotificationDialog {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
-        String languageCode = Localizations.localeOf(context).languageCode;
-
-        double dialogHeight =
-            ResponsiveDesignOrientation.isLandscape ? 410.h : 235.h;
-
         Widget content = Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -73,13 +68,11 @@ class NotificationDialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
           ),
-          child: SizedBox(
-            height: dialogHeight + paddingHeight,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(32.r),
-                child: content,
-              ),
+          child: SingleChildScrollView(
+            // <--- ครอบด้วย SingleChildScrollView
+            child: Padding(
+              padding: EdgeInsets.all(32.r),
+              child: content,
             ),
           ),
         );
