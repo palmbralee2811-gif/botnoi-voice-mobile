@@ -157,6 +157,18 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : buildFilterNavbar(context),
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: ResponsiveDesignOrientation.isLandscape ? 15.h : 10.h,
+            bottom: ResponsiveDesignOrientation.isLandscape ? 25.h : 30.h,
+            left: 20.w,
+            right: 20.w,
+          ),
+          child: BottomNavbarButton(audioPlayer: audioPlayer),
+        ),
+      ),
     );
   }
 
@@ -254,9 +266,6 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
             ),
           ),
         ),
-        SizedBox(height: ResponsiveDesignOrientation.isLandscape ? 25.h : 20.h),
-        BottomNavbarButton(audioPlayer: audioPlayer),
-        SizedBox(height: ResponsiveDesignOrientation.isLandscape ? 25.h : 40.h),
       ],
     );
   }
