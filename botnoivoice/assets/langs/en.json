@@ -88,8 +88,10 @@
         "buy_points": "Buy Points",
         "security": "Security",
         "reward": "Reward",
+
         "redeem": "Redeem Coupon",
         "education": "Education"
+
     },
     "account": {
         "uid_copy_success": "UID copied successfully",
@@ -264,6 +266,7 @@
         "widget_text02": "Get 1,000 points \nOnly for new users",
         "widget_text_button02": "Successfully Redeemed",
         "widget_display_points": "Get {points} points"
+
     },
     "reward_service": {
         "error_message": "An error occurred:",

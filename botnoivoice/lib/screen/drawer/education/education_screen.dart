@@ -18,6 +18,7 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
+
   bool isRedeemedEducation = true;
 
   @override
@@ -29,16 +30,20 @@ class _EducationScreenState extends State<EducationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarTemplate(
+
         title: 'education_screen.appbar_title'.tr(),
+
         onPressed: () {
           context.pop();
         },
       ),
       body: Stack(
+
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
             child: SingleChildScrollView(
+
               child: Column(
                 children: [
                   RewardCard(
@@ -46,6 +51,7 @@ class _EducationScreenState extends State<EducationScreen> {
                     title: 'education_screen.text_header'.tr(),
                     description: 'education_screen.widget_title01'.tr(),
                     buttonText: 'education_screen.widget_button'.tr(),
+
                     onTap: () => _handleEducationSubscription(context),
                     isTablet: isTablet,
                     isLandscape: isLandscape,
@@ -55,6 +61,7 @@ class _EducationScreenState extends State<EducationScreen> {
               ),
             ),
           ),
+
           if (rewardServiceProvider.isLoading)
             Positioned.fill(
               child: Container(
@@ -86,7 +93,9 @@ class _EducationScreenState extends State<EducationScreen> {
 
         NotificationDialog(
           context: context,
+
           text: '"Subscription activated successfully!"',
+
           onPressed: () {},
         ).showCheckmarkModalWithAction(context);
       } else {
