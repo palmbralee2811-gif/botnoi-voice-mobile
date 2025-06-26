@@ -14,6 +14,8 @@
     "share": "แชร์",
     "select": "เลือก",
     "no_internet_connection": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+    "add_favorite": "เพิ่มรายการโปรดแล้ว {count} รายการ",
+    "remove_favorite": "ลบรายการโปรดแล้ว {count} รายการ",
     "welcome_message": {
         "line1": "เปลี่ยนข้อความเป็นเสียง",
         "line2": "บอทน้อย",
@@ -86,7 +88,9 @@
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
         "reward": "ฟรีพอยต์",
-        "education": "โครงการศึกษา"
+
+        "redeem": "ใช้คูปอง",
+        "education": "การศึกษา"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -141,7 +145,10 @@
         "get_points": "ได้รับ {productTitle} พอยต์",
         "buy_now": "ซื้อตอนนี้",
         "received_points": "ได้รับพอยต์จำนวน {pointsTitle} พอยต์",
-        "error_occurred": "เกิดข้อผิดพลาด"
+        "error_occurred": "เกิดข้อผิดพลาด",
+
+        "normal_points": "พอยต์",
+        "monthly_points": "พอยต์รายเดือน"
     },
     "change_username_provider": {
         "username_taken": "ชื่อผู้ใช้งานซ้ำกับบัญชีอื่น"
@@ -257,10 +264,7 @@
         "widget_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
         "widget_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
         "widget_text_button02" : "รับพอยต์สำเร็จ",
-        "widget_display_points": "รับเลย {points} พอยต์",
-
-        "subscription_notification": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว"
-
+        "widget_display_points": "รับเลย {points} พอยต์"
         
     },
     "reward_service": {
@@ -268,9 +272,43 @@
         "coupon_already_used": "คูปองของคุณถูกใช้งานแล้ว",
         "coupon_not_found": "ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
         "coupon_expired_or_not_found": "ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว",
-        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:"
+        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
+
+        "no_daily_coupon_to_redeem": "คูปองยังไม่พร้อมใช้งานในขณะนี้",
+
+        "success_get_education": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว",
+        "already_subscribed": "ท่านเป็นสมาชิก Subscription อยู่แล้ว กรุณารอให้ Subscription ปัจจุบันหมดอายุ จึงจะกดรับสิทธิ์ได้อีกครั้ง",
+        "failure_provider": "โครงการ Education ต้องเป็น Account ที่ล็อกอินด้วยอีเมลเท่านั้น",
+        "failcase_whitelist": "อีเมลของท่านยังไม่อยู่ในลิสต์ Education กรุณาให้ Admin ของสถานศึกษาท่านอ่านรายละเอียดและติดต่อเพื่อสมัครเข้าร่วมโครงการที่เพจ FB Botnoi Voice",
+        "failure_case": "เกิดข้อผิดพลาดในการสมัครสมาชิกโครงการ"
     },
     "free_quota_use": {
         "ten_time_perday": "คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน"
+    },
+    "redeem_coupon_dialog":{
+        "title": "ใช้คูปอง",
+        "use": "ใช้",
+        "input": "กรอกคูปอง",
+        "success": "ใช้คูปอง {coupon_name} สําเร็จ"
+    },
+    "redeem_coupon_service": {
+        "error_message": "เกิดข้อผิดพลาด:",
+        "coupon_already_used": "คูปอง \"{coupon_name}\" ถูกใช้งานแล้ว",
+        "coupon_not_found": "ไม่พบคูปอง \"{coupon_name}\" คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
+        "coupon_expired_or_not_found": "ไม่พบคูปอง \"{coupon_name}\" ในระบบ หรือคูปองหมดอายุไปแล้ว",
+        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
+        "coupon_code_empty": "กรุณากรอกคูปอง",
+        "not_session": "ไม่มีการเข้าสู่ระบบ",
+        "no_daily_coupon_to_redeem": "คูปอง ยังไม่พร้อมใช้งานในขณะนี้"
+    },
+    "education_screen": {
+        "appbar_title": "การศึกษา",
+        "text_header": "สมัครสมาชิกเพื่อการศึกษา",
+        "widget_title01": "รับสิทธิ์เข้าถึงเนื้อหาและฟีเจอร์เพื่อการศึกษาโดยเฉพาะ",
+        "widget_button": "สมัครสมาชิก"
+        
+    },
+    "favorite_screen": {
+        "background_text": "ไม่มีผู้พูดที่ถูกใจในภาษานี้"
     }
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/main/home/function/share_audio_file.dart';
 import 'package:botnoivoice/screen/main/home/function/create_ios_app_folder.dart';
@@ -40,6 +40,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
   bool isPlaying = false;
   bool isLoading = true;
 
+  double currentSliderValue = 0;
+  bool isDragging = false;
+
   final ReceivePort _port = ReceivePort();
   String? taskId;
 
@@ -75,39 +78,42 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     try {
       final file = File(widget.filePath);
       if (!await file.exists() || await file.length() == 0) {
-        throw Exception('audio_player.audio_file_not_found'
-            .tr()); //ไม่พบไฟล์เสียงหรือไฟล์ว่างเปล่า
+        throw Exception('audio_player.audio_file_not_found'.tr());
       }
-      await audioPlayer.setSourceDeviceFile(widget.filePath);
-      audioPlayer.onDurationChanged.listen((d) {
-        if (mounted) {
+      await audioPlayer.setFilePath(widget.filePath);
+
+      audioPlayer.durationStream.listen((d) {
+        if (mounted && d != null) {
           setState(() {
             duration = d;
           });
         }
       });
-      audioPlayer.onPositionChanged.listen((p) {
+
+      // Modified position stream listener
+      audioPlayer.positionStream.listen((p) {
         if (mounted) {
           setState(() {
             position = p;
+            if (!isDragging) {
+              currentSliderValue = p.inMilliseconds.toDouble();
+            }
           });
         }
       });
-      audioPlayer.onPlayerStateChanged.listen((state) {
+
+      audioPlayer.playerStateStream.listen((state) {
         if (mounted) {
           setState(() {
-            isPlaying = state == PlayerState.playing;
+            isPlaying = state.playing;
+            if (state.processingState == ProcessingState.completed) {
+              position = Duration.zero;
+              isPlaying = false;
+            }
           });
         }
       });
-      audioPlayer.onPlayerComplete.listen((event) {
-        if (mounted) {
-          setState(() {
-            position = Duration.zero;
-            isPlaying = false;
-          });
-        }
-      });
+
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -115,13 +121,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       }
     } catch (e) {
       if (mounted) {
-        // Close Audio Player Dialog
         context.pop();
-
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  "${'audio_player.error_playing_audio'.tr()} $e")), //เกิดข้อผิดพลาดในการเล่นไฟล์เสียง:
+          SnackBar(content: Text("${'audio_player.error_playing_audio'.tr()} $e")),
         );
       }
     }
@@ -231,16 +233,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        iconSize: ResponsiveDesignOrientation.isLandscape
-                            ? 15.sp
-                            : 30.sp,
+                        iconSize: ResponsiveDesignOrientation.isLandscape ? 15.sp : 30.sp,
                         icon: GradientIcon(
-                          icon: isPlaying
-                              ? Icons.pause_circle_outline
-                              : Icons.play_circle_outline,
-                          size: ResponsiveDesignOrientation.isLandscape
-                              ? 15.sp
-                              : 30.sp,
+                          icon: isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                          size: ResponsiveDesignOrientation.isLandscape ? 15.sp : 30.sp,
                           gradient: const LinearGradient(
                             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                             begin: Alignment.topLeft,
@@ -251,31 +247,39 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                           if (isPlaying) {
                             await audioPlayer.pause();
                           } else {
-                            await audioPlayer
-                                .play(DeviceFileSource(widget.filePath));
+                            if (audioPlayer.processingState == ProcessingState.completed) {
+                              await audioPlayer.seek(Duration.zero);
+                            }
+                            await audioPlayer.play();
                           }
                         },
                       ),
                       SizedBox(width: 10.w),
                       Expanded(
-                        child: StreamBuilder<Duration>(
-                          stream: audioPlayer.onPositionChanged,
-                          builder: (context, snapshot) {
-                            final position = snapshot.data ?? Duration.zero;
-                            return Slider(
-                              activeColor: Colors.blue,
-                              inactiveColor: Colors.grey[300],
-                              min: 0,
-                              max: duration.inMilliseconds.toDouble(),
-                              value: position.inMilliseconds
-                                  .toDouble()
-                                  .clamp(0, duration.inMilliseconds.toDouble()),
-                              onChanged: (value) async {
-                                final newPosition =
-                                    Duration(milliseconds: value.toInt());
-                                await audioPlayer.seek(newPosition);
-                              },
-                            );
+                        child: Slider(
+                          activeColor: Colors.blue,
+                          inactiveColor: Colors.grey[300],
+                          min: 0,
+                          max: duration.inMilliseconds.toDouble(),
+                          value: currentSliderValue.clamp(0, duration.inMilliseconds.toDouble()),
+                          onChangeStart: (value) {
+                            setState(() {
+                              isDragging = true;
+                            });
+                            audioPlayer.pause();
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              currentSliderValue = value.clamp(0, duration.inMilliseconds.toDouble());
+                            });
+                          },
+                          onChangeEnd: (value) {
+                            double clampedValue = value.clamp(0, duration.inMilliseconds.toDouble());
+                            setState(() {
+                              isDragging = false;
+                              currentSliderValue = clampedValue;
+                            });
+                            audioPlayer.seek(Duration(milliseconds: clampedValue.toInt()));
                           },
                         ),
                       ),

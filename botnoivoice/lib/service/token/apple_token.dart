@@ -12,6 +12,8 @@ class AppleToken extends ChangeNotifier {
   String? _userID;
   String? _jwtToken;
   String? _remainingCredits;
+  int? _remainingNormalCredits;
+  int? _remainingMonthlyPoints;
   String? _credentialsToken;
   String? _quotaDownload;
 
@@ -27,6 +29,8 @@ class AppleToken extends ChangeNotifier {
 
   /// Getter for the remaining credits
   String? get getRemainingCredits => _remainingCredits;
+  int? get getRemainingNormalCredits => _remainingNormalCredits;
+  int? get getRemainingMonthlyPoints => _remainingMonthlyPoints;
 
   /// Getter for the credentials token
   String? get getCredentialsToken => _credentialsToken;
@@ -41,6 +45,8 @@ class AppleToken extends ChangeNotifier {
   void clearTokens() {
     _userID = null;
     _jwtToken = null;
+    _remainingNormalCredits = null;
+    _remainingMonthlyPoints = null;
     _remainingCredits = null;
     _credentialsToken = null;
     _quotaDownload = null;
@@ -108,7 +114,9 @@ class AppleToken extends ChangeNotifier {
         _logger.i('Get Profile Data: $data');
 
         _userID = data['data']['uid'].toString();
-        _remainingCredits = data['data']['credits'].toString();
+        _remainingNormalCredits = data['data']['credits']?.toInt() ?? 0;
+        _remainingMonthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
+        _remainingCredits = ((_remainingNormalCredits ?? 0) + (_remainingMonthlyPoints ?? 0)).toString();
         _quotaDownload = data['data']['quota_download'].toString();
         _isSubscription = data['data']['subscription']?.toString() ==
             'Pro'; // Check ว่าผู้ใช้ได้ Subscription ไหม

@@ -133,14 +133,16 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         width: ResponsiveDesignOrientation.isLandscape
                             ? 6.w
                             : 8.w),
-                    Text(
-                      speakerName!,
-                      style: GoogleFonts.prompt(
-                        fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 8.sp
-                            : 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: kDark,
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: Text(
+                        speakerName!,
+                        style: GoogleFonts.prompt(
+                          fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: kDark,
+                        ),
+                        overflow: TextOverflow.ellipsis, // Optional: Truncate text with ellipsis if too long
                       ),
                     ),
                     SizedBox(
@@ -179,7 +181,10 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         color: kDark,
                       ),
                     ),
-                    const Spacer(),
+                    SizedBox(
+                        width: ResponsiveDesignOrientation.isLandscape
+                            ? 10.w
+                            : 14.w),
                     Text(
                       'appbar_bottom.change'.tr(),
                       style: GoogleFonts.prompt(

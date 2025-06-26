@@ -118,6 +118,10 @@ class _HomeScreenState extends State<HomeScreen> {
         _isGenerateAudio,
       );
       await creditsProvider.callLoadCreditsApi(context);
+      //ปิด isGenerateAudio เมื่อสําเร็จแล้วและเปิด dialog
+      setState(() {
+        _isGenerateAudio = false;
+      });
       if (audioUrl.isNotEmpty) {
         await openAudioPlayerDialog(
           context,

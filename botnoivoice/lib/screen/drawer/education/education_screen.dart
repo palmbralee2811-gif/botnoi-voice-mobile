@@ -1,5 +1,3 @@
-// education_screen.dart (New File)
-
 import 'package:botnoivoice/service/reward/reward_service.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 
 class EducationScreen extends StatefulWidget {
@@ -19,7 +18,7 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
-  //--- MOVED from reward_screen.dart ---
+
   bool isRedeemedEducation = true;
 
   @override
@@ -31,40 +30,38 @@ class _EducationScreenState extends State<EducationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarTemplate(
-        title:
-            'Education', // สามารถเปลี่ยนเป็น 'education_screen.title'.tr() ได้
+
+        title: 'education_screen.appbar_title'.tr(),
+
         onPressed: () {
           context.pop();
         },
       ),
       body: Stack(
-        // เพิ่ม Stack เพื่อรองรับ Loading indicator
+
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
             child: SingleChildScrollView(
-              // ใช้ SingleChildScrollView เผื่อมีเนื้อหาเพิ่มในอนาคต
+
               child: Column(
                 children: [
-                  //--- MOVED from reward_screen.dart ---
                   RewardCard(
                     iconUrl: 'assets/images/logo/credit-icon.svg',
-                    title: 'Education Subscription',
-                    description:
-                        'Get access to exclusive educational content and features.',
-                    buttonText: 'Get Subscription',
+                    title: 'education_screen.text_header'.tr(),
+                    description: 'education_screen.widget_title01'.tr(),
+                    buttonText: 'education_screen.widget_button'.tr(),
+
                     onTap: () => _handleEducationSubscription(context),
                     isTablet: isTablet,
                     isLandscape: isLandscape,
                     isRedeemed: isRedeemedEducation,
                   ),
-
-                  // สามารถเพิ่ม Widget อื่นๆ ที่เกี่ยวกับ Education ได้ที่นี่
                 ],
               ),
             ),
           ),
-          // --- Loading Indicator COPIED from reward_screen.dart ---
+
           if (rewardServiceProvider.isLoading)
             Positioned.fill(
               child: Container(
@@ -96,7 +93,9 @@ class _EducationScreenState extends State<EducationScreen> {
 
         NotificationDialog(
           context: context,
-          text: "Subscription activated successfully!", // ควรใช้ localization
+
+          text: '"Subscription activated successfully!"',
+
           onPressed: () {},
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -109,7 +108,7 @@ class _EducationScreenState extends State<EducationScreen> {
     } catch (e) {
       NotificationDialog(
         context: context,
-        text: "An error occurred: $e", // ควรใช้ localization
+        text: "An error occurred: $e",
         onPressed: () {},
       ).showErrorModal(context);
     }
