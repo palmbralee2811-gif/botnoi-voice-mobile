@@ -9,8 +9,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+// Import Token services
+import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
+import 'package:botnoivoice/service/token/google_token.dart';
+import 'package:botnoivoice/service/token/line_token.dart';
+// Import Login Services
+import 'package:botnoivoice/service/login/apple_login.dart';
+import 'package:botnoivoice/service/login/google_login.dart';
+import 'package:botnoivoice/service/login/line_login.dart';
+import 'package:botnoivoice/service/login/email_login.dart';
 
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
@@ -30,9 +38,21 @@ class _PaymentBottomSheetContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final paymentProvider = context.watch<PaymentService>();
 
-    final emailToken = context.watch<EmailToken>();
-    final normalCredits = emailToken.getRemainingNormalCredits ?? 0;
-    final monthlyPoints = emailToken.getRemainingMonthlyPoints ?? 0;
+    dynamic selectedToken;
+    if (context.read<LineLogin>().isLoggedIn) {
+      selectedToken = context.watch<LineToken>();
+    } else if (context.read<AppleLogin>().isLoggedIn) {
+      selectedToken = context.watch<AppleToken>();
+    } else if (context.read<GoogleLogin>().isLoggedIn) {
+      selectedToken = context.watch<GoogleToken>();
+    } else if (context.read<EmailLogin>().isLoggedIn) {
+      selectedToken = context.watch<EmailToken>();
+    } else {
+      selectedToken = null; // Default or fallback if no token is found
+    }
+
+    final normalCredits = selectedToken?.getRemainingNormalCredits ?? 0;
+    final monthlyPoints = selectedToken?.getRemainingMonthlyPoints ?? 0;
 
     return paymentProvider.isLoading
         ? Container(
