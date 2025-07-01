@@ -62,3 +62,6 @@ models.jsonc
 *.env
 *.enc
 botnoivoice-firebase-admin-sdk.json
+
+# FVM Version Cache
+.fvm/
