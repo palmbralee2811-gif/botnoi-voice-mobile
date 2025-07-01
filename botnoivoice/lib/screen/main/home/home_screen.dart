@@ -32,13 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final InternetChecker _internetChecker = InternetChecker();
 
-  final String _audioUrl = '';
-  final _logger = Logger();
+  final String _audioUrl = ''; //Audio URL
+  final _logger = Logger(); //For debugging
 
-  bool _isShowClearIcon = false;
-  bool _isGenerateAudio = false;
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _hasShownQuotaDialog = false;
+  bool _isShowClearIcon = false; //Show clear Icon
+  bool _isGenerateAudio = false; //Generate Audio
+  final AudioPlayer _audioPlayer = AudioPlayer(); //Play example audio
+  bool _hasShownQuotaDialog = false; //Show Quota Download Dialog Before Generating Audio
 
   @override
   void initState() {
