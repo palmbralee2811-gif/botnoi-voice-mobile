@@ -73,9 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _generateAudio() async {
     final creditsProvider = context.read<CallReloadData>();
-    setState(() {
-      _isGenerateAudio = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isGenerateAudio = true;
+      });
+    }
 
     await _audioPlayer.stop();
     if (_textController.text.isEmpty) {
@@ -83,9 +85,11 @@ class _HomeScreenState extends State<HomeScreen> {
               context: context,
               text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
           .showAsError();
-      setState(() {
-        _isGenerateAudio = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isGenerateAudio = false;
+        });
+      }
       return;
     }
 
@@ -102,9 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
       await _generateAudioConfirmed();
     }
 
-    setState(() {
-      _isGenerateAudio = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isGenerateAudio = false;
+      });
+    }
   }
 
   Future<void> _generateAudioConfirmed() async {
