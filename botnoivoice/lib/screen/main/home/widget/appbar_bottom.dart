@@ -174,8 +174,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       nationalFlagName!,
                       style: GoogleFonts.prompt(
                         fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 8.sp
-                            : 14.sp,
+                            ? 7.sp
+                            : 10.sp,
                         color: kDark,
                       ),
                     ),
