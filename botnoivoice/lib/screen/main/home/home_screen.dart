@@ -32,23 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final InternetChecker _internetChecker = InternetChecker();
 
-  // Audio URL
-  final String _audioUrl = '';
+  final String _audioUrl = ''; //Audio URL
+  final _logger = Logger(); //For debugging
 
-  /// For debugging
-  final _logger = Logger();
-
-  /// Show Clear Icon
-  bool _isShowClearIcon = false;
-
-  /// Generate Audio
-  bool _isGenerateAudio = false;
-
-  /// Play Example Audio
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-  /// Show Quota Download Dialog Before Generating Audio
-  bool _hasShownQuotaDialog = false;
+  bool _isShowClearIcon = false; //Show clear Icon
+  bool _isGenerateAudio = false; //Generate Audio
+  final AudioPlayer _audioPlayer = AudioPlayer(); //Play example audio
+  bool _hasShownQuotaDialog = false; //Show Quota Download Dialog Before Generating Audio
 
   @override
   void initState() {
@@ -61,56 +51,45 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     _internetChecker.cancelListener();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
   Future<void> _generateAudio() async {
     final creditsProvider = context.read<CallReloadData>();
-    if (mounted) {
-      setState(() {
-        _isGenerateAudio = true;
-      });
-    }
+    setState(() {
+      _isGenerateAudio = true;
+    });
 
     await _audioPlayer.stop();
+
     if (_textController.text.isEmpty) {
       NotificationPopup(
-              context: context,
-              text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
-          .showAsError();
-      if (mounted) {
-        setState(() {
-          _isGenerateAudio = false;
-        });
-      }
+        context: context,
+        text: tr('home_screen.please_type_message'),
+      ).showAsError();
+      setState(() {
+        _isGenerateAudio = false;
+      });
       return;
     }
 
-    if (creditsProvider.remainingQuotaDownload == "0" &&
-        !_hasShownQuotaDialog) {
-      _hasShownQuotaDialog = true; // Show dialog only once
+    if (creditsProvider.remainingQuotaDownload == "0" && !_hasShownQuotaDialog) {
+      _hasShownQuotaDialog = true;
       NotificationDialog(
         context: context,
-        text: tr(
-            'free_quota_use.ten_time_perday'), //คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน
+        text: tr('free_quota_use.ten_time_perday'),
         onPressed: () {},
       ).showCheckmarkModalWithAction(context);
     } else {
       await _generateAudioConfirmed();
     }
 
-    if (mounted) {
-      setState(() {
-        _isGenerateAudio = false;
-      });
-    }
+    setState(() {
+      _isGenerateAudio = false;
+    });
   }
 
   Future<void> _generateAudioConfirmed() async {
@@ -136,15 +115,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentLocale = context.locale; // เพื่อให้ widget rebuild เมื่อเปลี่ยนภาษา
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: const DrawerAppbar(),
       appBar: const AppBarTop(),
       body: Column(
         children: [
-          Expanded(
-            child: buildTextBox(),
-          ),
+          Expanded(child: buildTextBox()),
           Container(
             width: double.infinity,
             color: Colors.white,
@@ -173,29 +152,23 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             width: ResponsiveDesignOrientation.isLandscape ? 250.w : 288.w,
             decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 5.0,
-                ),
-              ],
+              boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 5.0)],
               color: Colors.white,
               borderRadius: BorderRadius.circular(14.r),
             ),
             child: Padding(
               padding: EdgeInsets.only(
-                  left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-                  right: ResponsiveDesignOrientation.isLandscape ? 0.w : 10.w,
-                  top: ResponsiveDesignOrientation.isLandscape ? 5.w : 20.w),
+                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
+                right: ResponsiveDesignOrientation.isLandscape ? 0.w : 10.w,
+                top: ResponsiveDesignOrientation.isLandscape ? 5.w : 20.w,
+              ),
               child: Column(
                 children: [
                   Expanded(
                     child: TextField(
                       cursorColor: const Color(0xFF000000),
                       style: GoogleFonts.prompt(
-                        fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 8.sp
-                            : 14.sp,
+                        fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
                         color: kDark,
                       ),
                       maxLines: null,
@@ -203,10 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: _textController,
                       onChanged: (text) {
                         if (_textController.text.length > 1000) {
-                          _textController.text =
-                              _textController.text.substring(0, 1000);
-                          _textController.selection =
-                              TextSelection.fromPosition(
+                          _textController.text = _textController.text.substring(0, 1000);
+                          _textController.selection = TextSelection.fromPosition(
                             TextPosition(offset: _textController.text.length),
                           );
                         }
@@ -216,17 +187,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText:
-                            'home_screen.type_message_in_selected_language'
-                                .tr(), //พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .
+                        hintText: tr('home_screen.type_message_in_selected_language'),
                         hintStyle: TextStyle(
                           color: const Color(0xFFA19F9D),
                           fontStyle: GoogleFonts.prompt(
-                                  fontSize:
-                                      ResponsiveDesignOrientation.isLandscape
-                                          ? 8.sp
-                                          : 14.sp)
-                              .fontStyle,
+                            fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
+                          ).fontStyle,
                         ),
                         hintMaxLines: 1,
                       ),
@@ -245,70 +211,36 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildBottomTextBox() {
     return Padding(
       padding: EdgeInsets.only(
-          right: ResponsiveDesignOrientation.isLandscape ? 15.w : 25.w),
+        right: ResponsiveDesignOrientation.isLandscape ? 15.w : 25.w,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _isShowClearIcon
-                  ? Padding(
-                      padding: EdgeInsets.only(right: 1.w),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(
-                                fontSize:
-                                    ResponsiveDesignOrientation.isLandscape
-                                        ? 5.sp
-                                        : 10.sp)),
-                        onPressed: () {
-                          setState(() {
-                            _textController.clear();
-                            _isShowClearIcon = false;
-                          });
-                        },
-                        child: GradientIcon(
-                          icon: Icons.close_sharp,
-                          size: ResponsiveDesignOrientation.isLandscape
-                              ? 10.sp
-                              : 20.sp,
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                      ),
-                    )
-                  : Padding(
-                      padding: EdgeInsets.only(right: 1.w),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            textStyle: TextStyle(
-                                fontSize:
-                                    ResponsiveDesignOrientation.isLandscape
-                                        ? 12.sp
-                                        : 10.sp)),
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.close_sharp,
-                          size: ResponsiveDesignOrientation.isLandscape
-                              ? 10.sp
-                              : 20.sp,
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    )
-            ],
-          ),
+          _isShowClearIcon
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _textController.clear();
+                      _isShowClearIcon = false;
+                    });
+                  },
+                  child: GradientIcon(
+                    icon: Icons.close_sharp,
+                    size: ResponsiveDesignOrientation.isLandscape ? 10.sp : 20.sp,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                )
+              : SizedBox(width: 20.sp),
           Row(
             children: [
               GradientText(
                 text: '${_textController.text.length}',
                 style: GoogleFonts.prompt(
-                  fontSize:
-                      ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
+                  fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
                   color: const Color(0xFFA19F9D),
                 ),
                 gradient: const LinearGradient(
@@ -318,8 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 ' / 1000',
                 style: GoogleFonts.prompt(
-                  fontSize:
-                      ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
+                  fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
                   color: const Color(0xFFA19F9D),
                 ),
               ),
@@ -332,47 +263,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildGenerateButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-          left: ResponsiveDesignOrientation.isLandscape ? 60.w : 20.w,
-          top: ResponsiveDesignOrientation.isLandscape ? 10.h : 15.h,
-          right: ResponsiveDesignOrientation.isLandscape ? 60.w : 20.w,
-          bottom: ResponsiveDesignOrientation.isLandscape ? 10.h : 15.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveDesignOrientation.isLandscape ? 60.w : 20.w,
+        vertical: ResponsiveDesignOrientation.isLandscape ? 10.h : 15.h,
+      ),
       child: GradientRow(
-        onPressed:
-            _isGenerateAudio ? () {} : () async => await _generateAudio(),
+        onPressed: _isGenerateAudio ? null : () async => await _generateAudio(),
         child: _isGenerateAudio
-            ? const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
+            ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('home_screen.create_sound'.tr(), //สร้างเสียง
-                      style: GoogleFonts.prompt(
-                          color: Colors.white,
-                          fontSize: ResponsiveDesignOrientation.isLandscape
-                              ? 11.sp
-                              : 16.sp,
-                          fontWeight: FontWeight.w600)),
-                  SizedBox(
-                      width:
-                          ResponsiveDesignOrientation.isLandscape ? 5.w : 10.w),
+                  Text(
+                    tr('home_screen.create_sound'),
+                    style: GoogleFonts.prompt(
+                      color: Colors.white,
+                      fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(width: ResponsiveDesignOrientation.isLandscape ? 5.w : 10.w),
                   SvgPicture.asset(
                     'assets/images/logo/credit-icon.svg',
-                    height:
-                        ResponsiveDesignOrientation.isLandscape ? 40.h : 20.h,
-                    width:
-                        ResponsiveDesignOrientation.isLandscape ? 40.w : 20.w,
+                    height: ResponsiveDesignOrientation.isLandscape ? 40.h : 20.h,
+                    width: ResponsiveDesignOrientation.isLandscape ? 40.w : 20.w,
                   ),
                   SizedBox(width: 5.w),
                   Text(
                     '${_textController.text.length}',
                     style: GoogleFonts.prompt(
-                        color: Colors.white,
-                        fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 11.sp
-                            : 16.sp,
-                        fontWeight: FontWeight.w600),
+                      color: Colors.white,
+                      fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
