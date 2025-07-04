@@ -75,10 +75,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     try {
       final file = File(widget.filePath);
       if (!await file.exists() || await file.length() == 0) {
-        throw Exception('audio_player.audio_file_not_found'
-            .tr()); //ไม่พบไฟล์เสียงหรือไฟล์ว่างเปล่า
+        throw Exception('audio_player.audio_file_not_found'.tr());
       }
-      await audioPlayer.setSourceDeviceFile(widget.filePath);
+      // Set up listeners before setting the source
       audioPlayer.onDurationChanged.listen((d) {
         if (mounted) {
           setState(() {
@@ -108,8 +107,15 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
           });
         }
       });
+      // Set the source after listeners are attached
+      await audioPlayer.setSourceDeviceFile(widget.filePath);
+      // Force update position and duration immediately after setting source
+      final d = await audioPlayer.getDuration();
+      final p = await audioPlayer.getCurrentPosition();
       if (mounted) {
         setState(() {
+          duration = d ?? Duration.zero;
+          position = p ?? Duration.zero;
           isLoading = false;
         });
       }
@@ -117,11 +123,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       if (mounted) {
         // Close Audio Player Dialog
         context.pop();
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  "${'audio_player.error_playing_audio'.tr()} $e")), //เกิดข้อผิดพลาดในการเล่นไฟล์เสียง:
+                  "${'audio_player.error_playing_audio'.tr()} $e")),
         );
       }
     }
@@ -227,59 +232,72 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 10.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        iconSize: ResponsiveDesignOrientation.isLandscape
-                            ? 15.sp
-                            : 30.sp,
-                        icon: GradientIcon(
-                          icon: isPlaying
-                              ? Icons.pause_circle_outline
-                              : Icons.play_circle_outline,
-                          size: ResponsiveDesignOrientation.isLandscape
-                              ? 15.sp
-                              : 30.sp,
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                  // --- Audio Player Row with Only End Timer (Syncing) ---
+                  StreamBuilder<Duration>(
+                    stream: audioPlayer.onPositionChanged,
+                    builder: (context, snapshot) {
+                      final currentPosition = snapshot.data ?? position;
+                      final totalDuration = duration;
+                      final clampedPosition = currentPosition.inMilliseconds.clamp(0, totalDuration.inMilliseconds);
+                      // Show total time at first, then count up
+                      final showDuration = (clampedPosition == 0 && totalDuration.inMilliseconds > 0)
+                          ? totalDuration
+                          : Duration(milliseconds: clampedPosition);
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            iconSize: ResponsiveDesignOrientation.isLandscape
+                                ? 15.sp
+                                : 30.sp,
+                            icon: GradientIcon(
+                              icon: isPlaying
+                                  ? Icons.pause_circle_outline
+                                  : Icons.play_circle_outline,
+                              size: ResponsiveDesignOrientation.isLandscape
+                                  ? 15.sp
+                                  : 30.sp,
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            onPressed: () async {
+                              if (isPlaying) {
+                                await audioPlayer.pause();
+                              } else {
+                                await audioPlayer.play(DeviceFileSource(widget.filePath));
+                              }
+                            },
                           ),
-                        ),
-                        onPressed: () async {
-                          if (isPlaying) {
-                            await audioPlayer.pause();
-                          } else {
-                            await audioPlayer
-                                .play(DeviceFileSource(widget.filePath));
-                          }
-                        },
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: StreamBuilder<Duration>(
-                          stream: audioPlayer.onPositionChanged,
-                          builder: (context, snapshot) {
-                            final position = snapshot.data ?? Duration.zero;
-                            return Slider(
+                          SizedBox(width: 10.w),
+                          // Slider (syncs with position)
+                          Expanded(
+                            child: Slider(
                               activeColor: Colors.blue,
                               inactiveColor: Colors.grey[300],
                               min: 0,
-                              max: duration.inMilliseconds.toDouble(),
-                              value: position.inMilliseconds
-                                  .toDouble()
-                                  .clamp(0, duration.inMilliseconds.toDouble()),
+                              max: totalDuration.inMilliseconds.toDouble(),
+                              value: clampedPosition.toDouble(),
                               onChanged: (value) async {
-                                final newPosition =
-                                    Duration(milliseconds: value.toInt());
+                                final newPosition = Duration(milliseconds: value.toInt());
                                 await audioPlayer.seek(newPosition);
                               },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          // Timer: show total at first, then count up
+                          Text(
+                            _formatDuration(showDuration),
+                            style: GoogleFonts.prompt(
+                              fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   SizedBox(
                       height: ResponsiveDesignOrientation.isLandscape
@@ -372,5 +390,13 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
               ),
       ),
     );
+  }
+
+  /// Format a Duration to mm:ss
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(d.inMinutes.remainder(60));
+    final seconds = twoDigits(d.inSeconds.remainder(60));
+    return "$minutes:$seconds";
   }
 }

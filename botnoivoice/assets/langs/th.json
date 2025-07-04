@@ -85,8 +85,7 @@
         "profile": "ข้อมูลส่วนตัว",
         "buy_points": "ซื้อพอยต์",
         "security": "ความปลอดภัย",
-        "reward": "ฟรีพอยต์",
-        "education": "โครงการศึกษา"
+        "reward": "รางวัล"
     },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
@@ -249,7 +248,7 @@
     "reward_screen": {
         "notification_dialog_success": "เติมคูปองสำเร็จแล้ว",
         "notification_dialog_error": "เกิดข้อผิดพลาด",
-        "appbar_title" : "ฟรีพอยต์",
+        "appbar_title" : "รางวัล",
         "text_header" : "รับของรางวัลสุดพิเศษจากเรา",
         "widget_title01" : "รับพอยต์ฟรี รายวัน",
         "widget_text01" : "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี่",
@@ -257,11 +256,7 @@
         "widget_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
         "widget_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
         "widget_text_button02" : "รับพอยต์สำเร็จ",
-        "widget_display_points": "รับเลย {points} พอยต์",
-
-        "subscription_notification": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว"
-
-        
+        "widget_display_points": "รับเลย {points} พอยต์"
     },
     "reward_service": {
         "error_message": "เกิดข้อผิดพลาด:",

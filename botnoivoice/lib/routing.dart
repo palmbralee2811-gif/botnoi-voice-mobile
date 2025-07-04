@@ -19,7 +19,6 @@ import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
 
 final router = GoRouter(
   debugLogDiagnostics: true,
@@ -96,10 +95,6 @@ final router = GoRouter(
     GoRoute(
       path: '/reward',
       builder: (context, state) => const RewardScreen(),
-    ),
-    GoRoute(
-      path: '/education',
-      builder: (context, state) => const EducationScreen(),
     ),
     GoRoute(
       path: '/email-permission',
