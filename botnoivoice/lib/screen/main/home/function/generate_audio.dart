@@ -46,7 +46,7 @@ Future<String> generateAudio(
     "volume": 1,
     "speed": 1,
     "type_media": "mp3",
-    "save_file": true,
+    "save_file": "true",
     "language": language,
     "page": "mobile"
   };
