@@ -14,6 +14,8 @@
     "share": "Share",
     "select": "Select",
     "no_internet_connection": "No Internet Connection",
+    "add_favorite": "You added {count} favorite(s).",
+    "remove_favorite": "You removed {count} favorite(s).",
     "welcome_message": {
         "line1": "Convert Text to Speech",
         "line2": "BOTNOI",
@@ -85,7 +87,11 @@
         "profile": "Profile",
         "buy_points": "Buy Points",
         "security": "Security",
-        "reward": "Reward"
+        "reward": "Reward",
+
+        "redeem": "Redeem Coupon",
+        "education": "Education"
+
     },
     "account": {
         "uid_copy_success": "UID copied successfully",
@@ -140,7 +146,10 @@
         "get_points": "Get {productTitle} points",
         "buy_now": "Purchase Now",
         "received_points": "You have received {pointsTitle} points.",
-        "error_occurred": "An error occurred during the transaction. Please try again."
+        "error_occurred": "An error occurred during the transaction. Please try again.",
+
+        "normal_points": "Points",
+        "monthly_points": "Monthly points"
     },
     "change_username_provider": {
         "username_taken": "This username is already in use by another account. Please choose a different username."
@@ -248,24 +257,58 @@
     "reward_screen": {
         "notification_dialog_success": "Successfully Redeemed",
         "notification_dialog_error": "An error occurred",
-        "appbar_title" : "Reward",
-        "text_header" : "Exclusive reward from Botnoi",
-        "widget_title01" : "Daily Points",
-        "widget_text01" : "Get 100 points \nAvailable every day",
+        "appbar_title": "Reward",
+        "text_header": "Exclusive reward from Botnoi",
+        "widget_title01": "Daily Points",
+        "widget_text01": "Get 100 points \nAvailable every day",
         "widget_text_button01": "Only {Timeout} hours left",
-        "widget_title02" : "New User Exclusive",
-        "widget_text02" : "Get 1,000 points \nOnly for new users",
-        "widget_text_button02" : "Successfully Redeemed",
+        "widget_title02": "New User Exclusive",
+        "widget_text02": "Get 1,000 points \nOnly for new users",
+        "widget_text_button02": "Successfully Redeemed",
         "widget_display_points": "Get {points} points"
+
     },
     "reward_service": {
         "error_message": "An error occurred:",
         "coupon_already_used": "Your coupon has already been used.",
         "coupon_not_found": "Coupon not found. The coupon may no longer be valid or the coupon you entered is incorrect.",
         "coupon_expired_or_not_found": "Coupon not found in the system or the coupon has expired.",
-        "api_call_error": "An error occurred while calling the API:"
+        "api_call_error": "An error occurred while calling the API:",
+        "no_daily_coupon_to_redeem": "Daily coupon not ready for today",
+
+        "success_get_education": "Congratulations, you have joined the project.",
+        "already_subscribed": "You are already a Subscription member. Please wait for your current Subscription to expire before you can claim your rights again.",
+        "failure_provider": "Education Project must be an account logged in with email only.",
+        "failcase_whitelist": "Your email is not in the Education list yet. Please have your school's Admin read the details and contact us to apply to join the project on the Botnoi Voice FB page.",
+        "failure_case": "An error occurred while registering for the Education project."
     },
     "free_quota_use": {
         "ten_time_perday": "You have reached your daily limit of 10 free uses. From now on, the system will deduct points based on your usage."
+    },
+    "redeem_coupon_dialog": {
+        "title": "Redeem Coupon",
+        "use": "Redeem",
+        "input": "Enter Coupon",
+        "success": "Coupon {coupon_name} redeem successfully"
+    },
+    "redeem_coupon_service": {
+        "error_message": "An error occurred",
+        "coupon_already_used": "Your coupon \"{coupon_name}\" has already been used.",
+        "coupon_not_found": "Coupon \"{coupon_name}\" not found or invalid.",
+        "coupon_expired_or_not_found": "Coupon \"{coupon_name}\" not found in the system or the coupon has expired.",
+        "api_call_error": "An error occurred while calling the API:",
+        "coupon_code_empty": "Please enter a coupon",
+        "not_session": "Not Login Please Login",
+        "no_daily_coupon_to_redeem": "Daily coupon not ready for today"
+    },
+    "education_screen": {
+        "appbar_title": "Education",
+        "text_header": "Education Subscription",
+        "widget_title01": "Get access to exclusive educational content and features.",
+        "widget_button": "Get Subscription"
+        
+    },
+    "favorite_screen": {
+        "background_text": "There are no preferred speakers in this language."
     }
 }

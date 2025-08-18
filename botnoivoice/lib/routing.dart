@@ -5,6 +5,7 @@ import 'package:botnoivoice/screen/drawer/account/account_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/change_email_username_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
+import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
 import 'package:botnoivoice/screen/drawer/reward/reward_screen.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/email_permission/email_permission_screen.dart';
@@ -95,6 +96,10 @@ final router = GoRouter(
     GoRoute(
       path: '/reward',
       builder: (context, state) => const RewardScreen(),
+    ),
+    GoRoute(
+      path: '/education',
+      builder: (context, state) => const EducationScreen(),
     ),
     GoRoute(
       path: '/email-permission',
