@@ -1,3 +1,4 @@
+import 'package:botnoivoice/shared/dialog/redeem_coupon/redeem_coupon_dialog.dart';
 import 'package:botnoivoice/shared/function/app_language_function.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
@@ -169,7 +170,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             contentPadding: EdgeInsets.only(
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
-              Icons.card_giftcard_outlined,
+              Icons.local_offer_outlined,
               size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
               color: kDark,
             ),
@@ -188,7 +189,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
           ),
           SizedBox(height: 10.h),
 
-           //Education Section
+          //Education Section
           ListTile(
             contentPadding: EdgeInsets.only(
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
@@ -208,6 +209,36 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             ),
             onTap: () {
               context.push('/education');
+            },
+          ),
+          SizedBox(height: 10.h),
+
+
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
+            leading: Icon(
+              Icons.card_giftcard_outlined,
+              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              color: kDark,
+            ),
+            title: Text(
+              'app_drawer.redeem'.tr(), //ใช้คูปอง
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              // Close Drawer
+              context.pop();
+
+              RedeemCouponDialog(
+                context: context,
+                text: 'app_drawer.redeem'.tr(),
+              ).showModal(context);
             },
           ),
           SizedBox(height: 10.h),

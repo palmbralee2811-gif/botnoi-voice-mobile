@@ -1,5 +1,6 @@
 import 'package:botnoivoice/config/api_key_config.dart';
 import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/service/redeem_coupon/redeem_coupon_service.dart';
 import 'package:botnoivoice/shared/function/app_language_function.dart';
 import 'package:botnoivoice/routing.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
@@ -87,6 +88,7 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PaymentService()),
         ChangeNotifierProvider(create: (_) => CheckUserIsShowEmail()),
         ChangeNotifierProvider(create: (_) => RewardService()),
+        ChangeNotifierProvider(create: (_) => RedeemCouponService()),
         ChangeNotifierProvider(create: (_) => CallReloadData()),
       ],
       child: ScreenUtilInit(
