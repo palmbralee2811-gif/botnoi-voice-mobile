@@ -55,11 +55,11 @@ class RedeemSuccessDialog {
                 children: [
                   TextSpan(
                     text: parts[0], // "Coupon ", "คูปอง ", or "Kupon "
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                   TextSpan(
                     text: couponName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
@@ -67,7 +67,7 @@ class RedeemSuccessDialog {
                   TextSpan(
                     text: parts[
                         1], // " redeemed successfully", " แลกสำเร็จ", or " berhasil ditukarkan"
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ],
               ),

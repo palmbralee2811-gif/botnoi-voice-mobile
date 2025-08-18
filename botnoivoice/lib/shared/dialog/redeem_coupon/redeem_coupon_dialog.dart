@@ -21,6 +21,12 @@ class RedeemCouponDialog {
   final BuildContext context;
   final VoidCallback? onPressed;
 
+  /// Loading state 
+  bool _isLoading = false;
+
+  /// Controller for the coupon input field
+  final TextEditingController _couponInputController = TextEditingController();
+
   /// ฟังก์ชันที่ใช้สร้าง UI ของ modal
   void _showModal({
     required BuildContext context,
@@ -37,8 +43,6 @@ class RedeemCouponDialog {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
-        bool _isLoading = false;
-        TextEditingController _CouponInputController = TextEditingController();
         // Get data from provider
         final redeemServiceProvider = context.watch<RedeemCouponService>();
         final creditsProvider = context.read<CallReloadData>();
@@ -61,7 +65,7 @@ class RedeemCouponDialog {
                 ),
                 SizedBox(height: 16.h),
                 TextFormField(
-                  controller: _CouponInputController,
+                  controller: _couponInputController,
                   style: TextStyle(
                     fontSize:
                         ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
@@ -69,35 +73,38 @@ class RedeemCouponDialog {
                   ),
                   decoration: InputDecoration(
                     enabled: _isLoading ? false : true,
-                    labelText:
-                        'redeem_coupon_dialog.input'.tr(), // ชื่อผู้ใช้งานหรืออีเมล
+                    labelText: 'redeem_coupon_dialog.input'
+                        .tr(), // ชื่อผู้ใช้งานหรืออีเมล
                     labelStyle: TextStyle(
-                      fontSize:
-                          ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+                      fontSize: ResponsiveDesignOrientation.isLandscape
+                          ? 11.sp
+                          : 16.sp,
                       fontWeight: FontWeight.w400,
                     ),
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.grey, // สีของเส้นขอบ
                         width: 1.0, // ความหนาของเส้นขอบ
                       ),
                     ),
                     errorStyle: TextStyle(
-                      fontSize:
-                          ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp,
+                      fontSize: ResponsiveDesignOrientation.isLandscape
+                          ? 10.sp
+                          : 14.sp,
                     ),
                     errorMaxLines: 5,
                     suffixIcon: IconButton(
                       icon: Icon(
                         null,
-                        size: ResponsiveDesignOrientation.isLandscape ? 16.w : 24.w,
+                        size: ResponsiveDesignOrientation.isLandscape
+                            ? 16.w
+                            : 24.w,
                       ),
                       onPressed: null,
                     ),
-                    
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -111,14 +118,17 @@ class RedeemCouponDialog {
                   Text(
                     redeemServiceProvider.errorMessage!,
                     style: TextStyle(
-                      fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 12.sp,
+                      fontSize: ResponsiveDesignOrientation.isLandscape
+                          ? 8.sp
+                          : 12.sp,
                       color: Colors.red,
                     ),
                     textAlign: TextAlign.left,
                   ),
                 ],
-
-                SizedBox(height: ResponsiveDesignOrientation.isLandscape ? 56.h : 20.h),
+                SizedBox(
+                    height:
+                        ResponsiveDesignOrientation.isLandscape ? 56.h : 20.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.w),
                   child: GradientLoadingButton(
@@ -128,7 +138,8 @@ class RedeemCouponDialog {
                       setState(() {
                         _isLoading = true;
                       });
-                      final result = await redeemServiceProvider.redeemCoupon(context, _CouponInputController.text);
+                      final result = await redeemServiceProvider.redeemCoupon(
+                          context, _couponInputController.text);
                       if (result == null) {
                         await creditsProvider.callLoadCreditsApi(context);
                       }
@@ -140,7 +151,14 @@ class RedeemCouponDialog {
                         context.pop();
 
                         //Notify success
-                        RedeemSuccessDialog(context: context, text: 'redeem_coupon_dialog.success'.tr(namedArgs: {'coupon_name': _CouponInputController.text}), couponName: _CouponInputController.text).showCheckmarkModal(context);
+                        RedeemSuccessDialog(
+                                context: context,
+                                text: 'redeem_coupon_dialog.success'.tr(
+                                    namedArgs: {
+                                      'coupon_name': _couponInputController.text
+                                    }),
+                                couponName: _couponInputController.text)
+                            .showCheckmarkModal(context);
                       }
                     },
                   ),
@@ -157,7 +175,10 @@ class RedeemCouponDialog {
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: screenWidth > 600 ? 235.sp : screenWidth * 0.9, // Use 90% of screen width if less than 600
+                  maxWidth: screenWidth > 600
+                      ? 235.sp
+                      : screenWidth *
+                          0.9, // Use 90% of screen width if less than 600
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(24.r),
@@ -181,5 +202,4 @@ class RedeemCouponDialog {
       onPressed: onPressed,
     );
   }
-
 }
