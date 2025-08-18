@@ -23,7 +23,7 @@ class AppBarBottom extends StatefulWidget {
 }
 
 class _AppBarBottomState extends State<AppBarBottom> {
-  final AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
 
   @override
@@ -41,7 +41,6 @@ class _AppBarBottomState extends State<AppBarBottom> {
     final speakerProvider = context.watch<HomeSpeakerDataManagement>();
     String language = Localizations.localeOf(context).languageCode;
 
-<<<<<<< Updated upstream
     final speakerInfo = appbarBottomModel
         .firstWhere((speaker) => speaker['language'] == language);
 
@@ -53,44 +52,17 @@ class _AppBarBottomState extends State<AppBarBottom> {
         speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
     final nationalFlagPath =
         speakerProvider.nationalFlagPath ?? speakerInfo['flagPath'];
-=======
-    final defaultInfo = appbarBottomModel.firstWhere(
-      (speaker) => speaker['language'] == locale,
-      orElse: () => appbarBottomModel.first,
-    );
-
-    final speakerName = (speakerProvider.speakerName?.isNotEmpty ?? false)
-        ? speakerProvider.speakerName
-        : defaultInfo['name'];
-    final speakerImagePath =
-        (speakerProvider.speakerImagePath?.isNotEmpty ?? false)
-            ? speakerProvider.speakerImagePath
-            : defaultInfo['image'];
-    final speakerAudio =
-        (speakerProvider.speakerAudio?.isNotEmpty ?? false)
-            ? speakerProvider.speakerAudio
-            : defaultInfo['audio'];
-    final nationalFlagName =
-        (speakerProvider.nationalFlagName?.isNotEmpty ?? false)
-            ? speakerProvider.nationalFlagName
-            : defaultInfo['flagName'];
-    final nationalFlagPath =
-        (speakerProvider.nationalFlagPath?.isNotEmpty ?? false)
-            ? speakerProvider.nationalFlagPath
-            : defaultInfo['flagPath'];
->>>>>>> Stashed changes
 
     return SizedBox(
       width: double.infinity,
       height: ResponsiveDesignOrientation.isLandscape ? 80.h : 60.h,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // ปุ่ม Play/Pause
           InkWell(
             onTap: () async {
               if (isPlaying) {
                 await audioPlayer.stop();
-<<<<<<< Updated upstream
                 setState(() {
                   isPlaying = false;
                 });
@@ -113,19 +85,6 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       isPlaying = true;
                     });
                   }
-=======
-                setState(() => isPlaying = false);
-              } else if (speakerAudio != null && speakerAudio.isNotEmpty) {
-                final response = await http.get(
-                  Uri.parse(speakerAudio),
-                  headers: {'Referer': 'https://voice.botnoi.ai/'},
-                );
-                final audioBytes = response.bodyBytes;
-                if (audioBytes.isNotEmpty) {
-                  final mimeType = response.headers['content-type'] ?? 'audio/wav';
-                  await audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
-                  setState(() => isPlaying = true);
->>>>>>> Stashed changes
                 }
               }
             },
@@ -145,8 +104,6 @@ class _AppBarBottomState extends State<AppBarBottom> {
               ),
             ),
           ),
-
-          // ข้อมูล Speaker ครอบด้วย Expanded
           Expanded(
             child: InkWell(
               onTap: () {
@@ -162,7 +119,6 @@ class _AppBarBottomState extends State<AppBarBottom> {
                     ResponsiveDesignOrientation.isLandscape ? 2.w : 8.w),
                 child: Row(
                   children: [
-                    // รูป Speaker
                     CircleAvatar(
                       radius:
                           ResponsiveDesignOrientation.isLandscape ? 22.r : 14.r,
@@ -173,44 +129,26 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         },
                       ),
                     ),
-<<<<<<< Updated upstream
                     SizedBox(
                         width: ResponsiveDesignOrientation.isLandscape
                             ? 6.w
                             : 8.w),
-                    Text(
-                      speakerName!,
-                      style: GoogleFonts.prompt(
-                        fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 8.sp
-                            : 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: kDark,
-                      ),
-                    ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 6.w
-                            : 8.w),
-=======
-                    SizedBox(width: ResponsiveDesignOrientation.isLandscape ? 6.w : 8.w),
-                    // ชื่อ Speaker
                     Flexible(
-                      flex: 2,
+                      fit: FlexFit.tight,
                       child: Text(
                         speakerName!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.prompt(
                           fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
                           fontWeight: FontWeight.w600,
                           color: kDark,
                         ),
+                        overflow: TextOverflow.ellipsis, // Optional: Truncate text with ellipsis if too long
                       ),
                     ),
-                    SizedBox(width: ResponsiveDesignOrientation.isLandscape ? 6.w : 8.w),
-                    // จุดสีเทา
->>>>>>> Stashed changes
+                    SizedBox(
+                        width: ResponsiveDesignOrientation.isLandscape
+                            ? 6.w
+                            : 8.w),
                     Container(
                       width:
                           ResponsiveDesignOrientation.isLandscape ? 2.w : 4.w,
@@ -221,21 +159,15 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         color: Colors.grey.shade700,
                       ),
                     ),
-<<<<<<< Updated upstream
                     SizedBox(
                         width: ResponsiveDesignOrientation.isLandscape
                             ? 6.w
                             : 8.w),
-=======
-                    SizedBox(width: ResponsiveDesignOrientation.isLandscape ? 6.w : 8.w),
-                    // ธงชาติ
->>>>>>> Stashed changes
                     CircleAvatar(
                       radius:
                           ResponsiveDesignOrientation.isLandscape ? 16.r : 7.r,
                       backgroundImage: AssetImage(nationalFlagPath!),
                     ),
-<<<<<<< Updated upstream
                     SizedBox(
                         width: ResponsiveDesignOrientation.isLandscape
                             ? 4.w
@@ -249,7 +181,10 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         color: kDark,
                       ),
                     ),
-                    const Spacer(),
+                    SizedBox(
+                        width: ResponsiveDesignOrientation.isLandscape
+                            ? 10.w
+                            : 14.w),
                     Text(
                       'appbar_bottom.change'.tr(),
                       style: GoogleFonts.prompt(
@@ -264,39 +199,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
                         width: ResponsiveDesignOrientation.isLandscape
                             ? 10.w
                             : 16.w),
-=======
-                    SizedBox(width: ResponsiveDesignOrientation.isLandscape ? 4.w : 8.w),
-                    // ชื่อประเทศ
-                    Flexible(
-                      flex: 2,
-                      child: Text(
-                        nationalFlagName!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.prompt(
-                          fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
-                          color: kDark,
-                        ),
-                      ),
-                    ),
->>>>>>> Stashed changes
                   ],
                 ),
-              ),
-            ),
-          ),
-
-          // ข้อความ "change" ชิดขวาสุด
-          Padding(
-            padding: EdgeInsets.only(
-              right: ResponsiveDesignOrientation.isLandscape ? 10.w : 16.w,
-            ),
-            child: Text(
-              'appbar_bottom.change'.tr(),
-              style: GoogleFonts.prompt(
-                fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
               ),
             ),
           ),
