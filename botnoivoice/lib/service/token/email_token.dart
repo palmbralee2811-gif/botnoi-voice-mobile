@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 /// Email: Token, User Profile Data and Credentials
 class EmailToken extends ChangeNotifier {
   String? _userID;
+  String? _userName;
   String? _jwtToken;
   String? _remainingCredits;
   int? _remainingNormalCredits;
@@ -23,6 +24,9 @@ class EmailToken extends ChangeNotifier {
 
   /// Getter for the User ID from Database after login
   String? get getUserID => _userID;
+
+  /// Getter for the User Name from Database after login
+  String? get getUserName => _userName;
 
   /// Getter for the json web token after login
   String? get getJwtToken => _jwtToken;
@@ -110,10 +114,11 @@ class EmailToken extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         // Logging Profile Data
-        var data = json.decode(response.body);
+        var data = json.decode(utf8.decode(response.bodyBytes));
         _logger.i('Get Profile Data: $data');
 
         _userID = data['data']['uid'].toString();
+        _userName = data['data']['username'].toString();
         _remainingNormalCredits = data['data']['credits']?.toInt() ?? 0;
         _remainingMonthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
         _remainingCredits = ((_remainingNormalCredits ?? 0) + (_remainingMonthlyPoints ?? 0)).toString();

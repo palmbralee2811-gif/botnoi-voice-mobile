@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 /// LINE: Token, User Profile Data and Credentials
 class LineToken extends ChangeNotifier {
   String? _userID;
+  String? _userName;
   String? _jwtToken;
   String? _remainingCredits;
   String? _credentialsToken;
@@ -21,6 +22,9 @@ class LineToken extends ChangeNotifier {
 
   /// Getter for the user ID from Database after login
   String? get getUserID => _userID;
+
+  /// Getter for the User Name from Database after login
+  String? get getUserName => _userName;
 
   /// Getter for the json web token after login
   String? get getJwtToken => _jwtToken;
@@ -102,10 +106,11 @@ class LineToken extends ChangeNotifier {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         // Logging Profile Data
-        var data = json.decode(response.body);
+        var data = json.decode(utf8.decode(response.bodyBytes));
         _logger.i('Get Profile Data: $data');
 
         _userID = data['data']['uid'].toString();
+        _userName = data['data']['username'].toString();
         _remainingCredits = data['data']['credits'].toString();
         _quotaDownload = data['data']['quota_download'].toString();
         _isSubscription = data['data']['subscription']?.toString() ==

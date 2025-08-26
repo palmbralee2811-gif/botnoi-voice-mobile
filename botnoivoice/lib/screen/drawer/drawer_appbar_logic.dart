@@ -37,7 +37,7 @@ class DrawerAppbarLogic {
       uid = lineTokenProvider.getUserID ?? 'No uid found';
       profilePictureUrl = lineProvider.getProfilePictureUrl ?? '';
     } else if (appleProvider.isLoggedIn) {
-      displayName = appleProvider.user?.displayName ?? 'Apple User';
+      displayName = appleTokenProvider.getUserName ?? 'Apple User';
       uid = appleTokenProvider.getUserID ?? 'No uid found';
       profilePictureUrl = appleProvider.user?.photoURL ?? '';
     } else if (googleProvider.isLoggedIn) {
