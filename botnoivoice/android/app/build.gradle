@@ -31,10 +31,11 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.mobile.botnoivoice"
-    compileSdk = 34 // compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35
+    ndkVersion = "28.0.12433566"
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -46,7 +47,7 @@ android {
     defaultConfig {
         applicationId = "com.mobile.botnoivoice"
         minSdkVersion = 24 // Version 24 For Support LINE Login
-		targetSdkVersion = 34 // targetSdkVersion = flutter.targetSdkVersion
+		targetSdkVersion = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -77,4 +78,5 @@ flutter {
 dependencies {
   implementation platform('com.google.firebase:firebase-bom:33.2.0')
   implementation 'com.android.billingclient:billing:6.0.1'
+  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
