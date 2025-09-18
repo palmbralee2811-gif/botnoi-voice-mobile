@@ -102,7 +102,10 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <!-- LINE Login Key for Production Mode -->
-                <data android:scheme="lineauth-1656375389" android:host="com.mobile.botnoivoice"/>
+                <!-- <data android:scheme="lineauth-1656375389" android:host="com.mobile.botnoivoice"/> -->
+
+                <!-- LINE Login Key for Staging Mode -->
+                <data android:scheme="lineauth-2003460314" android:host="com.mobile.botnoivoice"/>
             </intent-filter>
         </activity>
 
