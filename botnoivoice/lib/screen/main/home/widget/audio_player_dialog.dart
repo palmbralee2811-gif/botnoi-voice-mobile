@@ -33,7 +33,7 @@ class AudioPlayerDialog extends StatefulWidget {
 }
 
 class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
-  final Logger logger = Logger(); // Logger for Debugging mode
+  final Logger _logger = Logger(); // Logger for Debugging mode
   late AudioPlayer audioPlayer;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
@@ -65,6 +65,10 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
           .showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
+        // String fileDirPath = "/storage/emulated/0/Download/${widget.filePath.split('/').last}";
+        // _logger.d("File Path: $fileDirPath");
+        _logger.d("Widget File Path: ${widget.filePath}");
+        // OpenFile.open(fileDirPath);
         OpenFile.open(widget.filePath);
       });
     }
@@ -151,7 +155,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       String id = data[0];
       int status = data[1];
       int progress = data[2];
-      logger.i("Task ID: $id, Status: $status, Progress: $progress%");
+      _logger.i("Task ID: $id, Status: $status, Progress: $progress%");
     });
     FlutterDownloader.registerCallback(downloadCallback);
   }
