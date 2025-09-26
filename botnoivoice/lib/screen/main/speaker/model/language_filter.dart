@@ -179,7 +179,7 @@ final languageFilter = [
     'id': 23,
     'thaiName': 'สิงคโปร์',
     'englishName': 'Singapore',
-    'indonesianName': 'Bahasa Singapura',
+    'indonesianName': 'Singapura',
     'image': 'assets/images/national_flag/singapore.png',
     'code': 'SG'
   },
