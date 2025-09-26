@@ -175,5 +175,13 @@ final languageFilter = [
     'image': 'assets/images/national_flag/turkish.png',
     'code': 'TR'
   },
+  {
+    'id': 23,
+    'thaiName': 'สิงคโปร์',
+    'englishName': 'Singapore',
+    'indonesianName': 'Bahasa Singapura',
+    'image': 'assets/images/national_flag/singapore.png',
+    'code': 'SG'
+  },
   // ... Add other languages here
 ];
