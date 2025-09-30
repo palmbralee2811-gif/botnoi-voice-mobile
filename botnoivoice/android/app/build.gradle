@@ -47,7 +47,7 @@ android {
     defaultConfig {
         applicationId = "com.mobile.botnoivoice"
         minSdkVersion = 24 // Version 24 For Support LINE Login
-		targetSdkVersion = 35
+        targetSdkVersion = 35 // targetSdkVersion = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -61,11 +61,28 @@ android {
         }
     }
 
+    // buildTypes {
+    //     release {
+    //         signingConfig signingConfigs.release
+    //         ndk {
+    //             debugSymbolLevel 'FULL'
+    //         }
+    //     }
+    // }
     buildTypes {
         release {
+            // signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
+
+            // เปิดใช้งาน R8/ProGuard บอกให้ Gradle เปิดการย่อโค้ด (ใช้ R8)
+            minifyEnabled true
+            // ตัด resource ที่ไม่ได้ใช้ (ลดขนาด APK)
+            shrinkResources true
+            // บอกว่าจะใช้ไฟล์ rules ตัวไหน (ของ Android + ของคุณเอง)
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
             ndk {
-                debugSymbolLevel 'FULL' 
+                debugSymbolLevel 'FULL'
             }
         }
     }

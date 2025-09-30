@@ -1,0 +1,1 @@
+-dontwarn com.linecorp.linesdk.BR
