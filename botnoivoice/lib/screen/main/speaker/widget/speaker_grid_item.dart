@@ -238,28 +238,23 @@ class SpeakerGridItem extends StatelessWidget {
                                             : 16.w,
                                       ),
                                 SizedBox(width: 3.w),
+
+                                // Display Speaker Name
                                 Expanded(
                                   child: Text(
-                                    (() {
-                                      final name =
-                                          Localizations.localeOf(context)
-                                                      .languageCode ==
-                                                  'th'
-                                              ? speakerItem.thaiName
-                                              : speakerItem.engName;
-
-                                      // ถ้ายาวเกิน 12 ตัวอักษร -> ตัด + ...
-                                      return name.length > 12
-                                          ? '${name.substring(0, 12)}...'
-                                          : name;
-                                    })(),
+                                    Localizations.localeOf(context)
+                                                .languageCode ==
+                                            'th'
+                                        ? speakerItem.thaiName
+                                        : speakerItem.engName,
                                     style: GoogleFonts.prompt(
                                       fontSize: 10.sp,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
                                     ),
-                                    overflow: TextOverflow
-                                        .ellipsis, // เผื่อกรณีข้อความเกิน
+                                    // กำหนดให้แสดงข้อความที่ยาวเกินไปด้วย "..."
+                                    overflow: TextOverflow.ellipsis,
+                                    // กำหนดให้ข้อความแสดงในบรรทัดเดียว
                                     maxLines: 1,
                                   ),
                                 )
