@@ -120,7 +120,8 @@ class BuildMultipleSpeaker extends StatelessWidget {
               index: index,
               isSelected: selectedIndex.contains(index),
               isFavorite: selectedIndexFavorites.contains(data.speakerId),
-              onSpeakerTap: (index, speakerItem) => onSpeakerTap(index, speakerItem),
+              onSpeakerTap: (index, speakerItem) =>
+                  onSpeakerTap(index, speakerItem),
               onFavoriteToggle: (speakerId) => onFavoriteToggle(speakerId),
             );
           },

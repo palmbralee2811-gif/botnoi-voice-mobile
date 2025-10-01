@@ -136,22 +136,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      drawer: const DrawerAppbar(),
-      appBar: const AppBarTop(),
-      body: Column(
-        children: [
-          Expanded(
-            child: buildTextBox(),
-          ),
-          Container(
-            width: double.infinity,
-            color: Colors.white,
-            height: ResponsiveDesignOrientation.isLandscape ? 75.h : 90.h,
-            child: buildGenerateButton(context),
-          ),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        drawer: const DrawerAppbar(),
+        appBar: const AppBarTop(),
+        body: Column(
+          children: [
+            Expanded(
+              child: buildTextBox(),
+            ),
+            Container(
+              width: double.infinity,
+              color: Colors.white,
+              height: ResponsiveDesignOrientation.isLandscape ? 75.h : 90.h,
+              child: buildGenerateButton(context),
+            ),
+          ],
+        ),
       ),
     );
   }

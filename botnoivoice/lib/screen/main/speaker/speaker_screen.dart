@@ -152,11 +152,13 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppBarSpeakerScreen(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : buildFilterNavbar(context),
+    return SafeArea(
+      child: Scaffold(
+        appBar: const AppBarSpeakerScreen(),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : buildFilterNavbar(context),
+      ),
     );
   }
 
@@ -248,15 +250,15 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                               },
                             );
                           },
-                        )
+                        ),
                 ],
               ),
             ),
           ),
         ),
-        SizedBox(height: ResponsiveDesignOrientation.isLandscape ? 25.h : 20.h),
+        SizedBox(height: 5.h),
         BottomNavbarButton(audioPlayer: audioPlayer),
-        SizedBox(height: ResponsiveDesignOrientation.isLandscape ? 25.h : 40.h),
+        SizedBox(height: 5.h),
       ],
     );
   }
@@ -365,14 +367,16 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           backgroundColor: Colors.white,
           context: context,
           builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return SizedBox(
-                  child: SingleChildScrollView(
-                    child: buildLanguageButton(context, setState),
-                  ),
-                );
-              },
+            return SafeArea(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return SizedBox(
+                    child: SingleChildScrollView(
+                      child: buildLanguageButton(context, setState),
+                    ),
+                  );
+                },
+              ),
             );
           },
         ).whenComplete(() {
@@ -400,15 +404,17 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           backgroundColor: Colors.white,
           context: context,
           builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
-                return SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 440.h : 220.h,
-                  child: SingleChildScrollView(
-                      child: buildGenderButton(context, setModalState)),
-                );
-              },
+            return SafeArea(
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setModalState) {
+                  return SizedBox(
+                    height:
+                        ResponsiveDesignOrientation.isLandscape ? 440.h : 220.h,
+                    child: SingleChildScrollView(
+                        child: buildGenderButton(context, setModalState)),
+                  );
+                },
+              ),
             );
           },
         ).whenComplete(() {
