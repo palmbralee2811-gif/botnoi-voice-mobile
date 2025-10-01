@@ -72,6 +72,7 @@ Future<void> handleSpeakerTap({
   homeSpeakerProvider.setSpeakerImagePath(speakerItem.squareImage);
   homeSpeakerProvider.setNationalFlagPath(selectedLanguageImage);
   homeSpeakerProvider.setNationalFlagName(selectedLanguage);
+  homeSpeakerProvider.setIsV2(speakerItem.v2);
 
   if (selectedIndex.contains(index)) {
     // ถ้าเคยกดแล้ว

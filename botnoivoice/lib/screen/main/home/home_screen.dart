@@ -1,4 +1,5 @@
 import 'package:botnoivoice/auth/internet_checker.dart';
+import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/main/home/function/generate_audio.dart';
 import 'package:botnoivoice/screen/main/home/function/open_audio_player.dart';
@@ -116,12 +117,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _generateAudioConfirmed() async {
     final creditsProvider = context.read<CallReloadData>();
 
+    final speakerProvider = context.read<HomeSpeakerDataManagement>();
+    final isV2 = speakerProvider.isV2;
+
     if (_textController.text.isNotEmpty) {
       final String audioUrl = await generateAudio(
         context,
         _textController.text,
         _audioUrl,
         _isGenerateAudio,
+        isV2: isV2,
       );
       await creditsProvider.callLoadCreditsApi(context);
       if (audioUrl.isNotEmpty) {

@@ -23,6 +23,7 @@ Future<String> generateAudio(
   String text,
   String audioUrl,
   bool isGenerateAudio,
+  {required bool isV2}
 ) async {
   // Get Data from Home Speaker Data Management
   String speakerId = context.read<HomeSpeakerDataManagement>().speakerId ?? getDefaultSpeakerId(context);
@@ -39,7 +40,11 @@ Future<String> generateAudio(
   _logger.i("LINE-credentialsToken: $lineCredentialsToken");
   _logger.i("Email-credentialsToken: $emailCredentialsToken");
 
-  String url = "$apiUrl/openapi/v1/generate_audio";
+  // เลือก URL ตาม isV2
+  String url = isV2
+      ? "$apiUrl/openapi/v1/generate_audio_v2"
+      : "$apiUrl/openapi/v1/generate_audio";
+
   Map<String, dynamic> payload = {
     "text": text,
     "speaker": speakerId,
@@ -74,6 +79,7 @@ Future<String> generateAudio(
   };
 
   try {
+    _logger.i("POST $url");
     final response = await http.post(
       Uri.parse(url),
       headers: headers,

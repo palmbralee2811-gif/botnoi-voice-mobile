@@ -9,41 +9,65 @@ class SpeakerModel {
   static final Logger _logger = Logger();
 
   /// ฟังก์ชันโหลดข้อมูล JSON และเพิ่มใน speakerItem
-  static Future<void> loadSpeakers({required bool isSubscribed, required String jwtToken}) async {
+  static Future<void> loadSpeakers(
+      {required bool isSubscribed, required String jwtToken}) async {
     try {
       // โหลด JSON จาก assets
-      final url = Uri.parse('$apiUrl/api/marketplace/get_all_marketplace');
-      final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $jwtToken',
-      });
-      if (response.statusCode != 200) {
-        throw Exception("Failed to load speakers: ${response.statusCode}");
-      }
+      final urlV2 = Uri.parse('$apiUrl/api/marketplace/get_all_marketplace_v2');
+      final urlV1 = Uri.parse('$apiUrl/api/marketplace/get_all_marketplace');
 
+      // ยิงทั้งสอง endpoint พร้อมกัน
+      final responses = await Future.wait([
+        http.get(urlV2, headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $jwtToken',
+        }),
+        http.get(urlV1, headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $jwtToken',
+        }),
+      ]);
+
+      // v2 ไม่ต้องกรอง
+      final responseV2 = responses[0];
+      if (responseV2.statusCode != 200) {
+        throw Exception("Failed to load speakers v2: ${responseV2.statusCode}");
+      }
       // แปลง JSON String -> Map
-      Map<String, dynamic> jsonMap = json.decode(utf8.decode(response.bodyBytes));
+      Map<String, dynamic> jsonMapV2 =
+          json.decode(utf8.decode(responseV2.bodyBytes));
 
-      // เข้าถึงคีย์ "data" ซึ่งเป็น List
-      if (jsonMap['data'] == null || jsonMap['data'] is! List) {
-        throw Exception("Invalid or missing 'data' field in JSON");
+      // เข้าถึงคีย์ "data" ซึ่งเป็น List    
+      if (jsonMapV2['data'] == null || jsonMapV2['data'] is! List) {
+        throw Exception("Invalid or missing 'data' field in JSON v2");
       }
+      List<SpeakerEntity> speakersV2 = (jsonMapV2['data'] as List)
+          .map((json) => SpeakerEntity.fromJson(json))
+          .toList();
 
-      // แปลง JSON เป็น List<SpeakerEntity>
-      List<dynamic> jsonList = jsonMap['data'];
+      // v1 กรองตาม isSubscribed
+      final responseV1 = responses[1];
+      if (responseV1.statusCode != 200) {
+        throw Exception("Failed to load speakers v1: ${responseV1.statusCode}");
+      }
+      // แปลง JSON String -> Map
+      Map<String, dynamic> jsonMapV1 =
+          json.decode(utf8.decode(responseV1.bodyBytes));
 
-      _logger.d('Loading speakers...');
-      _logger.i('Speaker data loaded: $jsonList speakers found.');
-
-      // ใช้ isSubscribed กรอง speakers ถ้า sub อยู่จะให้แสดงทั้งหมด ถ้าไม่จะแสดงแค่ Free
-      speakerItem =
-          jsonList.map((json) => SpeakerEntity.fromJson(json)).where((speaker) {
+      // เข้าถึงคีย์ "data" ซึ่งเป็น List    
+      if (jsonMapV1['data'] == null || jsonMapV1['data'] is! List) {
+        throw Exception("Invalid or missing 'data' field in JSON v1");
+      }
+      List<SpeakerEntity> speakersV1 = (jsonMapV1['data'] as List)
+          .map((json) => SpeakerEntity.fromJson(json))
+          .where((speaker) {
         final tier = speaker.tier;
-        // ให้ผ่าน speaker ถ้าเป็นสมาชิก หรือ speaker เป็น Free
         return isSubscribed || tier == 'Free';
       }).toList();
 
-      // แสดงข้อมูล Speaker ที่โหลดได้
+      // รวมลิสต์ทั้ง V1 และ V2
+      speakerItem = [...speakersV2, ...speakersV1];
+
       _logger.d('Speakers loaded successfully: ${speakerItem.length}');
     } catch (e) {
       // จัดการข้อผิดพลาด
