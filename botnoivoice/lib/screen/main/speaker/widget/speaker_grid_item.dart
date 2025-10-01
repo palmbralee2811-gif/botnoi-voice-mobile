@@ -76,7 +76,7 @@ class SpeakerGridItem extends StatelessWidget {
                           imageUrl: Uri.encodeFull(speakerItem.squareImage),
                           httpHeaders: const {
                             'Referer': 'https://voice.botnoi.ai/',
-                            'Accept' : 'image/webp,*/*'
+                            'Accept': 'image/webp,*/*'
                           },
                           fit: BoxFit.cover,
                           placeholder: (context, url) =>
@@ -240,18 +240,29 @@ class SpeakerGridItem extends StatelessWidget {
                                 SizedBox(width: 3.w),
                                 Expanded(
                                   child: Text(
-                                    Localizations.localeOf(context)
-                                                .languageCode ==
-                                            'th'
-                                        ? speakerItem.thaiName
-                                        : speakerItem.engName,
+                                    (() {
+                                      final name =
+                                          Localizations.localeOf(context)
+                                                      .languageCode ==
+                                                  'th'
+                                              ? speakerItem.thaiName
+                                              : speakerItem.engName;
+
+                                      // ถ้ายาวเกิน 12 ตัวอักษร -> ตัด + ...
+                                      return name.length > 12
+                                          ? '${name.substring(0, 12)}...'
+                                          : name;
+                                    })(),
                                     style: GoogleFonts.prompt(
                                       fontSize: 10.sp,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
                                     ),
+                                    overflow: TextOverflow
+                                        .ellipsis, // เผื่อกรณีข้อความเกิน
+                                    maxLines: 1,
                                   ),
-                                ),
+                                )
                               ],
                             ),
                             SizedBox(
