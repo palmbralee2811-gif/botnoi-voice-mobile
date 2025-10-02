@@ -69,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _generateAudio() async {
-    final creditsProvider = context.read<CallReloadData>();
     if (mounted) {
       setState(() {
         _isGenerateAudio = true;
