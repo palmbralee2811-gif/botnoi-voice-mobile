@@ -36,10 +36,12 @@ class BuildMultipleSpeaker extends StatelessWidget {
     List<SpeakerEntity> filteredSpeakers = [];
     String languageCode = Localizations.localeOf(context).languageCode;
 
+    // กรองตามภาษา
     filteredSpeakers = SpeakerModel.speakerItem.where((item) {
       return item.language == language;
     }).toList();
 
+    // ถ้าไม่มี item ตรงภาษา ให้เลือก item ที่มี availableLanguage
     if (filteredSpeakers.isEmpty) {
       filteredSpeakers = SpeakerModel.speakerItem.where((item) {
         return item.availableLanguage.contains(language?.toLowerCase()) &&
@@ -47,11 +49,13 @@ class BuildMultipleSpeaker extends StatelessWidget {
       }).toList();
     }
 
+    // กรองตามเพศ
     if (gender != null && gender!.isNotEmpty) {
       filteredSpeakers =
           filteredSpeakers.where((item) => item.gender == gender).toList();
     }
 
+    // กรองตาม voice style
     if (selectedStyles.isNotEmpty) {
       filteredSpeakers = filteredSpeakers.where((item) {
         if (languageCode == 'th') {
@@ -64,6 +68,7 @@ class BuildMultipleSpeaker extends StatelessWidget {
       }).toList();
     }
 
+    // กรองตาม speech style / category
     if (selectedCategories.isNotEmpty) {
       filteredSpeakers = filteredSpeakers.where((item) {
         if (languageCode == 'th') {
@@ -101,31 +106,38 @@ class BuildMultipleSpeaker extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      child: SizedBox(
-        height: 420.h,
-        width: 320.w,
-        child: GridView.builder(
-          itemCount: filteredItems.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 0,
-            childAspectRatio: 0.8,
-          ),
-          itemBuilder: (context, index) {
-            final data = filteredItems[index];
+      child: Column(
+        children: [
+          GridView.builder(
+            shrinkWrap: true, // ให้ GridView พอดีกับจำนวน item
+            physics:
+                const NeverScrollableScrollPhysics(), // ไม่ให้ scroll ซ้ำกับ SingleChildScrollView
+            itemCount: filteredItems.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 0,
+              mainAxisSpacing: 0,
+              childAspectRatio: 0.8,
+            ),
+            itemBuilder: (context, index) {
+              final data = filteredItems[index];
 
-            return SpeakerGridItem(
-              key: ValueKey(data.speakerId),
-              speakerItem: data,
-              index: index,
-              isSelected: selectedIndex.contains(index),
-              isFavorite: selectedIndexFavorites.contains(data.speakerId),
-              onSpeakerTap: (index, speakerItem) =>
-                  onSpeakerTap(index, speakerItem),
-              onFavoriteToggle: (speakerId) => onFavoriteToggle(speakerId),
-            );
-          },
-        ),
+              return SpeakerGridItem(
+                key: ValueKey(data.speakerId),
+                speakerItem: data,
+                index: index,
+                isSelected: selectedIndex.contains(index),
+                isFavorite: selectedIndexFavorites.contains(data.speakerId),
+                onSpeakerTap: (index, speakerItem) =>
+                    onSpeakerTap(index, speakerItem),
+                onFavoriteToggle: (speakerId) => onFavoriteToggle(speakerId),
+              );
+            },
+          ),
+
+          // เพิ่มพื้นที่ว่างด้านล่าง
+          SizedBox(height: 50.h),
+        ],
       ),
     );
   }
