@@ -15,18 +15,14 @@ final _logger = Logger();
 
 class CallReloadData with ChangeNotifier {
   String? _remainingCredits;
-  String? _remainingQuotaDownload;
 
   // Getter สำหรับเครดิตคงเหลือ
   String? get remainingCredits => _remainingCredits;
 
-  // Getter สำหรับโควต้าดาวน์โหลดเสียงคงเหลือ
-  String? get remainingQuotaDownload => _remainingQuotaDownload;
 
-  // เซ็ตค่าทั้งสองและ notifyListeners เพื่อให้ UI อัปเดต
-  void setRemainingCredits(String? credits, String? quotaDownload) {
+  // เซ็ตค่าและ notifyListeners เพื่อให้ UI อัปเดต
+  void setRemainingCredits(String? credits) {
     _remainingCredits = credits;
-    _remainingQuotaDownload = quotaDownload;
     notifyListeners();
   }
 
@@ -76,19 +72,9 @@ class CallReloadData with ChangeNotifier {
         emailToken,
       );
 
-      final quotaDownload = await _getQuotaDownloadFromToken(
-        appleProvider,
-        googleProvider,
-        lineProvider,
-        emailProvider,
-        appleToken,
-        googleToken,
-        lineToken,
-        emailToken,
-      );
 
       // อัปเดตสถานะใน state provider นี้
-      setRemainingCredits(credits, quotaDownload);
+      setRemainingCredits(credits);
     } catch (e) {
       _logger.e('Failed to load credits: $e');
     }
@@ -133,49 +119,6 @@ class CallReloadData with ChangeNotifier {
       return "N/A";
     } catch (e) {
       _logger.e('Failed to get remaining credits', error: e);
-      return "N/A";
-    }
-  }
-
-  // ดึงโควต้าดาวน์โหลดเสียงจาก provider ที่ล็อกอินอยู่
-  Future<String?> _getQuotaDownloadFromToken(
-    AppleLogin appleProvider,
-    GoogleLogin googleProvider,
-    LineLogin lineProvider,
-    EmailLogin emailProvider,
-    AppleToken appleToken,
-    GoogleToken googleToken,
-    LineToken lineToken,
-    EmailToken emailToken,
-  ) async {
-    try {
-      if (appleProvider.isLoggedIn &&
-          appleProvider.user?.providerData[0].providerId == 'apple.com') {
-        _logger.d('User logged in with Apple');
-        return appleToken.getQuotaDownload;
-      }
-
-      if (googleProvider.isLoggedIn &&
-          googleProvider.user?.providerData[0].providerId == 'google.com') {
-        _logger.d('User logged in with Google');
-        return googleToken.getQuotaDownload;
-      }
-
-      if (lineProvider.isLoggedIn) {
-        _logger.d('User logged in with LINE');
-        return lineToken.getQuotaDownload;
-      }
-
-      if (emailProvider.isLoggedIn &&
-          emailProvider.user?.providerData[0].providerId == 'password') {
-        _logger.d('User logged in with Email');
-        return emailToken.getQuotaDownload;
-      }
-
-      _logger.w('No valid login provider found');
-      return "N/A";
-    } catch (e) {
-      _logger.e('Failed to get quota download', error: e);
       return "N/A";
     }
   }

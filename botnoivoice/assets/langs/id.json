@@ -281,9 +281,6 @@
         "failure_case": "Terjadi kesalahan saat mendaftar untuk proyek Pendidikan."
 
     },
-    "free_quota_use": {
-        "ten_time_perday": "Anda telah mencapai batas harian 10 penggunaan gratis. Mulai sekarang, sistem akan memotong poin berdasarkan penggunaan Anda."
-    },
     "redeem_coupon_dialog": {
         "title": "Tukarkan Kupon",
         "use": "Tukarkan",
