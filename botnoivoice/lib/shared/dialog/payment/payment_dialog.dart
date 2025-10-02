@@ -20,7 +20,9 @@ void showPaymentDialog(BuildContext context) {
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
     ),
     builder: (context) {
-      return _PaymentBottomSheetContent();
+      return SafeArea(
+        child: _PaymentBottomSheetContent(),
+      );
     },
   );
 }
