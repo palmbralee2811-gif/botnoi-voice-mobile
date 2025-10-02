@@ -84,9 +84,14 @@ android {
             shrinkResources true
             // บอกว่าจะใช้ไฟล์ rules ตัวไหน (ของ Android + ของคุณเอง)
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            ndk.debugSymbolLevel = "FULL"
+            
+            // ndk.debugSymbolLevel = "FULL"
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
         }
     }
+    buildToolsVersion '35.0.0'
 }
 
 flutter {

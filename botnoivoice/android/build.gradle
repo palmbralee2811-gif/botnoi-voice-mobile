@@ -3,7 +3,8 @@ allprojects {
         google()
         mavenCentral()
     }
-     // This code finds any subproject that is an Android library (a plugin)
+    
+    // This code finds any subproject that is an Android library (a plugin)
     // and enables buildConfig for it.
     plugins.withId('com.android.library') {
         android {
