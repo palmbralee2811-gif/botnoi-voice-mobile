@@ -19,7 +19,6 @@ class CallReloadData with ChangeNotifier {
   // Getter สำหรับเครดิตคงเหลือ
   String? get remainingCredits => _remainingCredits;
 
-
   // เซ็ตค่าและ notifyListeners เพื่อให้ UI อัปเดต
   void setRemainingCredits(String? credits) {
     _remainingCredits = credits;
@@ -71,7 +70,6 @@ class CallReloadData with ChangeNotifier {
         lineToken,
         emailToken,
       );
-
 
       // อัปเดตสถานะใน state provider นี้
       setRemainingCredits(credits);

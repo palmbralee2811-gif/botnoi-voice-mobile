@@ -64,6 +64,7 @@ class HomeSpeakerDataManagement with ChangeNotifier {
     _logger.d("SpeakerProvider -> setLanguage: $language");
     notifyListeners();
   }
+  
   void setIsV2(bool isV2) {
     _isV2 = isV2;
     _logger.d("SpeakerProvider -> setIsV2: $isV2");
