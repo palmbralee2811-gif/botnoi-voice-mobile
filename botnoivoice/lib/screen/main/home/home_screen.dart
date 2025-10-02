@@ -1,9 +1,9 @@
 import 'package:botnoivoice/auth/internet_checker.dart';
+import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/main/home/function/generate_audio.dart';
 import 'package:botnoivoice/screen/main/home/function/open_audio_player.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
-import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/main/home/widget/appbar_top.dart';
@@ -47,9 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Play Example Audio
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  /// Show Quota Download Dialog Before Generating Audio
-  bool _hasShownQuotaDialog = false;
-
   @override
   void initState() {
     super.initState();
@@ -72,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _generateAudio() async {
-    final creditsProvider = context.read<CallReloadData>();
     if (mounted) {
       setState(() {
         _isGenerateAudio = true;
@@ -93,18 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    if (creditsProvider.remainingQuotaDownload == "0" &&
-        !_hasShownQuotaDialog) {
-      _hasShownQuotaDialog = true; // Show dialog only once
-      NotificationDialog(
-        context: context,
-        text: tr(
-            'free_quota_use.ten_time_perday'), //คุณใช้โควต้าฟรี 10 ครั้ง/วันครบแล้ว หลังจาก นี้ระบบจะเริ่มหักพ้อยท์ตามการใช้งาน
-        onPressed: () {},
-      ).showCheckmarkModalWithAction(context);
-    } else {
-      await _generateAudioConfirmed();
-    }
+    await _generateAudioConfirmed();
 
     if (mounted) {
       setState(() {
@@ -116,12 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _generateAudioConfirmed() async {
     final creditsProvider = context.read<CallReloadData>();
 
+    final speakerProvider = context.read<HomeSpeakerDataManagement>();
+    final isV2 = speakerProvider.isV2;
+
     if (_textController.text.isNotEmpty) {
       final String audioUrl = await generateAudio(
         context,
         _textController.text,
         _audioUrl,
         _isGenerateAudio,
+        isV2: isV2,
       );
       await creditsProvider.callLoadCreditsApi(context);
       if (audioUrl.isNotEmpty) {

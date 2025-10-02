@@ -12,6 +12,7 @@ class HomeSpeakerDataManagement with ChangeNotifier {
   String? _nationalFlagName;
   String? _nationalFlagPath;
   String? _language;
+  bool _isV2 = false;
 
   String? get speakerId => _speakerId;
   String? get speakerName => _speakerName;
@@ -20,6 +21,7 @@ class HomeSpeakerDataManagement with ChangeNotifier {
   String? get nationalFlagName => _nationalFlagName;
   String? get nationalFlagPath => _nationalFlagPath;
   String? get language => _language;
+  bool get isV2 => _isV2;
 
   void setSpeakerId(String id) {
     _speakerId = id;
@@ -60,6 +62,12 @@ class HomeSpeakerDataManagement with ChangeNotifier {
   void setLanguage(String language) {
     _language = language;
     _logger.d("SpeakerProvider -> setLanguage: $language");
+    notifyListeners();
+  }
+  
+  void setIsV2(bool isV2) {
+    _isV2 = isV2;
+    _logger.d("SpeakerProvider -> setIsV2: $isV2");
     notifyListeners();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:botnoivoice/screen/main/home/function/get_free_icon_path.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/main/home/widget/appbar_bottom.dart';
@@ -37,7 +36,6 @@ class _AppBarTopState extends State<AppBarTop> {
   @override
   Widget build(BuildContext context) {
     var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    var remainingQuotaDownload = context.watch<CallReloadData>().remainingQuotaDownload ?? 'N/A';
 
     return AppBar(
       backgroundColor: kWhite,
@@ -133,46 +131,6 @@ class _AppBarTopState extends State<AppBarTop> {
             borderRadius: BorderRadius.circular(15.r),
           ),
           margin: EdgeInsets.only(right: 10.w),
-          child: InkWell(
-            onTap: () {
-              // Add your onTap functionality here
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                    width: ResponsiveDesignOrientation.isLandscape ? 3.w : 5.w),
-                SizedBox(
-                  height: ResponsiveDesignOrientation.isLandscape ? 40.h : 20.h,
-                  width: ResponsiveDesignOrientation.isLandscape ? 10.w : 20.w,
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: SvgPicture.asset(
-                      /// Get Free Icon Path
-                      getFreeIconPath(context),
-                      width:
-                          ResponsiveDesignOrientation.isLandscape ? 30.w : 20.w,
-                      height:
-                          ResponsiveDesignOrientation.isLandscape ? 30.h : 20.h,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 2.w),
-                Text(
-                  '$remainingQuotaDownload/10',
-                  style: GoogleFonts.prompt(
-                    fontSize: ResponsiveDesignOrientation.isLandscape
-                        ? 7.5.sp
-                        : 12.sp,
-                    fontWeight: FontWeight.bold,
-                    color: kDark,
-                  ),
-                ),
-                SizedBox(
-                    width: ResponsiveDesignOrientation.isLandscape ? 3.w : 5.w),
-              ],
-            ),
-          ),
         ),
       ],
       bottom: PreferredSize(

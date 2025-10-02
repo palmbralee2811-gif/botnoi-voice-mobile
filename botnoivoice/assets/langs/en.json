@@ -282,9 +282,6 @@
         "failcase_whitelist": "Your email is not in the Education list yet. Please have your school's Admin read the details and contact us to apply to join the project on the Botnoi Voice FB page.",
         "failure_case": "An error occurred while registering for the Education project."
     },
-    "free_quota_use": {
-        "ten_time_perday": "You have reached your daily limit of 10 free uses. From now on, the system will deduct points based on your usage."
-    },
     "redeem_coupon_dialog": {
         "title": "Redeem Coupon",
         "use": "Redeem",
