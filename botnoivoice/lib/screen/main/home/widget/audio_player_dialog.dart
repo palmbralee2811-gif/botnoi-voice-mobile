@@ -18,7 +18,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:logger/logger.dart';
 import 'package:open_file_plus/open_file_plus.dart';
-import 'package:provider/provider.dart';
 
 // Play Audio on Temporary Directory, Download File, and Open Audio File
 class AudioPlayerDialog extends StatefulWidget {
@@ -53,8 +52,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
   /// Check Android Request Permission
   Future<void> _checkAndroidRequestPermissions() async {
-    bool hasPermission =
-        await context.read<AndroidPermission>().requestAndroidPermission();
+    bool hasPermission = await AndroidPermission().requestAndroidPermission();
 
     // Show Alert if Permission Denied
     if (!hasPermission) {
@@ -65,10 +63,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
           .showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
-        // String fileDirPath = "/storage/emulated/0/Download/${widget.filePath.split('/').last}";
-        // _logger.d("File Path: $fileDirPath");
         _logger.d("Widget File Path: ${widget.filePath}");
-        // OpenFile.open(fileDirPath);
         OpenFile.open(widget.filePath);
       });
     }

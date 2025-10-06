@@ -21,7 +21,6 @@ import 'package:botnoivoice/firebase_options.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:botnoivoice/service/payment/payment_service.dart';
-import 'package:botnoivoice/service/permission/android_permission.dart';
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -75,7 +74,6 @@ class BotnoiVoiceApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GoogleLogin()),
         ChangeNotifierProvider(create: (_) => GoogleToken()),
         ChangeNotifierProvider(create: (_) => HomeSpeakerDataManagement()),
-        ChangeNotifierProvider(create: (_) => AndroidPermission()),
         ChangeNotifierProvider(create: (_) => LineLogin()),
         ChangeNotifierProvider(create: (_) => LineToken()),
         ChangeNotifierProvider(create: (_) => EmailLogin()),
