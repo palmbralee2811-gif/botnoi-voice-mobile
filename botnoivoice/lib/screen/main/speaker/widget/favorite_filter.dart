@@ -51,63 +51,61 @@ class FavoriteFilter extends StatelessWidget {
     // ดึงรหัสภาษาปัจจุบันจาก locale ของ context
     String languageCode = Localizations.localeOf(context).languageCode;
 
-    // เริ่มต้นด้วยการกรองเฉพาะ speaker ที่อยู่ใน selectedIndexFavorites
+    // เริ่มต้นด้วยการกรองเฉพาะ speaker ที่ผู้ใช้กด favorite ไว้
     List<SpeakerEntity> filtered = SpeakerModel.speakerItem
         .where((item) => selectedIndexFavorites.contains(item.speakerId))
         .toList();
 
-    // กรองตามภาษา ถ้าไอเทมตรงกับ currentLanguage
-    filtered = filtered.where((item) => item.language == currentLanguage).toList();
+    // กรองเฉพาะภาษาที่เลือกเท่านั้น
+    filtered =
+        filtered.where((item) => item.language == currentLanguage).toList();
 
-    // ถ้าไม่มีไอเทมตรงภาษา ให้เลือกไอเทมที่ availableLanguage มีภาษาปัจจุบัน
+    // ไม่ดึงภาษาจาก availableLanguage ถ้าไม่มีภาษานี้ → แสดงว่าไม่มีเลย
     if (filtered.isEmpty) {
-      filtered = SpeakerModel.speakerItem
-          .where((item) =>
-              selectedIndexFavorites.contains(item.speakerId) &&
-              item.availableLanguage.contains(currentLanguage.toLowerCase()) &&
-              item.language != currentLanguage)
-          .toList();
+      logger.w("No favorite speakers found for language: $currentLanguage");
     }
 
-    // กรองตามเพศ ถ้ามีการกำหนด
+    // กรองตามเพศ (ถ้ามีเลือกไว้)
     if (currentGender.isNotEmpty) {
-      filtered = filtered.where((item) => item.gender == currentGender).toList();
+      filtered =
+          filtered.where((item) => item.gender == currentGender).toList();
     }
 
-    // กรองตาม voice style ถ้ามีการกำหนด
+    // กรองตาม voice style (เฉพาะภาษาใน locale)
     if (currentStyles.isNotEmpty) {
       filtered = filtered.where((item) {
         if (languageCode == 'th') {
-          // ถ้าเป็นภาษาไทย ตรวจสอบ voiceStyle ของ item
+          // ถ้าเป็นภาษาไทย → ใช้ voiceStyle
           return item.voiceStyle.isNotEmpty &&
               item.voiceStyle.any((style) => currentStyles.contains(style));
         } else {
-          // ถ้าไม่ใช่ภาษาไทย ตรวจสอบ engVoiceStyle
+          // ถ้าไม่ใช่ภาษาไทย → ใช้ engVoiceStyle
           return item.engVoiceStyle.isNotEmpty &&
               item.engVoiceStyle.any((style) => currentStyles.contains(style));
         }
       }).toList();
     }
 
-    // กรองตาม speech style หรือ category ถ้ามีการกำหนด
+    // กรองตาม category (speechStyle / engSpeechStyle)
     if (currentCategories.isNotEmpty) {
       filtered = filtered.where((item) {
         if (languageCode == 'th') {
-          // ตรวจสอบ speechStyle ของภาษาไทย
+          // ภาษาไทย → ใช้ speechStyle
           return item.speechStyle.isNotEmpty &&
-              item.speechStyle.any((category) => currentCategories.contains(category));
+              item.speechStyle
+                  .any((category) => currentCategories.contains(category));
         } else {
-          // ตรวจสอบ engSpeechStyle ของภาษาอื่น
+          // ภาษาอื่น → ใช้ engSpeechStyle
           return item.engSpeechStyle.isNotEmpty &&
-              item.engSpeechStyle.any((category) => currentCategories.contains(category));
+              item.engSpeechStyle
+                  .any((category) => currentCategories.contains(category));
         }
       }).toList();
     }
 
-    // log จำนวน speaker ที่ผ่านการกรองแล้ว
+    // Log จำนวน speaker ที่ผ่านการกรองแล้ว
     logger.i("Total favorite speakers after filtering: ${filtered.length}");
 
-    // คืนค่า filtered list
     return filtered;
   }
 
@@ -136,7 +134,8 @@ class FavoriteFilter extends StatelessWidget {
           // GridView.builder สำหรับสร้างไอเทม speaker
           GridView.builder(
             shrinkWrap: true, // ทำให้ GridView ไม่ใช้พื้นที่มากเกินไป
-            physics: const NeverScrollableScrollPhysics(), // ป้องกันการ scroll ของ GridView
+            physics:
+                const NeverScrollableScrollPhysics(), // ป้องกันการ scroll ของ GridView
             itemCount: favoriteSpeakers.length, // จำนวนไอเทม
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, // จำนวนคอลัมน์ใน Grid
@@ -157,10 +156,12 @@ class FavoriteFilter extends StatelessWidget {
                 key: ValueKey(data.speakerId), // ใช้ speakerId เป็น key
                 speakerItem: data, // ข้อมูลของ speaker
                 index: originalIndex, // index ดั้งเดิม
-                isSelected: selectedIndex.contains(originalIndex), // ตรวจสอบว่า item ถูกเลือก
+                isSelected: selectedIndex
+                    .contains(originalIndex), // ตรวจสอบว่า item ถูกเลือก
                 isFavorite: true, // แสดงว่าเป็น favorite
                 onSpeakerTap: onSpeakerTap, // callback เมื่อกดไอเทม
-                onFavoriteToggle: onFavoriteToggle, // callback เมื่อ toggle favorite
+                onFavoriteToggle:
+                    onFavoriteToggle, // callback เมื่อ toggle favorite
               );
             },
           ),
