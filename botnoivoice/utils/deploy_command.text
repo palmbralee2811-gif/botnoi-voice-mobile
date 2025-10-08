@@ -8,6 +8,14 @@ cd /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/
 flutter clean && flutter pub get
 flutter build appbundle --release
 
+# How to Upload native debug symbols for App bundle
+1. cd /botnoivoice/build/app/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib
+2. zip all files in /lib
+3. open terminal and run zip -d Archive.zip "__MACOSX*"
+- pwd /botnoivoice/build/app/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib
+4. upload zip file on Google Play Console
+5. done
+
 # Reset Firebase Config
 https://firebase.flutter.dev/docs/cli/
 
