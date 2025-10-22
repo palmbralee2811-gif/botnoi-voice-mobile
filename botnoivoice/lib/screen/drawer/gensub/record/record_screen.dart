@@ -120,7 +120,8 @@ class _RecordScreenState extends State<RecordScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
                 const SizedBox(height: 20),
                 GestureDetector(
-                  onTap: () => controller.toggleRecording(_safeSetState),
+                  //  แก้ไขตรงนี้: เพิ่ม context เข้าไปใน toggleRecording
+                  onTap: () => controller.toggleRecording(context, _safeSetState),
                   child: CircleAvatar(
                     radius: 45,
                     backgroundColor: controller.isRecording

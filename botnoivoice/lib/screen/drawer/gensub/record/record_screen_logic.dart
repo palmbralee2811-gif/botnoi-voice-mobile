@@ -1,10 +1,12 @@
 // record_screen_logic.dart
 
 import 'dart:io';
+import 'package:botnoivoice/screen/drawer/gensub/permission/permission_gensub.dart';
+import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart'; // เพิ่ม import นี้เพื่อใช้ BuildContext
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,12 +40,34 @@ class RecordLogic {
   Future<void> initPlayer() async {
     await _player.openPlayer();
   }
+  // เปลี่ยนไปส่งค่า boolean กลับมา
+  Future<bool> _checkAndroidRequestPermissions(BuildContext context) async {
+    bool hasPermission = await GenSubPermission().requestPermissionGenSub();
 
-  Future<void> toggleRecording(Function(void Function()) setState) async {
-    if (!isRecorderReady) return;
+    // หากไม่ได้รับอนุญาต ให้แสดง Dialog
+    if (!hasPermission) {
+      OpenAppSettingsDialog(
+              context: context,
+              text: 'audio_player.permission_denied'.tr())
+          .showPermissionDeniedDialog();
+    }
+    // ส่งสถานะการอนุญาตกลับไป
+    return hasPermission; 
+  }
+
+  Future<void> toggleRecording(BuildContext context, Function(void Function()) setState) async {
+    
+    // 1. ตรวจสอบสิทธิ์และรอผลลัพธ์
+    bool hasPermission = await _checkAndroidRequestPermissions(context);
+
+    // 2. ออกจากฟังก์ชันหากไม่มีสิทธิ์หรือ Recorder ไม่พร้อม
+    if (!hasPermission || !isRecorderReady) return; 
 
     if (isRecording) {
+      //  Logic: หยุดการบันทึก (Stop Recording)
       final path = await _recorder.stopRecorder();
+      
+      // คำนวณความยาวของเสียงที่บันทึก
       final player = AudioPlayer();
       await player.setFilePath(path!);
       final d = player.duration ?? Duration.zero;
@@ -54,11 +78,18 @@ class RecordLogic {
         recordedFilePath = path;
         audioDuration = d;
       });
+      
     } else {
+      //  Logic: เริ่มการบันทึก (Start Recording)
+      
+      // 3. กำหนด Path สำหรับไฟล์เสียง (ใช้ App-Specific Storage)
       final dir = await getTemporaryDirectory();
       final randomCode = randomStringOfCapitals(5); // สุ่มรหัสยาว 5 ตัว
-      final path = '${dir.path}/recording_$randomCode';
-      await _recorder.startRecorder(toFile: path);
+      // Path สำหรับไฟล์เสียงที่บันทึก
+      final path = '${dir.path}/recording_$randomCode'; // 💡 แนะนำให้ระบุนามสกุลไฟล์ด้วย เช่น .aac หรือ .mp4
+      
+      // 4. เริ่มบันทึกเสียง
+      await _recorder.startRecorder(toFile: path); // ⚠️ บรรทัดนี้จะไม่เกิด PlatformException แล้ว เพราะมีการตรวจสอบสิทธิ์ด้านบน
 
       setState(() {
         isRecording = true;
