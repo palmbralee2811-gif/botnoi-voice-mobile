@@ -66,7 +66,9 @@ Future<Map<String, String?>> uploadAudioToGensub(
   _logger.d("Fields: ${request.fields}");
 
   var response = await request.send();
-  var responseBody = await response.stream.bytesToString();
+  // Read raw bytes then decode with utf8 to preserve non-ASCII (e.g., Thai)
+  var responseBytes = await response.stream.toBytes();
+  var responseBody = utf8.decode(responseBytes);
 
   _logger.i("Response status: ${response.statusCode}");
   _logger.d("Response body: $responseBody");
@@ -101,11 +103,11 @@ Future<Map<String, String?>> transcribeAudioFile(
 
   try {
     String? body = result['body'];
-    if (body != null && body.startsWith('Response body: ')) {
+    if (body != null && body.isNotEmpty) {
       body = body.replaceFirst('Response body: ', '');
     }
     
-    if (body != null) {
+    if (body != null && body.isNotEmpty) {
       final jsonMap = json.decode(body);
       textResult = jsonMap['data']?['text']?.toString();
       if (textResult == null || textResult.isEmpty) {

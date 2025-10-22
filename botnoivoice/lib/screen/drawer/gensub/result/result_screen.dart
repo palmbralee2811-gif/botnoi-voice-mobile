@@ -174,6 +174,10 @@ class _ResultScreenState extends State<ResultScreen> {
           }
 
           final project = snapshot.data!;
+          debugPrint('ResultScreen: project.segments count=${project.segments.length}');
+          if (project.segments.isNotEmpty) {
+            debugPrint('ResultScreen: first segment text=${project.segments.first['text']}');
+          }
           final segments = project.segments;
           final approvedCount =
               segments.where((s) => s['approved'] == true).length;
