@@ -23,6 +23,7 @@ Future<Map<String, String?>> uploadAudioToGensub(
     int maxDuration = 10,
     double maxSilence = 0.3,
     String srt = "no",
+    String language = "en",
 }) async {
   // ดึง token มาใช้เป็นทั้ง Authorization: Bearer และ Botnoi-Token
   final token = getSelectedBotnoiToken(context); 
@@ -49,15 +50,16 @@ Future<Map<String, String?>> uploadAudioToGensub(
   headers['Botnoi-Token'] = token; // ใช้ Token เดียวกันสำหรับ Botnoi-Token
 
   var request = http.MultipartRequest("POST", url)
-    ..headers.addAll(headers)
-    ..fields['max_duration'] = maxDuration.toString()
-    ..fields['max_silence'] = maxSilence.toString()
-    ..fields['srt'] = srt
-    ..files.add(await http.MultipartFile.fromPath(
-      'audio_file',
-      file.path,
-      contentType: contentType,
-    ));
+  ..headers.addAll(headers)
+  ..fields['max_duration'] = maxDuration.toString()
+  ..fields['max_silence'] = maxSilence.toString()
+  ..fields['srt'] = srt
+  ..fields['language'] = language // 🚀 เพิ่ม field 'language' เข้ามาที่นี่
+  ..files.add(await http.MultipartFile.fromPath(
+    'audio_file',
+    file.path,
+    contentType: contentType,
+  ));
 
   _logger.i("Calling uploadAudioToGensub API: $url with file ${file.path}");
   _logger.d("Headers: ${request.headers}");
@@ -82,6 +84,7 @@ Future<Map<String, String?>> transcribeAudioFile(
     required File file,
     int maxDuration = 10,
     double maxSilence = 0.3,
+    String language = "en",
   }
 ) async {
   // เรียกใช้ uploadAudioToGensub
@@ -91,14 +94,13 @@ Future<Map<String, String?>> transcribeAudioFile(
     maxDuration: maxDuration,
     maxSilence: maxSilence,
     srt: "no",
+    language: language,
   );
 
   String? textResult;
 
   try {
     String? body = result['body'];
-    // Logic ในโค้ดเดิมมีปัญหาที่พยายามลบ 'Response body: ' ซึ่งอาจไม่จำเป็น
-    // แต่ถ้าโค้ดเดิมต้องการให้ทำแบบนั้น เราก็จะทำตาม
     if (body != null && body.startsWith('Response body: ')) {
       body = body.replaceFirst('Response body: ', '');
     }
