@@ -212,7 +212,29 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
             },
           ),
           SizedBox(height: 10.h),
-
+          
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
+            leading: Icon(
+              Icons.subtitles_outlined, // ไอคอนสำหรับ GenSub
+              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              color: kDark,
+            ),
+            title: Text(
+              'app_drawer.gensub'.tr(), // ชื่อแท็บ
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              context.push('/gensub');
+            },
+          ),
+          SizedBox(height: 10.h),
 
           ListTile(
             contentPadding: EdgeInsets.only(
