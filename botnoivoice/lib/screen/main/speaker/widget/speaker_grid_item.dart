@@ -124,7 +124,7 @@ class SpeakerGridItem extends StatelessWidget {
                     Logger().e(
                         'Image failed to load: ${speakerItem.squareImage}, error: $error');
                     return const Center(
-                      child: Icon(Icons.error, color: Colors.white70),
+                      child: Icon(Icons.error),
                     );
                   },
                 ),
