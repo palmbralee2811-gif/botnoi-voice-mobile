@@ -6,7 +6,7 @@ import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
-import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
+import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -99,10 +99,19 @@ Future<String> generateAudio(
       _logger.e("Failed to generate audio: ${response.statusCode}");
 
       if (context.mounted) {
-        NotificationPopup(
+        String errorMessage;
+
+        if (response.statusCode == 403) {
+          // Custom message for 403
+          errorMessage = 'home_screen.forbidden_language_mismatch'.tr();
+        } else {
+          errorMessage = 'home_screen.unable_to_create_sound'.tr();
+        }
+
+        NotificationDialog(
           context: context,
-          //ไม่สามารสร้างเสียงได้
-          text: 'home_screen.unable_to_create_sound'.tr()).showAsError();
+          text: errorMessage,
+        ).showErrorModal(context);
       }
     }
   } catch (e) {

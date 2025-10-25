@@ -242,7 +242,8 @@
         "please_type_message": "Please type your message",
         "type_message_in_selected_language": "Type your message in the selected language...",
         "create_sound": "Generate",
-        "unable_to_create_sound": "Unable to generate voice"
+        "unable_to_create_sound": "Unable to generate voice",
+        "forbidden_language_mismatch": "Please type text matching the language you selected"
     },
     "appbar_bottom": {
         "thai": "Thai",

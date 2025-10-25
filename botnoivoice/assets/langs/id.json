@@ -240,7 +240,8 @@
         "please_type_message": "Silakan ketik pesan Anda",
         "type_message_in_selected_language": "Ketik pesan Anda dalam bahasa yang dipilih...",
         "create_sound": "Buat",
-        "unable_to_create_sound": "Tidak dapat membuat suara"
+        "unable_to_create_sound": "Tidak dapat membuat suara",
+        "forbidden_language_mismatch": "Silakan ketik teks sesuai bahasa yang Anda pilih"
     },
     "appbar_bottom": {
         "thai": "Thai",

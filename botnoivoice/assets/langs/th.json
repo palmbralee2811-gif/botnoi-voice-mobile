@@ -241,7 +241,8 @@
         "please_type_message": "กรุณาพิมพ์ข้อความ",
         "type_message_in_selected_language": "พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .",
         "create_sound": "สร้างเสียง",
-        "unable_to_create_sound": "ไม่สามารถสร้างเสียงได้"
+        "unable_to_create_sound": "ไม่สามารถสร้างเสียงได้",
+        "forbidden_language_mismatch": "กรุณาพิมพ์ข้อความให้ตรงกับภาษาที่คุณเลือก"
     },
     "appbar_bottom": {
         "thai": "ไทย",
