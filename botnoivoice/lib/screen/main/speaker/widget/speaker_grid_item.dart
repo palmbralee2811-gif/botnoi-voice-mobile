@@ -76,51 +76,6 @@ class SpeakerGridItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
             child: Stack(
               children: [
-                // // รูปพื้นหลังจาก network
-                // CachedNetworkImage(
-                //   imageUrl: Uri.encodeFull(speakerItem.squareImage),
-                //   httpHeaders: const {
-                //     'Referer': 'https://voice.botnoi.ai/',
-                //     'Accept': 'image/webp,*/*'
-                //   },
-                //   fit: BoxFit.cover, // ให้รูปขยายครอบเต็ม container
-                //   placeholder: (context, url) =>
-                //       const Center(child: CircularProgressIndicator()),
-                //   errorWidget: (context, url, error) {
-                //     Logger().e('Image failed to load: $url, error: $error');
-                //     return const Icon(Icons.error);
-                //   },
-                //   width: double.infinity,  // กำหนดเต็ม container
-                //   height: double.infinity, // กำหนดเต็ม container
-                // ),
-                // รูปพื้นหลังจาก network (optimized)
-
-                // FadeInImage(
-                //   placeholder:
-                //       MemoryImage(kTransparentImage), // ภาพโปร่งใสเล็ก ๆ
-                //   image: ResizeImage(
-                //     NetworkImage(
-                //       Uri.encodeFull(speakerItem.squareImage),
-                //       headers: const {
-                //         'Referer': 'https://voice.botnoi.ai/',
-                //         'Accept': 'image/webp,*/*'
-                //       },
-                //     ),
-                //     width: 300, // ลดขนาดภาพตอน decode เพื่อลดการใช้หน่วยความจำ
-                //     height: 300,
-                //   ),
-                //   fit: BoxFit.cover,
-                //   width: double.infinity,
-                //   height: double.infinity,
-                //   fadeInDuration: const Duration(milliseconds: 250),
-                //   imageErrorBuilder: (context, error, stackTrace) {
-                //     Logger().e(
-                //         'Image failed to load: ${speakerItem.squareImage}, error: $error');
-                //     return const Center(
-                //         child: Icon(Icons.error, color: Colors.white70));
-                //   },
-                // ),
-
                 FadeInImage(
                   // Placeholder: ภาพเล็กโปร่งใส ใช้ในช่วงที่รูปจริงกำลังโหลด
                   // Placeholder image: small transparent image used while the real image is loading
