@@ -83,6 +83,10 @@ dependencies:
   # Caching Image form URL
   cached_network_image: ^3.4.1
 
+  # Preview Image in Speaker Screen (speaker_grid_item.dart)
+  transparent_image: ^2.0.1
+  flutter_cache_manager: ^3.4.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
