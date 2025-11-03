@@ -28,12 +28,13 @@ Future<dynamic> getAllWorkspaces(BuildContext context) async {
   var response = await http.get(url, headers: getJsonHeadersWithAuth(token));
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("getAllWorkspaces failed: ${response.statusCode} ${response.body}");
+    throw Exception("getAllWorkspaces failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -50,12 +51,13 @@ Future<dynamic> getAsrWorkspace(BuildContext context, String userId, String proj
   var response = await http.get(url, headers: getJsonHeadersWithAuth(token));
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("getAsrWorkspace failed: ${response.statusCode} ${response.body}");
+    throw Exception("getAsrWorkspace failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -94,13 +96,14 @@ Future<dynamic> insertAsrWorkspace(
   );
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
     throw Exception(
-        "insertAsrWorkspace failed: ${response.statusCode} ${response.body}");
+        "insertAsrWorkspace failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -129,12 +132,13 @@ Future<dynamic> updateAsrWorkspace(
   var response = await http.put(url, headers: getJsonHeadersWithAuth(token), body: body);
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("updateAsrWorkspace failed: ${response.statusCode} ${response.body}");
+    throw Exception("updateAsrWorkspace failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -151,12 +155,13 @@ Future<dynamic> deleteAsrWorkspace(BuildContext context, String projectId, Strin
   var response = await http.delete(url, headers: getJsonHeadersWithAuth(token));
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("deleteAsrWorkspace failed: ${response.statusCode} ${response.body}");
+    throw Exception("deleteAsrWorkspace failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -195,10 +200,11 @@ Future<dynamic> updateAsrApprove(
     );
 
     _logger.i("Response status: ${response.statusCode}");
-    _logger.d("Response body: ${response.body}");
+    var respBody = utf8.decode(response.bodyBytes);
+    _logger.d("Response body: $respBody");
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return jsonDecode(respBody);
     } else {
       throw Exception(
         "Failed to update ASR approve: ${response.statusCode} ${response.reasonPhrase}",

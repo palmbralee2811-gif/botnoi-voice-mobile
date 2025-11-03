@@ -9,7 +9,7 @@ import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 
 /// Referer URL 
-const String projectApiReferer = "https://voice-staging.botnoi.ai/";
+const String projectApiReferer = "https://api-voice.botnoi.ai";
 
 /// ฟังก์ชันดึง Token หลัก (Credentials Token/JWT) ตามลำดับความสำคัญ
 // Note: ฟังก์ชันนี้ทำงานถูกต้องแล้ว และไม่ต้องแก้ไข

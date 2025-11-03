@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:just_audio/just_audio.dart';
@@ -120,6 +121,18 @@ class UploadLogic {
       final chunksRes = await getAllChunks(context, projectId: projectId); 
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
+      // Try to extract immediate transcription from uploadResult so UI can show text right away
+      String? uploadText;
+      try {
+        final bodyStr = uploadResult['body'];
+        if (bodyStr != null && bodyStr.isNotEmpty) {
+          final parsed = json.decode(bodyStr);
+          uploadText = parsed['data']?['text']?.toString();
+        }
+      } catch (_) {
+        uploadText = null;
+      }
+
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
         final durationStr = (s['duration'] ?? '') as String;
         final parts = durationStr.split(' - ');
@@ -128,11 +141,16 @@ class UploadLogic {
             ? _parseTime(parts[1])
             : audioDuration?.inSeconds.toDouble() ?? 0.0;
 
+        // If backend chunk text is empty, try to use uploadText (gensub immediate response)
+        final chunkText = (s['botnoi_asr_text'] != null && s['botnoi_asr_text'].toString().trim().isNotEmpty)
+            ? s['botnoi_asr_text']
+            : (uploadText ?? '');
+
         return {
           "id": s['chunk_id'],
           "start": start,
           "end": end,
-          "text": s['botnoi_asr_text'] ?? '',
+          "text": chunkText,
         };
       }).toList();
 
@@ -146,6 +164,13 @@ class UploadLogic {
         segments: segments,
         userId: realUserId, // ใช้ userId จริงจาก backend
       );
+
+      debugPrint('transcribeFile: uploadText=$uploadText');
+      if (project.segments.isNotEmpty) {
+        debugPrint('transcribeFile: sample segment text=${project.segments.first['text']}');
+      } else {
+        debugPrint('transcribeFile: no segments returned from chunks');
+      }
 
       lastProject = project;
       onProjectCreated(project);

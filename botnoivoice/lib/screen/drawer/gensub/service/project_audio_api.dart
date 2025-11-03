@@ -51,7 +51,8 @@ Future<dynamic> cutAudio(
   _logger.i("Calling cutAudio API: $url\nFields: ${request.fields}\nFile: $filePath");
 
   var response = await request.send();
-  var responseBody = await response.stream.bytesToString();
+  var responseBytes = await response.stream.toBytes();
+  var responseBody = utf8.decode(responseBytes);
 
   _logger.i("Response status: ${response.statusCode}");
   _logger.d("Response body: $responseBody");
@@ -88,12 +89,14 @@ Future<dynamic> updateAudioApprove(
   var response = await http.put(url, headers: getJsonHeadersWithAuth(token), body: body);
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  // Use utf8.decode on bodyBytes to preserve encoding
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
   
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("updateAudioApprove failed: ${response.statusCode} ${response.body}");
+    throw Exception("updateAudioApprove failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -121,12 +124,13 @@ Future<dynamic> getAllChunks(
   var response = await http.get(url, headers: getJsonHeadersWithAuth(token));
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("getAllChunks failed: ${response.statusCode} ${response.body}");
+    throw Exception("getAllChunks failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -143,12 +147,13 @@ Future<dynamic> getChunk(BuildContext context, String chunkId) async {
   var response = await http.get(url, headers: getJsonHeadersWithAuth(token));
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("getChunk failed: ${response.statusCode} ${response.body}");
+    throw Exception("getChunk failed: ${response.statusCode} $respBody");
   }
 }
 
@@ -165,11 +170,12 @@ Future<dynamic> deleteChunk(BuildContext context, String chunkId) async {
   var response = await http.delete(url, headers: getJsonHeadersWithAuth(token));
 
   _logger.i("Response status: ${response.statusCode}");
-  _logger.d("Response body: ${response.body}");
+  var respBody = utf8.decode(response.bodyBytes);
+  _logger.d("Response body: $respBody");
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return jsonDecode(respBody);
   } else {
-    throw Exception("deleteChunk failed: ${response.statusCode} ${response.body}");
+    throw Exception("deleteChunk failed: ${response.statusCode} $respBody");
   }
 }

@@ -70,16 +70,41 @@ class ResultLogic {
           "text": text,
         };
       }).toList();
-
       if (segments.isNotEmpty) {
         final projectIdFromChunk = rawSegments.first['project_id'] ?? projectId;
+
+        // If all segment texts are empty, try to fall back to a direct transcription
+        final hasAnyText = segments.any((s) =>
+            (s['text'] != null && s['text'].toString().trim().isNotEmpty));
+
+        List<Map<String, dynamic>> finalSegments = segments;
+
+        if (!hasAnyText) {
+          try {
+            final transcription = await transcribeAudioFile(context, file: File(filePath));
+            final fallbackText = transcription['text'] ?? '';
+            if (fallbackText.isNotEmpty) {
+              // Populate each segment's text with fallbackText when original text empty
+              finalSegments = segments.map((s) {
+                final currentText = s['text']?.toString() ?? '';
+                return {
+                  ...s,
+                  'text': currentText.trim().isNotEmpty ? currentText : fallbackText,
+                };
+              }).toList();
+            }
+          } catch (e) {
+            debugPrint('Fallback transcription failed: $e');
+          }
+        }
+
         return ProjectModel(
           projectId: projectIdFromChunk,
           projectName: filePath.split('/').last,
           createdAt: DateTime.now(),
           duration: duration,
           filePath: filePath,
-          segments: segments,
+          segments: finalSegments,
           userId: userId,
         );
       }
