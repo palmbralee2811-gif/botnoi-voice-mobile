@@ -35,7 +35,7 @@ Future<dynamic> cutAudio(
       return;
     }
   var url = Uri.parse("$apiUrl$_baseUrlSuffix/cut_audio"); 
-  
+  _logger.e("print url $url");
   var request = http.MultipartRequest("POST", url)
     ..headers.addAll(getMultipartHeadersWithAuth(token))
     ..fields["project_id"] = projectId
@@ -47,7 +47,15 @@ Future<dynamic> cutAudio(
     ..fields["max_silence"] = maxSilence
     ..fields["language"] = language
     ..files.add(await http.MultipartFile.fromPath("audio_file", filePath));
-
+  _logger.e("audio duration $maxDuration");
+  _logger.e("audio silence $maxSilence");
+  _logger.e("language $language"); 
+  _logger.e("audio file path $filePath");
+  _logger.e("duration $durations");
+  _logger.e("chunk $chunk");
+  _logger.e("project name $projectName");
+  _logger.e("project id $projectId");
+  _logger.e("cut type $cutType");
   _logger.i("Calling cutAudio API: $url\nFields: ${request.fields}\nFile: $filePath");
 
   var response = await request.send();

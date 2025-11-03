@@ -223,7 +223,7 @@ class ResultLogic {
       List<Map<String, dynamic>> segments) async {
     for (var s in segments) {
       // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
-      await updateAudioApprove(
+      await updateAudioApproveSegment(
         context,
         chunkId: s['id'],
         userId: userId,
@@ -233,7 +233,7 @@ class ResultLogic {
   }
 
   // 4. Approve segment เดียว (updateAudioApprove - เดิมใช้ apiService โดยตรงใน UI, ตอนนี้ย้าย Logic มา Controller และใช้ BuildContext)
-  Future<dynamic> updateAudioApprove(
+  Future<dynamic> updateAudioApproveSegment(
     BuildContext context, // เพิ่ม BuildContext
     {required String chunkId, required String userId, required String approveText}
   ) async {

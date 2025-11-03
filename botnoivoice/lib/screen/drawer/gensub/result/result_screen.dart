@@ -331,7 +331,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                         try {
                                           //  แก้ไข: เรียก updateAudioApprove บน controller โดยส่ง context
                                           final res = await controller
-                                              .updateAudioApprove(
+                                              .updateAudioApproveSegment(
                                                 context, // ส่ง context
                                                 chunkId: segment['id'],
                                                 userId: widget.userId,
@@ -456,7 +456,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                   onPressed: () async {
                                     try {
                                       //  เรียกใช้ method บน controller โดยส่ง context
-                                      final res = await controller.updateAudioApprove(
+                                      final res = await controller.updateAudioApproveSegment(
                                           context, // ส่ง context
                                           chunkId: segment['id'],
                                           userId: widget.userId,

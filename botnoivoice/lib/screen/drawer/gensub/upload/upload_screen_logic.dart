@@ -16,9 +16,10 @@ String _extractSeconds(String input, {Duration? fallback}) {
   if (input.contains("ไม่จำกัด")) {
     return fallback != null ? fallback.inSeconds.toString() : "3600";
   }
-  final number = input.replaceAll(RegExp(r'[^0-9]'), "");
-  return number.isNotEmpty ? number : "10"; // default 10 วินาที
+  final number = RegExp(r'[\d.]+').firstMatch(input)?.group(0);
+  return number ?? (fallback != null ? fallback.inSeconds.toString() : "10");
 }
+
 
 /// Controller จัดการเลือกไฟล์, คำนวณความยาวไฟล์, และอัปโหลด/สร้าง workspace
 class UploadLogic {
@@ -104,17 +105,17 @@ class UploadLogic {
 
       // 3) cut audio → chunk อัตโนมัติ (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final cutResult = await cutAudio(
-        context, // ส่ง context
-        filePath: filePath!,
-        projectId: projectId,
-        projectName: projectName,
-        cutType: "sec",
-        chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-        durations: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
-        maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-        maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
-        language: "th",
-      );
+  context,
+  filePath: filePath!,
+  projectId: projectId,
+  projectName: projectName,
+  cutType: "sec",
+  chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+  durations: (audioDuration?.inSeconds ?? 0).toString(), // ✅ ใช้ความยาวจริงของไฟล์
+  maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+  maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
+  language: "th",
+);
       debugPrint(" cut audio result = $cutResult");
 
       // 4) get all chunks → ได้ segments (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)

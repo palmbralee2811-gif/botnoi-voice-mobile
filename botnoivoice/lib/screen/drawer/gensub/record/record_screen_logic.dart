@@ -164,17 +164,19 @@ class RecordLogic {
 
       // 3) cut audio (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final cutResult = await cutAudio(
-        context, 
-        filePath: recordedFilePath!,
-        projectId: projectId,
-        projectName: projectName,
-        cutType: "sec", 
-        chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-        durations: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
-        maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-        maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
-        language: "th",
-      );
+  context, 
+  filePath: recordedFilePath!,
+  projectId: projectId,
+  projectName: projectName,
+  cutType: "sec", 
+  chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+  durations: (audioDuration?.inSeconds ?? 0).toString(),
+
+  maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+  maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
+  language: "th",
+);
+
 
       debugPrint("Cut audio result: $cutResult");
 
@@ -218,12 +220,17 @@ class RecordLogic {
 
 
   String _extractSeconds(String input, {Duration? fallback}) {
-    if (input.contains("ไม่จำกัด")) {
-      return fallback != null ? fallback.inSeconds.toString() : "3600";
-    }
-    final number = input.replaceAll(RegExp(r'[^0-9]'), "");
-    return number.isNotEmpty ? number : "10";
+  if (input.contains("ไม่จำกัด")) {
+    return fallback != null ? fallback.inSeconds.toString() : "3600";
   }
+
+  // ✅ ใช้ regex แบบใหม่ ดึงตัวเลขที่มีทศนิยมได้
+  final match = RegExp(r'[\d.]+').firstMatch(input);
+  final number = match?.group(0);
+
+  return number ?? (fallback != null ? fallback.inSeconds.toString() : "10");
+}
+
 
   double _parseTime(String t) {
     final parts = t.split(':').map((e) => double.tryParse(e) ?? 0).toList();

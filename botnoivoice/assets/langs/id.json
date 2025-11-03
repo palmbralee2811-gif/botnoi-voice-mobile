@@ -89,7 +89,8 @@
         "security": "Keamanan",
         "reward": "Hadiah",
         "redeem": "Tukar Kupon",
-        "education": "Pendidikan"
+        "education": "Pendidikan",
+        "gensub": "BuatSub"
     },
     "account": {
         "uid_copy_success": "UID berhasil disalin",
