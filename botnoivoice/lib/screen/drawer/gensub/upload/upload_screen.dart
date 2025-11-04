@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as path;
 import 'package:intl/intl.dart';
 
@@ -61,13 +62,14 @@ class _UploadScreenState extends State<UploadScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "อัปโหลดไฟล์เสียง",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                "text_to_gensub.transcribe_audio".tr(),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 6),
-              const Text("ถอดข้อความจากไฟล์เสียงที่อัปโหลด",
-                  style: TextStyle(color: Colors.black54)),
+              Text("text_to_gensub.Expand_Title".tr(),
+                  style: const TextStyle(color: Colors.black54)),
               const SizedBox(height: 20),
               OutlinedButton.icon(
                 onPressed: () async {
@@ -75,8 +77,8 @@ class _UploadScreenState extends State<UploadScreen> {
                   setState(() {});
                 },
                 icon: const Icon(Icons.upload_file, color: Colors.blue),
-                label:
-                    const Text("อัปโหลด", style: TextStyle(color: Colors.blue)),
+                label: Text("text_to_gensub.upload".tr(),
+                    style: const TextStyle(color: Colors.blue)),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.blue),
                   padding:
@@ -123,12 +125,14 @@ class _UploadScreenState extends State<UploadScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("ภาษาของไฟล์เสียง"),
+                Text("text_to_gensub.audio_language".tr()),
                 DropdownButton<String>(
                   value: controller.selectedLanguage,
-                  items: const [
-                    DropdownMenuItem(value: "ไทย", child: Text("ไทย")),
-                    DropdownMenuItem(value: "อังกฤษ", child: Text("อังกฤษ")),
+                  items: [
+                    DropdownMenuItem(
+                        value: "ไทย", child: Text("languages.th".tr())),
+                    DropdownMenuItem(
+                        value: "อังกฤษ", child: Text("languages.en".tr())),
                   ],
                   onChanged: (val) {
                     if (val != null) {
@@ -142,43 +146,46 @@ class _UploadScreenState extends State<UploadScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("เวลาของไฟล์"),
+                Text("text_to_gensub.audio_time".tr()),
                 Text(
                   controller.audioDuration != null
-                      ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} นาที"
-                      : "คำนวณอัตโนมัติเมื่อถอดเสียง",
+                      ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
+                      : "text_to_gensub.duration_auto_calculate".tr(),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             ExpansionTile(
-              title: const Text("ตั้งค่าการตัดข้อความ"),
+              title: Text("text_to_gensub.segmentation_settings".tr()),
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("ระยะเวลาสูงสุดในการตัด"),
+                    Text("text_to_gensub.max_segment_duration".tr()),
                     DropdownButton<String>(
-                      value: controller.maxSegmentDuration,
-                      items: const [
+                      value: [
+                        "1 ${"units.seconds".tr()}",
+                        "2 ${"units.seconds".tr()}",
+                        "5 ${"units.seconds".tr()}",
+                        "10 ${"units.seconds".tr()}",
+                        "15 ${"units.seconds".tr()}",
+                        "20 ${"units.seconds".tr()}",
+                        "25 ${"units.seconds".tr()}",
+                        "30 ${"units.seconds".tr()}",
+                        "units.unlimited".tr(),
+                      ].contains(controller.maxSegmentDuration)
+                          ? controller.maxSegmentDuration
+                          : "10 ${"units.seconds".tr()}",
+                      items: [
+                        for (var sec in [1, 2, 5, 10, 15, 20, 25, 30])
+                          DropdownMenuItem(
+                            value: "$sec ${"units.seconds".tr()}",
+                            child: Text("$sec ${"units.seconds".tr()}"),
+                          ),
                         DropdownMenuItem(
-                            value: "1 วินาที", child: Text("1 วินาที")),
-                        DropdownMenuItem(
-                            value: "2 วินาที", child: Text("2 วินาที")),
-                        DropdownMenuItem(
-                            value: "5 วินาที", child: Text("5 วินาที")),
-                        DropdownMenuItem(
-                            value: "10 วินาที", child: Text("10 วินาที")),
-                        DropdownMenuItem(
-                            value: "15 วินาที", child: Text("15 วินาที")),
-                        DropdownMenuItem(
-                            value: "20 วินาที", child: Text("20 วินาที")),
-                        DropdownMenuItem(
-                            value: "25 วินาที", child: Text("25 วินาที")),
-                        DropdownMenuItem(
-                            value: "30 วินาที", child: Text("30 วินาที")),
-                        DropdownMenuItem(
-                            value: "ไม่จำกัด", child: Text("ไม่จำกัด")),
+                          value: "units.unlimited".tr(),
+                          child: Text("units.unlimited".tr()),
+                        ),
                       ],
                       onChanged: (val) {
                         if (val != null) {
@@ -189,35 +196,40 @@ class _UploadScreenState extends State<UploadScreen> {
                   ],
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("ช่วงเงียบสูงสุดในการตัด"),
-                    DropdownButton<String>(
-                      value: controller.maxSilenceDuration,
-                      items: const [
-                        DropdownMenuItem(
-                            value: "0.1 วินาที", child: Text("0.1 วินาที")),
-                        DropdownMenuItem(
-                            value: "0.3 วินาที", child: Text("0.3 วินาที")),
-                        DropdownMenuItem(
-                            value: "0.5 วินาที", child: Text("0.5 วินาที")),
-                        DropdownMenuItem(
-                            value: "0.7 วินาที", child: Text("0.7 วินาที")),
-                        DropdownMenuItem(
-                            value: "0.9 วินาที", child: Text("0.9 วินาที")),
-                        DropdownMenuItem(
-                            value: "1.5 วินาที", child: Text("1.5 วินาที")),
-                        DropdownMenuItem(
-                            value: "ไม่จำกัด", child: Text("ไม่จำกัด")),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(() => controller.maxSilenceDuration = val);
-                        }
-                      },
-                    ),
-                  ],
-                ),
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Text("text_to_gensub.max_silence_duration".tr()),
+    DropdownButton<String>(
+      value: [
+        "0.1 ${"units.seconds".tr()}",
+        "0.3 ${"units.seconds".tr()}",
+        "0.5 ${"units.seconds".tr()}",
+        "0.7 ${"units.seconds".tr()}",
+        "0.9 ${"units.seconds".tr()}",
+        "1.5 ${"units.seconds".tr()}",
+        "units.unlimited".tr(),
+      ].contains(controller.maxSilenceDuration)
+          ? controller.maxSilenceDuration
+          : "0.3 ${"units.seconds".tr()}",
+      items: [
+        for (var sec in ["0.1", "0.3", "0.5", "0.7", "0.9", "1.5"])
+          DropdownMenuItem(
+            value: "$sec ${"units.seconds".tr()}",
+            child: Text("$sec ${"units.seconds".tr()}"),
+          ),
+        DropdownMenuItem(
+          value: "units.unlimited".tr(),
+          child: Text("units.unlimited".tr()),
+        ),
+      ],
+      onChanged: (val) {
+        if (val != null) {
+          setState(() => controller.maxSilenceDuration = val);
+        }
+      },
+    ),
+  ],
+)
               ],
             ),
             const SizedBox(height: 16),
@@ -263,7 +275,9 @@ class _UploadScreenState extends State<UploadScreen> {
                       ),
                     )
                   : const Icon(Icons.play_arrow),
-              label: Text(isLoading ? "กำลังถอด..." : "ถอดไฟล์เสียง"),
+              label: Text(isLoading
+                  ? "text_to_gensub.transcribing".tr()
+                  : "text_to_gensub.transcribe_audio".tr()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
@@ -305,12 +319,13 @@ class _UploadScreenState extends State<UploadScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
               color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
-          child: const Text(
-            "Botnoi GenSub project",
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent),
+          child: Text(
+            "text_to_gensub.project".tr(),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.blueAccent,
+            ),
           ),
         ),
         const SizedBox(height: 10),
@@ -327,7 +342,9 @@ class _UploadScreenState extends State<UploadScreen> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("สร้างเมื่อ: ${formatDate(project.createdAt)}"),
+                  Text(
+                    '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
+                  ),
                   const SizedBox(height: 2),
                   Row(
                     children: [
@@ -352,18 +369,21 @@ class _UploadScreenState extends State<UploadScreen> {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (_) => AlertDialog(
-                          title: const Text("ลบโปรเจกต์"),
-                          content:
-                              const Text("คุณแน่ใจหรือไม่ที่จะลบโปรเจกต์นี้?"),
+                          title: Text("dialog.delete_project_title".tr()),
+                          content: Text("dialog.delete_project_content".tr()),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: const Text("ยกเลิก"),
+                              child: Text("dialog.cancel".tr()),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text("ลบ",
-                                  style: TextStyle(color: Colors.red)),
+                              child: Text(
+                                "dialog.delete".tr(),
+                                style: const TextStyle(
+                                    color: Colors
+                                        .red), // <--- **ใส่ 'const' ที่นี่**
+                              ),
                             ),
                           ],
                         ),

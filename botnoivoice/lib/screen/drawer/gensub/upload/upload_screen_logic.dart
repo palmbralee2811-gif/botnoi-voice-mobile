@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 
 // Import Standalone API Functions ใหม่ที่คุณสร้าง
@@ -35,6 +36,8 @@ class UploadLogic {
   String maxSegmentDuration = "10 วินาที";
   String maxSilenceDuration = "0.3 วินาที";
 
+  bool _isPicking = false;
+
   ProjectModel? lastProject;
 
   UploadLogic({
@@ -45,6 +48,10 @@ class UploadLogic {
 
   /// เลือกไฟล์เสียงผ่าน FilePicker และอ่านความยาวไฟล์ด้วย just_audio (ไม่มี API call)
   Future<void> pickFile() async {
+  if (_isPicking) return; // กันการกดซ้ำ
+  _isPicking = true;
+
+  try {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['mp3', 'wav', 'm4a', 'aac'],
@@ -53,18 +60,21 @@ class UploadLogic {
     if (result != null && result.files.single.path != null) {
       final selectedPath = result.files.single.path!;
       final player = AudioPlayer();
-      try {
-        await player.setFilePath(selectedPath);
-        final d = player.duration ?? Duration.zero;
+      await player.setFilePath(selectedPath);
+      final d = player.duration ?? Duration.zero;
 
-        filePath = selectedPath;
-        audioDuration = d;
-        transcribeStatus = null;
-      } finally {
-        await player.dispose();
-      }
+      filePath = selectedPath;
+      audioDuration = d;
+      transcribeStatus = null;
+
+      await player.dispose();
     }
+  } catch (e) {
+    debugPrint("pickFile error: $e");
+  } finally {
+    _isPicking = false;
   }
+}
 
   /// ล้างไฟล์ที่เลือก (ไม่มี API call)
   void clearFile() {
@@ -77,7 +87,7 @@ class UploadLogic {
   Future<bool> transcribeFile(BuildContext context) async { // <<< ใช้ BuildContext
     if (filePath == null) return false;
 
-    transcribeStatus = " กำลังอัปโหลดและถอดเสียง...";
+    transcribeStatus = "text_to_gensub.transcribe_status".tr();
 
     try {
       // 1) upload audio → gensub (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)

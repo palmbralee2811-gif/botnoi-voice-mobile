@@ -56,46 +56,64 @@ class RecordLogic {
   }
 
   Future<void> toggleRecording(BuildContext context, Function(void Function()) setState) async {
-    
-    // 1. ตรวจสอบสิทธิ์และรอผลลัพธ์
-    bool hasPermission = await _checkAndroidRequestPermissions(context);
+  bool hasPermission = await _checkAndroidRequestPermissions(context);
+  if (!hasPermission) return;
 
-    // 2. ออกจากฟังก์ชันหากไม่มีสิทธิ์หรือ Recorder ไม่พร้อม
-    if (!hasPermission || !isRecorderReady) return; 
-
-    if (isRecording) {
-      //  Logic: หยุดการบันทึก (Stop Recording)
-      final path = await _recorder.stopRecorder();
-      
-      // คำนวณความยาวของเสียงที่บันทึก
-      final player = AudioPlayer();
-      await player.setFilePath(path!);
-      final d = player.duration ?? Duration.zero;
-      await player.dispose();
-
-      setState(() {
-        isRecording = false;
-        recordedFilePath = path;
-        audioDuration = d;
-      });
-      
-    } else {
-      //  Logic: เริ่มการบันทึก (Start Recording)
-      
-      // 3. กำหนด Path สำหรับไฟล์เสียง (ใช้ App-Specific Storage)
-      final dir = await getTemporaryDirectory();
-      final randomCode = randomStringOfCapitals(5); // สุ่มรหัสยาว 5 ตัว
-      // Path สำหรับไฟล์เสียงที่บันทึก
-      final path = '${dir.path}/recording_$randomCode'; // 💡 แนะนำให้ระบุนามสกุลไฟล์ด้วย เช่น .aac หรือ .mp4
-      
-      // 4. เริ่มบันทึกเสียง
-      await _recorder.startRecorder(toFile: path); // ⚠️ บรรทัดนี้จะไม่เกิด PlatformException แล้ว เพราะมีการตรวจสอบสิทธิ์ด้านบน
-
-      setState(() {
-        isRecording = true;
-      });
-    }
+  // ถ้ายังไม่ได้ initRecorder ให้ init ก่อน
+  if (!isRecorderReady) {
+    await initRecorder();
   }
+
+  if (isRecording) {
+    // 🟥 หยุดการอัด
+    final path = await _recorder.stopRecorder();
+
+    // 🧠 ปิดและเปิด recorder ใหม่เพื่อ reset state
+    await _recorder.closeRecorder();
+    await _recorder.openRecorder();
+
+    // ✅ รอไฟล์ถูกเขียนเสร็จ
+    final file = File(path!);
+    for (int i = 0; i < 5; i++) {
+      if (await file.exists()) break;
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+
+    // ✅ ตรวจไฟล์ก่อนเล่น
+    if (await file.exists()) {
+      final player = AudioPlayer();
+      try {
+        await player.setFilePath(file.path);
+        final d = player.duration ?? Duration.zero;
+        await player.dispose();
+        setState(() {
+          recordedFilePath = file.path;
+          audioDuration = d;
+          isRecording = false;
+        });
+      } catch (e) {
+        debugPrint("⚠️ Failed to load file: $e");
+      }
+    }
+  } else {
+    // 🟩 เริ่มอัดเสียงใหม่
+    final dir = await getTemporaryDirectory();
+    final randomCode = randomStringOfCapitals(5);
+    final path = '${dir.path}/recording_$randomCode.aac';
+
+    // ปิด recorder เก่าถ้ามันยังเปิดอยู่ (กัน state ซ้ำ)
+    if (_recorder.isStopped == false) {
+      await _recorder.stopRecorder();
+    }
+
+    await _recorder.startRecorder(toFile: path);
+    setState(() {
+      isRecording = true;
+    });
+  }
+}
+
+
 
   Future<void> togglePlay(Function(void Function()) setState) async {
     if (recordedFilePath == null) return;

@@ -307,5 +307,38 @@
     },
     "favorite_screen": {
         "background_text": "There are no preferred speakers in this language."
-    }
+    },
+    "text_to_gensub": {
+    "upload": "Upload File",
+    "record": "Record File",
+    "audio_language": "Audio Language",
+    "file_duration": "File Duration",
+    "Expand_Title": "Transcribe text from uploaded audio files",
+    "duration_auto_calculate": "Auto calculate when transcribing",
+    "audio_time": "File Time",
+    "segmentation_settings": "Segmentation Settings",
+    "max_segment_duration": "Max Segment Duration",
+    "transcribe_status" : "Uploading and Transcribing",
+    "max_silence_duration": "Max Silence Duration",
+    "transcribing": "Transcribing...",
+    "transcribe_audio": "Transcribe Audio",
+    "create_at" : "Create at:",
+    "project" : "Botnoi GenSub Project"
+  },
+  "units": {
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "unlimited": "Unlimited"
+  },
+  "languages": {
+    "th": "Thai",
+    "en": "English",
+    "id": "Indonesian"
+  },
+  "dialog": {
+    "delete_project_title": "Delete Project",
+    "delete_project_content": "Are you sure you want to delete this project?",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  }
 }

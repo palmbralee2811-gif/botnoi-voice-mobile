@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen.dart';
-// Note: ต้องมั่นใจว่า UploadRecordState ไม่มี apiToken แล้ว
+import 'package:easy_localization/easy_localization.dart';
 
 class UploadRecScreen extends ConsumerStatefulWidget {
   const UploadRecScreen({super.key});
@@ -16,9 +16,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
   @override
   void initState() {
     super.initState();
-    // เรียกหลัง widget ถูก mount
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ✅ แก้ไข: ส่ง context เข้าไปใน loadProjects
       ref.read(uploadRecordProvider.notifier).loadProjects(context);
     });
   }
@@ -34,11 +32,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
         backgroundColor: Colors.white,
         elevation: 1,
         title: Text(
-          controller.selectedIndex == 0
-              ? "อัปโหลดไฟล์"
-              : controller.selectedIndex == 1
-                  ? "อัดเสียง"
-                  : "โปรไฟล์",
+          controller.selectedIndex == 0 ? "text_to_gensub.upload".tr() : "text_to_gensub.record".tr(),
           style: const TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -55,11 +49,8 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                     ref.read(uploadRecordProvider.notifier).addProject(project);
                   },
                   onProjectDeleted: (project) {
-                    //  แก้ไข: ส่ง context เข้าไปใน deleteProject
                     ref.read(uploadRecordProvider.notifier).deleteProject(context, project);
                   },
-                  //  ลบ apiToken ออกจาก Widget Call
-                  // apiToken: controller.apiToken, 
                 ),
                 RecordScreen(
                   projects: controller.projects,
@@ -67,12 +58,8 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                     ref.read(uploadRecordProvider.notifier).addProject(project);
                   },
                   onProjectDeleted: (project) {
-                    //  แก้ไข: ส่ง context เข้าไปใน deleteProject
                     ref.read(uploadRecordProvider.notifier).deleteProject(context, project);
                   },
-                ),
-                const Center(
-                  child: Text("หน้าโปรไฟล์ (ยังไม่ได้ทำ)"),
                 ),
               ],
             ),
@@ -83,18 +70,14 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
         onTap: (index) {
           ref.read(uploadRecordProvider.notifier).changeTab(index);
         },
-        items: const [
+        items:  [
           BottomNavigationBarItem(
-            icon: Icon(Icons.file_upload),
-            label: "อัปโหลดไฟล์",
+            icon: const Icon(Icons.file_upload),
+            label: "text_to_gensub.upload".tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.mic),
-            label: "อัดเสียง",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "โปรไฟล์",
+            icon: const Icon(Icons.mic),
+            label: "text_to_gensub.record".tr(),
           ),
         ],
       ),

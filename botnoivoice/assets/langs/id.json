@@ -307,5 +307,38 @@
     },
     "favorite_screen": {
         "background_text": "Tidak ada penutur pilihan dalam bahasa ini."
-    }
+    },
+    "text_to_gensub": {
+    "upload": "Unggah Berkas",
+    "record": "Rekam Berkas",
+    "audio_language": "Bahasa Audio",
+    "file_duration": "Durasi File",
+    "Expand_Title": "Transkripsikan teks dari file audio yang diunggah",
+    "duration_auto_calculate": "Hitung otomatis saat transkripsi",
+    "audio_time": "Waktu File",
+    "transcribe_status" : "Sedang Mengunggah dan Mentranskripsi",
+    "segmentation_settings": "Pengaturan Pemotongan",
+    "max_segment_duration": "Durasi Maksimum Segmen",
+    "max_silence_duration": "Durasi Hening Maksimum",
+    "transcribing": "Sedang menyalin...",
+    "transcribe_audio": "Transkripsi Audio",
+    "create_at" : "Dibuat saat:",
+    "project" : "Proyek Botnoi GenSub"
+  },
+  "units": {
+    "seconds": "detik",
+    "minutes": "menit",
+    "unlimited": "Tak terbatas"
+  },
+  "languages": {
+    "th": "Thai",
+    "en": "Inggris",
+    "id": "Indonesia"
+  },
+  "dialog": {
+    "delete_project_title": "Hapus Proyek",
+    "delete_project_content": "Apakah Anda yakin ingin menghapus proyek ini?",
+    "cancel": "Batal",
+    "delete": "Hapus"
+  }
 }

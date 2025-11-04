@@ -307,5 +307,38 @@
     },
     "favorite_screen": {
         "background_text": "ไม่มีผู้พูดที่ถูกใจในภาษานี้"
-    }
+    },
+  "text_to_gensub": {
+    "upload": "อัปโหลดไฟล์",
+    "record": "อัดเสียง",
+    "audio_language": "ภาษาของไฟล์เสียง",
+    "file_duration": "เวลาของไฟล์",
+    "Expand_Title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด",
+    "duration_auto_calculate": "คำนวณอัตโนมัติเมื่อถอดเสียง",
+    "audio_time": "เวลาของไฟล์",
+    "segmentation_settings": "ตั้งค่าการตัดข้อความ",
+    "max_segment_duration": "ระยะเวลาสูงสุดในการตัด",
+    "max_silence_duration": "ช่วงเงียบสูงสุดในการตัด",
+    "transcribing": "กำลังถอด...",
+    "transcribe_status" : "กำลังอัปโหลดและถอดเสียง",
+    "transcribe_audio": "ถอดไฟล์เสียง",
+    "create_at" : "สร้างเมื่อ:",
+    "project" : "โปรเจคบอทน้อยเจนซับ"
+  },
+  "units": {
+    "seconds": "วินาที",
+    "minutes": "นาที",
+    "unlimited": "ไม่จำกัด"
+  },
+  "languages": {
+    "th": "ไทย",
+    "en": "อังกฤษ",
+    "id": "อินโดนีเซีย"
+  },
+  "dialog": {
+    "delete_project_title": "ลบโปรเจกต์",
+    "delete_project_content": "คุณแน่ใจหรือไม่ที่จะลบโปรเจกต์นี้?",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ"
+  }
 }
