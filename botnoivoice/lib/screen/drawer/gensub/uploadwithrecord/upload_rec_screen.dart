@@ -1,9 +1,11 @@
-import 'package:botnoivoice/screen/drawer/gensub/upload_rec_logic.dart';
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/topbar_gensub.dart'; 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 
 class UploadRecScreen extends ConsumerStatefulWidget {
   const UploadRecScreen({super.key});
@@ -27,17 +29,8 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 1,
-        title: Text(
-          controller.selectedIndex == 0 ? "text_to_gensub.upload".tr() : "text_to_gensub.record".tr(),
-          style: const TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
+      appBar: const TopbarGensub(),
+      drawer: const DrawerAppbar(), 
       body: controller.loading
           ? const Center(child: CircularProgressIndicator())
           : IndexedStack(
@@ -70,7 +63,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
         onTap: (index) {
           ref.read(uploadRecordProvider.notifier).changeTab(index);
         },
-        items:  [
+        items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.file_upload),
             label: "text_to_gensub.upload".tr(),

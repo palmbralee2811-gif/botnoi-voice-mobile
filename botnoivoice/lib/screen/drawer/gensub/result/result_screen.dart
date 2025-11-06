@@ -1,7 +1,7 @@
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-import 'package:botnoivoice/screen/drawer/gensub/upload_rec_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:intl/intl.dart';
 
 // Note: ต้องมั่นใจว่า ResultLogic ถูกปรับให้ Constructor ไม่รับ apiService

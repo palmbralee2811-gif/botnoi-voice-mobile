@@ -19,7 +19,7 @@ import 'package:botnoivoice/screen/email/register_screen.dart';
 import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
-import 'package:botnoivoice/screen/drawer/gensub/upload_rec_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
