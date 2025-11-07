@@ -309,11 +309,8 @@
         "background_text": "Tidak ada penutur pilihan dalam bahasa ini."
     },
     "text_to_gensub": {
-    "upload": "Unggah Berkas",
-    "record": "Rekam Berkas",
     "audio_language": "Bahasa Audio",
     "file_duration": "Durasi File",
-    "Expand_Title": "Transkripsikan teks dari file audio yang diunggah",
     "duration_auto_calculate": "Hitung otomatis saat transkripsi",
     "audio_time": "Waktu File",
     "transcribe_status" : "Sedang Mengunggah dan Mentranskripsi",
@@ -324,6 +321,18 @@
     "transcribe_audio": "Transkripsi Audio",
     "create_at" : "Dibuat saat:",
     "project" : "Proyek Botnoi GenSub"
+  },
+  "upload_gensub": {
+    "upload": "Unggah Berkas",
+    "Title" : "Unggah Berkas Audio",
+    "Expand_Title": "Transkripsikan dari Berkas Audio yang Diunggah"
+  },
+  "record_gensub": {
+    "record": "Rekam Audio",
+    "Title" : "Rekam Audio untuk Transkripsi",
+    "Expand_Title": "Transkripsikan dari Berkas Audio yang Diunggah",
+    "press_to" : "Tekan tombol untuk merekam audio",
+    "press_correct" : "Tekan ✓ untuk mengirim data"
   },
   "units": {
     "seconds": "detik",

@@ -3,7 +3,8 @@ import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart';
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
 // Import Standalone API Functions ที่ใช้โดยตรงใน Widget (สำหรับ _loadProjects)
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 
@@ -27,14 +28,14 @@ class _RecordScreenState extends State<RecordScreen> {
   late RecordLogic controller;
   bool _confirmed = false;
   bool _loading = false;
-  
+
   // Note: ลบ bool _isLoading ออก เพราะไม่ได้ใช้
-  // bool _isLoading = false; 
-  
+  // bool _isLoading = false;
+
   List<ProjectModel> _projects = [];
 
   // UI controls
-  String _selectedLanguage = "ไทย";
+  String _selectedLanguage = "TH";
   String _maxSegmentDuration = "10 วินาที";
   String _maxSilenceDuration = "0.3 วินาที";
 
@@ -46,7 +47,7 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     // ❌ ลบการใช้ dotenv และ ProjectApiService
     // final apiToken = dotenv.env['API_TOKEN'] ?? '';
     // final currentUserId = dotenv.env['USER_ID'] ?? '';
@@ -54,12 +55,13 @@ class _RecordScreenState extends State<RecordScreen> {
     // ✅ แก้ไข: สร้าง RecordLogic โดยไม่ต้องส่ง API Class/Token เข้าไป
     controller = RecordLogic(
       // api: ProjectApiService(apiToken), // <<< ลบออก
-      currentUserId: "USER_ID_PLACEHOLDER", // <<< ใช้ค่า placeholder หรือดึงจาก Provider อื่น
+      currentUserId:
+          "USER_ID_PLACEHOLDER", // <<< ใช้ค่า placeholder หรือดึงจาก Provider อื่น
     );
 
     controller.initRecorder();
     controller.initPlayer();
-    
+
     // ✅ เรียก loadProjects หลังจาก widget build ครั้งแรก (เพื่อให้ context พร้อม)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadProjects();
@@ -71,8 +73,8 @@ class _RecordScreenState extends State<RecordScreen> {
     _safeSetState(() => _loading = true);
     try {
       // ✅ เรียกใช้ Standalone API Function และส่ง context
-      final res = await getAllWorkspaces(context); 
-      
+      final res = await getAllWorkspaces(context);
+
       if (res != null && res['data'] != null) {
         _projects = (res['data'] as List)
             .map((json) => ProjectModel.fromJson(json))
@@ -112,16 +114,19 @@ class _RecordScreenState extends State<RecordScreen> {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               children: [
-                const Text("อัดเสียงถอดข้อความ",
-                    style:
-                        TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                Text(
+                  "record_gensub.Title".tr(),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
-                const Text("ถอดข้อความจากไฟล์เสียงที่อัด",
-                    style: TextStyle(fontSize: 16, color: Colors.grey)),
+                Text("record_gensub.Expand_Title".tr(),
+                    style: const TextStyle(color: Colors.black54)),
                 const SizedBox(height: 20),
                 GestureDetector(
                   //  แก้ไขตรงนี้: เพิ่ม context เข้าไปใน toggleRecording
-                  onTap: () => controller.toggleRecording(context, _safeSetState),
+                  onTap: () =>
+                      controller.toggleRecording(context, _safeSetState),
                   child: CircleAvatar(
                     radius: 45,
                     backgroundColor: controller.isRecording
@@ -134,6 +139,9 @@ class _RecordScreenState extends State<RecordScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 15),
+                Text("record_gensub.press_to".tr(),
+                    style: const TextStyle(color: Colors.black54)),
               ],
             ),
           ),
@@ -163,9 +171,9 @@ class _RecordScreenState extends State<RecordScreen> {
             color: Colors.blue[50],
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Text(
-            "Botnoi GenSub project",
-            style: TextStyle(
+          child: Text(
+            "text_to_gensub.project".tr(),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.blueAccent,
@@ -173,7 +181,6 @@ class _RecordScreenState extends State<RecordScreen> {
           ),
         ),
         const SizedBox(height: 10),
-
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -196,7 +203,9 @@ class _RecordScreenState extends State<RecordScreen> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("สร้างเมื่อ: ${formatDate(project.createdAt)}"),
+                    Text(
+                      '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
+                    ),
                     const SizedBox(height: 2),
                     Row(
                       children: [
@@ -221,17 +230,17 @@ class _RecordScreenState extends State<RecordScreen> {
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text("ลบโปรเจกต์"),
-                            content: const Text(
-                                "คุณแน่ใจหรือไม่ที่จะลบโปรเจกต์นี้?"),
+                            title: const Text("dialog.delete_project_title"),
+                            content:
+                                const Text("dialog.delete_project_content"),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context, false),
-                                child: const Text("ยกเลิก"),
+                                child: const Text("dialog.cancel"),
                               ),
                               TextButton(
                                 onPressed: () => Navigator.pop(context, true),
-                                child: const Text("ลบ",
+                                child: const Text("dialog.delete",
                                     style: TextStyle(color: Colors.red)),
                               ),
                             ],
@@ -239,10 +248,11 @@ class _RecordScreenState extends State<RecordScreen> {
                         );
                         if (confirm == true) {
                           // ✅ แก้ไข: ส่ง context เข้าไปใน deleteProject
-                          await controller.deleteProject(context, project.projectId);
-                          
+                          await controller.deleteProject(
+                              context, project.projectId);
+
                           // ลบออกจาก UI และเรียก Callback
-                          widget.onProjectDeleted(project); 
+                          widget.onProjectDeleted(project);
                           _safeSetState(() {
                             _projects.removeWhere(
                                 (p) => p.projectId == project.projectId);
@@ -281,11 +291,13 @@ class _RecordScreenState extends State<RecordScreen> {
       child: Column(
         children: [
           const SizedBox(height: 20),
-          const Text("อัดเสียงถอดข้อความ",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          Text(
+            "record_gensub.Title".tr(),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 8),
-          const Text("ถอดข้อความจากไฟล์เสียงที่อัด",
-              style: TextStyle(fontSize: 16, color: Colors.grey)),
+          Text("record_gensub.Expand_Title".tr(),
+              style: const TextStyle(color: Colors.black54)),
           const SizedBox(height: 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -319,8 +331,8 @@ class _RecordScreenState extends State<RecordScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          const Text("กด ✓ เพื่อส่งข้อมูล",
-              style: TextStyle(fontSize: 16, color: Colors.grey)),
+          Text("record_gensub.press_correct".tr(),
+              style: const TextStyle(color: Colors.black54)),
           if (_projects.isNotEmpty) _buildProjectList(),
         ],
       ),
@@ -329,197 +341,216 @@ class _RecordScreenState extends State<RecordScreen> {
 
   /// ---------------- UI: Confirm แล้ว (ตั้งค่า + ถอดเสียง) ----------------
   Widget _buildSettingsUI() {
-    final fileName = controller.recordedFilePath != null
-        ? controller.recordedFilePath!.split('/').last
-        : "";
+  final fileName = controller.recordedFilePath != null
+      ? controller.recordedFilePath!.split('/').last
+      : "";
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16)),
-            elevation: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ---------------- ไฟล์เสียง ----------------
-                  Row(
-                    children: [
-                      const Icon(Icons.mic, color: Colors.blue),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          fileName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _safeSetState(() {
-                            controller.recordedFilePath = null;
-                            controller.audioDuration = null;
-                            _confirmed = false;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // ---------------- เลือกภาษา ----------------
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("ภาษาของไฟล์เสียง"),
-                      DropdownButton<String>(
-                        value: _selectedLanguage,
-                        items: const [
-                          DropdownMenuItem(value: "ไทย", child: Text("ไทย")),
-                          DropdownMenuItem(value: "อังกฤษ", child: Text("อังกฤษ")),
-                        ],
-                        onChanged: (val) {
-                          if (val != null) {
-                            _safeSetState(() => _selectedLanguage = val);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // ---------------- เวลา ----------------
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("เวลาของไฟล์"),
-                      Text(
-                        controller.audioDuration != null
-                            ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} นาที"
-                            : "คำนวณอัตโนมัติเมื่อถอดเสียง",
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // ---------------- ตั้งค่าตัดข้อความ ----------------
-                  ExpansionTile(
-                    title: const Text("ตั้งค่าการตัดข้อความ"),
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("ระยะเวลาสูงสุดในการตัด"),
-                          DropdownButton<String>(
-                            value: _maxSegmentDuration,
-                            items: const [
-                              DropdownMenuItem(value: "1 วินาที", child: Text("1 วินาที")),
-                              DropdownMenuItem(value: "5 วินาที", child: Text("5 วินาที")),
-                              DropdownMenuItem(value: "10 วินาที", child: Text("10 วินาที")),
-                              DropdownMenuItem(value: "15 วินาที", child: Text("15 วินาที")),
-                              DropdownMenuItem(value: "30 วินาที", child: Text("30 วินาที")),
-                              DropdownMenuItem(value: "ไม่จำกัด", child: Text("ไม่จำกัด")),
-                            ],
-                            onChanged: (val) {
-                              if (val != null) {
-                                _safeSetState(() => _maxSegmentDuration = val);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("ช่วงเงียบสูงสุดในการตัด"),
-                          DropdownButton<String>(
-                            value: _maxSilenceDuration,
-                            items: const [
-                              DropdownMenuItem(value: "0.1 วินาที", child: Text("0.1 วินาที")),
-                              DropdownMenuItem(value: "0.3 วินาที", child: Text("0.3 วินาที")),
-                              DropdownMenuItem(value: "0.5 วินาที", child: Text("0.5 วินาที")),
-                              DropdownMenuItem(value: "0.7 วินาที", child: Text("0.7 วินาที")),
-                              DropdownMenuItem(value: "1.0 วินาที", child: Text("1.0 วินาที")),
-                              DropdownMenuItem(value: "ไม่จำกัด", child: Text("ไม่จำกัด")),
-                            ],
-                            onChanged: (val) {
-                              if (val != null) {
-                                _safeSetState(() => _maxSilenceDuration = val);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // ---------------- ปุ่มถอดเสียง ----------------
-                  ElevatedButton.icon(
-                    onPressed: _loading
-                        ? null
-                        : () async {
-                              _safeSetState(() => _loading = true);
-
-                              // ✅ แก้ไข: ส่ง context เข้าไปใน handleTranscribe
-                              final project = await controller.handleTranscribe(
-                                context,
-                                maxSegmentDuration: _maxSegmentDuration,
-                                maxSilenceDuration: _maxSilenceDuration,
-                              );
-
-                              _safeSetState(() => _loading = false);
-
-                              if (project != null && mounted) {
-                                widget.onProjectCreated(project);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => ResultScreen(
-                                      workspaceId: project.projectId,
-                                      userId: project.userId,
-                                      filePath: project.filePath,
-                                      duration: project.duration,
-                                    ),
-                                  ),
-                                );
-                                // ✅ โหลด projects ใหม่หลังจากสร้างสำเร็จ (เรียก _loadProjects ที่ถูกแก้ไขแล้ว)
-                                await _loadProjects();
-                              }
-                            },
-                    icon: _loading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Icon(Icons.play_arrow),
-                    label: Text(_loading ? "กำลังถอด..." : "ถอดไฟล์เสียง"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        // ---------------- การ์ดหลัก ----------------
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 3,
+          margin: const EdgeInsets.all(20),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ---------- ชื่อไฟล์ ----------
+                Row(
+                  children: [
+                    const Icon(Icons.mic, color: Colors.blue),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        fileName,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _safeSetState(() {
+                          controller.recordedFilePath = null;
+                          controller.audioDuration = null;
+                          _confirmed = false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // ---------- ภาษา ----------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("text_to_gensub.audio_language".tr()),
+                    DropdownButton<String>(
+                      value: _selectedLanguage,
+                      items: languageFilter.map((lang) {
+                        final code = lang['code'].toString();
+                        final displayName = lang['thaiName'].toString();
+                        final image = lang['image'].toString();
+
+                        return DropdownMenuItem<String>(
+                          value: code,
+                          child: Row(
+                            children: [
+                              Image.asset(image, width: 24, height: 24),
+                              const SizedBox(width: 8),
+                              Text(displayName),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          _safeSetState(() => _selectedLanguage = val);
+                          controller.selectedLanguage = val;
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // ---------- เวลา ----------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("text_to_gensub.audio_time".tr()),
+                    Text(
+                      controller.audioDuration != null
+                          ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
+                          : "text_to_gensub.duration_auto_calculate".tr(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // ---------- ตั้งค่าการตัด ----------
+                ExpansionTile(
+                  title: Text("text_to_gensub.segmentation_settings".tr()),
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("text_to_gensub.max_segment_duration".tr()),
+                        DropdownButton<String>(
+                          value: _maxSegmentDuration,
+                          items: [
+                            for (var sec in [1, 2, 5, 10, 15, 20, 25, 30])
+                              DropdownMenuItem(
+                                value: "$sec ${"units.seconds".tr()}",
+                                child: Text("$sec ${"units.seconds".tr()}"),
+                              ),
+                            DropdownMenuItem(
+                              value: "units.unlimited".tr(),
+                              child: Text("units.unlimited".tr()),
+                            ),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) {
+                              _safeSetState(() => _maxSegmentDuration = val);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("text_to_gensub.max_silence_duration".tr()),
+                        DropdownButton<String>(
+                          value: _maxSilenceDuration,
+                          items: [
+                            for (var sec in ["0.1", "0.3", "0.5", "0.7", "0.9", "1.5"])
+                              DropdownMenuItem(
+                                value: "$sec ${"units.seconds".tr()}",
+                                child: Text("$sec ${"units.seconds".tr()}"),
+                              ),
+                            DropdownMenuItem(
+                              value: "units.unlimited".tr(),
+                              child: Text("units.unlimited".tr()),
+                            ),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) {
+                              _safeSetState(() => _maxSilenceDuration = val);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // ---------- ปุ่มถอดเสียง ----------
+                ElevatedButton.icon(
+                  onPressed: _loading
+                      ? null
+                      : () async {
+                          _safeSetState(() => _loading = true);
+                          final project = await controller.handleTranscribe(
+                            context,
+                            maxSegmentDuration: _maxSegmentDuration,
+                            maxSilenceDuration: _maxSilenceDuration,
+                          );
+                          _safeSetState(() => _loading = false);
+
+                          if (project != null && mounted) {
+                            widget.onProjectCreated(project);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ResultScreen(
+                                  workspaceId: project.projectId,
+                                  userId: project.userId,
+                                  filePath: project.filePath,
+                                  duration: project.duration,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                  icon: _loading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.play_arrow),
+                  label: Text(
+                    _loading
+                        ? "text_to_gensub.transcribing".tr()
+                        : "text_to_gensub.transcribe_status".tr(),
                   ),
-                ],
-              ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          if (_projects.isNotEmpty) _buildProjectList(),
-        ],
-      ),
-    );
-  }
+        ),
+
+        // ---------- ส่วนโปรเจคของฉัน ----------
+        const SizedBox(height: 20), if (_projects.isNotEmpty) _buildProjectList(),
+
+      ],
+    ),
+  );
+}
 }

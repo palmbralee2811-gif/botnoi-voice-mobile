@@ -4,6 +4,7 @@ import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as path;
+import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
 import 'package:intl/intl.dart';
 
 class UploadScreen extends StatefulWidget {
@@ -53,23 +54,30 @@ class _UploadScreenState extends State<UploadScreen> {
   }
 
   Widget _buildUploadCard() {
-    return Center(
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+  return Center(
+    child: Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 3,
+      child: SizedBox(
+        height: 200, // ✅ เพิ่มความสูงให้มีพื้นที่วางตรงกลาง
+        width: double.infinity,
+        child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "text_to_gensub.transcribe_audio".tr(),
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                "upload_gensub.Title".tr(),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
               ),
               const SizedBox(height: 6),
-              Text("text_to_gensub.Expand_Title".tr(),
-                  style: const TextStyle(color: Colors.black54)),
+              Text(
+                "upload_gensub.Expand_Title".tr(),
+                style: const TextStyle(color: Colors.black54),
+                textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
+              ),
               const SizedBox(height: 20),
               OutlinedButton.icon(
                 onPressed: () async {
@@ -77,20 +85,23 @@ class _UploadScreenState extends State<UploadScreen> {
                   setState(() {});
                 },
                 icon: const Icon(Icons.upload_file, color: Colors.blue),
-                label: Text("text_to_gensub.upload".tr(),
-                    style: const TextStyle(color: Colors.blue)),
+                label: Text(
+                  "upload_gensub.upload".tr(),
+                  style: const TextStyle(color: Colors.blue),
+                ),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.blue),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildSettingsCard() {
     final fileName =
@@ -123,25 +134,36 @@ class _UploadScreenState extends State<UploadScreen> {
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("text_to_gensub.audio_language".tr()),
-                DropdownButton<String>(
-                  value: controller.selectedLanguage,
-                  items: [
-                    DropdownMenuItem(
-                        value: "ไทย", child: Text("languages.th".tr())),
-                    DropdownMenuItem(
-                        value: "อังกฤษ", child: Text("languages.en".tr())),
-                  ],
-                  onChanged: (val) {
-                    if (val != null) {
-                      setState(() => controller.selectedLanguage = val);
-                    }
-                  },
-                ),
-              ],
-            ),
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Text("text_to_gensub.audio_language".tr()),
+
+    DropdownButton<String>(
+      value: controller.selectedLanguage,
+      items: languageFilter.map((lang) {
+        final code = lang['code'].toString();
+        final displayName = lang['thaiName'].toString();
+        final image = lang['image'].toString();
+
+        return DropdownMenuItem<String>(
+          value: code,
+          child: Row(
+            children: [
+              Image.asset(image, width: 24, height: 24),
+              const SizedBox(width: 8),
+              Text(displayName),
+            ],
+          ),
+        );
+      }).toList(),
+      onChanged: (val) {
+        if (val != null) {
+          setState(() => controller.selectedLanguage = val);
+        }
+      },
+    ),
+  ],
+),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -277,7 +299,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   : const Icon(Icons.play_arrow),
               label: Text(isLoading
                   ? "text_to_gensub.transcribing".tr()
-                  : "text_to_gensub.transcribe_audio".tr()),
+                  : "text_to_gensub.transcribe_status".tr()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,

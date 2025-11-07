@@ -25,7 +25,7 @@ class RecordLogic {
   bool isRecorderReady = false;
   bool isRecording = false;
   bool isPlaying = false;
-
+  String selectedLanguage = 'TH';
   String? recordedFilePath;
   Duration? audioDuration;
 

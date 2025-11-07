@@ -66,11 +66,11 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.file_upload),
-            label: "text_to_gensub.upload".tr(),
+            label: "upload_gensub.upload".tr(),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.mic),
-            label: "text_to_gensub.record".tr(),
+            label: "record_gensub.record".tr(),
           ),
         ],
       ),

@@ -309,11 +309,8 @@
         "background_text": "There are no preferred speakers in this language."
     },
     "text_to_gensub": {
-    "upload": "Upload File",
-    "record": "Record File",
     "audio_language": "Audio Language",
     "file_duration": "File Duration",
-    "Expand_Title": "Transcribe text from uploaded audio files",
     "duration_auto_calculate": "Auto calculate when transcribing",
     "audio_time": "File Time",
     "segmentation_settings": "Segmentation Settings",
@@ -325,6 +322,16 @@
     "create_at" : "Create at:",
     "project" : "Botnoi GenSub Project"
   },
+  "upload_gensub": {
+    "upload": "Upload File",
+    "Expand_Title": "Transcribe text from uploaded audio file"
+},
+  "record_gensub": {
+    "record": "Record ",
+    "Expand_Title": "Transcribe text from recorded audio",
+    "press_to": "Press the button to start recording",
+    "press_correct": "Press ✓ to submit"
+},
   "units": {
     "seconds": "seconds",
     "minutes": "minutes",

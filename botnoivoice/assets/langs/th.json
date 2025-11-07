@@ -309,11 +309,8 @@
         "background_text": "ไม่มีผู้พูดที่ถูกใจในภาษานี้"
     },
   "text_to_gensub": {
-    "upload": "อัปโหลดไฟล์",
-    "record": "อัดเสียง",
     "audio_language": "ภาษาของไฟล์เสียง",
     "file_duration": "เวลาของไฟล์",
-    "Expand_Title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด",
     "duration_auto_calculate": "คำนวณอัตโนมัติเมื่อถอดเสียง",
     "audio_time": "เวลาของไฟล์",
     "segmentation_settings": "ตั้งค่าการตัดข้อความ",
@@ -321,9 +318,21 @@
     "max_silence_duration": "ช่วงเงียบสูงสุดในการตัด",
     "transcribing": "กำลังถอด...",
     "transcribe_status" : "กำลังอัปโหลดและถอดเสียง",
-    "transcribe_audio": "ถอดไฟล์เสียง",
+    "transcribe_audio": "อัปโหลดไฟล์เสียง",
     "create_at" : "สร้างเมื่อ:",
     "project" : "โปรเจคบอทน้อยเจนซับ"
+  },
+  "upload_gensub": {
+    "upload": "Upload File",
+    "Title" : "Upload Audio File",
+    "Expand_Title": "Transcribe from Uploaded Audio File"
+  },
+  "record_gensub": {
+    "record": "Record Audio",
+    "Title" : "Record Audio for Transcription",
+    "Expand_Title": "Transcribe from Uploaded Audio File",
+    "press_to" : "Press the button to record audio",
+    "press_correct" : "Press ✓ to submit data"
   },
   "units": {
     "seconds": "วินาที",

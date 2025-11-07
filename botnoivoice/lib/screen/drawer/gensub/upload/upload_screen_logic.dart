@@ -32,7 +32,7 @@ class UploadLogic {
   Duration? audioDuration;
   String? transcribeStatus;
 
-  String selectedLanguage = "ไทย";
+  String selectedLanguage = "TH";
   String maxSegmentDuration = "10 วินาที";
   String maxSilenceDuration = "0.3 วินาที";
 
