@@ -25,6 +25,18 @@ class GenSubPermission {
           _logger.d("Requesting permissions for older Android versions");
           return await _requestPermissionsForOlderVersions();
         }
+      } else if (Platform.isIOS) {
+        _logger.d("Requesting microphone permission for iOS");
+
+        PermissionStatus status = await Permission.microphone.request();
+
+        if (status.isGranted) {
+          _logger.i("Microphone permission granted on iOS");
+          return true;
+        } else {
+          _logger.w("Microphone permission denied on iOS");
+          return false;
+        }
       }
     } catch (e, stackTrace) {
       _logger.e("Error requesting permissions",
