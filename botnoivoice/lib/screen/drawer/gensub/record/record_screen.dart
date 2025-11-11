@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
 // Import Standalone API Functions ที่ใช้โดยตรงใน Widget (สำหรับ _loadProjects)
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 
@@ -36,8 +37,8 @@ class _RecordScreenState extends State<RecordScreen> {
 
   // UI controls
   String _selectedLanguage = "TH";
-  String _maxSegmentDuration = "10 วินาที";
-  String _maxSilenceDuration = "0.3 วินาที";
+  int _maxSegmentDuration = 10;
+  double _maxSilenceDuration = 0.3;
 
   void _safeSetState(void Function() fn) {
     if (!mounted) return;
@@ -341,216 +342,208 @@ class _RecordScreenState extends State<RecordScreen> {
 
   /// ---------------- UI: Confirm แล้ว (ตั้งค่า + ถอดเสียง) ----------------
   Widget _buildSettingsUI() {
-  final fileName = controller.recordedFilePath != null
-      ? controller.recordedFilePath!.split('/').last
-      : "";
+    final fileName = controller.recordedFilePath != null
+        ? controller.recordedFilePath!.split('/').last
+        : "";
 
-  return SingleChildScrollView(
-    child: Column(
-      children: [
-        // ---------------- การ์ดหลัก ----------------
-        Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 3,
-          margin: const EdgeInsets.all(20),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ---------- ชื่อไฟล์ ----------
-                Row(
-                  children: [
-                    const Icon(Icons.mic, color: Colors.blue),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        fileName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // ---------------- การ์ดหลัก ----------------
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 3,
+            margin: const EdgeInsets.all(20),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ---------- ชื่อไฟล์ ----------
+                  Row(
+                    children: [
+                      const Icon(Icons.mic, color: Colors.blue),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          fileName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          _safeSetState(() {
+                            controller.recordedFilePath = null;
+                            controller.audioDuration = null;
+                            _confirmed = false;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ---------- ภาษา ----------
+                 // ---------- ภาษา ----------
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Text("text_to_gensub.audio_language".tr()),
+    LanguageSelector(
+      selectedLanguage: controller.selectedLanguageName,
+      selectedLanguageImage: controller.selectedLanguageImage,
+      onSelected: (lang) {
+        setState(() {
+          controller.selectedLanguage = lang['code'];
+          controller.selectedLanguageImage = lang['image'];
+
+          // ✅ ตั้งชื่อภาษาให้ตรงกับ locale ปัจจุบัน
+          final locale = context.locale.languageCode;
+          switch (locale) {
+            case 'th':
+              controller.selectedLanguageName = lang['thaiName'];
+              break;
+            case 'id':
+              controller.selectedLanguageName = lang['indonesianName'];
+              break;
+            default:
+              controller.selectedLanguageName = lang['englishName'];
+          }
+        });
+      },
+    ),
+  ],
+),
+
+                  const SizedBox(height: 12),
+
+                  // ---------- เวลา ----------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("text_to_gensub.audio_time".tr()),
+                      Text(
+                        controller.audioDuration != null
+                            ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
+                            : "text_to_gensub.duration_auto_calculate".tr(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // ---------- ตั้งค่าการตัด ----------
+                  ExpansionTile(
+                    title: Text("text_to_gensub.segmentation_settings".tr()),
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("text_to_gensub.max_segment_duration".tr()),
+                          DropdownButton<int>(
+                            value: _maxSegmentDuration,
+                            items: [
+                              for (var sec in [1, 2, 5, 10, 15, 20, 25, 30])
+                                DropdownMenuItem(
+                                  value: sec,
+                                  child: Text("$sec ${'units.seconds'.tr()}"),
+                                ),
+                            ],
+                            onChanged: (val) {
+                              if (val != null)
+                                _safeSetState(() => _maxSegmentDuration = val);
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("text_to_gensub.max_silence_duration".tr()),
+                          DropdownButton<double>(
+                            value: _maxSilenceDuration,
+                            items: [
+                              for (var sec in [0.1, 0.3, 0.5, 0.7, 0.9, 1.5])
+                                DropdownMenuItem(
+                                  value: sec,
+                                  child: Text("$sec ${'units.seconds'.tr()}"),
+                                ),
+                            ],
+                            onChanged: (val) {
+                              if (val != null)
+                                _safeSetState(() => _maxSilenceDuration = val);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // ---------- ปุ่มถอดเสียง ----------
+                  ElevatedButton.icon(
+                    onPressed: _loading
+                        ? null
+                        : () async {
+                            _safeSetState(() => _loading = true);
+                            final project = await controller.handleTranscribe(
+                              context,
+                              maxSegmentDuration: _maxSegmentDuration,
+                              maxSilenceDuration: _maxSilenceDuration,
+                            );
+                            _safeSetState(() => _loading = false);
+
+                            if (project != null && mounted) {
+                              widget.onProjectCreated(project);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ResultScreen(
+                                    workspaceId: project.projectId,
+                                    userId: project.userId,
+                                    filePath: project.filePath,
+                                    duration: project.duration,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                    icon: _loading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.play_arrow),
+                    label: Text(
+                      _loading
+                          ? "text_to_gensub.transcribing".tr()
+                          : "text_to_gensub.transcribe_status".tr(),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        _safeSetState(() {
-                          controller.recordedFilePath = null;
-                          controller.audioDuration = null;
-                          _confirmed = false;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                // ---------- ภาษา ----------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("text_to_gensub.audio_language".tr()),
-                    DropdownButton<String>(
-                      value: _selectedLanguage,
-                      items: languageFilter.map((lang) {
-                        final code = lang['code'].toString();
-                        final displayName = lang['thaiName'].toString();
-                        final image = lang['image'].toString();
-
-                        return DropdownMenuItem<String>(
-                          value: code,
-                          child: Row(
-                            children: [
-                              Image.asset(image, width: 24, height: 24),
-                              const SizedBox(width: 8),
-                              Text(displayName),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (val) {
-                        if (val != null) {
-                          _safeSetState(() => _selectedLanguage = val);
-                          controller.selectedLanguage = val;
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // ---------- เวลา ----------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("text_to_gensub.audio_time".tr()),
-                    Text(
-                      controller.audioDuration != null
-                          ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
-                          : "text_to_gensub.duration_auto_calculate".tr(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // ---------- ตั้งค่าการตัด ----------
-                ExpansionTile(
-                  title: Text("text_to_gensub.segmentation_settings".tr()),
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("text_to_gensub.max_segment_duration".tr()),
-                        DropdownButton<String>(
-                          value: _maxSegmentDuration,
-                          items: [
-                            for (var sec in [1, 2, 5, 10, 15, 20, 25, 30])
-                              DropdownMenuItem(
-                                value: "$sec ${"units.seconds".tr()}",
-                                child: Text("$sec ${"units.seconds".tr()}"),
-                              ),
-                            DropdownMenuItem(
-                              value: "units.unlimited".tr(),
-                              child: Text("units.unlimited".tr()),
-                            ),
-                          ],
-                          onChanged: (val) {
-                            if (val != null) {
-                              _safeSetState(() => _maxSegmentDuration = val);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("text_to_gensub.max_silence_duration".tr()),
-                        DropdownButton<String>(
-                          value: _maxSilenceDuration,
-                          items: [
-                            for (var sec in ["0.1", "0.3", "0.5", "0.7", "0.9", "1.5"])
-                              DropdownMenuItem(
-                                value: "$sec ${"units.seconds".tr()}",
-                                child: Text("$sec ${"units.seconds".tr()}"),
-                              ),
-                            DropdownMenuItem(
-                              value: "units.unlimited".tr(),
-                              child: Text("units.unlimited".tr()),
-                            ),
-                          ],
-                          onChanged: (val) {
-                            if (val != null) {
-                              _safeSetState(() => _maxSilenceDuration = val);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                // ---------- ปุ่มถอดเสียง ----------
-                ElevatedButton.icon(
-                  onPressed: _loading
-                      ? null
-                      : () async {
-                          _safeSetState(() => _loading = true);
-                          final project = await controller.handleTranscribe(
-                            context,
-                            maxSegmentDuration: _maxSegmentDuration,
-                            maxSilenceDuration: _maxSilenceDuration,
-                          );
-                          _safeSetState(() => _loading = false);
-
-                          if (project != null && mounted) {
-                            widget.onProjectCreated(project);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ResultScreen(
-                                  workspaceId: project.projectId,
-                                  userId: project.userId,
-                                  filePath: project.filePath,
-                                  duration: project.duration,
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                  icon: _loading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(Icons.play_arrow),
-                  label: Text(
-                    _loading
-                        ? "text_to_gensub.transcribing".tr()
-                        : "text_to_gensub.transcribe_status".tr(),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
 
-        // ---------- ส่วนโปรเจคของฉัน ----------
-        const SizedBox(height: 20), if (_projects.isNotEmpty) _buildProjectList(),
-
-      ],
-    ),
-  );
-}
+          // ---------- ส่วนโปรเจคของฉัน ----------
+          const SizedBox(height: 20),
+          if (_projects.isNotEmpty) _buildProjectList(),
+        ],
+      ),
+    );
+  }
 }

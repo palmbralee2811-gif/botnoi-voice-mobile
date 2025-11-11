@@ -322,17 +322,41 @@
     "create_at" : "สร้างเมื่อ:",
     "project" : "โปรเจคบอทน้อยเจนซับ"
   },
+  "result_gensub": {
+  "title": "Gensub",
+  "upload": "อัปโหลดไฟล์ใหม่",
+  "save": "บันทึก",
+  "download": "ดาวน์โหลดข้อความ",
+  "text_format": "นามสกุลไฟล์ text :",
+  "confirm": "ยืนยัน",
+  "cancel": "ยกเลิก",
+  "saved_txt": "บันทึกไฟล์ TXT เรียบร้อย:",
+  "saved_srt": "บันทึกไฟล์ SRT เรียบร้อย:",
+  "error": "เกิดข้อผิดพลาด:",
+  "no_workspace": "ไม่พบ workspace",
+  "comfirm": "ยืนยันข้อความแล้ว",
+  "save_success": "บันทึกสำเร็จ",
+  "save_fail": "บันทึกไม่สำเร็จ ลองอีกครั้ง",
+  "approve_success": "อนุมัติเรียบร้อย",
+  "approve_fail": "อนุมัติไม่สำเร็จ ลองอีกครั้ง",
+  "delete_success": "ลบเรียบร้อย",
+  "delete_fail": "ลบไม่สำเร็จ:",
+  "history": "ประวัติ",
+  "history_text": "ข้อความก่อนแก้ไข:",
+  "close": "ปิด"
+},
   "upload_gensub": {
-    "upload": "Upload File",
-    "Title" : "Upload Audio File",
-    "Expand_Title": "Transcribe from Uploaded Audio File"
+    "upload": "อัปโหลดไฟล์",
+    "Title" : "อัปโหลดไฟล์เสียง",
+    "Expand_Title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด"
   },
+
   "record_gensub": {
-    "record": "Record Audio",
-    "Title" : "Record Audio for Transcription",
-    "Expand_Title": "Transcribe from Uploaded Audio File",
-    "press_to" : "Press the button to record audio",
-    "press_correct" : "Press ✓ to submit data"
+    "record": "อัดเสียง",
+    "Title" : "อัดเสียงถอดข้อความ",
+    "Expand_Title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด",
+    "press_to" : "กดที่ปุ่มเพื่ออัดเสียง",
+    "press_correct" : "กด ✓ เพื่อส่งข้อมูล"
   },
   "units": {
     "seconds": "วินาที",
@@ -349,5 +373,8 @@
     "delete_project_content": "คุณแน่ใจหรือไม่ที่จะลบโปรเจกต์นี้?",
     "cancel": "ยกเลิก",
     "delete": "ลบ"
+  },
+  "select_languages": {
+    "Thai" : "ไทย"
   }
 }

@@ -25,6 +25,7 @@ String _extractSeconds(String input, {Duration? fallback}) {
 /// Controller จัดการเลือกไฟล์, คำนวณความยาวไฟล์, และอัปโหลด/สร้าง workspace
 class UploadLogic {
   // final String apiToken; // <<< ลบออก
+  
   final Function(ProjectModel) onProjectCreated;
   final String currentUserId;
 
@@ -33,6 +34,8 @@ class UploadLogic {
   String? transcribeStatus;
 
   String selectedLanguage = "TH";
+  String selectedLanguageName = "select_languages.Thai".tr();
+  String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   String maxSegmentDuration = "10 วินาที";
   String maxSilenceDuration = "0.3 วินาที";
 

@@ -5,6 +5,7 @@ import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as path;
 import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
+import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
 import 'package:intl/intl.dart';
 
 class UploadScreen extends StatefulWidget {
@@ -133,37 +134,36 @@ class _UploadScreenState extends State<UploadScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
+           Row(
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
   children: [
     Text("text_to_gensub.audio_language".tr()),
+    LanguageSelector(
+  selectedLanguage: controller.selectedLanguageName, // <-- ใช้ชื่อแทน
+  selectedLanguageImage: controller.selectedLanguageImage,
+  onSelected: (lang) {
+  setState(() {
+    controller.selectedLanguage = lang['code'];
+    controller.selectedLanguageImage = lang['image'];
 
-    DropdownButton<String>(
-      value: controller.selectedLanguage,
-      items: languageFilter.map((lang) {
-        final code = lang['code'].toString();
-        final displayName = lang['thaiName'].toString();
-        final image = lang['image'].toString();
-
-        return DropdownMenuItem<String>(
-          value: code,
-          child: Row(
-            children: [
-              Image.asset(image, width: 24, height: 24),
-              const SizedBox(width: 8),
-              Text(displayName),
-            ],
-          ),
-        );
-      }).toList(),
-      onChanged: (val) {
-        if (val != null) {
-          setState(() => controller.selectedLanguage = val);
-        }
-      },
-    ),
+    // แสดงชื่อให้ตรงกับภาษาของแอป
+    final locale = context.locale.languageCode;
+    switch (locale) {
+      case 'th':
+        controller.selectedLanguageName = lang['thaiName'];
+        break;
+      case 'id':
+        controller.selectedLanguageName = lang['indonesianName'];
+        break;
+      default:
+        controller.selectedLanguageName = lang['englishName'];
+    }
+  });
+},
+),
   ],
 ),
+
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -322,6 +322,29 @@
     "create_at" : "Dibuat saat:",
     "project" : "Proyek Botnoi GenSub"
   },
+  "result_gensub": {
+  "title": "GenSub",
+  "upload": "Unggah file baru",
+  "save": "Simpan",
+  "download": "Unduh teks",
+  "text_format": "Format file teks:",
+  "confirm": "Konfirmasi",
+  "cancel": "Batal",
+  "saved_txt": "File TXT berhasil disimpan:",
+  "saved_srt": "File SRT berhasil disimpan:",
+  "error": "Kesalahan:",
+  "no_workspace": "Workspace tidak ditemukan",
+  "comfirm": "Teks telah dikonfirmasi",
+  "save_success": "Berhasil disimpan",
+  "save_fail": "Gagal menyimpan, silakan coba lagi",
+  "approve_success": "Berhasil disetujui",
+  "approve_fail": "Gagal menyetujui, silakan coba lagi",
+  "delete_success": "Berhasil dihapus",
+  "delete_fail": "Gagal menghapus:",
+  "history": "Riwayat",
+  "history_text": "Teks sebelum diedit:",
+  "close": "Tutup"
+},
   "upload_gensub": {
     "upload": "Unggah Berkas",
     "Title" : "Unggah Berkas Audio",
@@ -349,5 +372,8 @@
     "delete_project_content": "Apakah Anda yakin ingin menghapus proyek ini?",
     "cancel": "Batal",
     "delete": "Hapus"
+  },
+  "select_languages": {
+    "Thai" : "Thai"
   }
 }

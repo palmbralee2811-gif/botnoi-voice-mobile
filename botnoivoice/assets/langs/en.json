@@ -322,15 +322,40 @@
     "create_at" : "Create at:",
     "project" : "Botnoi GenSub Project"
   },
+  "result_gensub": {
+  "title": "GenSub",
+  "upload": "Upload new file",
+  "save": "Save",
+  "download": "Download text",
+  "text_format": "Text file format:",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "saved_txt": "TXT file saved successfully:",
+  "saved_srt": "SRT file saved successfully:",
+  "error": "Error:",
+  "no_workspace": "No workspace found",
+  "comfirm": "Text confirmed",
+  "save_success": "Saved successfully",
+  "save_fail": "Failed to save, please try again",
+  "approve_success": "Approved successfully",
+  "approve_fail": "Approval failed, please try again",
+  "delete_success": "Deleted successfully",
+  "delete_fail": "Delete failed:",
+  "history": "History",
+  "history_text": "Text before edit:",
+  "close": "Close"
+},
   "upload_gensub": {
     "upload": "Upload File",
-    "Expand_Title": "Transcribe text from uploaded audio file"
-},
+    "Title" : "Upload Audio File",
+    "Expand_Title": "Transcribe from Uploaded Audio File"
+  },
   "record_gensub": {
-    "record": "Record ",
-    "Expand_Title": "Transcribe text from recorded audio",
-    "press_to": "Press the button to start recording",
-    "press_correct": "Press ✓ to submit"
+    "record": "Record Audio",
+    "Title" : "Record Audio for Transcription",
+    "Expand_Title": "Transcribe from Uploaded Audio File",
+    "press_to" : "Press the button to record audio",
+    "press_correct" : "Press ✓ to submit data"
 },
   "units": {
     "seconds": "seconds",
@@ -347,5 +372,8 @@
     "delete_project_content": "Are you sure you want to delete this project?",
     "cancel": "Cancel",
     "delete": "Delete"
+  },
+  "select_languages": {
+    "Thai" : "Thai"
   }
 }

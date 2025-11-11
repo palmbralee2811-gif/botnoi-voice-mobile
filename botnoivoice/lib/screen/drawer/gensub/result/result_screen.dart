@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:intl/intl.dart';
-
-// Note: ต้องมั่นใจว่า ResultLogic ถูกปรับให้ Constructor ไม่รับ apiService
-// และ methods ที่เรียก API รับ BuildContext เป็น argument แรกแล้ว
+import 'package:easy_localization/easy_localization.dart';
 
 class ResultScreen extends StatefulWidget {
   final String workspaceId;
@@ -27,7 +25,7 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   late ResultLogic controller;
-  late Future<ProjectModel?> _futureProject; // preload future
+  late Future<ProjectModel?> _futureProject;
 
   int? editingIndex;
   String tempText = "";
@@ -35,18 +33,13 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   void initState() {
     super.initState();
-
-    //  ลบการใช้ dotenv และ ProjectApiService
     controller = ResultLogic(
       userId: widget.userId,
       filePath: widget.filePath,
       workspaceId: widget.workspaceId,
       duration: widget.duration,
-      //  ไม่ต้องส่ง apiService แล้ว
     );
-
-    //  ส่ง context เข้าไปใน fetchWorkspace
-    _futureProject = controller.fetchWorkspace(context); // preload
+    _futureProject = controller.fetchWorkspace(context);
   }
 
   @override
@@ -68,8 +61,9 @@ class _ResultScreenState extends State<ResultScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text("Botnoi GenSub",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+        title: Text("result_gensub.title".tr(),
+            style:
+                const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
         actions: [
           TextButton.icon(
             onPressed: () {
@@ -79,21 +73,20 @@ class _ResultScreenState extends State<ResultScreen> {
               );
             },
             icon: const Icon(Icons.upload_file, color: Colors.purple),
-            label: const Text("อัปโหลดไฟล์ใหม่",
-                style: TextStyle(color: Colors.purple)),
+            label: Text("result_gensub.upload".tr(),
+                style: const TextStyle(color: Colors.purple)),
           ),
           const SizedBox(width: 8),
           TextButton.icon(
             onPressed: () async {
               final project = await _futureProject;
               if (project != null) {
-                //  ส่ง context เข้าไปใน Logic methods
                 await controller.saveEdits(context, project, project.segments);
                 await controller.finalizeProjectApprove(context, project);
 
                 if (!mounted) return;
 
-                String selectedFormat = "txt"; // ค่า default
+                String selectedFormat = "txt";
 
                 showDialog(
                   context: context,
@@ -101,24 +94,20 @@ class _ResultScreenState extends State<ResultScreen> {
                     return StatefulBuilder(
                       builder: (context, setState) {
                         return AlertDialog(
-                          title: const Text("ดาวน์โหลดข้อความ"),
+                          title: Text("result_gensub.download".tr()),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("นามสกุลไฟล์ text :"),
+                              Text("result_gensub.text_format".tr()),
                               const SizedBox(height: 8),
                               DropdownButton<String>(
                                 value: selectedFormat,
                                 items: const [
                                   DropdownMenuItem(
-                                    value: "txt",
-                                    child: Text(".txt"),
-                                  ),
+                                      value: "txt", child: Text(".txt")),
                                   DropdownMenuItem(
-                                    value: "srt",
-                                    child: Text(".srt"),
-                                  ),
+                                      value: "srt", child: Text(".srt")),
                                 ],
                                 onChanged: (val) {
                                   if (val != null) {
@@ -133,20 +122,22 @@ class _ResultScreenState extends State<ResultScreen> {
                               onPressed: () async {
                                 Navigator.pop(context);
                                 if (selectedFormat == "txt") {
-                                  //  ส่ง context เข้าไป
-                                  final file = await controller.exportTxt(context, project);
-                                  _showSnack("บันทึกไฟล์ TXT เรียบร้อย: ${file.path}");
+                                  final file =
+                                      await controller.exportTxt(context, project);
+                                  _showSnack(
+                                      "${"result_gensub.saved_txt".tr()} ${file.path}");
                                 } else {
-                                  //  ส่ง context เข้าไป
-                                  final file = await controller.exportSrt(context, project);
-                                  _showSnack("บันทึกไฟล์ SRT เรียบร้อย: ${file.path}");
+                                  final file =
+                                      await controller.exportSrt(context, project);
+                                  _showSnack(
+                                      "${"result_gensub.saved_srt".tr()} ${file.path}");
                                 }
                               },
-                              child: const Text("ยืนยัน"),
+                              child: Text("result_gensub.confirm".tr()),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text("ยกเลิก"),
+                              child: Text("result_gensub.cancel".tr()),
                             ),
                           ],
                         );
@@ -157,27 +148,26 @@ class _ResultScreenState extends State<ResultScreen> {
               }
             },
             icon: const Icon(Icons.save, color: Colors.green),
-            label: const Text("บันทึก", style: TextStyle(color: Colors.green)),
+            label: Text("result_gensub.save".tr(),
+                style: const TextStyle(color: Colors.green)),
           ),
           const SizedBox(width: 12),
         ],
       ),
       body: FutureBuilder<ProjectModel?>(
-        future: _futureProject, // ใช้ future ที่ preload
+        future: _futureProject,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("เกิดข้อผิดพลาด: ${snapshot.error}"));
+            return Center(
+                child: Text(
+                    "${"result_gensub.error".tr()} ${snapshot.error.toString()}"));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("ไม่พบ workspace"));
+            return Center(child: Text("result_gensub.no_workspace".tr()));
           }
 
           final project = snapshot.data!;
-          debugPrint('ResultScreen: project.segments count=${project.segments.length}');
-          if (project.segments.isNotEmpty) {
-            debugPrint('ResultScreen: first segment text=${project.segments.first['text']}');
-          }
           final segments = project.segments;
           final approvedCount =
               segments.where((s) => s['approved'] == true).length;
@@ -214,10 +204,11 @@ class _ResultScreenState extends State<ResultScreen> {
                                     fontSize: 16, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 4),
                             Text(
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(project.createdAt.toLocal()),
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.black54)),
+                              DateFormat('dd/MM/yyyy HH:mm')
+                                  .format(project.createdAt.toLocal()),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black54),
+                            ),
                           ],
                         ),
                       ),
@@ -244,7 +235,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       const Icon(Icons.warning, color: Colors.orange, size: 20),
                       const SizedBox(width: 6),
                       Text(
-                          "ยืนยันข้อความแล้ว $approvedCount/${segments.length}",
+                          "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
                           style: const TextStyle(
                               color: Colors.orange,
                               fontSize: 14,
@@ -254,11 +245,10 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
                 ),
 
-                /// Segments
+                /// Segments list
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
-
                     final startSec = (segment['start'] is num)
                         ? (segment['start'] as num).toDouble()
                         : 0.0;
@@ -269,7 +259,6 @@ class _ResultScreenState extends State<ResultScreen> {
                     final start =
                         Duration(milliseconds: (startSec * 1000).round());
                     final end = Duration(milliseconds: (endSec * 1000).round());
-
                     final isEditing = editingIndex == index;
 
                     return Container(
@@ -289,7 +278,6 @@ class _ResultScreenState extends State<ResultScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// Text หรือ TextField
                           if (isEditing)
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +298,6 @@ class _ResultScreenState extends State<ResultScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    // ปุ่มยกเลิก
                                     TextButton.icon(
                                       onPressed: () {
                                         setState(() {
@@ -320,23 +307,22 @@ class _ResultScreenState extends State<ResultScreen> {
                                       },
                                       icon: const Icon(Icons.close,
                                           color: Colors.red),
-                                      label: const Text("ยกเลิก",
-                                          style: TextStyle(color: Colors.red)),
+                                      label: Text("result_gensub.cancel".tr(),
+                                          style: const TextStyle(
+                                              color: Colors.red)),
                                     ),
                                     const SizedBox(width: 8),
-                                    // ปุ่มบันทึกเฉพาะ segment
                                     TextButton.icon(
                                       onPressed: () async {
                                         final approveText = tempText;
                                         try {
-                                          //  แก้ไข: เรียก updateAudioApprove บน controller โดยส่ง context
                                           final res = await controller
                                               .updateAudioApproveSegment(
-                                                context, // ส่ง context
-                                                chunkId: segment['id'],
-                                                userId: widget.userId,
-                                                approveText: approveText,
-                                              );
+                                            context,
+                                            chunkId: segment['id'],
+                                            userId: widget.userId,
+                                            approveText: approveText,
+                                          );
 
                                           if (res != null &&
                                               res['data'] != null) {
@@ -346,26 +332,30 @@ class _ResultScreenState extends State<ResultScreen> {
                                                 segment['original_text'] =
                                                     segment['text'];
                                               }
-                                              segment['text'] = res['data']
-                                                      ['approve_text'] ??
-                                                  approveText;
-                                              segment['approved'] = res['data']
-                                                      ['approve'] ??
-                                                  true;
+                                              segment['text'] =
+                                                  res['data']['approve_text'] ??
+                                                      approveText;
+                                              segment['approved'] =
+                                                  res['data']['approve'] ?? true;
                                               editingIndex = null;
                                             });
-                                            _showSnack("บันทึกสำเร็จ ");
+                                            _showSnack(
+                                                "result_gensub.save_success"
+                                                    .tr());
                                           } else {
-                                            _showSnack("บันทึกไม่สำเร็จ ลองอีกครั้ง");
+                                            _showSnack("result_gensub.save_fail"
+                                                .tr());
                                           }
                                         } catch (e) {
-                                          _showSnack("เกิดข้อผิดพลาด: $e");
+                                          _showSnack(
+                                              "${"result_gensub.error".tr()} $e");
                                         }
                                       },
                                       icon: const Icon(Icons.check,
                                           color: Colors.blue),
-                                      label: const Text("บันทึก",
-                                          style: TextStyle(color: Colors.blue)),
+                                      label: Text("result_gensub.save".tr(),
+                                          style: const TextStyle(
+                                              color: Colors.blue)),
                                     ),
                                   ],
                                 ),
@@ -389,19 +379,16 @@ class _ResultScreenState extends State<ResultScreen> {
                             ),
 
                           const SizedBox(height: 6),
-
                           Text(
                             "${controller.formatTime(start)} - ${controller.formatTime(end)}",
                             style: const TextStyle(
                                 fontSize: 12, color: Colors.black54),
                           ),
-
                           const SizedBox(height: 6),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              // ปุ่มเล่น/หยุดเสียง
                               IconButton(
                                 icon: Icon(
                                   controller.playingIndex == index &&
@@ -422,11 +409,9 @@ class _ResultScreenState extends State<ResultScreen> {
                                   if (mounted) setState(() {});
                                 },
                               ),
-
                               const SizedBox(width: 8),
 
                               if (segment['approved'] == true) ...[
-                                // ปุ่มดู History
                                 IconButton(
                                   icon: const Icon(Icons.history,
                                       color: Colors.grey),
@@ -434,12 +419,14 @@ class _ResultScreenState extends State<ResultScreen> {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title: const Text("History"),
+                                        title:
+                                            Text("result_gensub.history".tr()),
                                         content: Text(
-                                            "ข้อความก่อนแก้ไข:\n${segment['original_text'] ?? '-'}"),
+                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}"),
                                         actions: [
                                           TextButton(
-                                            child: const Text("ปิด"),
+                                            child: Text(
+                                                "result_gensub.close".tr()),
                                             onPressed: () =>
                                                 Navigator.pop(context),
                                           )
@@ -449,59 +436,68 @@ class _ResultScreenState extends State<ResultScreen> {
                                   },
                                 ),
                               ] else ...[
-                                // ยังไม่อนุมัติ → ปุ่มติ๊กถูกกับลบ
                                 IconButton(
                                   icon: const Icon(Icons.check,
                                       color: Colors.blue),
                                   onPressed: () async {
                                     try {
-                                      //  เรียกใช้ method บน controller โดยส่ง context
-                                      final res = await controller.updateAudioApproveSegment(
-                                          context, // ส่ง context
-                                          chunkId: segment['id'],
-                                          userId: widget.userId,
-                                          approveText: segment['text'],
-                                        );
+                                      final res = await controller
+                                          .updateAudioApproveSegment(
+                                        context,
+                                        chunkId: segment['id'],
+                                        userId: widget.userId,
+                                        approveText: segment['text'],
+                                      );
 
-                                      if (res != null && res['data'] != null) {
+                                      if (res != null &&
+                                          res['data'] != null) {
                                         setState(() {
                                           segment['original_text'] =
                                               segment['text'];
-                                          segment['text'] = res['data']
-                                                  ['approve_text'] ??
-                                              segment['text'];
+                                          segment['text'] =
+                                              res['data']['approve_text'] ??
+                                                  segment['text'];
                                           segment['approved'] =
                                               res['data']['approve'] ?? true;
                                         });
-                                        _showSnack("อนุมัติเรียบร้อย ");
+                                        _showSnack(
+                                            "result_gensub.approve_success"
+                                                .tr());
                                       } else {
-                                        _showSnack("อนุมัติไม่สำเร็จ ลองอีกครั้ง");
+                                        _showSnack(
+                                            "result_gensub.approve_fail".tr());
                                       }
                                     } catch (e) {
-                                      _showSnack("เกิดข้อผิดพลาด: $e");
+                                      _showSnack(
+                                          "${"result_gensub.error".tr()} $e");
                                     }
                                   },
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
                                   onPressed: () async {
                                     try {
-                                      //  เรียกใช้ method บน controller โดยส่ง context
-                                      await controller.deleteSegment(context, index, segments, project); 
+                                      await controller.deleteSegment(
+                                          context, index, segments, project);
                                       setState(() {});
-                                      _showSnack("ลบเรียบร้อย");
-
-                                      //  ถ้า segment หมด → กลับไปหน้า Upload
+                                      _showSnack(
+                                          "result_gensub.delete_success".tr());
                                       if (segments.isEmpty && mounted) {
-                                        Future.delayed(const Duration(milliseconds: 400), () {
+                                        Future.delayed(
+                                            const Duration(milliseconds: 400),
+                                            () {
                                           Navigator.pushReplacement(
                                             context,
-                                            MaterialPageRoute(builder: (_) => const UploadRecScreen()),
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const UploadRecScreen()),
                                           );
                                         });
                                       }
                                     } catch (e) {
-                                      _showSnack("ลบไม่สำเร็จ: $e");
+                                      _showSnack(
+                                          "${"result_gensub.delete_fail".tr()} $e");
                                     }
                                   },
                                 ),

@@ -25,7 +25,9 @@ class RecordLogic {
   bool isRecorderReady = false;
   bool isRecording = false;
   bool isPlaying = false;
-  String selectedLanguage = 'TH';
+   String selectedLanguage = "TH";
+  String selectedLanguageName = "select_languages.Thai".tr();
+  String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   String? recordedFilePath;
   Duration? audioDuration;
 
@@ -148,8 +150,8 @@ class RecordLogic {
   Future<ProjectModel?> handleTranscribe(
     BuildContext context, // รับ BuildContext
     {
-      String maxSegmentDuration = "10 วินาที",
-      String maxSilenceDuration = "0.3 วินาที",
+      int maxSegmentDuration = 10,
+    double maxSilenceDuration = 0.3,
     }
   ) async {
     if (recordedFilePath == null) return null;
@@ -182,18 +184,18 @@ class RecordLogic {
 
       // 3) cut audio (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final cutResult = await cutAudio(
-  context, 
+  context,
   filePath: recordedFilePath!,
   projectId: projectId,
   projectName: projectName,
-  cutType: "sec", 
-  chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+  cutType: "sec",
+  chunk: maxSegmentDuration.toString(),
   durations: (audioDuration?.inSeconds ?? 0).toString(),
-
-  maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-  maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
-  language: "th",
+  maxDuration: maxSegmentDuration.toString(),
+  maxSilence: maxSilenceDuration.toString(),
+  language: selectedLanguage.toLowerCase(),
 );
+
 
 
       debugPrint("Cut audio result: $cutResult");
