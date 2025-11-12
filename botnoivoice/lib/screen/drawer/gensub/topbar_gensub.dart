@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart'; //  เพิ่มมาสำหรับใช้ context.go()
+import 'package:go_router/go_router.dart'; // สำหรับใช้ context.go()
 
 class TopbarGensub extends StatefulWidget implements PreferredSizeWidget {
   const TopbarGensub({super.key});
@@ -41,47 +41,45 @@ class _TopbarGensubState extends State<TopbarGensub> {
     return AppBar(
       backgroundColor: kWhite,
       elevation: 4.0,
+
+      // 🔹 เปลี่ยนจากปุ่มเมนู → ปุ่มย้อนกลับ
       leading: Builder(
-  builder: (context) => SizedBox(
-    width: double.infinity,
-    height: ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
-    child: IconButton(
-      icon: Icon(
-        Icons.menu_rounded,
-        size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
-        color: kDark,
+        builder: (context) => SizedBox(
+          width: double.infinity,
+          height:
+              ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
+          child: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
+              color: kDark,
+            ),
+            onPressed: () {
+              context.go('/home'); // 🔙 ไปหน้าโฮม
+            },
+            tooltip: 'กลับไปหน้าแรก',
+          ),
+        ),
       ),
-      onPressed: () => Scaffold.of(context).openDrawer(),
-      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-    ),
-  ),
-),
       leadingWidth: ResponsiveDesignOrientation.isLandscape ? 35.w : 60.w,
 
-      //  โลโก้ตรงกลาง
+      // 🔹 โลโก้ตรงกลาง (ไม่ต้องกด)
       title: SizedBox(
         height: 120.h,
         child: Center(
-          child: InkWell(
-            onTap: () { 
-              context.go('/home');
-            },
-            borderRadius: BorderRadius.circular(30),
-            child: SvgPicture.asset(
-              'assets/images/logo/appbar-icon.svg',
-              width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
-              height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
-              fit: BoxFit.contain,
-            ),
+          child: SvgPicture.asset(
+            'assets/images/logo/appbar-icon.svg',
+            width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
+            height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
+            fit: BoxFit.contain,
           ),
         ),
       ),
 
-      //  ด้านขวา (เครดิต)
+      // 🔹 ด้านขวา (เครดิต)
       actions: [
         Container(
-          height:
-              ResponsiveDesignOrientation.isLandscape ? 35.h : 30.h,
+          height: ResponsiveDesignOrientation.isLandscape ? 35.h : 30.h,
           decoration: BoxDecoration(
             boxShadow: const [
               BoxShadow(
@@ -104,8 +102,10 @@ class _TopbarGensubState extends State<TopbarGensub> {
                 SizedBox(width: 5.w),
                 SvgPicture.asset(
                   'assets/images/logo/credit-icon.svg',
-                  width: ResponsiveDesignOrientation.isLandscape ? 20.w : 20.w,
-                  height: ResponsiveDesignOrientation.isLandscape ? 20.h : 20.h,
+                  width:
+                      ResponsiveDesignOrientation.isLandscape ? 20.w : 20.w,
+                  height:
+                      ResponsiveDesignOrientation.isLandscape ? 20.h : 20.h,
                 ),
                 SizedBox(width: 4.w),
                 Text(

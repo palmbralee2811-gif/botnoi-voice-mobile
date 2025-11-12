@@ -69,13 +69,13 @@ class _UploadScreenState extends State<UploadScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "upload_gensub.Title".tr(),
+                "upload_gensub.title".tr(),
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
               ),
               const SizedBox(height: 6),
               Text(
-                "upload_gensub.Expand_Title".tr(),
+                "upload_gensub.expand_title".tr(),
                 style: const TextStyle(color: Colors.black54),
                 textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
               ),

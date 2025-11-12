@@ -26,7 +26,7 @@ class RecordLogic {
   bool isRecording = false;
   bool isPlaying = false;
    String selectedLanguage = "TH";
-  String selectedLanguageName = "select_languages.Thai".tr();
+  String selectedLanguageName = "select_languages.thai".tr();
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   String? recordedFilePath;
   Duration? audioDuration;

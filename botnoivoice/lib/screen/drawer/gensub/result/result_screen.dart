@@ -3,7 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
+
+Future<void> shareTextFile(BuildContext context, String filePath) async {
+  final box = context.findRenderObject() as RenderBox?;
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+  final shareResult = await Share.shareXFiles(
+    [XFile(filePath)],
+    sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
+  );
+
+  String message;
+  switch (shareResult.status) {
+    case ShareResultStatus.success:
+      message = 'แชร์ไฟล์สำเร็จแล้ว ✅';
+      break;
+    case ShareResultStatus.dismissed:
+      message = 'ยกเลิกการแชร์ ❌';
+      break;
+    default:
+      message = 'เกิดข้อผิดพลาดในการแชร์ ⚠️';
+      break;
+  }
+
+  scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
+}
 
 class ResultScreen extends StatefulWidget {
   final String workspaceId;
@@ -120,19 +148,25 @@ class _ResultScreenState extends State<ResultScreen> {
                           actions: [
                             TextButton(
                               onPressed: () async {
-                                Navigator.pop(context);
-                                if (selectedFormat == "txt") {
-                                  final file =
-                                      await controller.exportTxt(context, project);
-                                  _showSnack(
-                                      "${"result_gensub.saved_txt".tr()} ${file.path}");
-                                } else {
-                                  final file =
-                                      await controller.exportSrt(context, project);
-                                  _showSnack(
-                                      "${"result_gensub.saved_srt".tr()} ${file.path}");
-                                }
-                              },
+  Navigator.pop(context);
+  try {
+    File file;
+
+    if (selectedFormat == "txt") {
+  file = await controller.exportTxt(context, project);
+  _showSnack("${"result_gensub.saved_txt".tr()} ${file.path}");
+} else {
+  file = await controller.exportSrt(context, project);
+  _showSnack("${"result_gensub.saved_srt".tr()} ${file.path}");
+}
+
+
+    // 🟣 เรียกแชร์ไฟล์ต่อทันที
+    await shareTextFile(context, file.path);
+  } catch (e) {
+    _showSnack("${"result_gensub.error".tr()} $e");
+  }
+},
                               child: Text("result_gensub.confirm".tr()),
                             ),
                             TextButton(

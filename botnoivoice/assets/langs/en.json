@@ -347,13 +347,13 @@
 },
   "upload_gensub": {
     "upload": "Upload File",
-    "Title" : "Upload Audio File",
-    "Expand_Title": "Transcribe from Uploaded Audio File"
+    "title" : "Upload Audio File",
+    "expand_title": "Transcribe from Uploaded Audio File"
   },
   "record_gensub": {
     "record": "Record Audio",
-    "Title" : "Record Audio for Transcription",
-    "Expand_Title": "Transcribe from Uploaded Audio File",
+    "title" : "Record Audio for Transcription",
+    "expand_title": "Transcribe from Uploaded Audio File",
     "press_to" : "Press the button to record audio",
     "press_correct" : "Press ✓ to submit data"
 },
@@ -374,6 +374,6 @@
     "delete": "Delete"
   },
   "select_languages": {
-    "Thai" : "Thai"
+    "thai" : "Thai"
   }
 }

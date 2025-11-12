@@ -34,7 +34,7 @@ class UploadLogic {
   String? transcribeStatus;
 
   String selectedLanguage = "TH";
-  String selectedLanguageName = "select_languages.Thai".tr();
+  String selectedLanguageName = "select_languages.thai".tr();
   String selectedLanguageImage = 'assets/images/national_flag/thai.png';
   String maxSegmentDuration = "10 วินาที";
   String maxSilenceDuration = "0.3 วินาที";

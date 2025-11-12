@@ -347,13 +347,13 @@
 },
   "upload_gensub": {
     "upload": "Unggah Berkas",
-    "Title" : "Unggah Berkas Audio",
-    "Expand_Title": "Transkripsikan dari Berkas Audio yang Diunggah"
+    "title" : "Unggah Berkas Audio",
+    "expand_title": "Transkripsikan dari Berkas Audio yang Diunggah"
   },
   "record_gensub": {
     "record": "Rekam Audio",
-    "Title" : "Rekam Audio untuk Transkripsi",
-    "Expand_Title": "Transkripsikan dari Berkas Audio yang Diunggah",
+    "title" : "Rekam Audio untuk Transkripsi",
+    "expand_title": "Transkripsikan dari Berkas Audio yang Diunggah",
     "press_to" : "Tekan tombol untuk merekam audio",
     "press_correct" : "Tekan ✓ untuk mengirim data"
   },
@@ -374,6 +374,6 @@
     "delete": "Hapus"
   },
   "select_languages": {
-    "Thai" : "Thai"
+    "thai" : "Thai"
   }
 }
