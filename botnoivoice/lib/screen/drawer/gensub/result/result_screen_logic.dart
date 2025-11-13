@@ -7,8 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 // ต้องเปิดใช้ import สำหรับ ProjectModel
 import '../models/project_model.dart';
-// import '../service/project/project_api_service.dart'; // <<< ลบออก
-
+import 'package:path/path.dart' as p;
 // Import Standalone API Functions ใหม่ที่คุณสร้าง
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart'; 
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; 
@@ -272,40 +271,48 @@ class ResultLogic {
 
   // 6. Export .txt (exportTxt - เพิ่ม BuildContext)
   // แม้ว่า Logic การ Export จะไม่มีการเรียก API แต่เราแก้ไข UI ให้ส่ง context มาแล้ว จึงต้องรับไว้
-  Future<File> exportTxt(BuildContext context, ProjectModel project) async { 
-    final buffer = StringBuffer();
-    for (var s in project.segments) {
-      buffer.writeln(s['text']);
-    }
-
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/${project.projectName}.txt");
-    await file.writeAsString(buffer.toString());
-    debugPrint(" TXT saved at: ${file.path}");
-    return file;
+  Future<File> exportTxt(BuildContext context, ProjectModel project) async {
+  final buffer = StringBuffer();
+  for (var s in project.segments) {
+    buffer.writeln(s['text']);
   }
+
+  final dir = await getApplicationDocumentsDirectory();
+
+  // ✅ ตัดนามสกุลเก่าทิ้ง เช่น .mp3 → เหลือชื่อไฟล์เปล่า
+  final cleanName = p.basenameWithoutExtension(project.projectName);
+  final file = File("${dir.path}/$cleanName.txt");
+
+  await file.writeAsString(buffer.toString());
+  debugPrint("TXT saved at: ${file.path}");
+  return file;
+}
 
   // 7. Export .srt (exportSrt - เพิ่ม BuildContext)
   // แม้ว่า Logic การ Export จะไม่มีการเรียก API แต่เราแก้ไข UI ให้ส่ง context มาแล้ว จึงต้องรับไว้
   Future<File> exportSrt(BuildContext context, ProjectModel project) async {
-    final buffer = StringBuffer();
-    int index = 1;
-    for (var s in project.segments) {
-      final start = srtTime(Duration(milliseconds: (s['start'] * 1000).round()));
-      final end = srtTime(Duration(milliseconds: (s['end'] * 1000).round()));
-      buffer.writeln("$index");
-      buffer.writeln("$start --> $end");
-      buffer.writeln(s['text']);
-      buffer.writeln();
-      index++;
-    }
-
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File("${dir.path}/${project.projectName}.srt");
-    await file.writeAsString(buffer.toString());
-    debugPrint(" SRT saved at: ${file.path}");
-    return file;
+  final buffer = StringBuffer();
+  int index = 1;
+  for (var s in project.segments) {
+    final start = srtTime(Duration(milliseconds: (s['start'] * 1000).round()));
+    final end = srtTime(Duration(milliseconds: (s['end'] * 1000).round()));
+    buffer.writeln("$index");
+    buffer.writeln("$start --> $end");
+    buffer.writeln(s['text']);
+    buffer.writeln();
+    index++;
   }
+
+  final dir = await getApplicationDocumentsDirectory();
+
+  // ✅ ตัดนามสกุลเก่าทิ้ง เช่น .mp3 → เหลือชื่อไฟล์เปล่า
+  final cleanName = p.basenameWithoutExtension(project.projectName);
+  final file = File("${dir.path}/$cleanName.srt");
+
+  await file.writeAsString(buffer.toString());
+  debugPrint("SRT saved at: ${file.path}");
+  return file;
+}
 
   /// Helper
   String formatTime(Duration duration) {

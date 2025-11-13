@@ -101,7 +101,7 @@ class UploadLogic {
       debugPrint(" upload result = $uploadResult");
 
       // 2) insert workspace → สร้าง project_id (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-      final projectName = filePath!.split(Platform.pathSeparator).last; 
+      final projectName = filePath!.split(Platform.pathSeparator).last.split('.').first;
       final durationStr = _formatDuration(audioDuration ?? Duration.zero); // MM:SS
       final insertResult = await insertAsrWorkspace(
         context, // ส่ง context

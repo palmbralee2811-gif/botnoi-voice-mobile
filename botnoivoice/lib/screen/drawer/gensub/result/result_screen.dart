@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
@@ -90,8 +91,8 @@ class _ResultScreenState extends State<ResultScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text("result_gensub.title".tr(),
-            style:
-                const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black87)),
         actions: [
           TextButton.icon(
             onPressed: () {
@@ -148,25 +149,29 @@ class _ResultScreenState extends State<ResultScreen> {
                           actions: [
                             TextButton(
                               onPressed: () async {
-  Navigator.pop(context);
-  try {
-    File file;
+                                Navigator.pop(context);
+                                try {
+                                  File file;
 
-    if (selectedFormat == "txt") {
-  file = await controller.exportTxt(context, project);
-  _showSnack("${"result_gensub.saved_txt".tr()} ${file.path}");
-} else {
-  file = await controller.exportSrt(context, project);
-  _showSnack("${"result_gensub.saved_srt".tr()} ${file.path}");
-}
+                                  if (selectedFormat == "txt") {
+                                    file = await controller.exportTxt(
+                                        context, project);
+                                    _showSnack(
+                                        "${"result_gensub.saved_txt".tr()} ${file.path}");
+                                  } else {
+                                    file = await controller.exportSrt(
+                                        context, project);
+                                    _showSnack(
+                                        "${"result_gensub.saved_srt".tr()} ${file.path}");
+                                  }
 
-
-    // 🟣 เรียกแชร์ไฟล์ต่อทันที
-    await shareTextFile(context, file.path);
-  } catch (e) {
-    _showSnack("${"result_gensub.error".tr()} $e");
-  }
-},
+                                  // 🟣 เรียกแชร์ไฟล์ต่อทันที
+                                  await shareTextFile(context, file.path);
+                                } catch (e) {
+                                  _showSnack(
+                                      "${"result_gensub.error".tr()} $e");
+                                }
+                              },
                               child: Text("result_gensub.confirm".tr()),
                             ),
                             TextButton(
@@ -233,9 +238,11 @@ class _ResultScreenState extends State<ResultScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(project.projectName,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                            Text(
+                              p.basenameWithoutExtension(project.projectName),
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
                             const SizedBox(height: 4),
                             Text(
                               DateFormat('dd/MM/yyyy HH:mm')
@@ -366,19 +373,20 @@ class _ResultScreenState extends State<ResultScreen> {
                                                 segment['original_text'] =
                                                     segment['text'];
                                               }
-                                              segment['text'] =
-                                                  res['data']['approve_text'] ??
-                                                      approveText;
-                                              segment['approved'] =
-                                                  res['data']['approve'] ?? true;
+                                              segment['text'] = res['data']
+                                                      ['approve_text'] ??
+                                                  approveText;
+                                              segment['approved'] = res['data']
+                                                      ['approve'] ??
+                                                  true;
                                               editingIndex = null;
                                             });
                                             _showSnack(
                                                 "result_gensub.save_success"
                                                     .tr());
                                           } else {
-                                            _showSnack("result_gensub.save_fail"
-                                                .tr());
+                                            _showSnack(
+                                                "result_gensub.save_fail".tr());
                                           }
                                         } catch (e) {
                                           _showSnack(
@@ -411,7 +419,6 @@ class _ResultScreenState extends State<ResultScreen> {
                                 ),
                               ),
                             ),
-
                           const SizedBox(height: 6),
                           Text(
                             "${controller.formatTime(start)} - ${controller.formatTime(end)}",
@@ -419,7 +426,6 @@ class _ResultScreenState extends State<ResultScreen> {
                                 fontSize: 12, color: Colors.black54),
                           ),
                           const SizedBox(height: 6),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -444,7 +450,6 @@ class _ResultScreenState extends State<ResultScreen> {
                                 },
                               ),
                               const SizedBox(width: 8),
-
                               if (segment['approved'] == true) ...[
                                 IconButton(
                                   icon: const Icon(Icons.history,
@@ -483,14 +488,13 @@ class _ResultScreenState extends State<ResultScreen> {
                                         approveText: segment['text'],
                                       );
 
-                                      if (res != null &&
-                                          res['data'] != null) {
+                                      if (res != null && res['data'] != null) {
                                         setState(() {
                                           segment['original_text'] =
                                               segment['text'];
-                                          segment['text'] =
-                                              res['data']['approve_text'] ??
-                                                  segment['text'];
+                                          segment['text'] = res['data']
+                                                  ['approve_text'] ??
+                                              segment['text'];
                                           segment['approved'] =
                                               res['data']['approve'] ?? true;
                                         });
