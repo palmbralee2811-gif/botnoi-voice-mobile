@@ -90,7 +90,8 @@
         "reward": "Hadiah",
         "redeem": "Tukar Kupon",
         "education": "Pendidikan",
-        "gensub": "BuatSub"
+        "gensub": "BuatSub",
+        "marads": "Pesan Buat iklan"
     },
     "account": {
         "uid_copy_success": "UID berhasil disalin",

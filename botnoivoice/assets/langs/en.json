@@ -90,8 +90,8 @@
         "reward": "Reward",
         "gensub": "Gensub",        
         "redeem": "Redeem Coupon",
-        "education": "Education"
-
+        "education": "Education",
+        "marads": "Create massage ads"
     },
     "account": {
         "uid_copy_success": "UID copied successfully",

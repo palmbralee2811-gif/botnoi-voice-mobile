@@ -20,6 +20,8 @@ import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/mar_ads_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/additional_info.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -118,6 +120,14 @@ final router = GoRouter(
     GoRoute(
   path: '/gensub',
   builder: (context, state) => const UploadRecScreen(),
+),
+GoRoute(
+  path: '/marads',
+  builder: (context, state) => const MarAdsScreen(),
+),
+GoRoute(
+  path: '/marads/additional-info',
+  builder: (context, state) => const AdditionalInfoScreen(),
 ),
   ],
 );

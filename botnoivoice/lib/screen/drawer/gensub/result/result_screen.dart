@@ -21,13 +21,13 @@ Future<void> shareTextFile(BuildContext context, String filePath) async {
   String message;
   switch (shareResult.status) {
     case ShareResultStatus.success:
-      message = 'แชร์ไฟล์สำเร็จแล้ว ✅';
+      message = 'แชร์ไฟล์สำเร็จแล้ว';
       break;
     case ShareResultStatus.dismissed:
-      message = 'ยกเลิกการแชร์ ❌';
+      message = 'ยกเลิกการแชร์';
       break;
     default:
-      message = 'เกิดข้อผิดพลาดในการแชร์ ⚠️';
+      message = 'เกิดข้อผิดพลาดในการแชร์';
       break;
   }
 
