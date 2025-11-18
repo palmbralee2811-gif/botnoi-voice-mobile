@@ -7,6 +7,7 @@ import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/mar_ads_free_badge.dart';
 
+
 class AdditionalInfoScreen extends StatefulWidget {
   const AdditionalInfoScreen({super.key});
 
@@ -16,13 +17,30 @@ class AdditionalInfoScreen extends StatefulWidget {
 
 class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
   final TextEditingController _infoController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // เปิดคีย์บอร์ดอัตโนมัติหลังหน้าสร้างเสร็จ
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
+  }
+
+  @override
+  void dispose() {
+    _infoController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
-
-      /// ⭐ ใช้ AppBar แบบเดียวกัน
+      resizeToAvoidBottomInset: true, // ⭐ เปิดให้เลื่อนเมื่อคีย์บอร์ดขึ้น
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -30,7 +48,6 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
         toolbarHeight: ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
         title: Stack(
           children: [
-            /// Back button
             Align(
               alignment: Alignment.centerLeft,
               child: IconButton(
@@ -42,8 +59,6 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                 onPressed: () => context.pop(),
               ),
             ),
-
-            /// Center logo
             Center(
               child: SvgPicture.asset(
                 'assets/images/logo/appbar-icon.svg',
@@ -52,8 +67,6 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                 fit: BoxFit.contain,
               ),
             ),
-
-            /// Badge ขวา
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
@@ -97,6 +110,7 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                   /// TextField
                   TextField(
                     controller: _infoController,
+                    focusNode: _focusNode, // ⭐ เชื่อม FocusNode
                     maxLines: null,
                     maxLength: 250,
                     onChanged: (_) => setState(() {}), // update counter
@@ -110,7 +124,12 @@ class _AdditionalInfoScreenState extends State<AdditionalInfoScreen> {
                         color: const Color(0xFF9E9E9E),
                       ),
                     ),
-                    style: GoogleFonts.inter(fontSize: 15.sp),
+                    style: GoogleFonts.inter(
+                      fontSize: 15.sp,
+                      color: _infoController.text.isNotEmpty
+                          ? Colors.black
+                          : Colors.grey, // สีดำเมื่อมีข้อความ
+                    ),
                   ),
 
                   /// Close Button

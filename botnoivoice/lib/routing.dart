@@ -21,7 +21,9 @@ import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/mar_ads_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/mar_ads_advanced_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/additional_info.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/product_properties.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -126,8 +128,16 @@ GoRoute(
   builder: (context, state) => const MarAdsScreen(),
 ),
 GoRoute(
+  path: '/marads/advanced',
+  builder: (context, state) => const MarAdsAdvancedScreen(),
+),
+GoRoute(
   path: '/marads/additional-info',
   builder: (context, state) => const AdditionalInfoScreen(),
+),
+GoRoute(
+  path: '/marads/product-properties',
+  builder: (context, state) => const ProductPropertiesScreen(),
 ),
   ],
 );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'widgets/mar_ads_text_field.dart';
+import 'widgets/basic_mar_ads_text_field.dart';
 import 'widgets/mar_ads_dropdown.dart';
 import 'widgets/mar_ads_mode_selector.dart';
 import 'widgets/mar_ads_free_badge.dart';
@@ -20,10 +20,12 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
   final TextEditingController _productController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  
+
+  String _additionalInfo = "";
   String _selectedContentStyle = 'จูงใจให้ใช้';
   String _selectedContentLength = '~15 วิ';
   String _selectedMode = 'Basic mode';
+  
 
   @override
   void dispose() {
@@ -154,7 +156,15 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
 
         GestureDetector(
   behavior: HitTestBehavior.opaque,   // ⭐ ต้องเพิ่มบรรทัดนี้
-  onTap: () => context.push('/marads/additional-info'),
+  onTap: () async {
+  final result = await context.push('/marads/additional-info');
+
+  if (result != null && result is String) {
+    setState(() {
+      _additionalInfo = result;
+    });
+  }
+},
   child: Container(
     height: 100.h,
             padding: EdgeInsets.all(1.5), 
@@ -174,15 +184,19 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "พลาดไม่ได้, หมดเขตในอีก 3 วัน",
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: const Color.fromARGB(255, 194, 194, 194),
-                      height: 1.25,
-                    ),
-                  ),
-                  
+  _additionalInfo.isNotEmpty
+      ? _additionalInfo                    // ข้อความที่กรอก
+      : "พลาดไม่ได้, หมดเขตในอีก 3 วัน", // Placeholder
+  style: GoogleFonts.inter(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w400,
+    color: _additionalInfo.isNotEmpty
+        ? Colors.black                      // สีดำเมื่อผู้ใช้กรอก
+        : const Color(0xFFC2C2C2),          // สีเทาเมื่อยังไม่กรอก
+    height: 1.25,
+  ),
+),
+      
                 ],
               ),
             ),
@@ -259,7 +273,6 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
   }
 
   void _handleModeSelectorTap() {
-    // TODO: Implement mode selector bottom sheet or dialog
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -277,22 +290,8 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
             ListTile(
               title: const Text('Advanced mode'),
               onTap: () {
-                setState(() => _selectedMode = 'Advanced mode');
                 Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('History'),
-              onTap: () {
-                setState(() => _selectedMode = 'History');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Result'),
-              onTap: () {
-                setState(() => _selectedMode = 'Result');
-                Navigator.pop(context);
+                context.go('/marads/advanced');
               },
             ),
           ],
@@ -341,7 +340,7 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
               },
             ),
             ListTile(
-              title: const Text('จริงจัง'),
+              title: const Text('จ��ิงจัง'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'จริงจัง');
                 Navigator.pop(context);

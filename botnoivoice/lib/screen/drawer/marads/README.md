@@ -6,12 +6,15 @@ Flutter implementation of the marketing ads content creation form.
 
 ```
 lib/screen/drawer/marads/
-├── mar_ads_screen.dart          # Main screen
+├── mar_ads_screen.dart                      # Basic mode screen
+├── mar_ads_advanced_screen.dart             # Advanced mode screen
 ├── widgets/
-│   ├── mar_ads_text_field.dart     # Custom text field component
-│   ├── mar_ads_dropdown.dart       # Custom dropdown component
-│   ├── mar_ads_mode_selector.dart  # Mode selector button
-│   └── mar_ads_free_badge.dart     # Free usage badge
+│   ├── mar_ads_text_field.dart              # Custom text field component
+│   ├── mar_ads_dropdown.dart                # Custom dropdown component
+│   ├── mar_ads_mode_selector.dart           # Mode selector button
+│   ├── mar_ads_free_badge.dart              # Free usage badge
+│   ├── mar_ads_collapsible_section.dart     # Collapsible accordion section
+│   └── additional_info.dart                 # Additional info input screen
 └── README.md
 ```
 
@@ -82,6 +85,10 @@ Badge displaying remaining free usage count.
 - ✅ Form validation (product field required)
 - ✅ Disabled button state
 - ✅ Bottom sheet dialogs for selections
+- ✅ Basic mode with simple form fields
+- ✅ Advanced mode with collapsible sections
+- ✅ Hamburger menu navigation
+- ✅ Additional info full-screen editor
 
 ## TODO
 
