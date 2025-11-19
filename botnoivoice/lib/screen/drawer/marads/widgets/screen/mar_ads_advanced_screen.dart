@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'widgets/mar_ads_mode_selector.dart';
-import 'widgets/mar_ads_free_badge.dart';
-import 'widgets/mar_ads_collapsible_section.dart';
-import 'widgets/basic_mar_ads_text_field.dart';
-import 'widgets/mar_ads_dropdown.dart';
+import '../ui/mar_ads_mode_selector.dart';
+import '../ui/mar_ads_free_badge.dart';
+import '../ui/mar_ads_collapsible_section.dart';
+import '../ui/basic_mar_ads_text_field.dart';
+import '../ui/mar_ads_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/shared/style/style.dart';
-import 'package:botnoivoice/screen/drawer/marads/widgets/product_properties.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/product_properties.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:go_router/go_router.dart';
@@ -92,7 +92,7 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
                       isRequired: true,
                     ),
                     MarAdsTextField(
-                      label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
+                      label: 'ช��่อแบรนด์/ชื่อยี่ห้อ',
                       placeholder: 'บอทน้อย',
                       controller: _brandController,
                     ),
@@ -275,7 +275,7 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'คาแรกเตอร์คนขาย',
+            'คาแร��เตอร์คนขาย',
             style: GoogleFonts.inter(
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
@@ -345,7 +345,7 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
             children: [
               Expanded(
                 child: Text(
-                  'ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)',
+                  'ความยาวของเนื้อหา* (มีผล��่อพอยท์ที่ใช้)',
                   style: GoogleFonts.inter(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -504,24 +504,31 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
             ],
           ),
           SizedBox(height: 8.h),
-          Opacity(
-            opacity: 0.25,
-            child: Container(
-              width: double.infinity,
-              height: 56.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFF262626),
-                borderRadius: BorderRadius.circular(20.r),
+          Container(
+            width: double.infinity,
+            height: 56.h,
+            decoration: BoxDecoration(
+              color: const Color(0xFF262626),
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
               ),
-              child: Center(
-                child: Text(
-                  'สร้างข้อความ',
-                  style: GoogleFonts.prompt(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    height: 1.4,
-                  ),
+              onPressed: () {
+                context.push('/marads/result');
+              },
+              child: Text(
+                'สร้างข้อความ',
+                style: GoogleFonts.prompt(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  height: 1.4,
                 ),
               ),
             ),

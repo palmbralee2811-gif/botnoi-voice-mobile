@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:botnoivoice/screen/drawer/marads/widgets/marads_ui_style.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 
 class ProductPropertiesScreen extends StatefulWidget {
   const ProductPropertiesScreen({super.key});

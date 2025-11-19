@@ -47,12 +47,12 @@ Future<String> generateAudio(
 
   Map<String, dynamic> payload = {
     "text": text,
-    "speaker": speakerId,
+    "speaker": "1",
     "volume": 1,
     "speed": 1,
     "type_media": "mp3",
     "save_file": "true",
-    "language": language,
+    "language": "th",
     /// Note: None Free Daily Quota.
     "page": "mobilebotnoivoice",
   };
