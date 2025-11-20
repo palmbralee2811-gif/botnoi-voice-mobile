@@ -133,10 +133,6 @@ GoRoute(
   builder: (context, state) => const MarAdsAdvancedScreen(),
 ),
 GoRoute(
-  path: '/marads/additional-info',
-  builder: (context, state) => const AdditionalInfoScreen(),
-),
-GoRoute(
   path: '/marads/product-properties',
   builder: (context, state) => const ProductPropertiesScreen(),
 ),

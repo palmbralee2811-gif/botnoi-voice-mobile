@@ -17,47 +17,54 @@ import 'package:http/http.dart' as http;
 /// For debugging
 final _logger = Logger();
 
-/// Generate audio from text
-Future<String> generateAudio(
+/// Generate audio (เวอร์ชันใหม่ – อย่าชนชื่อกับของเดิม)
+Future<String> generateAudioPreview(
   BuildContext context,
   String text,
   String audioUrl,
-  bool isGenerateAudio,
-  {required bool isV2}
-) async {
-  // Get Data from Home Speaker Data Management
-  String speakerId = context.read<HomeSpeakerDataManagement>().speakerId ?? getDefaultSpeakerId(context);
-  String language = context.read<HomeSpeakerDataManagement>().language ?? 'th';
+  bool isGenerateAudio, {
+  required bool isV2,
+}) async {
+  // ถ้าต้องการ fix ค่า speaker = "1" และ language = "th"
+  // ตามที่พี่เขาแนะนำ (ไม่ไปยุ่งกับ logic ของไฟล์เดิม)
+  // สามารถเขียนแบบนี้ได้เลย
+
+  // NOTE: ถ้าไม่อยากใช้ค่าจาก HomeSpeakerDataManagement เลย ให้คอมเมนต์ออก
+  // String speakerId =
+  //     context.read<HomeSpeakerDataManagement>().speakerId ?? getDefaultSpeakerId(context);
+  // String language =
+  //     context.read<HomeSpeakerDataManagement>().language ?? 'th';
+
+  String speakerId = "1"; // fix speaker
+  String language = "th"; // fix language
+
   String? appleCredentialsToken = context.read<AppleToken>().getCredentialsToken;
   String? googleCredentialsToken = context.read<GoogleToken>().getCredentialsToken;
   String? lineCredentialsToken = context.read<LineToken>().getCredentialsToken;
   String? emailCredentialsToken = context.read<EmailToken>().getCredentialsToken;
 
-  _logger.i("speakerId: $speakerId");
-  _logger.i("language: $language");
+  _logger.i("Preview speakerId: $speakerId");
+  _logger.i("Preview language: $language");
   _logger.i("Apple-credentialsToken: $appleCredentialsToken");
   _logger.i("Google-credentialsToken: $googleCredentialsToken");
   _logger.i("LINE-credentialsToken: $lineCredentialsToken");
   _logger.i("Email-credentialsToken: $emailCredentialsToken");
 
-  // เลือก URL ตาม isV2
   String url = isV2
       ? "$apiUrl/openapi/v1/generate_audio_v2"
       : "$apiUrl/openapi/v1/generate_audio";
 
   Map<String, dynamic> payload = {
     "text": text,
-    "speaker": speakerId,
+    "speaker": speakerId, // ใช้ค่า fix "1"
     "volume": 1,
     "speed": 1,
     "type_media": "mp3",
     "save_file": "true",
-    "language": language,
-    /// Note: None Free Daily Quota.
+    "language": language, // ใช้ค่า fix "th"
     "page": "mobilebotnoivoice",
   };
 
-  // Determine which token to use in the headers
   String? selectedToken;
   if (context.read<LineLogin>().isLoggedIn) {
     selectedToken = lineCredentialsToken;
@@ -71,7 +78,7 @@ Future<String> generateAudio(
       emailCredentialsToken.isNotEmpty) {
     selectedToken = emailCredentialsToken;
   } else {
-    selectedToken = ''; // Default or fallback if no token is found
+    selectedToken = '';
   }
 
   Map<String, String> headers = {
@@ -80,7 +87,7 @@ Future<String> generateAudio(
   };
 
   try {
-    _logger.i("POST $url");
+    _logger.i("POST (preview) $url");
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
@@ -89,24 +96,23 @@ Future<String> generateAudio(
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      // Set Audio URL from response
       audioUrl = jsonData['audio_url'];
-      _logger.i("generateAudio -> $audioUrl");
+      _logger.i("generateAudioPreview -> $audioUrl");
     } else {
       isGenerateAudio = false;
-      // Set Audio URL to empty string when failed to generate audio
       audioUrl = '';
-      _logger.e("Failed to generate audio: ${response.statusCode}");
+      _logger.e("Failed to generate preview audio: ${response.statusCode}");
 
       if (context.mounted) {
         NotificationPopup(
           context: context,
-          //ไม่สามารสร้างเสียงได้
-          text: 'home_screen.unable_to_create_sound'.tr()).showAsError();
+          text: 'home_screen.unable_to_create_sound'.tr(),
+        ).showAsError();
       }
     }
   } catch (e) {
-    _logger.e("Error on generateAudio: $e");
+    _logger.e("Error on generateAudioPreview: $e");
   }
+
   return audioUrl;
 }

@@ -8,7 +8,11 @@ import '../ui/mar_ads_free_badge.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_basic_logic.dart';
+import 'package:logger/logger.dart';
+
 
 class MarAdsScreen extends StatefulWidget {
   const MarAdsScreen({super.key});
@@ -22,18 +26,27 @@ class _MarAdsScreenState extends State<MarAdsScreen> {
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _additionalInfoController =
-      TextEditingController(); //  ใหม่
+      TextEditingController();
+  late final MarAdsLogic _logic;
+  final Logger _logger = Logger();
+  bool _isLoading = false;
 
   String _selectedContentStyle = 'จูงใจให้ใช้';
   String _selectedContentLength = '~15 วิ';
   String _selectedMode = 'Basic mode';
 
   @override
+  void initState() {
+    super.initState();
+    _logic = MarAdsLogic(PromptService());
+  }
+
+  @override
   void dispose() {
     _productController.dispose();
     _brandController.dispose();
     _priceController.dispose();
-    _additionalInfoController.dispose(); //  ใหม่
+    _additionalInfoController.dispose();
     super.dispose();
   }
   
@@ -417,9 +430,46 @@ MarAdsTextField(
     );
   }
 
-  void _handleCreateMessage() {
-    // ถ้าอยากส่งค่าพวก additionalInfo / style / length ไปหน้า result
-    // สามารถใส่เป็น extra parameter ตรงนี้ได้
-    context.push('/marads/result');
+      Future<void> _handleCreateMessage() async {
+    if (_isLoading) return;
+
+    // กันเหนียว validate อีกที
+    if (_productController.text.isEmpty ||
+        _brandController.text.isEmpty ||
+        _priceController.text.isEmpty) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      _logger.i("MarAds: start create_prompt_ads");
+
+      final response = await _logic.createPromptAdsFromForm(
+        context: context,
+        productName: _productController.text,
+        brandName: _brandController.text,
+        price: _priceController.text,
+        contentStyle: _selectedContentStyle,
+        contentLengthLabel: _selectedContentLength,
+        additionalInfo: _additionalInfoController.text,
+      );
+
+      _logger.i("MarAds: create_prompt_ads response: $response");
+
+      // ตอนนี้ยังไม่ต้อง parse model แค่ยิงสำเร็จ + ไปหน้า result
+      context.push('/marads/result');
+    } catch (e, stack) {
+_logger.e(
+  "MarAds: error on create_prompt_ads",
+  error: e,
+  stackTrace: stack,
+);
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
+
 }
