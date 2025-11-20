@@ -83,15 +83,15 @@
         "password_mismatch": "รหัสผ่านไม่ตรงกัน",
         "confirm": "ยืนยัน"
     },
-    "app_drawer": {
-        "profile": "ข้อมูลส่วนตัว",
-        "buy_points": "ซื้อพอยต์",
-        "security": "ความปลอดภัย",
-        "reward": "ฟรีพอยต์",
-
-        "redeem": "ใช้คูปอง",
-        "education": "การศึกษา"
-    },
+        "app_drawer": {
+            "profile": "ข้อมูลส่วนตัว",
+            "buy_points": "ซื้อพอยต์",
+            "security": "ความปลอดภัย",
+            "reward": "ฟรีพอยต์",
+            "gensub": "เเปลงซับ",
+            "redeem": "ใช้คูปอง",
+            "education": "การศึกษา"
+        },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
         "profile": "ข้อมูลส่วนตัว",
@@ -308,5 +308,74 @@
     },
     "favorite_screen": {
         "background_text": "ไม่มีผู้พูดที่ถูกใจในภาษานี้"
-    }
+    },
+  "text_to_gensub": {
+    "audio_language": "ภาษาของไฟล์เสียง",
+    "file_duration": "เวลาของไฟล์",
+    "duration_auto_calculate": "คำนวณอัตโนมัติเมื่อถอดเสียง",
+    "audio_time": "เวลาของไฟล์",
+    "segmentation_settings": "ตั้งค่าการตัดข้อความ",
+    "max_segment_duration": "ระยะเวลาสูงสุดในการตัด",
+    "max_silence_duration": "ช่วงเงียบสูงสุดในการตัด",
+    "transcribing": "กำลังถอด...",
+    "transcribe_status" : "กำลังอัปโหลดและถอดเสียง",
+    "transcribe_audio": "อัปโหลดไฟล์เสียง",
+    "create_at" : "สร้างเมื่อ:",
+    "project" : "โปรเจคบอทน้อยเจนซับ"
+  },
+  "result_gensub": {
+  "title": "Gensub",
+  "upload": "อัปโหลดไฟล์ใหม่",
+  "save": "บันทึก",
+  "download": "ดาวน์โหลดข้อความ",
+  "text_format": "นามสกุลไฟล์ text :",
+  "confirm": "ยืนยัน",
+  "cancel": "ยกเลิก",
+  "saved_txt": "บันทึกไฟล์ TXT เรียบร้อย:",
+  "saved_srt": "บันทึกไฟล์ SRT เรียบร้อย:",
+  "error": "เกิดข้อผิดพลาด:",
+  "no_workspace": "ไม่พบ workspace",
+  "comfirm": "ยืนยันข้อความแล้ว",
+  "save_success": "บันทึกสำเร็จ",
+  "save_fail": "บันทึกไม่สำเร็จ ลองอีกครั้ง",
+  "approve_success": "อนุมัติเรียบร้อย",
+  "approve_fail": "อนุมัติไม่สำเร็จ ลองอีกครั้ง",
+  "delete_success": "ลบเรียบร้อย",
+  "delete_fail": "ลบไม่สำเร็จ:",
+  "history": "ประวัติ",
+  "history_text": "ข้อความก่อนแก้ไข:",
+  "close": "ปิด"
+},
+  "upload_gensub": {
+    "upload": "อัปโหลดไฟล์",
+    "title" : "อัปโหลดไฟล์เสียง",
+    "expand_title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด"
+  },
+
+  "record_gensub": {
+    "record": "อัดเสียง",
+    "title" : "อัดเสียงถอดข้อความ",
+    "expand_title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด",
+    "press_to" : "กดที่ปุ่มเพื่ออัดเสียง",
+    "press_correct" : "กด ✓ เพื่อส่งข้อมูล"
+  },
+  "units": {
+    "seconds": "วินาที",
+    "minutes": "นาที",
+    "unlimited": "ไม่จำกัด"
+  },
+  "languages": {
+    "th": "ไทย",
+    "en": "อังกฤษ",
+    "id": "อินโดนีเซีย"
+  },
+  "dialog": {
+    "delete_project_title": "ลบโปรเจกต์",
+    "delete_project_content": "คุณแน่ใจหรือไม่ที่จะลบโปรเจกต์นี้?",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ"
+  },
+  "select_languages": {
+    "thai" : "ไทย"
+  }
 }

@@ -88,7 +88,7 @@
         "buy_points": "Buy Points",
         "security": "Security",
         "reward": "Reward",
-
+        "gensub": "Gensub",        
         "redeem": "Redeem Coupon",
         "education": "Education"
 
@@ -308,5 +308,73 @@
     },
     "favorite_screen": {
         "background_text": "There are no preferred speakers in this language."
-    }
+    },
+    "text_to_gensub": {
+    "audio_language": "Audio Language",
+    "file_duration": "File Duration",
+    "duration_auto_calculate": "Auto calculate when transcribing",
+    "audio_time": "File Time",
+    "segmentation_settings": "Segmentation Settings",
+    "max_segment_duration": "Max Segment Duration",
+    "transcribe_status" : "Uploading and Transcribing",
+    "max_silence_duration": "Max Silence Duration",
+    "transcribing": "Transcribing...",
+    "transcribe_audio": "Transcribe Audio",
+    "create_at" : "Create at:",
+    "project" : "Botnoi GenSub Project"
+  },
+  "result_gensub": {
+  "title": "GenSub",
+  "upload": "Upload new file",
+  "save": "Save",
+  "download": "Download text",
+  "text_format": "Text file format:",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "saved_txt": "TXT file saved successfully:",
+  "saved_srt": "SRT file saved successfully:",
+  "error": "Error:",
+  "no_workspace": "No workspace found",
+  "comfirm": "Text confirmed",
+  "save_success": "Saved successfully",
+  "save_fail": "Failed to save, please try again",
+  "approve_success": "Approved successfully",
+  "approve_fail": "Approval failed, please try again",
+  "delete_success": "Deleted successfully",
+  "delete_fail": "Delete failed:",
+  "history": "History",
+  "history_text": "Text before edit:",
+  "close": "Close"
+},
+  "upload_gensub": {
+    "upload": "Upload File",
+    "title" : "Upload Audio File",
+    "expand_title": "Transcribe from Uploaded Audio File"
+  },
+  "record_gensub": {
+    "record": "Record Audio",
+    "title" : "Record Audio for Transcription",
+    "expand_title": "Transcribe from Uploaded Audio File",
+    "press_to" : "Press the button to record audio",
+    "press_correct" : "Press ✓ to submit data"
+},
+  "units": {
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "unlimited": "Unlimited"
+  },
+  "languages": {
+    "th": "Thai",
+    "en": "English",
+    "id": "Indonesian"
+  },
+  "dialog": {
+    "delete_project_title": "Delete Project",
+    "delete_project_content": "Are you sure you want to delete this project?",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "select_languages": {
+    "thai" : "Thai"
+  }
 }

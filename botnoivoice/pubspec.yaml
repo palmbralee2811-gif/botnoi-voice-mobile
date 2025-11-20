@@ -73,6 +73,15 @@ dependencies:
   #internet_checker
   internet_connection_checker_plus: ^2.7.0
 
+  # State Management
+  flutter_riverpod: ^2.5.1
+
+  # Upload Audio File from Device
+  file_picker: ^6.1.1
+  
+  #sound manage
+  flutter_sound: ^9.28.0
+
   # Router
   go_router: ^14.8.1
 

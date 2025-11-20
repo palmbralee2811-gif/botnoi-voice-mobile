@@ -11,5 +11,5 @@ String get apiUrl => _productionUrl;
 
 /// Check if the app is running in debugging mode
 bool get isDebuggingMode {
-  return apiUrl == _stagingUrl;
+  return apiUrl == _productionUrl;
 }
