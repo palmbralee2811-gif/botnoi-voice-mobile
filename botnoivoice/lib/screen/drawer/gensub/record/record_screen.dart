@@ -231,18 +231,19 @@ class _RecordScreenState extends State<RecordScreen> {
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text("dialog.delete_project_title"),
-                            content:
-                                const Text("dialog.delete_project_content"),
+                            title: Text("dialog.delete_project_title".tr()),
+                            content: Text("dialog.delete_project_content".tr()),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context, false),
-                                child: const Text("dialog.cancel"),
+                                child: Text("dialog.cancel".tr()),
                               ),
                               TextButton(
                                 onPressed: () => Navigator.pop(context, true),
-                                child: const Text("dialog.delete",
-                                    style: TextStyle(color: Colors.red)),
+                                child: Text(
+                                  "dialog.delete".tr(),
+                                  style: const TextStyle(color: Colors.red),
+                                ),
                               ),
                             ],
                           ),
@@ -386,36 +387,39 @@ class _RecordScreenState extends State<RecordScreen> {
                   const SizedBox(height: 16),
 
                   // ---------- ภาษา ----------
-                 // ---------- ภาษา ----------
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Text("text_to_gensub.audio_language".tr()),
-    LanguageSelector(
-      selectedLanguage: controller.selectedLanguageName,
-      selectedLanguageImage: controller.selectedLanguageImage,
-      onSelected: (lang) {
-        setState(() {
-          controller.selectedLanguage = lang['code'];
-          controller.selectedLanguageImage = lang['image'];
+                  // ---------- ภาษา ----------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("text_to_gensub.audio_language".tr()),
+                      LanguageSelector(
+                        selectedLanguage: controller.selectedLanguageName,
+                        selectedLanguageImage: controller.selectedLanguageImage,
+                        onSelected: (lang) {
+                          setState(() {
+                            controller.selectedLanguage = lang['code'];
+                            controller.selectedLanguageImage = lang['image'];
 
-          // ✅ ตั้งชื่อภาษาให้ตรงกับ locale ปัจจุบัน
-          final locale = context.locale.languageCode;
-          switch (locale) {
-            case 'th':
-              controller.selectedLanguageName = lang['thaiName'];
-              break;
-            case 'id':
-              controller.selectedLanguageName = lang['indonesianName'];
-              break;
-            default:
-              controller.selectedLanguageName = lang['englishName'];
-          }
-        });
-      },
-    ),
-  ],
-),
+                            // ✅ ตั้งชื่อภาษาให้ตรงกับ locale ปัจจุบัน
+                            final locale = context.locale.languageCode;
+                            switch (locale) {
+                              case 'th':
+                                controller.selectedLanguageName =
+                                    lang['thaiName'];
+                                break;
+                              case 'id':
+                                controller.selectedLanguageName =
+                                    lang['indonesianName'];
+                                break;
+                              default:
+                                controller.selectedLanguageName =
+                                    lang['englishName'];
+                            }
+                          });
+                        },
+                      ),
+                    ],
+                  ),
 
                   const SizedBox(height: 12),
 
