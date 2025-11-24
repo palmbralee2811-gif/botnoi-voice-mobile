@@ -2,7 +2,6 @@ import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
@@ -15,19 +14,20 @@ Future<void> shareTextFile(BuildContext context, String filePath) async {
   final shareResult = await Share.shareXFiles(
     [XFile(filePath)],
     sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
+    // text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
+    text: "Choose to save or share this file",
   );
 
   String message;
   switch (shareResult.status) {
     case ShareResultStatus.success:
-      message = 'แชร์ไฟล์สำเร็จแล้ว ✅';
+      message = 'Share Text File Successful';
       break;
     case ShareResultStatus.dismissed:
-      message = 'ยกเลิกการแชร์ ❌';
+      message = 'Share Text File Dismissed';
       break;
     default:
-      message = 'เกิดข้อผิดพลาดในการแชร์ ⚠️';
+      message = 'Share Text File Failed';
       break;
   }
 

@@ -116,12 +116,12 @@ class _RecordScreenState extends State<RecordScreen> {
             child: Column(
               children: [
                 Text(
-                  "record_gensub.Title".tr(),
+                  "record_gensub.title".tr(),
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                Text("record_gensub.Expand_Title".tr(),
+                Text("record_gensub.expand_title".tr(),
                     style: const TextStyle(color: Colors.black54)),
                 const SizedBox(height: 20),
                 GestureDetector(
