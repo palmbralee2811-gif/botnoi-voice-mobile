@@ -12,11 +12,14 @@ class EmailToken extends ChangeNotifier {
   String? _userID;
   String? _userName;
   String? _jwtToken;
+
+  // Credits
   String? _remainingCredits;
   int? _remainingNormalCredits;
   int? _remainingMonthlyPoints;
-  String? _credentialsToken;
 
+  String? _credentialsToken;
+  
   bool _isSubscription = false;
 
   final Logger _logger = Logger(); // For debugging
@@ -37,7 +40,6 @@ class EmailToken extends ChangeNotifier {
 
   /// Getter for the credentials token
   String? get getCredentialsToken => _credentialsToken;
-
 
   // Getter for the user subscription
   bool get isSubscription => _isSubscription;

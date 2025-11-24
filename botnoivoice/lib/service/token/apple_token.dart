@@ -12,9 +12,13 @@ class AppleToken extends ChangeNotifier {
   String? _userID;
   String? _userName;
   String? _jwtToken;
-  String? _remainingCredits;
-  String? _credentialsToken;
 
+  // Credits
+  String? _remainingCredits;
+  int? _remainingNormalCredits;
+  int? _remainingMonthlyPoints;
+
+  String? _credentialsToken;
 
   bool _isSubscription = false;
 
@@ -31,10 +35,11 @@ class AppleToken extends ChangeNotifier {
 
   /// Getter for the remaining credits
   String? get getRemainingCredits => _remainingCredits;
+  int? get getRemainingNormalCredits => _remainingNormalCredits;
+  int? get getRemainingMonthlyPoints => _remainingMonthlyPoints;
 
   /// Getter for the credentials token
   String? get getCredentialsToken => _credentialsToken;
-
 
   // Getter for the user subscription
   bool get isSubscription => _isSubscription;
@@ -110,7 +115,9 @@ class AppleToken extends ChangeNotifier {
 
         _userID = data['data']['uid'].toString();
         _userName = data['data']['username'].toString();
-        _remainingCredits = data['data']['credits'].toString();
+        _remainingNormalCredits = data['data']['credits']?.toInt() ?? 0;
+        _remainingMonthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
+        _remainingCredits = ((_remainingNormalCredits ?? 0) + (_remainingMonthlyPoints ?? 0)).toString();
         _isSubscription = data['data']['subscription']?.toString() ==
             'Pro'; // Check ว่าผู้ใช้ได้ Subscription ไหม
         notifyListeners();
