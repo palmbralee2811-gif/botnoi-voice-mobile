@@ -214,8 +214,11 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
   }
 
   Future<void> _handleCouponRedemption100(WidgetRef ref) async {
-    final couponProvider = context.read<RewardService>();
-    final creditsProvider = context.read<CallReloadData>();
+    // final couponProvider = context.read<RewardService>();
+    // final creditsProvider = context.read<CallReloadData>();
+
+    final couponProvider = ref.read(rewardServiceProvider);
+    final creditsProvider = ref.read(callReloadDataProvider);
 
     try {
       await couponProvider.checkCoupon100(ref);
@@ -256,8 +259,11 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
   }
 
   Future<void> _handleCouponRedemption1K(WidgetRef ref) async {
-    final couponProvider = context.read<RewardService>();
-    final creditsProvider = context.read<CallReloadData>();
+    // final couponProvider = context.read<RewardService>();
+    // final creditsProvider = context.read<CallReloadData>();
+
+    final couponProvider = ref.read(rewardServiceProvider);
+    final creditsProvider = ref.read(callReloadDataProvider);
 
     try {
       await couponProvider.checkCoupon1K(ref);

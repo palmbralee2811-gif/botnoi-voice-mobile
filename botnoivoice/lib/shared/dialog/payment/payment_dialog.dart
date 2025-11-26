@@ -463,7 +463,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
       final resultState = ref.read(paymentServiceProvider);
 
       if (resultState.errorMessage == null) {
-        await creditsProvider.callLoadCreditsApi(context);
+        await creditsProvider.callLoadCreditsApi();
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
@@ -471,7 +471,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
           }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
           onPressed: () async {
             /// Refresh Points After In-App Purchase: IAP
-            await creditsProvider.callLoadCreditsApi(context);
+            await creditsProvider.callLoadCreditsApi();
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -490,7 +490,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
       ).showErrorModal(context);
     } finally {
       // Call reload data regardless of success or failure
-      await creditsProvider.callLoadCreditsApi(context);
+      await creditsProvider.callLoadCreditsApi();
     }
   }
 }

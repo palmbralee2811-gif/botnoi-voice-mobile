@@ -787,7 +787,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                                 : 15.w),
                         child: LineLoginButton(
                           onPressed: () {
-                            openLineLogin(context);
+                            openLineLogin(ref);
                           },
                         ),
                       ),
@@ -805,7 +805,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                                 : 15.w),
                         child: GoogleLoginButton(
                           onPressed: () {
-                            openGoogleLogin(context);
+                            openGoogleLogin(ref);
                           },
                         ),
                       ),
@@ -824,7 +824,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                                   : 15.w),
                           child: AppleLoginButton(
                             onPressed: () {
-                              openAppleLogin(context);
+                              openAppleLogin(ref);
                             },
                           ),
                         ),

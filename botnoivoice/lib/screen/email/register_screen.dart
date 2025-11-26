@@ -782,7 +782,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
           child: LineLoginButton(
             onPressed: () {
-              openLineLogin(context);
+              openLineLogin(ref);
             },
           ),
         ),
@@ -793,7 +793,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
           child: GoogleLoginButton(
             onPressed: () {
-              openGoogleLogin(context);
+              openGoogleLogin(ref);
             },
           ),
         ),
@@ -805,7 +805,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
             child: AppleLoginButton(
               onPressed: () {
-                openAppleLogin(context);
+                openAppleLogin(ref);
               },
             ),
           ),

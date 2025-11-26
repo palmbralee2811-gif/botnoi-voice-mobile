@@ -144,7 +144,7 @@ class AuthChecker extends ConsumerWidget { // **เปลี่ยนเป็�
         SchedulerBinding.instance.addPostFrameCallback((_) {
           if (context.mounted) {
             // openEmailLogout ต้องถูกปรับให้ใช้ Riverpod/Ref เพื่อสั่ง Sign Out ได้
-            openEmailLogout(context); 
+            openEmailLogout(ref); 
           }
         });
         loginProvider = null;

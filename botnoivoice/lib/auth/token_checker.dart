@@ -341,11 +341,11 @@ class _TokenCheckerState extends ConsumerState<TokenChecker> { // **ใช้ Co
         isSubscribed: _isSubscribed, 
         jwtToken: tokenState.jwtToken!);
 
-    if (!_isDisposed) await configureRevenueCat(context);
+    if (!_isDisposed) await configureRevenueCat(ref);
 
     if (mounted) {
       Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(context);
+        await PushNotificationService.init(ref);
       });
       setState(() {
         _initialized = true;
@@ -370,11 +370,11 @@ class _TokenCheckerState extends ConsumerState<TokenChecker> { // **ใช้ Co
         isSubscribed: _isSubscribed,
         jwtToken: tokenState.jwtToken!);
 
-    if (!_isDisposed) await configureRevenueCat(context);
+    if (!_isDisposed) await configureRevenueCat(ref);
 
     if (mounted) {
       Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(context);
+        await PushNotificationService.init(ref);
       });
       setState(() {
         _initialized = true;
@@ -398,11 +398,11 @@ class _TokenCheckerState extends ConsumerState<TokenChecker> { // **ใช้ Co
     await SpeakerModel.loadSpeakers(
         isSubscribed: _isSubscribed, jwtToken: tokenState.jwtToken!);
 
-    if (!_isDisposed) await configureRevenueCat(context);
+    if (!_isDisposed) await configureRevenueCat(ref);
 
     if (mounted) {
       Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(context);
+        await PushNotificationService.init(ref);
       });
       setState(() {
         _initialized = true;
@@ -445,11 +445,11 @@ class _TokenCheckerState extends ConsumerState<TokenChecker> { // **ใช้ Co
     }
 
     // 4. Load RevenueCat & Notification
-    if (!_isDisposed) await configureRevenueCat(context);
+    if (!_isDisposed) await configureRevenueCat(ref);
 
     if (mounted) {
       Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(context);
+        await PushNotificationService.init(ref);
       });
       setState(() {
         _initialized = true;

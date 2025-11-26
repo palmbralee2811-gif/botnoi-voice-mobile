@@ -1,63 +1,131 @@
+// import 'package:botnoivoice/service/login/apple_login.dart';
+// import 'package:botnoivoice/service/login/email_login.dart';
+// import 'package:botnoivoice/service/login/google_login.dart';
+// import 'package:botnoivoice/service/login/line_login.dart';
+// import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:provider/provider.dart';
+
+// /// Open Email Logout Function and Redirect to `login_screen.dart`
+// Future<void> openEmailLogout(BuildContext context) async {
+//   try {
+//     await context.read<EmailLogin>().signOutWithEmail(context);
+//     // Redirect to `login_screen.dart`
+//     context.go('/login');
+//   } catch (e) {
+//     NotificationPopup(
+//       context: context,
+//       text: e.toString(),
+//     ).showAsError();
+//   }
+// }
+
+// /// Open Apple Logout Function and Redirect to `login_screen.dart`
+// Future<void> openAppleLogout(BuildContext context) async {
+//   try {
+//     await context.read<AppleLogin>().signOutWithApple(context);
+//     // Redirect to `login_screen.dart`
+//     context.go('/login');
+//   } catch (e) {
+//     NotificationPopup(
+//       context: context,
+//       text: e.toString(),
+//     ).showAsError();
+//   }
+// }
+
+// /// Open Google Logout Function and Redirect to `login_screen.dart`
+// Future<void> openGoogleLogout(BuildContext context) async {
+//   try {
+//     await context.read<GoogleLogin>().signOutWithGoogle(context);
+//     // Redirect to `login_screen.dart`
+//     context.go('/login');
+//   } catch (e) {
+//     NotificationPopup(
+//       context: context,
+//       text: e.toString(),
+//     ).showAsError();
+//   }
+// }
+
+// /// Open Line Logout Function and Redirect to `login_screen.dart`
+// Future<void> openLineLogout(BuildContext context) async {
+//   try {
+//     await context.read<LineLogin>().signOutWithLine(context);
+//     // Redirect to `login_screen.dart`
+//     context.go('/login');
+//   } catch (e) {
+//     NotificationPopup(
+//       context: context,
+//       text: e.toString(),
+//     ).showAsError();
+//   }
+// }
+
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Open Email Logout Function and Redirect to `login_screen.dart`
-Future<void> openEmailLogout(BuildContext context) async {
+Future<void> openEmailLogout(WidgetRef ref) async {
   try {
-    await context.read<EmailLogin>().signOutWithEmail(context);
+    // await context.read<EmailLogin>().signOutWithEmail(context);
+    await ref.read(emailLoginNotifierProvider.notifier).signOutWithEmail(ref);
     // Redirect to `login_screen.dart`
-    context.go('/login');
+    ref.context.go('/login');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }
 }
 
 /// Open Apple Logout Function and Redirect to `login_screen.dart`
-Future<void> openAppleLogout(BuildContext context) async {
+Future<void> openAppleLogout(WidgetRef ref) async {
   try {
-    await context.read<AppleLogin>().signOutWithApple(context);
+    // await context.read<AppleLogin>().signOutWithApple(context);
+    await ref.read(appleLoginNotifierProvider.notifier).signOutWithApple(ref);
     // Redirect to `login_screen.dart`
-    context.go('/login');
+    ref.context.go('/login');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }
 }
 
 /// Open Google Logout Function and Redirect to `login_screen.dart`
-Future<void> openGoogleLogout(BuildContext context) async {
+Future<void> openGoogleLogout(WidgetRef ref) async {
   try {
-    await context.read<GoogleLogin>().signOutWithGoogle(context);
+    // await context.read<GoogleLogin>().signOutWithGoogle(context);
+    await ref.read(googleLoginNotifierProvider.notifier).signOutWithGoogle(ref);
     // Redirect to `login_screen.dart`
-    context.go('/login');
+    ref.context.go('/login');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }
 }
 
 /// Open Line Logout Function and Redirect to `login_screen.dart`
-Future<void> openLineLogout(BuildContext context) async {
+Future<void> openLineLogout(WidgetRef ref) async {
   try {
-    await context.read<LineLogin>().signOutWithLine(context);
+    // await context.read<LineLogin>().signOutWithLine(context);
+    await ref.read(lineLoginNotifierProvider.notifier).signOutWithLine(ref);
     // Redirect to `login_screen.dart`
-    context.go('/login');
+    ref.context.go('/login');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }

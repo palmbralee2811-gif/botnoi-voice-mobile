@@ -446,12 +446,12 @@ class _ConfirmDeleteAccountScreenState extends ConsumerState<ConfirmDeleteAccoun
         // Logout Email/Password
         // ต้องเรียกใช้ signOutWithEmail จาก Notifier
         await emailLoginNotifier.signOutWithEmail(ref); // ส่ง ref เข้าไปด้วย
-        openEmailLogout(context); // ฟังก์ชันนำทางหลังจาก Logout
+        openEmailLogout(ref); // ฟังก์ชันนำทางหลังจาก Logout
       } else if (_providerId == 'apple.com') {
         // Logout Apple
         // ต้องเรียกใช้ signOutWithApple จาก Notifier
         await appleLoginNotifier.signOutWithApple(ref); // ส่ง ref เข้าไปด้วย
-        openAppleLogout(context); // ฟังก์ชันนำทางหลังจาก Logout
+        openAppleLogout(ref); // ฟังก์ชันนำทางหลังจาก Logout
       }
     } catch (error) {
       NotificationPopup(
