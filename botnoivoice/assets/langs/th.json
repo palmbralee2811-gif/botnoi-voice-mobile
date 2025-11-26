@@ -90,7 +90,8 @@
             "reward": "ฟรีพอยต์",
             "gensub": "เเปลงซับ",
             "redeem": "ใช้คูปอง",
-            "education": "การศึกษา"
+            "education": "การศึกษา",
+            "marads": "สร้างข้อความโฆษณา"
         },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
