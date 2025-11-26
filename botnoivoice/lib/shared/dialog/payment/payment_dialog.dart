@@ -248,7 +248,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
@@ -453,7 +452,10 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
     // final creditsProvider = ref.read(callReloadDataProvider);
     // Using the original logic for CallReloadData for compatibility,
     // but recommend converting it to Riverpod for consistency.
-    final creditsProvider = context.read<CallReloadData>();
+    
+    
+    // final creditsProvider = context.read<CallReloadData>();
+    final creditsProvider = ref.read(callReloadDataProvider);
 
     try {
       // Call the method on the Notifier

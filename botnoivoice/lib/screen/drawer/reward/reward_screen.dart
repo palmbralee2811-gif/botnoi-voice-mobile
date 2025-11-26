@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:botnoivoice/screen/drawer/reward/widget/reward_card_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -49,7 +48,9 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
   @override
   Widget build(BuildContext context) {
     // Get data from provider
-    final rewardServiceProvider = context.watch<RewardService>();
+    // final rewardServiceProvider = context.watch<RewardService>();
+    final rewardService = ref.watch(rewardServiceProvider);
+
 
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = ResponsiveDesignOrientation.isLandscape;
@@ -195,7 +196,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
           ),
 
           // วงกลมโหลด (Fullscreen Loading Overlay)
-          if (rewardServiceProvider.isLoading)
+          if (rewardService.isLoading)
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0.5), // พื้นหลังมืดโปร่งแสง

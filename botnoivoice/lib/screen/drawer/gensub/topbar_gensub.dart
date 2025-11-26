@@ -146,7 +146,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
 class TopbarGensub extends ConsumerStatefulWidget implements PreferredSizeWidget {
@@ -176,8 +175,8 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
 
   @override
   Widget build(BuildContext context) {
-    var remainingCredits =
-        context.watch<CallReloadData>().remainingCredits ?? 'N/A';
+    // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
+    var remainingCredits = ref.watch(callReloadDataProvider).remainingCredits ?? 'N/A';
 
     return AppBar(
       backgroundColor: kWhite,

@@ -122,6 +122,7 @@ class AppleLoginNotifier extends UserLoginBaseNotifier<AppleLoginState> {
   AppleLoginNotifier() : super(AppleLoginState(), providerId);
   
   // Implement abstract method from base class
+  @override
   void _updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
     state = state.copyWith(user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
   }

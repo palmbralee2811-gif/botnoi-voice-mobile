@@ -195,6 +195,7 @@ class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
   EmailLoginNotifier(this._ref) : super(EmailLoginState(), providerId);
 
   // Implement abstract method from base class
+  @override
   void _updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
     state = state.copyWith(user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
   }

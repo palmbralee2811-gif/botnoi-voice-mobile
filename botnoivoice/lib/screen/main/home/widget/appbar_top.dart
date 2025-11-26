@@ -4,23 +4,23 @@ import 'package:botnoivoice/screen/main/home/widget/appbar_bottom.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-class AppBarTop extends StatefulWidget implements PreferredSizeWidget {
+class AppBarTop extends ConsumerStatefulWidget implements PreferredSizeWidget {
   const AppBarTop({super.key});
 
   @override
-  State<AppBarTop> createState() => _AppBarTopState();
+  ConsumerState<AppBarTop> createState() => _AppBarTopState();
 
   @override
   Size get preferredSize =>
       Size.fromHeight(ResponsiveDesignOrientation.isLandscape ? 135.h : 100.h);
 }
 
-class _AppBarTopState extends State<AppBarTop> {
+class _AppBarTopState extends ConsumerState<AppBarTop> {
   @override
   void initState() {
     super.initState();
@@ -30,12 +30,14 @@ class _AppBarTopState extends State<AppBarTop> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    await context.read<CallReloadData>().callLoadCreditsApi();
+    // await context.read<CallReloadData>().callLoadCreditsApi();
+    await ref.read(callReloadDataProvider).callLoadCreditsApi();
   }
 
   @override
   Widget build(BuildContext context) {
-    var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
+    // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
+    var remainingCredits = ref.read(callReloadDataProvider).remainingCredits ?? 'N/A';
 
     return AppBar(
       backgroundColor: kWhite,

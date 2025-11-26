@@ -138,7 +138,7 @@ class AuthChecker extends ConsumerWidget { // **เปลี่ยนเป็�
     String? loginProvider;
 
     // ตรวจสอบว่าเป็นการล็อกอินด้วย Email หรือไม่ (ใช้ isAuthenticated จาก Notifier)
-    if (emailNotifier.isAuthenticated) {
+    if (emailNotifier.isAuthenticated && emailNotifier.user?.providerData[0].providerId == 'email') {
       // ถ้า email ยังไม่ได้ยืนยัน จะบังคับให้ logout
       if (emailState.user != null && !emailState.user!.emailVerified) {
         SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -153,11 +153,11 @@ class AuthChecker extends ConsumerWidget { // **เปลี่ยนเป็�
       }
 
     // ตรวจสอบการล็อกอินผ่าน Google
-    } else if (googleNotifier.isAuthenticated) {
+    } else if (googleNotifier.isAuthenticated && googleNotifier.user?.providerData[0].providerId == 'google.com') {
       loginProvider = 'google';
 
     // ตรวจสอบการล็อกอินผ่าน Apple
-    } else if (appleNotifier.isAuthenticated) {
+    } else if (appleNotifier.isAuthenticated && appleNotifier.user?.providerData[0].providerId == 'apple.com') {
       loginProvider = 'apple';
 
     // ตรวจสอบการล็อกอินผ่าน Line

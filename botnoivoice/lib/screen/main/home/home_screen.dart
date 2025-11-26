@@ -20,7 +20,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -100,9 +99,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _generateAudioConfirmed() async {
-    final creditsProvider = context.read<CallReloadData>();
+    // final creditsProvider = context.read<CallReloadData>();
+    final creditsProvider = ref.read(callReloadDataProvider);
 
-    final speakerProvider = context.read<HomeSpeakerDataManagement>();
+    // final speakerProvider = context.read<HomeSpeakerDataManagement>();
+    final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
     final isV2 = speakerProvider.isV2;
 
     if (_textController.text.isNotEmpty) {
