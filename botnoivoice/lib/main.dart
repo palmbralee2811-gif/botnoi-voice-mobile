@@ -32,7 +32,6 @@ import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -42,16 +41,16 @@ void main() async {
 
   // โหลดภาษาเริ่มต้นจาก LanguageHelper
   String localeCode = await loadSelectedLanguage();
-  Locale initialLocale = localeCode.isNotEmpty
-      ? Locale(localeCode)
-      : const Locale('th');
+  Locale initialLocale =
+      localeCode.isNotEmpty ? Locale(localeCode) : const Locale('th');
 
   runApp(
     // 1. REMOVE 'const' HERE
-    ProviderScope( 
+    ProviderScope(
       // 2. REMOVE 'const' HERE
       child: EasyLocalization(
-        supportedLocales: const [ // This array IS const, so we keep 'const' inside
+        supportedLocales: const [
+          // This array IS const, so we keep 'const' inside
           Locale('en'),
           Locale('th'),
           Locale('id')
@@ -59,7 +58,7 @@ void main() async {
         path: 'assets/langs',
         fallbackLocale: const Locale('th'),
         // 'initialLocale' is determined at runtime, so the constructor call cannot be 'const'
-        startLocale: initialLocale, 
+        startLocale: initialLocale,
         child: const BotnoiVoiceApp(), // BotnoiVoiceApp can remain const
       ),
     ),
@@ -78,7 +77,8 @@ class BotnoiVoiceApp extends StatelessWidget {
         provider.ChangeNotifierProvider(create: (_) => AppleToken()),
         provider.ChangeNotifierProvider(create: (_) => GoogleLogin()),
         provider.ChangeNotifierProvider(create: (_) => GoogleToken()),
-        provider.ChangeNotifierProvider(create: (_) => HomeSpeakerDataManagement()),
+        provider.ChangeNotifierProvider(
+            create: (_) => HomeSpeakerDataManagement()),
         provider.ChangeNotifierProvider(create: (_) => LineLogin()),
         provider.ChangeNotifierProvider(create: (_) => LineToken()),
         provider.ChangeNotifierProvider(create: (_) => EmailLogin()),
