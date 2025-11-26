@@ -69,6 +69,7 @@ class _SpeakerScreenState extends ConsumerState<SpeakerScreen> {
 
     loadInitialData(
       context: context,
+      ref: ref,
       logger: _logger,
       setSelectedIndexFavorites: (fetchedFavorites) {
         if (mounted) {
@@ -202,6 +203,7 @@ class _SpeakerScreenState extends ConsumerState<SpeakerScreen> {
                           onFavoriteToggle: (speakerId) async {
                             await handleFavoriteToggle(
                               context: context,
+                              ref: ref,
                               logger: _logger,
                               speakerId: speakerId,
                               selectedIndexFavorites: selectedIndexFavorites,
@@ -243,6 +245,7 @@ class _SpeakerScreenState extends ConsumerState<SpeakerScreen> {
                           onFavoriteToggle: (speakerId) async {
                             await handleFavoriteToggle(
                               context: context,
+                              ref: ref,
                               logger: _logger,
                               speakerId: speakerId,
                               selectedIndexFavorites: selectedIndexFavorites,

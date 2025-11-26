@@ -78,3 +78,4 @@ class UserTokenNotifier extends Notifier<UserTokenState> {
 final userTokenProvider = NotifierProvider<UserTokenNotifier, UserTokenState>(
   () => UserTokenNotifier(),
 );
+

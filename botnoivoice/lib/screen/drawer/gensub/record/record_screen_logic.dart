@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart'; // เพิ่ม import นี้เพื่อใช้ BuildContext
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -147,7 +148,7 @@ class RecordLogic {
 
   // <<< Method ที่รับ BuildContext เพื่อเรียก API >>>
   Future<ProjectModel?> handleTranscribe(
-    BuildContext context, // รับ BuildContext
+    WidgetRef ref, // รับ BuildContext
     {
     int maxSegmentDuration = 10,
     double maxSilenceDuration = 0.3,
@@ -159,7 +160,7 @@ class RecordLogic {
 
       // 1) upload (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final uploadResult = await uploadAudioToGensub(
-        context,
+        ref,
         file: file,
       );
       debugPrint("Upload result: $uploadResult");
@@ -167,7 +168,7 @@ class RecordLogic {
       // 2) insert workspace (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final projectName = file.path.split('/').last;
       final insertResult = await insertAsrWorkspace(
-        context,
+        ref: ref,
         projectName: projectName,
         cer: 0.0,
         pointAdd: 0,
@@ -183,7 +184,7 @@ class RecordLogic {
 
       // 3) cut audio (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final cutResult = await cutAudio(
-        context,
+        ref,
         filePath: recordedFilePath!,
         projectId: projectId,
         projectName: projectName,
@@ -198,7 +199,7 @@ class RecordLogic {
       debugPrint("Cut audio result: $cutResult");
 
       // 4) get all chunks (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-      final chunksRes = await getAllChunks(context, projectId: projectId);
+      final chunksRes = await getAllChunks(ref, projectId: projectId);
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
@@ -247,10 +248,13 @@ class RecordLogic {
   }
 
   // <<< Method ที่รับ BuildContext เพื่อเรียก API >>>
-  Future<void> deleteProject(BuildContext context, String projectId) async {
+  Future<void> deleteProject(WidgetRef ref, String projectId) async {
     try {
-      await deleteAsrWorkspace(context, projectId,
-          currentUserId); // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
+      await deleteAsrWorkspace(
+        ref,
+        projectId,
+        currentUserId,
+      ); // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
     } catch (e) {
       debugPrint("Failed to delete project: $e");
     }

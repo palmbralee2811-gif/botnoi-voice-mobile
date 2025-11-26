@@ -1,17 +1,15 @@
 // result_screen_logic.dart
-
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart'; // ต้อง import เพื่อใช้ BuildContext
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-// ต้องเปิดใช้ import สำหรับ ProjectModel
 import '../models/project_model.dart';
 import 'package:path/path.dart' as p;
-// Import Standalone API Functions ใหม่ที่คุณสร้าง
-import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart'; 
-import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; 
-import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart'; 
+import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
 
 class ResultLogic {
   final String userId;
@@ -41,12 +39,15 @@ class ResultLogic {
   }
 
   // 1. โหลด workspace พร้อม segment (เพิ่ม BuildContext)
-  Future<ProjectModel?> fetchWorkspace(BuildContext context) async {
+  Future<ProjectModel?> fetchWorkspace(WidgetRef ref) async {
     try {
       final projectId = workspaceId;
 
       // 1) ดึง chunks ทั้งหมด (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-      final chunksJson = await getAllChunks(context, projectId: projectId);
+      final chunksJson = await getAllChunks(
+        ref,
+        projectId: projectId,
+      );
       final rawSegments = (chunksJson['data'] as List<dynamic>? ?? []);
 
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
@@ -80,7 +81,8 @@ class ResultLogic {
 
         if (!hasAnyText) {
           try {
-            final transcription = await transcribeAudioFile(context, file: File(filePath));
+            final transcription =
+                await transcribeAudioFile(ref, file: File(filePath));
             final fallbackText = transcription['text'] ?? '';
             if (fallbackText.isNotEmpty) {
               // Populate each segment's text with fallbackText when original text empty
@@ -88,7 +90,9 @@ class ResultLogic {
                 final currentText = s['text']?.toString() ?? '';
                 return {
                   ...s,
-                  'text': currentText.trim().isNotEmpty ? currentText : fallbackText,
+                  'text': currentText.trim().isNotEmpty
+                      ? currentText
+                      : fallbackText,
                 };
               }).toList();
             }
@@ -112,8 +116,11 @@ class ResultLogic {
     }
 
     // 2) ถ้าไม่มีข้อมูล segment → ถอดเสียงใหม่จากไฟล์ (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-    final transcription =
-        await transcribeAudioFile(context, file: File(filePath));
+    final transcription = await transcribeAudioFile(
+      ref,
+      file: File(filePath),
+    );
+
     final text = transcription['text'] ?? 'ไม่พบข้อความถอดเสียงในผลลัพธ์';
 
     final segments = [
@@ -139,11 +146,8 @@ class ResultLogic {
   /// Helper แปลง "mm:ss" → double seconds
   double _parseTime(String timeStr) {
     try {
-      final parts = timeStr
-          .trim()
-          .split(':')
-          .map((p) => int.tryParse(p) ?? 0)
-          .toList();
+      final parts =
+          timeStr.trim().split(':').map((p) => int.tryParse(p) ?? 0).toList();
       if (parts.length == 2) {
         return (parts[0] * 60 + parts[1]).toDouble();
       } else if (parts.length == 3) {
@@ -161,9 +165,8 @@ class ResultLogic {
   ) async {
     final segment = segments[index];
     // ... โค้ดเดิมทั้งหมด ...
-    final startSec = (segment['start'] is num)
-        ? (segment['start'] as num).toDouble()
-        : 0.0;
+    final startSec =
+        (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
     final endSec = (segment['end'] is num)
         ? (segment['end'] as num).toDouble()
         : duration.inSeconds.toDouble();
@@ -204,26 +207,26 @@ class ResultLogic {
 
   // 2. ลบ segment (เพิ่ม BuildContext)
   Future<void> deleteSegment(
-    BuildContext context, // เพิ่ม BuildContext
+    WidgetRef ref, // เพิ่ม BuildContext
     int index,
     List<Map<String, dynamic>> segments,
     ProjectModel project,
   ) async {
     final segment = segments[index];
     // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
-    await deleteChunk(context, segment['id']); 
+    await deleteChunk(ref, segment['id']);
     segments.removeAt(index);
   }
 
   // 3. บันทึกการแก้ไข (saveEdits - เพิ่ม BuildContext)
   Future<void> saveEdits(
-      BuildContext context, // เพิ่ม BuildContext
-      ProjectModel project, 
+      WidgetRef ref, // เพิ่ม BuildContext
+      ProjectModel project,
       List<Map<String, dynamic>> segments) async {
     for (var s in segments) {
       // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
       await updateAudioApproveSegment(
-        context,
+        ref,
         chunkId: s['id'],
         userId: userId,
         approveText: s['text'],
@@ -233,12 +236,15 @@ class ResultLogic {
 
   // 4. Approve segment เดียว (updateAudioApprove - เดิมใช้ apiService โดยตรงใน UI, ตอนนี้ย้าย Logic มา Controller และใช้ BuildContext)
   Future<dynamic> updateAudioApproveSegment(
-    BuildContext context, // เพิ่ม BuildContext
-    {required String chunkId, required String userId, required String approveText}
-  ) async {
+    WidgetRef ref, // เพิ่ม BuildContext
+    {
+    required String chunkId,
+    required String userId,
+    required String approveText,
+  }) async {
     // ต้องเรียกใช้ฟังก์ชัน Standalone API โดยตรง
     return await updateAudioApprove(
-      context,
+      ref,
       chunkId: chunkId,
       userId: userId,
       approveText: approveText,
@@ -246,17 +252,20 @@ class ResultLogic {
   }
 
   // 5. Finalize Project (finalizeProjectApprove - เพิ่ม BuildContext)
-  Future<void> finalizeProjectApprove(BuildContext context, ProjectModel project) async {
+  Future<void> finalizeProjectApprove(
+    WidgetRef ref,
+    ProjectModel project,
+  ) async {
     try {
       final durationStr = _formatDuration(project.duration);
 
       debugPrint(
-          "finalizeProjectApprove → projectId=${project.projectId}, userId=${project.userId}, duration=$durationStr",
+        "finalizeProjectApprove → projectId=${project.projectId}, userId=${project.userId}, duration=$durationStr",
       );
 
       // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
       final res = await updateAsrApprove(
-        context,
+        ref: ref,
         projectId: project.projectId,
         userId: project.userId,
         cer: 0.0,
@@ -272,47 +281,48 @@ class ResultLogic {
   // 6. Export .txt (exportTxt - เพิ่ม BuildContext)
   // แม้ว่า Logic การ Export จะไม่มีการเรียก API แต่เราแก้ไข UI ให้ส่ง context มาแล้ว จึงต้องรับไว้
   Future<File> exportTxt(BuildContext context, ProjectModel project) async {
-  final buffer = StringBuffer();
-  for (var s in project.segments) {
-    buffer.writeln(s['text']);
+    final buffer = StringBuffer();
+    for (var s in project.segments) {
+      buffer.writeln(s['text']);
+    }
+
+    final dir = await getApplicationDocumentsDirectory();
+
+    // ✅ ตัดนามสกุลเก่าทิ้ง เช่น .mp3 → เหลือชื่อไฟล์เปล่า
+    final cleanName = p.basenameWithoutExtension(project.projectName);
+    final file = File("${dir.path}/$cleanName.txt");
+
+    await file.writeAsString(buffer.toString());
+    debugPrint("TXT saved at: ${file.path}");
+    return file;
   }
-
-  final dir = await getApplicationDocumentsDirectory();
-
-  // ✅ ตัดนามสกุลเก่าทิ้ง เช่น .mp3 → เหลือชื่อไฟล์เปล่า
-  final cleanName = p.basenameWithoutExtension(project.projectName);
-  final file = File("${dir.path}/$cleanName.txt");
-
-  await file.writeAsString(buffer.toString());
-  debugPrint("TXT saved at: ${file.path}");
-  return file;
-}
 
   // 7. Export .srt (exportSrt - เพิ่ม BuildContext)
   // แม้ว่า Logic การ Export จะไม่มีการเรียก API แต่เราแก้ไข UI ให้ส่ง context มาแล้ว จึงต้องรับไว้
   Future<File> exportSrt(BuildContext context, ProjectModel project) async {
-  final buffer = StringBuffer();
-  int index = 1;
-  for (var s in project.segments) {
-    final start = srtTime(Duration(milliseconds: (s['start'] * 1000).round()));
-    final end = srtTime(Duration(milliseconds: (s['end'] * 1000).round()));
-    buffer.writeln("$index");
-    buffer.writeln("$start --> $end");
-    buffer.writeln(s['text']);
-    buffer.writeln();
-    index++;
+    final buffer = StringBuffer();
+    int index = 1;
+    for (var s in project.segments) {
+      final start =
+          srtTime(Duration(milliseconds: (s['start'] * 1000).round()));
+      final end = srtTime(Duration(milliseconds: (s['end'] * 1000).round()));
+      buffer.writeln("$index");
+      buffer.writeln("$start --> $end");
+      buffer.writeln(s['text']);
+      buffer.writeln();
+      index++;
+    }
+
+    final dir = await getApplicationDocumentsDirectory();
+
+    // ✅ ตัดนามสกุลเก่าทิ้ง เช่น .mp3 → เหลือชื่อไฟล์เปล่า
+    final cleanName = p.basenameWithoutExtension(project.projectName);
+    final file = File("${dir.path}/$cleanName.srt");
+
+    await file.writeAsString(buffer.toString());
+    debugPrint("SRT saved at: ${file.path}");
+    return file;
   }
-
-  final dir = await getApplicationDocumentsDirectory();
-
-  // ✅ ตัดนามสกุลเก่าทิ้ง เช่น .mp3 → เหลือชื่อไฟล์เปล่า
-  final cleanName = p.basenameWithoutExtension(project.projectName);
-  final file = File("${dir.path}/$cleanName.srt");
-
-  await file.writeAsString(buffer.toString());
-  debugPrint("SRT saved at: ${file.path}");
-  return file;
-}
 
   /// Helper
   String formatTime(Duration duration) {

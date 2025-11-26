@@ -3,10 +3,11 @@ import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
 
-class UploadScreen extends StatefulWidget {
+class UploadScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
   final Function(ProjectModel) onProjectCreated;
   final Function(ProjectModel) onProjectDeleted;
@@ -19,10 +20,10 @@ class UploadScreen extends StatefulWidget {
   });
 
   @override
-  State<UploadScreen> createState() => _UploadScreenState();
+  ConsumerState<UploadScreen> createState() => _UploadScreenState();
 }
 
-class _UploadScreenState extends State<UploadScreen> {
+class _UploadScreenState extends ConsumerState<UploadScreen> {
   late UploadLogic controller;
   bool isLoading = false;
 
@@ -53,54 +54,55 @@ class _UploadScreenState extends State<UploadScreen> {
   }
 
   Widget _buildUploadCard() {
-  return Center(
-    child: Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 3,
-      child: SizedBox(
-        height: 200, // ✅ เพิ่มความสูงให้มีพื้นที่วางตรงกลาง
-        width: double.infinity,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "upload_gensub.title".tr(),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
-              ),
-              const SizedBox(height: 6),
-              Text(
-                "upload_gensub.expand_title".tr(),
-                style: const TextStyle(color: Colors.black54),
-                textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
-              ),
-              const SizedBox(height: 20),
-              OutlinedButton.icon(
-                onPressed: () async {
-                  await controller.pickFile();
-                  setState(() {});
-                },
-                icon: const Icon(Icons.upload_file, color: Colors.blue),
-                label: Text(
-                  "upload_gensub.upload".tr(),
-                  style: const TextStyle(color: Colors.blue),
+    return Center(
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 3,
+        child: SizedBox(
+          height: 200, // ✅ เพิ่มความสูงให้มีพื้นที่วางตรงกลาง
+          width: double.infinity,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "upload_gensub.title".tr(),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
                 ),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.blue),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                const SizedBox(height: 6),
+                Text(
+                  "upload_gensub.expand_title".tr(),
+                  style: const TextStyle(color: Colors.black54),
+                  textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    await controller.pickFile();
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.upload_file, color: Colors.blue),
+                  label: Text(
+                    "upload_gensub.upload".tr(),
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.blue),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildSettingsCard() {
     final fileName =
@@ -132,35 +134,37 @@ class _UploadScreenState extends State<UploadScreen> {
               ],
             ),
             const SizedBox(height: 16),
-           Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Text("text_to_gensub.audio_language".tr()),
-    LanguageSelector(
-  selectedLanguage: controller.selectedLanguageName, // <-- ใช้ชื่อแทน
-  selectedLanguageImage: controller.selectedLanguageImage,
-  onSelected: (lang) {
-  setState(() {
-    controller.selectedLanguage = lang['code'];
-    controller.selectedLanguageImage = lang['image'];
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("text_to_gensub.audio_language".tr()),
+                LanguageSelector(
+                  selectedLanguage:
+                      controller.selectedLanguageName, // <-- ใช้ชื่อแทน
+                  selectedLanguageImage: controller.selectedLanguageImage,
+                  onSelected: (lang) {
+                    setState(() {
+                      controller.selectedLanguage = lang['code'];
+                      controller.selectedLanguageImage = lang['image'];
 
-    // แสดงชื่อให้ตรงกับภาษาของแอป
-    final locale = context.locale.languageCode;
-    switch (locale) {
-      case 'th':
-        controller.selectedLanguageName = lang['thaiName'];
-        break;
-      case 'id':
-        controller.selectedLanguageName = lang['indonesianName'];
-        break;
-      default:
-        controller.selectedLanguageName = lang['englishName'];
-    }
-  });
-},
-),
-  ],
-),
+                      // แสดงชื่อให้ตรงกับภาษาของแอป
+                      final locale = context.locale.languageCode;
+                      switch (locale) {
+                        case 'th':
+                          controller.selectedLanguageName = lang['thaiName'];
+                          break;
+                        case 'id':
+                          controller.selectedLanguageName =
+                              lang['indonesianName'];
+                          break;
+                        default:
+                          controller.selectedLanguageName = lang['englishName'];
+                      }
+                    });
+                  },
+                ),
+              ],
+            ),
 
             const SizedBox(height: 12),
             Row(
@@ -216,40 +220,47 @@ class _UploadScreenState extends State<UploadScreen> {
                   ],
                 ),
                 Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Text("text_to_gensub.max_silence_duration".tr()),
-    DropdownButton<String>(
-      value: [
-        "0.1 ${"units.seconds".tr()}",
-        "0.3 ${"units.seconds".tr()}",
-        "0.5 ${"units.seconds".tr()}",
-        "0.7 ${"units.seconds".tr()}",
-        "0.9 ${"units.seconds".tr()}",
-        "1.5 ${"units.seconds".tr()}",
-        "units.unlimited".tr(),
-      ].contains(controller.maxSilenceDuration)
-          ? controller.maxSilenceDuration
-          : "0.3 ${"units.seconds".tr()}",
-      items: [
-        for (var sec in ["0.1", "0.3", "0.5", "0.7", "0.9", "1.5"])
-          DropdownMenuItem(
-            value: "$sec ${"units.seconds".tr()}",
-            child: Text("$sec ${"units.seconds".tr()}"),
-          ),
-        DropdownMenuItem(
-          value: "units.unlimited".tr(),
-          child: Text("units.unlimited".tr()),
-        ),
-      ],
-      onChanged: (val) {
-        if (val != null) {
-          setState(() => controller.maxSilenceDuration = val);
-        }
-      },
-    ),
-  ],
-)
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("text_to_gensub.max_silence_duration".tr()),
+                    DropdownButton<String>(
+                      value: [
+                        "0.1 ${"units.seconds".tr()}",
+                        "0.3 ${"units.seconds".tr()}",
+                        "0.5 ${"units.seconds".tr()}",
+                        "0.7 ${"units.seconds".tr()}",
+                        "0.9 ${"units.seconds".tr()}",
+                        "1.5 ${"units.seconds".tr()}",
+                        "units.unlimited".tr(),
+                      ].contains(controller.maxSilenceDuration)
+                          ? controller.maxSilenceDuration
+                          : "0.3 ${"units.seconds".tr()}",
+                      items: [
+                        for (var sec in [
+                          "0.1",
+                          "0.3",
+                          "0.5",
+                          "0.7",
+                          "0.9",
+                          "1.5"
+                        ])
+                          DropdownMenuItem(
+                            value: "$sec ${"units.seconds".tr()}",
+                            child: Text("$sec ${"units.seconds".tr()}"),
+                          ),
+                        DropdownMenuItem(
+                          value: "units.unlimited".tr(),
+                          child: Text("units.unlimited".tr()),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) {
+                          setState(() => controller.maxSilenceDuration = val);
+                        }
+                      },
+                    ),
+                  ],
+                )
               ],
             ),
             const SizedBox(height: 16),
@@ -262,7 +273,8 @@ class _UploadScreenState extends State<UploadScreen> {
                       setState(() => isLoading = true);
 
                       // ✅ แก้ไข: ส่ง context เข้าไปใน transcribeFile
-                      final success = await controller.transcribeFile(context);
+                      final success =
+                          await controller.transcribeFile(ref, context);
 
                       if (mounted) {
                         setState(() => isLoading = false);

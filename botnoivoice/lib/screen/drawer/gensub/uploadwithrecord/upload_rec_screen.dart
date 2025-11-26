@@ -19,7 +19,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(uploadRecordProvider.notifier).loadProjects(context);
+      ref.read(uploadRecordProvider.notifier).loadProjects(ref);
     });
   }
 
@@ -42,7 +42,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                     ref.read(uploadRecordProvider.notifier).addProject(project);
                   },
                   onProjectDeleted: (project) {
-                    ref.read(uploadRecordProvider.notifier).deleteProject(context, project);
+                    ref.read(uploadRecordProvider.notifier).deleteProject(ref, project);
                   },
                 ),
                 RecordScreen(
@@ -51,7 +51,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                     ref.read(uploadRecordProvider.notifier).addProject(project);
                   },
                   onProjectDeleted: (project) {
-                    ref.read(uploadRecordProvider.notifier).deleteProject(context, project);
+                    ref.read(uploadRecordProvider.notifier).deleteProject(ref, project);
                   },
                 ),
               ],

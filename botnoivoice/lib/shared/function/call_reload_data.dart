@@ -122,7 +122,20 @@
 //   }
 // }
 
-// 2. call_reload_data.dart
+
+
+
+
+
+
+
+
+
+
+
+
+// call_reload_data.dart
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:flutter/material.dart';
 // Remove Provider import
 import 'package:logger/logger.dart';
@@ -188,7 +201,7 @@ class CallReloadData {
   // Note: The original still uses `context.read<XLogin>()` and `context.read<XToken>()`
   // for *other* providers which are assumed to be NOT Riverpod yet.
   // If these were Riverpod providers, we would use `_ref.read(XLoginProvider)` etc.
-  Future<void> callLoadCreditsApi(BuildContext context) async {
+  Future<void> callLoadCreditsApi() async {
     // Reading other Providers that are assumed to still be using the Provider package
     // (requires BuildContext). This is a temporary necessity during migration.
     // In a fully Riverpod environment, use `_ref.read`.
@@ -210,14 +223,12 @@ class CallReloadData {
     final lineProvider = _ref.watch(lineLoginNotifierProvider);
     final emailProvider = _ref.watch(emailLoginNotifierProvider);
 
-    final appleToken =
-        _ref.watch<AppleTokenNotifier>(appleTokenNotifierProvider.notifier);
-    final googleToken =
-        _ref.watch<GoogleTokenNotifier>(googleTokenNotifierProvider.notifier);
-    final lineToken =
-        _ref.watch<LineTokenNotifier>(lineTokenNotifierProvider.notifier);
-    final emailToken =
-        _ref.watch<EmailTokenNotifier>(emailTokenNotifierProvider.notifier);
+    final appleToken = _ref.read(appleTokenNotifierProvider.notifier);
+    final googleToken = _ref.read(googleTokenNotifierProvider.notifier);
+    final lineToken = _ref.read(lineTokenNotifierProvider.notifier);
+    final emailToken = _ref.read(emailTokenNotifierProvider.notifier);
+
+    final userTokenState = _ref.read(userTokenProvider);
 
     try {
       // Call credit loading based on the logged-in provider.
@@ -251,6 +262,7 @@ class CallReloadData {
         googleToken,
         lineToken,
         emailToken,
+        userTokenState,
       );
 
       // Update the state in this Riverpod provider.
@@ -260,39 +272,46 @@ class CallReloadData {
     }
   }
 
-  /// Function to fetch remaining credits from the currently logged-in provider.
+// ใน class CallReloadData
+// การประกาศพารามิเตอร์ต้องระบุประเภทให้ถูกต้อง (XTokenNotifier)
   Future<String?> _getRemainingCreditsFromToken(
-    appleProvider,
-    googleProvider,
-    lineProvider,
-    emailProvider,
-    appleToken,
-    googleToken,
-    lineToken,
-    emailToken,
+    // ... (Login Providers เหมือนเดิม)
+    AppleLoginState appleProvider,
+    GoogleLoginState googleProvider,
+    LineLoginState lineProvider,
+    EmailLoginState emailProvider,
+    AppleTokenNotifier appleToken, // เปลี่ยนเป็น Notifier Class
+    GoogleTokenNotifier googleToken, // เปลี่ยนเป็น Notifier Class
+    LineTokenNotifier lineToken, // เปลี่ยนเป็น Notifier Class
+    EmailTokenNotifier emailToken, // เปลี่ยนเป็น Notifier Class
+    UserTokenState userTokenState,
   ) async {
     try {
       if (appleProvider.isLoggedIn &&
           appleProvider.user?.providerData[0].providerId == 'apple.com') {
         _logger.d('User logged in with Apple');
-        return appleToken.getRemainingCredits;
+        // 🚨 แก้ไขตรงนี้: เข้าถึง state.remainingCredits
+        return userTokenState.remainingCredits;
       }
 
       if (googleProvider.isLoggedIn &&
           googleProvider.user?.providerData[0].providerId == 'google.com') {
         _logger.d('User logged in with Google');
-        return googleToken.getRemainingCredits;
+        // 🚨 แก้ไขตรงนี้: เข้าถึง state.remainingCredits
+        return userTokenState.remainingCredits;
       }
 
       if (lineProvider.isLoggedIn) {
         _logger.d('User logged in with LINE');
-        return lineToken.getRemainingCredits;
+        // 🚨 แก้ไขตรงนี้: เข้าถึง state.remainingCredits
+        return userTokenState.remainingCredits;
       }
 
       if (emailProvider.isLoggedIn &&
           emailProvider.user?.providerData[0].providerId == 'password') {
         _logger.d('User logged in with Email');
-        return emailToken.getRemainingCredits;
+        // 🚨 แก้ไขตรงนี้: เข้าถึง state.remainingCredits
+        return userTokenState.remainingCredits;
       }
 
       _logger.w('No valid login provider found');

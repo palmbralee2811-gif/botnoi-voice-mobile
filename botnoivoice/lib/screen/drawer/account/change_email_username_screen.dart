@@ -10,33 +10,33 @@ import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart'
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Change Username for Email Account
-class ChangeEmailUsernameScreen extends StatefulWidget {
+class ChangeEmailUsernameScreen extends ConsumerStatefulWidget {
   const ChangeEmailUsernameScreen({super.key});
 
   @override
-  State<ChangeEmailUsernameScreen> createState() =>
+  ConsumerState<ChangeEmailUsernameScreen> createState() =>
       _ChangeEmailUsernameScreenState();
 }
 
-class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
+class _ChangeEmailUsernameScreenState
+    extends ConsumerState<ChangeEmailUsernameScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _confirmUsernameController =
       TextEditingController();
 
   void submitUsernameChangeRequest() async {
-    final changeUsername = context.read<EmailChangeUsername>();
+    final changeUsername = ref.watch(emailChangeUsernameNotifierProvider.notifier);
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      await changeUsername.postChangeUsername(
-          context, _usernameController.text);
+      await changeUsername.postChangeUsername(_usernameController.text);
       final errorMessage = changeUsername.errorMessage;
 
       if (errorMessage != null && errorMessage.isNotEmpty) {
@@ -59,7 +59,8 @@ class _ChangeEmailUsernameScreenState extends State<ChangeEmailUsernameScreen> {
               ),
             );
 
-            await context.read<EmailLogin>().signOutWithEmail(context);
+            // await context.read<EmailLogin>().signOutWithEmail(context);
+            await ref.read(emailLoginNotifierProvider.notifier).signOutWithEmail(ref);
 
             // Close loading dialog
             context.pop();

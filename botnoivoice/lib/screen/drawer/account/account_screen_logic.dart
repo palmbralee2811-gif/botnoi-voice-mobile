@@ -214,47 +214,53 @@ import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
 /// Define the provider for the AccountScreenLogic class.
-final accountScreenLogicProvider = Provider((ref) => AccountScreenLogic(ref));
+final accountScreenLogicProvider = Provider((ref) => AccountScreenLogic());
 
 /// Business logic and helper methods for the AccountScreen.
 class AccountScreenLogic {
-  final Ref _ref;
   final Logger _logger = Logger(); // For debugging
 
-  AccountScreenLogic(this._ref);
+  AccountScreenLogic();
 
   /// Signs out the user from the currently active authentication provider.
-  Future<void> _signOutProvider(BuildContext context) async {
+  Future<void> _signOutProvider(
+    BuildContext context,
+    WidgetRef widgetRef,
+  ) async {
     // Read notifiers directly using the internal Riverpod Ref (_ref)
-    final appleNotifier = _ref.read(appleLoginNotifierProvider.notifier);
-    final googleNotifier = _ref.read(googleLoginNotifierProvider.notifier);
-    final lineNotifier = _ref.read(lineLoginNotifierProvider.notifier);
-    final emailNotifier = _ref.read(emailLoginNotifierProvider.notifier);
+    final appleProvider = widgetRef.read(appleLoginNotifierProvider);
+    final googleProvider = widgetRef.read(googleLoginNotifierProvider);
+    final lineProvider = widgetRef.read(lineLoginNotifierProvider);
+    final emailProvider = widgetRef.read(emailLoginNotifierProvider);
 
-    // Use WidgetRef (ref) for calling sign out methods that might need it (e.g., passing context)
-    // In Riverpod, you pass WidgetRef/BuildContext only when necessary for UI/navigation.
-    final widgetRef = context as WidgetRef; 
+    final appleNotifier = widgetRef.read(appleLoginNotifierProvider.notifier);
+    final googleNotifier = widgetRef.read(googleLoginNotifierProvider.notifier);
+    final lineNotifier = widgetRef.read(lineLoginNotifierProvider.notifier);
+    final emailNotifier = widgetRef.read(emailLoginNotifierProvider.notifier);
 
-    if (appleNotifier.isLoggedIn) {
+    if (appleProvider.isLoggedIn) {
       _logger.d("Signing out from Apple...");
       await appleNotifier.signOutWithApple(widgetRef);
     }
-    if (googleNotifier.isLoggedIn) {
+    if (googleProvider.isLoggedIn) {
       _logger.d("Signing out from Google...");
       await googleNotifier.signOutWithGoogle(widgetRef);
     }
-    if (lineNotifier.isLoggedIn) {
+    if (lineProvider.isLoggedIn) {
       _logger.d("Signing out from LINE...");
       await lineNotifier.signOutWithLine(widgetRef);
     }
-    if (emailNotifier.isLoggedIn) {
+    if (emailProvider.isLoggedIn) {
       _logger.d("Signing out from Email...");
       await emailNotifier.signOutWithEmail(widgetRef);
     }
   }
 
   /// Calling Sign Out Method, Dialog and Snackbar
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOut(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     _logger.i("Sign out process started...");
 
     // Show Loading Dialog
@@ -267,7 +273,10 @@ class AccountScreenLogic {
     );
 
     try {
-      await _signOutProvider(context);
+      await _signOutProvider(
+        context,
+        ref,
+      );
       _logger.i("User signed out successfully.");
 
       // Close Loading Dialog
@@ -306,7 +315,8 @@ class AccountScreenLogic {
   }
 
   /// Loading User Information
-  Future<void> loadUserInfo({
+  Future<void> loadUserInfo(
+    WidgetRef widgetRef, {
     required Function(
       String displayName,
       String userId,
@@ -318,20 +328,20 @@ class AccountScreenLogic {
     ) onUpdateState,
   }) async {
     // Read the current state from the Riverpod providers
-    final appleState = _ref.read(appleLoginNotifierProvider);
-    final googleState = _ref.read(googleLoginNotifierProvider);
-    final lineState = _ref.read(lineLoginNotifierProvider);
-    final emailState = _ref.read(emailLoginNotifierProvider);
+    final appleState = widgetRef.read(appleLoginNotifierProvider);
+    final googleState = widgetRef.read(googleLoginNotifierProvider);
+    final lineState = widgetRef.read(lineLoginNotifierProvider);
+    final emailState = widgetRef.read(emailLoginNotifierProvider);
 
-    final appleTokenState = _ref.read(appleTokenNotifierProvider);
-    final googleTokenState = _ref.read(googleTokenNotifierProvider);
-    final lineTokenState = _ref.read(lineTokenNotifierProvider);
-    final emailTokenState = _ref.read(emailTokenNotifierProvider);
-    
+    final appleTokenState = widgetRef.read(appleTokenNotifierProvider);
+    final googleTokenState = widgetRef.read(googleTokenNotifierProvider);
+    final lineTokenState = widgetRef.read(lineTokenNotifierProvider);
+    final emailTokenState = widgetRef.read(emailTokenNotifierProvider);
+
     // Assuming EmailUsernameApi and CheckUserIsShowEmail are also Riverpod Providers
-    final emailUsernameApi = _ref.read(emailUsernameApiProvider); 
-    final userInfoProvider = _ref.read(checkUserIsShowEmailProvider);
-
+    final emailUsernameApi = widgetRef.read(emailUsernameApiNotifierProvider);
+    final userInfoProvider =
+        widgetRef.read(checkUserIsShowEmailNotifierProvider);
 
     String displayName = "Loading...";
     String userId = "Loading...";
@@ -340,10 +350,10 @@ class AccountScreenLogic {
     bool isAppleLoggedIn = false;
     bool isGoogleLoggedIn = false;
     bool isLineLoggedIn = false;
-    
+
     // Check if Firebase user exists for providers
     final firebaseUser = FirebaseAuth.instance.currentUser;
-    
+
     if (lineState.isLoggedIn) {
       displayName = lineState.displayName ?? "Line User";
       userId = lineTokenState.userID ?? "No UID";
@@ -351,16 +361,16 @@ class AccountScreenLogic {
       isLineLoggedIn = true;
     } else if (appleState.isLoggedIn) {
       displayName = appleState.user?.displayName ?? 'Apple User';
-      userId = appleTokenState.getUserID ?? 'No UID';
+      userId = appleTokenState.userID ?? 'No UID';
       email = getUserEmail(firebaseUser) ?? 'No email found';
       isAppleLoggedIn = true;
     } else if (googleState.isLoggedIn) {
       displayName = googleState.user?.displayName ?? 'Google User';
-      userId = googleTokenState.getUserID ?? 'No UID';
+      userId = googleTokenState.userID ?? 'No UID';
       email = getUserEmail(firebaseUser) ?? 'No email found';
       isGoogleLoggedIn = true;
     } else if (emailState.isLoggedIn) {
-      userId = emailTokenState.getUserID ?? "No UID";
+      userId = emailTokenState.userID ?? "No UID";
       displayName = emailUsernameApi.getUsername ?? "Email User";
       email = userInfoProvider.isShowEmail
           ? (emailState.user?.email ?? "No email found")
@@ -409,22 +419,24 @@ class AccountScreenLogic {
   }
 
   /// Check Email Permission (True/False)
-  Future<bool> checkEmailPermission() async {
+  Future<bool> checkEmailPermission(
+      BuildContext context, WidgetRef widgetRef) async {
     // Assuming EmailForgetPassword is also converted to a Riverpod Provider
-    final emailForgetPassword = _ref.read(emailForgetPasswordProvider);
-    // Note: The original implementation passes context to checkShowEmail, 
-    // which is generally avoided in Riverpod. Assuming checkShowEmail is refactored 
+    final emailForgetPassword =
+        widgetRef.read(emailForgetPasswordNotifierProvider.notifier);
+    // Note: The original implementation passes context to checkShowEmail,
+    // which is generally avoided in Riverpod. Assuming checkShowEmail is refactored
     // to use internal ref or takes no context if possible. If it strictly needs context,
     // the calling widget must pass it. For now, removing context argument.
-    return await emailForgetPassword.checkShowEmail();
+    return await emailForgetPassword.checkShowEmail(context);
   }
 }
 
-// NOTE: You must also ensure the providers below are defined somewhere, 
+// NOTE: You must also ensure the providers below are defined somewhere,
 // for example in the respective service files, or this code will not compile.
 
 // /// Riverpod Provider assumption for EmailUsernameApi
-// final emailUsernameApiProvider = Provider((ref) => EmailUsernameApi()); 
+// final emailUsernameApiProvider = Provider((ref) => EmailUsernameApi());
 // /// Riverpod Provider assumption for CheckUserIsShowEmail
 // final checkUserIsShowEmailProvider = Provider((ref) => CheckUserIsShowEmail());
 // /// Riverpod Provider assumption for EmailForgetPassword

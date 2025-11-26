@@ -2,15 +2,15 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 
 // Import Standalone API Functions ใหม่ที่คุณสร้าง
-import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart'; 
-import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; 
-import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart'; 
-
+import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
 
 String _extractSeconds(String input, {Duration? fallback}) {
   if (input.contains("ไม่จำกัด")) {
@@ -20,11 +20,10 @@ String _extractSeconds(String input, {Duration? fallback}) {
   return number ?? (fallback != null ? fallback.inSeconds.toString() : "10");
 }
 
-
 /// Controller จัดการเลือกไฟล์, คำนวณความยาวไฟล์, และอัปโหลด/สร้าง workspace
 class UploadLogic {
   // final String apiToken; // <<< ลบออก
-  
+
   final Function(ProjectModel) onProjectCreated;
   final String currentUserId;
 
@@ -50,33 +49,33 @@ class UploadLogic {
 
   /// เลือกไฟล์เสียงผ่าน FilePicker และอ่านความยาวไฟล์ด้วย just_audio (ไม่มี API call)
   Future<void> pickFile() async {
-  if (_isPicking) return; // กันการกดซ้ำ
-  _isPicking = true;
+    if (_isPicking) return; // กันการกดซ้ำ
+    _isPicking = true;
 
-  try {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['mp3', 'wav', 'm4a', 'aac'],
-    );
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['mp3', 'wav', 'm4a', 'aac'],
+      );
 
-    if (result != null && result.files.single.path != null) {
-      final selectedPath = result.files.single.path!;
-      final player = AudioPlayer();
-      await player.setFilePath(selectedPath);
-      final d = player.duration ?? Duration.zero;
+      if (result != null && result.files.single.path != null) {
+        final selectedPath = result.files.single.path!;
+        final player = AudioPlayer();
+        await player.setFilePath(selectedPath);
+        final d = player.duration ?? Duration.zero;
 
-      filePath = selectedPath;
-      audioDuration = d;
-      transcribeStatus = null;
+        filePath = selectedPath;
+        audioDuration = d;
+        transcribeStatus = null;
 
-      await player.dispose();
+        await player.dispose();
+      }
+    } catch (e) {
+      debugPrint("pickFile error: $e");
+    } finally {
+      _isPicking = false;
     }
-  } catch (e) {
-    debugPrint("pickFile error: $e");
-  } finally {
-    _isPicking = false;
   }
-}
 
   /// ล้างไฟล์ที่เลือก (ไม่มี API call)
   void clearFile() {
@@ -86,7 +85,11 @@ class UploadLogic {
   }
 
   /// อัปโหลดไฟล์และถอดเสียง (return true ถ้าสำเร็จ)
-  Future<bool> transcribeFile(BuildContext context) async { // <<< ใช้ BuildContext
+  Future<bool> transcribeFile(
+    WidgetRef ref,
+    BuildContext context,
+  ) async {
+    // <<< ใช้ BuildContext
     if (filePath == null) return false;
 
     transcribeStatus = "text_to_gensub.transcribe_status".tr();
@@ -94,16 +97,18 @@ class UploadLogic {
     try {
       // 1) upload audio → gensub (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final uploadResult = await uploadAudioToGensub(
-        context, 
+        ref,
         file: File(filePath!),
       );
       debugPrint(" upload result = $uploadResult");
 
       // 2) insert workspace → สร้าง project_id (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-      final projectName = filePath!.split(Platform.pathSeparator).last.split('.').first;
-      final durationStr = _formatDuration(audioDuration ?? Duration.zero); // MM:SS
+      final projectName =
+          filePath!.split(Platform.pathSeparator).last.split('.').first;
+      final durationStr =
+          _formatDuration(audioDuration ?? Duration.zero); // MM:SS
       final insertResult = await insertAsrWorkspace(
-        context, // ส่ง context
+        ref: ref, // ส่ง context
         projectName: projectName,
         cer: 0.0,
         pointAdd: 0,
@@ -117,21 +122,27 @@ class UploadLogic {
 
       // 3) cut audio → chunk อัตโนมัติ (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
       final cutResult = await cutAudio(
-  context,
-  filePath: filePath!,
-  projectId: projectId,
-  projectName: projectName,
-  cutType: "sec",
-  chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-  durations: (audioDuration?.inSeconds ?? 0).toString(), // ✅ ใช้ความยาวจริงของไฟล์
-  maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-  maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
-  language: "th",
-);
+        ref,
+        filePath: filePath!,
+        projectId: projectId,
+        projectName: projectName,
+        cutType: "sec",
+        chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+        durations: (audioDuration?.inSeconds ?? 0)
+            .toString(), // ✅ ใช้ความยาวจริงของไฟล์
+        maxDuration:
+            _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+        maxSilence: _extractSeconds(maxSilenceDuration,
+            fallback: const Duration(seconds: 1)),
+        language: "th",
+      );
       debugPrint(" cut audio result = $cutResult");
 
       // 4) get all chunks → ได้ segments (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-      final chunksRes = await getAllChunks(context, projectId: projectId); 
+      final chunksRes = await getAllChunks(
+        ref,
+        projectId: projectId,
+      );
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
       // Try to extract immediate transcription from uploadResult so UI can show text right away
@@ -155,7 +166,8 @@ class UploadLogic {
             : audioDuration?.inSeconds.toDouble() ?? 0.0;
 
         // If backend chunk text is empty, try to use uploadText (gensub immediate response)
-        final chunkText = (s['botnoi_asr_text'] != null && s['botnoi_asr_text'].toString().trim().isNotEmpty)
+        final chunkText = (s['botnoi_asr_text'] != null &&
+                s['botnoi_asr_text'].toString().trim().isNotEmpty)
             ? s['botnoi_asr_text']
             : (uploadText ?? '');
 
@@ -180,7 +192,8 @@ class UploadLogic {
 
       debugPrint('transcribeFile: uploadText=$uploadText');
       if (project.segments.isNotEmpty) {
-        debugPrint('transcribeFile: sample segment text=${project.segments.first['text']}');
+        debugPrint(
+            'transcribeFile: sample segment text=${project.segments.first['text']}');
       } else {
         debugPrint('transcribeFile: no segments returned from chunks');
       }
@@ -203,7 +216,7 @@ class UploadLogic {
       return false;
     }
   }
-  
+
   String _formatDuration(Duration d) {
     final minutes = d.inMinutes.toString().padLeft(2, '0');
     final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');

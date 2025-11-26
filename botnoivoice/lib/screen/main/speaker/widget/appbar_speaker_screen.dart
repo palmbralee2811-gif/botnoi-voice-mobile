@@ -32,7 +32,7 @@ class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    await context.read<CallReloadData>().callLoadCreditsApi(context);
+    await context.read<CallReloadData>().callLoadCreditsApi();
   }
 
   @override

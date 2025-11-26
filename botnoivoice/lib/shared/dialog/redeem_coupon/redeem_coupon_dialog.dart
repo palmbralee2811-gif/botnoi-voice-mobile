@@ -5,6 +5,7 @@ import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_loading_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -13,15 +14,17 @@ import 'package:provider/provider.dart';
 class RedeemCouponDialog {
   RedeemCouponDialog({
     required this.context,
+    required this.ref,
     required this.text,
     this.onPressed, // กำหนด onPressed เป็น optional
   });
 
   final String text;
   final BuildContext context;
+  final WidgetRef ref;
   final VoidCallback? onPressed;
 
-  /// Loading state 
+  /// Loading state
   bool _isLoading = false;
 
   /// Controller for the coupon input field
@@ -139,7 +142,10 @@ class RedeemCouponDialog {
                         _isLoading = true;
                       });
                       final result = await redeemServiceProvider.redeemCoupon(
-                          context, _couponInputController.text);
+                        context,
+                        _couponInputController.text,
+                        ref,
+                      );
                       if (result == null) {
                         await creditsProvider.callLoadCreditsApi(context);
                       }

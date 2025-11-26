@@ -14,6 +14,7 @@ import 'package:botnoivoice/shared/widget/gradient/gradient_row.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,14 +22,14 @@ import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final InternetChecker _internetChecker = InternetChecker();
 
@@ -106,13 +107,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_textController.text.isNotEmpty) {
       final String audioUrl = await generateAudio(
-        context,
-        _textController.text,
-        _audioUrl,
-        _isGenerateAudio,
+        ref: ref,
+        text: _textController.text,
+        audioUrl: _audioUrl,
+        isGenerateAudio: _isGenerateAudio,
         isV2: isV2,
       );
-      await creditsProvider.callLoadCreditsApi(context);
+      await creditsProvider.callLoadCreditsApi();
       if (audioUrl.isNotEmpty) {
         await openAudioPlayerDialog(
           context,

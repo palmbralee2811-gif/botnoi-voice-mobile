@@ -229,10 +229,17 @@ class LineTokenNotifier extends StateNotifier<UserTokenState> {
         var data = json.decode(utf8.decode(response.bodyBytes));
         _logger.i('Get Profile Data: $data');
 
+        // Parsing credit and point values
+        final normalCredits = data['data']['credits']?.toInt() ?? 0;
+        final monthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
+        final totalCredits = (normalCredits + monthlyPoints).toString();
+
         state = state.copyWith(
           userID: data['data']['uid'].toString(),
           userName: data['data']['username'].toString(),
-          remainingCredits: data['data']['credits'].toString(),
+          remainingNormalCredits: normalCredits,
+          remainingMonthlyPoints: monthlyPoints,
+          remainingCredits: totalCredits,
           // Check ว่าผู้ใช้ได้ Subscription ไหม
           isSubscription: data['data']['subscription']?.toString() == 'Pro', 
         );

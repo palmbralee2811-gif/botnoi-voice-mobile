@@ -30,7 +30,7 @@ class _TopbarGensubState extends State<TopbarGensub> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    await context.read<CallReloadData>().callLoadCreditsApi(context);
+    await context.read<CallReloadData>().callLoadCreditsApi();
   }
 
   @override

@@ -5,8 +5,9 @@ import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RecordScreen extends StatefulWidget {
+class RecordScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
   final Function(ProjectModel) onProjectCreated;
   final Function(ProjectModel) onProjectDeleted;
@@ -19,10 +20,10 @@ class RecordScreen extends StatefulWidget {
   });
 
   @override
-  State<RecordScreen> createState() => _RecordScreenState();
+  ConsumerState<RecordScreen> createState() => _RecordScreenState();
 }
 
-class _RecordScreenState extends State<RecordScreen> {
+class _RecordScreenState extends ConsumerState<RecordScreen> {
   late RecordLogic controller;
   bool _confirmed = false;
   bool _loading = false;
@@ -70,7 +71,7 @@ class _RecordScreenState extends State<RecordScreen> {
     _safeSetState(() => _loading = true);
     try {
       // ✅ เรียกใช้ Standalone API Function และส่ง context
-      final res = await getAllWorkspaces(context);
+      final res = await getAllWorkspaces(ref);
 
       if (res != null && res['data'] != null) {
         _projects = (res['data'] as List)
@@ -247,7 +248,9 @@ class _RecordScreenState extends State<RecordScreen> {
                         if (confirm == true) {
                           // ✅ แก้ไข: ส่ง context เข้าไปใน deleteProject
                           await controller.deleteProject(
-                              context, project.projectId);
+                            ref,
+                            project.projectId,
+                          );
 
                           // ลบออกจาก UI และเรียก Callback
                           widget.onProjectDeleted(project);
@@ -491,7 +494,7 @@ class _RecordScreenState extends State<RecordScreen> {
                         : () async {
                             _safeSetState(() => _loading = true);
                             final project = await controller.handleTranscribe(
-                              context,
+                              ref,
                               maxSegmentDuration: _maxSegmentDuration,
                               maxSilenceDuration: _maxSilenceDuration,
                             );

@@ -6,19 +6,20 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:botnoivoice/screen/drawer/reward/widget/reward_card_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class RewardScreen extends StatefulWidget {
+class RewardScreen extends ConsumerStatefulWidget {
   const RewardScreen({super.key});
 
   @override
-  State<RewardScreen> createState() => _RewardScreenState();
+  ConsumerState<RewardScreen> createState() => _RewardScreenState();
 }
 
-class _RewardScreenState extends State<RewardScreen> {
+class _RewardScreenState extends ConsumerState<RewardScreen> {
   String? currentDate;
   String? hoursUntilMidnight;
   bool isRedeemed100 = true; //เอาไว้เช็คว่ารับพอยต์ไปแล้วหรือยัง
@@ -144,8 +145,9 @@ class _RewardScreenState extends State<RewardScreen> {
                                                     hoursUntilMidnight ?? '24',
                                               },
                                             ),
-                                      onTap: () =>
-                                          _handleCouponRedemption100(context),
+                                      onTap: () {
+                                        _handleCouponRedemption100(ref);
+                                      },
                                       isTablet: isTablet,
                                       isLandscape: isLandscape,
                                       isRedeemed: isRedeemed100,
@@ -168,8 +170,9 @@ class _RewardScreenState extends State<RewardScreen> {
                                             })
                                           : 'reward_screen.widget_text_button02'
                                               .tr(),
-                                      onTap: () =>
-                                          _handleCouponRedemption1K(context),
+                                      onTap: () {
+                                        _handleCouponRedemption1K(ref);
+                                      },
                                       isTablet: isTablet,
                                       isLandscape: isLandscape,
                                       isRedeemed: isRedeemed1k,
@@ -210,12 +213,12 @@ class _RewardScreenState extends State<RewardScreen> {
     );
   }
 
-  Future<void> _handleCouponRedemption100(BuildContext context) async {
+  Future<void> _handleCouponRedemption100(WidgetRef ref) async {
     final couponProvider = context.read<RewardService>();
     final creditsProvider = context.read<CallReloadData>();
 
     try {
-      await couponProvider.checkCoupon100(context);
+      await couponProvider.checkCoupon100(ref);
 
       if (couponProvider.errorMessage == null) {
         setState(() {
@@ -227,7 +230,7 @@ class _RewardScreenState extends State<RewardScreen> {
           text: 'reward_screen.notification_dialog_success'
               .tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
-            creditsProvider.callLoadCreditsApi(context);
+            creditsProvider.callLoadCreditsApi();
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -248,16 +251,16 @@ class _RewardScreenState extends State<RewardScreen> {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      creditsProvider.callLoadCreditsApi(context);
+      creditsProvider.callLoadCreditsApi();
     }
   }
 
-  Future<void> _handleCouponRedemption1K(BuildContext context) async {
+  Future<void> _handleCouponRedemption1K(WidgetRef ref) async {
     final couponProvider = context.read<RewardService>();
     final creditsProvider = context.read<CallReloadData>();
 
     try {
-      await couponProvider.checkCoupon1K(context);
+      await couponProvider.checkCoupon1K(ref);
 
       if (couponProvider.errorMessage == null) {
         setState(() {
@@ -269,7 +272,7 @@ class _RewardScreenState extends State<RewardScreen> {
           text: 'reward_screen.notification_dialog_success'
               .tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
-            creditsProvider.callLoadCreditsApi(context);
+            creditsProvider.callLoadCreditsApi();
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -291,7 +294,7 @@ class _RewardScreenState extends State<RewardScreen> {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      creditsProvider.callLoadCreditsApi(context);
+      creditsProvider.callLoadCreditsApi();
     }
   }
 }

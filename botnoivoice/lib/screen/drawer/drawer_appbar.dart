@@ -8,19 +8,19 @@ import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
 import 'package:botnoivoice/screen/drawer/app_language_selection/app_language_selection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-class DrawerAppbar extends StatefulWidget {
+class DrawerAppbar extends ConsumerStatefulWidget {
   const DrawerAppbar({super.key});
 
   @override
-  State<DrawerAppbar> createState() => _DrawerAppbarState();
+  ConsumerState<DrawerAppbar> createState() => _DrawerAppbarState();
 }
 
-class _DrawerAppbarState extends State<DrawerAppbar> {
+class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
   final DrawerAppbarLogic _logic = DrawerAppbarLogic();
   String displayName = "Loading...";
   String uid = "Loading...";
@@ -32,7 +32,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _logic.loadUserInfo(
-        context: context,
+        ref: ref,
         onUpdateState: (String newDisplayName, String newUid,
             String newProfilePictureUrl) {
           setState(() {
@@ -47,7 +47,8 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
 
   @override
   Widget build(BuildContext context) {
-    final emailProvider = context.read<EmailLogin>();
+    // final emailProvider = context.read<EmailLogin>();
+    final emailProvider = ref.watch(emailLoginNotifierProvider);
 
     return Drawer(
       width: 257.w,
@@ -292,6 +293,7 @@ class _DrawerAppbarState extends State<DrawerAppbar> {
 
               RedeemCouponDialog(
                 context: context,
+                ref: ref,
                 text: 'app_drawer.redeem'.tr(),
               ).showModal(context);
             },
