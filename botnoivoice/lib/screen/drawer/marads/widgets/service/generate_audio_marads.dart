@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
-import 'package:botnoivoice/screen/main/home/function/get_default_speaker_id.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
-import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';

@@ -1,13 +1,10 @@
-// project_gensub_api.dart
-
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:logger/logger.dart';
-// Import ที่จำเป็น
-import 'package:botnoivoice/config/api_url_config.dart'; // ต้อง import เพื่อใช้ apiUrl
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'api_token_helper.dart'; 
 
 final _logger = Logger();

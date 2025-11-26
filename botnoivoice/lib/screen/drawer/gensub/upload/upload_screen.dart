@@ -4,9 +4,7 @@ import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path/path.dart' as path;
-import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
-import 'package:intl/intl.dart';
 
 class UploadScreen extends StatefulWidget {
   final List<ProjectModel> projects;

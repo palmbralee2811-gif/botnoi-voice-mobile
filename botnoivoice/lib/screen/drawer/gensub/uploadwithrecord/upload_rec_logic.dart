@@ -1,11 +1,6 @@
-// upload_record_logic.dart
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart'; // ต้อง import เพื่อใช้ BuildContext ใน methods
+import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-import 'package:flutter/foundation.dart'; // สำหรับ debugPrint
-
-// Import Standalone API Functions ใหม่ที่คุณสร้าง
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; 
 
 /// State class

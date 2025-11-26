@@ -22,7 +22,6 @@ class MarAdsDropdown extends StatefulWidget {
 
 class _MarAdsDropdownState extends State<MarAdsDropdown> {
 
-  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,23 +56,20 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
           GestureDetector(
   onTapDown: (_) {
     setState(() {
-      _isPressed = true;
     });
   },
   onTapUp: (_) {
     setState(() {
-      _isPressed = false;
     });
     widget.onTap();
   },
   onTapCancel: () {
     setState(() {
-      _isPressed = false;
     });
   },
   child: Container(
     height: 46.h,
-    padding: EdgeInsets.all(1.5), // ความหนาเส้นขอบไล่สี
+    padding: const EdgeInsets.all(1.5), // ความหนาเส้นขอบไล่สี
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16.r),
       gradient: const LinearGradient(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -171,7 +170,7 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
     child: Row(
       children: [
         _buildCharacterSelector(),
-        Spacer(),
+        const Spacer(),
         _buildResultSelector(),
       ],
     ),
@@ -596,18 +595,18 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
 
   void _handleCreateVoice() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('กำลังสร้างเสียง...'),
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: 2),
       ),
     );
   }
 
   void _handleMakeMorePersuasive() {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('กำลังปรับปรุงข��อความให้โน้มน้าวมากขึ้น...'),
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: 2),
       ),
     );
   }

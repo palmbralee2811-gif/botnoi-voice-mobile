@@ -96,6 +96,9 @@ dependencies:
   transparent_image: ^2.0.1
   flutter_cache_manager: ^3.4.1
 
+  # Media Type
+  http_parser: ^4.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -22,7 +22,6 @@ class MarAdsTextField extends StatefulWidget {
 
 class _MarAdsTextFieldState extends State<MarAdsTextField> {
 
-  bool _isFocused = false;
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -30,7 +29,6 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
     super.initState();
     _focusNode.addListener(() {
       setState(() {
-        _isFocused = _focusNode.hasFocus;
       });
     });
   }
@@ -61,7 +59,7 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
           SizedBox(height: 5.h),
           Container(
   height: 49.h,
-  padding: EdgeInsets.all(1.5), // ความหนาของกรอบไล่สี
+  padding: const EdgeInsets.all(1.5), // ความหนาของกรอบไล่สี
   decoration: BoxDecoration(
     borderRadius: BorderRadius.circular(16.r),
     gradient: const LinearGradient(
