@@ -251,6 +251,9 @@
 
 
 
+
+
+
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/service/payment/payment_service.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -262,6 +265,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart'; // เพิ่มสำหรับ Font SnackBar
 
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
@@ -282,14 +286,11 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 1. Read PaymentState from paymentServiceProvider
-    // We watch the entire state (PaymentState)
     final paymentState = ref.watch(paymentServiceProvider);
 
-    // 2. Read UserTokenState from the EmailToken provider
-    // Assuming the emailTokenProvider is defined in email_token.dart
+    // 2. Read UserTokenState
     final userTokenState = ref.watch(currentUserTokenStateProvider);
 
-    // Access credits directly from the immutable state
     final normalCredits = userTokenState.remainingNormalCredits ?? 0;
     final monthlyPoints = userTokenState.remainingMonthlyPoints ?? 0;
 
@@ -306,11 +307,12 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // ... (ส่วน UI Header และ แสดง Credits คงเดิม ไม่เปลี่ยนแปลง) ...
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'payment.buy_points'.tr(), //ซื้อพ้อยท์
+                      'payment.buy_points'.tr(),
                       style: TextStyle(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 12.sp
@@ -319,10 +321,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                       ),
                     ),
                     InkWell(
-                      onTap: () {
-                        // Close Payment Dialog
-                        context.pop();
-                      },
+                      onTap: () => context.pop(),
                       child: Icon(
                         Icons.close,
                         size: ResponsiveDesignOrientation.isLandscape
@@ -348,7 +347,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'payment.normal_points'.tr(), // "เครดิตปกติ"
+                            'payment.normal_points'.tr(),
                             style: TextStyle(
                                 fontSize:
                                     ResponsiveDesignOrientation.isLandscape
@@ -371,7 +370,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'payment.monthly_points'.tr(), // "เครดิตรายเดือน"
+                            'payment.monthly_points'.tr(),
                             style: TextStyle(
                                 fontSize:
                                     ResponsiveDesignOrientation.isLandscape
@@ -397,7 +396,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "${'payment.price'.tr()} ${'payment.currency'.tr()}", //บาท , ${product.price}
+                      "${'payment.price'.tr()} ${'payment.currency'.tr()}",
                       style: TextStyle(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 25.sp
@@ -424,9 +423,8 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          'payment.get_points'.tr(namedArgs: {
-                            'productTitle': '5,000'
-                          }), //ได้ ${product.title} พ้อยท์
+                          'payment.get_points'
+                              .tr(namedArgs: {'productTitle': '5,000'}),
                           style: TextStyle(
                             fontSize: ResponsiveDesignOrientation.isLandscape
                                 ? 13.sp
@@ -440,8 +438,9 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                   ],
                 ),
                 SizedBox(height: 30.h),
+                // ปุ่มกดซื้อ
                 GradientTextButton(
-                  text: 'payment.buy_now'.tr(), //ซื้อตอนนี้
+                  text: 'payment.buy_now'.tr(),
                   onPressed: () async {
                     await _handlePurchase(context, ref);
                   },
@@ -454,59 +453,76 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
           );
   }
 
-// Updated signature to accept WidgetRef
   Future<void> _handlePurchase(BuildContext context, WidgetRef ref) async {
-    // Read the PaymentService notifier (methods)
     final paymentServiceNotifier = ref.read(paymentServiceProvider.notifier);
 
-    // Read the CallReloadData provider (assuming it's a Riverpod provider too, or a method provider)
-    // NOTE: If CallReloadData is a ChangeNotifier, you must also convert it to a StateNotifier or Provider.
-    // For now, assuming CallReloadData is available via context.read (or a helper class)
-    // or you convert it to a simple Provider/Notifier:
-    // final creditsProvider = ref.read(callReloadDataProvider);
-    // Using the original logic for CallReloadData for compatibility,
-    // but recommend converting it to Riverpod for consistency.
-
-    // final creditsProvider = context.read<CallReloadData>();
-    // final creditsProvider = ref.read(callReloadDataProvider);
-    final creditsProvider = loadAllTokensIfLoggedIn(ref);
-
     try {
-      // Call the method on the Notifier
+      // 1. เรียก Method ซื้อ (รอจนกว่าจะเสร็จ)
       await paymentServiceNotifier.handlePurchase();
 
-      // Read the state again to check the result after the async operation
+      // 2. เช็คผลลัพธ์
       final resultState = ref.read(paymentServiceProvider);
 
       if (resultState.errorMessage == null) {
-        await creditsProvider;
-        NotificationDialog(
-          context: context,
-          text: 'payment.received_points'.tr(namedArgs: {
-            'pointsTitle': '5,000'
-          }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
-          onPressed: () async {
-            /// Refresh Points After In-App Purchase: IAP
-            await creditsProvider;
-          },
-        ).showCheckmarkModalWithAction(context);
+        // --- Success Case ---
+
+        // 3. เรียกโหลด Token ใหม่ตรงนี้ (หลังจากซื้อสำเร็จแล้วจริงๆ)
+        await loadAllTokensIfLoggedIn(ref);
+
+        if (context.mounted) {
+          // 4. แสดง SnackBar ตามที่ต้องการ
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'Successfully Updated Points',
+                    style: GoogleFonts.prompt(
+                      color: Colors.white,
+                      fontSize: ResponsiveDesignOrientation.isLandscape
+                          ? 10.sp
+                          : 14.sp,
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+          );
+
+          // 5. แสดง Dialog แจ้งเตือนสำเร็จ
+          NotificationDialog(
+            context: context,
+            text: 'payment.received_points'
+                .tr(namedArgs: {'pointsTitle': '5,000'}),
+            onPressed: () {},
+          ).showCheckmarkModal(context);
+        }
       } else {
+        // --- Error Case ---
+        if (context.mounted) {
+          NotificationDialog(
+            context: context,
+            text: resultState.errorMessage!,
+            onPressed: () {},
+          ).showErrorModal(context);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
         NotificationDialog(
           context: context,
-          // Use the errorMessage from the Riverpod state
-          text: resultState.errorMessage!,
+          text: "${'payment.error_occurred'.tr()} $e",
           onPressed: () {},
         ).showErrorModal(context);
       }
-    } catch (e) {
-      NotificationDialog(
-        context: context,
-        text: "${'payment.error_occurred'.tr()} $e", //เกิดข้อผิดพลาด
-        onPressed: () {},
-      ).showErrorModal(context);
-    } finally {
-      // Call reload data regardless of success or failure
-      await creditsProvider;
     }
   }
 }
