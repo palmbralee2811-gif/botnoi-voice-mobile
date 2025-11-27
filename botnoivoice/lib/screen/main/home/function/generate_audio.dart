@@ -146,9 +146,8 @@ Future<String> generateAudio({
 }) async {
   // Get Data from Home Speaker Data Management
   final homeSpeakerProvider = ref.read(homeSpeakerDataProvider.notifier);
-  String speakerId =
-      homeSpeakerProvider.speakerId ?? getDefaultSpeakerId(ref.context);
-  String language = homeSpeakerProvider.language ?? 'th';
+  String speakerId = homeSpeakerProvider.speakerId ?? getDefaultSpeakerId(ref.context);
+  String language = homeSpeakerProvider.language ?? Localizations.localeOf(ref.context).languageCode;
 
   final selectedToken =
       ref.watch(currentUserTokenStateProvider).credentialsToken;
@@ -165,6 +164,10 @@ Future<String> generateAudio({
   _logger.i("speakerId: $speakerId");
   _logger.i("language: $language");
   _logger.i("User CredentialsToken: $selectedToken");
+  _logger.i("Text: $text");
+  _logger.i("Audio URL: $audioUrl");
+  _logger.i("isGenerateAudio: $isGenerateAudio");
+  _logger.i("isV2: $isV2");
 
   // เลือก URL ตาม isV2
   String url = isV2
@@ -179,9 +182,7 @@ Future<String> generateAudio({
     "type_media": "mp3",
     "save_file": "true",
     "language": language,
-
-    /// Note: None Free Daily Quota.
-    "page": "mobilebotnoivoice",
+    "page": "mobilebotnoivoice", // Note: None Free Daily Quota.
   };
 
   Map<String, String> headers = {

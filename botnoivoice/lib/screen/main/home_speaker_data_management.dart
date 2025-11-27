@@ -73,6 +73,18 @@
 // }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
@@ -189,7 +201,6 @@ class HomeSpeakerDataManagement extends StateNotifier<HomeSpeakerDataState> {
 
 
 // provider_definitions.dart
-
 final homeSpeakerDataProvider = 
     StateNotifierProvider<HomeSpeakerDataManagement, HomeSpeakerDataState>(
         (ref) {

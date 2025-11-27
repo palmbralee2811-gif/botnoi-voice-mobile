@@ -68,7 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-Future<void> _generateAudio() async {
+  Future<void> _generateAudio() async {
     // เริ่มต้น Loading
     if (mounted) {
       setState(() {
@@ -77,12 +77,11 @@ Future<void> _generateAudio() async {
     }
 
     await _audioPlayer.stop();
-    
+
     // ตรวจสอบข้อความว่าง
     if (_textController.text.isEmpty) {
       NotificationPopup(
-              context: context,
-              text: 'home_screen.please_type_message'.tr())
+              context: context, text: 'home_screen.please_type_message'.tr())
           .showAsError();
       if (mounted) {
         setState(() {
@@ -93,17 +92,25 @@ Future<void> _generateAudio() async {
     }
 
     try {
-      // 1. เรียก Generate API และแสดง Dialog ผลลัพธ์
-      // หมายเหตุ: ถ้าใน _generateAudioConfirmed มีการ await showDialog 
-      // โค้ดบรรทัดถัดไปจะทำงานหลังจาก "ปิด Dialog" แล้วเท่านั้น
-      await _generateAudioConfirmed();
+      // 1. เรียก Generate API และรับค่า bool ว่าสำเร็จหรือไม่
+      final bool isSuccess = await _generateAudioConfirmed();
 
-      // 2. เมื่อ Generate หรือปิด Dialog เสร็จแล้ว ให้ทำการโหลด Points ใหม่
+      // [เพิ่ม] ถ้าไม่สำเร็จ (เช่น error 403, 500 หรือ url ว่าง) ให้หยุดการทำงานตรงนี้
+      if (!isSuccess) {
+        if (mounted) {
+          setState(() {
+            _isGenerateAudio = false;
+          });
+        }
+        return; // ออกจากฟังก์ชันทันที ไม่ไปโหลด token ต่อ
+      }
+
+      // 2. ถ้าสำเร็จ (isSuccess == true) ค่อยทำการโหลด Points ใหม่
       if (mounted) {
         await loadAllTokensIfLoggedIn(ref);
       }
 
-      // 3. เมื่อโหลดเสร็จแล้ว ค่อยปิด Loading และแสดง SnackBar
+      // 3. เมื่อโหลดเสร็จแล้ว ค่อยปิด Loading และแสดง SnackBar Success
       if (mounted) {
         setState(() {
           _isGenerateAudio = false;
@@ -119,9 +126,10 @@ Future<void> _generateAudio() async {
                 Text(
                   'Successfully Updated Points',
                   style: GoogleFonts.prompt(
-                    color: Colors.white,
-                    fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp
-                  ),
+                      color: Colors.white,
+                      fontSize: ResponsiveDesignOrientation.isLandscape
+                          ? 10.sp
+                          : 14.sp),
                 ),
               ],
             ),
@@ -141,7 +149,7 @@ Future<void> _generateAudio() async {
         setState(() {
           _isGenerateAudio = false;
         });
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error updating points: $e'),
@@ -152,9 +160,8 @@ Future<void> _generateAudio() async {
     }
   }
 
-  Future<void> _generateAudioConfirmed() async {
-    // final creditsProvider = context.read<CallReloadData>();
-    // final speakerProvider = context.read<HomeSpeakerDataManagement>();
+  // Check Generate Audio Status before Refresh Points
+  Future<bool> _generateAudioConfirmed() async {
     final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
     final isV2 = speakerProvider.isV2;
 
@@ -166,14 +173,18 @@ Future<void> _generateAudio() async {
         isGenerateAudio: _isGenerateAudio,
         isV2: isV2,
       );
+
+      // เช็คว่าถ้าได้ URL มาแสดงว่าทำงานสำเร็จ
       if (audioUrl.isNotEmpty) {
         await openAudioPlayerDialog(
           context,
           audioUrl,
           "BotnoiVoice${randomStringOfNumbers(6)}.mp3",
         );
+        return true; // ส่งค่ากลับว่า สำเร็จ
       }
     }
+    return false; // ส่งค่ากลับว่า ไม่สำเร็จ
   }
 
   @override

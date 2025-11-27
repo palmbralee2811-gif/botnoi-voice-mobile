@@ -23,13 +23,16 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
   Future<String?> _getAuthToken() async {
     switch (_providerType) {
       case LoginProviderType.apple:
-        final appleLoginNotifier = _ref.read(appleLoginNotifierProvider.notifier);
+        final appleLoginNotifier =
+            _ref.read(appleLoginNotifierProvider.notifier);
         return await appleLoginNotifier.user?.getIdToken();
       case LoginProviderType.email:
-        final emailLoginNotifier = _ref.read(emailLoginNotifierProvider.notifier);
+        final emailLoginNotifier =
+            _ref.read(emailLoginNotifierProvider.notifier);
         return await emailLoginNotifier.user?.getIdToken();
       case LoginProviderType.google:
-        final googleLoginNotifier = _ref.read(googleLoginNotifierProvider.notifier);
+        final googleLoginNotifier =
+            _ref.read(googleLoginNotifierProvider.notifier);
         return await googleLoginNotifier.user?.getIdToken();
       case LoginProviderType.line:
         return _ref.read(lineLoginNotifierProvider).idTokenRaw;
@@ -40,7 +43,7 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
   Map<String, dynamic> _getJwtTokenApiConfig(String idToken) {
     String url;
     Map<String, String> headers;
-    
+
     switch (_providerType) {
       case LoginProviderType.email:
         url = '$apiUrl/api/dashboard/sign_in';
@@ -50,6 +53,12 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
         };
         break;
       case LoginProviderType.apple:
+        url = '$apiUrl/api/dashboard/firebase_auth';
+        headers = {
+          'Botnoi-Token': 'Bearer $idToken',
+          'Content-Type': 'application/json'
+        };
+        break;
       case LoginProviderType.google:
         url = '$apiUrl/api/dashboard/firebase_auth';
         headers = {
@@ -106,7 +115,7 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
             jwtToken = data['data']['token'] as String;
           }
         }
-        
+
         if (jwtToken != null) {
           state = state.copyWith(jwtToken: jwtToken);
           _logger.i('JWT Token successfully loaded for $_providerType.');
@@ -114,7 +123,8 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
           _logger.w('Token not found in response data for $_providerType.');
         }
       } else {
-        _logger.e('Failed to load JWT Token for $_providerType: ${response.statusCode}');
+        _logger.e(
+            'Failed to load JWT Token for $_providerType: ${response.statusCode}');
       }
     } catch (e) {
       _logger.e('Error fetching JWT Token for $_providerType: $e');
@@ -139,8 +149,9 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
         // Extract credits and monthly points safely
         // Casting to 'num?' allows handling both int and double values from API
         int normalCredits = (data['data']['credits'] as num?)?.toInt() ?? 0;
-        int monthlyPoints = (data['data']['monthly_point'] as num?)?.toInt() ?? 0;
-        
+        int monthlyPoints =
+            (data['data']['monthly_point'] as num?)?.toInt() ?? 0;
+
         // Calculate total remaining credits
         String totalCredits = (normalCredits + monthlyPoints).toString();
 
@@ -153,9 +164,11 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
           isSubscription: data['data']['subscription']?.toString() == 'Pro',
         );
 
-        _logger.i('Remaining credits successfully loaded for $_providerType: ${state.remainingCredits} (Normal: $normalCredits + Monthly: $monthlyPoints)');
+        _logger.i(
+            'Remaining credits successfully loaded for $_providerType: ${state.remainingCredits} (Normal: $normalCredits + Monthly: $monthlyPoints)');
       } else {
-        _logger.e("Failed to retrieve remaining credits for $_providerType: ${response.statusCode}");
+        _logger.e(
+            "Failed to retrieve remaining credits for $_providerType: ${response.statusCode}");
       }
     } catch (e) {
       _logger.e('Error fetching remaining credits for $_providerType: $e');
@@ -180,10 +193,12 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
       );
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        state = state.copyWith(credentialsToken: data['data'][0]['token'].toString());
+        state = state.copyWith(
+            credentialsToken: data['data'][0]['token'].toString());
         _logger.i('Credentials token successfully loaded for $_providerType.');
       } else {
-        _logger.e('Failed to load Credentials-Token for $_providerType: ${response.statusCode}');
+        _logger.e(
+            'Failed to load Credentials-Token for $_providerType: ${response.statusCode}');
       }
     } catch (e) {
       _logger.e('Error fetching Credentials-Token for $_providerType: $e');
@@ -192,19 +207,23 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
 }
 
 // Providers for each service type
-final appleTokenNotifierProvider = StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
+final appleTokenNotifierProvider =
+    StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
   return UserTokenNotifier(ref, LoginProviderType.apple);
 });
 
-final emailTokenNotifierProvider = StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
+final emailTokenNotifierProvider =
+    StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
   return UserTokenNotifier(ref, LoginProviderType.email);
 });
 
-final googleTokenNotifierProvider = StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
+final googleTokenNotifierProvider =
+    StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
   return UserTokenNotifier(ref, LoginProviderType.google);
 });
 
-final lineTokenNotifierProvider = StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
+final lineTokenNotifierProvider =
+    StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
   return UserTokenNotifier(ref, LoginProviderType.line);
 });
 
