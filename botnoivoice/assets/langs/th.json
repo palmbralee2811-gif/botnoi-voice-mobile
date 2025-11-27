@@ -88,10 +88,10 @@
             "buy_points": "ซื้อพอยต์",
             "security": "ความปลอดภัย",
             "reward": "ฟรีพอยต์",
-            "gensub": "เเปลงซับ",
+            "gensub": "GenSub",
             "redeem": "ใช้คูปอง",
             "education": "การศึกษา",
-            "marads": "สร้างข้อความโฆษณา"
+            "marads": "MarAds"
         },
     "account": {
         "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",

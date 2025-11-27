@@ -88,10 +88,10 @@
         "buy_points": "Buy Points",
         "security": "Security",
         "reward": "Reward",
-        "gensub": "Gensub",        
+        "gensub": "GenSub",        
         "redeem": "Redeem Coupon",
         "education": "Education",
-        "marads": "Create massage ads"
+        "marads": "MarAds"
     },
     "account": {
         "uid_copy_success": "UID copied successfully",
