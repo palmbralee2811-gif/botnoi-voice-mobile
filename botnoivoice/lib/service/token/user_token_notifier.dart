@@ -1,17 +1,17 @@
 // lib/service/token/user_token_notifier.dart
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
-import 'package:botnoivoice/service/login/apple_login.dart'; // ใช้สำหรับการเรียก appleLoginNotifierProvider
-import 'package:botnoivoice/service/login/email_login.dart'; // ใช้สำหรับการเรียก emailLoginNotifierProvider
-import 'package:botnoivoice/service/login/google_login.dart'; // ใช้สำหรับการเรียก googleLoginNotifierProvider
-import 'package:botnoivoice/service/login/line_login.dart'; // ใช้สำหรับการเรียก lineLoginNotifierProvider
+import 'package:botnoivoice/service/login/apple_login.dart';
+import 'package:botnoivoice/service/login/email_login.dart';
+import 'package:botnoivoice/service/login/google_login.dart';
+import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/service/token/login_provider_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-/// Class สำหรับจัดการ Token, User Profile และ Credentials สำหรับทุกผู้ให้บริการ
+/// Class for managing Token, User Profile, and Credentials for all providers
 class UserTokenNotifier extends StateNotifier<UserTokenState> {
   final Ref _ref;
   final LoginProviderType _providerType;
@@ -20,7 +20,6 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
   UserTokenNotifier(this._ref, this._providerType) : super(UserTokenState());
 
   /// Helper function: Get the FirebaseAuth User or Line's idTokenRaw
-  /// ขึ้นอยู่กับประเภทผู้ให้บริการ
   Future<String?> _getAuthToken() async {
     switch (_providerType) {
       case LoginProviderType.apple:
@@ -33,13 +32,11 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
         final googleLoginNotifier = _ref.read(googleLoginNotifierProvider.notifier);
         return await googleLoginNotifier.user?.getIdToken();
       case LoginProviderType.line:
-        // สำหรับ LINE, idTokenRaw อยู่ใน LineLoginState
         return _ref.read(lineLoginNotifierProvider).idTokenRaw;
     }
   }
 
   /// Helper function: Get the API URL and Headers for loading JWT Token
-  /// ขึ้นอยู่กับประเภทผู้ให้บริการ
   Map<String, dynamic> _getJwtTokenApiConfig(String idToken) {
     String url;
     Map<String, String> headers;
@@ -97,14 +94,14 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
         String? jwtToken;
 
         if (_providerType == LoginProviderType.line) {
-          // Logic พิเศษสำหรับ LINE
+          // Logic for LINE
           var message = data['message'] as String? ?? '';
           var tokenIndex = message.indexOf('token=');
           if (tokenIndex != -1) {
             jwtToken = message.substring(tokenIndex + 'token='.length);
           }
         } else {
-          // Logic ทั่วไปสำหรับ Apple, Email, Google
+          // Logic for Apple, Email, Google
           if (data['data'] != null && data['data']['token'] != null) {
             jwtToken = data['data']['token'] as String;
           }
@@ -139,24 +136,24 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
         var data = json.decode(utf8.decode(response.bodyBytes));
         _logger.i('Get Profile Data for $_providerType: $data');
 
-        int normalCredits = 0;
-        int monthlyPoints = 0;
-        String totalCredits = '';
-
-        normalCredits = data['data']['credits']?.toInt() ?? 0;
-        monthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
-        totalCredits = (normalCredits + monthlyPoints).toString();
+        // Extract credits and monthly points safely
+        // Casting to 'num?' allows handling both int and double values from API
+        int normalCredits = (data['data']['credits'] as num?)?.toInt() ?? 0;
+        int monthlyPoints = (data['data']['monthly_point'] as num?)?.toInt() ?? 0;
+        
+        // Calculate total remaining credits
+        String totalCredits = (normalCredits + monthlyPoints).toString();
 
         state = state.copyWith(
           userID: data['data']['uid'].toString(),
           userName: data['data']['username'].toString(),
           remainingNormalCredits: normalCredits,
           remainingMonthlyPoints: monthlyPoints,
-          remainingCredits: totalCredits,
+          remainingCredits: totalCredits, // Set the combined total here
           isSubscription: data['data']['subscription']?.toString() == 'Pro',
         );
 
-        _logger.i('Remaining credits successfully loaded for $_providerType: ${state.remainingCredits}');
+        _logger.i('Remaining credits successfully loaded for $_providerType: ${state.remainingCredits} (Normal: $normalCredits + Monthly: $monthlyPoints)');
       } else {
         _logger.e("Failed to retrieve remaining credits for $_providerType: ${response.statusCode}");
       }
@@ -194,7 +191,7 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
   }
 }
 
-// Providers สำหรับผู้ให้บริการแต่ละประเภท
+// Providers for each service type
 final appleTokenNotifierProvider = StateNotifierProvider<UserTokenNotifier, UserTokenState>((ref) {
   return UserTokenNotifier(ref, LoginProviderType.apple);
 });
@@ -211,25 +208,17 @@ final lineTokenNotifierProvider = StateNotifierProvider<UserTokenNotifier, UserT
   return UserTokenNotifier(ref, LoginProviderType.line);
 });
 
-// Provider สำหรับการตรวจสอบสถานะการ Login
-// ใช้เพื่อตรวจสอบว่าผู้ใช้กำลัง Login ด้วยผู้ให้บริการรายใด
+// Provider to check login status
 final isLoggedInProvider = Provider<bool>((ref) {
-  // Check for Apple Login
   if (ref.watch(appleLoginNotifierProvider).isLoggedIn) return true;
-  // Check for Email Login
   if (ref.watch(emailLoginNotifierProvider).isLoggedIn) return true;
-  // Check for Google Login
   if (ref.watch(googleLoginNotifierProvider).isLoggedIn) return true;
-  // Check for Line Login
   if (ref.watch(lineLoginNotifierProvider).isLoggedIn) return true;
-  
   return false;
 });
 
-// Provider สำหรับดึง UserTokenState ของผู้ใช้ที่กำลัง Login อยู่
-// สามารถใช้ในการเช็คและเรียกโหลด Token/Credits
+// Provider to get the UserTokenState of the currently logged-in user
 final currentUserTokenStateProvider = Provider<UserTokenState>((ref) {
-  // ใช้ .isLoggedIn จาก Login Notifier แต่ละตัวเพื่อตรวจสอบสถานะ
   if (ref.watch(appleLoginNotifierProvider).isLoggedIn) {
     return ref.watch(appleTokenNotifierProvider);
   }
@@ -242,13 +231,11 @@ final currentUserTokenStateProvider = Provider<UserTokenState>((ref) {
   if (ref.watch(lineLoginNotifierProvider).isLoggedIn) {
     return ref.watch(lineTokenNotifierProvider);
   }
-  // หากไม่มีใคร Login
   return UserTokenState();
 });
 
-// Provider สำหรับดึง UserTokenNotifier (StateNotifier) ของผู้ใช้ที่กำลัง Login อยู่
+// Provider to get the UserTokenNotifier of the currently logged-in user
 final currentUserTokenNotifierProvider = Provider<UserTokenNotifier?>((ref) {
-  // ใช้ .isLoggedIn จาก Login Notifier แต่ละตัวเพื่อตรวจสอบสถานะ
   if (ref.watch(appleLoginNotifierProvider).isLoggedIn) {
     return ref.read(appleTokenNotifierProvider.notifier);
   }
@@ -264,7 +251,7 @@ final currentUserTokenNotifierProvider = Provider<UserTokenNotifier?>((ref) {
   return null;
 });
 
-// ฟังก์ชันสำหรับเรียกใช้ loadJwtToken, loadRemainingCredits, loadCredentials
+// Function to trigger loading all tokens
 Future<void> loadAllTokensIfLoggedIn(WidgetRef ref) async {
   final notifier = ref.read(currentUserTokenNotifierProvider);
   if (notifier != null) {

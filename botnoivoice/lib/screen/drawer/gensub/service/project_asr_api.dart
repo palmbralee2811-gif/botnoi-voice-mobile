@@ -236,7 +236,7 @@
 
 // project_asr_api.dart
 import 'dart:convert';
-import 'package:botnoivoice/service/token/user_token_state.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -250,7 +250,7 @@ const String _baseUrlSuffix = "/api/genai";
 
 /// 1. ดึง ASR Workspaces ทั้งหมด (getAllWorkspaces)
 Future<dynamic> getAllWorkspaces(WidgetRef ref) async {
-  final String? token = ref.read(userTokenProvider).jwtToken;
+  final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -277,7 +277,7 @@ Future<dynamic> getAsrWorkspace(
   String userId,
   String projectId,
 ) async {
-  final String? token = ref.read(userTokenProvider).jwtToken;
+  final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -307,7 +307,7 @@ Future<dynamic> insertAsrWorkspace({
   required int totalPoint,
   required String duration,
 }) async {
-  final String? token = ref.read(userTokenProvider).jwtToken;
+  final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -349,7 +349,7 @@ Future<dynamic> updateAsrWorkspace({
   required String userId,
   String? projectName,
 }) async {
-  final String? token = ref.read(userTokenProvider).jwtToken;
+  final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -383,7 +383,7 @@ Future<dynamic> deleteAsrWorkspace(
   String projectId,
   String userId,
 ) async {
-  final String? token = ref.read(userTokenProvider).jwtToken;
+  final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -413,7 +413,7 @@ Future<dynamic> updateAsrApprove({
   required double cer,
   String? duration,
 }) async {
-  final String? token = ref.read(userTokenProvider).jwtToken;
+  final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }

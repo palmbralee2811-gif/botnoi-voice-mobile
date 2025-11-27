@@ -55,12 +55,18 @@
 //   }
 // }
 
+
+
+
+
+
+
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/token/user_token_state.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DrawerAppbarLogic {
@@ -80,7 +86,7 @@ class DrawerAppbarLogic {
     final emailProvider = ref.read(emailLoginNotifierProvider);
 
     // Fetch user data from Database (API)
-    final userTokenState = ref.read(userTokenProvider);
+    final userTokenState = ref.read(currentUserTokenStateProvider);
 
     String displayName = "Loading...";
     String uid = "Loading...";

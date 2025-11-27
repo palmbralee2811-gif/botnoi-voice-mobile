@@ -68,7 +68,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _generateAudio() async {
+Future<void> _generateAudio() async {
+    // เริ่มต้น Loading
     if (mounted) {
       setState(() {
         _isGenerateAudio = true;
@@ -76,10 +77,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     await _audioPlayer.stop();
+    
+    // ตรวจสอบข้อความว่าง
     if (_textController.text.isEmpty) {
       NotificationPopup(
               context: context,
-              text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
+              text: 'home_screen.please_type_message'.tr())
           .showAsError();
       if (mounted) {
         setState(() {
@@ -89,19 +92,68 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return;
     }
 
-    await _generateAudioConfirmed();
+    try {
+      // 1. เรียก Generate API และแสดง Dialog ผลลัพธ์
+      // หมายเหตุ: ถ้าใน _generateAudioConfirmed มีการ await showDialog 
+      // โค้ดบรรทัดถัดไปจะทำงานหลังจาก "ปิด Dialog" แล้วเท่านั้น
+      await _generateAudioConfirmed();
 
-    if (mounted) {
-      setState(() {
-        _isGenerateAudio = false;
-      });
+      // 2. เมื่อ Generate หรือปิด Dialog เสร็จแล้ว ให้ทำการโหลด Points ใหม่
+      if (mounted) {
+        await loadAllTokensIfLoggedIn(ref);
+      }
+
+      // 3. เมื่อโหลดเสร็จแล้ว ค่อยปิด Loading และแสดง SnackBar
+      if (mounted) {
+        setState(() {
+          _isGenerateAudio = false;
+        });
+
+        // แสดง SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8.w),
+                Text(
+                  'Successfully Updated Points',
+                  style: GoogleFonts.prompt(
+                    color: Colors.white,
+                    fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // จัดการกรณี Error และปิด Loading
+      _logger.e("Error during generate audio: $e");
+      if (mounted) {
+        setState(() {
+          _isGenerateAudio = false;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating points: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   Future<void> _generateAudioConfirmed() async {
     // final creditsProvider = context.read<CallReloadData>();
-    final creditsProvider = loadAllTokensIfLoggedIn(ref);
-
     // final speakerProvider = context.read<HomeSpeakerDataManagement>();
     final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
     final isV2 = speakerProvider.isV2;
@@ -114,7 +166,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         isGenerateAudio: _isGenerateAudio,
         isV2: isV2,
       );
-      await creditsProvider;
       if (audioUrl.isNotEmpty) {
         await openAudioPlayerDialog(
           context,

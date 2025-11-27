@@ -101,81 +101,89 @@
 
 
 
-// lib/auth/auth_checker.dart (ใช้ Riverpod ConsumerWidget)
+
+
+
+
+
+
 import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/auth/token_checker.dart';
-import 'package:botnoivoice/shared/function/open_logout_function.dart'; // สมมติว่ามี
+import 'package:botnoivoice/shared/function/open_logout_function.dart'; 
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // **NEW IMPORT**
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
-/// Widget ตรวจสอบสถานะการล็อกอินของผู้ใช้
-class AuthChecker extends ConsumerWidget { // **เปลี่ยนเป็น ConsumerWidget**
+class AuthChecker extends ConsumerWidget {
   AuthChecker({super.key});
 
   final Logger _logger = Logger();
   final _internetChecker = InternetChecker();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { // **รับ WidgetRef**
-    
-    // 1. WATCH Notifiers เพื่อดึงสถานะและ logic isAuthenticated
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 1. Watch Auth State changes
     final appleNotifier = ref.watch(appleLoginNotifierProvider.notifier);
     final googleNotifier = ref.watch(googleLoginNotifierProvider.notifier);
     final emailNotifier = ref.watch(emailLoginNotifierProvider.notifier);
-    final lineState = ref.watch(lineLoginNotifierProvider); // Line ใช้ State เพราะไม่มี isAuthenticated ใน Notifier Base
+    final lineState = ref.watch(lineLoginNotifierProvider);
 
-    // 2. WATCH State เพื่อดึงข้อมูล User/isLoggedIn
+    // 2. Watch User Data (Specific for Email verification check)
     final emailState = ref.watch(emailLoginNotifierProvider);
 
     String? loginProvider;
 
-    // ตรวจสอบว่าเป็นการล็อกอินด้วย Email หรือไม่ (ใช้ isAuthenticated จาก Notifier)
-    if (emailNotifier.isAuthenticated && emailNotifier.user?.providerData[0].providerId == 'password') {
-      // ถ้า email ยังไม่ได้ยืนยัน จะบังคับให้ logout
+    // --- Logic Check Providers ---
+    
+    // Check Email Login
+    if (emailNotifier.isAuthenticated &&
+        emailNotifier.user?.providerData[0].providerId == 'password') {
+      
+      // ตรวจสอบ Email Verification
       if (emailState.user != null && !emailState.user!.emailVerified) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
+        // ใช้ Future.microtask เพื่อเลี่ยงการ update state ระหว่าง build
+        Future.microtask(() {
           if (context.mounted) {
-            // openEmailLogout ต้องถูกปรับให้ใช้ Riverpod/Ref เพื่อสั่ง Sign Out ได้
+            // เรียกฟังก์ชัน Logout (ต้องแน่ใจว่า openEmailLogout รองรับ ref หรือ context)
             openEmailLogout(ref); 
           }
         });
-        loginProvider = null;
+        loginProvider = null; // ถือว่ายังไม่ได้ login ที่สมบูรณ์
       } else {
         loginProvider = 'email';
       }
 
-    // ตรวจสอบการล็อกอินผ่าน Google
-    } else if (googleNotifier.isAuthenticated && googleNotifier.user?.providerData[0].providerId == 'google.com') {
+    // Check Google Login
+    } else if (googleNotifier.isAuthenticated &&
+        googleNotifier.user?.providerData[0].providerId == 'google.com') {
       loginProvider = 'google';
 
-    // ตรวจสอบการล็อกอินผ่าน Apple
-    } else if (appleNotifier.isAuthenticated && appleNotifier.user?.providerData[0].providerId == 'apple.com') {
+    // Check Apple Login
+    } else if (appleNotifier.isAuthenticated &&
+        appleNotifier.user?.providerData[0].providerId == 'apple.com') {
       loginProvider = 'apple';
 
-    // ตรวจสอบการล็อกอินผ่าน Line
+    // Check Line Login
     } else if (lineState.isLoggedIn) {
       loginProvider = 'line';
     }
 
+    // --- Return Widget ---
 
     if (loginProvider != null) {
-      _logger.d("Authenticated $loginProvider");
+      _logger.d("Authenticated with $loginProvider");
 
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _internetChecker.startListeningToInternetChanges(context,
-            (isAvailable) {
-          if (!isAvailable) {
-            if (context.mounted) {
-              context.go('/login');
-            }
+      // Internet check logic (ใส่ postFrameCallback เพื่อความปลอดภัย)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
+          if (!isAvailable && context.mounted) {
+            context.go('/login');
           }
         });
       });

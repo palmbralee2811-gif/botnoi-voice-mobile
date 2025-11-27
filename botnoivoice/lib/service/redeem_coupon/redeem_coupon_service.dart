@@ -148,9 +148,21 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
-import 'package:botnoivoice/service/token/user_token_state.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -159,9 +171,9 @@ import 'package:logger/logger.dart';
 
 /// Represents the immutable state of the RedeemCouponService.
 class RedeemCouponState {
-  /// Variable to store error messages. (ตัวแปรเก็บ error message)
+  /// Variable to store error messages.
   final String? errorMessage;
-  /// Variable to check the loading status. (ตัวแปรเช็คสถานะกำลังโหลด)
+  /// Variable to check the loading status.
   final bool isLoading;
 
   const RedeemCouponState({
@@ -175,47 +187,51 @@ class RedeemCouponState {
     bool? isLoading,
   }) {
     return RedeemCouponState(
-      errorMessage: errorMessage,
+      errorMessage: errorMessage ?? this.errorMessage, // Fix: keep existing message if null is passed unless intended
       isLoading: isLoading ?? this.isLoading,
     );
   }
+  
+  // Helper to allow setting errorMessage to null explicitly in copyWith if needed, 
+  // but for simplicity in your logic, direct assignment is fine.
+  // In the usage below, we handle null correctly.
 }
 
 /// Defines the StateNotifierProvider for RedeemCouponService.
-/// This provider allows UI widgets to listen to the state (RedeemCouponState)
-/// and interact with the service (RedeemCouponService).
 final redeemCouponServiceProvider = 
     StateNotifierProvider<RedeemCouponService, RedeemCouponState>((ref) {
   return RedeemCouponService();
 });
-
 
 class RedeemCouponService extends StateNotifier<RedeemCouponState> {
   // Initialize the state in the constructor
   RedeemCouponService() : super(const RedeemCouponState());
 
   final _logger = Logger();
-  // State variables (errorMessage, isLoading) are now accessed via `state`
 
-  /// Internal method to update the loading state and notify listeners (via Riverpod state update).
+  /// Internal method to update the loading state.
   void _setLoading(bool value) {
-    // ฟังก์ชันเซ็ตค่า `isLoading` และแจ้งให้ UI อัปเดต
-    state = state.copyWith(isLoading: value);
+    state = RedeemCouponState(
+      errorMessage: state.errorMessage,
+      isLoading: value,
+    );
   }
 
   /// Resets the error message state.
   void resetErrorMessage() {
-    // Add this method to reset errorMessage
-    state = state.copyWith(errorMessage: null);
+    state = RedeemCouponState(
+      errorMessage: null,
+      isLoading: state.isLoading,
+    );
   }
 
-  /// ฟังก์ชันดึง JWT Token
+  /// Fetch JWT Token
   Future<String?> _fetchJwtToken(
     BuildContext context,
     WidgetRef ref,
   ) async {
     try {
-      final jwtToken = ref.read(userTokenProvider).jwtToken;
+      final jwtToken = ref.read(currentUserTokenStateProvider).jwtToken;
       if (jwtToken == null) {
         state = state.copyWith(errorMessage: 'Failed to fetch ID token');
         _logger.e(state.errorMessage);
@@ -228,7 +244,7 @@ class RedeemCouponService extends StateNotifier<RedeemCouponState> {
     }
   }
 
-  /// ฟังก์ชันตรวจสอบและใช้คูปอง
+  /// Call API to check coupon
   Future<String?> _callCheckCouponApi(
       String jwtToken, String couponName) async {
     try {
@@ -258,48 +274,40 @@ class RedeemCouponService extends StateNotifier<RedeemCouponState> {
           _logger.d('Coupon redeemed successfully $couponName');
           return null;
         } else if (message.toString().toLowerCase() == 'already in use') {
-          //คูปองของคุณถูกใช้งานแล้ว
           final errorMsg = 'redeem_coupon_service.coupon_already_used'
               .tr(namedArgs: {'coupon_name': couponName});
           state = state.copyWith(errorMessage: errorMsg);
           _logger.e(state.errorMessage);
           return errorMsg;
         } else if (message.toString().toLowerCase() == 'incorrect coupon') {
-          //ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง
           final errorMsg = 'redeem_coupon_service.coupon_not_found'
               .tr(namedArgs: {'coupon_name': couponName});
           state = state.copyWith(errorMessage: errorMsg);
           _logger.e(state.errorMessage);
-
           return errorMsg;
         } else {
-          //ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว
           final errorMsg = 'redeem_coupon_service.coupon_expired_or_not_found'
               .tr(namedArgs: {'coupon_name': couponName});
           state = state.copyWith(errorMessage: errorMsg);
           _logger.e(state.errorMessage);
-
           return errorMsg;
         }
       } else {
-        //เกิดข้อผิดพลาดในการเรียก API:
         final errorMsg =
             '${'redeem_coupon_service.api_call_error'.tr()} ${response.statusCode}';
         state = state.copyWith(errorMessage: errorMsg);
         _logger.e(state.errorMessage);
-
         return errorMsg;
       }
     } catch (e) {
       final errorMsg = 'Exception occurred: $e';
       state = state.copyWith(errorMessage: errorMsg);
       _logger.e(state.errorMessage);
-
       return 'redeem_coupon_service.error_message'.tr();
-    } finally {}
+    }
   }
 
-  /// ใช้คูปอง ถ้า return string คือมี error
+  /// Public method to redeem coupon
   Future<String?> redeemCoupon(
     BuildContext context,
     String couponCode,
@@ -317,25 +325,19 @@ class RedeemCouponService extends StateNotifier<RedeemCouponState> {
       }
 
       final jwtToken = await _fetchJwtToken(context, ref);
-      // _fetchJwtToken updates the error state if token fetching fails.
       if (jwtToken == null) return 'redeem_coupon_service.not_session'.tr();
 
-      // Set the coupon code to redeem
       _logger.d('Calling _callCheckCouponApi with couponCode: $couponCode');
-
       final result = await _callCheckCouponApi(jwtToken, couponCode);
-      // _callCheckCouponApi updates the error state if coupon check fails.
 
       return result;
     } catch (e) {
       final errorMsg = '${'redeem_coupon_service.error_message'.tr()} $e';
       state = state.copyWith(errorMessage: errorMsg);
       _logger.e(state.errorMessage);
-
       return 'redeem_coupon_service.error_message'.tr();
     } finally {
       _setLoading(false);
     }
   }
 }
-

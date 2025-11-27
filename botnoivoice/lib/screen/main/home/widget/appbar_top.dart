@@ -1,5 +1,4 @@
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/main/home/widget/appbar_bottom.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -39,9 +38,15 @@ class _AppBarTopState extends ConsumerState<AppBarTop> {
   @override
   Widget build(BuildContext context) {
     // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-
     // final userTokenState = _ref.read(userTokenProvider);
-    var remainingCredits = ref.read(userTokenProvider).remainingCredits ?? 'N/A';
+
+    // Access credits directly from the immutable state
+    final userTokenState = ref.watch(currentUserTokenStateProvider);
+    // final normalCredits = userTokenState.remainingNormalCredits ?? 0;
+    // final monthlyPoints = userTokenState.remainingMonthlyPoints ?? 0;
+    // var remainingCredits = normalCredits + monthlyPoints;
+    var remainingCredits = userTokenState.remainingCredits ?? 'N/A';
+
 
     return AppBar(
       backgroundColor: kWhite,
@@ -109,7 +114,7 @@ class _AppBarTopState extends ConsumerState<AppBarTop> {
                   ),
                 ),
                 Text(
-                  remainingCredits,
+                  remainingCredits.toString(),
                   style: GoogleFonts.prompt(
                     fontSize: ResponsiveDesignOrientation.isLandscape
                         ? 7.5.sp

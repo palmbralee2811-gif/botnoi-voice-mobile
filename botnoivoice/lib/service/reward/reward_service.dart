@@ -284,7 +284,6 @@
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -474,7 +473,7 @@ class RewardService {
   Future<String?> _fetchJwtToken(WidgetRef ref) async {
     try {
       // Assuming getJwtTokenAll is a function that still relies on BuildContext/Provider
-      final jwtToken = ref.read(userTokenProvider).jwtToken;
+      final jwtToken = ref.read(currentUserTokenStateProvider).jwtToken;
 
       if (jwtToken == null) {
         // Set error message in provider state

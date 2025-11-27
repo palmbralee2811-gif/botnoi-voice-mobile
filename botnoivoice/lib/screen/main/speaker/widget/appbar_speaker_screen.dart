@@ -41,7 +41,11 @@ class _AppBarSpeakerScreenState extends ConsumerState<AppBarSpeakerScreen> {
   @override
   Widget build(BuildContext context) {
     // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
+    // var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
+
+    // Access credits directly from the immutable state
+    final userTokenState = ref.watch(currentUserTokenStateProvider);
+    final remainingCredits = userTokenState.remainingCredits ?? 'N/A';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -110,7 +114,7 @@ class _AppBarSpeakerScreenState extends ConsumerState<AppBarSpeakerScreen> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      remainingCredits,
+                      remainingCredits.toString(),
                       style: GoogleFonts.prompt(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 7.5.sp

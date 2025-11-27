@@ -138,7 +138,6 @@
 
 
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
@@ -178,7 +177,11 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
   @override
   Widget build(BuildContext context) {
     // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
+    // var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
+
+    // Access credits directly from the immutable state
+    final userTokenState = ref.watch(currentUserTokenStateProvider);
+    final remainingCredits = userTokenState.remainingCredits ?? 'N/A';
 
     return AppBar(
       backgroundColor: kWhite,
@@ -251,7 +254,7 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  remainingCredits,
+                  remainingCredits.toString(),
                   style: GoogleFonts.prompt(
                     fontSize: ResponsiveDesignOrientation.isLandscape
                         ? 8.sp

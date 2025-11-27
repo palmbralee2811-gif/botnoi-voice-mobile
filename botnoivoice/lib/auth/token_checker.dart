@@ -245,216 +245,180 @@
 
 
 
-// lib/auth/token_checker.dart (ใช้ Riverpod ConsumerStatefulWidget)
-import 'package:botnoivoice/config/revenuecat_config.dart'; // สมมติว่ามี
-import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart'; // สมมติว่ามี
-import 'package:botnoivoice/service/email/check_user_is_show_email.dart'; // สมมติว่ามี
-import 'package:botnoivoice/service/email/email_username_api.dart'; // สมมติว่ามี
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:botnoivoice/config/revenuecat_config.dart';
+import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
+import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
+import 'package:botnoivoice/service/email/email_username_api.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/notification/push_notification_service.dart'; // สมมติว่ามี
-import 'package:botnoivoice/service/token/user_token_notifier.dart'; // **NEW IMPORT**
+import 'package:botnoivoice/service/notification/push_notification_service.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/splash/splash_screen.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // **NEW IMPORT**
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Token Management for Google, Apple, LINE, and Email.
-class TokenChecker extends ConsumerStatefulWidget { // **เปลี่ยนเป็น ConsumerStatefulWidget**
+class TokenChecker extends ConsumerStatefulWidget {
   const TokenChecker({super.key});
 
   @override
   ConsumerState<TokenChecker> createState() => _TokenCheckerState();
 }
 
-class _TokenCheckerState extends ConsumerState<TokenChecker> { // **ใช้ ConsumerState**
+class _TokenCheckerState extends ConsumerState<TokenChecker> {
   bool _initialized = false;
-  bool _isDisposed = false;
-  bool _isSubscribed = false;
+  // ไม่จำเป็นต้องใช้ _isDisposed เอง เพราะ ConsumerState มี property "mounted" ให้ใช้อยู่แล้ว
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      if (mounted) {
-        initApp();
-      }
+    // เริ่มทำงานทันทีหลัง build แรกเสร็จ
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initApp();
     });
   }
 
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
-
-  /// Function to check how the user logs in and loading data
+  /// Function to check how the user logs in and load data
   Future<void> initApp() async {
-    if (_isDisposed) return;
+    if (!mounted) return;
 
     // 1. อ่าน Notifier เพื่อเข้าถึง isAuthenticated และ logic
+    // ใช้ read ตรงนี้ได้เพราะอยู่ใน method ไม่ใช่ build
     final appleNotifier = ref.read(appleLoginNotifierProvider.notifier);
     final googleNotifier = ref.read(googleLoginNotifierProvider.notifier);
     final emailNotifier = ref.read(emailLoginNotifierProvider.notifier);
-    final lineState = ref.read(lineLoginNotifierProvider); // Line ใช้ State
+    final lineState = ref.read(lineLoginNotifierProvider);
 
-    if (_isDisposed) return;
-
-    // 2. ตรวจสอบผู้ให้บริการที่ล็อกอินอยู่ (ใช้ isAuthenticated ที่ถูกต้อง)
+    // 2. ตรวจสอบผู้ให้บริการ และเรียกฟังก์ชันโหลดข้อมูล
+    // ต้องใส่ await เพื่อรอให้ process จบก่อน setState
     if (appleNotifier.isAuthenticated) {
-      await _loadAppleCredentials();
+      await _loadCredentials(
+        tokenNotifierProvider: appleTokenNotifierProvider,
+        providerType: 'apple',
+      );
     } else if (googleNotifier.isAuthenticated) {
-      await _loadGoogleCredentials();
-    } else if (lineState.isLoggedIn) { // Line ยังคงใช้ isLoggedIn จาก State
-      await _loadLineCredentials();
+      await _loadCredentials(
+        tokenNotifierProvider: googleTokenNotifierProvider,
+        providerType: 'google',
+      );
+    } else if (lineState.isLoggedIn) {
+      await _loadCredentials(
+        tokenNotifierProvider: lineTokenNotifierProvider,
+        providerType: 'line',
+      );
     } else if (emailNotifier.isAuthenticated) {
       await _loadEmailCredentials();
     }
 
-    if (_isDisposed) return;
+    if (!mounted) return;
 
-    if (mounted) {
-      setState(() {
-        _initialized = true;
-      });
-    }
+    setState(() {
+      _initialized = true;
+    });
   }
 
-  /// Load data when logging in with Apple
-  Future<void> _loadAppleCredentials() async {
-    if (_isDisposed) return;
-    
-    // ✅ ใช้ Token Notifier ใหม่
-    final tokenNotifier = ref.read(appleTokenNotifierProvider.notifier);
+  /// Refactored: Generic load function for Apple, Google, Line (Logic เหมือนกัน)
+  Future<void> _loadCredentials({
+    required tokenNotifierProvider,
+    required String providerType,
+  }) async {
+    if (!mounted) return;
 
-    if (!_isDisposed) await tokenNotifier.loadJwtToken();
-    if (!_isDisposed) await tokenNotifier.loadCredentials();
-    if (!_isDisposed) await tokenNotifier.loadRemainingCredits();
+    final tokenNotifier = ref.read(tokenNotifierProvider.notifier);
 
-    final tokenState = ref.read(appleTokenNotifierProvider); // อ่าน State
-    
-    // Load Speaker Data by User Subscription (Free or Pro)
-    _isSubscribed = tokenState.isSubscription;
-    await SpeakerModel.loadSpeakers(
-        isSubscribed: _isSubscribed, 
-        jwtToken: tokenState.jwtToken!);
+    // 1. Load Tokens
+    await tokenNotifier.loadJwtToken();
+    if (!mounted) return; // **สำคัญ** เช็ค mounted หลัง await ทุกครั้ง
 
-    if (!_isDisposed) await configureRevenueCat(ref);
+    await tokenNotifier.loadCredentials();
+    if (!mounted) return;
 
-    if (mounted) {
-      Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(ref);
-      });
-      setState(() {
-        _initialized = true;
-      });
+    await tokenNotifier.loadRemainingCredits();
+    if (!mounted) return;
+
+    // 2. Load Speaker Data
+    // อ่านค่า State ล่าสุด (หลังจาก load เสร็จ)
+    final tokenState = ref.read(tokenNotifierProvider);
+    final isSubscribed = tokenState.isSubscription;
+    final jwtToken = tokenState.jwtToken;
+
+    if (jwtToken != null) {
+      await SpeakerModel.loadSpeakers(
+        isSubscribed: isSubscribed,
+        jwtToken: jwtToken,
+      );
     }
+    if (!mounted) return;
+
+    // 3. RevenueCat & Notification
+    await configureRevenueCat(ref);
+    if (!mounted) return;
+
+    await PushNotificationService.init(ref);
   }
 
-  /// Load data when logging in with Google
-  Future<void> _loadGoogleCredentials() async {
-    if (_isDisposed) return;
-
-    final tokenNotifier = ref.read(googleTokenNotifierProvider.notifier);
-
-    if (!_isDisposed) await tokenNotifier.loadJwtToken();
-    if (!_isDisposed) await tokenNotifier.loadCredentials();
-    if (!_isDisposed) await tokenNotifier.loadRemainingCredits();
-
-    final tokenState = ref.read(googleTokenNotifierProvider);
-    
-    _isSubscribed = tokenState.isSubscription;
-    await SpeakerModel.loadSpeakers(
-        isSubscribed: _isSubscribed,
-        jwtToken: tokenState.jwtToken!);
-
-    if (!_isDisposed) await configureRevenueCat(ref);
-
-    if (mounted) {
-      Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(ref);
-      });
-      setState(() {
-        _initialized = true;
-      });
-    }
-  }
-
-  /// Load data when logging in with LINE
-  Future<void> _loadLineCredentials() async {
-    if (_isDisposed) return;
-
-    final tokenNotifier = ref.read(lineTokenNotifierProvider.notifier);
-
-    if (!_isDisposed) await tokenNotifier.loadJwtToken();
-    if (!_isDisposed) await tokenNotifier.loadCredentials();
-    if (!_isDisposed) await tokenNotifier.loadRemainingCredits();
-
-    final tokenState = ref.read(lineTokenNotifierProvider);
-    
-    _isSubscribed = tokenState.isSubscription;
-    await SpeakerModel.loadSpeakers(
-        isSubscribed: _isSubscribed, jwtToken: tokenState.jwtToken!);
-
-    if (!_isDisposed) await configureRevenueCat(ref);
-
-    if (mounted) {
-      Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(ref);
-      });
-      setState(() {
-        _initialized = true;
-      });
-    }
-  }
-
-  /// Load data when logging in with Email
+  /// Specific load function for Email (มี logic เพิ่มเติม)
   Future<void> _loadEmailCredentials() async {
-    if (_isDisposed) return;
+    if (!mounted) return;
 
     final tokenNotifier = ref.read(emailTokenNotifierProvider.notifier);
 
-    // 1. Load Tokens & Credits
-    if (!_isDisposed) await tokenNotifier.loadJwtToken();
-    if (!_isDisposed) await tokenNotifier.loadCredentials();
-    if (!_isDisposed) await tokenNotifier.loadRemainingCredits();
+    // 1. Load Tokens
+    await tokenNotifier.loadJwtToken();
+    if (!mounted) return;
 
-    final tokenState = ref.read(emailTokenNotifierProvider);
-    final emailLoginState = ref.read(emailLoginNotifierProvider);
+    await tokenNotifier.loadCredentials();
+    if (!mounted) return;
+
+    await tokenNotifier.loadRemainingCredits();
+    if (!mounted) return;
 
     // 2. Load Speaker Data
-    _isSubscribed = tokenState.isSubscription;
-    await SpeakerModel.loadSpeakers(
-        isSubscribed: _isSubscribed, jwtToken: tokenState.jwtToken!);
+    final tokenState = ref.read(emailTokenNotifierProvider);
+    if (tokenState.jwtToken != null) {
+      await SpeakerModel.loadSpeakers(
+        isSubscribed: tokenState.isSubscription,
+        jwtToken: tokenState.jwtToken!,
+      );
+    }
+    if (!mounted) return;
 
     // 3. Load Email Specific Data
-    if (!_isDisposed) {
-      /// Load get username by email
-      String? email = emailLoginState.user?.email; // อ่าน email จาก Login state
-      if (email != null) {
-          final emailUsernameApiNotifier = ref.read(emailUsernameApiNotifierProvider.notifier);
-          await emailUsernameApiNotifier.loadGetUsername(email);
-      }
-      
-      /// Load user info show mail (email permission)
-      final checkUserIsShowEmailNotifier = ref.read(checkUserIsShowEmailNotifierProvider.notifier);
-      // NOTE: getUserInfoShowMail ไม่ต้องรับ context แล้ว
-      await checkUserIsShowEmailNotifier.getUserInfoShowMail(); 
-    }
+    final emailLoginState = ref.read(emailLoginNotifierProvider);
+    String? email = emailLoginState.user?.email;
 
-    // 4. Load RevenueCat & Notification
-    if (!_isDisposed) await configureRevenueCat(ref);
-
-    if (mounted) {
-      Future.delayed(Duration.zero, () async {
-        await PushNotificationService.init(ref);
-      });
-      setState(() {
-        _initialized = true;
-      });
+    if (email != null) {
+      final emailUsernameApiNotifier = ref.read(emailUsernameApiNotifierProvider.notifier);
+      await emailUsernameApiNotifier.loadGetUsername(email);
     }
+    if (!mounted) return;
+
+    // Load user info show mail permission
+    final checkUserIsShowEmailNotifier = ref.read(checkUserIsShowEmailNotifierProvider.notifier);
+    await checkUserIsShowEmailNotifier.getUserInfoShowMail();
+    if (!mounted) return;
+
+    // 4. RevenueCat & Notification
+    await configureRevenueCat(ref);
+    if (!mounted) return;
+
+    await PushNotificationService.init(ref);
   }
 
   @override

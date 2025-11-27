@@ -228,6 +228,11 @@
 
 
 
+
+
+
+
+
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/service/redeem_coupon/redeem_coupon_service.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
@@ -238,15 +243,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Alert Modal for displaying messages
 class RedeemCouponDialog {
   RedeemCouponDialog({
     required this.context,
-    required this.ref,
+    required this.ref, // Receive ref from the parent widget
     required this.text,
-    this.onPressed, // กำหนด onPressed เป็น optional
+    this.onPressed,
   });
 
   final String text;
@@ -254,40 +258,35 @@ class RedeemCouponDialog {
   final WidgetRef ref;
   final VoidCallback? onPressed;
 
-  /// Loading state
-  bool _isLoading = false;
-
   /// Controller for the coupon input field
   final TextEditingController _couponInputController = TextEditingController();
 
-  /// ฟังก์ชันที่ใช้สร้าง UI ของ modal
+  /// Function to show the modal UI
   void _showModal({
     required BuildContext context,
     required bool barrierDismissible,
     VoidCallback? onPressed,
   }) {
-    // Defer reset until after build
+    // Correct way to access the Notifier method in Riverpod
+    // Reset error message before showing the dialog
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final redeemServiceProvider = context.read<RedeemCouponService>();
-      redeemServiceProvider.resetErrorMessage();
+      ref.read(redeemCouponServiceProvider.notifier).resetErrorMessage();
     });
 
     showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
-        // Get data from provider
-        // final redeemServiceProvider = context.watch<RedeemCouponService>();
-        final redeemServiceProvider = ref.watch(redeemCouponServiceProvider);
-        final redeemServiceNotifier = ref.watch(redeemCouponServiceProvider.notifier);
+        // Use Consumer to listen to provider changes within the Dialog
+        return Consumer(
+          builder: (context, ref, child) {
+            // Watch the State (for isLoading, errorMessage)
+            final redeemCouponState = ref.watch(redeemCouponServiceProvider);
+            // Read the Notifier (for calling functions)
+            final redeemCouponNotifier = ref.read(redeemCouponServiceProvider.notifier);
 
-        final creditsProvider = loadAllTokensIfLoggedIn(ref);
-
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
             Widget content = Column(
-              mainAxisSize: MainAxisSize
-                  .min, // Ensures the column takes only the space it needs
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'redeem_coupon_dialog.title'.tr(),
@@ -308,9 +307,9 @@ class RedeemCouponDialog {
                     fontWeight: FontWeight.w400,
                   ),
                   decoration: InputDecoration(
-                    enabled: _isLoading ? false : true,
-                    labelText: 'redeem_coupon_dialog.input'
-                        .tr(), // ชื่อผู้ใช้งานหรืออีเมล
+                    // Use isLoading from Riverpod state
+                    enabled: !redeemCouponState.isLoading,
+                    labelText: 'redeem_coupon_dialog.input'.tr(),
                     labelStyle: TextStyle(
                       fontSize: ResponsiveDesignOrientation.isLandscape
                           ? 11.sp
@@ -322,8 +321,8 @@ class RedeemCouponDialog {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: const BorderSide(
-                        color: Colors.grey, // สีของเส้นขอบ
-                        width: 1.0, // ความหนาของเส้นขอบ
+                        color: Colors.grey,
+                        width: 1.0,
                       ),
                     ),
                     errorStyle: TextStyle(
@@ -344,15 +343,16 @@ class RedeemCouponDialog {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'redeem_coupon_dialog.input'.tr(); // กรอก coupon
+                      return 'redeem_coupon_dialog.input'.tr();
                     }
                     return null;
                   },
                 ),
-                if (redeemServiceProvider.errorMessage != null) ...[
+                // Display error message from Riverpod state
+                if (redeemCouponState.errorMessage != null) ...[
                   SizedBox(height: 8.h),
                   Text(
-                    redeemServiceProvider.errorMessage!,
+                    redeemCouponState.errorMessage!,
                     style: TextStyle(
                       fontSize: ResponsiveDesignOrientation.isLandscape
                           ? 8.sp
@@ -368,36 +368,37 @@ class RedeemCouponDialog {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.w),
                   child: GradientLoadingButton(
-                    text: 'redeem_coupon_dialog.use'.tr(), // ใช้ Coupon
-                    isLoading: _isLoading,
+                    text: 'redeem_coupon_dialog.use'.tr(),
+                    // Bind isLoading directly to the service state
+                    isLoading: redeemCouponState.isLoading,
                     onPressed: () async {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      final result = await redeemServiceNotifier.redeemCoupon(
+                      // Call the function via Notifier
+                      final result = await redeemCouponNotifier.redeemCoupon(
                         context,
                         _couponInputController.text,
                         ref,
                       );
-                      if (result == null) {
-                        await creditsProvider;
-                      }
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      if (result == null) {
-                        // Close This Notification Dialog
-                        context.pop();
 
-                        //Notify success
-                        RedeemSuccessDialog(
-                                context: context,
-                                text: 'redeem_coupon_dialog.success'.tr(
-                                    namedArgs: {
-                                      'coupon_name': _couponInputController.text
-                                    }),
-                                couponName: _couponInputController.text)
-                            .showCheckmarkModal(context);
+                      if (result == null) {
+                        // Success case: Reload tokens/credits
+                        await loadAllTokensIfLoggedIn(ref);
+
+                        // Close the dialog
+                        if (context.mounted) {
+                          context.pop();
+                        }
+
+                        // Show Success Dialog
+                        if (context.mounted) {
+                          RedeemSuccessDialog(
+                            context: context,
+                            text: 'redeem_coupon_dialog.success'.tr(
+                                namedArgs: {
+                                  'coupon_name': _couponInputController.text
+                                }),
+                            couponName: _couponInputController.text,
+                          ).showCheckmarkModal(context);
+                        }
                       }
                     },
                   ),
@@ -416,8 +417,7 @@ class RedeemCouponDialog {
                 constraints: BoxConstraints(
                   maxWidth: screenWidth > 600
                       ? 235.sp
-                      : screenWidth *
-                          0.9, // Use 90% of screen width if less than 600
+                      : screenWidth * 0.9,
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(24.r),
@@ -433,7 +433,7 @@ class RedeemCouponDialog {
     );
   }
 
-  /// Modal  Show
+  /// Modal Show
   void showModal(BuildContext context) {
     _showModal(
       context: context,

@@ -1,4 +1,4 @@
-import 'package:botnoivoice/service/token/user_token_state.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/service/favorite/favorite_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +12,7 @@ Future<void> loadInitialData({
   required Function(bool) setLoading,
 }) async {
   try {
-    final String? token = ref.read(userTokenProvider).jwtToken;
+    final String? token = ref.read(currentUserTokenStateProvider).jwtToken;
     if (token == null || token.isEmpty) {
       setLoading(false);
       return;

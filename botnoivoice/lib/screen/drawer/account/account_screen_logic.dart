@@ -208,7 +208,7 @@ import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/email/email_forget_password.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
-import 'package:botnoivoice/service/token/user_token_state.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_snack_bar.dart';
 import 'package:botnoivoice/screen/drawer/account/get_user_email.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
@@ -342,7 +342,7 @@ class AccountScreenLogic {
     final lineState = widgetRef.read(lineLoginNotifierProvider);
     final emailState = widgetRef.read(emailLoginNotifierProvider);
 
-    final userTokenState = widgetRef.read(userTokenProvider);
+    final userTokenState = widgetRef.read(currentUserTokenStateProvider);
 
     // Assuming EmailUsernameApi and CheckUserIsShowEmail are also Riverpod Providers
     final emailUsernameApi = widgetRef.read(emailUsernameApiNotifierProvider);
