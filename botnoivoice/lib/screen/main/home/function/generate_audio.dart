@@ -146,13 +146,16 @@ Future<String> generateAudio({
 }) async {
   // Get Data from Home Speaker Data Management
   final homeSpeakerProvider = ref.read(homeSpeakerDataProvider.notifier);
-  String speakerId = homeSpeakerProvider.speakerId ?? getDefaultSpeakerId(ref.context);
-  String language = homeSpeakerProvider.language ?? Localizations.localeOf(ref.context).languageCode;
+  String speakerId =
+      homeSpeakerProvider.speakerId ?? getDefaultSpeakerId(ref.context);
+  String language = homeSpeakerProvider.language ??
+      Localizations.localeOf(ref.context).languageCode;
 
   final selectedToken =
       ref.watch(currentUserTokenStateProvider).credentialsToken;
 
   if (selectedToken == null || selectedToken.isEmpty) {
+    _logger.e("User CredentialsToken is null or empty");
     // Show Snackbar
     NotificationSnackBar(
             context: ref.context,
