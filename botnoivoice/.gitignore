@@ -64,4 +64,6 @@ botnoivoice-firebase-admin-sdk.json
 *.storekit
 *.cer
 *.p8
+*Appfile
 *Fastfile
+*report.xml
