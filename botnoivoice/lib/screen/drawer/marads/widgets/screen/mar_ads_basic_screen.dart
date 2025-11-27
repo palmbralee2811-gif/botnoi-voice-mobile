@@ -125,7 +125,7 @@ MarAdsTextField(
                 color: kDark,
               ),
               onPressed: () {
-                context.go('/home');
+                context.pop();
               },
             ),
           ),

@@ -366,7 +366,7 @@ class AccountScreenLogic {
       email = lineState.lineEmail ?? "No email found";
       isLineLoggedIn = true;
     } else if (appleState.isLoggedIn) {
-      displayName = appleState.user?.displayName ?? 'Apple User';
+      displayName = userTokenState.userName ?? 'Apple User';
       userId = userTokenState.userID ?? 'No UID';
       email = getUserEmail(firebaseUser) ?? 'No email found';
       isAppleLoggedIn = true;

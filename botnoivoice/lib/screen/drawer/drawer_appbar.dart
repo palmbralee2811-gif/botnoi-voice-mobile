@@ -218,13 +218,11 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
             contentPadding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
             ),
-
             leading: Icon(
-              Icons.chat_outlined, 
+              Icons.chat_outlined,
               size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
               color: kDark,
             ),
-
             title: Text(
               'app_drawer.marads'.tr(), // Gensub
               style: GoogleFonts.prompt(
@@ -234,9 +232,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 color: kDark,
               ),
             ),
-
             onTap: () {
-              
               context.push('/marads');
             },
           ),
@@ -246,13 +242,11 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
             contentPadding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
             ),
-
             leading: Icon(
-              Icons.subtitles_outlined, 
+              Icons.subtitles_outlined,
               size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
               color: kDark,
             ),
-
             title: Text(
               'app_drawer.gensub'.tr(), // Gensub
               style: GoogleFonts.prompt(
@@ -262,9 +256,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 color: kDark,
               ),
             ),
-
             onTap: () {
-              
               context.push('/gensub');
             },
           ),
