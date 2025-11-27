@@ -118,6 +118,10 @@
 
 
 
+
+
+
+
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -159,6 +163,16 @@ class PaymentService extends StateNotifier<PaymentState> {
   // Initialize with a default state
   PaymentService() : super(PaymentState());
 
+  // Method to reset state to clean slate (clear errors and loading)
+  void resetStatus() {
+    state = PaymentState(errorMessage: null, isLoading: false);
+  }
+
+  // Public method to manually set loading state from UI
+  void setLoading(bool value) {
+    state = state.copyWith(isLoading: value);
+  }
+
   // Public method to handle the payment process based on the platform
   Future<void> handlePurchase() async {
     // Check current platform and call the appropriate payment method
@@ -187,27 +201,19 @@ class PaymentService extends StateNotifier<PaymentState> {
         _logger.i("Purchase successful: $purchaseResult");
         // No error, clear any existing error message
         state = state.copyWith(errorMessage: null);
+        
+        // NOTE: On success, we DO NOT set isLoading = false here.
+        // We let the UI handle it after polling for updated points.
       } else {
         _logger.w("No available package found for offering: $productId");
         // Set error message if no package is found
         state = state.copyWith(errorMessage: "No packages available for this offering.");
+        // Stop loading on error
+        state = state.copyWith(isLoading: false);
       }
     } catch (e) {
-      String errorMessage;
-      // Handle user cancellation specifically
-      if (e is PlatformException &&
-          e.details?['readableErrorCode'] == 'PurchaseCancelledError') {
-        _logger.e("Purchase cancelled: $e");
-        errorMessage = "Purchase Cancelled";
-      } else {
-        _logger.e("Error during purchase: $e");
-        // Set generic error message for other failures
-        errorMessage = "Purchase failed: $e";
-      }
-      // Update state with the error message
-      state = state.copyWith(errorMessage: errorMessage);
-    } finally {
-      // Ensure loading state is set to false after the operation finishes
+      _handleError(e);
+      // Stop loading on error
       state = state.copyWith(isLoading: false);
     }
   }
@@ -231,34 +237,39 @@ class PaymentService extends StateNotifier<PaymentState> {
         _logger.i("Purchase successful: $purchaseResult");
         // No error, clear any existing error message
         state = state.copyWith(errorMessage: null);
+        
+        // NOTE: On success, we DO NOT set isLoading = false here.
       } else {
         _logger.w("No product found for ID: $productId");
         // Set error message if the product is not found
         state = state.copyWith(errorMessage: "Product not found.");
+        state = state.copyWith(isLoading: false);
       }
     } catch (e) {
-      String errorMessage;
-      // Handle user cancellation specifically (different code for iOS)
-      if (e is PlatformException &&
-          e.details?['readableErrorCode'] == 'PURCHASE_CANCELLED') {
-        _logger.e("Purchase cancelled: $e");
-        errorMessage = "Purchase Cancelled";
-      } else {
-        _logger.e("Error during purchase: $e");
-        // Set generic error message for other failures
-        errorMessage = "Purchase failed: $e";
-      }
-      // Update state with the error message
-      state = state.copyWith(errorMessage: errorMessage);
-    } finally {
-      // Ensure loading state is set to false after the operation finishes
+      _handleError(e);
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  void _handleError(Object e) {
+    String errorMessage;
+    // Handle user cancellation specifically
+    if (e is PlatformException &&
+        (e.details?['readableErrorCode'] == 'PurchaseCancelledError' ||
+         e.details?['readableErrorCode'] == 'PURCHASE_CANCELLED')) {
+      _logger.e("Purchase cancelled: $e");
+      errorMessage = "Purchase Cancelled";
+    } else {
+      _logger.e("Error during purchase: $e");
+      // Set generic error message for other failures
+      errorMessage = "Purchase failed: $e";
+    }
+    // Update state with the error message
+    state = state.copyWith(errorMessage: errorMessage);
   }
 }
 
 // Global provider to expose the PaymentService instance
-// StateNotifierProvider is used for mutable state (like this class)
 final paymentServiceProvider = StateNotifierProvider<PaymentService, PaymentState>(
   (ref) => PaymentService(),
-);
+); 

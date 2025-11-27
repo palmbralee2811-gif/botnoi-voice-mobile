@@ -254,6 +254,14 @@
 
 
 
+
+
+
+
+
+
+
+
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/service/payment/payment_service.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -265,7 +273,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart'; // เพิ่มสำหรับ Font SnackBar
 
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
@@ -296,9 +303,25 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
 
     return paymentState.isLoading
         ? Container(
-            color: Colors.black54,
-            child: const Center(
-              child: CircularProgressIndicator(),
+            height: 300.h,
+            width: double.infinity,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  SizedBox(height: 16.h),
+                  Text(
+                    "Processing Payment & Updating Points...",
+                    style: TextStyle(
+                      fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp,
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         : Padding(
@@ -307,7 +330,6 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ... (ส่วน UI Header และ แสดง Credits คงเดิม ไม่เปลี่ยนแปลง) ...
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -438,7 +460,6 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
                   ],
                 ),
                 SizedBox(height: 30.h),
-                // ปุ่มกดซื้อ
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(),
                   onPressed: () async {
@@ -456,71 +477,90 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
   Future<void> _handlePurchase(BuildContext context, WidgetRef ref) async {
     final paymentServiceNotifier = ref.read(paymentServiceProvider.notifier);
 
+    // 1. Reset previous error status before starting
+    paymentServiceNotifier.resetStatus();
+
+    // 2. Snapshot current points before purchase
+    final initialTokenState = ref.read(currentUserTokenStateProvider);
+    final int initialTotalPoints = (initialTokenState.remainingNormalCredits ?? 0) +
+        (initialTokenState.remainingMonthlyPoints ?? 0);
+
     try {
-      // 1. เรียก Method ซื้อ (รอจนกว่าจะเสร็จ)
+      // 3. Call purchase method (Service will keep isLoading = true if successful)
       await paymentServiceNotifier.handlePurchase();
 
-      // 2. เช็คผลลัพธ์
+      // 4. Check result
       final resultState = ref.read(paymentServiceProvider);
 
       if (resultState.errorMessage == null) {
         // --- Success Case ---
+        
+        // Polling loop to wait for points update
+        int retryCount = 0;
+        const int maxRetries = 20; // Try for approx 40 seconds
+        const int delaySeconds = 2;
 
-        // 3. เรียกโหลด Token ใหม่ตรงนี้ (หลังจากซื้อสำเร็จแล้วจริงๆ)
-        await loadAllTokensIfLoggedIn(ref);
+        while (retryCount < maxRetries) {
+          // Reload tokens
+          await loadAllTokensIfLoggedIn(ref);
+
+          // Check new points
+          final currentTokenState = ref.read(currentUserTokenStateProvider);
+          final int currentTotalPoints = (currentTokenState.remainingNormalCredits ?? 0) +
+              (currentTokenState.remainingMonthlyPoints ?? 0);
+
+          // Break if points have increased
+          if (currentTotalPoints > initialTotalPoints) {
+            break;
+          }
+
+          retryCount++;
+          if (retryCount < maxRetries) {
+            await Future.delayed(const Duration(seconds: delaySeconds));
+          }
+        }
+
+        // 5. Stop loading manually
+        paymentServiceNotifier.setLoading(false);
 
         if (context.mounted) {
-          // 4. แสดง SnackBar ตามที่ต้องการ
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.white),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'Successfully Updated Points',
-                    style: GoogleFonts.prompt(
-                      color: Colors.white,
-                      fontSize: ResponsiveDesignOrientation.isLandscape
-                          ? 10.sp
-                          : 14.sp,
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 3),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-            ),
-          );
-
-          // 5. แสดง Dialog แจ้งเตือนสำเร็จ
+          // 6. Show Success Dialog
           NotificationDialog(
             context: context,
             text: 'payment.received_points'
                 .tr(namedArgs: {'pointsTitle': '5,000'}),
-            onPressed: () {},
-          ).showCheckmarkModal(context);
+            onPressed: () {
+               context.pop(); // Close the payment sheet
+            },
+          ).showCheckmarkModalWithAction(context);
         }
       } else {
-        // --- Error Case ---
+        // --- Error Case (Purchase Failed / Cancelled) ---
+        // Service sets isLoading = false automatically on error
+        
         if (context.mounted) {
           NotificationDialog(
             context: context,
             text: resultState.errorMessage!,
-            onPressed: () {},
+            onPressed: () {
+               // Clear error status when closing dialog
+               ref.read(paymentServiceProvider.notifier).resetStatus();
+            },
           ).showErrorModal(context);
         }
       }
     } catch (e) {
+      // General Exception
+      paymentServiceNotifier.setLoading(false);
+      
       if (context.mounted) {
         NotificationDialog(
           context: context,
           text: "${'payment.error_occurred'.tr()} $e",
-          onPressed: () {},
+          onPressed: () {
+             // Clear error status when closing dialog
+             ref.read(paymentServiceProvider.notifier).resetStatus();
+          },
         ).showErrorModal(context);
       }
     }
