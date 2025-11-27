@@ -187,10 +187,32 @@
 //   }
 // }
 
-// project_audio_api.dart
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// project_audio_api.dart
 import 'dart:convert';
-import 'package:botnoivoice/shared/function/get_jwt_token.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -216,7 +238,7 @@ Future<dynamic> cutAudio(
   required String maxSilence,
   String language = "th",
 }) async {
-  final String? token = await getJwtTokenAll(ref);
+  final String? token = ref.read(userTokenProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -266,7 +288,7 @@ Future<dynamic> updateAudioApprove(
   required String userId,
   required String approveText,
 }) async {
-  final String? token = await getJwtTokenAll(ref);
+  final String? token = ref.read(userTokenProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -301,7 +323,7 @@ Future<dynamic> getAllChunks(
   String? projectId,
   double? minCer,
 }) async {
-  final String? token = await getJwtTokenAll(ref);
+  final String? token = ref.read(userTokenProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -332,7 +354,7 @@ Future<dynamic> getChunk(
   WidgetRef ref,
   String chunkId,
 ) async {
-  final String? token = await getJwtTokenAll(ref);
+  final String? token = ref.read(userTokenProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }
@@ -358,7 +380,7 @@ Future<dynamic> deleteChunk(
   WidgetRef ref,
   String chunkId,
 ) async {
-  final String? token = await getJwtTokenAll(ref);
+  final String? token = ref.read(userTokenProvider).jwtToken;
   if (token == null || token.isEmpty) {
     return;
   }

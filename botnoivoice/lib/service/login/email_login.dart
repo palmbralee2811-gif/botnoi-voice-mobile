@@ -163,11 +163,19 @@
 
 
 
-// lib/service/login/email_login.dart
-import 'package:botnoivoice/service/email/email_username_api.dart'; // สมมติว่ามี
+
+
+
+
+
+
+
+
+
+import 'package:botnoivoice/service/email/email_username_api.dart';
+import 'package:botnoivoice/service/login/user_login_base.dart';
 import 'package:botnoivoice/service/notification/push_notification_service.dart';
-import 'package:botnoivoice/service/token/user_token_notifier.dart'; // สมมติว่ามี
-import 'package:botnoivoice/service/login/user_login_base.dart'; // **NEW IMPORT**
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -181,7 +189,7 @@ class EmailLoginState extends UserLoginBaseState {
     return EmailLoginState(
       user: user ?? this.user,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
-      errorMessage: errorMessage,
+      errorMessage: errorMessage, // Note: Error message is not persisted from previous state usually
     );
   }
 }
@@ -194,20 +202,21 @@ class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
 
   EmailLoginNotifier(this._ref) : super(EmailLoginState(), providerId);
 
-  // Implement abstract method from base class
+  // Override the public updateState method from the base class
   @override
-  void _updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
-    state = state.copyWith(user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
+  void updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
+    state = state.copyWith(
+        user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
   }
 
   User? get user => state.user;
 
   /// Clear the current error message.
   void clearErrorMessage() {
-    _updateState(errorMessage: null);
+    updateState(errorMessage: null);
   }
 
-  /// เข้าสู่ระบบด้วย `username` และ `password`
+  /// Login with username and password
   Future<void> loginWithUsernamePassword(
     String username,
     String password,
@@ -221,18 +230,18 @@ class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
 
       if (email == 'email not found') {
         final errorMessage = 'login_provider.invalid_username'.tr();
-        _updateState(errorMessage: errorMessage, isLoggedIn: false, user: null);
+        updateState(errorMessage: errorMessage, isLoggedIn: false, user: null);
         return;
       }
 
       await loginWithEmailPassword(email, password);
     } catch (e) {
       final errorMessage = "${'login_provider.error_logging_in'.tr()} $e";
-      _updateState(errorMessage: errorMessage, isLoggedIn: false, user: null);
+      updateState(errorMessage: errorMessage, isLoggedIn: false, user: null);
     }
   }
 
-  /// เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
+  /// Login with email and password
   Future<void> loginWithEmailPassword(
     String email,
     String password,
@@ -240,7 +249,7 @@ class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      _updateState(errorMessage: null);
+      updateState(errorMessage: null);
 
       if (userCredential.user != null && !userCredential.user!.emailVerified) {
         var error = 'login_provider.please_verify_email_before_login'.tr();
@@ -252,28 +261,28 @@ class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
         }
 
         await FirebaseAuth.instance.signOut();
-        _updateState(errorMessage: error, isLoggedIn: false, user: null);
+        updateState(errorMessage: error, isLoggedIn: false, user: null);
         return;
       }
 
-      _updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
+      updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
     } on FirebaseAuthException catch (e) {
       String? error;
       switch (e.code) {
         case 'invalid-email':
-          error = 'login_provider.invalid_email'.tr(); // อีเมลไม่ถูกต้อง
+          error = 'login_provider.invalid_email'.tr();
           break;
         case 'wrong-password':
-          error = 'login_provider.incorrect_password'.tr(); // รหัสผ่านไม่ถูกต้อง
+          error = 'login_provider.incorrect_password'.tr();
           break;
         case 'user-disabled':
-          error = 'login_provider.account_suspended'.tr(); // บัญชีนี้ถูกระงับการใช้งาน
+          error = 'login_provider.account_suspended'.tr();
           break;
         default:
-          error = 'login_provider.username_or_password_incorrect'.tr(); // ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง 
+          error = 'login_provider.username_or_password_incorrect'.tr();
           break;
       }
-      _updateState(errorMessage: error, isLoggedIn: false, user: null);
+      updateState(errorMessage: error, isLoggedIn: false, user: null);
     }
   }
 
@@ -284,7 +293,8 @@ class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
       await PushNotificationService.unsubscribeFromTopic("default");
       await PushNotificationService.deleteFcmToken();
       await FirebaseAuth.instance.signOut();
-      _updateState(user: null, isLoggedIn: false, errorMessage: null);
+      
+      updateState(user: null, isLoggedIn: false, errorMessage: null);
       _logger.i("User signed out successfully");
     } catch (e) {
       _logger.e("Error signing out: $e");
@@ -296,6 +306,3 @@ final emailLoginNotifierProvider =
     StateNotifierProvider<EmailLoginNotifier, EmailLoginState>((ref) {
   return EmailLoginNotifier(ref);
 });
-
-// NOTE: ต้องกำหนด provider สำหรับ emailUsernameApiNotifierProvider ใน lib/service/email/email_username_api.dart
-// final emailUsernameApiNotifierProvider = ...

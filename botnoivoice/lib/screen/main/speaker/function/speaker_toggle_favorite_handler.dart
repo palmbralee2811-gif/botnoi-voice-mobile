@@ -1,4 +1,4 @@
-import 'package:botnoivoice/shared/function/get_jwt_token.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/service/favorite/favorite_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +29,7 @@ Future<void> handleFavoriteToggle({
   logger.d("UI list state is now: $selectedIndexFavorites");
 
   try {
-    final String? token = await getJwtTokenAll(ref);
+    final String? token = ref.read(userTokenProvider).jwtToken;
     if (token == null || token.isEmpty) {
       throw Exception('Token not found.');
     }

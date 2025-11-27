@@ -210,10 +210,28 @@
 //   }
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/service/redeem_coupon/redeem_coupon_service.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/shared/dialog/redeem_coupon/redeem_success_dialog.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_loading_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -263,7 +281,7 @@ class RedeemCouponDialog {
         final redeemServiceProvider = ref.watch(redeemCouponServiceProvider);
         final redeemServiceNotifier = ref.watch(redeemCouponServiceProvider.notifier);
 
-        final creditsProvider = ref.read(callReloadDataProvider);
+        final creditsProvider = loadAllTokensIfLoggedIn(ref);
 
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
@@ -362,7 +380,7 @@ class RedeemCouponDialog {
                         ref,
                       );
                       if (result == null) {
-                        await creditsProvider.callLoadCreditsApi();
+                        await creditsProvider;
                       }
                       setState(() {
                         _isLoading = false;

@@ -1,5 +1,5 @@
 import 'package:botnoivoice/service/reward/reward_service.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:botnoivoice/screen/drawer/reward/function/time_zone_function.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -219,7 +219,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
     // final creditsProvider = context.read<CallReloadData>();
 
     final couponProvider = ref.read(rewardServiceProvider);
-    final creditsProvider = ref.read(callReloadDataProvider);
+    final creditsProvider = loadAllTokensIfLoggedIn(ref);
 
     try {
       await couponProvider.checkCoupon100(ref);
@@ -234,7 +234,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
           text: 'reward_screen.notification_dialog_success'
               .tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
-            creditsProvider.callLoadCreditsApi();
+            creditsProvider;
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -255,7 +255,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      creditsProvider.callLoadCreditsApi();
+      creditsProvider;
     }
   }
 
@@ -264,7 +264,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
     // final creditsProvider = context.read<CallReloadData>();
 
     final couponProvider = ref.read(rewardServiceProvider);
-    final creditsProvider = ref.read(callReloadDataProvider);
+    final creditsProvider = loadAllTokensIfLoggedIn(ref);
 
     try {
       await couponProvider.checkCoupon1K(ref);
@@ -279,7 +279,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
           text: 'reward_screen.notification_dialog_success'
               .tr(), //เติมคูปองสำเร็จแล้ว
           onPressed: () {
-            creditsProvider.callLoadCreditsApi();
+            creditsProvider;
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -301,7 +301,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen> {
         onPressed: () {},
       ).showErrorModal(context);
     } finally {
-      creditsProvider.callLoadCreditsApi();
+      creditsProvider;
     }
   }
 }

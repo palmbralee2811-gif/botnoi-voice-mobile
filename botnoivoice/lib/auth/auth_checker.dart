@@ -138,7 +138,7 @@ class AuthChecker extends ConsumerWidget { // **เปลี่ยนเป็�
     String? loginProvider;
 
     // ตรวจสอบว่าเป็นการล็อกอินด้วย Email หรือไม่ (ใช้ isAuthenticated จาก Notifier)
-    if (emailNotifier.isAuthenticated && emailNotifier.user?.providerData[0].providerId == 'email') {
+    if (emailNotifier.isAuthenticated && emailNotifier.user?.providerData[0].providerId == 'password') {
       // ถ้า email ยังไม่ได้ยืนยัน จะบังคับให้ logout
       if (emailState.user != null && !emailState.user!.emailVerified) {
         SchedulerBinding.instance.addPostFrameCallback((_) {

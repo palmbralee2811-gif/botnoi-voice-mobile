@@ -192,18 +192,27 @@
 //   }
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
 import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/email/email_forget_password.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
-import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_snack_bar.dart';
 import 'package:botnoivoice/screen/drawer/account/get_user_email.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/token/line_token.dart';
 import 'package:botnoivoice/service/email/check_user_is_show_email.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -333,10 +342,7 @@ class AccountScreenLogic {
     final lineState = widgetRef.read(lineLoginNotifierProvider);
     final emailState = widgetRef.read(emailLoginNotifierProvider);
 
-    final appleTokenState = widgetRef.read(appleTokenNotifierProvider);
-    final googleTokenState = widgetRef.read(googleTokenNotifierProvider);
-    final lineTokenState = widgetRef.read(lineTokenNotifierProvider);
-    final emailTokenState = widgetRef.read(emailTokenNotifierProvider);
+    final userTokenState = widgetRef.read(userTokenProvider);
 
     // Assuming EmailUsernameApi and CheckUserIsShowEmail are also Riverpod Providers
     final emailUsernameApi = widgetRef.read(emailUsernameApiNotifierProvider);
@@ -356,21 +362,21 @@ class AccountScreenLogic {
 
     if (lineState.isLoggedIn) {
       displayName = lineState.displayName ?? "Line User";
-      userId = lineTokenState.userID ?? "No UID";
+      userId = userTokenState.userID ?? "No UID";
       email = lineState.lineEmail ?? "No email found";
       isLineLoggedIn = true;
     } else if (appleState.isLoggedIn) {
       displayName = appleState.user?.displayName ?? 'Apple User';
-      userId = appleTokenState.userID ?? 'No UID';
+      userId = userTokenState.userID ?? 'No UID';
       email = getUserEmail(firebaseUser) ?? 'No email found';
       isAppleLoggedIn = true;
     } else if (googleState.isLoggedIn) {
       displayName = googleState.user?.displayName ?? 'Google User';
-      userId = googleTokenState.userID ?? 'No UID';
+      userId = userTokenState.userID ?? 'No UID';
       email = getUserEmail(firebaseUser) ?? 'No email found';
       isGoogleLoggedIn = true;
     } else if (emailState.isLoggedIn) {
-      userId = emailTokenState.userID ?? "No UID";
+      userId = userTokenState.userID ?? "No UID";
       displayName = emailUsernameApi.getUsername ?? "Email User";
       email = userInfoProvider.isShowEmail
           ? (emailState.user?.email ?? "No email found")

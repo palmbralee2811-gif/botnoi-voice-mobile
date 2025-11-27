@@ -1,5 +1,6 @@
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/shared/style/style.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
@@ -34,14 +35,13 @@ class _AppBarSpeakerScreenState extends ConsumerState<AppBarSpeakerScreen> {
 
   Future<void> _loadRemainingCredits() async {
     // await context.read<CallReloadData>().callLoadCreditsApi();
-    await ref.read(callReloadDataProvider).callLoadCreditsApi();
+    await loadAllTokensIfLoggedIn(ref);
   }
 
   @override
   Widget build(BuildContext context) {
     // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    var remainingCredits =
-        ref.watch(callReloadDataProvider).remainingCredits ?? 'N/A';
+    var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
 
     return Column(
       mainAxisSize: MainAxisSize.min,

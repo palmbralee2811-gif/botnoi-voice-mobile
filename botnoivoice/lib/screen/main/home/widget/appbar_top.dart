@@ -1,5 +1,6 @@
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:botnoivoice/shared/style/style.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/main/home/widget/appbar_bottom.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
@@ -31,13 +32,16 @@ class _AppBarTopState extends ConsumerState<AppBarTop> {
 
   Future<void> _loadRemainingCredits() async {
     // await context.read<CallReloadData>().callLoadCreditsApi();
-    await ref.read(callReloadDataProvider).callLoadCreditsApi();
+    // await ref.read(callReloadDataProvider).callLoadCreditsApi();
+    await loadAllTokensIfLoggedIn(ref);
   }
 
   @override
   Widget build(BuildContext context) {
     // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    var remainingCredits = ref.read(callReloadDataProvider).remainingCredits ?? 'N/A';
+
+    // final userTokenState = _ref.read(userTokenProvider);
+    var remainingCredits = ref.read(userTokenProvider).remainingCredits ?? 'N/A';
 
     return AppBar(
       backgroundColor: kWhite,

@@ -93,10 +93,18 @@
 
 
 
-// lib/service/login/google_login.dart
+
+
+
+
+
+
+
+
+
+import 'package:botnoivoice/service/login/user_login_base.dart';
 import 'package:botnoivoice/service/notification/push_notification_service.dart';
-import 'package:botnoivoice/service/token/user_token_notifier.dart'; // สมมติว่ามี
-import 'package:botnoivoice/service/login/user_login_base.dart'; // **NEW IMPORT**
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -122,35 +130,39 @@ class GoogleLoginNotifier extends UserLoginBaseNotifier<GoogleLoginState> {
 
   GoogleLoginNotifier() : super(GoogleLoginState(), providerId);
 
-  // Implement abstract method from base class
+  // Override the public updateState method from the base class
   @override
-  void _updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
-    state = state.copyWith(user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
+  void updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
+    state = state.copyWith(
+        user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
   }
 
   User? get user => state.user;
 
   /// Sign in with Google and update the user
   Future<void> signInWithGoogle() async {
-    // ... (logic เหมือนเดิม)
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
-      if (userCredential.user?.providerData[0].providerId == providerId) {
-        _updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
+      // Explicitly update state if needed, though listener handles it too
+      if (userCredential.user != null) {
+          updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
       }
+      
       _logger.i("User signed in with Google successfully.");
     } catch (e) {
       _logger.e('Error signing in with Google: $e');
-      _updateState(errorMessage: e.toString());
+      updateState(errorMessage: e.toString());
     }
   }
 
@@ -162,7 +174,8 @@ class GoogleLoginNotifier extends UserLoginBaseNotifier<GoogleLoginState> {
       await PushNotificationService.deleteFcmToken();
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
-      _updateState(user: null, isLoggedIn: false, errorMessage: null);
+      
+      updateState(user: null, isLoggedIn: false, errorMessage: null);
       _logger.i("User signed out successfully.");
     } catch (e) {
       _logger.e("Error signing out: $e");
@@ -170,6 +183,7 @@ class GoogleLoginNotifier extends UserLoginBaseNotifier<GoogleLoginState> {
   }
 }
 
-final googleLoginNotifierProvider = StateNotifierProvider<GoogleLoginNotifier, GoogleLoginState>((ref) {
+final googleLoginNotifierProvider =
+    StateNotifierProvider<GoogleLoginNotifier, GoogleLoginState>((ref) {
   return GoogleLoginNotifier();
 });

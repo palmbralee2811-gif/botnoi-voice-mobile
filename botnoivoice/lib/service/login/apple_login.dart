@@ -91,10 +91,17 @@
 
 
 
-// lib/service/login/apple_login.dart
+
+
+
+
+
+
+
+
+import 'package:botnoivoice/service/login/user_login_base.dart';
 import 'package:botnoivoice/service/notification/push_notification_service.dart';
-import 'package:botnoivoice/service/token/user_token_notifier.dart'; // สมมติว่านี่คือไฟล์รวม token
-import 'package:botnoivoice/service/login/user_login_base.dart'; // **NEW IMPORT**
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -104,7 +111,6 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 class AppleLoginState extends UserLoginBaseState {
   AppleLoginState({super.user, super.isLoggedIn, super.errorMessage});
 
-  
   AppleLoginState copyWith({User? user, bool? isLoggedIn, String? errorMessage}) {
     return AppleLoginState(
       user: user ?? this.user,
@@ -120,11 +126,12 @@ class AppleLoginNotifier extends UserLoginBaseNotifier<AppleLoginState> {
   static const String providerId = 'apple.com';
 
   AppleLoginNotifier() : super(AppleLoginState(), providerId);
-  
-  // Implement abstract method from base class
+
+  // Override the public updateState method from the base class
   @override
-  void _updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
-    state = state.copyWith(user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
+  void updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
+    state = state.copyWith(
+        user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
   }
 
   // Getter for current Firebase user.
@@ -132,25 +139,30 @@ class AppleLoginNotifier extends UserLoginBaseNotifier<AppleLoginState> {
 
   /// Sign in with Apple and update the user
   Future<void> signInWithApple() async {
-    // ... (logic เหมือนเดิม)
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
       );
       final oAuthProvider = OAuthProvider(providerId);
       final credential = oAuthProvider.credential(
         idToken: appleCredential.identityToken,
         accessToken: appleCredential.authorizationCode,
       );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
-      if (userCredential.user?.providerData[0].providerId == providerId) {
-        _updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
+      // The listener in the base class will handle state updates,
+      // but we can enforce it here to be immediate.
+      if (userCredential.user != null) {
+         updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
       }
       _logger.i("User signed in with Apple successfully.");
     } catch (e) {
       _logger.e('Error signing in with Apple: $e');
-      _updateState(errorMessage: e.toString());
+      updateState(errorMessage: e.toString());
     }
   }
 
@@ -161,7 +173,8 @@ class AppleLoginNotifier extends UserLoginBaseNotifier<AppleLoginState> {
       await PushNotificationService.unsubscribeFromTopic("default");
       await PushNotificationService.deleteFcmToken();
       await FirebaseAuth.instance.signOut();
-      _updateState(user: null, isLoggedIn: false, errorMessage: null);
+      
+      updateState(user: null, isLoggedIn: false, errorMessage: null);
       _logger.i("User signed out successfully.");
     } catch (e) {
       _logger.e("Error signing out: $e");
@@ -169,6 +182,7 @@ class AppleLoginNotifier extends UserLoginBaseNotifier<AppleLoginState> {
   }
 }
 
-final appleLoginNotifierProvider = StateNotifierProvider<AppleLoginNotifier, AppleLoginState>((ref) {
+final appleLoginNotifierProvider =
+    StateNotifierProvider<AppleLoginNotifier, AppleLoginState>((ref) {
   return AppleLoginNotifier();
 });

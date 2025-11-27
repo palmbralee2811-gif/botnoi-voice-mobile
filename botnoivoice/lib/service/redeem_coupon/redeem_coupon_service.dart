@@ -150,12 +150,12 @@
 
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:botnoivoice/shared/function/get_jwt_token.dart';
 
 /// Represents the immutable state of the RedeemCouponService.
 class RedeemCouponState {
@@ -215,7 +215,7 @@ class RedeemCouponService extends StateNotifier<RedeemCouponState> {
     WidgetRef ref,
   ) async {
     try {
-      final jwtToken = await getJwtTokenAll(ref);
+      final jwtToken = ref.read(userTokenProvider).jwtToken;
       if (jwtToken == null) {
         state = state.copyWith(errorMessage: 'Failed to fetch ID token');
         _logger.e(state.errorMessage);

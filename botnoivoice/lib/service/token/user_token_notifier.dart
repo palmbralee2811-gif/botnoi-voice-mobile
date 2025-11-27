@@ -139,23 +139,13 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
         var data = json.decode(utf8.decode(response.bodyBytes));
         _logger.i('Get Profile Data for $_providerType: $data');
 
-        // Logic การคำนวณ Credit ที่แตกต่างกันระหว่าง Email และอื่น ๆ
         int normalCredits = 0;
         int monthlyPoints = 0;
         String totalCredits = '';
 
-        if (_providerType == LoginProviderType.email) {
-          normalCredits = data['data']['credits']?.toInt() ?? 0;
-          monthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
-          totalCredits = (normalCredits + monthlyPoints).toString();
-        } else {
-          // Logic สำหรับ Apple, Google, Line
-          // (Google และ Line ในโค้ดเดิมของคุณไม่มี monthly_point และ credits มีค่าเป็น String)
-          normalCredits = data['data']['credits']?.toInt() ?? 0;
-          totalCredits = data['data']['credits']?.toString() ?? '0';
-          // Set monthlyPoints เป็น 0 เนื่องจากไม่มีในโค้ดเดิมสำหรับ provider เหล่านี้
-          monthlyPoints = 0; 
-        }
+        normalCredits = data['data']['credits']?.toInt() ?? 0;
+        monthlyPoints = data['data']['monthly_point']?.toInt() ?? 0;
+        totalCredits = (normalCredits + monthlyPoints).toString();
 
         state = state.copyWith(
           userID: data['data']['uid'].toString(),

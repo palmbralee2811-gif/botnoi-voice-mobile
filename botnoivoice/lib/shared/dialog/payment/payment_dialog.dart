@@ -236,8 +236,22 @@
 //   }
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/service/payment/payment_service.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
@@ -452,10 +466,10 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
     // final creditsProvider = ref.read(callReloadDataProvider);
     // Using the original logic for CallReloadData for compatibility,
     // but recommend converting it to Riverpod for consistency.
-    
-    
+
     // final creditsProvider = context.read<CallReloadData>();
-    final creditsProvider = ref.read(callReloadDataProvider);
+    // final creditsProvider = ref.read(callReloadDataProvider);
+    final creditsProvider = loadAllTokensIfLoggedIn(ref);
 
     try {
       // Call the method on the Notifier
@@ -465,7 +479,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
       final resultState = ref.read(paymentServiceProvider);
 
       if (resultState.errorMessage == null) {
-        await creditsProvider.callLoadCreditsApi();
+        await creditsProvider;
         NotificationDialog(
           context: context,
           text: 'payment.received_points'.tr(namedArgs: {
@@ -473,7 +487,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
           }), //ได้รับพ้อยท์จำนวน $title พ้อยท์
           onPressed: () async {
             /// Refresh Points After In-App Purchase: IAP
-            await creditsProvider.callLoadCreditsApi();
+            await creditsProvider;
           },
         ).showCheckmarkModalWithAction(context);
       } else {
@@ -492,7 +506,7 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
       ).showErrorModal(context);
     } finally {
       // Call reload data regardless of success or failure
-      await creditsProvider.callLoadCreditsApi();
+      await creditsProvider;
     }
   }
 }

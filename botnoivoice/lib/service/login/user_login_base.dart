@@ -1,4 +1,4 @@
-// lib/service/login/user_login_base.dart (ไฟล์ใหม่)
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -10,8 +10,6 @@ class UserLoginBaseState {
   final String? errorMessage;
 
   UserLoginBaseState({this.user, this.isLoggedIn = false, this.errorMessage});
-
-  // NOTE: copyWith จะถูก implement ใน State ของแต่ละ Provider
 }
 
 /// Base Notifier Class for Firebase Authentication Providers
@@ -19,46 +17,60 @@ abstract class UserLoginBaseNotifier<T extends UserLoginBaseState>
     extends StateNotifier<T> {
   final String _providerId;
   final Logger _logger = Logger();
+  StreamSubscription<User?>? _authStateSubscription;
 
   UserLoginBaseNotifier(super.initialState, this._providerId) {
-    // Listen for Firebase authentication state changes.
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user?.providerData.isNotEmpty == true &&
-          user?.providerData[0].providerId == _providerId) {
-        _logger.d("$_providerId Firebase User UID: ${user?.uid}");
-        _updateState(
-          user: user,
-          isLoggedIn: true,
-          errorMessage: null,
-        );
-      } else {
-        // Handle case where user logs out or switches provider
-        if (state.isLoggedIn && user == null) {
-          _logger.i("Logout detected for $_providerId");
-          _updateState(
-            user: null,
-            isLoggedIn: false,
-            errorMessage: null,
-          ); // Reset state on logout
+    _initializeAuthListener();
+  }
+
+  /// Initialize the Firebase Auth listener
+  void _initializeAuthListener() {
+    _authStateSubscription =
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        // Handle logout scenario
+        if (state.isLoggedIn) {
+          _logger.d("Logout detected for $_providerId");
+          updateState(user: null, isLoggedIn: false, errorMessage: null);
         }
+        return;
       }
+
+      // Check if the current user is associated with this specific provider
+      final isLinkedToProvider = user.providerData
+          .any((userInfo) => userInfo.providerId == _providerId);
+
+      if (isLinkedToProvider) {
+        _logger.d("$_providerId Firebase User UID: ${user.uid}");
+        updateState(user: user, isLoggedIn: true, errorMessage: null);
+      }
+    }, onError: (error) {
+      _logger.e("Auth state change error: $error");
     });
   }
 
-  // Abstract method ที่ต้องให้ Subclass Implement เพื่อใช้ copyWith()
-  void _updateState({
+  /// Abstract method to update state, must be implemented by subclasses.
+  /// This must be public to be overridden across different library files.
+  void updateState({
     User? user,
     bool? isLoggedIn,
     String? errorMessage,
   });
 
-  // Getter สำหรับการตรวจสอบการยืนยันตัวตน (ใช้ใน AuthChecker)
+  /// Check if the user is authenticated with this specific provider
   bool get isAuthenticated {
     final currentUser = FirebaseAuth.instance.currentUser;
-    // ตรวจสอบว่า user ใน state ตรงกับ user ใน session ปัจจุบันหรือไม่ (เพื่อป้องกันการใช้ token ของ provider อื่น)
-    return currentUser?.uid != null &&
-        currentUser?.providerData.isNotEmpty == true &&
-        currentUser?.providerData[0].providerId == _providerId &&
-        state.isLoggedIn; // เช็คสถานะภายใน Notifier ด้วย
+    if (currentUser == null) return false;
+
+    final isLinked = currentUser.providerData
+        .any((userInfo) => userInfo.providerId == _providerId);
+
+    return isLinked && state.isLoggedIn;
+  }
+
+  @override
+  void dispose() {
+    _authStateSubscription?.cancel();
+    super.dispose();
   }
 }

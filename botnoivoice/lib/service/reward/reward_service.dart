@@ -276,15 +276,19 @@
 
 
 
+
+
+
+
 // 1. reward_service.dart
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:botnoivoice/shared/function/get_jwt_token.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // --- Riverpod Providers ---
 
@@ -425,8 +429,10 @@ class RewardService {
         // Instead of `context.read<CallReloadData>()`, use Riverpod's ref.read
         // to access the CallReloadData service provider.
         // We assume CallReloadData is now wrapped in a Riverpod Provider.
-        final creditsProvider = _ref.read(callReloadDataProvider);
-        await creditsProvider.callLoadCreditsApi();
+        final creditsProvider = loadAllTokensIfLoggedIn(ref);
+
+        await creditsProvider;
+
         _logger.d('Successfully get education subscription.');
       } else {
         // Handle errors
@@ -468,7 +474,8 @@ class RewardService {
   Future<String?> _fetchJwtToken(WidgetRef ref) async {
     try {
       // Assuming getJwtTokenAll is a function that still relies on BuildContext/Provider
-      final jwtToken = await getJwtTokenAll(ref);
+      final jwtToken = ref.read(userTokenProvider).jwtToken;
+
       if (jwtToken == null) {
         // Set error message in provider state
         _ref.read(errorMessageProvider.notifier).state =

@@ -56,14 +56,11 @@
 // }
 
 import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/token/apple_token.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
-import 'package:botnoivoice/service/token/email_token.dart';
 import 'package:botnoivoice/service/email/email_username_api.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/token/google_token.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/token/line_token.dart';
+import 'package:botnoivoice/service/token/user_token_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DrawerAppbarLogic {
@@ -83,10 +80,7 @@ class DrawerAppbarLogic {
     final emailProvider = ref.read(emailLoginNotifierProvider);
 
     // Fetch user data from Database (API)
-    final appleTokenProvider = ref.read(appleTokenNotifierProvider);
-    final googleTokenProvider = ref.read(googleTokenNotifierProvider);
-    final lineTokenProvider = ref.read(lineTokenNotifierProvider);
-    final emailTokenProvider = ref.read(emailTokenNotifierProvider);
+    final userTokenState = ref.read(userTokenProvider);
 
     String displayName = "Loading...";
     String uid = "Loading...";
@@ -94,19 +88,19 @@ class DrawerAppbarLogic {
 
     if (lineProvider.isLoggedIn) {
       displayName = lineProvider.displayName ?? 'No Name';
-      uid = lineTokenProvider.userID ?? 'No uid found';
+      uid = userTokenState.userID ?? 'No uid found';
       profilePictureUrl = lineProvider.profilePictureUrl ?? '';
     } else if (appleProvider.isLoggedIn) {
-      displayName = appleTokenProvider.userName ?? 'Apple User';
-      uid = appleTokenProvider.userID ?? 'No uid found';
+      displayName = userTokenState.userName ?? 'Apple User';
+      uid = userTokenState.userID ?? 'No uid found';
       profilePictureUrl = appleProvider.user?.photoURL ?? '';
     } else if (googleProvider.isLoggedIn) {
       displayName = googleProvider.user?.displayName ?? 'Google User';
-      uid = googleTokenProvider.userID ?? 'No uid found';
+      uid = userTokenState.userID ?? 'No uid found';
       profilePictureUrl = googleProvider.user?.photoURL ?? '';
     } else if (emailProvider.isLoggedIn) {
       displayName = ref.read(emailUsernameApiNotifierProvider).getUsername ?? "Email User";
-      uid = emailTokenProvider.userID ?? 'No uid found';
+      uid = userTokenState.userID ?? 'No uid found';
       profilePictureUrl = emailProvider.user?.photoURL ?? '';
     }
 
