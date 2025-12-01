@@ -15,7 +15,6 @@ Future<void> shareTextFile(BuildContext context, String filePath) async {
   final shareResult = await Share.shareXFiles(
     [XFile(filePath)],
     sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    // text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
     text: "Choose to save or share this file",
   );
 
@@ -54,7 +53,8 @@ class ResultScreen extends ConsumerStatefulWidget {
 }
 
 class _ResultScreenState extends ConsumerState<ResultScreen> {
-  late ResultLogic controller;
+  ResultLogic? controller;
+
   late Future<ProjectModel?> _futureProject;
 
   int? editingIndex;
@@ -63,18 +63,46 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   void initState() {
     super.initState();
-    controller = ResultLogic(
+    _futureProject = _fetchAndSetupController();
+  }
+
+  Future<ProjectModel?> _fetchAndSetupController() async {
+    final tempController = ResultLogic(
       userId: widget.userId,
       filePath: widget.filePath,
       workspaceId: widget.workspaceId,
       duration: widget.duration,
+      audioS3Link: null,
     );
-    _futureProject = controller.fetchWorkspace(ref);
+
+    final ProjectModel? project = await tempController.fetchWorkspace(ref);
+
+    if (project != null && mounted) {
+      final String? firstS3Link = project.segments.isNotEmpty
+          ? project.segments.first['s3_link'] as String?
+          : null;
+
+      // ถ้าเป็นโปรเจกต์จาก history ที่ไม่มี local file จะใช้ S3 เป็นหลัก
+      // ถ้าอยากแยกเคส history/ใหม่จริง ๆ ค่อยมาเพิ่มเงื่อนไขทีหลังได้
+      final safeFilePath = widget.filePath; // ถ้าแน่ใจว่าของใหม่ยังมีไฟล์อยู่
+      // ถ้าอยากบังคับให้ใช้ S3 เสมอเวลาเปิดจาก server ใช้ "" แทน
+      // final safeFilePath = "";
+
+      controller = ResultLogic(
+        userId: widget.userId,
+        filePath: safeFilePath,
+        workspaceId: widget.workspaceId,
+        duration: widget.duration,
+        audioS3Link: firstS3Link,
+      );
+    }
+
+    return project;
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
   }
 
@@ -91,9 +119,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text("result_gensub.title".tr(),
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black87)),
+        title: Text(
+          "result_gensub.title".tr(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
         actions: [
           TextButton.icon(
             onPressed: () {
@@ -103,20 +135,22 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               );
             },
             icon: const Icon(Icons.upload_file, color: Colors.purple),
-            label: Text("result_gensub.upload".tr(),
-                style: const TextStyle(color: Colors.purple)),
+            label: Text(
+              "result_gensub.upload".tr(),
+              style: const TextStyle(color: Colors.purple),
+            ),
           ),
           const SizedBox(width: 8),
           TextButton.icon(
             onPressed: () async {
               final project = await _futureProject;
-              if (project != null) {
-                await controller.saveEdits(
+              if (project != null && controller != null) {
+                await controller!.saveEdits(
                   ref,
                   project,
                   project.segments,
                 );
-                await controller.finalizeProjectApprove(
+                await controller!.finalizeProjectApprove(
                   ref,
                   project,
                 );
@@ -162,18 +196,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   File file;
 
                                   if (selectedFormat == "txt") {
-                                    file = await controller.exportTxt(
+                                    file = await controller!.exportTxt(
                                         context, project);
                                     _showSnack(
                                         "${"result_gensub.saved_txt".tr()} ${file.path}");
                                   } else {
-                                    file = await controller.exportSrt(
+                                    file = await controller!.exportSrt(
                                         context, project);
                                     _showSnack(
                                         "${"result_gensub.saved_srt".tr()} ${file.path}");
                                   }
 
-                                  // 🟣 เรียกแชร์ไฟล์ต่อทันที
                                   await shareTextFile(context, file.path);
                                 } catch (e) {
                                   _showSnack(
@@ -195,8 +228,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               }
             },
             icon: const Icon(Icons.save, color: Colors.green),
-            label: Text("result_gensub.save".tr(),
-                style: const TextStyle(color: Colors.green)),
+            label: Text(
+              "result_gensub.save".tr(),
+              style: const TextStyle(color: Colors.green),
+            ),
           ),
           const SizedBox(width: 12),
         ],
@@ -204,12 +239,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       body: FutureBuilder<ProjectModel?>(
         future: _futureProject,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              controller == null) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
-                child: Text(
-                    "${"result_gensub.error".tr()} ${snapshot.error.toString()}"));
+              child: Text(
+                "${"result_gensub.error".tr()} ${snapshot.error.toString()}",
+              ),
+            );
           } else if (!snapshot.hasData || snapshot.data == null) {
             return Center(child: Text("result_gensub.no_workspace".tr()));
           }
@@ -224,7 +262,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Header
+                // Header
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -249,28 +287,35 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             Text(
                               p.basenameWithoutExtension(project.projectName),
                               style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               DateFormat('dd/MM/yyyy HH:mm')
                                   .format(project.createdAt.toLocal()),
                               style: const TextStyle(
-                                  fontSize: 12, color: Colors.black54),
+                                fontSize: 12,
+                                color: Colors.black54,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      Text(controller.formatTime(project.duration),
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87)),
+                      Text(
+                        controller!.formatTime(project.duration),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
                     ],
                   ),
                 ),
 
-                /// Status
+                // Status
                 Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -284,17 +329,19 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       const Icon(Icons.warning, color: Colors.orange, size: 20),
                       const SizedBox(width: 6),
                       Text(
-                          "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
-                          style: const TextStyle(
-                              color: Colors.orange,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500)),
+                        "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       const Spacer(),
                     ],
                   ),
                 ),
 
-                /// Segments list
+                // Segments list
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
@@ -335,8 +382,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   autofocus: true,
                                   controller:
                                       TextEditingController(text: tempText)
-                                        ..selection = TextSelection.collapsed(
-                                            offset: tempText.length),
+                                        ..selection =
+                                            TextSelection.collapsed(
+                                                offset: tempText.length),
                                   onChanged: (val) => tempText = val,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
@@ -356,16 +404,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       },
                                       icon: const Icon(Icons.close,
                                           color: Colors.red),
-                                      label: Text("result_gensub.cancel".tr(),
-                                          style: const TextStyle(
-                                              color: Colors.red)),
+                                      label: Text(
+                                        "result_gensub.cancel".tr(),
+                                        style: const TextStyle(
+                                            color: Colors.red),
+                                      ),
                                     ),
                                     const SizedBox(width: 8),
                                     TextButton.icon(
                                       onPressed: () async {
                                         final approveText = tempText;
                                         try {
-                                          final res = await controller
+                                          final res = await controller!
                                               .updateAudioApproveSegment(
                                             ref,
                                             chunkId: segment['id'],
@@ -403,9 +453,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       },
                                       icon: const Icon(Icons.check,
                                           color: Colors.blue),
-                                      label: Text("result_gensub.save".tr(),
-                                          style: const TextStyle(
-                                              color: Colors.blue)),
+                                      label: Text(
+                                        "result_gensub.save".tr(),
+                                        style: const TextStyle(
+                                            color: Colors.blue),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -429,9 +481,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             ),
                           const SizedBox(height: 6),
                           Text(
-                            "${controller.formatTime(start)} - ${controller.formatTime(end)}",
+                            "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.black54),
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Row(
@@ -439,15 +493,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             children: [
                               IconButton(
                                 icon: Icon(
-                                  controller.playingIndex == index &&
-                                          controller.audioPlayer.playing
+                                  controller!.playingIndex == index &&
+                                          controller!.audioPlayer.playing
                                       ? Icons.pause_circle_filled
                                       : Icons.play_circle_fill,
                                   color: Colors.purple,
                                   size: 28,
                                 ),
                                 onPressed: () async {
-                                  await controller.playSegment(
+                                  await controller!.playSegment(
                                     index,
                                     segments,
                                     () {
@@ -466,10 +520,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title:
-                                            Text("result_gensub.history".tr()),
+                                        title: Text(
+                                            "result_gensub.history".tr()),
                                         content: Text(
-                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}"),
+                                          "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}",
+                                        ),
                                         actions: [
                                           TextButton(
                                             child: Text(
@@ -488,7 +543,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       color: Colors.blue),
                                   onPressed: () async {
                                     try {
-                                      final res = await controller
+                                      final res = await controller!
                                           .updateAudioApproveSegment(
                                         ref,
                                         chunkId: segment['id'],
@@ -496,13 +551,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         approveText: segment['text'],
                                       );
 
-                                      if (res != null && res['data'] != null) {
+                                      if (res != null &&
+                                          res['data'] != null) {
                                         setState(() {
                                           segment['original_text'] =
                                               segment['text'];
-                                          segment['text'] = res['data']
-                                                  ['approve_text'] ??
-                                              segment['text'];
+                                          segment['text'] =
+                                              res['data']['approve_text'] ??
+                                                  segment['text'];
                                           segment['approved'] =
                                               res['data']['approve'] ?? true;
                                         });
@@ -524,7 +580,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       color: Colors.red),
                                   onPressed: () async {
                                     try {
-                                      await controller.deleteSegment(
+                                      await controller!.deleteSegment(
                                         ref,
                                         index,
                                         segments,
@@ -535,15 +591,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                           "result_gensub.delete_success".tr());
                                       if (segments.isEmpty && mounted) {
                                         Future.delayed(
-                                            const Duration(milliseconds: 400),
-                                            () {
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
+                                          const Duration(milliseconds: 400),
+                                          () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
                                                 builder: (_) =>
-                                                    const UploadRecScreen()),
-                                          );
-                                        });
+                                                    const UploadRecScreen(),
+                                              ),
+                                            );
+                                          },
+                                        );
                                       }
                                     } catch (e) {
                                       _showSnack(

@@ -8,6 +8,8 @@ class ProjectModel {
   final String filePath;
   final List<Map<String, dynamic>> segments;
   final String userId;
+  final String? audioS3Link; // ✅ เพิ่มฟิลด์ S3 link
+
 
   ProjectModel({
     required this.projectId,
@@ -17,6 +19,7 @@ class ProjectModel {
     required this.filePath,
     required this.segments,
     required this.userId,
+    required this.audioS3Link, // ✅ เพิ่มใน constructor
   });
 
   ProjectModel copyWith({
@@ -27,6 +30,7 @@ class ProjectModel {
     String? filePath,
     List<Map<String, dynamic>>? segments,
     String? userId,
+    String? audioS3Link, // ✅ เพิ่ม copyWith
   }) {
     return ProjectModel(
       projectId: projectId ?? this.projectId,
@@ -36,10 +40,11 @@ class ProjectModel {
       filePath: filePath ?? this.filePath,
       segments: segments ?? this.segments,
       userId: userId ?? this.userId,
+      audioS3Link: audioS3Link ?? this.audioS3Link,
     );
   }
 
-  ///  ฟังก์ชันช่วย parse duration
+  /// helper parse duration
   static Duration _parseDuration(dynamic value) {
     if (value == null) return Duration.zero;
 
@@ -49,13 +54,11 @@ class ProjectModel {
 
     if (value is String) {
       if (value.contains(":")) {
-        // กรณี "00:08"
         final parts = value.split(":");
         final minutes = int.tryParse(parts[0]) ?? 0;
         final seconds = int.tryParse(parts[1]) ?? 0;
         return Duration(minutes: minutes, seconds: seconds);
       } else {
-        // กรณี "7"
         return Duration(seconds: int.tryParse(value) ?? 0);
       }
     }
@@ -63,9 +66,9 @@ class ProjectModel {
     return Duration.zero;
   }
 
-  ///  fromJson รองรับ field จาก API
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
     debugPrint("RAW project json: $json");
+
     return ProjectModel(
       projectId: json['project_id']?.toString() ?? '',
       projectName: json['project_name']?.toString() ?? '',
@@ -78,22 +81,30 @@ class ProjectModel {
           ? List<Map<String, dynamic>>.from(json['segments'])
           : [],
       userId: json['user_id']?.toString() ?? '',
+
+      /// ⭐ รองรับ key จาก API:
+      /// - audio_s3_link
+      /// - audioS3Link
+      audioS3Link: json['audio_s3_link']?.toString()
+          ?? json['audioS3Link']?.toString()
+          ?? null,
     );
   }
+
   String _formatDuration(Duration d) {
     final minutes = d.inMinutes.toString().padLeft(2, '0');
     final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
   }
 
-  ///  toJson
   Map<String, dynamic> toJson() => {
         'project_id': projectId,
         'project_name': projectName,
         'create_at': createdAt.toIso8601String(),
-        'duration': _formatDuration(duration), // ส่งเป็น "MM:SS"
+        'duration': _formatDuration(duration),
         'file_path': filePath,
         'segments': segments,
         'user_id': userId,
+        'audio_s3_link': audioS3Link, // ⭐ เซฟลง JSON
       };
 }

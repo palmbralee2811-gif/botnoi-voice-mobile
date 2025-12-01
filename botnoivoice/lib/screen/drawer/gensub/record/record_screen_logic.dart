@@ -228,6 +228,7 @@ class RecordLogic {
         filePath: recordedFilePath!,
         segments: segments,
         userId: realUserId,
+        audioS3Link: null,
       );
     } catch (e, st) {
       debugPrint("Transcribe failed: $e");

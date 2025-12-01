@@ -188,6 +188,7 @@ class UploadLogic {
         filePath: filePath!,
         segments: segments,
         userId: realUserId, // ใช้ userId จริงจาก backend
+        audioS3Link: null,
       );
 
       debugPrint('transcribeFile: uploadText=$uploadText');
