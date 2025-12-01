@@ -180,13 +180,13 @@ class AuthChecker extends ConsumerWidget {
       _logger.d("Authenticated with $loginProvider");
 
       // Internet check logic (ใส่ postFrameCallback เพื่อความปลอดภัย)
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
-          if (!isAvailable && context.mounted) {
-            context.go('/login');
-          }
-        });
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
+      //     if (!isAvailable && context.mounted) {
+      //       context.go('/login');
+      //     }
+      //   });
+      // });
 
       return const TokenChecker();
     } else {
