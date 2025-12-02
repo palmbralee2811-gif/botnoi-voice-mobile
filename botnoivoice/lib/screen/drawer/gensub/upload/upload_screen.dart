@@ -292,6 +292,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                               userId: controller.lastProject!.userId,
                               filePath: controller.lastProject!.filePath,
                               duration: controller.lastProject!.duration,
+                              projectName: controller.lastProject!.projectName,
                             ),
                           ),
                         );
@@ -438,6 +439,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       userId: project.userId,
                       filePath: project.filePath,
                       duration: project.duration,
+                      projectName: project.projectName,
                     ),
                   ),
                 );

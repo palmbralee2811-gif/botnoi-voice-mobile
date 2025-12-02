@@ -39,6 +39,7 @@ class ResultScreen extends ConsumerStatefulWidget {
   final String userId;
   final String filePath;
   final Duration duration;
+  final String projectName;
 
   const ResultScreen({
     super.key,
@@ -46,6 +47,7 @@ class ResultScreen extends ConsumerStatefulWidget {
     required this.userId,
     required this.filePath,
     required this.duration,
+    required this.projectName,
   });
 
   @override
@@ -73,8 +75,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       workspaceId: widget.workspaceId,
       duration: widget.duration,
       audioS3Link: null,
+      initialProjectName: widget.projectName, // 🚩 ส่งชื่อโปรเจกต์ที่ถูกต้อง
     );
 
+    // fetchWorkspace จะดึง ProjectModel ที่มี createdAt และ projectName ถูกต้องแล้ว
     final ProjectModel? project = await tempController.fetchWorkspace(ref);
 
     if (project != null && mounted) {
@@ -82,18 +86,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ? project.segments.first['s3_link'] as String?
           : null;
 
-      // ถ้าเป็นโปรเจกต์จาก history ที่ไม่มี local file จะใช้ S3 เป็นหลัก
-      // ถ้าอยากแยกเคส history/ใหม่จริง ๆ ค่อยมาเพิ่มเงื่อนไขทีหลังได้
-      final safeFilePath = widget.filePath; // ถ้าแน่ใจว่าของใหม่ยังมีไฟล์อยู่
-      // ถ้าอยากบังคับให้ใช้ S3 เสมอเวลาเปิดจาก server ใช้ "" แทน
-      // final safeFilePath = "";
+      final safeFilePath = widget.filePath; 
 
+      // 🚩 สร้าง Controller ตัวจริง โดยใช้ชื่อโปรเจกต์ที่ได้จาก API/Initial Name
+      // (เพื่อให้ Logic สามารถใช้งานชื่อนี้ได้ภายหลัง)
       controller = ResultLogic(
         userId: widget.userId,
         filePath: safeFilePath,
         workspaceId: widget.workspaceId,
         duration: widget.duration,
         audioS3Link: firstS3Link,
+        initialProjectName: project.projectName, 
       );
     }
 
@@ -262,7 +265,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
+                // Header (แสดงชื่อไฟล์และวันที่สร้างจริง)
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -284,17 +287,22 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // 🚩 1. ชื่อไฟล์ (Project Name)
                             Text(
+                              // แก้ไข: ใช้ project.projectName ที่ ResultLogic ดึงมาแล้ว
                               p.basenameWithoutExtension(project.projectName),
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.black87,
                               ),
                             ),
                             const SizedBox(height: 4),
+                            // 🚩 2. วันที่สร้างโปรเจกต์ (Fixed Timezone)
                             Text(
+                              // แก้ไข: ใช้ project.createdAt ที่ถูกแปลง Timezone แล้ว
                               DateFormat('dd/MM/yyyy HH:mm')
-                                  .format(project.createdAt.toLocal()),
+                                  .format(project.createdAt), 
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
@@ -303,6 +311,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                           ],
                         ),
                       ),
+                      // Duration (เช่น 00:07)
                       Text(
                         controller!.formatTime(project.duration),
                         style: const TextStyle(
@@ -437,7 +446,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                               segment['approved'] = res['data']
                                                       ['approve'] ??
                                                   true;
-                                              editingIndex = null;
+                                              editingIndex = null; 
                                             });
                                             _showSnack(
                                                 "result_gensub.save_success"

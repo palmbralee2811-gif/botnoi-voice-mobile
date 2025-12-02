@@ -17,7 +17,8 @@ class ResultLogic {
   final String filePath;
   final String workspaceId;
   final Duration duration;
-  final String? audioS3Link; //  รับค่า s3Link เข้ามา (project-level)
+  final String? audioS3Link; // รับค่า s3Link เข้ามา (project-level)
+  final String initialProjectName; // 🚩 NEW: ต้องรับเข้ามา
 
   late AudioPlayer audioPlayer;
   StreamSubscription<Duration>? positionSub;
@@ -28,11 +29,11 @@ class ResultLogic {
     required this.filePath,
     required this.workspaceId,
     required this.duration,
+    required this.initialProjectName, 
     this.audioS3Link,
   }) {
     audioPlayer = AudioPlayer();
-    // เรียกแบบไม่ต้อง await (constructor can't be async)
-    _setAudioSource(filePath, audioS3Link);
+    // โค้ดถูกย้ายไปที่ fetchWorkspace เพื่อให้แน่ใจว่าได้ชื่อโปรเจกต์ที่ถูกต้อง
   }
 
   /// Caller should await this when disposing if possible.
@@ -45,8 +46,6 @@ class ResultLogic {
       await audioPlayer.stop();
     } catch (_) {}
     try {
-      // just_audio allows setting an empty source by setting a ConcatenatingAudioSource with zero children,
-      // but setAudioSource(null) isn't valid. We simply dispose the player after stopping.
       await audioPlayer.dispose();
     } catch (_) {}
   }
@@ -56,9 +55,9 @@ class ResultLogic {
   /// 1) Try s3Link (with Referer header) via AudioSource.uri
   /// 2) If that fails, try downloading bytes with Referer header and save to temp file, then setFilePath
   /// 3) If localPath exists, use local file
-  Future<void> _setAudioSource(String localPath, String? s3Link) async {
-    debugPrint("🔊 _setAudioSource localPath = '$localPath'");
-    debugPrint("🔊 _setAudioSource s3Link = '$s3Link'");
+  Future<void> setProjectAudioSource(String localPath, String? s3Link) async {
+    debugPrint("🔊 setProjectAudioSource localPath = '$localPath'");
+    debugPrint("🔊 setProjectAudioSource s3Link = '$s3Link'");
 
     // 1) If explicit s3Link provided, try it first (with Referer)
     if (s3Link != null && s3Link.isNotEmpty && s3Link.startsWith('http')) {
@@ -144,6 +143,13 @@ class ResultLogic {
       );
       final rawSegments = (chunksJson['data'] as List<dynamic>? ?? []);
 
+      // ดึง project_name จาก JSON ตรงๆ 
+      final projectData = rawSegments.isNotEmpty ? rawSegments.first : chunksJson;
+      final projectNameFromApi = projectData['project_name'] as String?;
+      
+      debugPrint('RAW project json: ${projectData.toString()}');
+
+
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
         final durationStr = (s['duration'] ?? '') as String;
         final parts = durationStr.split(' - ');
@@ -169,6 +175,29 @@ class ResultLogic {
 
       if (segments.isNotEmpty) {
         final projectIdFromChunk = rawSegments.first['project_id'] ?? projectId;
+        
+        // 🚩 FIX 1: ดึงวันที่สร้างและแปลงเป็น Local Time (แก้ปัญหา +7 ชม.)
+        final createAtStr = rawSegments.first['create_at'];
+        final createdAt = (createAtStr != null) 
+          ? DateTime.tryParse(createAtStr)?.toLocal() ?? DateTime.now().toLocal() 
+          : DateTime.now().toLocal();
+
+        // 🚩 FIX 2: กำหนดชื่อโปรเจกต์อย่างถูกต้อง (ใช้ชื่อที่ส่งมาจากหน้า List เป็นหลัก)
+        String finalProjectName;
+        
+        if (initialProjectName.isNotEmpty) {
+            // 1. ใช้ชื่อที่ส่งมาเมื่อเปิดจาก List (เช่น "nemo")
+            finalProjectName = initialProjectName;
+        } else if (filePath.trim().isNotEmpty && p.basenameWithoutExtension(filePath).length > 2) {
+            // 2. ถ้ามี filePath ที่สมบูรณ์ (มักเป็นโปรเจกต์ใหม่) ให้ใช้ชื่อจาก Path
+            finalProjectName = p.basenameWithoutExtension(filePath);
+        } else if (projectNameFromApi != null && projectNameFromApi.isNotEmpty) {
+            // 3. ถ้า filePath ว่าง/ไม่สมบูรณ์ แต่มี project_name จาก API ให้ใช้ตัวนี้
+             finalProjectName = projectNameFromApi;
+        } else {
+             // 4. ใช้ project ID เป็นทางเลือกสุดท้าย
+             finalProjectName = projectIdFromChunk;
+        }
 
         final hasAnyText = segments.any((s) =>
             (s['text'] != null && s['text'].toString().trim().isNotEmpty));
@@ -199,18 +228,22 @@ class ResultLogic {
         // Determine a reasonable project-level S3 link:
         // prefer audioS3Link passed into this ResultLogic, otherwise try first segment's s3_link
         String? projectLevelS3 = audioS3Link;
-if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmpty) {
-  final seg0 = finalSegments.first;
-  final cand = seg0['s3_link'];
-  if (cand is String && cand.isNotEmpty) {
-    projectLevelS3 = cand;
-  }
-}
+        if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmpty) {
+          final seg0 = finalSegments.first;
+          final cand = seg0['s3_link'];
+          if (cand is String && cand.isNotEmpty) {
+            projectLevelS3 = cand;
+          }
+        }
+        
+        // 🚩 FIX 3: ตั้งค่า Audio Source หลัก (ไฟล์เสียงเต็ม)
+        await setProjectAudioSource(filePath, projectLevelS3);
+
 
         return ProjectModel(
           projectId: projectIdFromChunk,
-          projectName: filePath.split('/').last,
-          createdAt: DateTime.now(),
+          projectName: finalProjectName, // 👈 ใช้ชื่อไฟล์ที่แก้ไขแล้ว
+          createdAt: createdAt, 
           duration: duration,
           filePath: filePath,
           segments: finalSegments,
@@ -239,6 +272,10 @@ if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmp
         "original_text": null,
       }
     ];
+    
+    // หากไม่พบ Segment ใดๆ ให้ตั้งค่า Source หลักด้วย
+    await setProjectAudioSource(filePath, audioS3Link);
+
 
     return ProjectModel(
       projectId: workspaceId,
@@ -272,6 +309,13 @@ if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmp
     VoidCallback onStop,
   ) async {
     final segment = segments[index];
+    debugPrint('-----------------------------');
+    debugPrint('▶ PLAY SEGMENT index = $index');
+    debugPrint('▶ segment id = ${segment['id']}');
+    debugPrint('▶ segment s3_link = ${segment['s3_link']}');
+    debugPrint('▶ project audioS3Link = $audioS3Link');
+    debugPrint('▶ start = ${segment['start']} , end = ${segment['end']}');
+    debugPrint('-----------------------------');
 
     final startSec =
         (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
@@ -291,12 +335,19 @@ if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmp
       return;
     }
 
+    // 🚩 FIX: ต้องสั่ง Stop ก่อนเสมอเพื่อ Clear Clip และให้ Player กลับสู่สถานะพร้อม
     await audioPlayer.stop();
 
-    // If segment provides its own s3_link, set that as source with Referer header.
+    // 🚩 Logic การเปลี่ยน Source กลับมาเหมือนเดิม เพื่อให้ Segment 1+ เล่นได้ 
+    // (เรายอมให้มีการโหลดซ้ำเกิดขึ้นเพื่อแก้ปัญหาการไม่เล่น)
+    
+    bool newSourceSet = false;
+
+    // 1. If segment provides its own s3_link, set that as source with Referer header.
     final segS3 = (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
     if (segS3 != null && segS3.isNotEmpty && segS3.startsWith('http')) {
       try {
+        // หากมี Segment S3 Link ให้พยายามโหลด Segment สั้นๆ นี้
         await audioPlayer.setAudioSource(
           AudioSource.uri(
             Uri.parse(segS3),
@@ -306,6 +357,7 @@ if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmp
           ),
         );
         debugPrint('Set audio source from segment s3_link with Referer');
+        newSourceSet = true;
       } catch (e) {
         debugPrint('Failed to set segment s3_link source: $e');
         // Try download fallback for this segment
@@ -320,36 +372,59 @@ if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmp
             await f.writeAsBytes(resp.bodyBytes);
             await audioPlayer.setFilePath(tmpPath);
             debugPrint('Set audio source from downloaded segment file: $tmpPath');
+            newSourceSet = true;
           }
         } catch (e2) {
           debugPrint('Segment download fallback failed: $e2');
         }
       }
-    } else {
-      // If no seg s3, but we have a project-level s3 link that was set earlier, try using it.
-      if (audioS3Link != null && audioS3Link!.isNotEmpty && audioS3Link!.startsWith('http')) {
-        try {
-          await audioPlayer.setAudioSource(
-            AudioSource.uri(
-              Uri.parse(audioS3Link!),
-              headers: {'Referer': 'https://voice.botnoi.ai/'},
-            ),
-          );
-          debugPrint('Set audio source from project-level audioS3Link with Referer');
-        } catch (e) {
-          debugPrint('Failed to set project-level s3 source: $e');
-        }
+    } 
+    
+    // 2. Fallback to Project-level S3 link
+    // ถ้า Source ถูกเปลี่ยนเป็น Segment สั้น ๆ ไปแล้ว เราต้องโหลด Source หลักกลับมา
+    if (!newSourceSet && audioS3Link != null && audioS3Link!.isNotEmpty && audioS3Link!.startsWith('http')) {
+      try {
+        await audioPlayer.setAudioSource(
+          AudioSource.uri(
+            Uri.parse(audioS3Link!),
+            headers: {'Referer': 'https://voice.botnoi.ai/'},
+          ),
+        );
+        debugPrint('Set audio source from project-level audioS3Link with Referer');
+        newSourceSet = true;
+      } catch (e) {
+        debugPrint('Failed to set project-level s3 source: $e');
       }
+    }
+    
+    // 3. Final Fallback to Local File Path
+    if (!newSourceSet && filePath.trim().isNotEmpty) {
+        final file = File(filePath);
+        if (await file.exists()) {
+            try {
+                await audioPlayer.setFilePath(filePath);
+                debugPrint('Set audio source from Local File Path as final fallback');
+                newSourceSet = true;
+            } catch (e) {
+                debugPrint('Final setFilePath failed: $e');
+            }
+        }
+    }
+    
+    if (!newSourceSet) {
+        debugPrint('ERROR: Could not set any audio source for segment playback.');
+        return; // หยุดทำงานถ้าไม่มี Source
     }
 
     // Small delay to allow player to fetch metadata / be ready before setting clip
     await Future.delayed(const Duration(milliseconds: 200));
 
-    // Set clip (works with either remote AudioSource or local file previously set)
+    // Set clip (ทำงานกับไฟล์เสียงเต็ม/ไฟล์ segment)
     try {
       await audioPlayer.setClip(start: start, end: end);
     } catch (e) {
       debugPrint('setClip failed: $e');
+      return; 
     }
 
     try {
