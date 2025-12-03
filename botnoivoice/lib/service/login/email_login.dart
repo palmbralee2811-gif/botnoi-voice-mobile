@@ -1,156 +1,308 @@
+// import 'package:botnoivoice/service/notification/push_notification_service.dart';
+// import 'package:botnoivoice/service/token/email_token.dart';
+// import 'package:easy_localization/easy_localization.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/scheduler.dart';
+// import 'package:logger/logger.dart';
+// import 'package:provider/provider.dart';
+// import 'package:botnoivoice/service/email/email_username_api.dart';
+
+// /// Login with Email/Username and Password
+// class EmailLogin with ChangeNotifier {
+//   User? user;
+//   String? _errorMessage;
+//   final Logger _logger = Logger(); // สำหรับ debug
+//   bool _isLoggedIn = false;
+
+//   /// Getter สำหรับการตรวจสอบว่าเข้าสู่ระบบแล้วหรือไม่
+//   bool get isLoggedIn => _isLoggedIn;
+
+//   /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
+//   bool get isAuthenticated {
+//     return FirebaseAuth.instance.currentUser?.uid != null &&
+//         user?.providerData.isNotEmpty == true &&
+//         user?.providerData[0].providerId == 'password';
+//   }
+
+//   /// Getter สำหรับอีเมล
+//   String? get getUserEmail => user?.email;
+
+//   /// Getter สำหรับ error message
+//   String? get errorMessage => _errorMessage;
+
+//   EmailLogin() {
+//     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+//       if (user?.providerData[0].providerId == 'password') {
+//         this.user = user;
+//         _logger.d("Email Firebase User UID: ${user?.uid}");
+//         _logger.i("Login with Email: $user");
+//         _isLoggedIn = true;
+//       }
+//       notifyListeners(); // Update UI
+//     });
+//   }
+
+//   /// เข้าสู่ระบบด้วย `username` และ `password` พร้อมกับเรียก `get email by username`
+//   Future<void> loginWithUsernamePassword(
+//       String username, String password, BuildContext context) async {
+//     final emailUsernameProvider = context.read<EmailUsernameApi>();
+
+//     try {
+//       // เรียกใช้ฟังก์ชัน get email by username เพื่อดึง email จาก username
+//       await emailUsernameProvider.getEmailByUsername(username);
+//       final email = emailUsernameProvider.result; // รับค่า email จาก result
+
+//       if (email == 'email not found') {
+//         _errorMessage =
+//             'login_provider.invalid_username'.tr(); //ชื่อผู้ใช้งานไม่ถูกต้อง
+//         _logger.e("No email found for username: $username");
+//         notifyListeners();
+//         return;
+//       }
+
+//       // ทำการเข้าสู่ระบบโดยใช้ email และ password ที่ได้จาก username
+//       await loginWithEmailPassword(email, password);
+//     } catch (e) {
+//       _errorMessage =
+//           "${'login_provider.error_logging_in'.tr()} $e"; //เกิดข้อผิดพลาดในการเข้าสู่ระบบ:
+//       _logger.e("Error logging in with username: $e");
+//       notifyListeners();
+//     }
+//   }
+
+//   /// เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
+//   Future<void> loginWithEmailPassword(String email, String password) async {
+//     try {
+//       UserCredential userCredential = await FirebaseAuth.instance
+//           .signInWithEmailAndPassword(email: email, password: password);
+//       _errorMessage = null;
+
+//       // ตรวจสอบว่าผู้ใช้อีเมลได้รับการยืนยันหรือไม่
+//       if (!userCredential.user!.emailVerified) {
+//         _errorMessage = 'login_provider.please_verify_email_before_login'
+//             .tr(); //กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ
+//         _logger.w("User email is not verified: $email");
+
+//         // ส่งอีเมลยืนยันหากยังไม่ได้รับการยืนยัน
+//         try {
+//           await userCredential.user?.sendEmailVerification();
+//           _errorMessage =
+//               '${'login_provider.please_verify_email'.tr()} $email'; //กรุณายืนยันอีเมล:
+//           _logger.i("Verification email sent to: $email");
+//         } on FirebaseAuthException catch (e) {
+//           _errorMessage = e.message;
+//           _logger.e("Failed to send verification email: $e");
+//         }
+
+//         // ทำการ sign out เพื่อป้องกันการเข้าถึงโดยไม่ยืนยันอีเมล
+//         await FirebaseAuth.instance.signOut();
+//         _isLoggedIn = false;
+//         notifyListeners();
+//         return;
+//       }
+
+//       // หากยืนยันอีเมลแล้ว อนุญาตให้เข้าสู่ระบบ
+//       user = userCredential.user;
+//       _isLoggedIn = true;
+//       _logger.i(
+//           "User logged in successfully with email: $email, Email User ID: ${user?.uid}");
+//       notifyListeners();
+//     } on FirebaseAuthException catch (e) {
+//       switch (e.code) {
+//         case 'invalid-email':
+//           _errorMessage = 'login_provider.invalid_email'.tr(); //อีเมลไม่ถูกต้อง
+//           break;
+//         case 'wrong-password':
+//           _errorMessage =
+//               'login_provider.incorrect_password'.tr(); //รหัสผ่านไม่ถูกต้อง
+//           break;
+//         case 'user-disabled':
+//           _errorMessage = 'login_provider.account_suspended'
+//               .tr(); //บัญชีนี้ถูกระงับการใช้งาน
+//           break;
+//         default:
+//           _errorMessage = 'login_provider.username_or_password_incorrect'
+//               .tr(); //ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง
+//           break;
+//       }
+//       _logger.e(
+//           "Error logging in with email. \nMessage: ${e.message} \nCode: ${e.code}");
+//       notifyListeners();
+//     }
+//   }
+
+//   /// Sign out for Login with Email and Password
+//   Future<void> signOutWithEmail(BuildContext context) async {
+//     try {
+//       context.read<EmailToken>().clearTokens();
+
+//       // ❌ Unsubscribe from Topic when user sign out
+//       await PushNotificationService.unsubscribeFromTopic("default");
+//       // ❌ Delete FCM Token Form Firebase Messaging and Database
+//       await PushNotificationService.deleteFcmToken();
+
+//       await FirebaseAuth.instance.signOut();
+//       _isLoggedIn = false;
+//       _logger.i("User signed out successfully");
+//     } catch (e) {
+//       _logger.e("Error signing out: $e");
+//     }
+
+//     SchedulerBinding.instance.addPostFrameCallback((_) {
+//       notifyListeners();
+//     });
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:botnoivoice/service/email/email_username_api.dart';
+import 'package:botnoivoice/service/login/user_login_base.dart';
 import 'package:botnoivoice/service/notification/push_notification_service.dart';
-import 'package:botnoivoice/service/token/email_token.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
-import 'package:botnoivoice/service/email/email_username_api.dart';
 
-/// Login with Email/Username and Password
-class EmailLogin with ChangeNotifier {
-  User? user;
-  String? _errorMessage;
-  final Logger _logger = Logger(); // สำหรับ debug
-  bool _isLoggedIn = false;
+/// Define the state for EmailLogin.
+class EmailLoginState extends UserLoginBaseState {
+  EmailLoginState({super.user, super.isLoggedIn, super.errorMessage});
 
-  /// Getter สำหรับการตรวจสอบว่าเข้าสู่ระบบแล้วหรือไม่
-  bool get isLoggedIn => _isLoggedIn;
+  EmailLoginState copyWith({User? user, bool? isLoggedIn, String? errorMessage}) {
+    return EmailLoginState(
+      user: user ?? this.user,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
+      errorMessage: errorMessage, // Note: Error message is not persisted from previous state usually
+    );
+  }
+}
 
-  /// Getter สำหรับการตรวจสอบการยืนยันตัวตน
-  bool get isAuthenticated {
-    return FirebaseAuth.instance.currentUser?.uid != null &&
-        user?.providerData.isNotEmpty == true &&
-        user?.providerData[0].providerId == 'password';
+/// Login with Email/Username and Password using Riverpod StateNotifier.
+class EmailLoginNotifier extends UserLoginBaseNotifier<EmailLoginState> {
+  final Ref _ref;
+  final Logger _logger = Logger();
+  static const String providerId = 'password';
+
+  EmailLoginNotifier(this._ref) : super(EmailLoginState(), providerId);
+
+  // Override the public updateState method from the base class
+  @override
+  void updateState({User? user, bool? isLoggedIn, String? errorMessage}) {
+    state = state.copyWith(
+        user: user, isLoggedIn: isLoggedIn, errorMessage: errorMessage);
   }
 
-  /// Getter สำหรับอีเมล
-  String? get getUserEmail => user?.email;
+  User? get user => state.user;
 
-  /// Getter สำหรับ error message
-  String? get errorMessage => _errorMessage;
-
-  EmailLogin() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-      if (user?.providerData[0].providerId == 'password') {
-        this.user = user;
-        _logger.d("Email Firebase User UID: ${user?.uid}");
-        _logger.i("Login with Email: $user");
-        _isLoggedIn = true;
-      }
-      notifyListeners(); // Update UI
-    });
+  /// Clear the current error message.
+  void clearErrorMessage() {
+    updateState(errorMessage: null);
   }
 
-  /// เข้าสู่ระบบด้วย `username` และ `password` พร้อมกับเรียก `get email by username`
+  /// Login with username and password
   Future<void> loginWithUsernamePassword(
-      String username, String password, BuildContext context) async {
-    final emailUsernameProvider = context.read<EmailUsernameApi>();
+    String username,
+    String password,
+  ) async {
+    final emailUsernameApiNotifier =
+        _ref.read(emailUsernameApiNotifierProvider.notifier);
 
     try {
-      // เรียกใช้ฟังก์ชัน get email by username เพื่อดึง email จาก username
-      await emailUsernameProvider.getEmailByUsername(username);
-      final email = emailUsernameProvider.result; // รับค่า email จาก result
+      await emailUsernameApiNotifier.getEmailByUsername(username);
+      final email = _ref.read(emailUsernameApiNotifierProvider).result;
 
       if (email == 'email not found') {
-        _errorMessage =
-            'login_provider.invalid_username'.tr(); //ชื่อผู้ใช้งานไม่ถูกต้อง
-        _logger.e("No email found for username: $username");
-        notifyListeners();
+        final errorMessage = 'login_provider.invalid_username'.tr();
+        updateState(errorMessage: errorMessage, isLoggedIn: false, user: null);
         return;
       }
 
-      // ทำการเข้าสู่ระบบโดยใช้ email และ password ที่ได้จาก username
       await loginWithEmailPassword(email, password);
     } catch (e) {
-      _errorMessage =
-          "${'login_provider.error_logging_in'.tr()} $e"; //เกิดข้อผิดพลาดในการเข้าสู่ระบบ:
-      _logger.e("Error logging in with username: $e");
-      notifyListeners();
+      final errorMessage = "${'login_provider.error_logging_in'.tr()} $e";
+      updateState(errorMessage: errorMessage, isLoggedIn: false, user: null);
     }
   }
 
-  /// เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
-  Future<void> loginWithEmailPassword(String email, String password) async {
+  /// Login with email and password
+  Future<void> loginWithEmailPassword(
+    String email,
+    String password,
+  ) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      _errorMessage = null;
+      updateState(errorMessage: null);
 
-      // ตรวจสอบว่าผู้ใช้อีเมลได้รับการยืนยันหรือไม่
-      if (!userCredential.user!.emailVerified) {
-        _errorMessage = 'login_provider.please_verify_email_before_login'
-            .tr(); //กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ
-        _logger.w("User email is not verified: $email");
-
-        // ส่งอีเมลยืนยันหากยังไม่ได้รับการยืนยัน
+      if (userCredential.user != null && !userCredential.user!.emailVerified) {
+        var error = 'login_provider.please_verify_email_before_login'.tr();
         try {
           await userCredential.user?.sendEmailVerification();
-          _errorMessage =
-              '${'login_provider.please_verify_email'.tr()} $email'; //กรุณายืนยันอีเมล:
-          _logger.i("Verification email sent to: $email");
+          error = '${'login_provider.please_verify_email'.tr()} $email';
         } on FirebaseAuthException catch (e) {
-          _errorMessage = e.message;
-          _logger.e("Failed to send verification email: $e");
+          error = e.message.toString();
         }
 
-        // ทำการ sign out เพื่อป้องกันการเข้าถึงโดยไม่ยืนยันอีเมล
         await FirebaseAuth.instance.signOut();
-        _isLoggedIn = false;
-        notifyListeners();
+        updateState(errorMessage: error, isLoggedIn: false, user: null);
         return;
       }
 
-      // หากยืนยันอีเมลแล้ว อนุญาตให้เข้าสู่ระบบ
-      user = userCredential.user;
-      _isLoggedIn = true;
-      _logger.i(
-          "User logged in successfully with email: $email, Email User ID: ${user?.uid}");
-      notifyListeners();
+      updateState(user: userCredential.user, isLoggedIn: true, errorMessage: null);
     } on FirebaseAuthException catch (e) {
+      String? error;
       switch (e.code) {
         case 'invalid-email':
-          _errorMessage = 'login_provider.invalid_email'.tr(); //อีเมลไม่ถูกต้อง
+          error = 'login_provider.invalid_email'.tr();
           break;
         case 'wrong-password':
-          _errorMessage =
-              'login_provider.incorrect_password'.tr(); //รหัสผ่านไม่ถูกต้อง
+          error = 'login_provider.incorrect_password'.tr();
           break;
         case 'user-disabled':
-          _errorMessage = 'login_provider.account_suspended'
-              .tr(); //บัญชีนี้ถูกระงับการใช้งาน
+          error = 'login_provider.account_suspended'.tr();
           break;
         default:
-          _errorMessage = 'login_provider.username_or_password_incorrect'
-              .tr(); //ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง
+          error = 'login_provider.username_or_password_incorrect'.tr();
           break;
       }
-      _logger.e(
-          "Error logging in with email. \nMessage: ${e.message} \nCode: ${e.code}");
-      notifyListeners();
+      updateState(errorMessage: error, isLoggedIn: false, user: null);
     }
   }
 
   /// Sign out for Login with Email and Password
-  Future<void> signOutWithEmail(BuildContext context) async {
+  Future<void> signOutWithEmail(WidgetRef ref) async {
     try {
-      context.read<EmailToken>().clearTokens();
-
-      // ❌ Unsubscribe from Topic when user sign out
+      ref.read(emailTokenNotifierProvider.notifier).clearTokens();
       await PushNotificationService.unsubscribeFromTopic("default");
-      // ❌ Delete FCM Token Form Firebase Messaging and Database
       await PushNotificationService.deleteFcmToken();
-
       await FirebaseAuth.instance.signOut();
-      _isLoggedIn = false;
+      
+      updateState(user: null, isLoggedIn: false, errorMessage: null);
       _logger.i("User signed out successfully");
     } catch (e) {
       _logger.e("Error signing out: $e");
     }
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      notifyListeners();
-    });
   }
 }
+
+final emailLoginNotifierProvider =
+    StateNotifierProvider<EmailLoginNotifier, EmailLoginState>((ref) {
+  return EmailLoginNotifier(ref);
+});

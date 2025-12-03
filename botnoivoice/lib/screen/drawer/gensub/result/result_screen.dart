@@ -2,7 +2,7 @@ import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
@@ -15,26 +15,27 @@ Future<void> shareTextFile(BuildContext context, String filePath) async {
   final shareResult = await Share.shareXFiles(
     [XFile(filePath)],
     sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
+    // text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
+    text: "Choose to save or share this file",
   );
 
   String message;
   switch (shareResult.status) {
     case ShareResultStatus.success:
-      message = 'แชร์ไฟล์สำเร็จแล้ว';
+      message = 'Share Text File Successful';
       break;
     case ShareResultStatus.dismissed:
-      message = 'ยกเลิกการแชร์';
+      message = 'Share Text File Dismissed';
       break;
     default:
-      message = 'เกิดข้อผิดพลาดในการแชร์';
+      message = 'Share Text File Failed';
       break;
   }
 
   scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
 }
 
-class ResultScreen extends StatefulWidget {
+class ResultScreen extends ConsumerStatefulWidget {
   final String workspaceId;
   final String userId;
   final String filePath;
@@ -49,10 +50,10 @@ class ResultScreen extends StatefulWidget {
   });
 
   @override
-  State<ResultScreen> createState() => _ResultScreenState();
+  ConsumerState<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
+class _ResultScreenState extends ConsumerState<ResultScreen> {
   late ResultLogic controller;
   late Future<ProjectModel?> _futureProject;
 
@@ -68,7 +69,7 @@ class _ResultScreenState extends State<ResultScreen> {
       workspaceId: widget.workspaceId,
       duration: widget.duration,
     );
-    _futureProject = controller.fetchWorkspace(context);
+    _futureProject = controller.fetchWorkspace(ref);
   }
 
   @override
@@ -110,8 +111,15 @@ class _ResultScreenState extends State<ResultScreen> {
             onPressed: () async {
               final project = await _futureProject;
               if (project != null) {
-                await controller.saveEdits(context, project, project.segments);
-                await controller.finalizeProjectApprove(context, project);
+                await controller.saveEdits(
+                  ref,
+                  project,
+                  project.segments,
+                );
+                await controller.finalizeProjectApprove(
+                  ref,
+                  project,
+                );
 
                 if (!mounted) return;
 
@@ -359,7 +367,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                         try {
                                           final res = await controller
                                               .updateAudioApproveSegment(
-                                            context,
+                                            ref,
                                             chunkId: segment['id'],
                                             userId: widget.userId,
                                             approveText: approveText,
@@ -482,7 +490,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                     try {
                                       final res = await controller
                                           .updateAudioApproveSegment(
-                                        context,
+                                        ref,
                                         chunkId: segment['id'],
                                         userId: widget.userId,
                                         approveText: segment['text'],
@@ -517,7 +525,11 @@ class _ResultScreenState extends State<ResultScreen> {
                                   onPressed: () async {
                                     try {
                                       await controller.deleteSegment(
-                                          context, index, segments, project);
+                                        ref,
+                                        index,
+                                        segments,
+                                        project,
+                                      );
                                       setState(() {});
                                       _showSnack(
                                           "result_gensub.delete_success".tr());

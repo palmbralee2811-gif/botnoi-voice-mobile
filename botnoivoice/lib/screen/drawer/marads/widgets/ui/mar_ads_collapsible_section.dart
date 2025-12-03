@@ -26,7 +26,7 @@ class _MarAdsCollapsibleSectionState extends State<MarAdsCollapsibleSection> {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Container(
         height: 42.h,
-        padding: EdgeInsets.all(1.5),
+        padding: const EdgeInsets.all(1.5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(0),
           gradient: const LinearGradient(

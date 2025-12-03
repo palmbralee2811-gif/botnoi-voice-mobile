@@ -1,28 +1,29 @@
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/shared/style/style.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-class AppBarSpeakerScreen extends StatefulWidget
+class AppBarSpeakerScreen extends ConsumerStatefulWidget
     implements PreferredSizeWidget {
   final Function()? onBackButtonPressed;
 
   const AppBarSpeakerScreen({super.key, this.onBackButtonPressed});
 
   @override
-  State<AppBarSpeakerScreen> createState() => _AppBarSpeakerScreenState();
+  ConsumerState<AppBarSpeakerScreen> createState() =>
+      _AppBarSpeakerScreenState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
+class _AppBarSpeakerScreenState extends ConsumerState<AppBarSpeakerScreen> {
   @override
   void initState() {
     super.initState();
@@ -32,12 +33,18 @@ class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    await context.read<CallReloadData>().callLoadCreditsApi(context);
+    // await context.read<CallReloadData>().callLoadCreditsApi();
+    await loadAllTokensIfLoggedIn(ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
+    // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
+    // var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
+
+    // Access credits directly from the immutable state
+    final userTokenState = ref.watch(currentUserTokenStateProvider);
+    final remainingCredits = userTokenState.remainingCredits ?? 'N/A';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -106,7 +113,7 @@ class _AppBarSpeakerScreenState extends State<AppBarSpeakerScreen> {
                     ),
                     SizedBox(width: 8.w),
                     Text(
-                      remainingCredits,
+                      remainingCredits.toString(),
                       style: GoogleFonts.prompt(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 7.5.sp

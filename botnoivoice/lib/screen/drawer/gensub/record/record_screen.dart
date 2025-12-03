@@ -1,15 +1,13 @@
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
-// Import Standalone API Functions ที่ใช้โดยตรงใน Widget (สำหรับ _loadProjects)
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RecordScreen extends StatefulWidget {
+class RecordScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
   final Function(ProjectModel) onProjectCreated;
   final Function(ProjectModel) onProjectDeleted;
@@ -22,10 +20,10 @@ class RecordScreen extends StatefulWidget {
   });
 
   @override
-  State<RecordScreen> createState() => _RecordScreenState();
+  ConsumerState<RecordScreen> createState() => _RecordScreenState();
 }
 
-class _RecordScreenState extends State<RecordScreen> {
+class _RecordScreenState extends ConsumerState<RecordScreen> {
   late RecordLogic controller;
   bool _confirmed = false;
   bool _loading = false;
@@ -36,7 +34,6 @@ class _RecordScreenState extends State<RecordScreen> {
   List<ProjectModel> _projects = [];
 
   // UI controls
-  String _selectedLanguage = "TH";
   int _maxSegmentDuration = 10;
   double _maxSilenceDuration = 0.3;
 
@@ -74,7 +71,7 @@ class _RecordScreenState extends State<RecordScreen> {
     _safeSetState(() => _loading = true);
     try {
       // ✅ เรียกใช้ Standalone API Function และส่ง context
-      final res = await getAllWorkspaces(context);
+      final res = await getAllWorkspaces(ref);
 
       if (res != null && res['data'] != null) {
         _projects = (res['data'] as List)
@@ -116,12 +113,12 @@ class _RecordScreenState extends State<RecordScreen> {
             child: Column(
               children: [
                 Text(
-                  "record_gensub.Title".tr(),
+                  "record_gensub.title".tr(),
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                Text("record_gensub.Expand_Title".tr(),
+                Text("record_gensub.expand_title".tr(),
                     style: const TextStyle(color: Colors.black54)),
                 const SizedBox(height: 20),
                 GestureDetector(
@@ -231,18 +228,19 @@ class _RecordScreenState extends State<RecordScreen> {
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text("dialog.delete_project_title"),
-                            content:
-                                const Text("dialog.delete_project_content"),
+                            title: Text("dialog.delete_project_title".tr()),
+                            content: Text("dialog.delete_project_content".tr()),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context, false),
-                                child: const Text("dialog.cancel"),
+                                child: Text("dialog.cancel".tr()),
                               ),
                               TextButton(
                                 onPressed: () => Navigator.pop(context, true),
-                                child: const Text("dialog.delete",
-                                    style: TextStyle(color: Colors.red)),
+                                child: Text(
+                                  "dialog.delete".tr(),
+                                  style: const TextStyle(color: Colors.red),
+                                ),
                               ),
                             ],
                           ),
@@ -250,7 +248,9 @@ class _RecordScreenState extends State<RecordScreen> {
                         if (confirm == true) {
                           // ✅ แก้ไข: ส่ง context เข้าไปใน deleteProject
                           await controller.deleteProject(
-                              context, project.projectId);
+                            ref,
+                            project.projectId,
+                          );
 
                           // ลบออกจาก UI และเรียก Callback
                           widget.onProjectDeleted(project);
@@ -293,11 +293,11 @@ class _RecordScreenState extends State<RecordScreen> {
         children: [
           const SizedBox(height: 20),
           Text(
-            "record_gensub.Title".tr(),
+            "record_gensub.title".tr(),
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text("record_gensub.Expand_Title".tr(),
+          Text("record_gensub.expand_title".tr(),
               style: const TextStyle(color: Colors.black54)),
           const SizedBox(height: 40),
           Row(
@@ -386,36 +386,39 @@ class _RecordScreenState extends State<RecordScreen> {
                   const SizedBox(height: 16),
 
                   // ---------- ภาษา ----------
-                 // ---------- ภาษา ----------
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    Text("text_to_gensub.audio_language".tr()),
-    LanguageSelector(
-      selectedLanguage: controller.selectedLanguageName,
-      selectedLanguageImage: controller.selectedLanguageImage,
-      onSelected: (lang) {
-        setState(() {
-          controller.selectedLanguage = lang['code'];
-          controller.selectedLanguageImage = lang['image'];
+                  // ---------- ภาษา ----------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("text_to_gensub.audio_language".tr()),
+                      LanguageSelector(
+                        selectedLanguage: controller.selectedLanguageName,
+                        selectedLanguageImage: controller.selectedLanguageImage,
+                        onSelected: (lang) {
+                          setState(() {
+                            controller.selectedLanguage = lang['code'];
+                            controller.selectedLanguageImage = lang['image'];
 
-          // ✅ ตั้งชื่อภาษาให้ตรงกับ locale ปัจจุบัน
-          final locale = context.locale.languageCode;
-          switch (locale) {
-            case 'th':
-              controller.selectedLanguageName = lang['thaiName'];
-              break;
-            case 'id':
-              controller.selectedLanguageName = lang['indonesianName'];
-              break;
-            default:
-              controller.selectedLanguageName = lang['englishName'];
-          }
-        });
-      },
-    ),
-  ],
-),
+                            // ✅ ตั้งชื่อภาษาให้ตรงกับ locale ปัจจุบัน
+                            final locale = context.locale.languageCode;
+                            switch (locale) {
+                              case 'th':
+                                controller.selectedLanguageName =
+                                    lang['thaiName'];
+                                break;
+                              case 'id':
+                                controller.selectedLanguageName =
+                                    lang['indonesianName'];
+                                break;
+                              default:
+                                controller.selectedLanguageName =
+                                    lang['englishName'];
+                            }
+                          });
+                        },
+                      ),
+                    ],
+                  ),
 
                   const SizedBox(height: 12),
 
@@ -451,8 +454,9 @@ Row(
                                 ),
                             ],
                             onChanged: (val) {
-                              if (val != null)
+                              if (val != null) {
                                 _safeSetState(() => _maxSegmentDuration = val);
+                              }
                             },
                           ),
                         ],
@@ -471,8 +475,9 @@ Row(
                                 ),
                             ],
                             onChanged: (val) {
-                              if (val != null)
+                              if (val != null) {
                                 _safeSetState(() => _maxSilenceDuration = val);
+                              }
                             },
                           ),
                         ],
@@ -489,7 +494,7 @@ Row(
                         : () async {
                             _safeSetState(() => _loading = true);
                             final project = await controller.handleTranscribe(
-                              context,
+                              ref,
                               maxSegmentDuration: _maxSegmentDuration,
                               maxSilenceDuration: _maxSilenceDuration,
                             );

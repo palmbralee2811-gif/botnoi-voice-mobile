@@ -7,22 +7,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_icon.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-class AppBarBottom extends StatefulWidget {
+class AppBarBottom extends ConsumerStatefulWidget {
   const AppBarBottom({
     super.key,
   });
 
   @override
-  State<AppBarBottom> createState() => _AppBarBottomState();
+  ConsumerState<AppBarBottom> createState() => _AppBarBottomState();
 }
 
-class _AppBarBottomState extends State<AppBarBottom> {
+class _AppBarBottomState extends ConsumerState<AppBarBottom> {
   AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
 
@@ -38,7 +38,9 @@ class _AppBarBottomState extends State<AppBarBottom> {
 
   @override
   Widget build(BuildContext context) {
-    final speakerProvider = context.watch<HomeSpeakerDataManagement>();
+    // final speakerProvider = context.watch<HomeSpeakerDataManagement>();
+    final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
+
     String language = Localizations.localeOf(context).languageCode;
 
     final speakerInfo = appbarBottomModel
@@ -138,11 +140,14 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       child: Text(
                         speakerName!,
                         style: GoogleFonts.prompt(
-                          fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
+                          fontSize: ResponsiveDesignOrientation.isLandscape
+                              ? 8.sp
+                              : 14.sp,
                           fontWeight: FontWeight.w600,
                           color: kDark,
                         ),
-                        overflow: TextOverflow.ellipsis, // Optional: Truncate text with ellipsis if too long
+                        overflow: TextOverflow
+                            .ellipsis, // Optional: Truncate text with ellipsis if too long
                       ),
                     ),
                     SizedBox(

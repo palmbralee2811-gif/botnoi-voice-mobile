@@ -31,7 +31,7 @@ class MarAdsUIStyle {
     color: Colors.white,
     borderRadius: BorderRadius.circular(15),
     border: Border.all(color: primary, width: 1.5),
-    boxShadow: [
+    boxShadow: const [
       BoxShadow(
         color: Colors.black12,
         blurRadius: 6,
@@ -41,7 +41,7 @@ class MarAdsUIStyle {
   );
 
   // ปุ่มดำ
-  static BoxDecoration solidButton = BoxDecoration(
+  static BoxDecoration solidButton = const BoxDecoration(
     color: primary,
     borderRadius: BorderRadius.all(Radius.circular(20)),
   );

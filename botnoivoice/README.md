@@ -1,5 +1,23 @@
 # botnoivoice
 
+### 4. วิธีใช้งาน
+
+Deploy on TestFlight:
+```bash
+./deploy.sh
+```
+
+Deploy on App Store Connect:
+```bash
+./deploy_production.sh
+```
+
+```
+แค่นี้คุณก็จะมี 2 คำสั่งแยกกันชัดเจนครับ:
+* `./deploy.sh` -> ส่งเข้า TestFlight (ให้ทีมเทส)
+* `./deploy_production.sh` -> ส่งเข้า App Store (เตรียมขายจริง)
+```
+
 A new Flutter project.
 
 ## Getting Started

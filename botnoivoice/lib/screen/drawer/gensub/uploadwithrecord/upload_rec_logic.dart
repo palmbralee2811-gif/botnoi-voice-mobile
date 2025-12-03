@@ -1,12 +1,7 @@
-// upload_record_logic.dart
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart'; // ต้อง import เพื่อใช้ BuildContext ใน methods
+import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-import 'package:flutter/foundation.dart'; // สำหรับ debugPrint
-
-// Import Standalone API Functions ใหม่ที่คุณสร้าง
-import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; 
+import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 
 /// State class
 class UploadRecordState {
@@ -46,47 +41,49 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
         );
 
   // ✅ เพิ่ม BuildContext เป็น Argument
-  Future<void> loadProjects(BuildContext context) async {
+  Future<void> loadProjects(WidgetRef ref) async {
     state = state.copyWith(loading: true);
 
     try {
       // final api = ProjectApiService(state.apiToken); // <<< ลบออก
 
       // ✅ เรียกใช้ฟังก์ชัน Standalone API และส่ง context
-      final list = await getAllWorkspaces(context); 
-      
-      final projects = (list['data'] as List<dynamic>?)?.map((item) {
-        // แปลง duration (Logic เดิม)
-        Duration parsedDuration = Duration.zero;
-        final rawDuration = item['duration']?.toString();
-        if (rawDuration != null && rawDuration.isNotEmpty) {
-          if (rawDuration.contains(":")) {
-            // เช่น "00:08"
-            final parts = rawDuration.split(":");
-            if (parts.length == 2) {
-              final minutes = int.tryParse(parts[0]) ?? 0;
-              final seconds = int.tryParse(parts[1]) ?? 0;
-              parsedDuration = Duration(minutes: minutes, seconds: seconds);
-            }
-          } else {
-            // เช่น "7"
-            final seconds = int.tryParse(rawDuration) ?? 0;
-            parsedDuration = Duration(seconds: seconds);
-          }
-        }
+      final list = await getAllWorkspaces(ref);
 
-        return ProjectModel(
-          projectId: item['project_id'] ?? '',
-          projectName: item['project_name'] ?? '',
-          createdAt: DateTime.tryParse(item['create_at'] ?? '') ?? DateTime.now(),
-          duration: parsedDuration,
-          filePath: item['file_path'] ?? '',
-          segments: item['segments'] != null
-              ? List<Map<String, dynamic>>.from(item['segments'])
-              : [],
-          userId: item['user_id'] ?? '',
-        );
-      }).toList() ?? [];
+      final projects = (list['data'] as List<dynamic>?)?.map((item) {
+            // แปลง duration (Logic เดิม)
+            Duration parsedDuration = Duration.zero;
+            final rawDuration = item['duration']?.toString();
+            if (rawDuration != null && rawDuration.isNotEmpty) {
+              if (rawDuration.contains(":")) {
+                // เช่น "00:08"
+                final parts = rawDuration.split(":");
+                if (parts.length == 2) {
+                  final minutes = int.tryParse(parts[0]) ?? 0;
+                  final seconds = int.tryParse(parts[1]) ?? 0;
+                  parsedDuration = Duration(minutes: minutes, seconds: seconds);
+                }
+              } else {
+                // เช่น "7"
+                final seconds = int.tryParse(rawDuration) ?? 0;
+                parsedDuration = Duration(seconds: seconds);
+              }
+            }
+
+            return ProjectModel(
+              projectId: item['project_id'] ?? '',
+              projectName: item['project_name'] ?? '',
+              createdAt:
+                  DateTime.tryParse(item['create_at'] ?? '') ?? DateTime.now(),
+              duration: parsedDuration,
+              filePath: item['file_path'] ?? '',
+              segments: item['segments'] != null
+                  ? List<Map<String, dynamic>>.from(item['segments'])
+                  : [],
+              userId: item['user_id'] ?? '',
+            );
+          }).toList() ??
+          [];
 
       state = state.copyWith(projects: projects, loading: false);
     } catch (e) {
@@ -101,15 +98,16 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
   }
 
   // ✅ เพิ่ม BuildContext เป็น Argument
-  Future<void> deleteProject(BuildContext context, ProjectModel project) async {
+  Future<void> deleteProject(WidgetRef ref, ProjectModel project) async {
     try {
       // final api = ProjectApiService(state.apiToken); // <<< ลบออก
-      
+
       // ✅ เรียกใช้ฟังก์ชัน Standalone API และส่ง context
-      await deleteAsrWorkspace(context, project.projectId, project.userId); 
-      
-      final updated =
-          state.projects.where((p) => p.projectId != project.projectId).toList();
+      await deleteAsrWorkspace(ref, project.projectId, project.userId);
+
+      final updated = state.projects
+          .where((p) => p.projectId != project.projectId)
+          .toList();
       state = state.copyWith(projects: updated);
     } catch (e) {
       debugPrint("Failed to delete project: $e");

@@ -7,8 +7,6 @@ import '../ui/mar_ads_collapsible_section.dart';
 import '../ui/basic_mar_ads_text_field.dart';
 import '../ui/mar_ads_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:botnoivoice/shared/style/style.dart';
-import 'package:botnoivoice/screen/drawer/marads/widgets/screen/product_properties.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:go_router/go_router.dart';
@@ -37,7 +35,6 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
   final TextEditingController _sizeController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _materialController = TextEditingController();
-  String _selectedColor = 'ไม่ระบุ';
   
   bool _isBasicInfoExpanded = false;
   bool _isSalesStyleExpanded = false;
@@ -229,7 +226,6 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
       _sizeController.text = result['size'] ?? '';
       _modelController.text = result['model'] ?? '';
       _materialController.text = result['material'] ?? '';
-      _selectedColor = result['color'] ?? 'ไม่ระบุ';
     });
   }
 },
@@ -289,7 +285,7 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
             onTap: _handleSalesCharacterTap,
             child: Container(
               height: 46.h,
-              padding: EdgeInsets.all(1.5),
+              padding: const EdgeInsets.all(1.5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
                 gradient: const LinearGradient(
@@ -363,7 +359,7 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
             onTap: _handleContentLengthTap,
             child: Container(
               height: 46.h,
-              padding: EdgeInsets.all(1.5),
+              padding: const EdgeInsets.all(1.5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
                 gradient: const LinearGradient(
@@ -433,7 +429,7 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
             },
             child: Container(
               height: 80.h,
-              padding: EdgeInsets.all(1.5),
+              padding: const EdgeInsets.all(1.5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
                 gradient: const LinearGradient(

@@ -1,3 +1,447 @@
+// import 'dart:io';
+// import 'package:botnoivoice/shared/function/is_vaild_data.dart';
+// import 'package:botnoivoice/shared/function/open_login_function.dart';
+// import 'package:botnoivoice/shared/style/style.dart';
+// import 'package:botnoivoice/service/email/email_register.dart';
+// import 'package:botnoivoice/screen/appbar/appbar_template.dart';
+// import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
+// import 'package:botnoivoice/shared/widget/button/apple_login_button.dart';
+// import 'package:botnoivoice/shared/widget/button/google_login_button.dart';
+// import 'package:botnoivoice/shared/widget/button/line_login_button.dart';
+// import 'package:botnoivoice/shared/dialog/email_permission/email_permission_dialog.dart';
+// import 'package:botnoivoice/shared/widget/gradient/gradient_text_button.dart';
+// import 'package:botnoivoice/shared/widget/gradient/gradient_text_style.dart';
+// import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
+// import 'package:easy_localization/easy_localization.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:provider/provider.dart';
+
+// class RegisterScreen extends StatefulWidget {
+//   const RegisterScreen({super.key});
+
+//   @override
+//   State<RegisterScreen> createState() => _RegisterScreenState();
+// }
+
+// class _RegisterScreenState extends State<RegisterScreen> {
+//   final _formKey = GlobalKey<FormState>();
+//   final TextEditingController _emailController = TextEditingController();
+//   final TextEditingController _usernameController = TextEditingController();
+//   final TextEditingController _passwordController = TextEditingController();
+//   final TextEditingController _confirmPasswordController =
+//       TextEditingController();
+
+//   bool _isPasswordVisible = false;
+//   bool _isLoading = false;
+
+//   /// ฟังก์ชันสมัครสมาชิก
+//   Future<void> _registerUser() async {
+//     final emailRegisterProvider = context.read<EmailRegister>();
+
+//     if (_isLoading) return; // ป้องกันการกดปุ่มซ้ำ
+//     setState(() => _isLoading = true); // เริ่มสถานะการทำงาน
+
+//     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+//       emailRegisterProvider.username = _usernameController.text.trim();
+//       await emailRegisterProvider.registerWithEmailPassword(
+//         _emailController.text.trim(),
+//         _passwordController.text.trim(),
+//         _confirmPasswordController.text.trim(),
+//       );
+
+//       final errorMessage = emailRegisterProvider.errorMessage;
+//       if (errorMessage != null && errorMessage.isNotEmpty) {
+//         NotificationDialog(
+//           context: context,
+//           text: errorMessage,
+//         ).showErrorModal(context);
+//         setState(
+//             () => _isLoading = false); // ยกเลิกสถานะการทำงานหากมีข้อผิดพลาด
+//         return;
+//       }
+
+//       final resultMessage = emailRegisterProvider.resultMessage;
+//       if (resultMessage != null && resultMessage.isNotEmpty) {
+//         NotificationDialog(
+//           context: context,
+//           text: resultMessage,
+//           onPressed: () {
+//             // Redirect to Email Login Screen
+//             context.go('/email-login');
+//           },
+//         ).showCheckmarkModalWithAction(context);
+//       }
+//     } else {
+//       setState(() =>
+//           _isLoading = false); // ยกเลิกสถานะการทำงานหาก validation ล้มเหลว
+//     }
+
+//     setState(() => _isLoading = false); // การทำงานเสร็จสิ้น
+//   }
+
+//   /// Display Email Permission Dialog and Call Register Function
+//   void _openEmailPermissionDialog() {
+//     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+//       showDialog(
+//         context: context,
+//         barrierDismissible: false,
+//         builder: (BuildContext context) {
+//           return EmailPermissionDialog(
+//             onPressed: _registerUser,
+//           );
+//         },
+//       );
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       extendBodyBehindAppBar: true,
+//       appBar: AppBarTemplate(
+//         onPressed: () {
+//           // Redirect to Email Login Screen
+//           context.go('/email-login');
+//         },
+//       ),
+//       body: Container(
+//         decoration: const BoxDecoration(
+//           gradient: LinearGradient(
+//             colors: [Color(0xFFB1E9FD), Color(0xFFF9D8FD)],
+//             begin: Alignment.topCenter,
+//             end: Alignment.bottomCenter,
+//           ),
+//         ),
+//         child: SafeArea(
+//           child: Center(
+//             child: SingleChildScrollView(
+//               child: Padding(
+//                 padding: EdgeInsets.only(
+//                     left: ResponsiveDesignOrientation.isLandscape ? 42.w : 24.w,
+//                     right:
+//                         ResponsiveDesignOrientation.isLandscape ? 42.w : 24.w),
+//                 child: Form(
+//                   key: _formKey,
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       _buildGradientText('register.sign_up'.tr()),
+//                       SizedBox(height: 20.h),
+//                       _buildTextFormField(
+//                           _emailController, 'register.email'.tr()),
+//                       SizedBox(height: 16.h),
+//                       _buildTextFormField(
+//                           _usernameController, 'register.username'.tr()),
+//                       SizedBox(height: 16.h),
+//                       _buildPasswordField(
+//                           _passwordController, 'register.password'.tr()),
+//                       SizedBox(height: 16.h),
+//                       _buildPasswordField(_confirmPasswordController,
+//                           'register.confirm_password'.tr(),
+//                           isConfirmPassword: true),
+//                       SizedBox(height: 16.h),
+//                       _isLoading
+//                           ? const Center(child: CircularProgressIndicator())
+//                           : GradientTextButton(
+//                               text: 'register.sign_up'.tr(),
+//                               onPressed: _openEmailPermissionDialog,
+//                             ),
+//                       SizedBox(height: 16.h),
+//                       _buildBackToLoginButton(),
+//                       SizedBox(height: 16.h),
+//                       _buildDividerWithText('register.or'.tr()),
+//                       SizedBox(height: 16.h),
+//                       _buildSocialButtons(),
+//                       SizedBox(height: 16.h),
+//                       _buildPolicyScreen(),
+//                       SizedBox(height: 16.h),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildTextFormField(TextEditingController controller, String label,
+//       {bool isPassword = false, bool isConfirmPassword = false}) {
+//     return TextFormField(
+//       controller: controller,
+//       style: TextStyle(
+//           fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+//           fontWeight: FontWeight.w400),
+//       decoration: InputDecoration(
+//         labelText: label,
+//         labelStyle: TextStyle(
+//             fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+//             fontWeight: FontWeight.w400),
+//         filled: true,
+//         fillColor: Colors.white,
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(12.r),
+//           borderSide: BorderSide.none,
+//         ),
+//         errorStyle: TextStyle(
+//             fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp),
+//         errorMaxLines: 5,
+//         suffixIcon: IconButton(
+//           icon: Icon(
+//             isPassword || isConfirmPassword
+//                 ? (_isPasswordVisible ? Icons.visibility : Icons.visibility_off)
+//                 : null,
+//             size: ResponsiveDesignOrientation.isLandscape ? 16.w : 24.w,
+//           ),
+//           onPressed: isPassword || isConfirmPassword
+//               ? () {
+//                   setState(() {
+//                     _isPasswordVisible = !_isPasswordVisible;
+//                   });
+//                 }
+//               : null,
+//         ),
+//       ),
+//       obscureText:
+//           isPassword || isConfirmPassword ? !_isPasswordVisible : false,
+//       validator: (value) {
+//         if (value == null || value.isEmpty) {
+//           return 'register.please_enter_your_label'
+//               .tr(namedArgs: {'Label': label}); //โปรดใส่$labelของคุณ
+//         }
+//         if (label == 'อีเมล' && !isValidEmail(value)) {
+//           return 'register.email_invalid_format'.tr(); //รูปแบบอีเมลไม่ถูกต้อง
+//         }
+//         if (label == 'ชื่อผู้ใช้งาน' && !isValidUsername(value)) {
+//           return 'register.username_invalid'
+//               .tr(); //ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -
+//         }
+//         if (isConfirmPassword && value != _passwordController.text) {
+//           return 'register.password_mismatch'.tr(); //รหัสผ่านไม่ตรงกัน
+//         }
+//         return null;
+//       },
+//     );
+//   }
+
+//   Widget _buildPasswordField(TextEditingController controller, String label,
+//       {bool isConfirmPassword = false}) {
+//     return TextFormField(
+//       controller: controller,
+//       style: TextStyle(
+//           fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+//           fontWeight: FontWeight.w400),
+//       decoration: InputDecoration(
+//         labelText: label,
+//         labelStyle: TextStyle(
+//             fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 16.sp,
+//             fontWeight: FontWeight.w400),
+//         filled: true,
+//         fillColor: Colors.white,
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(12.r),
+//           borderSide: BorderSide.none,
+//         ),
+//         errorStyle: TextStyle(
+//             fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp),
+//         errorMaxLines: 5,
+//         suffixIcon: IconButton(
+//           icon: Icon(
+//             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+//             size: ResponsiveDesignOrientation.isLandscape ? 16.w : 24.w,
+//           ),
+//           onPressed: () {
+//             setState(() {
+//               _isPasswordVisible = !_isPasswordVisible;
+//             });
+//           },
+//         ),
+//       ),
+//       obscureText: !_isPasswordVisible,
+//       validator: (value) {
+//         if (value == null || value.isEmpty) {
+//           return 'register.please_enter_password'.tr();
+//         } else if (value.length < 6) {
+//           // Password charecter more than 6 digits
+//           return 'register.password_minimum_length'.tr();
+//         } else if (isConfirmPassword && value != _passwordController.text) {
+//           return 'register.password_mismatch'.tr();
+//         }
+//         return null;
+//       },
+//     );
+//   }
+
+//   Widget _buildGradientText(String text) {
+//     return Align(
+//       alignment: Alignment.centerLeft,
+//       child: GradientTextStyle(
+//         text,
+//         gradient: const LinearGradient(
+//             colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
+//         style: TextStyle(
+//             fontWeight: FontWeight.w600,
+//             fontSize: ResponsiveDesignOrientation.isLandscape ? 16.sp : 20.sp),
+//       ),
+//     );
+//   }
+
+//   Widget _buildBackToLoginButton() {
+//     return TextButton(
+//       onPressed: () {
+//         // Redirect to Email Login Screen
+//         context.go('/email-login');
+//       },
+//       child: Align(
+//         alignment: Alignment.center,
+//         child: Text('register.back_to_sign_in'.tr(),
+//             style: TextStyle(
+//                 color: Colors.grey.shade600,
+//                 fontSize:
+//                     ResponsiveDesignOrientation.isLandscape ? 9.w : 14.sp)),
+//       ),
+//     );
+//   }
+
+//   Widget _buildDividerWithText(String text) {
+//     return Row(
+//       children: [
+//         const Expanded(
+//             child: Divider(thickness: 1.0, color: Color(0xFF34BDFA))),
+//         Padding(
+//           padding: EdgeInsets.symmetric(horizontal: 8.w),
+//           child: Text(
+//             text,
+//             style: TextStyle(
+//                 fontWeight: FontWeight.bold,
+//                 fontSize:
+//                     ResponsiveDesignOrientation.isLandscape ? 9.sp : 14.sp,
+//                 color: Colors.grey.shade600),
+//           ),
+//         ),
+//         const Expanded(
+//             child: Divider(thickness: 1.0, color: Color(0xFF34BDFA))),
+//       ],
+//     );
+//   }
+
+//   Widget _buildSocialButtons() {
+//     return Column(
+//       children: [
+//         Padding(
+//           padding: EdgeInsets.only(
+//               left: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w,
+//               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
+//           child: LineLoginButton(
+//             onPressed: () {
+//               openLineLogin(context);
+//             },
+//           ),
+//         ),
+//         SizedBox(height: 16.h),
+//         Padding(
+//           padding: EdgeInsets.only(
+//               left: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w,
+//               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
+//           child: GoogleLoginButton(
+//             onPressed: () {
+//               openGoogleLogin(context);
+//             },
+//           ),
+//         ),
+//         SizedBox(height: 16.h),
+//         if (Platform.isIOS)
+//           Padding(
+//             padding: EdgeInsets.only(
+//                 left: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w,
+//                 right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
+//             child: AppleLoginButton(
+//               onPressed: () {
+//                 openAppleLogin(context);
+//               },
+//             ),
+//           ),
+//       ],
+//     );
+//   }
+
+//   Widget _buildPolicyScreen() {
+//     return Padding(
+//       padding: EdgeInsets.only(left: 15.w, right: 15.w),
+//       child: Center(
+//         child: Wrap(
+//           alignment: WrapAlignment.center,
+//           children: [
+//             Text(
+//               "term.read".tr(), //I have read and accepted the
+//               style: TextStyle(
+//                   fontSize:
+//                       ResponsiveDesignOrientation.isLandscape ? 9.sp : 12.sp,
+//                   color: kDark),
+//             ),
+//             GestureDetector(
+//               onTap: () {
+//                 // Redirect to TermsServiceScreen
+//                 context.go('/terms-service');
+//               },
+//               child: GradientTextStyle(
+//                 "term.service".tr(), //Terms of USE
+//                 gradient: const LinearGradient(
+//                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
+//                 style: TextStyle(
+//                     fontSize:
+//                         ResponsiveDesignOrientation.isLandscape ? 9.sp : 12.sp,
+//                     fontWeight: FontWeight.w400),
+//               ),
+//             ),
+//             Text(
+//               "term.and".tr(), // and
+//               style: TextStyle(
+//                   fontSize:
+//                       ResponsiveDesignOrientation.isLandscape ? 9.sp : 12.sp,
+//                   color: kDark),
+//             ),
+//             GestureDetector(
+//               onTap: () {
+//                 // Redirect to PrivacyPolicyScreen
+//                 context.go('/privacy-policy');
+//               },
+//               child: GradientTextStyle(
+//                 "term.policy".tr(), //Private Policy.
+//                 gradient: const LinearGradient(
+//                     colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
+//                 style: TextStyle(
+//                     fontSize:
+//                         ResponsiveDesignOrientation.isLandscape ? 9.sp : 12.sp,
+//                     fontWeight: FontWeight.w400),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import 'dart:io';
 import 'package:botnoivoice/shared/function/is_vaild_data.dart';
 import 'package:botnoivoice/shared/function/open_login_function.dart';
@@ -14,18 +458,18 @@ import 'package:botnoivoice/shared/widget/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -38,7 +482,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   /// ฟังก์ชันสมัครสมาชิก
   Future<void> _registerUser() async {
-    final emailRegisterProvider = context.read<EmailRegister>();
+    // final emailRegisterProvider = context.read<EmailRegister>();
+    final emailRegisterProvider = ref.read(emailRegisterNotifierProvider.notifier);
 
     if (_isLoading) return; // ป้องกันการกดปุ่มซ้ำ
     setState(() => _isLoading = true); // เริ่มสถานะการทำงาน
@@ -337,7 +782,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
           child: LineLoginButton(
             onPressed: () {
-              openLineLogin(context);
+              openLineLogin(ref);
             },
           ),
         ),
@@ -348,7 +793,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
           child: GoogleLoginButton(
             onPressed: () {
-              openGoogleLogin(context);
+              openGoogleLogin(ref);
             },
           ),
         ),
@@ -360,7 +805,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
             child: AppleLoginButton(
               onPressed: () {
-                openAppleLogin(context);
+                openAppleLogin(ref);
               },
             ),
           ),
@@ -425,3 +870,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+

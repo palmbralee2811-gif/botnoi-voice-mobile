@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ui/basic_mar_ads_text_field.dart';
@@ -14,14 +15,14 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_basic_log
 import 'package:logger/logger.dart';
 
 
-class MarAdsScreen extends StatefulWidget {
+class MarAdsScreen extends ConsumerStatefulWidget {
   const MarAdsScreen({super.key});
 
   @override
-  State<MarAdsScreen> createState() => _MarAdsScreenState();
+  ConsumerState<MarAdsScreen> createState() => _MarAdsScreenState();
 }
 
-class _MarAdsScreenState extends State<MarAdsScreen> {
+class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   final TextEditingController _productController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
@@ -124,7 +125,7 @@ MarAdsTextField(
                 color: kDark,
               ),
               onPressed: () {
-                context.go('/home');
+                context.pop();
               },
             ),
           ),
@@ -172,7 +173,7 @@ MarAdsTextField(
           SizedBox(height: 5.h),
           Container(
             height: 100.h,
-            padding: EdgeInsets.all(1.5),
+            padding: const EdgeInsets.all(1.5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.r),
               gradient: const LinearGradient(
@@ -446,6 +447,7 @@ MarAdsTextField(
       _logger.i("MarAds: start create_prompt_ads");
 
       final response = await _logic.createPromptAdsFromForm(
+        ref: ref,
         context: context,
         productName: _productController.text,
         brandName: _brandController.text,

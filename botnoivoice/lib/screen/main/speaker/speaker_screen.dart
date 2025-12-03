@@ -19,19 +19,20 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 
-class SpeakerScreen extends StatefulWidget {
+class SpeakerScreen extends ConsumerStatefulWidget {
   const SpeakerScreen({super.key});
 
   @override
-  State<SpeakerScreen> createState() => _SpeakerScreenState();
+  ConsumerState<SpeakerScreen> createState() => _SpeakerScreenState();
 }
 
-class _SpeakerScreenState extends State<SpeakerScreen> {
+class _SpeakerScreenState extends ConsumerState<SpeakerScreen> {
   final Logger _logger = Logger();
 
   AudioPlayer audioPlayer = AudioPlayer();
@@ -68,6 +69,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
 
     loadInitialData(
       context: context,
+      ref: ref,
       logger: _logger,
       setSelectedIndexFavorites: (fetchedFavorites) {
         if (mounted) {
@@ -184,6 +186,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           onSpeakerTap: (index, speakerItem) async {
                             await handleSpeakerTap(
                               context: context,
+                              ref: ref,
                               index: index,
                               speakerItem: speakerItem,
                               audioPlayer: audioPlayer,
@@ -200,6 +203,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           onFavoriteToggle: (speakerId) async {
                             await handleFavoriteToggle(
                               context: context,
+                              ref: ref,
                               logger: _logger,
                               speakerId: speakerId,
                               selectedIndexFavorites: selectedIndexFavorites,
@@ -224,6 +228,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           onSpeakerTap: (index, speakerItem) async {
                             await handleSpeakerTap(
                               context: context,
+                              ref: ref,
                               index: index,
                               speakerItem: speakerItem,
                               audioPlayer: audioPlayer,
@@ -240,6 +245,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
                           onFavoriteToggle: (speakerId) async {
                             await handleFavoriteToggle(
                               context: context,
+                              ref: ref,
                               logger: _logger,
                               speakerId: speakerId,
                               selectedIndexFavorites: selectedIndexFavorites,

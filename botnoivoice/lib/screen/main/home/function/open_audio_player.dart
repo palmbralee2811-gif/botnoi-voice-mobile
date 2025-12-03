@@ -21,6 +21,7 @@ Future openAudioPlayerDialog(
 
     // Open Audio Player Dialog with `file.path` and `audioUrl`
     await showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => AudioPlayerDialog(filePath: file.path, audioUrl: audioUrl),
     );

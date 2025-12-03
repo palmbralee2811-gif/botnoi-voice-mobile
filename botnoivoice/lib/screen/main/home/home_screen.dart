@@ -1,6 +1,6 @@
 import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/screen/main/home/function/generate_audio.dart';
 import 'package:botnoivoice/screen/main/home/function/open_audio_player.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
@@ -14,21 +14,21 @@ import 'package:botnoivoice/shared/widget/gradient/gradient_row.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _textController = TextEditingController();
   final InternetChecker _internetChecker = InternetChecker();
 
@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _generateAudio() async {
+    // เริ่มต้น Loading
     if (mounted) {
       setState(() {
         _isGenerateAudio = true;
@@ -76,10 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     await _audioPlayer.stop();
+
+    // ตรวจสอบข้อความว่าง
     if (_textController.text.isEmpty) {
       NotificationPopup(
-              context: context,
-              text: 'home_screen.please_type_message'.tr()) //กรุณาพิมพ์ข้อความ
+              context: context, text: 'home_screen.please_type_message'.tr())
           .showAsError();
       if (mounted) {
         setState(() {
@@ -89,38 +91,100 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    await _generateAudioConfirmed();
+    try {
+      // 1. เรียก Generate API และรับค่า bool ว่าสำเร็จหรือไม่
+      final bool isSuccess = await _generateAudioConfirmed();
 
-    if (mounted) {
-      setState(() {
-        _isGenerateAudio = false;
-      });
+      // [เพิ่ม] ถ้าไม่สำเร็จ (เช่น error 403, 500 หรือ url ว่าง) ให้หยุดการทำงานตรงนี้
+      if (!isSuccess) {
+        if (mounted) {
+          setState(() {
+            _isGenerateAudio = false;
+          });
+        }
+        return; // ออกจากฟังก์ชันทันที ไม่ไปโหลด token ต่อ
+      }
+
+      // 2. ถ้าสำเร็จ (isSuccess == true) ค่อยทำการโหลด Points ใหม่
+      if (mounted) {
+        await loadAllTokensIfLoggedIn(ref);
+      }
+
+      // 3. เมื่อโหลดเสร็จแล้ว ค่อยปิด Loading และแสดง SnackBar Success
+      if (mounted) {
+        setState(() {
+          _isGenerateAudio = false;
+        });
+
+        // แสดง SnackBar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: 8.w),
+                Text(
+                  'Successfully Updated Points',
+                  style: GoogleFonts.prompt(
+                      color: Colors.white,
+                      fontSize: ResponsiveDesignOrientation.isLandscape
+                          ? 10.sp
+                          : 14.sp),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // จัดการกรณี Error และปิด Loading
+      _logger.e("Error during generate audio: $e");
+      if (mounted) {
+        setState(() {
+          _isGenerateAudio = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating points: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
-  Future<void> _generateAudioConfirmed() async {
-    final creditsProvider = context.read<CallReloadData>();
-
-    final speakerProvider = context.read<HomeSpeakerDataManagement>();
+  // Check Generate Audio Status before Refresh Points
+  Future<bool> _generateAudioConfirmed() async {
+    final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
     final isV2 = speakerProvider.isV2;
 
     if (_textController.text.isNotEmpty) {
       final String audioUrl = await generateAudio(
-        context,
-        _textController.text,
-        _audioUrl,
-        _isGenerateAudio,
+        ref: ref,
+        text: _textController.text,
+        audioUrl: _audioUrl,
+        isGenerateAudio: _isGenerateAudio,
         isV2: isV2,
       );
-      await creditsProvider.callLoadCreditsApi(context);
+
+      // เช็คว่าถ้าได้ URL มาแสดงว่าทำงานสำเร็จ
       if (audioUrl.isNotEmpty) {
         await openAudioPlayerDialog(
           context,
           audioUrl,
           "BotnoiVoice${randomStringOfNumbers(6)}.mp3",
         );
+        return true; // ส่งค่ากลับว่า สำเร็จ
       }
     }
+    return false; // ส่งค่ากลับว่า ไม่สำเร็จ
   }
 
   @override
