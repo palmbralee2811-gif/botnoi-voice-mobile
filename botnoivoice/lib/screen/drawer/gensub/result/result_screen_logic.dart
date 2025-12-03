@@ -176,10 +176,17 @@ class ResultLogic {
         final projectIdFromChunk = rawSegments.first['project_id'] ?? projectId;
 
         // 🚩 FIX 1: ดึงวันที่สร้างและแปลงเป็น Local Time
-        final createAtStr = rawSegments.first['create_at'];
-        final createdAt = (createAtStr != null)
-            ? DateTime.tryParse(createAtStr)?.toLocal() ?? DateTime.now().toLocal()
-            : DateTime.now().toLocal();
+       final createAtStr = rawSegments.first['create_at'];
+        DateTime createdAt;
+
+        if (createAtStr != null) {
+          // แปลงเป็น String และลบตัว 'Z' ทิ้งเพื่อไม่ให้คิดเป็น UTC
+          String cleanStr = createAtStr.toString().replaceAll('Z', '');
+          // parse เฉยๆ โดยไม่ใช้ .toLocal() เพื่อรักษาตัวเลขเวลาเดิม (15:24) ไว้
+          createdAt = DateTime.tryParse(cleanStr) ?? DateTime.now();
+        } else {
+          createdAt = DateTime.now();
+        }
 
         // 🚩 FIX 2: กำหนดชื่อโปรเจกต์อย่างถูกต้อง
         String finalProjectName;
