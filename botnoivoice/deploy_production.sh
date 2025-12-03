@@ -1,3 +1,5 @@
+# /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/deploy_production.sh
+
 #!/bin/bash
 
 # :x: ถ้ามี error บรรทัดไหน ให้หยุดทำงานทันที (ป้องกันการอัปไฟล์เสีย)
