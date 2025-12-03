@@ -11,6 +11,7 @@ import 'package:path/path.dart' as p;
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
+import 'dart:convert'; // จำเป็นสำหรับ encoding: utf8
 
 class ResultLogic {
   final String userId;
@@ -29,7 +30,7 @@ class ResultLogic {
     required this.filePath,
     required this.workspaceId,
     required this.duration,
-    required this.initialProjectName, 
+    required this.initialProjectName,
     this.audioS3Link,
   }) {
     audioPlayer = AudioPlayer();
@@ -51,10 +52,6 @@ class ResultLogic {
   }
 
   /// Set audio source with Referer header support for S3 (hotlink protection).
-  /// Flow:
-  /// 1) Try s3Link (with Referer header) via AudioSource.uri
-  /// 2) If that fails, try downloading bytes with Referer header and save to temp file, then setFilePath
-  /// 3) If localPath exists, use local file
   Future<void> setProjectAudioSource(String localPath, String? s3Link) async {
     debugPrint("🔊 setProjectAudioSource localPath = '$localPath'");
     debugPrint("🔊 setProjectAudioSource s3Link = '$s3Link'");
@@ -77,7 +74,7 @@ class ResultLogic {
         // fallthrough to try download fallback or local
       }
 
-      // Download fallback: sometimes remote requires extra handshake, so fetch bytes with header and save to temp file
+      // Download fallback
       try {
         debugPrint("Audio Source: Attempting to download S3 file as fallback...");
         final resp = await http.get(
@@ -88,14 +85,16 @@ class ResultLogic {
         if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
           final tmpDir = await getTemporaryDirectory();
           final ext = _guessExtensionFromContentType(resp.headers['content-type']);
-          final tmpPath = p.join(tmpDir.path, 'botnoi_${DateTime.now().millisecondsSinceEpoch}$ext');
+          final tmpPath = p.join(
+              tmpDir.path, 'botnoi_${DateTime.now().millisecondsSinceEpoch}$ext');
           final f = File(tmpPath);
           await f.writeAsBytes(resp.bodyBytes);
           await audioPlayer.setFilePath(tmpPath);
           debugPrint("Audio Source: Set using downloaded temp file: $tmpPath");
           return;
         } else {
-          debugPrint("Audio Source: Download fallback failed: status=${resp.statusCode}");
+          debugPrint(
+              "Audio Source: Download fallback failed: status=${resp.statusCode}");
         }
       } catch (e) {
         debugPrint("Audio Source: Download fallback error: $e");
@@ -114,7 +113,8 @@ class ResultLogic {
           debugPrint("Audio Source: setFilePath failed: $e");
         }
       } else {
-        debugPrint("Audio Source: localPath provided but file not found: $localPath");
+        debugPrint(
+            "Audio Source: localPath provided but file not found: $localPath");
       }
     }
 
@@ -143,12 +143,11 @@ class ResultLogic {
       );
       final rawSegments = (chunksJson['data'] as List<dynamic>? ?? []);
 
-      // ดึง project_name จาก JSON ตรงๆ 
+      // ดึง project_name จาก JSON ตรงๆ
       final projectData = rawSegments.isNotEmpty ? rawSegments.first : chunksJson;
       final projectNameFromApi = projectData['project_name'] as String?;
-      
-      debugPrint('RAW project json: ${projectData.toString()}');
 
+      debugPrint('RAW project json: ${projectData.toString()}');
 
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
         final durationStr = (s['duration'] ?? '') as String;
@@ -175,28 +174,25 @@ class ResultLogic {
 
       if (segments.isNotEmpty) {
         final projectIdFromChunk = rawSegments.first['project_id'] ?? projectId;
-        
-        // 🚩 FIX 1: ดึงวันที่สร้างและแปลงเป็น Local Time (แก้ปัญหา +7 ชม.)
-        final createAtStr = rawSegments.first['create_at'];
-        final createdAt = (createAtStr != null) 
-          ? DateTime.tryParse(createAtStr)?.toLocal() ?? DateTime.now().toLocal() 
-          : DateTime.now().toLocal();
 
-        // 🚩 FIX 2: กำหนดชื่อโปรเจกต์อย่างถูกต้อง (ใช้ชื่อที่ส่งมาจากหน้า List เป็นหลัก)
+        // 🚩 FIX 1: ดึงวันที่สร้างและแปลงเป็น Local Time
+        final createAtStr = rawSegments.first['create_at'];
+        final createdAt = (createAtStr != null)
+            ? DateTime.tryParse(createAtStr)?.toLocal() ?? DateTime.now().toLocal()
+            : DateTime.now().toLocal();
+
+        // 🚩 FIX 2: กำหนดชื่อโปรเจกต์อย่างถูกต้อง
         String finalProjectName;
-        
+
         if (initialProjectName.isNotEmpty) {
-            // 1. ใช้ชื่อที่ส่งมาเมื่อเปิดจาก List (เช่น "nemo")
-            finalProjectName = initialProjectName;
-        } else if (filePath.trim().isNotEmpty && p.basenameWithoutExtension(filePath).length > 2) {
-            // 2. ถ้ามี filePath ที่สมบูรณ์ (มักเป็นโปรเจกต์ใหม่) ให้ใช้ชื่อจาก Path
-            finalProjectName = p.basenameWithoutExtension(filePath);
+          finalProjectName = initialProjectName;
+        } else if (filePath.trim().isNotEmpty &&
+            p.basenameWithoutExtension(filePath).length > 2) {
+          finalProjectName = p.basenameWithoutExtension(filePath);
         } else if (projectNameFromApi != null && projectNameFromApi.isNotEmpty) {
-            // 3. ถ้า filePath ว่าง/ไม่สมบูรณ์ แต่มี project_name จาก API ให้ใช้ตัวนี้
-             finalProjectName = projectNameFromApi;
+          finalProjectName = projectNameFromApi;
         } else {
-             // 4. ใช้ project ID เป็นทางเลือกสุดท้าย
-             finalProjectName = projectIdFromChunk;
+          finalProjectName = projectIdFromChunk;
         }
 
         final hasAnyText = segments.any((s) =>
@@ -225,25 +221,23 @@ class ResultLogic {
           }
         }
 
-        // Determine a reasonable project-level S3 link:
-        // prefer audioS3Link passed into this ResultLogic, otherwise try first segment's s3_link
         String? projectLevelS3 = audioS3Link;
-        if ((projectLevelS3 == null || projectLevelS3.isEmpty) && finalSegments.isNotEmpty) {
+        if ((projectLevelS3 == null || projectLevelS3.isEmpty) &&
+            finalSegments.isNotEmpty) {
           final seg0 = finalSegments.first;
           final cand = seg0['s3_link'];
           if (cand is String && cand.isNotEmpty) {
             projectLevelS3 = cand;
           }
         }
-        
-        // 🚩 FIX 3: ตั้งค่า Audio Source หลัก (ไฟล์เสียงเต็ม)
-        await setProjectAudioSource(filePath, projectLevelS3);
 
+        // 🚩 FIX 3: ตั้งค่า Audio Source หลัก
+        await setProjectAudioSource(filePath, projectLevelS3);
 
         return ProjectModel(
           projectId: projectIdFromChunk,
-          projectName: finalProjectName, // 👈 ใช้ชื่อไฟล์ที่แก้ไขแล้ว
-          createdAt: createdAt, 
+          projectName: finalProjectName,
+          createdAt: createdAt,
           duration: duration,
           filePath: filePath,
           segments: finalSegments,
@@ -272,10 +266,8 @@ class ResultLogic {
         "original_text": null,
       }
     ];
-    
-    // หากไม่พบ Segment ใดๆ ให้ตั้งค่า Source หลักด้วย
-    await setProjectAudioSource(filePath, audioS3Link);
 
+    await setProjectAudioSource(filePath, audioS3Link);
 
     return ProjectModel(
       projectId: workspaceId,
@@ -302,7 +294,7 @@ class ResultLogic {
     return 0.0;
   }
 
-  /// Play a single segment. If segment contains its own s3_link, use it with Referer header.
+  /// Play a single segment.
   Future<void> playSegment(
     int index,
     List<Map<String, dynamic>> segments,
@@ -312,10 +304,6 @@ class ResultLogic {
     debugPrint('-----------------------------');
     debugPrint('▶ PLAY SEGMENT index = $index');
     debugPrint('▶ segment id = ${segment['id']}');
-    debugPrint('▶ segment s3_link = ${segment['s3_link']}');
-    debugPrint('▶ project audioS3Link = $audioS3Link');
-    debugPrint('▶ start = ${segment['start']} , end = ${segment['end']}');
-    debugPrint('-----------------------------');
 
     final startSec =
         (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
@@ -335,19 +323,15 @@ class ResultLogic {
       return;
     }
 
-    // 🚩 FIX: ต้องสั่ง Stop ก่อนเสมอเพื่อ Clear Clip และให้ Player กลับสู่สถานะพร้อม
     await audioPlayer.stop();
 
-    // 🚩 Logic การเปลี่ยน Source กลับมาเหมือนเดิม เพื่อให้ Segment 1+ เล่นได้ 
-    // (เรายอมให้มีการโหลดซ้ำเกิดขึ้นเพื่อแก้ปัญหาการไม่เล่น)
-    
     bool newSourceSet = false;
 
-    // 1. If segment provides its own s3_link, set that as source with Referer header.
-    final segS3 = (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
+    // 1. If segment provides its own s3_link
+    final segS3 =
+        (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
     if (segS3 != null && segS3.isNotEmpty && segS3.startsWith('http')) {
       try {
-        // หากมี Segment S3 Link ให้พยายามโหลด Segment สั้นๆ นี้
         await audioPlayer.setAudioSource(
           AudioSource.uri(
             Uri.parse(segS3),
@@ -360,14 +344,15 @@ class ResultLogic {
         newSourceSet = true;
       } catch (e) {
         debugPrint('Failed to set segment s3_link source: $e');
-        // Try download fallback for this segment
         try {
           final resp = await http.get(Uri.parse(segS3),
               headers: {'Referer': 'https://voice.botnoi.ai/'});
           if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
             final tmpDir = await getTemporaryDirectory();
-            final ext = _guessExtensionFromContentType(resp.headers['content-type']);
-            final tmpPath = p.join(tmpDir.path, 'botnoi_seg_${DateTime.now().millisecondsSinceEpoch}$ext');
+            final ext =
+                _guessExtensionFromContentType(resp.headers['content-type']);
+            final tmpPath = p.join(tmpDir.path,
+                'botnoi_seg_${DateTime.now().millisecondsSinceEpoch}$ext');
             final f = File(tmpPath);
             await f.writeAsBytes(resp.bodyBytes);
             await audioPlayer.setFilePath(tmpPath);
@@ -378,11 +363,13 @@ class ResultLogic {
           debugPrint('Segment download fallback failed: $e2');
         }
       }
-    } 
-    
+    }
+
     // 2. Fallback to Project-level S3 link
-    // ถ้า Source ถูกเปลี่ยนเป็น Segment สั้น ๆ ไปแล้ว เราต้องโหลด Source หลักกลับมา
-    if (!newSourceSet && audioS3Link != null && audioS3Link!.isNotEmpty && audioS3Link!.startsWith('http')) {
+    if (!newSourceSet &&
+        audioS3Link != null &&
+        audioS3Link!.isNotEmpty &&
+        audioS3Link!.startsWith('http')) {
       try {
         await audioPlayer.setAudioSource(
           AudioSource.uri(
@@ -390,41 +377,41 @@ class ResultLogic {
             headers: {'Referer': 'https://voice.botnoi.ai/'},
           ),
         );
-        debugPrint('Set audio source from project-level audioS3Link with Referer');
+        debugPrint(
+            'Set audio source from project-level audioS3Link with Referer');
         newSourceSet = true;
       } catch (e) {
         debugPrint('Failed to set project-level s3 source: $e');
       }
     }
-    
+
     // 3. Final Fallback to Local File Path
     if (!newSourceSet && filePath.trim().isNotEmpty) {
-        final file = File(filePath);
-        if (await file.exists()) {
-            try {
-                await audioPlayer.setFilePath(filePath);
-                debugPrint('Set audio source from Local File Path as final fallback');
-                newSourceSet = true;
-            } catch (e) {
-                debugPrint('Final setFilePath failed: $e');
-            }
+      final file = File(filePath);
+      if (await file.exists()) {
+        try {
+          await audioPlayer.setFilePath(filePath);
+          debugPrint(
+              'Set audio source from Local File Path as final fallback');
+          newSourceSet = true;
+        } catch (e) {
+          debugPrint('Final setFilePath failed: $e');
         }
-    }
-    
-    if (!newSourceSet) {
-        debugPrint('ERROR: Could not set any audio source for segment playback.');
-        return; // หยุดทำงานถ้าไม่มี Source
+      }
     }
 
-    // Small delay to allow player to fetch metadata / be ready before setting clip
+    if (!newSourceSet) {
+      debugPrint('ERROR: Could not set any audio source for segment playback.');
+      return;
+    }
+
     await Future.delayed(const Duration(milliseconds: 200));
 
-    // Set clip (ทำงานกับไฟล์เสียงเต็ม/ไฟล์ segment)
     try {
       await audioPlayer.setClip(start: start, end: end);
     } catch (e) {
       debugPrint('setClip failed: $e');
-      return; 
+      return;
     }
 
     try {
@@ -457,8 +444,8 @@ class ResultLogic {
     segments.removeAt(index);
   }
 
-  Future<void> saveEdits(
-      WidgetRef ref, ProjectModel project, List<Map<String, dynamic>> segments) async {
+  Future<void> saveEdits(WidgetRef ref, ProjectModel project,
+      List<Map<String, dynamic>> segments) async {
     for (var s in segments) {
       await updateAudioApproveSegment(
         ref,
@@ -508,9 +495,21 @@ class ResultLogic {
     }
   }
 
+  // 🔥 UPDATE: เพิ่มการแสดงช่วงเวลา และแก้ Encoding
   Future<File> exportTxt(BuildContext context, ProjectModel project) async {
     final buffer = StringBuffer();
     for (var s in project.segments) {
+      // คำนวณเวลา Start - End
+      final start = Duration(milliseconds: (s['start'] * 1000).round());
+      final end = Duration(milliseconds: (s['end'] * 1000).round());
+      
+      final startText = _formatDuration(start);
+      final endText = _formatDuration(end);
+
+      // เขียนรูปแบบตามที่ต้องการ:
+      // 00:00 - 00:02
+      // ข้อความ...
+      buffer.writeln("$startText - $endText");
       buffer.writeln(s['text']);
     }
 
@@ -518,7 +517,9 @@ class ResultLogic {
     final cleanName = p.basenameWithoutExtension(project.projectName);
     final file = File("${dir.path}/$cleanName.txt");
 
-    await file.writeAsString(buffer.toString());
+    // ใช้ \uFEFF และ utf8 เพื่อแก้ภาษาต่างดาว
+    await file.writeAsString('\uFEFF${buffer.toString()}', encoding: utf8);
+    
     debugPrint("TXT saved at: ${file.path}");
     return file;
   }
@@ -541,7 +542,9 @@ class ResultLogic {
     final cleanName = p.basenameWithoutExtension(project.projectName);
     final file = File("${dir.path}/$cleanName.srt");
 
-    await file.writeAsString(buffer.toString());
+    // ใช้ \uFEFF และ utf8 เช่นกัน
+    await file.writeAsString('\uFEFF${buffer.toString()}', encoding: utf8);
+    
     debugPrint("SRT saved at: ${file.path}");
     return file;
   }
