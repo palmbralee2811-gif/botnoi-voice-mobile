@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart'; // import provider
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
@@ -59,7 +60,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 3,
         child: SizedBox(
-          height: 200, // ✅ เพิ่มความสูงให้มีพื้นที่วางตรงกลาง
+          height: 200,
           width: double.infinity,
           child: Center(
             child: Column(
@@ -71,13 +72,13 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   "upload_gensub.title".tr(),
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
+                  textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
                 ),
                 const SizedBox(height: 6),
                 Text(
                   "upload_gensub.expand_title".tr(),
                   style: const TextStyle(color: Colors.black54),
-                  textAlign: TextAlign.center, // ✅ จัดให้กลางแนวนอน
+                  textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
                 ),
                 const SizedBox(height: 20),
                 OutlinedButton.icon(
@@ -139,15 +140,13 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
               children: [
                 Text("text_to_gensub.audio_language".tr()),
                 LanguageSelector(
-                  selectedLanguage:
-                      controller.selectedLanguageName, // <-- ใช้ชื่อแทน
+                  selectedLanguage: controller.selectedLanguageName,
                   selectedLanguageImage: controller.selectedLanguageImage,
                   onSelected: (lang) {
                     setState(() {
                       controller.selectedLanguage = lang['code'];
                       controller.selectedLanguageImage = lang['image'];
 
-                      // แสดงชื่อให้ตรงกับภาษาของแอป
                       final locale = context.locale.languageCode;
                       switch (locale) {
                         case 'th':
@@ -165,7 +164,6 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -264,15 +262,11 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
               ],
             ),
             const SizedBox(height: 16),
-
-            // ปุ่มถอดเสียงพร้อม loading ข้างใน
             ElevatedButton.icon(
               onPressed: isLoading
                   ? null
                   : () async {
                       setState(() => isLoading = true);
-
-                      // ✅ แก้ไข: ส่ง context เข้าไปใน transcribeFile
                       final success =
                           await controller.transcribeFile(ref, context);
 
@@ -283,7 +277,8 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       if (success &&
                           mounted &&
                           controller.lastProject != null) {
-                        widget.onProjectCreated(controller.lastProject!);
+                        // widget.onProjectCreated(controller.lastProject!);
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -320,7 +315,6 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ),
             ),
-
             if (controller.transcribeStatus != null) ...[
               const SizedBox(height: 12),
               Text(
@@ -345,20 +339,38 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
       return "$m:$s";
     }
 
+    final isDescending = ref.watch(uploadRecordProvider).isDescending;
+
     return Column(
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
               color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
-          child: Text(
-            "text_to_gensub.project".tr(),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueAccent,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "text_to_gensub.project".tr(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  isDescending ? Icons.arrow_downward : Icons.arrow_upward,
+                  color: Colors.blueAccent,
+                  size: 20,
+                ),
+                tooltip: isDescending ? "Newest First" : "Oldest First",
+                onPressed: () {
+                  ref.read(uploadRecordProvider.notifier).toggleSort();
+                },
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 10),
@@ -384,11 +396,13 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       const Icon(Icons.timer, size: 14, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(formatDuration(project.duration)),
-                      const SizedBox(width: 12),
-                      const Icon(Icons.text_snippet,
-                          size: 14, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text("${project.segments.length}"),
+                      if (project.segments.isNotEmpty) ...[
+                        const SizedBox(width: 12),
+                        const Icon(Icons.text_snippet,
+                            size: 14, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text("${project.segments.length}"),
+                      ],
                     ],
                   ),
                 ],
@@ -413,9 +427,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                               onPressed: () => Navigator.pop(context, true),
                               child: Text(
                                 "dialog.delete".tr(),
-                                style: const TextStyle(
-                                    color: Colors
-                                        .red), // <--- **ใส่ 'const' ที่นี่**
+                                style: const TextStyle(color: Colors.red),
                               ),
                             ),
                           ],

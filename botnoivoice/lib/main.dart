@@ -154,7 +154,7 @@ void main() async {
     print("LineSDK Prepared");
   });
 
-  // โหลดภาษาเริ่มต้นจาก LanguageHelper
+  // โหลดภาษาเริ่มต้นจาก LanguageHelper                 
   String localeCode = await loadSelectedLanguage();
   Locale initialLocale =
       localeCode.isNotEmpty ? Locale(localeCode) : const Locale('th');

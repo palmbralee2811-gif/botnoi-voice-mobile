@@ -3,60 +3,60 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 
-/// State class
 class UploadRecordState {
   final int selectedIndex;
   final List<ProjectModel> projects;
   final bool loading;
-  // final String apiToken; // <<< ลบออก ไม่จำเป็นต้องเก็บ token ใน State อีกแล้ว
+  final bool isDescending;
 
   const UploadRecordState({
     this.selectedIndex = 0,
     this.projects = const [],
     this.loading = true,
-    // this.apiToken = '', // <<< ลบออก
+    this.isDescending = true,
   });
 
   UploadRecordState copyWith({
     int? selectedIndex,
     List<ProjectModel>? projects,
     bool? loading,
-    // String? apiToken, // <<< ลบออก
+    bool? isDescending,
   }) {
     return UploadRecordState(
       selectedIndex: selectedIndex ?? this.selectedIndex,
       projects: projects ?? this.projects,
       loading: loading ?? this.loading,
-      // apiToken: apiToken ?? this.apiToken, // <<< ลบออก
+      isDescending: isDescending ?? this.isDescending,
     );
   }
 }
 
-/// StateNotifier (แทน ChangeNotifier)
 class UploadRecordLogic extends StateNotifier<UploadRecordState> {
-  UploadRecordLogic()
-      : super(
-          // ❌ ลบการใช้ dotenv/apiToken ใน constructor
-          const UploadRecordState(),
-        );
+  UploadRecordLogic() : super(const UploadRecordState());
 
-  // ✅ เพิ่ม BuildContext เป็น Argument
+  /// ✅ ฟังก์ชันช่วยแปลงวันที่ (แก้ปัญหา Timezone/Format ผิด)
+  DateTime _parseDate(dynamic dateStr) {
+    if (dateStr == null || dateStr.toString().isEmpty) return DateTime.now();
+    try {
+      // ลบ 'Z' ออกเพื่อป้องกันปัญหา UTC/Local ตีกัน
+      String cleanStr = dateStr.toString().replaceAll('Z', '');
+      return DateTime.tryParse(cleanStr) ?? DateTime.now();
+    } catch (e) {
+      return DateTime.now();
+    }
+  }
+
   Future<void> loadProjects(WidgetRef ref) async {
     state = state.copyWith(loading: true);
 
     try {
-      // final api = ProjectApiService(state.apiToken); // <<< ลบออก
-
-      // ✅ เรียกใช้ฟังก์ชัน Standalone API และส่ง context
       final list = await getAllWorkspaces(ref);
 
       final projects = (list['data'] as List<dynamic>?)?.map((item) {
-            // แปลง duration (Logic เดิม)
             Duration parsedDuration = Duration.zero;
             final rawDuration = item['duration']?.toString();
             if (rawDuration != null && rawDuration.isNotEmpty) {
               if (rawDuration.contains(":")) {
-                // เช่น "00:08"
                 final parts = rawDuration.split(":");
                 if (parts.length == 2) {
                   final minutes = int.tryParse(parts[0]) ?? 0;
@@ -64,7 +64,6 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
                   parsedDuration = Duration(minutes: minutes, seconds: seconds);
                 }
               } else {
-                // เช่น "7"
                 final seconds = int.tryParse(rawDuration) ?? 0;
                 parsedDuration = Duration(seconds: seconds);
               }
@@ -73,8 +72,8 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
             return ProjectModel(
               projectId: item['project_id'] ?? '',
               projectName: item['project_name'] ?? '',
-              createdAt:
-                  DateTime.tryParse(item['create_at'] ?? '') ?? DateTime.now(),
+              // ✅ ใช้วิธี parse แบบใหม่
+              createdAt: _parseDate(item['create_at']),
               duration: parsedDuration,
               filePath: item['file_path'] ?? '',
               segments: item['segments'] != null
@@ -86,6 +85,11 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
           }).toList() ??
           [];
 
+      // ✅ เรียงลำดับ
+      projects.sort((a, b) => state.isDescending
+          ? b.createdAt.compareTo(a.createdAt)
+          : a.createdAt.compareTo(b.createdAt));
+
       state = state.copyWith(projects: projects, loading: false);
     } catch (e) {
       debugPrint("Failed to load projects: $e");
@@ -93,26 +97,34 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
     }
   }
 
+  void toggleSort() {
+    final newOrder = !state.isDescending;
+    final sortedProjects = [...state.projects];
+
+    sortedProjects.sort((a, b) => newOrder
+        ? b.createdAt.compareTo(a.createdAt)
+        : a.createdAt.compareTo(b.createdAt));
+
+    state = state.copyWith(isDescending: newOrder, projects: sortedProjects);
+  }
+
   Future<void> addProject(ProjectModel project) async {
-    final updated = [...state.projects, project];
+    final updated = [project, ...state.projects];
+    updated.sort((a, b) => state.isDescending
+        ? b.createdAt.compareTo(a.createdAt)
+        : a.createdAt.compareTo(b.createdAt));
     state = state.copyWith(projects: updated);
   }
 
-  // ✅ เพิ่ม BuildContext เป็น Argument
   Future<void> deleteProject(WidgetRef ref, ProjectModel project) async {
     try {
-      // final api = ProjectApiService(state.apiToken); // <<< ลบออก
-
-      // ✅ เรียกใช้ฟังก์ชัน Standalone API และส่ง context
       await deleteAsrWorkspace(ref, project.projectId, project.userId);
-
       final updated = state.projects
           .where((p) => p.projectId != project.projectId)
           .toList();
       state = state.copyWith(projects: updated);
     } catch (e) {
       debugPrint("Failed to delete project: $e");
-      // Note: อาจจะต้องเพิ่ม logic จัดการ error ใน UI
     }
   }
 
@@ -121,7 +133,6 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
   }
 }
 
-/// Provider (อันนี้เอาไปใช้ใน widget)
 final uploadRecordProvider =
     StateNotifierProvider<UploadRecordLogic, UploadRecordState>((ref) {
   return UploadRecordLogic();
