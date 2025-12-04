@@ -81,6 +81,7 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
                   ? List<Map<String, dynamic>>.from(item['segments'])
                   : [],
               userId: item['user_id'] ?? '',
+              audioS3Link: null,
             );
           }).toList() ??
           [];

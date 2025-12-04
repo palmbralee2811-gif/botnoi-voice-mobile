@@ -273,6 +273,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                         userId: project.userId,
                         filePath: project.filePath,
                         duration: project.duration,
+                        projectName: project.projectName
                       ),
                     ),
                   );
@@ -510,6 +511,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                                     userId: project.userId,
                                     filePath: project.filePath,
                                     duration: project.duration,
+                                    projectName: project.projectName
                                   ),
                                 ),
                               );

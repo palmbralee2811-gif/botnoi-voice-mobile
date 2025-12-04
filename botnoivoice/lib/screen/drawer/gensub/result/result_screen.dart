@@ -15,7 +15,6 @@ Future<void> shareTextFile(BuildContext context, String filePath) async {
   final shareResult = await Share.shareXFiles(
     [XFile(filePath)],
     sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    // text: "เลือกว่าจะบันทึกหรือแชร์ไฟล์นี้",
     text: "Choose to save or share this file",
   );
 
@@ -40,6 +39,7 @@ class ResultScreen extends ConsumerStatefulWidget {
   final String userId;
   final String filePath;
   final Duration duration;
+  final String projectName;
 
   const ResultScreen({
     super.key,
@@ -47,6 +47,7 @@ class ResultScreen extends ConsumerStatefulWidget {
     required this.userId,
     required this.filePath,
     required this.duration,
+    required this.projectName,
   });
 
   @override
@@ -54,7 +55,8 @@ class ResultScreen extends ConsumerStatefulWidget {
 }
 
 class _ResultScreenState extends ConsumerState<ResultScreen> {
-  late ResultLogic controller;
+  ResultLogic? controller;
+
   late Future<ProjectModel?> _futureProject;
 
   int? editingIndex;
@@ -63,18 +65,47 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   void initState() {
     super.initState();
-    controller = ResultLogic(
+    _futureProject = _fetchAndSetupController();
+  }
+
+  Future<ProjectModel?> _fetchAndSetupController() async {
+    final tempController = ResultLogic(
       userId: widget.userId,
       filePath: widget.filePath,
       workspaceId: widget.workspaceId,
       duration: widget.duration,
+      audioS3Link: null,
+      initialProjectName: widget.projectName, // 🚩 ส่งชื่อโปรเจกต์ที่ถูกต้อง
     );
-    _futureProject = controller.fetchWorkspace(ref);
+
+    // fetchWorkspace จะดึง ProjectModel ที่มี createdAt และ projectName ถูกต้องแล้ว
+    final ProjectModel? project = await tempController.fetchWorkspace(ref);
+
+    if (project != null && mounted) {
+      final String? firstS3Link = project.segments.isNotEmpty
+          ? project.segments.first['s3_link'] as String?
+          : null;
+
+      final safeFilePath = widget.filePath; 
+
+      // 🚩 สร้าง Controller ตัวจริง โดยใช้ชื่อโปรเจกต์ที่ได้จาก API/Initial Name
+      // (เพื่อให้ Logic สามารถใช้งานชื่อนี้ได้ภายหลัง)
+      controller = ResultLogic(
+        userId: widget.userId,
+        filePath: safeFilePath,
+        workspaceId: widget.workspaceId,
+        duration: widget.duration,
+        audioS3Link: firstS3Link,
+        initialProjectName: project.projectName, 
+      );
+    }
+
+    return project;
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
   }
 
@@ -91,9 +122,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text("result_gensub.title".tr(),
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black87)),
+        title: Text(
+          "result_gensub.title".tr(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
         actions: [
           TextButton.icon(
             onPressed: () {
@@ -103,20 +138,22 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               );
             },
             icon: const Icon(Icons.upload_file, color: Colors.purple),
-            label: Text("result_gensub.upload".tr(),
-                style: const TextStyle(color: Colors.purple)),
+            label: Text(
+              "result_gensub.upload".tr(),
+              style: const TextStyle(color: Colors.purple),
+            ),
           ),
           const SizedBox(width: 8),
           TextButton.icon(
             onPressed: () async {
               final project = await _futureProject;
-              if (project != null) {
-                await controller.saveEdits(
+              if (project != null && controller != null) {
+                await controller!.saveEdits(
                   ref,
                   project,
                   project.segments,
                 );
-                await controller.finalizeProjectApprove(
+                await controller!.finalizeProjectApprove(
                   ref,
                   project,
                 );
@@ -162,18 +199,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   File file;
 
                                   if (selectedFormat == "txt") {
-                                    file = await controller.exportTxt(
+                                    file = await controller!.exportTxt(
                                         context, project);
                                     _showSnack(
                                         "${"result_gensub.saved_txt".tr()} ${file.path}");
                                   } else {
-                                    file = await controller.exportSrt(
+                                    file = await controller!.exportSrt(
                                         context, project);
                                     _showSnack(
                                         "${"result_gensub.saved_srt".tr()} ${file.path}");
                                   }
 
-                                  // 🟣 เรียกแชร์ไฟล์ต่อทันที
                                   await shareTextFile(context, file.path);
                                 } catch (e) {
                                   _showSnack(
@@ -195,8 +231,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               }
             },
             icon: const Icon(Icons.save, color: Colors.green),
-            label: Text("result_gensub.save".tr(),
-                style: const TextStyle(color: Colors.green)),
+            label: Text(
+              "result_gensub.save".tr(),
+              style: const TextStyle(color: Colors.green),
+            ),
           ),
           const SizedBox(width: 12),
         ],
@@ -204,12 +242,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       body: FutureBuilder<ProjectModel?>(
         future: _futureProject,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              controller == null) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
-                child: Text(
-                    "${"result_gensub.error".tr()} ${snapshot.error.toString()}"));
+              child: Text(
+                "${"result_gensub.error".tr()} ${snapshot.error.toString()}",
+              ),
+            );
           } else if (!snapshot.hasData || snapshot.data == null) {
             return Center(child: Text("result_gensub.no_workspace".tr()));
           }
@@ -224,7 +265,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Header
+                // Header (แสดงชื่อไฟล์และวันที่สร้างจริง)
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -246,31 +287,44 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // 🚩 1. ชื่อไฟล์ (Project Name)
                             Text(
+                              // แก้ไข: ใช้ project.projectName ที่ ResultLogic ดึงมาแล้ว
                               p.basenameWithoutExtension(project.projectName),
                               style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
                             const SizedBox(height: 4),
+                            // 🚩 2. วันที่สร้างโปรเจกต์ (Fixed Timezone)
                             Text(
+                              // แก้ไข: ใช้ project.createdAt ที่ถูกแปลง Timezone แล้ว
                               DateFormat('dd/MM/yyyy HH:mm')
-                                  .format(project.createdAt.toLocal()),
+                                  .format(project.createdAt), 
                               style: const TextStyle(
-                                  fontSize: 12, color: Colors.black54),
+                                fontSize: 12,
+                                color: Colors.black54,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      Text(controller.formatTime(project.duration),
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87)),
+                      // Duration (เช่น 00:07)
+                      Text(
+                        controller!.formatTime(project.duration),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
                     ],
                   ),
                 ),
 
-                /// Status
+                // Status
                 Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -284,17 +338,19 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       const Icon(Icons.warning, color: Colors.orange, size: 20),
                       const SizedBox(width: 6),
                       Text(
-                          "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
-                          style: const TextStyle(
-                              color: Colors.orange,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500)),
+                        "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       const Spacer(),
                     ],
                   ),
                 ),
 
-                /// Segments list
+                // Segments list
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
@@ -335,8 +391,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   autofocus: true,
                                   controller:
                                       TextEditingController(text: tempText)
-                                        ..selection = TextSelection.collapsed(
-                                            offset: tempText.length),
+                                        ..selection =
+                                            TextSelection.collapsed(
+                                                offset: tempText.length),
                                   onChanged: (val) => tempText = val,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
@@ -356,16 +413,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       },
                                       icon: const Icon(Icons.close,
                                           color: Colors.red),
-                                      label: Text("result_gensub.cancel".tr(),
-                                          style: const TextStyle(
-                                              color: Colors.red)),
+                                      label: Text(
+                                        "result_gensub.cancel".tr(),
+                                        style: const TextStyle(
+                                            color: Colors.red),
+                                      ),
                                     ),
                                     const SizedBox(width: 8),
                                     TextButton.icon(
                                       onPressed: () async {
                                         final approveText = tempText;
                                         try {
-                                          final res = await controller
+                                          final res = await controller!
                                               .updateAudioApproveSegment(
                                             ref,
                                             chunkId: segment['id'],
@@ -387,7 +446,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                               segment['approved'] = res['data']
                                                       ['approve'] ??
                                                   true;
-                                              editingIndex = null;
+                                              editingIndex = null; 
                                             });
                                             _showSnack(
                                                 "result_gensub.save_success"
@@ -403,9 +462,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       },
                                       icon: const Icon(Icons.check,
                                           color: Colors.blue),
-                                      label: Text("result_gensub.save".tr(),
-                                          style: const TextStyle(
-                                              color: Colors.blue)),
+                                      label: Text(
+                                        "result_gensub.save".tr(),
+                                        style: const TextStyle(
+                                            color: Colors.blue),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -429,9 +490,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             ),
                           const SizedBox(height: 6),
                           Text(
-                            "${controller.formatTime(start)} - ${controller.formatTime(end)}",
+                            "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.black54),
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Row(
@@ -439,15 +502,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             children: [
                               IconButton(
                                 icon: Icon(
-                                  controller.playingIndex == index &&
-                                          controller.audioPlayer.playing
+                                  controller!.playingIndex == index &&
+                                          controller!.audioPlayer.playing
                                       ? Icons.pause_circle_filled
                                       : Icons.play_circle_fill,
                                   color: Colors.purple,
                                   size: 28,
                                 ),
                                 onPressed: () async {
-                                  await controller.playSegment(
+                                  await controller!.playSegment(
                                     index,
                                     segments,
                                     () {
@@ -466,10 +529,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title:
-                                            Text("result_gensub.history".tr()),
+                                        title: Text(
+                                            "result_gensub.history".tr()),
                                         content: Text(
-                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}"),
+                                          "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}",
+                                        ),
                                         actions: [
                                           TextButton(
                                             child: Text(
@@ -488,7 +552,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       color: Colors.blue),
                                   onPressed: () async {
                                     try {
-                                      final res = await controller
+                                      final res = await controller!
                                           .updateAudioApproveSegment(
                                         ref,
                                         chunkId: segment['id'],
@@ -496,13 +560,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         approveText: segment['text'],
                                       );
 
-                                      if (res != null && res['data'] != null) {
+                                      if (res != null &&
+                                          res['data'] != null) {
                                         setState(() {
                                           segment['original_text'] =
                                               segment['text'];
-                                          segment['text'] = res['data']
-                                                  ['approve_text'] ??
-                                              segment['text'];
+                                          segment['text'] =
+                                              res['data']['approve_text'] ??
+                                                  segment['text'];
                                           segment['approved'] =
                                               res['data']['approve'] ?? true;
                                         });
@@ -524,7 +589,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       color: Colors.red),
                                   onPressed: () async {
                                     try {
-                                      await controller.deleteSegment(
+                                      await controller!.deleteSegment(
                                         ref,
                                         index,
                                         segments,
@@ -535,15 +600,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                           "result_gensub.delete_success".tr());
                                       if (segments.isEmpty && mounted) {
                                         Future.delayed(
-                                            const Duration(milliseconds: 400),
-                                            () {
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
+                                          const Duration(milliseconds: 400),
+                                          () {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
                                                 builder: (_) =>
-                                                    const UploadRecScreen()),
-                                          );
-                                        });
+                                                    const UploadRecScreen(),
+                                              ),
+                                            );
+                                          },
+                                        );
                                       }
                                     } catch (e) {
                                       _showSnack(
