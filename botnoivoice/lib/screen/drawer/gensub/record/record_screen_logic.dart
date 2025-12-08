@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:botnoivoice/screen/drawer/gensub/permission/permission_gensub.dart';
 import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart'; // เพิ่ม import นี้เพื่อใช้ BuildContext
+import 'package:flutter/material.dart'; // ต้อง import เพื่อใช้ BuildContext และ ScaffoldMessenger
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +12,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 
-// Import Standalone API Functions ใหม่ที่คุณสร้าง
+// Import Standalone API Functions
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
@@ -20,7 +20,6 @@ import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart
 class RecordLogic {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   final FlutterSoundPlayer _player = FlutterSoundPlayer();
-  // final ProjectApiService api; // <<< ลบออก
   final String currentUserId;
 
   bool isRecorderReady = false;
@@ -32,7 +31,6 @@ class RecordLogic {
   String? recordedFilePath;
   Duration? audioDuration;
 
-  // RecordLogic({required this.api, required this.currentUserId}); // <<< แก้ Constructor
   RecordLogic({required this.currentUserId});
 
   Future<void> initRecorder() async {
@@ -44,17 +42,13 @@ class RecordLogic {
     await _player.openPlayer();
   }
 
-  // เปลี่ยนไปส่งค่า boolean กลับมา
   Future<bool> _checkAndroidRequestPermissions(BuildContext context) async {
     bool hasPermission = await GenSubPermission().requestPermissionGenSub();
-
-    // หากไม่ได้รับอนุญาต ให้แสดง Dialog
     if (!hasPermission) {
       OpenAppSettingsDialog(
               context: context, text: 'audio_player.permission_denied'.tr())
           .showPermissionDeniedDialog();
     }
-    // ส่งสถานะการอนุญาตกลับไป
     return hasPermission;
   }
 
@@ -63,27 +57,21 @@ class RecordLogic {
     bool hasPermission = await _checkAndroidRequestPermissions(context);
     if (!hasPermission) return;
 
-    // ถ้ายังไม่ได้ initRecorder ให้ init ก่อน
     if (!isRecorderReady) {
       await initRecorder();
     }
 
     if (isRecording) {
-      // 🟥 หยุดการอัด
       final path = await _recorder.stopRecorder();
-
-      // 🧠 ปิดและเปิด recorder ใหม่เพื่อ reset state
       await _recorder.closeRecorder();
       await _recorder.openRecorder();
 
-      // ✅ รอไฟล์ถูกเขียนเสร็จ
       final file = File(path!);
       for (int i = 0; i < 5; i++) {
         if (await file.exists()) break;
         await Future.delayed(const Duration(milliseconds: 200));
       }
 
-      // ✅ ตรวจไฟล์ก่อนเล่น
       if (await file.exists()) {
         final player = AudioPlayer();
         try {
@@ -100,12 +88,10 @@ class RecordLogic {
         }
       }
     } else {
-      // 🟩 เริ่มอัดเสียงใหม่
       final dir = await getTemporaryDirectory();
       final randomCode = randomStringOfCapitals(5);
       final path = '${dir.path}/recording_$randomCode.aac';
 
-      // ปิด recorder เก่าถ้ามันยังเปิดอยู่ (กัน state ซ้ำ)
       if (_recorder.isStopped == false) {
         await _recorder.stopRecorder();
       }
@@ -146,9 +132,10 @@ class RecordLogic {
     return '$minutes:$seconds';
   }
 
-  // <<< Method ที่รับ BuildContext เพื่อเรียก API >>>
+  // 🔥🔥🔥 ฟังก์ชันหลักที่แก้ไขให้แสดง SnackBar เมื่อเกิด Error 🔥🔥🔥
   Future<ProjectModel?> handleTranscribe(
-    WidgetRef ref, // รับ BuildContext
+    WidgetRef ref, 
+    BuildContext context, // ต้องรับ context เข้ามา
     {
     int maxSegmentDuration = 10,
     double maxSilenceDuration = 0.3,
@@ -158,14 +145,11 @@ class RecordLogic {
     try {
       final file = File(recordedFilePath!);
 
-      // 1) upload (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
-      final uploadResult = await uploadAudioToGensub(
-        ref,
-        file: file,
-      );
+      // 1) upload
+      final uploadResult = await uploadAudioToGensub(ref, file: file);
       debugPrint("Upload result: $uploadResult");
 
-      // 2) insert workspace (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 2) insert workspace
       final projectName = file.path.split('/').last;
       final insertResult = await insertAsrWorkspace(
         ref: ref,
@@ -177,12 +161,10 @@ class RecordLogic {
       );
       debugPrint("Insert workspace result: $insertResult");
 
-      // ดึง project_id และ user_id จาก backend
-      final projectId =
-          insertResult["data"]?["project_id"] ?? randomStringOfCapitals(8);
+      final projectId = insertResult["data"]?["project_id"] ?? randomStringOfCapitals(8);
       final realUserId = insertResult["data"]?["user_id"] ?? currentUserId;
 
-      // 3) cut audio (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 3) cut audio
       final cutResult = await cutAudio(
         ref,
         filePath: recordedFilePath!,
@@ -195,21 +177,17 @@ class RecordLogic {
         maxSilence: maxSilenceDuration.toString(),
         language: selectedLanguage.toLowerCase(),
       );
-
       debugPrint("Cut audio result: $cutResult");
 
-      // 4) get all chunks (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 4) get chunks
       final chunksRes = await getAllChunks(ref, projectId: projectId);
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
         final durationStr = (s['duration'] ?? '') as String;
         final parts = durationStr.split(' - ');
-
         final start = parts.isNotEmpty ? _parseTime(parts[0]) : 0.0;
-        final end = parts.length > 1
-            ? _parseTime(parts[1])
-            : audioDuration?.inSeconds.toDouble() ?? 0.0;
+        final end = parts.length > 1 ? _parseTime(parts[1]) : audioDuration?.inSeconds.toDouble() ?? 0.0;
 
         return {
           "id": s['chunk_id'],
@@ -219,7 +197,6 @@ class RecordLogic {
         };
       }).toList();
 
-      // 5) return ProjectModel
       return ProjectModel(
         projectId: projectId,
         projectName: projectName,
@@ -230,9 +207,35 @@ class RecordLogic {
         userId: realUserId,
         audioS3Link: null,
       );
+
     } catch (e, st) {
+      // ⛔ เมื่อเกิด Error โค้ดจะกระโดดมาทำงานตรงนี้
       debugPrint("Transcribe failed: $e");
       debugPrint(st.toString());
+
+      // 🔥 สั่งแสดง Popup (SnackBar) ตรงนี้ 🔥
+      if (context.mounted) {
+        // ตรวจสอบ Error จาก Log ของคุณ (VAD script returned no output) = ไฟล์เสียงเงียบ/สั้นเกินไป
+        String msg = "เกิดข้อผิดพลาด: $e";
+        if (e.toString().contains("VAD script")) {
+           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป กรุณาลองใหม่อีกครั้ง";
+        } else if (e.toString().contains("500")) {
+           msg = "Server Error (500): ไม่สามารถประมวลผลได้";
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(msg, style: const TextStyle(color: Colors.white)),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'ปิด',
+              textColor: Colors.white,
+              onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            ),
+          ),
+        );
+      }
       return null;
     }
   }
@@ -248,14 +251,9 @@ class RecordLogic {
     }
   }
 
-  // <<< Method ที่รับ BuildContext เพื่อเรียก API >>>
   Future<void> deleteProject(WidgetRef ref, String projectId) async {
     try {
-      await deleteAsrWorkspace(
-        ref,
-        projectId,
-        currentUserId,
-      ); // เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context
+      await deleteAsrWorkspace(ref, projectId, currentUserId);
     } catch (e) {
       debugPrint("Failed to delete project: $e");
     }

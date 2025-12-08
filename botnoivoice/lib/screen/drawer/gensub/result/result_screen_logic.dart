@@ -40,10 +40,12 @@ class ResultLogic {
   }) {
     audioPlayer = AudioPlayer();
     
+    // ✅ ดักจับสถานะ Player: ถ้าเล่นจบให้หยุดและรีเซ็ตตำแหน่ง
     stateSub = audioPlayer.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
          audioPlayer.seek(Duration.zero);
          audioPlayer.pause();
+         // UI จะถูกอัปเดตผ่าน callback onUpdate ในหน้าจอ หรือผ่าน logic ของ playSegment
       }
     });
   }
@@ -65,7 +67,6 @@ class ResultLogic {
   }
   
   Future<void> setProjectAudioSource(String localPath, String? s3Link) async {
-    // ... (โค้ดเดิม) ...
     debugPrint("🔊 setProjectAudioSource localPath = '$localPath'");
     debugPrint("🔊 setProjectAudioSource s3Link = '$s3Link'");
 
@@ -110,29 +111,26 @@ class ResultLogic {
     return '.aac';
   }
 
-  // ✅ แก้ไข: รับ context เพิ่มเข้ามาเพื่อแสดง SnackBar
+  // ✅ 1. เพิ่ม context เพื่อแสดง SnackBar กรณีข้อมูลเป็น null
   Future<ProjectModel?> fetchWorkspace(WidgetRef ref, BuildContext context) async {
     try {
       final projectId = workspaceId;
       final chunksJson = await getAllChunks(ref, projectId: projectId);
 
-      // 🔥🔥🔥 6. ตรวจสอบ Data Null และแสดง SnackBar 🔥🔥🔥
+      // 🔥 ตรวจสอบ Data Null 🔥
       if (chunksJson['data'] == null) {
         debugPrint("ResultLogic: Data is null");
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("Error: Data is null"), // ข้อความแจ้งเตือน
-              backgroundColor: Colors.red,          // สีแดง
-              duration: Duration(seconds: 5),       // แสดง 5 วินาที
+              content: Text("Error: ไม่พบข้อมูล (Data is null)"),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
             ),
           );
         }
-        // คืนค่า null เพื่อให้ UI จัดการต่อ (เช่น แสดงหน้าว่าง หรือ loading หายไป)
-        // หรือถ้าอยากให้แสดงข้อมูล Fallback ก็ลบ return null ออก แล้วปล่อยให้ข้างล่างจัดการเป็น []
-        return null; 
+        return null; // คืนค่า null เพื่อบอกว่าโหลดไม่สำเร็จ
       }
-      // 🔥🔥🔥 สิ้นสุดส่วนที่เพิ่ม 🔥🔥🔥
 
       final rawSegments = (chunksJson['data'] as List<dynamic>? ?? []);
       final projectData = rawSegments.isNotEmpty ? rawSegments.first : chunksJson;
@@ -177,8 +175,7 @@ class ResultLogic {
         
         String? projectLevelS3 = audioS3Link;
         if ((projectLevelS3 == null || projectLevelS3.isEmpty) && segments.isNotEmpty) {
-            final seg0 = segments.first;
-            // final cand = seg0['s3_link']; // ไม่ต้องใช้
+            // Logic เดิม
         }
         
         await setProjectAudioSource(filePath, projectLevelS3);
@@ -214,11 +211,11 @@ class ResultLogic {
     return 0.0;
   }
 
-  // 🔥🔥🔥 ฟังก์ชัน Play (โค้ดที่แก้แล้วจากรอบที่แล้ว) 🔥🔥🔥
+  // 🔥🔥🔥 ฟังก์ชัน Play ที่แก้ไขสมบูรณ์แล้ว 🔥🔥🔥
   Future<void> playSegment(
     int index,
     List<Map<String, dynamic>> segments,
-    VoidCallback onUpdate, 
+    VoidCallback onUpdate, // Callback เพื่ออัปเดต UI (setState)
   ) async {
     final segment = segments[index];
     debugPrint('-----------------------------');
@@ -227,6 +224,7 @@ class ResultLogic {
     bool isSameAsLoaded = (_loadedIndex == index);
 
     if (isSameAsLoaded) {
+       // --- กรณีไฟล์เดิม (Resume / Pause) ---
        if (audioPlayer.playing) {
          debugPrint("Action: PAUSE");
          await audioPlayer.pause();
@@ -235,6 +233,7 @@ class ResultLogic {
        } else {
          debugPrint("Action: RESUME");
          if (audioPlayer.processingState == ProcessingState.completed) {
+             // ถ้าจบแล้ว ให้เริ่มใหม่ (0)
              await audioPlayer.seek(Duration.zero); 
          }
          playingIndex = index;
@@ -244,6 +243,7 @@ class ResultLogic {
        return;
     }
 
+    // --- กรณีโหลดไฟล์ใหม่ ---
     debugPrint("Action: LOAD NEW");
     
     playingIndex = index;
@@ -252,44 +252,48 @@ class ResultLogic {
 
     try { await audioPlayer.stop(); } catch (_) {}
     
+    // คำนวณเวลา Timeline (ใช้เฉพาะกรณีเล่นไฟล์เต็ม)
     final startSec = (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
     final endSec = (segment['end'] is num) ? (segment['end'] as num).toDouble() : duration.inSeconds.toDouble();
     final timelineStart = Duration(milliseconds: (startSec * 1000).round());
     final timelineEnd = Duration(milliseconds: (endSec * 1000).round());
 
     bool newSourceSet = false;
-    bool isChunkSource = false; 
+    bool isChunkSource = false; // 🚩 ตัวแปรสำคัญ: เช็คว่าเป็นไฟล์ย่อยหรือไม่
 
     final segS3 = (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
 
+    // 1. ลองโหลดจาก Chunk S3 (Priority สูงสุด -> เป็นไฟล์ย่อย)
     if (segS3 != null && segS3.isNotEmpty && segS3.startsWith('http')) {
       try {
         debugPrint("Attempting to load CHUNK source: $segS3");
         await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(segS3), headers: {'Referer': 'https://voice.botnoi.ai/'}));
         newSourceSet = true;
-        isChunkSource = true; 
+        isChunkSource = true; // ✅ ระบุว่าเป็น Chunk
       } catch (e) {
         debugPrint("Failed to load chunk source: $e");
       }
     }
 
+    // 2. ถ้าไม่มี Chunk ให้ลองโหลดจาก Project S3 (ไฟล์เต็ม)
     if (!newSourceSet && audioS3Link != null && audioS3Link!.isNotEmpty) {
       try {
         debugPrint("Attempting to load FULL S3 source: $audioS3Link");
         await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(audioS3Link!), headers: {'Referer': 'https://voice.botnoi.ai/'}));
         newSourceSet = true;
-        isChunkSource = false; 
+        isChunkSource = false; // ✅ ระบุว่าเป็น Full File
       } catch (e) {
         debugPrint("Failed to load full S3 source: $e");
       }
     }
 
+    // 3. ถ้าไม่มี S3 เลย ให้โหลดจาก Local File (ไฟล์เต็ม)
     if (!newSourceSet && filePath.trim().isNotEmpty) {
       try {
         debugPrint("Attempting to load LOCAL source: $filePath");
         await audioPlayer.setFilePath(filePath);
         newSourceSet = true;
-        isChunkSource = false; 
+        isChunkSource = false; // ✅ ระบุว่าเป็น Full File
       } catch (e) {
          debugPrint("Failed to load local source: $e");
       }
@@ -304,10 +308,13 @@ class ResultLogic {
     }
 
     try {
+      // 🔥🔥🔥 แก้ไข Logic การ Clip เพื่อป้องกัน Error Clipping 🔥🔥🔥
       if (isChunkSource) {
+        // กรณี Chunk: เล่นทั้งไฟล์ (เริ่ม 0) ไม่ต้องสน Timeline หลัก เพราะไฟล์ถูกตัดมาพอดีแล้ว
         debugPrint("Playing CHUNK mode (Start: 0, End: null)");
         await audioPlayer.setClip(start: Duration.zero, end: null);
       } else {
+        // กรณี Full File: ต้อง Clip ตามช่วงเวลา Timeline หลัก
         debugPrint("Playing FULL FILE mode (Start: $timelineStart, End: $timelineEnd)");
         await audioPlayer.setClip(start: timelineStart, end: timelineEnd);
       }
@@ -320,21 +327,24 @@ class ResultLogic {
       onUpdate();
     }
 
+    // Listener สำหรับจบ Segment
     positionSub?.cancel();
     positionSub = audioPlayer.positionStream.listen((pos) async {
+      // ถ้าเป็นไฟล์เต็ม ต้องเช็คว่าเล่นเกินเวลา End หรือยัง
       if (!isChunkSource) {
         if (pos >= timelineEnd) {
           try {
               await audioPlayer.pause();
-              await audioPlayer.seek(timelineStart); 
+              await audioPlayer.seek(timelineStart); // รีเซ็ตไปจุดเริ่มของ Segment
           } catch (_) {}
           
           if (playingIndex == index) {
-              playingIndex = null;
+              playingIndex = null; // เปลี่ยนไอคอนเป็น Play
               onUpdate();
           }
         }
       }
+      // ถ้าเป็น Chunk Source ปล่อยให้มันจบเองได้เลย (Listener stateSub ด้านบนจะจัดการ UI reset ให้)
     });
   }
 

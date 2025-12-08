@@ -551,11 +551,15 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                         ? null
                         : () async {
                             _safeSetState(() => _loading = true);
+                            
+                            // 🔥🔥🔥 แก้ไขตรงนี้: ส่ง context เข้าไปในฟังก์ชัน handleTranscribe
                             final project = await controller.handleTranscribe(
                               ref,
+                              context, // <--- เพิ่ม context เพื่อให้ Logic แสดง SnackBar ได้
                               maxSegmentDuration: _maxSegmentDuration,
                               maxSilenceDuration: _maxSilenceDuration,
                             );
+                            
                             _safeSetState(() => _loading = false);
 
                             if (project != null && mounted) {

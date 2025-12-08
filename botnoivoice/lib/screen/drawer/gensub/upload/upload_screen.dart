@@ -72,13 +72,13 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   "upload_gensub.title".tr(),
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 6),
                 Text(
                   "upload_gensub.expand_title".tr(),
                   style: const TextStyle(color: Colors.black54),
-                  textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 OutlinedButton.icon(
@@ -267,8 +267,9 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   ? null
                   : () async {
                       setState(() => isLoading = true);
-                      final success =
-                          await controller.transcribeFile(ref, context);
+                      
+                      // 🔥🔥🔥 ส่ง context เพื่อให้แสดง SnackBar Error ได้ 🔥🔥🔥
+                      final success = await controller.transcribeFile(ref, context);
 
                       if (mounted) {
                         setState(() => isLoading = false);
@@ -277,7 +278,9 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       if (success &&
                           mounted &&
                           controller.lastProject != null) {
-                        // widget.onProjectCreated(controller.lastProject!);
+                        
+                        // ✅ Uncomment เพื่ออัปเดต List ทันที
+                        widget.onProjectCreated(controller.lastProject!);
 
                         Navigator.push(
                           context,

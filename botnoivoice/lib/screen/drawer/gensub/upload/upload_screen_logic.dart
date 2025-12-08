@@ -1,3 +1,5 @@
+// upload_screen_logic.dart
+
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 
-// Import Standalone API Functions ใหม่ที่คุณสร้าง
+// Import Standalone API Functions
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
@@ -22,8 +24,6 @@ String _extractSeconds(String input, {Duration? fallback}) {
 
 /// Controller จัดการเลือกไฟล์, คำนวณความยาวไฟล์, และอัปโหลด/สร้าง workspace
 class UploadLogic {
-  // final String apiToken; // <<< ลบออก
-
   final Function(ProjectModel) onProjectCreated;
   final String currentUserId;
 
@@ -42,14 +42,13 @@ class UploadLogic {
   ProjectModel? lastProject;
 
   UploadLogic({
-    // required this.apiToken, // <<< ลบออก
     required this.onProjectCreated,
     this.currentUserId = "YOUR_USER_ID",
   });
 
-  /// เลือกไฟล์เสียงผ่าน FilePicker และอ่านความยาวไฟล์ด้วย just_audio (ไม่มี API call)
+  /// เลือกไฟล์เสียงผ่าน FilePicker
   Future<void> pickFile() async {
-    if (_isPicking) return; // กันการกดซ้ำ
+    if (_isPicking) return;
     _isPicking = true;
 
     try {
@@ -77,7 +76,7 @@ class UploadLogic {
     }
   }
 
-  /// ล้างไฟล์ที่เลือก (ไม่มี API call)
+  /// ล้างไฟล์ที่เลือก
   void clearFile() {
     filePath = null;
     audioDuration = null;
@@ -87,40 +86,38 @@ class UploadLogic {
   /// อัปโหลดไฟล์และถอดเสียง (return true ถ้าสำเร็จ)
   Future<bool> transcribeFile(
     WidgetRef ref,
-    BuildContext context,
+    BuildContext context, // ต้องรับ context เข้ามาเพื่อแสดง SnackBar
   ) async {
-    // <<< ใช้ BuildContext
     if (filePath == null) return false;
 
     transcribeStatus = "text_to_gensub.transcribe_status".tr();
 
     try {
-      // 1) upload audio → gensub (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 1) upload audio
       final uploadResult = await uploadAudioToGensub(
         ref,
         file: File(filePath!),
       );
       debugPrint(" upload result = $uploadResult");
 
-      // 2) insert workspace → สร้าง project_id (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 2) insert workspace
       final projectName =
           filePath!.split(Platform.pathSeparator).last.split('.').first;
-      final durationStr =
-          _formatDuration(audioDuration ?? Duration.zero); // MM:SS
+      final durationStr = _formatDuration(audioDuration ?? Duration.zero);
       final insertResult = await insertAsrWorkspace(
-        ref: ref, // ส่ง context
+        ref: ref,
         projectName: projectName,
         cer: 0.0,
         pointAdd: 0,
         totalPoint: 0,
-        duration: durationStr, // ส่ง MM:SS
+        duration: durationStr,
       );
       debugPrint(" insert workspace result = $insertResult");
 
       final projectId = insertResult["data"]?["project_id"];
       final realUserId = insertResult["data"]?["user_id"];
 
-      // 3) cut audio → chunk อัตโนมัติ (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 3) cut audio
       final cutResult = await cutAudio(
         ref,
         filePath: filePath!,
@@ -128,8 +125,7 @@ class UploadLogic {
         projectName: projectName,
         cutType: "sec",
         chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-        durations: (audioDuration?.inSeconds ?? 0)
-            .toString(), // ✅ ใช้ความยาวจริงของไฟล์
+        durations: (audioDuration?.inSeconds ?? 0).toString(),
         maxDuration:
             _extractSeconds(maxSegmentDuration, fallback: audioDuration),
         maxSilence: _extractSeconds(maxSilenceDuration,
@@ -138,14 +134,14 @@ class UploadLogic {
       );
       debugPrint(" cut audio result = $cutResult");
 
-      // 4) get all chunks → ได้ segments (เรียกใช้ฟังก์ชันใหม่ พร้อมส่ง context)
+      // 4) get all chunks
       final chunksRes = await getAllChunks(
         ref,
         projectId: projectId,
       );
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
-      // Try to extract immediate transcription from uploadResult so UI can show text right away
+      // Try to extract immediate transcription
       String? uploadText;
       try {
         final bodyStr = uploadResult['body'];
@@ -165,7 +161,6 @@ class UploadLogic {
             ? _parseTime(parts[1])
             : audioDuration?.inSeconds.toDouble() ?? 0.0;
 
-        // If backend chunk text is empty, try to use uploadText (gensub immediate response)
         final chunkText = (s['botnoi_asr_text'] != null &&
                 s['botnoi_asr_text'].toString().trim().isNotEmpty)
             ? s['botnoi_asr_text']
@@ -179,7 +174,7 @@ class UploadLogic {
         };
       }).toList();
 
-      // 5) สร้าง ProjectModel พร้อม segments
+      // 5) สร้าง ProjectModel
       final project = ProjectModel(
         projectId: projectId,
         projectName: projectName,
@@ -187,31 +182,46 @@ class UploadLogic {
         duration: audioDuration ?? Duration.zero,
         filePath: filePath!,
         segments: segments,
-        userId: realUserId, // ใช้ userId จริงจาก backend
+        userId: realUserId,
         audioS3Link: null,
       );
 
       debugPrint('transcribeFile: uploadText=$uploadText');
-      if (project.segments.isNotEmpty) {
-        debugPrint(
-            'transcribeFile: sample segment text=${project.segments.first['text']}');
-      } else {
-        debugPrint('transcribeFile: no segments returned from chunks');
-      }
-
+      
       lastProject = project;
       onProjectCreated(project);
 
       transcribeStatus = " ถอดเสียงสำเร็จ";
       return true;
+
     } catch (e, st) {
+      // ⛔ เมื่อเกิด Error โค้ดจะกระโดดมาทำงานตรงนี้
       debugPrint(" Error while uploading/transcribing: $e");
       debugPrint(st.toString());
       transcribeStatus = " ถอดเสียงไม่สำเร็จ: $e";
 
+      // 🔥 สั่งแสดง Popup (SnackBar) ตรงนี้ 🔥
       if (context.mounted) {
+        String msg = "เกิดข้อผิดพลาด: $e";
+        
+        // ปรับแต่งข้อความ Error ให้เข้าใจง่ายขึ้น
+        if (e.toString().contains("VAD script")) {
+           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป กรุณาลองไฟล์อื่น";
+        } else if (e.toString().contains("500")) {
+           msg = "Server Error (500): ไม่สามารถประมวลผลไฟล์นี้ได้";
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("ถอดเสียงไม่สำเร็จ: $e")),
+          SnackBar(
+            content: Text(msg, style: const TextStyle(color: Colors.white)),
+            backgroundColor: Colors.red, // พื้นหลังสีแดง
+            duration: const Duration(seconds: 5), // แสดง 5 วินาที
+            action: SnackBarAction(
+              label: 'ปิด',
+              textColor: Colors.white,
+              onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            ),
+          ),
         );
       }
       return false;
@@ -224,7 +234,6 @@ class UploadLogic {
     return '$minutes:$seconds';
   }
 
-  /// helper แปลง time string → double (วินาที)
   double _parseTime(String t) {
     final parts = t.split(':').map((e) => double.tryParse(e) ?? 0).toList();
     if (parts.length == 3) {

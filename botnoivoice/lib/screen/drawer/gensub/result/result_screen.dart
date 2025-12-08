@@ -1,3 +1,5 @@
+// result_screen.dart
+
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
@@ -8,7 +10,6 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 
-// ... (ฟังก์ชัน shareTextFile และ shareAudioFile เดิม) ...
 Future<void> shareTextFile(BuildContext context, String filePath) async {
   final box = context.findRenderObject() as RenderBox?;
   final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -67,8 +68,7 @@ Future<void> shareAudioFile(BuildContext context, String filePath) async {
           const SnackBar(content: Text('Share Audio Successful')));
     }
   } catch (e) {
-    scaffoldMessenger
-        .showSnackBar(SnackBar(content: Text('Share Error: $e')));
+    scaffoldMessenger.showSnackBar(SnackBar(content: Text('Share Error: $e')));
   }
 }
 
@@ -114,8 +114,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       initialProjectName: widget.projectName,
     );
 
-    // 🔥 แก้ไขตรงนี้: ส่ง context เพิ่มเข้าไปตามที่แก้ใน Logic ก่อนหน้า
-    final ProjectModel? project = await tempController.fetchWorkspace(ref, context);
+    // ✅ ถูกต้อง: ส่ง context เข้าไปเพื่อให้ Logic แสดง SnackBar ได้
+    final ProjectModel? project =
+        await tempController.fetchWorkspace(ref, context);
 
     if (project != null && mounted) {
       final String? firstS3Link = project.segments.isNotEmpty
@@ -144,8 +145,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   void _showSnack(String msg) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -169,8 +169,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             onPressed: () async {
               final project = await _futureProject;
               if (project != null && controller != null) {
-                await controller!
-                    .saveEdits(ref, project, project.segments);
+                await controller!.saveEdits(ref, project, project.segments);
                 await controller!.finalizeProjectApprove(ref, project);
 
                 if (!mounted) return;
@@ -197,8 +196,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 12),
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey.shade300),
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: DropdownButtonHideUnderline(
@@ -217,8 +216,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                           child: Text("Audio File (Source)")),
                                     ],
                                     onChanged: (val) {
-                                      if (val != null)
+                                      if (val != null) {
                                         setState(() => selectedFormat = val);
+                                      }
                                     },
                                   ),
                                 ),
