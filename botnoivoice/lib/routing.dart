@@ -123,10 +123,10 @@ final router = GoRouter(
       path: '/gensub',
       builder: (context, state) => const UploadRecScreen(),
     ),
-    GoRoute(
-      path: '/marads',
-      builder: (context, state) => const MarAdsScreen(),
-    ),
+    // GoRoute(
+    //   path: '/marads',
+    //   builder: (context, state) => const MarAdsScreen(),
+    // ),
     GoRoute(
       path: '/marads/advanced',
       builder: (context, state) => const MarAdsAdvancedScreen(),
