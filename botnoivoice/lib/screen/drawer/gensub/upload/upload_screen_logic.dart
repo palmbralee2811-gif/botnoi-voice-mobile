@@ -9,7 +9,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 
-// Import Standalone API Functions
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
@@ -22,7 +21,6 @@ String _extractSeconds(String input, {Duration? fallback}) {
   return number ?? (fallback != null ? fallback.inSeconds.toString() : "10");
 }
 
-/// Controller จัดการเลือกไฟล์, คำนวณความยาวไฟล์, และอัปโหลด/สร้าง workspace
 class UploadLogic {
   final Function(ProjectModel) onProjectCreated;
   final String currentUserId;
@@ -46,7 +44,6 @@ class UploadLogic {
     this.currentUserId = "YOUR_USER_ID",
   });
 
-  /// เลือกไฟล์เสียงผ่าน FilePicker
   Future<void> pickFile() async {
     if (_isPicking) return;
     _isPicking = true;
@@ -76,21 +73,23 @@ class UploadLogic {
     }
   }
 
-  /// ล้างไฟล์ที่เลือก
   void clearFile() {
     filePath = null;
     audioDuration = null;
     transcribeStatus = null;
   }
 
-  /// อัปโหลดไฟล์และถอดเสียง (return true ถ้าสำเร็จ)
   Future<bool> transcribeFile(
     WidgetRef ref,
-    BuildContext context, // ต้องรับ context เข้ามาเพื่อแสดง SnackBar
+    BuildContext context,
   ) async {
     if (filePath == null) return false;
 
     transcribeStatus = "text_to_gensub.transcribe_status".tr();
+    
+    // 🚩 ตัวแปรสำหรับจำ ID โปรเจคที่เพิ่งสร้าง เผื่อต้องลบทิ้งกรณี Error
+    String? createdProjectId; 
+    String? createdUserId;
 
     try {
       // 1) upload audio
@@ -114,14 +113,18 @@ class UploadLogic {
       );
       debugPrint(" insert workspace result = $insertResult");
 
-      final projectId = insertResult["data"]?["project_id"];
-      final realUserId = insertResult["data"]?["user_id"];
+      // ✅ เก็บค่า ID ไว้ใช้ลบกรณี Error
+      createdProjectId = insertResult["data"]?["project_id"];
+      createdUserId = insertResult["data"]?["user_id"];
+      
+      final projectId = createdProjectId;
+      final realUserId = createdUserId;
 
-      // 3) cut audio
+      // 3) cut audio (จุดที่มักจะ Error ถ้าไม่มีเสียง)
       final cutResult = await cutAudio(
         ref,
         filePath: filePath!,
-        projectId: projectId,
+        projectId: projectId!,
         projectName: projectName,
         cutType: "sec",
         chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
@@ -141,7 +144,6 @@ class UploadLogic {
       );
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
-      // Try to extract immediate transcription
       String? uploadText;
       try {
         final bodyStr = uploadResult['body'];
@@ -174,7 +176,6 @@ class UploadLogic {
         };
       }).toList();
 
-      // 5) สร้าง ProjectModel
       final project = ProjectModel(
         projectId: projectId,
         projectName: projectName,
@@ -182,12 +183,10 @@ class UploadLogic {
         duration: audioDuration ?? Duration.zero,
         filePath: filePath!,
         segments: segments,
-        userId: realUserId,
+        userId: realUserId ?? currentUserId,
         audioS3Link: null,
       );
 
-      debugPrint('transcribeFile: uploadText=$uploadText');
-      
       lastProject = project;
       onProjectCreated(project);
 
@@ -195,27 +194,33 @@ class UploadLogic {
       return true;
 
     } catch (e, st) {
-      // ⛔ เมื่อเกิด Error โค้ดจะกระโดดมาทำงานตรงนี้
       debugPrint(" Error while uploading/transcribing: $e");
-      debugPrint(st.toString());
       transcribeStatus = " ถอดเสียงไม่สำเร็จ: $e";
 
-      // 🔥 สั่งแสดง Popup (SnackBar) ตรงนี้ 🔥
+      // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
+      if (createdProjectId != null) {
+        debugPrint("Rolling back: Deleting invalid project $createdProjectId");
+        try {
+          // เรียก API ลบโปรเจค
+          await deleteAsrWorkspace(ref, createdProjectId, createdUserId ?? currentUserId);
+        } catch (delErr) {
+          debugPrint("Rollback failed: $delErr");
+        }
+      }
+
       if (context.mounted) {
         String msg = "เกิดข้อผิดพลาด: $e";
-        
-        // ปรับแต่งข้อความ Error ให้เข้าใจง่ายขึ้น
         if (e.toString().contains("VAD script")) {
-           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป กรุณาลองไฟล์อื่น";
+           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
         } else if (e.toString().contains("500")) {
-           msg = "Server Error (500): ไม่สามารถประมวลผลไฟล์นี้ได้";
+           msg = "Server Error: ไม่สามารถประมวลผลไฟล์นี้ได้";
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg, style: const TextStyle(color: Colors.white)),
-            backgroundColor: Colors.red, // พื้นหลังสีแดง
-            duration: const Duration(seconds: 5), // แสดง 5 วินาที
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
             action: SnackBarAction(
               label: 'ปิด',
               textColor: Colors.white,

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
-import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+// import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; // ไม่จำเป็นต้องใช้แล้ว เพราะใช้ผ่าน Provider
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart'; // Import Provider
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RecordScreen extends ConsumerStatefulWidget {
@@ -14,7 +15,7 @@ class RecordScreen extends ConsumerStatefulWidget {
 
   const RecordScreen({
     super.key,
-    required this.projects,
+    required this.projects, // ✅ รับข้อมูลจาก Provider ผ่านตัวแปรนี้
     required this.onProjectCreated,
     required this.onProjectDeleted,
   });
@@ -27,9 +28,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   late RecordLogic controller;
   bool _confirmed = false;
   bool _loading = false;
-  bool _isDescending = true;
-
-  List<ProjectModel> _projects = [];
+  // ลบ _isDescending และ _projects ออก เพราะจะใช้จาก Provider โดยตรง
 
   // UI controls
   int _maxSegmentDuration = 10;
@@ -51,71 +50,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     controller.initRecorder();
     controller.initPlayer();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadProjects();
-    });
-  }
-
-  DateTime _parseDate(dynamic dateStr) {
-    if (dateStr == null || dateStr.toString().isEmpty) return DateTime.now();
-    try {
-      String cleanStr = dateStr.toString().replaceAll('Z', '');
-      return DateTime.tryParse(cleanStr) ?? DateTime.now();
-    } catch (e) {
-      return DateTime.now();
-    }
-  }
-
-  Future<void> _loadProjects() async {
-    _safeSetState(() => _loading = true);
-    try {
-      final res = await getAllWorkspaces(ref);
-
-      if (res != null && res['data'] != null) {
-        _projects = (res['data'] as List).map((json) {
-          final rawDuration = json['duration']?.toString();
-          Duration parsedDuration = Duration.zero;
-          
-          if (rawDuration != null && rawDuration.isNotEmpty) {
-             if (rawDuration.contains(":")) {
-                final parts = rawDuration.split(":");
-                if (parts.length == 2) {
-                  final minutes = int.tryParse(parts[0]) ?? 0;
-                  final seconds = int.tryParse(parts[1]) ?? 0;
-                  parsedDuration = Duration(minutes: minutes, seconds: seconds);
-                }
-              } else {
-                final seconds = int.tryParse(rawDuration) ?? 0;
-                parsedDuration = Duration(seconds: seconds);
-              }
-          }
-
-          return ProjectModel(
-            projectId: json['project_id'] ?? '',
-            projectName: json['project_name'] ?? '',
-            createdAt: _parseDate(json['create_at']),
-            duration: parsedDuration,
-            filePath: json['file_path'] ?? '',
-            segments: json['segments'] != null
-                ? List<Map<String, dynamic>>.from(json['segments'])
-                : [],
-            userId: json['user_id'] ?? '',
-            audioS3Link: null,
-          );
-        }).toList();
-
-        _sortProjects();
-      }
-    } catch (e) {
-      debugPrint("Failed to load projects: $e");
-    }
-    _safeSetState(() => _loading = false);
-  }
-
-  void _sortProjects() {
-    _projects.sort((a, b) => _isDescending
-        ? b.createdAt.compareTo(a.createdAt)
-        : a.createdAt.compareTo(b.createdAt));
+    // ❌ ไม่ต้องโหลด Projects เองแล้ว เพราะ Parent (UploadRecScreen) โหลดให้แล้ว
   }
 
   @override
@@ -138,27 +73,27 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Widget _buildInitialUI() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: SizedBox( // ✅ เพิ่ม SizedBox เพื่อขยายความกว้างเต็มจอ
+      child: SizedBox( 
         width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, // ✅ จัด Column หลักให้อยู่ตรงกลาง
+          crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center, // ✅ จัด Column ย่อยให้อยู่ตรงกลาง
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "record_gensub.title".tr(),
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
+                    textAlign: TextAlign.center, 
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "record_gensub.expand_title".tr(),
                     style: const TextStyle(color: Colors.black54),
-                    textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
+                    textAlign: TextAlign.center, 
                   ),
                   const SizedBox(height: 20),
                   GestureDetector(
@@ -180,12 +115,13 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                   Text(
                     "record_gensub.press_to".tr(),
                     style: const TextStyle(color: Colors.black54),
-                    textAlign: TextAlign.center, // ✅ จัดข้อความให้อยู่ตรงกลาง
+                    textAlign: TextAlign.center, 
                   ),
                 ],
               ),
             ),
-            if (_projects.isNotEmpty) _buildProjectList(),
+            // ✅ ใช้ widget.projects แทนตัวแปร local
+            if (widget.projects.isNotEmpty) _buildProjectList(),
           ],
         ),
       ),
@@ -201,6 +137,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       final s = (d.inSeconds % 60).toString().padLeft(2, '0');
       return "$m:$s";
     }
+
+    // ✅ ดึงค่าการเรียงลำดับจาก Provider
+    final isDescending = ref.watch(uploadRecordProvider).isDescending;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,15 +164,14 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  _isDescending ? Icons.arrow_downward : Icons.arrow_upward,
+                  // ✅ ใช้ state จาก Provider
+                  isDescending ? Icons.arrow_downward : Icons.arrow_upward,
                   color: Colors.blueAccent,
                   size: 20,
                 ),
                 onPressed: () {
-                  _safeSetState(() {
-                    _isDescending = !_isDescending;
-                    _sortProjects();
-                  });
+                  // ✅ สั่ง Toggle ผ่าน Provider เพื่อให้ทุกหน้าเปลี่ยนเหมือนกัน
+                  ref.read(uploadRecordProvider.notifier).toggleSort();
                 },
               ),
             ],
@@ -243,10 +181,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: _projects.length,
+          // ✅ ใช้ widget.projects แทน _projects
+          itemCount: widget.projects.length,
           separatorBuilder: (_, __) => const SizedBox(height: 8),
           itemBuilder: (context, index) {
-            final project = _projects[index];
+            final project = widget.projects[index];
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -310,16 +249,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                           ),
                         );
                         if (confirm == true) {
-                          await controller.deleteProject(
-                            ref,
-                            project.projectId,
-                          );
-
+                          // ✅ เรียก onProjectDeleted อย่างเดียว ให้ Provider จัดการ API และ State
+                          // (ไม่ต้องเรียก controller.deleteProject ซ้ำซ้อน)
                           widget.onProjectDeleted(project);
-                          _safeSetState(() {
-                            _projects.removeWhere(
-                                (p) => p.projectId == project.projectId);
-                          });
                         }
                       },
                     ),
@@ -351,7 +283,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Widget _buildConfirmUI() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: SizedBox( // ✅ เพิ่ม SizedBox เพื่อขยายเต็มจอสำหรับหน้านี้ด้วย
+      child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
@@ -359,12 +291,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             Text(
               "record_gensub.title".tr(),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center, // ✅ จัดกลาง
+              textAlign: TextAlign.center, 
             ),
             const SizedBox(height: 8),
             Text("record_gensub.expand_title".tr(),
                 style: const TextStyle(color: Colors.black54),
-                textAlign: TextAlign.center, // ✅ จัดกลาง
+                textAlign: TextAlign.center, 
             ),
             const SizedBox(height: 40),
             Row(
@@ -401,7 +333,8 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             const SizedBox(height: 20),
             Text("record_gensub.press_correct".tr(),
                 style: const TextStyle(color: Colors.black54)),
-            if (_projects.isNotEmpty) _buildProjectList(),
+            // ✅ ใช้ widget.projects
+            if (widget.projects.isNotEmpty) _buildProjectList(),
           ],
         ),
       ),
@@ -551,15 +484,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                         ? null
                         : () async {
                             _safeSetState(() => _loading = true);
-                            
-                            // 🔥🔥🔥 แก้ไขตรงนี้: ส่ง context เข้าไปในฟังก์ชัน handleTranscribe
                             final project = await controller.handleTranscribe(
                               ref,
-                              context, // <--- เพิ่ม context เพื่อให้ Logic แสดง SnackBar ได้
+                              context, // ส่ง context เพื่อแสดง Error popup
                               maxSegmentDuration: _maxSegmentDuration,
                               maxSilenceDuration: _maxSilenceDuration,
                             );
-                            
                             _safeSetState(() => _loading = false);
 
                             if (project != null && mounted) {
@@ -607,7 +537,8 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          if (_projects.isNotEmpty) _buildProjectList(),
+          // ✅ ใช้ widget.projects
+          if (widget.projects.isNotEmpty) _buildProjectList(),
         ],
       ),
     );

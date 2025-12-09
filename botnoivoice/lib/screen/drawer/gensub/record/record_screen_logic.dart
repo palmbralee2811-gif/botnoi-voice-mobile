@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:botnoivoice/screen/drawer/gensub/permission/permission_gensub.dart';
 import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart'; // ต้อง import เพื่อใช้ BuildContext และ ScaffoldMessenger
+import 'package:flutter/material.dart'; 
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +12,6 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 
-// Import Standalone API Functions
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
@@ -132,21 +131,27 @@ class RecordLogic {
     return '$minutes:$seconds';
   }
 
-  // 🔥🔥🔥 ฟังก์ชันหลักที่แก้ไขให้แสดง SnackBar เมื่อเกิด Error 🔥🔥🔥
   Future<ProjectModel?> handleTranscribe(
     WidgetRef ref, 
-    BuildContext context, // ต้องรับ context เข้ามา
+    BuildContext context, 
     {
     int maxSegmentDuration = 10,
     double maxSilenceDuration = 0.3,
   }) async {
     if (recordedFilePath == null) return null;
 
+    // 🚩 ตัวแปรสำหรับจำ ID โปรเจค
+    String? createdProjectId;
+    String? createdUserId;
+
     try {
       final file = File(recordedFilePath!);
 
       // 1) upload
-      final uploadResult = await uploadAudioToGensub(ref, file: file);
+      final uploadResult = await uploadAudioToGensub(
+        ref,
+        file: file,
+      );
       debugPrint("Upload result: $uploadResult");
 
       // 2) insert workspace
@@ -161,10 +166,14 @@ class RecordLogic {
       );
       debugPrint("Insert workspace result: $insertResult");
 
-      final projectId = insertResult["data"]?["project_id"] ?? randomStringOfCapitals(8);
-      final realUserId = insertResult["data"]?["user_id"] ?? currentUserId;
+      // ✅ เก็บ ID ไว้ลบถ้า Error
+      createdProjectId = insertResult["data"]?["project_id"];
+      createdUserId = insertResult["data"]?["user_id"];
 
-      // 3) cut audio
+      final projectId = createdProjectId ?? randomStringOfCapitals(8);
+      final realUserId = createdUserId ?? currentUserId;
+
+      // 3) cut audio (จุดที่มัก Error)
       final cutResult = await cutAudio(
         ref,
         filePath: recordedFilePath!,
@@ -177,17 +186,21 @@ class RecordLogic {
         maxSilence: maxSilenceDuration.toString(),
         language: selectedLanguage.toLowerCase(),
       );
+
       debugPrint("Cut audio result: $cutResult");
 
-      // 4) get chunks
+      // 4) get all chunks
       final chunksRes = await getAllChunks(ref, projectId: projectId);
       final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
 
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
         final durationStr = (s['duration'] ?? '') as String;
         final parts = durationStr.split(' - ');
+
         final start = parts.isNotEmpty ? _parseTime(parts[0]) : 0.0;
-        final end = parts.length > 1 ? _parseTime(parts[1]) : audioDuration?.inSeconds.toDouble() ?? 0.0;
+        final end = parts.length > 1
+            ? _parseTime(parts[1])
+            : audioDuration?.inSeconds.toDouble() ?? 0.0;
 
         return {
           "id": s['chunk_id'],
@@ -207,20 +220,26 @@ class RecordLogic {
         userId: realUserId,
         audioS3Link: null,
       );
-
     } catch (e, st) {
-      // ⛔ เมื่อเกิด Error โค้ดจะกระโดดมาทำงานตรงนี้
       debugPrint("Transcribe failed: $e");
       debugPrint(st.toString());
 
-      // 🔥 สั่งแสดง Popup (SnackBar) ตรงนี้ 🔥
+      // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
+      if (createdProjectId != null) {
+        debugPrint("Rolling back: Deleting invalid project $createdProjectId");
+        try {
+          await deleteAsrWorkspace(ref, createdProjectId, createdUserId ?? currentUserId);
+        } catch (delErr) {
+          debugPrint("Rollback failed: $delErr");
+        }
+      }
+
       if (context.mounted) {
-        // ตรวจสอบ Error จาก Log ของคุณ (VAD script returned no output) = ไฟล์เสียงเงียบ/สั้นเกินไป
         String msg = "เกิดข้อผิดพลาด: $e";
         if (e.toString().contains("VAD script")) {
-           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป กรุณาลองใหม่อีกครั้ง";
+           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
         } else if (e.toString().contains("500")) {
-           msg = "Server Error (500): ไม่สามารถประมวลผลได้";
+           msg = "Server Error: ไม่สามารถประมวลผลได้";
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -236,6 +255,7 @@ class RecordLogic {
           ),
         );
       }
+
       return null;
     }
   }
@@ -253,7 +273,11 @@ class RecordLogic {
 
   Future<void> deleteProject(WidgetRef ref, String projectId) async {
     try {
-      await deleteAsrWorkspace(ref, projectId, currentUserId);
+      await deleteAsrWorkspace(
+        ref,
+        projectId,
+        currentUserId,
+      );
     } catch (e) {
       debugPrint("Failed to delete project: $e");
     }

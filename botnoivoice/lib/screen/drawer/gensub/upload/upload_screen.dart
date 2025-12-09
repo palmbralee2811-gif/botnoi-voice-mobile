@@ -268,7 +268,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   : () async {
                       setState(() => isLoading = true);
                       
-                      // 🔥🔥🔥 ส่ง context เพื่อให้แสดง SnackBar Error ได้ 🔥🔥🔥
+                      // เรียกใช้งานฟังก์ชันถอดเสียง (พร้อมส่ง context เพื่อแสดง Error หากมี)
                       final success = await controller.transcribeFile(ref, context);
 
                       if (mounted) {
@@ -279,8 +279,8 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                           mounted &&
                           controller.lastProject != null) {
                         
-                        // ✅ Uncomment เพื่ออัปเดต List ทันที
-                        widget.onProjectCreated(controller.lastProject!);
+                        // ❌ ลบบรรทัดนี้ออกเพื่อแก้ปัญหาโปรเจคขึ้นซ้ำ 2 อัน
+                        // widget.onProjectCreated(controller.lastProject!);
 
                         Navigator.push(
                           context,
