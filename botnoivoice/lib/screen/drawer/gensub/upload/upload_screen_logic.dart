@@ -12,6 +12,9 @@ import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
+import 'package:logger/logger.dart';
+
+final _logger = Logger();
 
 String _extractSeconds(String input, {Duration? fallback}) {
   if (input.contains("ไม่จำกัด")) {
@@ -66,8 +69,11 @@ class UploadLogic {
 
         await player.dispose();
       }
-    } catch (e) {
-      debugPrint("pickFile error: $e");
+    } catch (e, st) {
+      _logger.e(
+        "pickFile error: $e",
+        stackTrace: st,
+      );
     } finally {
       _isPicking = false;
     }
@@ -86,9 +92,9 @@ class UploadLogic {
     if (filePath == null) return false;
 
     transcribeStatus = "text_to_gensub.transcribe_status".tr();
-    
+
     // 🚩 ตัวแปรสำหรับจำ ID โปรเจคที่เพิ่งสร้าง เผื่อต้องลบทิ้งกรณี Error
-    String? createdProjectId; 
+    String? createdProjectId;
     String? createdUserId;
 
     try {
@@ -97,7 +103,7 @@ class UploadLogic {
         ref,
         file: File(filePath!),
       );
-      debugPrint(" upload result = $uploadResult");
+      _logger.d(" upload result = $uploadResult");
 
       // 2) insert workspace
       final projectName =
@@ -111,12 +117,12 @@ class UploadLogic {
         totalPoint: 0,
         duration: durationStr,
       );
-      debugPrint(" insert workspace result = $insertResult");
+      _logger.d(" insert workspace result = $insertResult");
 
       // ✅ เก็บค่า ID ไว้ใช้ลบกรณี Error
       createdProjectId = insertResult["data"]?["project_id"];
       createdUserId = insertResult["data"]?["user_id"];
-      
+
       final projectId = createdProjectId;
       final realUserId = createdUserId;
 
@@ -135,7 +141,7 @@ class UploadLogic {
             fallback: const Duration(seconds: 1)),
         language: "th",
       );
-      debugPrint(" cut audio result = $cutResult");
+      _logger.d(" cut audio result = $cutResult");
 
       // 4) get all chunks
       final chunksRes = await getAllChunks(
@@ -192,28 +198,34 @@ class UploadLogic {
 
       transcribeStatus = " ถอดเสียงสำเร็จ";
       return true;
-
     } catch (e, st) {
-      debugPrint(" Error while uploading/transcribing: $e");
+      _logger.e(
+        " Error while uploading/transcribing: $e",
+        stackTrace: st,
+      );
       transcribeStatus = " ถอดเสียงไม่สำเร็จ: $e";
 
       // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
       if (createdProjectId != null) {
-        debugPrint("Rolling back: Deleting invalid project $createdProjectId");
+        _logger.w("Rolling back: Deleting invalid project $createdProjectId");
         try {
           // เรียก API ลบโปรเจค
-          await deleteAsrWorkspace(ref, createdProjectId, createdUserId ?? currentUserId);
-        } catch (delErr) {
-          debugPrint("Rollback failed: $delErr");
+          await deleteAsrWorkspace(
+              ref, createdProjectId, createdUserId ?? currentUserId);
+        } catch (delErr, st) {
+          _logger.e(
+            "Rollback failed: $delErr",
+            stackTrace: st,
+          );
         }
       }
 
       if (context.mounted) {
         String msg = "เกิดข้อผิดพลาด: $e";
         if (e.toString().contains("VAD script")) {
-           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
+          msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
         } else if (e.toString().contains("500")) {
-           msg = "Server Error: ไม่สามารถประมวลผลไฟล์นี้ได้";
+          msg = "Server Error: ไม่สามารถประมวลผลไฟล์นี้ได้";
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -224,7 +236,8 @@ class UploadLogic {
             action: SnackBarAction(
               label: 'ปิด',
               textColor: Colors.white,
-              onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+              onPressed: () =>
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar(),
             ),
           ),
         );

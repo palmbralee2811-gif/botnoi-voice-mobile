@@ -189,21 +189,16 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
 
       // 🔹 เปลี่ยนจากปุ่มเมนู → ปุ่มย้อนกลับ
       leading: Builder(
-        builder: (context) => SizedBox(
-          width: double.infinity,
-          height:
-              ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
-          child: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
-              color: kDark,
-            ),
-            onPressed: () {
-              context.go('/home'); // 🔙 ไปหน้าโฮม
-            },
-            tooltip: 'กลับไปหน้าแรก',
+        builder: (context) => IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            size: 12.sp,
+            color: kDark,
           ),
+          onPressed: () {
+            context.go('/home'); // Back to Home Screen
+          },
+          tooltip: 'Back',
         ),
       ),
       leadingWidth: ResponsiveDesignOrientation.isLandscape ? 35.w : 60.w,

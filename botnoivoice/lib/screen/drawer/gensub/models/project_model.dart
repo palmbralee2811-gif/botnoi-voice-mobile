@@ -1,4 +1,6 @@
-import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
+
+final _logger = Logger();
 
 class ProjectModel {
   final String projectId;
@@ -9,7 +11,6 @@ class ProjectModel {
   final List<Map<String, dynamic>> segments;
   final String userId;
   final String? audioS3Link; // ✅ เพิ่มฟิลด์ S3 link
-
 
   ProjectModel({
     required this.projectId,
@@ -67,7 +68,7 @@ class ProjectModel {
   }
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
-    debugPrint("RAW project json: $json");
+    _logger.d("RAW project json: $json");
 
     return ProjectModel(
       projectId: json['project_id']?.toString() ?? '',
@@ -85,9 +86,8 @@ class ProjectModel {
       /// ⭐ รองรับ key จาก API:
       /// - audio_s3_link
       /// - audioS3Link
-      audioS3Link: json['audio_s3_link']?.toString()
-          ?? json['audioS3Link']?.toString()
-          ?? null,
+      audioS3Link:
+          json['audio_s3_link']?.toString() ?? json['audioS3Link']?.toString(),
     );
   }
 

@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+import 'package:logger/logger.dart';
+
+final _logger = Logger();
 
 class UploadRecordState {
   final int selectedIndex;
@@ -91,8 +93,11 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
           : a.createdAt.compareTo(b.createdAt));
 
       state = state.copyWith(projects: projects, loading: false);
-    } catch (e) {
-      debugPrint("Failed to load projects: $e");
+    } catch (e, st) {
+      _logger.e(
+        "Failed to load projects: $e",
+        stackTrace: st,
+      );
       state = state.copyWith(loading: false);
     }
   }
@@ -123,8 +128,11 @@ class UploadRecordLogic extends StateNotifier<UploadRecordState> {
           .where((p) => p.projectId != project.projectId)
           .toList();
       state = state.copyWith(projects: updated);
-    } catch (e) {
-      debugPrint("Failed to delete project: $e");
+    } catch (e, st) {
+      _logger.e(
+        "Failed to delete project: $e",
+        stackTrace: st,
+      );
     }
   }
 

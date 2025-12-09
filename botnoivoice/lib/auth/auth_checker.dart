@@ -106,7 +106,6 @@
 
 
 
-import 'package:botnoivoice/auth/internet_checker.dart';
 import 'package:botnoivoice/auth/token_checker.dart';
 import 'package:botnoivoice/shared/function/open_logout_function.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
@@ -116,14 +115,12 @@ import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
 class AuthChecker extends ConsumerWidget {
   AuthChecker({super.key});
 
   final Logger _logger = Logger();
-  final _internetChecker = InternetChecker();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -178,15 +175,6 @@ class AuthChecker extends ConsumerWidget {
 
     if (loginProvider != null) {
       _logger.d("Authenticated with $loginProvider");
-
-      // Internet check logic (ใส่ postFrameCallback เพื่อความปลอดภัย)
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   _internetChecker.startListeningToInternetChanges(context, (isAvailable) {
-      //     if (!isAvailable && context.mounted) {
-      //       context.go('/login');
-      //     }
-      //   });
-      // });
 
       return const TokenChecker();
     } else {

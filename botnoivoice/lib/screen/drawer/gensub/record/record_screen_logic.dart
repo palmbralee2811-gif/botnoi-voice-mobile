@@ -4,17 +4,20 @@ import 'dart:io';
 import 'package:botnoivoice/screen/drawer/gensub/permission/permission_gensub.dart';
 import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
+
+final _logger = Logger();
 
 class RecordLogic {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
@@ -41,7 +44,7 @@ class RecordLogic {
     await _player.openPlayer();
   }
 
-  Future<bool> _checkAndroidRequestPermissions(BuildContext context) async {
+  Future<bool> _checkRequestPermissions(BuildContext context) async {
     bool hasPermission = await GenSubPermission().requestPermissionGenSub();
     if (!hasPermission) {
       OpenAppSettingsDialog(
@@ -53,7 +56,7 @@ class RecordLogic {
 
   Future<void> toggleRecording(
       BuildContext context, Function(void Function()) setState) async {
-    bool hasPermission = await _checkAndroidRequestPermissions(context);
+    bool hasPermission = await _checkRequestPermissions(context);
     if (!hasPermission) return;
 
     if (!isRecorderReady) {
@@ -82,8 +85,11 @@ class RecordLogic {
             audioDuration = d;
             isRecording = false;
           });
-        } catch (e) {
-          debugPrint("⚠️ Failed to load file: $e");
+        } catch (e, st) {
+          _logger.e(
+            "⚠️ Failed to load file: $e",
+            stackTrace: st,
+          );
         }
       }
     } else {
@@ -132,9 +138,8 @@ class RecordLogic {
   }
 
   Future<ProjectModel?> handleTranscribe(
-    WidgetRef ref, 
-    BuildContext context, 
-    {
+    WidgetRef ref,
+    BuildContext context, {
     int maxSegmentDuration = 10,
     double maxSilenceDuration = 0.3,
   }) async {
@@ -152,7 +157,7 @@ class RecordLogic {
         ref,
         file: file,
       );
-      debugPrint("Upload result: $uploadResult");
+      _logger.d("Upload result: $uploadResult");
 
       // 2) insert workspace
       final projectName = file.path.split('/').last;
@@ -164,7 +169,7 @@ class RecordLogic {
         totalPoint: 0,
         duration: _formatDuration(audioDuration ?? Duration.zero),
       );
-      debugPrint("Insert workspace result: $insertResult");
+      _logger.d("Insert workspace result: $insertResult");
 
       // ✅ เก็บ ID ไว้ลบถ้า Error
       createdProjectId = insertResult["data"]?["project_id"];
@@ -187,7 +192,7 @@ class RecordLogic {
         language: selectedLanguage.toLowerCase(),
       );
 
-      debugPrint("Cut audio result: $cutResult");
+      _logger.d("Cut audio result: $cutResult");
 
       // 4) get all chunks
       final chunksRes = await getAllChunks(ref, projectId: projectId);
@@ -221,25 +226,31 @@ class RecordLogic {
         audioS3Link: null,
       );
     } catch (e, st) {
-      debugPrint("Transcribe failed: $e");
-      debugPrint(st.toString());
+      _logger.e(
+        "Transcribe failed: $e",
+        stackTrace: st,
+      );
 
       // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
       if (createdProjectId != null) {
-        debugPrint("Rolling back: Deleting invalid project $createdProjectId");
+        _logger.e("Rolling back: Deleting invalid project $createdProjectId");
         try {
-          await deleteAsrWorkspace(ref, createdProjectId, createdUserId ?? currentUserId);
-        } catch (delErr) {
-          debugPrint("Rollback failed: $delErr");
+          await deleteAsrWorkspace(
+              ref, createdProjectId, createdUserId ?? currentUserId);
+        } catch (delErr, st) {
+          _logger.e(
+            "Rollback failed: $delErr",
+            stackTrace: st,
+          );
         }
       }
 
       if (context.mounted) {
         String msg = "เกิดข้อผิดพลาด: $e";
         if (e.toString().contains("VAD script")) {
-           msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
+          msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
         } else if (e.toString().contains("500")) {
-           msg = "Server Error: ไม่สามารถประมวลผลได้";
+          msg = "Server Error: ไม่สามารถประมวลผลได้";
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -250,7 +261,8 @@ class RecordLogic {
             action: SnackBarAction(
               label: 'ปิด',
               textColor: Colors.white,
-              onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+              onPressed: () =>
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar(),
             ),
           ),
         );
@@ -278,8 +290,11 @@ class RecordLogic {
         projectId,
         currentUserId,
       );
-    } catch (e) {
-      debugPrint("Failed to delete project: $e");
+    } catch (e, st) {
+      _logger.e(
+        "Failed to delete project: $e",
+        stackTrace: st,
+      );
     }
   }
 

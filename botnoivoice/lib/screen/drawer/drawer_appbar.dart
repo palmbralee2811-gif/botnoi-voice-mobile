@@ -146,8 +146,32 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
           ),
           ListTile(
             contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-                top: ResponsiveDesignOrientation.isLandscape ? 10.h : 30.h),
+              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
+              top: ResponsiveDesignOrientation.isLandscape ? 10.h : 30.h,
+            ),
+            leading: Icon(
+              Icons.subtitles_outlined,
+              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              color: kDark,
+            ),
+            title: Text(
+              'app_drawer.gensub'.tr(), // Gensub
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              context.push('/gensub');
+            },
+          ),
+          SizedBox(height: 10.h),
+
+          ListTile(
+            contentPadding: EdgeInsets.only(
+                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.account_circle_outlined,
               size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
@@ -214,53 +238,56 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
           ),
           SizedBox(height: 10.h),
 
-          ListTile(
-            contentPadding: EdgeInsets.only(
-              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-            ),
-            leading: Icon(
-              Icons.chat_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.marads'.tr(), // Gensub
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              context.push('/marads');
-            },
-          ),
-          SizedBox(height: 10.h),
+          // //Voicebot
+          // ListTile(
+          //   contentPadding: EdgeInsets.only(
+          //     left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
+          //   ),
+          //   leading: Icon(
+          //     Icons.record_voice_over_outlined, // ใช้ไอคอนรูปคนพูด หรือหุ่นยนต์
+          //     size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+          //     color: kDark,
+          //   ),
+          //   title: Text(
+          //     'Voicebot', // หรือ 'app_drawer.voicebot'.tr()
+          //     style: GoogleFonts.prompt(
+          //       fontSize:
+          //           ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+          //       fontWeight: FontWeight.w600,
+          //       color: kDark,
+          //     ),
+          //   ),
+          //   onTap: () {
+          //     // ปิด Drawer ก่อน แล้วไปหน้า Voicebot
+          //     context.pop(); 
+          //     context.push('/voicebot'); 
+          //   },
+          // ),
+          // SizedBox(height: 10.h),
 
-          ListTile(
-            contentPadding: EdgeInsets.only(
-              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-            ),
-            leading: Icon(
-              Icons.subtitles_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.gensub'.tr(), // Gensub
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              context.push('/gensub');
-            },
-          ),
-          SizedBox(height: 10.h),
+          // ListTile(
+          //   contentPadding: EdgeInsets.only(
+          //     left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
+          //   ),
+          //   leading: Icon(
+          //     Icons.chat_outlined,
+          //     size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+          //     color: kDark,
+          //   ),
+          //   title: Text(
+          //     'app_drawer.marads'.tr(), // Gensub
+          //     style: GoogleFonts.prompt(
+          //       fontSize:
+          //           ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+          //       fontWeight: FontWeight.w600,
+          //       color: kDark,
+          //     ),
+          //   ),
+          //   onTap: () {
+          //     context.push('/marads');
+          //   },
+          // ),
+          // SizedBox(height: 10.h),
 
           ListTile(
             contentPadding: EdgeInsets.only(
@@ -314,6 +341,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
             },
           ),
           SizedBox(height: 10.h),
+
           if (emailProvider.isLoggedIn &&
               emailProvider.user?.providerData[0].providerId == 'password')
             ListTile(
@@ -341,6 +369,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
           if (emailProvider.isLoggedIn &&
               emailProvider.user?.providerData[0].providerId == 'password')
             SizedBox(height: 10.h),
+          
           InkWell(
             onTap: () {
               // Show the reusable bottom sheet for language selection
@@ -373,6 +402,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
               ),
             ),
           ),
+          SizedBox(height: 50.h), // Free Space at the bottom
         ],
       ),
     );
