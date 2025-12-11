@@ -1,3 +1,4 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,12 +15,6 @@ class MarAdsModeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const gradient = LinearGradient(
-      colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -29,9 +24,10 @@ class MarAdsModeSelector extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           child: CustomPaint(
-            painter: _GradientBorderPainter(
-              gradient: gradient,
+            painter: GradientBorderPainter(
+              gradient: MarAdsUIStyle.cyanPurpleGradient,
               radius: 18.r,
+              strokeWidth: 2,
             ),
             child: Container(
               height: 36.h, // ← ฟิกความสูงให้คอนเทนต์อยู่กลางแน่นอน
@@ -42,11 +38,12 @@ class MarAdsModeSelector extends StatelessWidget {
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center, // ← จัดกึ่งกลาง
-                crossAxisAlignment: CrossAxisAlignment.center, // ← จัดกึ่งกลางแนวตั้ง
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ShaderMask(
-                    shaderCallback: (bounds) => gradient.createShader(bounds),
+                    shaderCallback: (bounds) =>
+                        MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                     child: Text(
                       selectedMode,
                       style: GoogleFonts.inter(
@@ -58,7 +55,8 @@ class MarAdsModeSelector extends StatelessWidget {
                   ),
                   SizedBox(width: 5.w),
                   ShaderMask(
-                    shaderCallback: (bounds) => gradient.createShader(bounds),
+                    shaderCallback: (bounds) =>
+                        MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 18.sp,
@@ -73,28 +71,4 @@ class MarAdsModeSelector extends StatelessWidget {
       ),
     );
   }
-}
-
-class _GradientBorderPainter extends CustomPainter {
-  final Gradient gradient;
-  final double radius;
-
-  _GradientBorderPainter({required this.gradient, required this.radius});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final paint = Paint()
-      ..shader = gradient.createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, Radius.circular(radius)),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

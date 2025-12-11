@@ -1,3 +1,4 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,11 +32,7 @@ class MarAdsFreeBadge extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
+              gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ Style กลาง
               borderRadius: BorderRadius.circular(100.r),
             ),
             child: Text(

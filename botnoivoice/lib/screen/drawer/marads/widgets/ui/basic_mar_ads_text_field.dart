@@ -1,3 +1,4 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +8,8 @@ class MarAdsTextField extends StatefulWidget {
   final String placeholder;
   final TextEditingController controller;
   final bool isRequired;
+  final double? height;
+  final int? maxLines;
 
   const MarAdsTextField({
     super.key,
@@ -14,6 +17,8 @@ class MarAdsTextField extends StatefulWidget {
     required this.placeholder,
     required this.controller,
     this.isRequired = false,
+    this.height,
+    this.maxLines = 1,
   });
 
   @override
@@ -21,15 +26,13 @@ class MarAdsTextField extends StatefulWidget {
 }
 
 class _MarAdsTextFieldState extends State<MarAdsTextField> {
-
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(() {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -58,50 +61,43 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
           ),
           SizedBox(height: 5.h),
           Container(
-  height: 49.h,
-  padding: const EdgeInsets.all(1.5), // ความหนาของกรอบไล่สี
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(16.r),
-    gradient: const LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [
-        Color(0xFF332261),
-        Color(0xFF7E2449),
-      ],
-    ),
-  ),
-  child: Container(
-    padding: EdgeInsets.symmetric(horizontal: 20.w),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(15.r),
-    ),
-    child: TextField(
-  controller: widget.controller,
-  focusNode: _focusNode,
-  textAlignVertical: TextAlignVertical.center,   // จัด baseline ให้ตรงกลาง
-  style: GoogleFonts.inter(
-    fontSize: 12.sp,
-    fontWeight: FontWeight.w400,
-    color: const Color(0xFF262626),
-  ),
-  decoration: InputDecoration(
-    hintText: widget.placeholder,
-    hintStyle: GoogleFonts.inter(
-      fontSize: 12.sp,
-      fontWeight: FontWeight.w400,
-      color: const Color(0xFF888888),
-    ),
-    border: InputBorder.none,
-
-    // 💡 ค่าที่ตรงกลางที่สุดสำหรับช่องสูง 49.h
-    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
-  ),
-)
-
-  ),
-)
+            height: widget.height ?? 49.h,
+            padding: const EdgeInsets.all(1.5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              gradient: MarAdsUIStyle.purplePinkGradient,
+            ),
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.r),
+                ),
+                child: TextField(
+                  controller: widget.controller,
+                  focusNode: _focusNode,
+                  textAlignVertical: widget.maxLines != 1
+                      ? TextAlignVertical.top
+                      : TextAlignVertical.center,
+                  maxLines: widget.maxLines,
+                  expands: widget.maxLines == null,
+                  style: GoogleFonts.inter(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF262626),
+                  ),
+                  decoration: InputDecoration(
+                    hintText: widget.placeholder,
+                    hintStyle: GoogleFonts.inter(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF888888),
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+                  ),
+                )),
+          )
         ],
       ),
     );
