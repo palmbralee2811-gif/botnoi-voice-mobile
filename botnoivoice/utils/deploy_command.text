@@ -1,3 +1,7 @@
+flutter clean && flutter pub get
+flutter build apk --release
+flutter build appbundle --release
+
 # Android (.apk) for Firebase App Tester Only
 cd /Users/kawin101/Desktop/botnoi-voice-mobile/botnoivoice/
 flutter clean && flutter pub get
