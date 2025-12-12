@@ -86,18 +86,6 @@
 // }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
 // mar_ads_logic.dart
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
@@ -112,58 +100,66 @@ class MarAdsLogic {
   MarAdsLogic(this._promptService);
 
   Future<dynamic> createPromptAdsFromForm({
-  required WidgetRef ref,
-  required BuildContext context,
-  required String productName,
-  required String brandName,
-  required String price,
-  required String contentStyle,
-  required String contentLengthLabel,
-  required String additionalInfo,
-}) async {
+    required WidgetRef ref,
+    required BuildContext context,
+    required String productName,
+    required String brandName,
+    required String price,
+    required String contentStyle,
+    required String contentLengthLabel,
+    required String additionalInfo,
+  }) async {
+    final token = ref.watch(currentUserTokenStateProvider).jwtToken;
 
-  final token = ref.watch(currentUserTokenStateProvider).credentialsToken;
+    if (token == null || token.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                "Something went wrong, Please try again. \n ### createPromptAdsFromForm: $token ###")),
+      );
+      throw Exception("NO_TOKEN");
+    }
 
-  if (token == null || token.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Something went wrong, Please try again. \n ### createPromptAdsFromForm: $token ###")),
-    );
-    throw Exception("NO_TOKEN");
+    String lengthValue;
+    switch (contentLengthLabel) {
+      case '~15 วิ':
+        lengthValue = 'สั้น';
+        break;
+      case '~30 วิ':
+        lengthValue = 'กลาง';
+        break;
+      case '~60 วิ':
+        lengthValue = 'ยาว';
+        break;
+      default:
+        lengthValue = 'สั้น';
+    }
+
+    final payload = {
+      "mode": "basic",
+      "language": "th",
+      "product_name": productName,
+      "product_brand": brandName,
+      "price": price,
+      "content_style": contentStyle,
+      "content_length": lengthValue,
+      "additional_info": additionalInfo,
+    };
+
+    _logger.i("Payload => $payload");
+
+    try {
+      final res = await _promptService.createPromptAds(
+        context: context,
+        token: token,
+        payload: payload,
+      );
+
+      _logger.i("API Response => $res");
+      return res;
+    } catch (e, stack) {
+      _logger.e("API Error", error: e, stackTrace: stack);
+      rethrow;
+    }
   }
-
-  String lengthValue;
-  switch (contentLengthLabel) {
-    case '~15 วิ': lengthValue = 'สั้น'; break;
-    case '~30 วิ': lengthValue = 'กลาง'; break;
-    case '~60 วิ': lengthValue = 'ยาว'; break;
-    default: lengthValue = 'สั้น';
-  }
-
-  final payload = {
-    "mode": "basic",
-    "language": "th",
-    "product_name": productName,
-    "product_brand": brandName,
-    "price": price,
-    "content_style": contentStyle,
-    "content_length": lengthValue,
-    "additional_info": additionalInfo,
-  };
-
-  _logger.i("Payload => $payload");
-
-  try {
-    final res = await _promptService.createPromptAds(
-      token: token,
-      payload: payload,
-    );
-
-    _logger.i("API Response => $res");
-    return res;
-
-  } catch (e, stack) {
-    _logger.e("API Error", error: e, stackTrace: stack);
-    rethrow;
-  }
-}
 }

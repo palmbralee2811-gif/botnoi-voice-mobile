@@ -14,7 +14,6 @@ import 'package:go_router/go_router.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_basic_logic.dart';
 import 'package:logger/logger.dart';
 
-
 class MarAdsScreen extends ConsumerStatefulWidget {
   const MarAdsScreen({super.key});
 
@@ -50,7 +49,6 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     _additionalInfoController.dispose();
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -68,21 +66,21 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                     onTap: _handleModeSelectorTap,
                   ),
                   MarAdsTextField(
-  label: 'สินค้าที่ต้องการขาย*',
-  placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
-  controller: _productController,
-  isRequired: true,
-),
-MarAdsTextField(
-  label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
-  placeholder: 'บอทน้อย',
-  controller: _brandController,
-),
-MarAdsTextField(
-  label: 'ราคา',
-  placeholder: '129 บาท, 99 บาท จาก 129 บาท',
-  controller: _priceController,
-),
+                    label: 'สินค้าที่ต้องการขาย*',
+                    placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
+                    controller: _productController,
+                    isRequired: true,
+                  ),
+                  MarAdsTextField(
+                    label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
+                    placeholder: 'บอทน้อย',
+                    controller: _brandController,
+                  ),
+                  MarAdsTextField(
+                    label: 'ราคา',
+                    placeholder: '129 บาท, 99 บาท จาก 129 บาท',
+                    controller: _priceController,
+                  ),
                   MarAdsDropdown(
                     label: 'สไตล์เนื้อหา',
                     value: _selectedContentStyle,
@@ -110,8 +108,7 @@ MarAdsTextField(
       backgroundColor: Colors.white,
       elevation: 0,
       automaticallyImplyLeading: false,
-      toolbarHeight:
-          ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
+      toolbarHeight: ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
       title: Stack(
         children: [
           Align(
@@ -119,9 +116,7 @@ MarAdsTextField(
             child: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios_new,
-                size: ResponsiveDesignOrientation.isLandscape
-                    ? 12.sp
-                    : 25.sp,
+                size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
                 color: kDark,
               ),
               onPressed: () {
@@ -132,12 +127,8 @@ MarAdsTextField(
           Center(
             child: SvgPicture.asset(
               'assets/images/logo/appbar-icon.svg',
-              width: ResponsiveDesignOrientation.isLandscape
-                  ? 30.w
-                  : 28.w,
-              height: ResponsiveDesignOrientation.isLandscape
-                  ? 30.h
-                  : 28.h,
+              width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
+              height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
               fit: BoxFit.contain,
             ),
           ),
@@ -155,67 +146,12 @@ MarAdsTextField(
 
   /// กล่อง "ข้อมูลเสริมอื่นๆ" ให้พิมพ์ได้เลย
   Widget _buildAdditionalInfoLabel() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)',
-            style: GoogleFonts.inter(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF262626),
-              height: 2,
-              letterSpacing: 0.25,
-            ),
-          ),
-          SizedBox(height: 5.h),
-          Container(
-            height: 100.h,
-            padding: const EdgeInsets.all(1.5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              gradient: const LinearGradient(
-                colors: [Color(0xFF332261), Color(0xFF7E2449)],
-              ),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15.r),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 8.h,
-              ),
-              child: TextField(
-                controller: _additionalInfoController,
-                maxLines: null,
-                expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                style: GoogleFonts.inter(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xFF262626),
-                  height: 1.25,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'พลาดไม่ได้, หมดเขตในอีก 3 วัน',
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFFC2C2C2),
-                    height: 1.25,
-                  ),
-                  isCollapsed: true,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return MarAdsTextField(
+      label: 'ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)',
+      placeholder: 'พลาดไม่ได้, หมดเขตในอีก 3 วัน',
+      controller: _additionalInfoController,
+      height: 100.h, // กำหนดความสูง
+      maxLines: null, // พิมพ์ได้ไม่จำกัดบรรทัด
     );
   }
 
@@ -269,16 +205,26 @@ MarAdsTextField(
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                 ),
-                onPressed: isFormValid ? _handleCreateMessage : null,
-                child: Text(
-                  'สร้างข้อความ',
-                  style: GoogleFonts.prompt(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    height: 1.4,
-                  ),
-                ),
+                onPressed:
+                    (isFormValid && !_isLoading) ? _handleCreateMessage : null,
+                child: _isLoading
+                    ? SizedBox(
+                        width: 24.w,
+                        height: 24.w,
+                        child: const CircularProgressIndicator(
+                          color: Colors.white, // สีขาวให้ตัดกับปุ่มสีเข้ม
+                          strokeWidth: 3,
+                        ),
+                      )
+                    : Text(
+                        'สร้างข้อความ',
+                        style: GoogleFonts.prompt(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          height: 1.4,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -366,8 +312,7 @@ MarAdsTextField(
             ListTile(
               title: const Text('เรียกความสงสาร'),
               onTap: () {
-                setState(
-                    () => _selectedContentStyle = 'เรียกความสงสาร');
+                setState(() => _selectedContentStyle = 'เรียกความสงสาร');
                 Navigator.pop(context);
               },
             ),
@@ -431,7 +376,7 @@ MarAdsTextField(
     );
   }
 
-      Future<void> _handleCreateMessage() async {
+  Future<void> _handleCreateMessage() async {
     if (_isLoading) return;
 
     // กันเหนียว validate อีกที
@@ -459,19 +404,36 @@ MarAdsTextField(
 
       _logger.i("MarAds: create_prompt_ads response: $response");
 
-      // ตอนนี้ยังไม่ต้อง parse model แค่ยิงสำเร็จ + ไปหน้า result
-      context.push('/marads/result');
+      // ดึงข้อความจาก response และส่งไปยังหน้า Result
+      if (response != null && response['data'] != null) {
+        String generatedText = response['data'].toString();
+
+        // API ส่งมาเป็น "[ข้อความ...]" ต้องเอาวงเล็บออกเพื่อให้สวยงาม
+        if (generatedText.startsWith('[') && generatedText.endsWith(']')) {
+          generatedText = generatedText.substring(1, generatedText.length - 1);
+        }
+
+        // ส่ง text ไปผ่าน query parameters (routing.dart ของคุณรอรับ key ชื่อ 'text' อยู่แล้ว)
+        context.push(
+          Uri(
+            path: '/marads/result',
+            queryParameters: {'text': generatedText},
+          ).toString(),
+        );
+      } else {
+        // กันเหนียว กรณี response มาผิดรูปแบบ
+        context.push('/marads/result');
+      }
     } catch (e, stack) {
-_logger.e(
-  "MarAds: error on create_prompt_ads",
-  error: e,
-  stackTrace: stack,
-);
+      _logger.e(
+        "MarAds: error on create_prompt_ads",
+        error: e,
+        stackTrace: stack,
+      );
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
   }
-
 }
