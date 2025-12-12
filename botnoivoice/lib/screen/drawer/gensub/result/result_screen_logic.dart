@@ -1,5 +1,3 @@
-// result_screen_logic.dart
-
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -41,15 +39,6 @@ class ResultLogic {
     this.audioS3Link,
   }) {
     audioPlayer = AudioPlayer();
-    
-    // ✅ ดักจับสถานะ Player: ถ้าเล่นจบให้หยุดและรีเซ็ตตำแหน่ง
-    stateSub = audioPlayer.playerStateStream.listen((state) {
-      if (state.processingState == ProcessingState.completed) {
-         audioPlayer.seek(Duration.zero);
-         audioPlayer.pause();
-         // UI จะถูกอัปเดตผ่าน callback onUpdate ในหน้าจอ หรือผ่าน logic ของ playSegment
-      }
-    });
   }
 
   Future<void> dispose() async {
@@ -123,13 +112,11 @@ class ResultLogic {
     return '.aac';
   }
 
-  // ✅ 1. เพิ่ม context เพื่อแสดง SnackBar กรณีข้อมูลเป็น null
   Future<ProjectModel?> fetchWorkspace(WidgetRef ref, BuildContext context) async {
     try {
       final projectId = workspaceId;
       final chunksJson = await getAllChunks(ref, projectId: projectId);
 
-      // 🔥 ตรวจสอบ Data Null 🔥
       if (chunksJson['data'] == null) {
         _logger.e("ResultLogic: Data is null");
         if (context.mounted) {
@@ -141,7 +128,7 @@ class ResultLogic {
             ),
           );
         }
-        return null; // คืนค่า null เพื่อบอกว่าโหลดไม่สำเร็จ
+        return null;
       }
 
       final rawSegments = (chunksJson['data'] as List<dynamic>? ?? []);
@@ -186,9 +173,6 @@ class ResultLogic {
         }
         
         String? projectLevelS3 = audioS3Link;
-        if ((projectLevelS3 == null || projectLevelS3.isEmpty) && segments.isNotEmpty) {
-            // Logic เดิม
-        }
         
         await setProjectAudioSource(filePath, projectLevelS3);
 
@@ -274,7 +258,7 @@ class ResultLogic {
     final timelineEnd = Duration(milliseconds: (endSec * 1000).round());
 
     bool newSourceSet = false;
-    bool isChunkSource = false; // 🚩 ตัวแปรสำคัญ: เช็คว่าเป็นไฟล์ย่อยหรือไม่
+    bool isChunkSource = false;
 
     final segS3 = (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
 
@@ -284,12 +268,9 @@ class ResultLogic {
         _logger.d("Attempting to load CHUNK source: $segS3");
         await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(segS3), headers: {'Referer': 'https://voice.botnoi.ai/'}));
         newSourceSet = true;
-        isChunkSource = true; // ✅ ระบุว่าเป็น Chunk
+        isChunkSource = true; 
       } catch (e, st) {
-        _logger.e(
-          "Failed to load chunk source: $e",
-          stackTrace: st,
-        );
+        _logger.e("Failed to load chunk source: $e", stackTrace: st);
       }
     }
 
@@ -299,12 +280,9 @@ class ResultLogic {
         _logger.d("Attempting to load FULL S3 source: $audioS3Link");
         await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(audioS3Link!), headers: {'Referer': 'https://voice.botnoi.ai/'}));
         newSourceSet = true;
-        isChunkSource = false; // ✅ ระบุว่าเป็น Full File
+        isChunkSource = false;
       } catch (e, st) {
-        _logger.e(
-          "Failed to load full S3 source: $e",
-          stackTrace: st,
-        );
+        _logger.e("Failed to load full S3 source: $e", stackTrace: st);
       }
     }
 
@@ -314,12 +292,9 @@ class ResultLogic {
         _logger.d("Attempting to load LOCAL source: $filePath");
         await audioPlayer.setFilePath(filePath);
         newSourceSet = true;
-        isChunkSource = false; // ✅ ระบุว่าเป็น Full File
+        isChunkSource = false;
       } catch (e, st) {
-        _logger.e(
-          "Failed to load local source: $e",
-          stackTrace: st,
-        );
+        _logger.e("Failed to load local source: $e", stackTrace: st);
       }
     }
 
@@ -332,51 +307,53 @@ class ResultLogic {
     }
 
     try {
-      // 🔥🔥🔥 แก้ไข Logic การ Clip เพื่อป้องกัน Error Clipping 🔥🔥🔥
+      // ยกเลิกอันเก่าก่อนเสมอ เพื่อผูกกับ onUpdate ล่าสุด
+      stateSub?.cancel();
+      stateSub = audioPlayer.playerStateStream.listen((state) {
+        if (state.processingState == ProcessingState.completed) {
+          _logger.d("Audio Completed. Resetting UI.");
+          playingIndex = null;
+          audioPlayer.seek(Duration.zero);
+          audioPlayer.pause();
+          onUpdate();
+        }
+      });
+
       if (isChunkSource) {
-        // กรณี Chunk: เล่นทั้งไฟล์ (เริ่ม 0) ไม่ต้องสน Timeline หลัก เพราะไฟล์ถูกตัดมาพอดีแล้ว
         _logger.d("Playing CHUNK mode (Start: 0, End: null)");
         await audioPlayer.setClip(start: Duration.zero, end: null);
       } else {
-        // กรณี Full File: ต้อง Clip ตามช่วงเวลา Timeline หลัก
         _logger.w("Playing FULL FILE mode (Start: $timelineStart, End: $timelineEnd)");
         await audioPlayer.setClip(start: timelineStart, end: timelineEnd);
       }
       
       await audioPlayer.play();
     } catch (e, st) {
-      _logger.e(
-        "Play Error: $e",
-        stackTrace: st,
-      );
+      _logger.e("Play Error: $e", stackTrace: st);
       playingIndex = null;
       _loadedIndex = null;
       onUpdate();
     }
 
-    // Listener สำหรับจบ Segment
+    // Listener สำหรับจบ Segment (สำหรับ Full File ที่ต้องหยุดเอง)
     positionSub?.cancel();
     positionSub = audioPlayer.positionStream.listen((pos) async {
-      // ถ้าเป็นไฟล์เต็ม ต้องเช็คว่าเล่นเกินเวลา End หรือยัง
       if (!isChunkSource) {
         if (pos >= timelineEnd) {
           try {
-              await audioPlayer.pause();
-              await audioPlayer.seek(timelineStart); // รีเซ็ตไปจุดเริ่มของ Segment
+             await audioPlayer.pause();
+             await audioPlayer.seek(timelineStart);
           } catch (_) {}
           
           if (playingIndex == index) {
-              playingIndex = null; // เปลี่ยนไอคอนเป็น Play
-              onUpdate();
+             playingIndex = null;
+             onUpdate();
           }
         }
       }
-      // ถ้าเป็น Chunk Source ปล่อยให้มันจบเองได้เลย (Listener stateSub ด้านบนจะจัดการ UI reset ให้)
     });
   }
 
-  // ... (ฟังก์ชันอื่นๆ: deleteSegment, saveEdits, exportTxt, exportSrt ฯลฯ ใช้โค้ดเดิม) ...
-  
   Future<void> deleteSegment(WidgetRef ref, int index, List<Map<String, dynamic>> segments, ProjectModel project) async {
     final segment = segments[index];
     await deleteChunk(ref, segment['id']);
