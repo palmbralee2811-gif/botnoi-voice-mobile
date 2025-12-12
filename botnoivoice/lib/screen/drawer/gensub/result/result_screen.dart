@@ -53,27 +53,33 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       initialProjectName: widget.projectName,
     );
 
-    // ✅ ถูกต้อง: ส่ง context ไปให้ Logic เพื่อใช้แสดง SnackBar Error
-    final ProjectModel? project =
-        await tempController.fetchWorkspace(ref, context);
+    try {
+      final ProjectModel? project = await tempController.fetchWorkspace(ref);
 
-    if (project != null && mounted) {
-      final String? firstS3Link = project.segments.isNotEmpty
-          ? project.segments.first['s3_link'] as String?
-          : null;
+      if (project != null && mounted) {
+        final String? firstS3Link = project.segments.isNotEmpty
+            ? project.segments.first['s3_link'] as String?
+            : null;
 
-      final safeFilePath = widget.filePath;
+        final safeFilePath = widget.filePath;
 
-      controller = ResultLogic(
-        userId: widget.userId,
-        filePath: safeFilePath,
-        workspaceId: widget.workspaceId,
-        duration: widget.duration,
-        audioS3Link: firstS3Link,
-        initialProjectName: project.projectName,
-      );
+        controller = ResultLogic(
+          userId: widget.userId,
+          filePath: safeFilePath,
+          workspaceId: widget.workspaceId,
+          duration: widget.duration,
+          audioS3Link: firstS3Link,
+          initialProjectName: project.projectName,
+        );
+      }
+      return project;
+    } catch (e) {
+      _logger.e('Error fetching workspace: $e');
+      if (mounted) {
+        _showSnack("${"result_gensub.error".tr()} $e");
+      }
+      return null;
     }
-    return project;
   }
 
   @override
@@ -150,9 +156,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       DropdownMenuItem(
                                           value: "srt",
                                           child: Text("Subtitle (.srt)")),
-                                      DropdownMenuItem(
-                                          value: "audio",
-                                          child: Text("Audio File (Source)")),
                                     ],
                                     onChanged: (val) {
                                       if (val != null) {
@@ -186,29 +189,24 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     onPressed: () async {
                                       Navigator.pop(context);
                                       try {
-                                        if (selectedFormat == "audio") {
-                                          await genSubShareAudioFile(
-                                              context, project.filePath);
+                                        File file;
+                                        if (selectedFormat == "txt") {
+                                          file = await controller!
+                                              .exportTxt(context, project);
+                                          _showSnack(
+                                              "result_gensub.saved_txt".tr());
+                                          _logger.d(
+                                              "GenSub Save Text File Path: ${file.path}");
                                         } else {
-                                          File file;
-                                          if (selectedFormat == "txt") {
-                                            file = await controller!
-                                                .exportTxt(context, project);
-                                            _showSnack(
-                                                "result_gensub.saved_txt".tr());
-                                            _logger.d(
-                                                "GenSub Save Text File Path: ${file.path}");
-                                          } else {
-                                            file = await controller!
-                                                .exportSrt(context, project);
-                                            _showSnack(
-                                                "result_gensub.saved_srt".tr());
-                                            _logger.d(
-                                                "GenSub Save Srt File Path: ${file.path}");
-                                          }
-                                          await genSubShareTextFile(
-                                              context, file.path);
+                                          file = await controller!
+                                              .exportSrt(context, project);
+                                          _showSnack(
+                                              "result_gensub.saved_srt".tr());
+                                          _logger.d(
+                                              "GenSub Save Srt File Path: ${file.path}");
                                         }
+                                        await genSubShareTextFile(
+                                            context, file.path);
                                       } catch (e) {
                                         _showSnack(
                                             "${"result_gensub.error".tr()} $e");
@@ -270,7 +268,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -318,8 +315,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     ],
                   ),
                 ),
-
-                // Status Bar
                 Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -343,8 +338,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     ],
                   ),
                 ),
-
-                // Segments List
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
@@ -477,10 +470,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              // 🔥🔥🔥 ปุ่ม Play/Stop 🔥🔥🔥
                               IconButton(
                                 icon: Icon(
-                                  // ถ้า index นี้กำลังเล่น ให้แสดงปุ่ม Pause
                                   controller!.playingIndex == index
                                       ? Icons.pause_circle_filled
                                       : Icons.play_circle_fill,
@@ -492,7 +483,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     index,
                                     segments,
                                     () {
-                                      // เมื่อสถานะเปลี่ยน (เล่น/หยุด) ให้รีเฟรชหน้าจอทันที
                                       if (mounted) setState(() {});
                                     },
                                   );
