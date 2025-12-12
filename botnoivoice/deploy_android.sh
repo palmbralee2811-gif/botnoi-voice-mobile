@@ -5,8 +5,6 @@ echo "--------------------------------------------------"
 echo "🚀  STARTING PRODUCTION DEPLOYMENT (GOOGLE PLAY STORE)"
 echo "--------------------------------------------------"
 
-cd ..
-
 flutter clean
 flutter pub get
 
