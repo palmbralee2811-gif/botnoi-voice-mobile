@@ -1,11 +1,21 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_audio_player_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_success_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:just_audio/just_audio.dart';
 
-class MarAdsResultScreen extends StatefulWidget {
+class MarAdsResultScreen extends ConsumerStatefulWidget {
   final String? generatedText;
 
   const MarAdsResultScreen({
@@ -14,27 +24,42 @@ class MarAdsResultScreen extends StatefulWidget {
   });
 
   @override
-  State<MarAdsResultScreen> createState() => _MarAdsResultScreenState();
+  ConsumerState<MarAdsResultScreen> createState() => _MarAdsResultScreenState();
 }
 
-class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
+class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   late TextEditingController _textController;
+  final MarAdsDownloadLogic _downloadLogic = MarAdsDownloadLogic();
   String _selectedCharacter = 'เอวา';
   String _selectedMode = 'Result';
+  String? _currentAudioUrl;
+  String? _currentFileName;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-      text: widget.generatedText ??
-          'พบกับโปรโมชั่นพิเศษสำหรับโทรศัพท์มือถือแบรนด์ Pineapple ราคาลดจาก 3,000 บาท เหลือเพียง 1,000 บาทเท่านั้น! โปรโมชั่นนี้มีถึงสิ้นเดือนนี้เท่านั้น อย่าพลาดโอกาสที่จะเป็นเ���้าของโทรศัพท์คุณภาพในราคาสุดคุ้ม รับประกันความพึงพอใจในทุกการใช้งาน!',
+      text: widget.generatedText ?? '',
     );
+    // addListener เพื่อสั่ง rebuild เมื่อพิมพ์
+    _textController.addListener(() {
+      if (mounted) setState(() {});
+    });
+    _initializeDownloader();
   }
 
   @override
   void dispose() {
     _textController.dispose();
+    _downloadLogic.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializeDownloader() async {
+    if (!FlutterDownloader.initialized) {
+      await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+    }
+    _downloadLogic.initialize();
   }
 
   int get _characterCount => _textController.text.length;
@@ -128,11 +153,8 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
             ),
             child: Center(
               child: ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ).createShader(bounds),
+                shaderCallback: (bounds) =>
+                    MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                 child: Text(
                   'P',
                   style: GoogleFonts.inter(
@@ -163,92 +185,79 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
   }
 
   Widget _buildModeSelectorRow() {
-  return Container(
-    width: double.infinity,
-    padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 5.h),
-    color: Colors.white,
-    child: Row(
-      children: [
-        _buildCharacterSelector(),
-        const Spacer(),
-        _buildResultSelector(),
-      ],
-    ),
-  );
-}
-
-
-
-
-  Widget _buildCharacterSelector() {
-  return GestureDetector(
-    onTap: _handleCharacterSelectorTap,
-    child: Container(
-      height: 33.h,
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: const Color(0xFF868688),
-          width: 1,
-        ),
-      ),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 5.h),
+      color: Colors.white,
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 25.w,
-            height: 25.h,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[300],
-            ),
-            child: Center(
-              child: Icon(
-                Icons.female,
-                size: 16.sp,
-                color: Colors.pink,
-              ),
-            ),
-          ),
-          SizedBox(width: 5.w),
-          Text(
-            _selectedCharacter,
-            style: GoogleFonts.prompt(
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF262626),
-            ),
-          ),
-          SizedBox(width: 5.w),
-          Icon(
-            Icons.keyboard_arrow_down,
-            size: 12.sp,
-            color: const Color(0xFF262626),
-          ),
+          _buildCharacterSelector(),
+          const Spacer(),
+          _buildResultSelector(),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
 
-
-
-
+  Widget _buildCharacterSelector() {
+    return GestureDetector(
+      onTap: _handleCharacterSelectorTap,
+      child: Container(
+        height: 33.h,
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF7F8FA),
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(
+            color: const Color(0xFF868688),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 25.w,
+              height: 25.h,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey[300],
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.female,
+                  size: 16.sp,
+                  color: Colors.pink,
+                ),
+              ),
+            ),
+            SizedBox(width: 5.w),
+            Text(
+              _selectedCharacter,
+              style: GoogleFonts.prompt(
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF262626),
+              ),
+            ),
+            SizedBox(width: 5.w),
+            Icon(
+              Icons.keyboard_arrow_down,
+              size: 12.sp,
+              color: const Color(0xFF262626),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildResultSelector() {
-    const gradient = LinearGradient(
-      colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-
     return GestureDetector(
       onTap: _handleResultSelectorTap,
       child: CustomPaint(
-        painter: _GradientBorderPainter(
-          gradient: gradient,
+        painter: GradientBorderPainter(
+          gradient: MarAdsUIStyle.cyanPurpleGradient,
           radius: 8.r,
         ),
         child: Container(
@@ -262,7 +271,8 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ShaderMask(
-                shaderCallback: (bounds) => gradient.createShader(bounds),
+                shaderCallback: (bounds) =>
+                    MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                 child: Text(
                   _selectedMode,
                   style: GoogleFonts.inter(
@@ -276,7 +286,8 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
               ),
               SizedBox(width: 5.w),
               ShaderMask(
-                shaderCallback: (bounds) => gradient.createShader(bounds),
+                shaderCallback: (bounds) =>
+                    MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                 child: Icon(
                   Icons.keyboard_arrow_down,
                   size: 12.sp,
@@ -291,17 +302,11 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
   }
 
   Widget _buildTextBox() {
-    const gradient = LinearGradient(
-      colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-
     return Container(
       padding: EdgeInsets.all(2.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
-        gradient: gradient,
+        gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ Style กลาง
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF9747FF).withOpacity(0.25),
@@ -336,9 +341,6 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
                 ),
-                onChanged: (value) {
-                  setState(() {});
-                },
               ),
             ),
             SizedBox(height: 20.h),
@@ -477,11 +479,8 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
               ),
               Center(
                 child: ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ).createShader(bounds),
+                  shaderCallback: (bounds) =>
+                      MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                   child: Text(
                     'P',
                     style: GoogleFonts.inter(
@@ -593,11 +592,184 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
     );
   }
 
-  void _handleCreateVoice() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('กำลังสร้างเสียง...'),
-        duration: Duration(seconds: 2),
+  Future<void> _handleCreateVoice() async {
+    // สั่งหุบคีย์บอร์ด (Unfocus) ก่อนจะเริ่มทำอะไรทั้งสิ้น
+    // เพื่อป้องกันคีย์บอร์ดเด้งสู้กับ Dialog
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    // รอแป๊บนึงให้คีย์บอร์ดลงสุด (Optional: ใส่หรือไม่ใส่ก็ได้ แต่ใส่ไว้ 0.2 วิ จะนุ่มนวลกว่า)
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    // โชว์ Loading Dialog
+    BuildContext? dialogContext;
+    AudioPlayer? preloadedPlayer;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        dialogContext = context;
+        return const MarAdsLoadingDialog();
+      },
+    );
+
+    try {
+      // เรียก API สร้างเสียง
+      final audioUrl = await generateAudioPreview(
+        ref: ref,
+        context: context,
+        text: _textController.text,
+        isV2: false,
+      );
+
+      if (audioUrl.isNotEmpty) {
+        _currentAudioUrl = audioUrl;
+        _currentFileName =
+            "botnoi_marads_${DateTime.now().millisecondsSinceEpoch}.mp3";
+
+        // สร้าง Player และโหลดเสียงรอเลย (Pre-load)
+        preloadedPlayer = AudioPlayer();
+        await preloadedPlayer.setUrl(audioUrl);
+
+        // ปิด Loading เมื่อ Buffer เสียงเสร็จแล้วจริงๆ
+        if (dialogContext != null && mounted) {
+          Navigator.of(dialogContext!).pop();
+          dialogContext = null;
+        }
+
+        // เปิด Dialog เล่นเสียง โดยส่ง Player ที่พร้อมแล้วเข้าไป
+        if (mounted) {
+          _showAudioPlayerDialog(preloadedPlayer);
+        }
+      } else {
+        // กรณีไม่มี URL ก็ปิด Dialog ตามปกติ
+        if (dialogContext != null && mounted) {
+          Navigator.of(dialogContext!).pop();
+          dialogContext = null;
+        }
+      }
+    } catch (e) {
+      preloadedPlayer?.dispose();
+
+      // ปิด Loading Dialog ก่อนแสดง Error
+      if (dialogContext != null && mounted) {
+        Navigator.of(dialogContext!).pop();
+        dialogContext = null;
+      }
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          backgroundColor: Colors.white,
+          title: Center(
+            child: Icon(Icons.error_outline, color: Colors.red, size: 50.sp),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "สร้างเสียงไม่สำเร็จ",
+                style: GoogleFonts.prompt(
+                    fontSize: 18.sp, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                "กรุณาลองใหม่อีกครั้ง\n($e)",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(fontSize: 12.sp, color: Colors.grey),
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("ตกลง",
+                    style: GoogleFonts.prompt(color: Colors.black)),
+              ),
+            )
+          ],
+        ),
+      );
+    } finally {
+      if (dialogContext != null && mounted) {
+        Navigator.of(dialogContext!).pop();
+      }
+    }
+  }
+
+  // เพิ่มฟังก์ชันโชว์ Dialog
+  void _showAudioPlayerDialog(AudioPlayer player) {
+    showDialog(
+      context: context,
+      builder: (context) => MarAdsAudioPlayerDialog(
+        player: player,
+        fileName: _currentFileName ?? "unknown.mp3",
+        onDownload: () {
+          Navigator.pop(context);
+          // เรียกฟังก์ชันดาวน์โหลด
+          if (_currentAudioUrl != null) {
+            _handleDownload(_currentAudioUrl!,
+                existingFileName: _currentFileName, isShare: false);
+          }
+        },
+        // ปุ่มแชร์: โหลด + เปิด Share Sheet
+        onShare: () {
+          Navigator.pop(context);
+          if (_currentAudioUrl != null) {
+            _handleDownload(_currentAudioUrl!,
+                existingFileName: _currentFileName, isShare: true);
+          }
+        },
+      ),
+    );
+  }
+
+  Future<void> _handleDownload(String url,
+      {String? existingFileName, bool isShare = false}) async {
+    // กรณีแชร์: ไม่ต้องเลือกนามสกุล ให้โหลดเลย (Logic เดิม)
+    if (isShare) {
+      await _downloadLogic.handleDownload(
+        context: context,
+        url: url,
+        existingFileName: existingFileName,
+        isShare: true,
+        onSuccess: () {}, // แชร์ไม่มี dialog success อยู่แล้ว
+      );
+      return;
+    }
+
+    // กรณีดาวน์โหลด: โชว์ Dialog ให้เลือกก่อน
+    showDialog(
+      context: context,
+      builder: (dialogContext) => MarAdsDownloadOptionsDialog(
+        onConfirm: (selectedExtension) async {
+          // เมื่อผู้ใช้กด "ตกลง" และเลือกนามสกุลมาแล้ว
+
+          // สร้างชื่อไฟล์ใหม่ตามนามสกุลที่เลือก
+          final timestamp = DateTime.now().millisecondsSinceEpoch;
+          final finalFileName = "botnoi_marads_$timestamp.$selectedExtension";
+
+          // เรียก Logic ดาวน์โหลดของจริง
+          await _downloadLogic.handleDownload(
+            context: context,
+            url: url,
+            existingFileName: finalFileName, // ส่งชื่อใหม่ที่มีนามสกุลถูกต้อง
+            isShare: false,
+            onSuccess: () {
+              if (!mounted) return;
+              showDialog(
+                context: context,
+                builder: (context) => const MarAdsSuccessDialog(
+                  title: "ดาวน์โหลดสำเร็จ",
+                  subtitle: "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -605,33 +777,9 @@ class _MarAdsResultScreenState extends State<MarAdsResultScreen> {
   void _handleMakeMorePersuasive() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('กำลังปรับปรุงข��อความให้โน้มน้าวมากขึ้น...'),
+        content: Text('กำลังปรับปรุงข้อความให้โน้มน้าวมากขึ้น...'),
         duration: Duration(seconds: 2),
       ),
     );
   }
-}
-
-class _GradientBorderPainter extends CustomPainter {
-  final Gradient gradient;
-  final double radius;
-
-  _GradientBorderPainter({required this.gradient, required this.radius});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final paint = Paint()
-      ..shader = gradient.createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, Radius.circular(radius)),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

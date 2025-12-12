@@ -130,11 +130,10 @@ import 'package:http/http.dart' as http;
 final _logger = Logger();
 
 /// Generate audio (เวอร์ชันใหม่ – อย่าชนชื่อกับของเดิม)
-Future<String> generateAudioPreview(
-  WidgetRef ref,
-  String text,
-  String audioUrl,
-  bool isGenerateAudio, {
+Future<String> generateAudioPreview({
+  required WidgetRef ref,
+  required BuildContext context,
+  required String text,
   required bool isV2,
 }) async {
   // ถ้าต้องการ fix ค่า speaker = "1" และ language = "th"
@@ -156,15 +155,18 @@ Future<String> generateAudioPreview(
   if (selectedToken == null || selectedToken.isEmpty) {
     // Show Snackbar
     NotificationSnackBar(
-      context: ref.context,
-      text: "User CredentialsToken is null or empty",
-      color: Colors.red
-    ).showSnackBar();
+            context: context,
+            text: "User CredentialsToken is null or empty",
+            color: Colors.red)
+        .showSnackBar();
+    return "";
   }
 
   _logger.i("Preview speakerId: $speakerId");
   _logger.i("Preview language: $language");
   _logger.i("User CredentialsToken: $selectedToken");
+
+  String audioUrl = "";
 
   String url = isV2
       ? "$apiUrl/openapi/v1/generate_audio_v2"
@@ -199,13 +201,14 @@ Future<String> generateAudioPreview(
       audioUrl = jsonData['audio_url'];
       _logger.i("generateAudioPreview -> $audioUrl");
     } else {
-      isGenerateAudio = false;
-      audioUrl = '';
       _logger.e("Failed to generate preview audio: ${response.statusCode}");
 
-      if (ref.context.mounted) {
+      // เพิ่มบรรทัดนี้เพื่อดูว่า Server ด่าว่าอะไร (เช่น "Point not enough")
+      _logger.e("Server Response: ${response.body}");
+
+      if (context.mounted) {
         NotificationPopup(
-          context: ref.context,
+          context: context, // ใช้ context ที่รับมา ปลอดภัยกว่า
           text: 'home_screen.unable_to_create_sound'.tr(),
         ).showAsError();
       }
