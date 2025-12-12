@@ -1,88 +1,15 @@
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
+import 'package:botnoivoice/screen/drawer/gensub/result/result_sharefile_function.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
-import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 
-// 🔥 ปรับปรุงฟังก์ชันแชร์ Text/SRT ให้ระบุประเภทไฟล์ชัดเจน
-Future<void> shareTextFile(BuildContext context, String filePath) async {
-  final box = context.findRenderObject() as RenderBox?;
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-  // กำหนด MimeType เป็น text/plain เพื่อให้รองรับแอปได้หลากหลายขึ้น
-  // (สำหรับ SRT บางแอปอาจต้องการ application/x-subrip แต่ text/plain ปลอดภัยสุดสำหรับการ Save)
-  String mimeType = 'text/plain';
-
-  final shareResult = await Share.shareXFiles(
-    [
-      XFile(
-        filePath,
-        mimeType: mimeType, 
-      )
-    ],
-    sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    text: "Share Subtitle File",
-  );
-
-  String message;
-  switch (shareResult.status) {
-    case ShareResultStatus.success:
-      message = 'Share Text File Successful';
-      break;
-    case ShareResultStatus.dismissed:
-      message = 'Share Text File Dismissed';
-      break;
-    default:
-      message = 'Share Text File Failed';
-      break;
-  }
-
-  scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
-}
-
-// 🔥 ปรับปรุงฟังก์ชันแชร์ Audio ให้รองรับ CapCut ได้ดีขึ้น
-Future<void> shareAudioFile(BuildContext context, String filePath) async {
-  final box = context.findRenderObject() as RenderBox?;
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-  // Default MIME type
-  String mimeType = 'audio/mpeg'; 
-  final lowerPath = filePath.toLowerCase();
-  
-  // ระบุประเภทไฟล์ให้แม่นยำ
-  if (lowerPath.endsWith('.wav')) {
-    mimeType = 'audio/wav';
-  } else if (lowerPath.endsWith('.m4a') || lowerPath.endsWith('.aac')) {
-    mimeType = 'audio/mp4'; 
-  } else if (lowerPath.endsWith('.ogg')) {
-    mimeType = 'audio/ogg';
-  } else if (lowerPath.endsWith('.mp3')) {
-    mimeType = 'audio/mpeg';
-  }
-
-  try {
-    final shareResult = await Share.shareXFiles(
-      [
-        XFile(
-          filePath,
-          mimeType: mimeType, 
-        )
-      ],
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-      text: "Share Audio File",
-    );
-
-    if (shareResult.status == ShareResultStatus.success) {
-      scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Share Audio Successful')));
-    }
-  } catch (e) {
-    scaffoldMessenger.showSnackBar(SnackBar(content: Text('Share Error: $e')));
-  }
-}
+final _logger = Logger();
 
 class ResultScreen extends ConsumerStatefulWidget {
   final String workspaceId;
@@ -127,7 +54,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     );
 
     // ✅ ถูกต้อง: ส่ง context ไปให้ Logic เพื่อใช้แสดง SnackBar Error
-    final ProjectModel? project = await tempController.fetchWorkspace(ref, context);
+    final ProjectModel? project =
+        await tempController.fetchWorkspace(ref, context);
 
     if (project != null && mounted) {
       final String? firstS3Link = project.segments.isNotEmpty
@@ -172,7 +100,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         elevation: 0,
         title: Text(
           "result_gensub.title".tr(),
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         actions: [
           TextButton.icon(
@@ -191,8 +120,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     return StatefulBuilder(
                       builder: (context, setState) {
                         return AlertDialog(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          title: Text("result_gensub.download".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          title: Text("result_gensub.download".tr(),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,9 +132,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                               const Text("Select Format:"),
                               const SizedBox(height: 12),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey.shade300),
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: DropdownButtonHideUnderline(
@@ -210,19 +144,28 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     value: selectedFormat,
                                     isExpanded: true,
                                     items: const [
-                                      DropdownMenuItem(value: "txt", child: Text("Text file (.txt)")),
-                                      DropdownMenuItem(value: "srt", child: Text("Subtitle (.srt)")),
-                                      DropdownMenuItem(value: "audio", child: Text("Audio File (Source)")),
+                                      DropdownMenuItem(
+                                          value: "txt",
+                                          child: Text("Text file (.txt)")),
+                                      DropdownMenuItem(
+                                          value: "srt",
+                                          child: Text("Subtitle (.srt)")),
+                                      DropdownMenuItem(
+                                          value: "audio",
+                                          child: Text("Audio File (Source)")),
                                     ],
                                     onChanged: (val) {
-                                      if (val != null) setState(() => selectedFormat = val);
+                                      if (val != null) {
+                                        setState(() => selectedFormat = val);
+                                      }
                                     },
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          actionsPadding:
+                              const EdgeInsets.fromLTRB(16, 0, 16, 16),
                           actions: [
                             Row(
                               children: [
@@ -230,7 +173,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   child: TextButton(
                                     onPressed: () => Navigator.pop(context),
                                     style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
                                       foregroundColor: Colors.grey[600],
                                     ),
                                     child: Text("result_gensub.cancel".tr()),
@@ -243,30 +187,46 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       Navigator.pop(context);
                                       try {
                                         if (selectedFormat == "audio") {
-                                          await shareAudioFile(context, project.filePath);
+                                          await genSubShareAudioFile(
+                                              context, project.filePath);
                                         } else {
                                           File file;
                                           if (selectedFormat == "txt") {
-                                            file = await controller!.exportTxt(context, project);
-                                            _showSnack("${"result_gensub.saved_txt".tr()} ${file.path}");
+                                            file = await controller!
+                                                .exportTxt(context, project);
+                                            _showSnack(
+                                                "result_gensub.saved_txt".tr());
+                                            _logger.d(
+                                                "GenSub Save Text File Path: ${file.path}");
                                           } else {
-                                            file = await controller!.exportSrt(context, project);
-                                            _showSnack("${"result_gensub.saved_srt".tr()} ${file.path}");
+                                            file = await controller!
+                                                .exportSrt(context, project);
+                                            _showSnack(
+                                                "result_gensub.saved_srt".tr());
+                                            _logger.d(
+                                                "GenSub Save Srt File Path: ${file.path}");
                                           }
-                                          await shareTextFile(context, file.path);
+                                          await genSubShareTextFile(
+                                              context, file.path);
                                         }
                                       } catch (e) {
-                                        _showSnack("${"result_gensub.error".tr()} $e");
+                                        _showSnack(
+                                            "${"result_gensub.error".tr()} $e");
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
                                       foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
                                       elevation: 0,
                                     ),
-                                    child: Text("result_gensub.confirm".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    child: Text("result_gensub.confirm".tr(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
                                   ),
                                 ),
                               ],
@@ -280,7 +240,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               }
             },
             icon: const Icon(Icons.save, color: Colors.green),
-            label: Text("result_gensub.save".tr(), style: const TextStyle(color: Colors.green)),
+            label: Text("result_gensub.save".tr(),
+                style: const TextStyle(color: Colors.green)),
           ),
           const SizedBox(width: 12),
         ],
@@ -288,17 +249,21 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       body: FutureBuilder<ProjectModel?>(
         future: _futureProject,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting || controller == null) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              controller == null) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text("${"result_gensub.error".tr()} ${snapshot.error.toString()}"));
+            return Center(
+                child: Text(
+                    "${"result_gensub.error".tr()} ${snapshot.error.toString()}"));
           } else if (!snapshot.hasData || snapshot.data == null) {
             return Center(child: Text("result_gensub.no_workspace".tr()));
           }
 
           final project = snapshot.data!;
           final segments = project.segments;
-          final approvedCount = segments.where((s) => s['approved'] == true).length;
+          final approvedCount =
+              segments.where((s) => s['approved'] == true).length;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -312,7 +277,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 6, offset: const Offset(0, 2)),
+                      BoxShadow(
+                          color: Colors.black.withAlpha(13),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2)),
                     ],
                   ),
                   child: Row(
@@ -325,19 +293,27 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                           children: [
                             Text(
                               p.basenameWithoutExtension(project.projectName),
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              DateFormat('dd/MM/yyyy HH:mm').format(project.createdAt),
-                              style: const TextStyle(fontSize: 12, color: Colors.black54),
+                              DateFormat('dd/MM/yyyy HH:mm')
+                                  .format(project.createdAt),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black54),
                             ),
                           ],
                         ),
                       ),
                       Text(
                         controller!.formatTime(project.duration),
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87),
                       ),
                     ],
                   ),
@@ -345,7 +321,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
                 // Status Bar
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   margin: const EdgeInsets.only(top: 12, bottom: 16),
                   decoration: BoxDecoration(
                     color: Colors.orange.withAlpha(26),
@@ -357,7 +334,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       const SizedBox(width: 6),
                       Text(
                         "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
-                        style: const TextStyle(color: Colors.orange, fontSize: 14, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                            color: Colors.orange,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
                       ),
                       const Spacer(),
                     ],
@@ -368,9 +348,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
-                    final startSec = (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
-                    final endSec = (segment['end'] is num) ? (segment['end'] as num).toDouble() : widget.duration.inSeconds.toDouble();
-                    final start = Duration(milliseconds: (startSec * 1000).round());
+                    final startSec = (segment['start'] is num)
+                        ? (segment['start'] as num).toDouble()
+                        : 0.0;
+                    final endSec = (segment['end'] is num)
+                        ? (segment['end'] as num).toDouble()
+                        : widget.duration.inSeconds.toDouble();
+                    final start =
+                        Duration(milliseconds: (startSec * 1000).round());
                     final end = Duration(milliseconds: (endSec * 1000).round());
                     final isEditing = editingIndex == index;
 
@@ -381,7 +366,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 4, offset: const Offset(0, 2)),
+                          BoxShadow(
+                              color: Colors.black.withAlpha(13),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2)),
                         ],
                       ),
                       child: Column(
@@ -392,9 +380,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                               children: [
                                 TextField(
                                   autofocus: true,
-                                  controller: TextEditingController(text: tempText)..selection = TextSelection.collapsed(offset: tempText.length),
+                                  controller:
+                                      TextEditingController(text: tempText)
+                                        ..selection = TextSelection.collapsed(
+                                            offset: tempText.length),
                                   onChanged: (val) => tempText = val,
-                                  decoration: const InputDecoration(border: OutlineInputBorder(), isDense: true),
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      isDense: true),
                                 ),
                                 const SizedBox(height: 6),
                                 Row(
@@ -405,37 +398,57 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         tempText = segment['text'] ?? '';
                                         editingIndex = null;
                                       }),
-                                      icon: const Icon(Icons.close, color: Colors.red),
-                                      label: Text("result_gensub.cancel".tr(), style: const TextStyle(color: Colors.red)),
+                                      icon: const Icon(Icons.close,
+                                          color: Colors.red),
+                                      label: Text("result_gensub.cancel".tr(),
+                                          style: const TextStyle(
+                                              color: Colors.red)),
                                     ),
                                     const SizedBox(width: 8),
                                     TextButton.icon(
                                       onPressed: () async {
                                         final approveText = tempText;
                                         try {
-                                          final res = await controller!.updateAudioApproveSegment(
+                                          final res = await controller!
+                                              .updateAudioApproveSegment(
                                             ref,
                                             chunkId: segment['id'],
                                             userId: widget.userId,
                                             approveText: approveText,
                                           );
-                                          if (res != null && res['data'] != null) {
+                                          if (res != null &&
+                                              res['data'] != null) {
                                             setState(() {
-                                              if (segment['original_text'] == null) segment['original_text'] = segment['text'];
-                                              segment['text'] = res['data']['approve_text'] ?? approveText;
-                                              segment['approved'] = res['data']['approve'] ?? true;
+                                              if (segment['original_text'] ==
+                                                  null) {
+                                                segment['original_text'] =
+                                                    segment['text'];
+                                              }
+                                              segment['text'] = res['data']
+                                                      ['approve_text'] ??
+                                                  approveText;
+                                              segment['approved'] = res['data']
+                                                      ['approve'] ??
+                                                  true;
                                               editingIndex = null;
                                             });
-                                            _showSnack("result_gensub.save_success".tr());
+                                            _showSnack(
+                                                "result_gensub.save_success"
+                                                    .tr());
                                           } else {
-                                            _showSnack("result_gensub.save_fail".tr());
+                                            _showSnack(
+                                                "result_gensub.save_fail".tr());
                                           }
                                         } catch (e) {
-                                          _showSnack("${"result_gensub.error".tr()} $e");
+                                          _showSnack(
+                                              "${"result_gensub.error".tr()} $e");
                                         }
                                       },
-                                      icon: const Icon(Icons.check, color: Colors.blue),
-                                      label: Text("result_gensub.save".tr(), style: const TextStyle(color: Colors.blue)),
+                                      icon: const Icon(Icons.check,
+                                          color: Colors.blue),
+                                      label: Text("result_gensub.save".tr(),
+                                          style: const TextStyle(
+                                              color: Colors.blue)),
                                     ),
                                   ],
                                 ),
@@ -449,12 +462,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   tempText = segment['text'] ?? '';
                                 });
                               },
-                              child: Text(segment['text'] ?? '', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                              child: Text(segment['text'] ?? '',
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500)),
                             ),
                           const SizedBox(height: 6),
                           Text(
                             "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
-                            style: const TextStyle(fontSize: 12, color: Colors.black54),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.black54),
                           ),
                           const SizedBox(height: 6),
                           Row(
@@ -484,17 +501,22 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                               const SizedBox(width: 8),
                               if (segment['approved'] == true)
                                 IconButton(
-                                  icon: const Icon(Icons.history, color: Colors.grey),
+                                  icon: const Icon(Icons.history,
+                                      color: Colors.grey),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title: Text("result_gensub.history".tr()),
-                                        content: Text("${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}"),
+                                        title:
+                                            Text("result_gensub.history".tr()),
+                                        content: Text(
+                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}"),
                                         actions: [
                                           TextButton(
-                                            child: Text("result_gensub.close".tr()),
-                                            onPressed: () => Navigator.pop(context),
+                                            child: Text(
+                                                "result_gensub.close".tr()),
+                                            onPressed: () =>
+                                                Navigator.pop(context),
                                           )
                                         ],
                                       ),
@@ -505,47 +527,69 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      icon: const Icon(Icons.check, color: Colors.blue),
+                                      icon: const Icon(Icons.check,
+                                          color: Colors.blue),
                                       onPressed: () async {
                                         try {
-                                          final res = await controller!.updateAudioApproveSegment(
+                                          final res = await controller!
+                                              .updateAudioApproveSegment(
                                             ref,
                                             chunkId: segment['id'],
                                             userId: widget.userId,
                                             approveText: segment['text'],
                                           );
-                                          if (res != null && res['data'] != null) {
+                                          if (res != null &&
+                                              res['data'] != null) {
                                             setState(() {
-                                              segment['original_text'] = segment['text'];
-                                              segment['text'] = res['data']['approve_text'] ?? segment['text'];
-                                              segment['approved'] = res['data']['approve'] ?? true;
+                                              segment['original_text'] =
+                                                  segment['text'];
+                                              segment['text'] = res['data']
+                                                      ['approve_text'] ??
+                                                  segment['text'];
+                                              segment['approved'] = res['data']
+                                                      ['approve'] ??
+                                                  true;
                                             });
-                                            _showSnack("result_gensub.approve_success".tr());
+                                            _showSnack(
+                                                "result_gensub.approve_success"
+                                                    .tr());
                                           } else {
-                                            _showSnack("result_gensub.approve_fail".tr());
+                                            _showSnack(
+                                                "result_gensub.approve_fail"
+                                                    .tr());
                                           }
                                         } catch (e) {
-                                          _showSnack("${"result_gensub.error".tr()} $e");
+                                          _showSnack(
+                                              "${"result_gensub.error".tr()} $e");
                                         }
                                       },
                                     ),
                                     IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.red),
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.red),
                                       onPressed: () async {
                                         try {
-                                          await controller!.deleteSegment(ref, index, segments, project);
+                                          await controller!.deleteSegment(
+                                              ref, index, segments, project);
                                           setState(() {});
-                                          _showSnack("result_gensub.delete_success".tr());
+                                          _showSnack(
+                                              "result_gensub.delete_success"
+                                                  .tr());
                                           if (segments.isEmpty && mounted) {
-                                            Future.delayed(const Duration(milliseconds: 400), () {
+                                            Future.delayed(
+                                                const Duration(
+                                                    milliseconds: 400), () {
                                               Navigator.pushReplacement(
                                                 context,
-                                                MaterialPageRoute(builder: (_) => const UploadRecScreen()),
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const UploadRecScreen()),
                                               );
                                             });
                                           }
                                         } catch (e) {
-                                          _showSnack("${"result_gensub.delete_fail".tr()} $e");
+                                          _showSnack(
+                                              "${"result_gensub.delete_fail".tr()} $e");
                                         }
                                       },
                                     ),
