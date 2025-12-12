@@ -196,14 +196,14 @@ class UploadLogic {
       lastProject = project;
       onProjectCreated(project);
 
-      transcribeStatus = " ถอดเสียงสำเร็จ";
+      transcribeStatus = " Transcribe Successfully!";
       return true;
     } catch (e, st) {
       _logger.e(
         " Error while uploading/transcribing: $e",
         stackTrace: st,
       );
-      transcribeStatus = " ถอดเสียงไม่สำเร็จ: $e";
+      transcribeStatus = " Something went wrong: $e";
 
       // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
       if (createdProjectId != null) {
