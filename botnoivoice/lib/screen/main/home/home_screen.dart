@@ -1,5 +1,5 @@
 import 'package:botnoivoice/auth/internet_checker.dart';
-import 'package:botnoivoice/screen/main/home/widget/home_header.dart'; // ตรวจสอบ path นี้ให้ถูกต้อง
+import 'package:botnoivoice/screen/main/home/widget/home_header.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/screen/main/home/function/generate_audio.dart';
@@ -31,7 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _logger = Logger();
 
   // ignore: unused_field
-  final String _audioUrl = ''; 
+  final String _audioUrl = '';
   bool _isShowClearIcon = false;
   bool _isGenerateAudio = false;
 
@@ -60,9 +60,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (_textController.text.isEmpty) {
       if (mounted) {
         NotificationPopup(
-          context: context, 
-          text: 'home_screen.please_type_message'.tr()
-        ).showAsError();
+                context: context, text: 'home_screen.please_type_message'.tr())
+            .showAsError();
         setState(() => _isGenerateAudio = false);
       }
       return;
@@ -84,17 +83,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           SnackBar(
             content: Row(
               children: [
-                Icon(Icons.check_circle_rounded, color: Colors.white, size: 20.sp),
+                Icon(Icons.check_circle_rounded,
+                    color: Colors.white, size: 20.sp),
                 SizedBox(width: 8.w),
                 Text(
                   'Successfully Updated Points',
-                  style: GoogleFonts.prompt(color: Colors.white, fontSize: 12.sp),
+                  style:
+                      GoogleFonts.prompt(color: Colors.white, fontSize: 12.sp),
                 ),
               ],
             ),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r)),
           ),
         );
       }
@@ -134,24 +136,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Logic for Scaling UI on Tablet Landscape
+    bool isTablet = MediaQuery.of(context).size.shortestSide > 550;
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    double scaleFactor = (isTablet && isLandscape) ? 0.65 : 1.0;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FD), // พื้นหลังสีโทนสว่าง Minimal
+      backgroundColor: const Color(0xFFF8F9FD),
       resizeToAvoidBottomInset: true,
       drawer: const DrawerAppbar(),
-      // **เอา AppBar ออกจาก Scaffold property แล้ว**
       body: Column(
         children: [
-          // 1. ใส่ HomeHeader ไว้เป็นส่วนหนึ่งของ Body (บนสุด)
+          // 1. Header (รวม AppBarTop + Bottom)
           const HomeHeader(),
 
-          // 2. พื้นที่กรอกข้อความ
+          // 2. Text Input Area
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              // เพิ่ม Padding ด้านข้างเยอะขึ้นใน Tablet เพื่อให้ดูสมมาตร ไม่กว้างเกินไป
+              padding: EdgeInsets.symmetric(
+                horizontal: isTablet && isLandscape ? 80.w : 20.w,
+                vertical: 16.h * scaleFactor,
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(20.r * scaleFactor),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
@@ -167,7 +178,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         controller: _textController,
                         cursorColor: Colors.blueAccent,
                         style: GoogleFonts.prompt(
-                          fontSize: 16.sp,
+                          fontSize: 16.sp * scaleFactor,
                           color: Colors.black87,
                           height: 1.5,
                         ),
@@ -176,7 +187,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         onChanged: (text) {
                           if (text.length > 1000) {
                             _textController.text = text.substring(0, 1000);
-                            _textController.selection = TextSelection.fromPosition(
+                            _textController.selection =
+                                TextSelection.fromPosition(
                               TextPosition(offset: _textController.text.length),
                             );
                           }
@@ -184,34 +196,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(20.w),
-                          hintText: 'home_screen.type_message_in_selected_language'.tr(),
+                          contentPadding: EdgeInsets.all(20.w * scaleFactor),
+                          hintText:
+                              'home_screen.type_message_in_selected_language'
+                                  .tr(),
                           hintStyle: GoogleFonts.prompt(
                             color: Colors.grey[400],
-                            fontSize: 16.sp,
+                            fontSize: 16.sp * scaleFactor,
                           ),
                         ),
                       ),
                     ),
-                    
+
                     // --- Character Counter & Clear Button ---
-                    _buildBottomTextBox(),
+                    _buildBottomTextBox(scaleFactor),
                   ],
                 ),
               ),
             ),
           ),
 
-          // 3. ปุ่ม Generate
-          _buildGenerateButtonArea(),
+          // 3. Generate Button Area
+          _buildGenerateButtonArea(isTablet, isLandscape, scaleFactor),
         ],
       ),
     );
   }
 
-  Widget _buildBottomTextBox() {
+  Widget _buildBottomTextBox(double scaleFactor) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(
+          horizontal: 16.w * scaleFactor, vertical: 8.h * scaleFactor),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: Colors.grey.shade100)),
       ),
@@ -223,13 +238,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             opacity: _isShowClearIcon ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),
             child: IconButton(
-              onPressed: _isShowClearIcon ? () {
-                setState(() {
-                  _textController.clear();
-                  _isShowClearIcon = false;
-                });
-              } : null,
-              icon: Icon(Icons.clear_rounded, color: Colors.grey[400], size: 20.sp),
+              onPressed: _isShowClearIcon
+                  ? () {
+                      setState(() {
+                        _textController.clear();
+                        _isShowClearIcon = false;
+                      });
+                    }
+                  : null,
+              icon: Icon(Icons.clear_rounded,
+                  color: Colors.grey[400], size: 20.sp * scaleFactor),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
             ),
@@ -241,7 +259,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               GradientText(
                 text: '${_textController.text.length}',
                 style: GoogleFonts.prompt(
-                  fontSize: 12.sp,
+                  fontSize: 12.sp * scaleFactor,
                   fontWeight: FontWeight.w600,
                 ),
                 gradient: const LinearGradient(
@@ -251,7 +269,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Text(
                 ' / 1000',
                 style: GoogleFonts.prompt(
-                  fontSize: 12.sp,
+                  fontSize: 12.sp * scaleFactor,
                   color: Colors.grey[400],
                 ),
               ),
@@ -262,10 +280,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildGenerateButtonArea() {
+  Widget _buildGenerateButtonArea(
+      bool isTablet, bool isLandscape, double scaleFactor) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(20.w),
+      // เพิ่ม Padding ให้ปุ่มไม่ชิดขอบจอเกินไปใน Tablet
+      padding: EdgeInsets.symmetric(
+        horizontal: isTablet && isLandscape ? 80.w : 20.w,
+        vertical: 20.h * scaleFactor,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -279,12 +302,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 56.h,
+          height: 56.h * scaleFactor,
           child: ElevatedButton(
             onPressed: _isGenerateAudio ? null : _generateAudio,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r * scaleFactor)),
               elevation: 0,
               backgroundColor: Colors.transparent,
             ),
@@ -295,14 +319,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(16.r * scaleFactor),
               ),
               child: Container(
                 alignment: Alignment.center,
                 child: _isGenerateAudio
                     ? SizedBox(
-                        width: 24.w,
-                        height: 24.w,
+                        width: 24.w * scaleFactor,
+                        height: 24.w * scaleFactor,
                         child: const CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(Colors.white),
                           strokeWidth: 2.5,
@@ -311,35 +335,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 20.sp),
-                          SizedBox(width: 8.w),
+                          Icon(Icons.auto_awesome_rounded,
+                              color: Colors.white, size: 20.sp * scaleFactor),
+                          SizedBox(width: 8.w * scaleFactor),
                           Text(
                             'home_screen.create_sound'.tr(),
                             style: GoogleFonts.prompt(
-                              fontSize: 16.sp,
+                              fontSize: 16.sp * scaleFactor,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(width: 12.w),
+                          SizedBox(width: 12.w * scaleFactor),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w * scaleFactor,
+                                vertical: 4.h * scaleFactor),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(20.r),
+                              borderRadius:
+                                  BorderRadius.circular(20.r * scaleFactor),
                             ),
                             child: Row(
                               children: [
                                 SvgPicture.asset(
                                   'assets/images/logo/credit-icon.svg',
-                                  width: 14.w,
-                                  height: 14.w,
+                                  width: 14.w * scaleFactor,
+                                  height: 14.w * scaleFactor,
                                 ),
-                                SizedBox(width: 4.w),
+                                SizedBox(width: 4.w * scaleFactor),
                                 Text(
                                   '${_textController.text.length}',
                                   style: GoogleFonts.prompt(
-                                    fontSize: 12.sp,
+                                    fontSize: 12.sp * scaleFactor,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),

@@ -13,20 +13,28 @@ Future<void> showLanguageBottomSheet({
 }) async {
   String selectedLanguage = await loadSelectedLanguage();
 
+  if (!context.mounted) return;
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
+      // --- Responsive Logic for Tablet Landscape ---
+      bool isTablet = MediaQuery.of(context).size.shortestSide > 550;
+      bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+      // ลดขนาดลง 30% ถ้าเป็น Tablet แนวนอน
+      double scaleFactor = (isTablet && isLandscape) ? 0.7 : 1.0;
+
       return Container(
-        // ปรับความสูงให้พอดีกับเนื้อหา แต่ไม่เกิน 80% ของหน้าจอ
+        // ปรับความสูงให้พอดีกับเนื้อหา และ Scale ตาม Device
         constraints: BoxConstraints(
           maxHeight: 0.8.sh,
-          minHeight: ResponsiveDesignOrientation.isLandscape ? 300.h : 350.h,
+          minHeight: (ResponsiveDesignOrientation.isLandscape ? 300.h : 350.h) * scaleFactor,
         ),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r * scaleFactor)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -38,19 +46,19 @@ Future<void> showLanguageBottomSheet({
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 12.h),
+            SizedBox(height: 12.h * scaleFactor),
             // --- Drag Handle ---
             Container(
-              width: 40.w,
-              height: 4.h,
+              width: 40.w * scaleFactor,
+              height: 4.h * scaleFactor,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2.r),
+                borderRadius: BorderRadius.circular(2.r * scaleFactor),
               ),
             ),
             
             // --- Header ---
-            _buildHeader(context),
+            _buildHeader(context, scaleFactor),
             
             Divider(height: 1, color: Colors.grey.shade100),
 
@@ -58,7 +66,10 @@ Future<void> showLanguageBottomSheet({
             Flexible(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.w * scaleFactor, 
+                  vertical: 10.h * scaleFactor
+                ),
                 child: Column(
                   children: appLanguageModel.map((lang) {
                     final bool isSelected = lang['code'] == selectedLanguage;
@@ -69,12 +80,13 @@ Future<void> showLanguageBottomSheet({
                       lang['name']!,
                       lang['image']!,
                       isSelected,
+                      scaleFactor,
                     );
                   }).toList(),
                 ),
               ),
             ),
-            SizedBox(height: 20.h), // Safe area / Bottom padding
+            SizedBox(height: 20.h * scaleFactor), // Safe area / Bottom padding
           ],
         ),
       );
@@ -82,32 +94,35 @@ Future<void> showLanguageBottomSheet({
   );
 }
 
-Widget _buildHeader(BuildContext context) {
+Widget _buildHeader(BuildContext context, double scaleFactor) {
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+    padding: EdgeInsets.symmetric(
+      horizontal: 24.w * scaleFactor, 
+      vertical: 16.h * scaleFactor
+    ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           'language'.tr(),
           style: GoogleFonts.prompt(
-            fontSize: ResponsiveDesignOrientation.isLandscape ? 14.sp : 18.sp,
+            fontSize: (ResponsiveDesignOrientation.isLandscape ? 18.sp : 18.sp) * scaleFactor,
             fontWeight: FontWeight.w700,
             color: Colors.black87,
           ),
         ),
         InkWell(
           onTap: () => context.pop(),
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(20.r * scaleFactor),
           child: Container(
-            padding: EdgeInsets.all(6.r),
+            padding: EdgeInsets.all(6.r * scaleFactor),
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.close_rounded,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 20.sp,
+              size: (ResponsiveDesignOrientation.isLandscape ? 20.sp : 20.sp) * scaleFactor,
               color: Colors.grey.shade600,
             ),
           ),
@@ -124,12 +139,13 @@ Widget _buildLanguageOption(
   String languageName,
   String imagePath,
   bool isSelected,
+  double scaleFactor,
 ) {
   return Container(
-    margin: EdgeInsets.only(bottom: 12.h),
+    margin: EdgeInsets.only(bottom: 12.h * scaleFactor),
     decoration: BoxDecoration(
       color: isSelected ? Colors.blue.withOpacity(0.04) : Colors.white,
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12.r * scaleFactor),
       border: Border.all(
         color: isSelected ? Colors.blue : Colors.grey.shade200,
         width: isSelected ? 1.5 : 1,
@@ -140,9 +156,12 @@ Widget _buildLanguageOption(
         await _onLanguageSelected(
             context, onLanguageSelected, languageCode);
       },
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12.r * scaleFactor),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        padding: EdgeInsets.symmetric(
+          vertical: 12.h * scaleFactor, 
+          horizontal: 16.w * scaleFactor
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -159,19 +178,22 @@ Widget _buildLanguageOption(
                 ]
               ),
               child: ClipOval(
-                child: Image.asset(imagePath, width: 32.w, height: 32.w, fit: BoxFit.cover),
+                child: Image.asset(
+                  imagePath, 
+                  width: 32.w * scaleFactor, 
+                  height: 32.w * scaleFactor, // ใช้ width เพื่อให้เป็นวงกลมสมบูรณ์
+                  fit: BoxFit.cover
+                ),
               ),
             ),
-            SizedBox(width: 16.w),
+            SizedBox(width: 16.w * scaleFactor),
             
             // Language Name
             Expanded(
               child: Text(
                 languageName,
                 style: GoogleFonts.prompt(
-                  fontSize: ResponsiveDesignOrientation.isLandscape
-                      ? 12.sp
-                      : 16.sp,
+                  fontSize: (ResponsiveDesignOrientation.isLandscape ? 16.sp : 16.sp) * scaleFactor,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   color: isSelected ? Colors.blue.shade700 : Colors.black87,
                 ),
@@ -185,7 +207,7 @@ Widget _buildLanguageOption(
               Icon(
                 Icons.check_circle_rounded,
                 color: Colors.blue,
-                size: 24.sp,
+                size: 24.sp * scaleFactor,
               ),
           ],
         ),
