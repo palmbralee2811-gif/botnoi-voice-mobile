@@ -1,6 +1,5 @@
 // result_sharefile_function.dart
 
-import 'package:botnoivoice/screen/main/home/function/random_string.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -8,9 +7,6 @@ import 'package:share_plus/share_plus.dart';
 Future<void> genSubShareTextFile(BuildContext context, String filePath) async {
   final box = context.findRenderObject() as RenderBox?;
   final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-  // ดึงนามสกุลไฟล์จริงจาก Path (เช่น srt หรือ txt)
-  String fileExtension = filePath.split('.').last;
 
   // กำหนด MimeType เป็น text/plain เพื่อให้รองรับแอปได้หลากหลาย
   String mimeType = 'text/plain';
@@ -20,8 +16,6 @@ Future<void> genSubShareTextFile(BuildContext context, String filePath) async {
       [
         XFile(
           filePath,
-          // ใช้นามสกุลไฟล์ตามไฟล์ต้นฉบับ
-          name: "BotnoiGenSub${randomStringOfNumbers(6)}.$fileExtension",
           mimeType: mimeType,
         )
       ],
@@ -31,7 +25,7 @@ Future<void> genSubShareTextFile(BuildContext context, String filePath) async {
     String message;
     switch (shareResult.status) {
       case ShareResultStatus.success:
-        message = 'Share Text File Successful';
+        message = 'Share Text File Successful ${filePath.split('/').last}';
         break;
       case ShareResultStatus.dismissed:
         message = 'Share Text File Dismissed';

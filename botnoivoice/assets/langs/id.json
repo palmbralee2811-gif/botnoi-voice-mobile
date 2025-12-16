@@ -314,12 +314,11 @@
     "audio_language": "Bahasa Audio",
     "file_duration": "Durasi File",
     "duration_auto_calculate": "Hitung otomatis saat transkripsi",
-    "audio_time": "Waktu File",
-    "transcribe_status" : "Sedang Mengunggah dan Mentranskripsi",
-    "segmentation_settings": "Pengaturan Pemotongan",
+    "transcribe_status" : "Mulai transkripsi",
+    "segmentation_settings": "Konfigurasi pemotongan teks",
     "max_segment_duration": "Durasi Maksimum Segmen",
     "max_silence_duration": "Durasi Hening Maksimum",
-    "transcribing": "Sedang menyalin...",
+    "transcribing": "Memuat...",
     "transcribe_audio": "Transkripsi Audio",
     "create_at" : "Dibuat saat:",
     "project" : "Proyek Botnoi GenSub"
@@ -350,12 +349,12 @@
   "upload_gensub": {
     "upload": "Unggah Berkas",
     "title" : "Unggah Berkas Audio",
-    "expand_title": "Transkripsikan dari Berkas Audio yang Diunggah"
+    "expand_title": "Transkripsi dari File Audio yang Diunggah"
   },
   "record_gensub": {
     "record": "Rekam Audio",
-    "title" : "Rekam Audio untuk Transkripsi",
-    "expand_title": "Transkripsikan dari Berkas Audio yang Diunggah",
+    "title" : "Merekam dan Mentranskripsikan Audio",
+    "expand_title": "Transkripsi dari File Audio yang Direkam",
     "press_to" : "Tekan tombol untuk merekam audio",
     "press_correct" : "Tekan ✓ untuk mengirim data"
   },

@@ -1,12 +1,15 @@
+import 'dart:async';
+
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
-// import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart'; // ไม่จำเป็นต้องใช้แล้ว เพราะใช้ผ่าน Provider
-import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart'; // Import Provider
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:botnoivoice/screen/drawer/gensub/point_calculator.dart';
 
 class RecordScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
@@ -15,7 +18,7 @@ class RecordScreen extends ConsumerStatefulWidget {
 
   const RecordScreen({
     super.key,
-    required this.projects, // ✅ รับข้อมูลจาก Provider ผ่านตัวแปรนี้
+    required this.projects,
     required this.onProjectCreated,
     required this.onProjectDeleted,
   });
@@ -28,7 +31,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   late RecordLogic controller;
   bool _confirmed = false;
   bool _loading = false;
-  // ลบ _isDescending และ _projects ออก เพราะจะใช้จาก Provider โดยตรง
+
+  // --- 2. ตัวแปรสำหรับจับเวลา ---
+  Timer? _timer;
+  int _recordSeconds = 0;
 
   // UI controls
   int _maxSegmentDuration = 10;
@@ -49,14 +55,44 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
     controller.initRecorder();
     controller.initPlayer();
-
-    // ❌ ไม่ต้องโหลด Projects เองแล้ว เพราะ Parent (UploadRecScreen) โหลดให้แล้ว
   }
 
   @override
   void dispose() {
+    // --- 3. ยกเลิก Timer เมื่อปิดหน้าจอ ---
+    _timer?.cancel();
     controller.dispose();
     super.dispose();
+  }
+
+  // --- 4. ฟังก์ชันจัดรูปแบบเวลา (แปลงวินาที เป็น 00:00) ---
+  String get _formattedTimer {
+    final minutes = (_recordSeconds ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_recordSeconds % 60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
+  // --- 5. ฟังก์ชันจัดการการกดปุ่ม (เริ่ม/หยุด Timer + Logic เดิม) ---
+  void _handleRecordingToggle() {
+    // เรียก logic เดิมของ controller
+    controller.toggleRecording(context, (fn) {
+      _safeSetState(fn); // เรียก setState ของ logic เดิม
+
+      // เพิ่ม logic จับเวลา
+      if (controller.isRecording) {
+        // ถ้าสถานะเป็น Recording (เริ่มอัด) -> เริ่มนับเวลา
+        _recordSeconds = 0;
+        _timer?.cancel();
+        _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            _recordSeconds++;
+          });
+        });
+      } else {
+        // ถ้าหยุดอัด -> หยุดนับเวลา
+        _timer?.cancel();
+      }
+    });
   }
 
   @override
@@ -73,10 +109,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Widget _buildInitialUI() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: SizedBox( 
+      child: SizedBox(
         width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, 
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -87,18 +123,18 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     "record_gensub.title".tr(),
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center, 
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "record_gensub.expand_title".tr(),
                     style: const TextStyle(color: Colors.black54),
-                    textAlign: TextAlign.center, 
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
                   GestureDetector(
-                    onTap: () =>
-                        controller.toggleRecording(context, _safeSetState),
+                    // --- 6. แก้ไข onTap ให้เรียกฟังก์ชันใหม่ ---
+                    onTap: _handleRecordingToggle,
                     child: CircleAvatar(
                       radius: 45,
                       backgroundColor: controller.isRecording
@@ -112,15 +148,26 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Text(
-                    "record_gensub.press_to".tr(),
-                    style: const TextStyle(color: Colors.black54),
-                    textAlign: TextAlign.center, 
-                  ),
+                  
+                  // --- 7. แสดงเวลา หรือ ข้อความกดเพื่ออัด ---
+                  if (controller.isRecording)
+                    Text(
+                      _formattedTimer, // แสดงเวลา 00:05
+                      style: const TextStyle(
+                        fontSize: 20, 
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87, // หรือ Colors.white ถ้าพื้นหลังดำ
+                      ),
+                    )
+                  else
+                    Text(
+                      "record_gensub.press_to".tr(),
+                      style: const TextStyle(color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
                 ],
               ),
             ),
-            // ✅ ใช้ widget.projects แทนตัวแปร local
             if (widget.projects.isNotEmpty) _buildProjectList(),
           ],
         ),
@@ -138,7 +185,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       return "$m:$s";
     }
 
-    // ✅ ดึงค่าการเรียงลำดับจาก Provider
     final isDescending = ref.watch(uploadRecordProvider).isDescending;
 
     return Column(
@@ -164,13 +210,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               ),
               IconButton(
                 icon: Icon(
-                  // ✅ ใช้ state จาก Provider
                   isDescending ? Icons.arrow_downward : Icons.arrow_upward,
                   color: Colors.blueAccent,
                   size: 20,
                 ),
                 onPressed: () {
-                  // ✅ สั่ง Toggle ผ่าน Provider เพื่อให้ทุกหน้าเปลี่ยนเหมือนกัน
                   ref.read(uploadRecordProvider.notifier).toggleSort();
                 },
               ),
@@ -181,7 +225,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          // ✅ ใช้ widget.projects แทน _projects
           itemCount: widget.projects.length,
           separatorBuilder: (_, __) => const SizedBox(height: 8),
           itemBuilder: (context, index) {
@@ -210,7 +253,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                         const Icon(Icons.timer, size: 14, color: Colors.grey),
                         const SizedBox(width: 4),
                         Text(formatDuration(project.duration)),
-                        
                         if (project.segments.isNotEmpty) ...[
                           const SizedBox(width: 12),
                           const Icon(Icons.text_snippet,
@@ -249,8 +291,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                           ),
                         );
                         if (confirm == true) {
-                          // ✅ เรียก onProjectDeleted อย่างเดียว ให้ Provider จัดการ API และ State
-                          // (ไม่ต้องเรียก controller.deleteProject ซ้ำซ้อน)
                           widget.onProjectDeleted(project);
                         }
                       },
@@ -263,12 +303,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => ResultScreen(
-                        workspaceId: project.projectId,
-                        userId: project.userId,
-                        filePath: project.filePath,
-                        duration: project.duration,
-                        projectName: project.projectName
-                      ),
+                          workspaceId: project.projectId,
+                          userId: project.userId,
+                          filePath: project.filePath,
+                          duration: project.duration,
+                          projectName: project.projectName),
                     ),
                   );
                 },
@@ -291,12 +330,13 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             Text(
               "record_gensub.title".tr(),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center, 
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text("record_gensub.expand_title".tr(),
-                style: const TextStyle(color: Colors.black54),
-                textAlign: TextAlign.center, 
+            Text(
+              "record_gensub.expand_title".tr(),
+              style: const TextStyle(color: Colors.black54),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
             Row(
@@ -309,6 +349,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                       controller.recordedFilePath = null;
                       controller.audioDuration = null;
                       _confirmed = false;
+                      // รีเซ็ตเวลาเมื่อกดถังขยะทิ้ง
+                      _recordSeconds = 0;
+                      _timer?.cancel();
                     });
                   },
                   icon: const Icon(Icons.delete, color: Colors.red),
@@ -318,7 +361,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                   iconSize: 64,
                   onPressed: () => controller.togglePlay(_safeSetState),
                   icon: Icon(
-                    controller.isPlaying ? Icons.stop_circle : Icons.play_circle,
+                    controller.isPlaying
+                        ? Icons.stop_circle
+                        : Icons.play_circle,
                     color: Colors.blue,
                   ),
                 ),
@@ -333,7 +378,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             const SizedBox(height: 20),
             Text("record_gensub.press_correct".tr(),
                 style: const TextStyle(color: Colors.black54)),
-            // ✅ ใช้ widget.projects
             if (widget.projects.isNotEmpty) _buildProjectList(),
           ],
         ),
@@ -345,6 +389,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     final fileName = controller.recordedFilePath != null
         ? controller.recordedFilePath!.split('/').last
         : "";
+
+    // --- 3. คำนวณ Point ---
+    int totalPoints =
+        PointCalculator.calculateTotalPoints(controller.audioDuration);
 
     return SingleChildScrollView(
       child: Column(
@@ -376,6 +424,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                             controller.recordedFilePath = null;
                             controller.audioDuration = null;
                             _confirmed = false;
+                             // รีเซ็ตเวลา
+                            _recordSeconds = 0;
+                            _timer?.cancel();
                           });
                         },
                       ),
@@ -386,7 +437,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("text_to_gensub.audio_language".tr()),
+                      Text(
+                        "text_to_gensub.audio_language".tr(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       LanguageSelector(
                         selectedLanguage: controller.selectedLanguageName,
                         selectedLanguageImage: controller.selectedLanguageImage,
@@ -419,7 +474,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("text_to_gensub.audio_time".tr()),
+                      Text("text_to_gensub.file_duration".tr()),
                       Text(
                         controller.audioDuration != null
                             ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
@@ -479,6 +534,48 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
                   const SizedBox(height: 16),
 
+                  // --- 4. แสดงผล Total Points ---
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.cyan, width: 1.5),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Total points",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/logo/credit-icon.svg',
+                              width: 20,
+                              height: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "$totalPoints",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.cyan,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
                   ElevatedButton.icon(
                     onPressed: _loading
                         ? null
@@ -486,7 +583,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                             _safeSetState(() => _loading = true);
                             final project = await controller.handleTranscribe(
                               ref,
-                              context, // ส่ง context เพื่อแสดง Error popup
+                              context,
                               maxSegmentDuration: _maxSegmentDuration,
                               maxSilenceDuration: _maxSilenceDuration,
                             );
@@ -498,12 +595,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => ResultScreen(
-                                    workspaceId: project.projectId,
-                                    userId: project.userId,
-                                    filePath: project.filePath,
-                                    duration: project.duration,
-                                    projectName: project.projectName
-                                  ),
+                                      workspaceId: project.projectId,
+                                      userId: project.userId,
+                                      filePath: project.filePath,
+                                      duration: project.duration,
+                                      projectName: project.projectName),
                                 ),
                               );
                             }
@@ -537,7 +633,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          // ✅ ใช้ widget.projects
           if (widget.projects.isNotEmpty) _buildProjectList(),
         ],
       ),

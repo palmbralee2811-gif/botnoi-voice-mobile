@@ -135,11 +135,9 @@ class UploadLogic {
         cutType: "sec",
         chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
         durations: (audioDuration?.inSeconds ?? 0).toString(),
-        maxDuration:
-            _extractSeconds(maxSegmentDuration, fallback: audioDuration),
-        maxSilence: _extractSeconds(maxSilenceDuration,
-            fallback: const Duration(seconds: 1)),
-        language: "th",
+        maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+        maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
+        language: selectedLanguage.toLowerCase(),
       );
       _logger.d(" cut audio result = $cutResult");
 

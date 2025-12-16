@@ -1,12 +1,18 @@
+import 'package:botnoivoice/screen/drawer/gensub/point_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
-import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart'; // import provider
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+// --- 1. IMPORT ไฟล์คำนวณ Point ที่สร้างใหม่ (ปรับ Path ให้ตรงกับที่คุณวางไฟล์) ---
+// import 'path/to/point_calculator.dart';
+// หรือถ้ายังไม่อยากสร้างไฟล์แยกจริงๆ สามารถใช้ Class ด้านล่างที่ผมแปะไว้ท้ายไฟล์นี้ได้เลยครับ
 
 class UploadScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
@@ -109,6 +115,10 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
     final fileName =
         controller.filePath != null ? path.basename(controller.filePath!) : "";
 
+    // --- 2. เรียกใช้ฟังก์ชันคำนวณ Point ---
+    int totalPoints =
+        PointCalculator.calculateTotalPoints(controller.audioDuration);
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 3,
@@ -138,7 +148,11 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("text_to_gensub.audio_language".tr()),
+                Text(
+                  "text_to_gensub.audio_language".tr(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 LanguageSelector(
                   selectedLanguage: controller.selectedLanguageName,
                   selectedLanguageImage: controller.selectedLanguageImage,
@@ -168,7 +182,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("text_to_gensub.audio_time".tr()),
+                Text("text_to_gensub.file_duration".tr()),
                 Text(
                   controller.audioDuration != null
                       ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
@@ -262,14 +276,57 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
               ],
             ),
             const SizedBox(height: 16),
+
+            // --- UI แสดงผล Total Points ---
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.cyan, width: 1.5),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Total points",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/logo/credit-icon.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      // --- 3. แสดงผลตัวเลขที่คำนวณได้ ---
+                      Text(
+                        "$totalPoints",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.cyan,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // -----------------------------
+
+            const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: isLoading
                   ? null
                   : () async {
                       setState(() => isLoading = true);
-                      
-                      // เรียกใช้งานฟังก์ชันถอดเสียง (พร้อมส่ง context เพื่อแสดง Error หากมี)
-                      final success = await controller.transcribeFile(ref, context);
+
+                      final success =
+                          await controller.transcribeFile(ref, context);
 
                       if (mounted) {
                         setState(() => isLoading = false);
@@ -278,10 +335,6 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       if (success &&
                           mounted &&
                           controller.lastProject != null) {
-                        
-                        // ❌ ลบบรรทัดนี้ออกเพื่อแก้ปัญหาโปรเจคขึ้นซ้ำ 2 อัน
-                        // widget.onProjectCreated(controller.lastProject!);
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(

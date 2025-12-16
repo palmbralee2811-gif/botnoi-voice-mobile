@@ -99,7 +99,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       backgroundColor: const Color(0xFFF8F5FB),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black87),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,

@@ -314,12 +314,11 @@
     "audio_language": "ภาษาของไฟล์เสียง",
     "file_duration": "เวลาของไฟล์",
     "duration_auto_calculate": "คำนวณอัตโนมัติเมื่อถอดเสียง",
-    "audio_time": "เวลาของไฟล์",
     "segmentation_settings": "ตั้งค่าการตัดข้อความ",
     "max_segment_duration": "ระยะเวลาสูงสุดในการตัด",
     "max_silence_duration": "ช่วงเงียบสูงสุดในการตัด",
-    "transcribing": "กำลังถอด...",
-    "transcribe_status" : "กำลังอัปโหลดและถอดเสียง",
+    "transcribing": "กำลังโหลด...",
+    "transcribe_status" : "ถอดไฟล์เสียง",
     "transcribe_audio": "อัปโหลดไฟล์เสียง",
     "create_at" : "สร้างเมื่อ:",
     "project" : "โปรเจคบอทน้อยเจนซับ"
@@ -356,7 +355,7 @@
   "record_gensub": {
     "record": "อัดเสียง",
     "title" : "อัดเสียงถอดข้อความ",
-    "expand_title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด",
+    "expand_title": "ถอดเสียงจากไฟล์เสียงที่บันทึกไว้",
     "press_to" : "กดที่ปุ่มเพื่ออัดเสียง",
     "press_correct" : "กด ✓ เพื่อส่งข้อมูล"
   },

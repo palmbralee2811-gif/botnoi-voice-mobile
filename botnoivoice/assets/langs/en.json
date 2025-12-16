@@ -313,12 +313,11 @@
     "audio_language": "Audio Language",
     "file_duration": "File Duration",
     "duration_auto_calculate": "Auto calculate when transcribing",
-    "audio_time": "File Time",
-    "segmentation_settings": "Segmentation Settings",
+    "segmentation_settings": "Configure text cutting",
     "max_segment_duration": "Max Segment Duration",
-    "transcribe_status" : "Uploading and Transcribing",
+    "transcribe_status" : "Start transcribe",
     "max_silence_duration": "Max Silence Duration",
-    "transcribing": "Transcribing...",
+    "transcribing": "Loading...",
     "transcribe_audio": "Transcribe Audio",
     "create_at" : "Create at:",
     "project" : "Botnoi GenSub Project"
@@ -353,8 +352,8 @@
   },
   "record_gensub": {
     "record": "Record Audio",
-    "title" : "Record Audio for Transcription",
-    "expand_title": "Transcribe from Uploaded Audio File",
+    "title" : "Record and Transcribe Audio",
+    "expand_title": "Transcribe from Recorded Audio File",
     "press_to" : "Press the button to record audio",
     "press_correct" : "Press ✓ to submit data"
 },
