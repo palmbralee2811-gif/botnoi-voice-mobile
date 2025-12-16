@@ -1,6 +1,5 @@
 import 'package:botnoivoice/shared/dialog/redeem_coupon/redeem_coupon_dialog.dart';
 import 'package:botnoivoice/shared/function/app_language_function.dart';
-import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar_logic.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -25,7 +24,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
   String displayName = "Loading...";
   String uid = "Loading...";
   String profilePictureUrl = "";
-  String selectedLanguage = 'th'; // Default language
+  String selectedLanguage = 'th';
 
   @override
   void initState() {
@@ -33,13 +32,14 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _logic.loadUserInfo(
         ref: ref,
-        onUpdateState: (String newDisplayName, String newUid,
-            String newProfilePictureUrl) {
-          setState(() {
-            displayName = newDisplayName;
-            uid = newUid;
-            profilePictureUrl = newProfilePictureUrl;
-          });
+        onUpdateState: (newDisplayName, newUid, newProfilePictureUrl) {
+          if (mounted) {
+            setState(() {
+              displayName = newDisplayName;
+              uid = newUid;
+              profilePictureUrl = newProfilePictureUrl;
+            });
+          }
         },
       );
     });
@@ -47,363 +47,242 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
 
   @override
   Widget build(BuildContext context) {
-    // final emailProvider = context.read<EmailLogin>();
     final emailProvider = ref.watch(emailLoginNotifierProvider);
+    final isLandscape = ResponsiveDesignOrientation.isLandscape;
 
     return Drawer(
-      width: 257.w,
-      elevation: 16,
+      width: isLandscape ? 200.w : 280.w,
+      elevation: 0, // Minimal Style: No heavy shadow
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
       backgroundColor: Colors.white,
-      shadowColor: Colors.black,
-      child: ListView(
-        children: <Widget>[
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-                top: 15.w,
-                right: 30.w),
-            title: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width:
-                          ResponsiveDesignOrientation.isLandscape ? 22.w : 56.w,
-                      height:
-                          ResponsiveDesignOrientation.isLandscape ? 76.h : 56.h,
-                      child: CircleAvatar(
-                        backgroundImage: profilePictureUrl.isNotEmpty
-                            ? NetworkImage(profilePictureUrl)
-                            : const AssetImage(
-                                    'assets/images/default-profile-picture.jpg')
-                                as ImageProvider<Object>,
-                        backgroundColor: Colors.black,
-                        radius: ResponsiveDesignOrientation.isLandscape
-                            ? 15.0.r
-                            : 20.0.r,
-                      ),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: TextStyle(fontSize: 10.sp),
-                      ),
-                      onPressed: () {
-                        // Close Drawer
-                        context.pop();
-                      },
-                      child: Icon(
-                        Icons.menu_sharp,
-                        color: kDark,
-                        size: ResponsiveDesignOrientation.isLandscape
-                            ? 22.sp
-                            : 32.sp,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            displayName,
-                            style: GoogleFonts.prompt(
-                              fontSize: ResponsiveDesignOrientation.isLandscape
-                                  ? 16.sp
-                                  : 24.sp,
-                              fontWeight: FontWeight.w600,
-                              color: kDark,
-                            ),
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'UID: $uid',
-                            style: GoogleFonts.prompt(
-                              fontSize: ResponsiveDesignOrientation.isLandscape
-                                  ? 8.sp
-                                  : 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: kDark,
-                            ),
-                            maxLines: 5,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- 1. Header Section ---
+            _buildHeader(isLandscape),
+
+            const Divider(height: 1, color: Color(0xFFF0F0F0)),
+
+            // --- 2. Menu Items ---
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                children: [
+                  _buildSectionLabel('app_drawer.services'.tr()),
+                  _DrawerTile(
+                    icon: Icons.subtitles_rounded,
+                    title: 'app_drawer.gensub'.tr(),
+                    onTap: () => context.push('/gensub'),
+                  ),
+                  _DrawerTile(
+                    icon: Icons.school_rounded,
+                    title: 'app_drawer.education'.tr(),
+                    onTap: () => context.push('/education'),
+                  ),
+                  
+                  SizedBox(height: 10.h),
+                  _buildSectionLabel('app_drawer.account'.tr()),
+                  
+                  _DrawerTile(
+                    icon: Icons.person_rounded,
+                    title: 'app_drawer.profile'.tr(),
+                    onTap: () => context.push('/account'),
+                  ),
+                  _DrawerTile(
+                    icon: Icons.card_giftcard_rounded,
+                    title: 'app_drawer.redeem'.tr(),
+                    onTap: () {
+                      context.pop();
+                      RedeemCouponDialog(
+                        context: context,
+                        ref: ref,
+                        text: 'app_drawer.redeem'.tr(),
+                      ).showModal(context);
+                    },
+                  ),
+                  _DrawerTile(
+                    icon: Icons.account_balance_wallet_rounded,
+                    title: 'app_drawer.buy_points'.tr(),
+                    onTap: () => showPaymentDialog(context),
+                  ),
+                  _DrawerTile(
+                    icon: Icons.stars_rounded,
+                    title: 'app_drawer.reward'.tr(),
+                    iconColor: Colors.amber,
+                    onTap: () => context.push('/reward'),
+                  ),
+
+                  // Show Security only for password login
+                  if (emailProvider.isLoggedIn &&
+                      emailProvider.user?.providerData[0].providerId == 'password') ...[
+                    SizedBox(height: 10.h),
+                    _buildSectionLabel('app_drawer.system'.tr()),
+                    _DrawerTile(
+                      icon: Icons.security_rounded,
+                      title: 'app_drawer.security'.tr(),
+                      onTap: () => context.push('/email-permission'),
                     ),
                   ],
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.only(
-              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-              top: ResponsiveDesignOrientation.isLandscape ? 10.h : 30.h,
-            ),
-            leading: Icon(
-              Icons.subtitles_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.gensub'.tr(), // Gensub
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
+                ],
               ),
             ),
-            onTap: () {
-              context.push('/gensub');
-            },
-          ),
-          SizedBox(height: 10.h),
 
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.account_circle_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.profile'.tr(), //ข้อมูลส่วนตัว
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              context.push('/account');
-            },
-          ),
-          SizedBox(height: 10.h),
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.local_offer_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.reward'.tr(), //รับพอยต์ฟรี
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              context.push('/reward');
-            },
-          ),
-          SizedBox(height: 10.h),
+            const Divider(height: 1, color: Color(0xFFF0F0F0)),
 
-          //Education Section
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.school_outlined, // ไอคอนหมวกรับปริญญา
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.education'.tr(), // Education
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              context.push('/education');
-            },
-          ),
-          SizedBox(height: 10.h),
-
-          // //Voicebot
-          // ListTile(
-          //   contentPadding: EdgeInsets.only(
-          //     left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-          //   ),
-          //   leading: Icon(
-          //     Icons.record_voice_over_outlined, // ใช้ไอคอนรูปคนพูด หรือหุ่นยนต์
-          //     size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-          //     color: kDark,
-          //   ),
-          //   title: Text(
-          //     'Voicebot', // หรือ 'app_drawer.voicebot'.tr()
-          //     style: GoogleFonts.prompt(
-          //       fontSize:
-          //           ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-          //       fontWeight: FontWeight.w600,
-          //       color: kDark,
-          //     ),
-          //   ),
-          //   onTap: () {
-          //     // ปิด Drawer ก่อน แล้วไปหน้า Voicebot
-          //     context.pop(); 
-          //     context.push('/voicebot'); 
-          //   },
-          // ),
-          // SizedBox(height: 10.h),
-
-          // ListTile(
-          //   contentPadding: EdgeInsets.only(
-          //     left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
-          //   ),
-          //   leading: Icon(
-          //     Icons.chat_outlined,
-          //     size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-          //     color: kDark,
-          //   ),
-          //   title: Text(
-          //     'app_drawer.marads'.tr(), // Gensub
-          //     style: GoogleFonts.prompt(
-          //       fontSize:
-          //           ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-          //       fontWeight: FontWeight.w600,
-          //       color: kDark,
-          //     ),
-          //   ),
-          //   onTap: () {
-          //     context.push('/marads');
-          //   },
-          // ),
-          // SizedBox(height: 10.h),
-
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.card_giftcard_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.redeem'.tr(), //ใช้คูปอง
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              // Close Drawer
-              context.pop();
-
-              RedeemCouponDialog(
-                context: context,
-                ref: ref,
-                text: 'app_drawer.redeem'.tr(),
-              ).showModal(context);
-            },
-          ),
-          SizedBox(height: 10.h),
-
-          ListTile(
-            contentPadding: EdgeInsets.only(
-                left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-            leading: Icon(
-              Icons.credit_card,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
-            ),
-            title: Text(
-              'app_drawer.buy_points'.tr(), //ซื้อพ้อยท์
-              style: GoogleFonts.prompt(
-                fontSize:
-                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                fontWeight: FontWeight.w600,
-                color: kDark,
-              ),
-            ),
-            onTap: () {
-              showPaymentDialog(context);
-            },
-          ),
-          SizedBox(height: 10.h),
-
-          if (emailProvider.isLoggedIn &&
-              emailProvider.user?.providerData[0].providerId == 'password')
-            ListTile(
-              contentPadding: EdgeInsets.only(
-                  left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-              leading: Icon(
-                Icons.security_outlined,
-                size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-                color: kDark,
-              ),
-              title: Text(
-                'app_drawer.security'.tr(), //ความปลอดภัย
-                style: GoogleFonts.prompt(
-                  fontSize:
-                      ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: kDark,
-                ),
-              ),
-              onTap: () {
-                // Redirect EmailPermissionScreen
-                context.push('/email-permission');
-              },
-            ),
-          if (emailProvider.isLoggedIn &&
-              emailProvider.user?.providerData[0].providerId == 'password')
-            SizedBox(height: 10.h),
-          
-          InkWell(
-            onTap: () {
-              // Show the reusable bottom sheet for language selection
-              showLanguageBottomSheet(
-                context: context,
-                onLanguageSelected: (language) {
-                  setState(() {
-                    selectedLanguage = language; // Update the selected language
-                  });
-                  saveSelectedLanguage(language); // Save the selected language
+            // --- 3. Footer (Language) ---
+            Padding(
+              padding: EdgeInsets.all(16.w),
+              child: _DrawerTile(
+                icon: Icons.language_rounded,
+                title: 'language'.tr(),
+                trailing: Icon(Icons.arrow_forward_ios_rounded, size: 12.sp, color: Colors.grey),
+                onTap: () {
+                  showLanguageBottomSheet(
+                    context: context,
+                    onLanguageSelected: (language) {
+                      setState(() => selectedLanguage = language);
+                      saveSelectedLanguage(language);
+                    },
+                  );
                 },
-              );
-            },
-            child: ListTile(
-              contentPadding: EdgeInsets.only(
-                  left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
-              leading: Icon(
-                Icons.language,
-                size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-                color: kDark,
-              ),
-              title: Text(
-                'language'.tr(),
-                style: GoogleFonts.prompt(
-                  fontSize:
-                      ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: kDark,
-                ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(bool isLandscape) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 20.h, 10.w, 20.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: isLandscape ? 40.w : 60.w,
+                height: isLandscape ? 40.w : 60.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey.shade200, width: 2),
+                  image: DecorationImage(
+                    image: profilePictureUrl.isNotEmpty
+                        ? NetworkImage(profilePictureUrl)
+                        : const AssetImage('assets/images/default-profile-picture.jpg')
+                            as ImageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => context.pop(),
+                icon: Icon(Icons.close_rounded, color: Colors.grey[400], size: 24.sp),
+                splashRadius: 20,
+              )
+            ],
           ),
-          SizedBox(height: 50.h), // Free Space at the bottom
+          SizedBox(height: 12.h),
+          Text(
+            displayName,
+            style: GoogleFonts.prompt(
+              fontSize: isLandscape ? 14.sp : 18.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.black87,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            'UID: $uid',
+            style: GoogleFonts.prompt(
+              fontSize: isLandscape ? 10.sp : 12.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[600],
+            ),
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionLabel(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      child: Text(
+        text.toUpperCase(),
+        style: GoogleFonts.prompt(
+          fontSize: 10.sp,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[400],
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+// --- Helper Widget for Uniform Tiles ---
+class _DrawerTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final Color? iconColor;
+  final Widget? trailing;
+
+  const _DrawerTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.iconColor,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 4.h),
+      decoration: BoxDecoration(
+        color: Colors.transparent, // หรือ Colors.grey[50] ถ้าต้องการพื้นหลังจางๆ
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        dense: true,
+        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0.h),
+        leading: Container(
+          padding: EdgeInsets.all(8.r),
+          decoration: BoxDecoration(
+            color: (iconColor ?? Colors.black87).withOpacity(0.05),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Icon(
+            icon,
+            size: 20.sp,
+            color: iconColor ?? Colors.black87,
+          ),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.prompt(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+          ),
+        ),
+        trailing: trailing,
+        onTap: onTap,
       ),
     );
   }

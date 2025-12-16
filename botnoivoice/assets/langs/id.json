@@ -91,7 +91,10 @@
     "redeem": "Tukar Kupon",
     "education": "Pendidikan",
     "gensub": "GenSub",
-    "marads": "MarAds"
+    "marads": "MarAds",
+    "services": "Layanan",
+    "account": "Akun",
+    "system": "Sistem"
   },
   "account": {
     "uid_copy_success": "UID berhasil disalin",

@@ -91,7 +91,10 @@
     "gensub": "GenSub",
     "redeem": "Redeem Coupon",
     "education": "Education",
-    "marads": "MarAds"
+    "marads": "MarAds",
+    "services": "Services",
+    "account": "Account",
+    "system": "System"
   },
   "account": {
     "uid_copy_success": "UID copied successfully",

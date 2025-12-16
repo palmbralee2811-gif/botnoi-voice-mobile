@@ -18,42 +18,64 @@ Future<void> showLanguageBottomSheet({
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return GestureDetector(
-        onTap: () {
-          // Close Drawer App Language Selection Dialog
-          context.pop();
-        },
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          width: double.infinity,
-          height: ResponsiveDesignOrientation.isLandscape ? 400.h : 300.h,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildHeader(context),
-              Flexible(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: appLanguageModel.map((lang) {
-                      return _buildLanguageOption(
-                        context,
-                        onLanguageSelected,
-                        lang['code']!,
-                        lang['name']!,
-                        lang['image']!,
-                        selectedLanguage,
-                      );
-                    }).toList(),
-                  ),
+      return Container(
+        // ปรับความสูงให้พอดีกับเนื้อหา แต่ไม่เกิน 80% ของหน้าจอ
+        constraints: BoxConstraints(
+          maxHeight: 0.8.sh,
+          minHeight: ResponsiveDesignOrientation.isLandscape ? 300.h : 350.h,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 12.h),
+            // --- Drag Handle ---
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            
+            // --- Header ---
+            _buildHeader(context),
+            
+            Divider(height: 1, color: Colors.grey.shade100),
+
+            // --- Language List ---
+            Flexible(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Column(
+                  children: appLanguageModel.map((lang) {
+                    final bool isSelected = lang['code'] == selectedLanguage;
+                    return _buildLanguageOption(
+                      context,
+                      onLanguageSelected,
+                      lang['code']!,
+                      lang['name']!,
+                      lang['image']!,
+                      isSelected,
+                    );
+                  }).toList(),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20.h), // Safe area / Bottom padding
+          ],
         ),
       );
     },
@@ -62,26 +84,32 @@ Future<void> showLanguageBottomSheet({
 
 Widget _buildHeader(BuildContext context) {
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           'language'.tr(),
           style: GoogleFonts.prompt(
-            fontSize: ResponsiveDesignOrientation.isLandscape ? 12.sp : 16.sp,
-            fontWeight: FontWeight.w600,
+            fontSize: ResponsiveDesignOrientation.isLandscape ? 14.sp : 18.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.black87,
           ),
         ),
         InkWell(
-          onTap: () {
-            // Close Drawer App Language Selection Dialog
-            context.pop();
-          },
-          child: Icon(
-            Icons.close,
-            size: ResponsiveDesignOrientation.isLandscape ? 14.sp : 24.sp,
-            color: Colors.black,
+          onTap: () => context.pop(),
+          borderRadius: BorderRadius.circular(20.r),
+          child: Container(
+            padding: EdgeInsets.all(6.r),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.close_rounded,
+              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 20.sp,
+              color: Colors.grey.shade600,
+            ),
           ),
         ),
       ],
@@ -95,50 +123,74 @@ Widget _buildLanguageOption(
   String languageCode,
   String languageName,
   String imagePath,
-  String selectedLanguage,
+  bool isSelected,
 ) {
-  return Column(
-    children: [
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () async {
-            await _onLanguageSelected(
-                context, onLanguageSelected, languageCode);
-          },
-          highlightColor: Colors.grey[300],
-          splashColor: Colors.transparent,
-          borderRadius: BorderRadius.circular(8.r),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(imagePath, width: 26.w, height: 26.h),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Text(
-                    languageName,
-                    style: GoogleFonts.prompt(
-                      fontSize: ResponsiveDesignOrientation.isLandscape
-                          ? 12.sp
-                          : 14.sp,
-                      fontWeight: selectedLanguage == languageCode
-                          ? FontWeight.w600
-                          : FontWeight.w400,
-                    ),
-                    softWrap: true, // ข้อความสามารถขึ้นบรรทัดใหม่ได้
-                    maxLines: null, // ไม่จำกัดจำนวนบรรทัด
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-              ],
+  return Container(
+    margin: EdgeInsets.only(bottom: 12.h),
+    decoration: BoxDecoration(
+      color: isSelected ? Colors.blue.withOpacity(0.04) : Colors.white,
+      borderRadius: BorderRadius.circular(12.r),
+      border: Border.all(
+        color: isSelected ? Colors.blue : Colors.grey.shade200,
+        width: isSelected ? 1.5 : 1,
+      ),
+    ),
+    child: InkWell(
+      onTap: () async {
+        await _onLanguageSelected(
+            context, onLanguageSelected, languageCode);
+      },
+      borderRadius: BorderRadius.circular(12.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Flag Image with Shadow
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ]
+              ),
+              child: ClipOval(
+                child: Image.asset(imagePath, width: 32.w, height: 32.w, fit: BoxFit.cover),
+              ),
             ),
-          ),
+            SizedBox(width: 16.w),
+            
+            // Language Name
+            Expanded(
+              child: Text(
+                languageName,
+                style: GoogleFonts.prompt(
+                  fontSize: ResponsiveDesignOrientation.isLandscape
+                      ? 12.sp
+                      : 16.sp,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  color: isSelected ? Colors.blue.shade700 : Colors.black87,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            // Checkmark Icon if selected
+            if (isSelected)
+              Icon(
+                Icons.check_circle_rounded,
+                color: Colors.blue,
+                size: 24.sp,
+              ),
+          ],
         ),
       ),
-      SizedBox(height: 16.h),
-    ],
+    ),
   );
 }
 
@@ -147,22 +199,18 @@ Future<void> _onLanguageSelected(
   Function(String) onLanguageSelected,
   String languageCode,
 ) async {
+  // Logic เดิม
   saveSelectedLanguage(languageCode);
   onLanguageSelected(languageCode);
   context.setLocale(Locale(languageCode));
 
-  if (context.mounted) {
-    // Close Drawer App Language Selection Dialog
-    context.pop();
-  }
+  // ใช้ mounted check เพื่อความปลอดภัย
+  if (!context.mounted) return;
+  context.pop(); // Close BottomSheet
 
-  if (context.mounted) {
-    // Close Drawer
-    context.pop();
-  }
+  if (!context.mounted) return;
+  context.pop(); // Close Drawer (ถ้าเปิดอยู่)
 
-  if (context.mounted) {
-    // Redirect to HomeScreen
-    context.go('/home');
-  }
+  if (!context.mounted) return;
+  context.go('/home'); // Redirect
 }

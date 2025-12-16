@@ -91,7 +91,10 @@
     "gensub": "GenSub",
     "redeem": "ใช้คูปอง",
     "education": "การศึกษา",
-    "marads": "MarAds"
+    "marads": "MarAds",
+    "services": "บริการ",
+    "account": "บัญชี",
+    "system": "ระบบ"
   },
   "account": {
     "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
