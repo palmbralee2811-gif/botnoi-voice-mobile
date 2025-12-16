@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen.dart';
-import 'package:botnoivoice/screen/drawer/gensub/topbar_gensub.dart'; 
+import 'package:botnoivoice/screen/drawer/gensub/topbar_gensub.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 
@@ -30,7 +30,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: const TopbarGensub(),
-      drawer: const DrawerAppbar(), 
+      drawer: const DrawerAppbar(),
       body: controller.loading
           ? const Center(child: CircularProgressIndicator())
           : IndexedStack(
@@ -42,7 +42,9 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                     ref.read(uploadRecordProvider.notifier).addProject(project);
                   },
                   onProjectDeleted: (project) {
-                    ref.read(uploadRecordProvider.notifier).deleteProject(ref, project);
+                    ref
+                        .read(uploadRecordProvider.notifier)
+                        .deleteProject(ref, project);
                   },
                 ),
                 RecordScreen(
@@ -51,7 +53,9 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                     ref.read(uploadRecordProvider.notifier).addProject(project);
                   },
                   onProjectDeleted: (project) {
-                    ref.read(uploadRecordProvider.notifier).deleteProject(ref, project);
+                    ref
+                        .read(uploadRecordProvider.notifier)
+                        .deleteProject(ref, project);
                   },
                 ),
               ],
@@ -65,11 +69,15 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.file_upload),
+            icon: const Icon(
+              Icons.file_upload,
+            ),
             label: "upload_gensub.upload".tr(),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.mic),
+            icon: const Icon(
+              Icons.mic,
+            ),
             label: "record_gensub.record".tr(),
           ),
         ],

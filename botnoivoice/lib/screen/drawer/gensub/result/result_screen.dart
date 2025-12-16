@@ -8,6 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 final _logger = Logger();
 
@@ -99,15 +100,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       backgroundColor: const Color(0xFFF8F5FB),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black87),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black87, size: 24.r),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
           "result_gensub.title".tr(),
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.black87),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              fontSize: 14.sp),
         ),
         actions: [
           TextButton.icon(
@@ -127,35 +130,40 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       builder: (context, setState) {
                         return AlertDialog(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
+                              borderRadius: BorderRadius.circular(16.r)),
                           title: Text("result_gensub.download".tr(),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.sp)),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Select Format:"),
-                              const SizedBox(height: 12),
+                              Text("Select Format:",
+                                  style: TextStyle(fontSize: 14.sp)),
+                              SizedBox(height: 12.h),
                               Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
+                                padding: EdgeInsets.symmetric(horizontal: 12.w),
                                 decoration: BoxDecoration(
                                   border:
                                       Border.all(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8.r),
                                 ),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     value: selectedFormat,
                                     isExpanded: true,
-                                    items: const [
+                                    items: [
                                       DropdownMenuItem(
                                           value: "txt",
-                                          child: Text("Text file (.txt)")),
+                                          child: Text("Text file (.txt)",
+                                              style: TextStyle(
+                                                  fontSize: 14.sp))),
                                       DropdownMenuItem(
                                           value: "srt",
-                                          child: Text("Subtitle (.srt)")),
+                                          child: Text("Subtitle (.srt)",
+                                              style: TextStyle(
+                                                  fontSize: 14.sp))),
                                     ],
                                     onChanged: (val) {
                                       if (val != null) {
@@ -168,7 +176,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             ],
                           ),
                           actionsPadding:
-                              const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
                           actions: [
                             Row(
                               children: [
@@ -176,14 +184,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   child: TextButton(
                                     onPressed: () => Navigator.pop(context),
                                     style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 12.h),
                                       foregroundColor: Colors.grey[600],
                                     ),
-                                    child: Text("result_gensub.cancel".tr()),
+                                    child: Text("result_gensub.cancel".tr(),
+                                        style: TextStyle(fontSize: 14.sp)),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
+                                SizedBox(width: 8.w),
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
@@ -215,16 +224,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
                                       foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 12.h),
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(8)),
+                                              BorderRadius.circular(8.r)),
                                       elevation: 0,
                                     ),
                                     child: Text("result_gensub.confirm".tr(),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14.sp)),
                                   ),
                                 ),
                               ],
@@ -237,11 +247,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 );
               }
             },
-            icon: const Icon(Icons.save, color: Colors.green),
+            icon: Icon(Icons.save, color: Colors.green, size: 24.r),
             label: Text("result_gensub.save".tr(),
-                style: const TextStyle(color: Colors.green)),
+                style: TextStyle(color: Colors.green, fontSize: 12.sp)),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
         ],
       ),
       body: FutureBuilder<ProjectModel?>(
@@ -263,16 +273,32 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           final approvedCount =
               segments.where((s) => s['approved'] == true).length;
 
+          // --- คำนวณค่า CER ---
+          double totalCer = 0.0;
+          int cerCount = 0;
+          for (var s in segments) {
+            if (s['cer'] != null && s['cer'] is num) {
+              totalCer += (s['cer'] as num).toDouble();
+              cerCount++;
+            }
+          }
+          String cerPercent = "0.00%";
+          if (cerCount > 0) {
+            double avgCer = (totalCer / cerCount) * 100;
+            cerPercent = "${avgCer.toStringAsFixed(2)}%";
+          }
+
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // --- ส่วนแสดงข้อมูลโปรเจกต์ (Project Info) ---
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     boxShadow: [
                       BoxShadow(
                           color: Colors.black.withAlpha(13),
@@ -282,62 +308,95 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.mic, color: Colors.purple, size: 32),
-                      const SizedBox(width: 12),
+                      Icon(Icons.mic, color: Colors.purple, size: 32.r),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               p.basenameWithoutExtension(project.projectName),
-                              style: const TextStyle(
-                                  fontSize: 16,
+                              style: TextStyle(
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Text(
                               DateFormat('dd/MM/yyyy HH:mm')
                                   .format(project.createdAt),
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.black54),
+                              style: TextStyle(
+                                  fontSize: 12.sp, color: Colors.black54),
                             ),
                           ],
                         ),
                       ),
                       Text(
                         controller!.formatTime(project.duration),
-                        style: const TextStyle(
-                            fontSize: 14,
+                        style: TextStyle(
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87),
                       ),
                     ],
                   ),
                 ),
+
+                SizedBox(height: 12.h),
+
+                // --- ส่วนแสดงสถานะ "ยืนยันข้อความ" (แยกออกมา) ---
                 Container(
+                  width: double.infinity,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  margin: const EdgeInsets.only(top: 12, bottom: 16),
+                      EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withAlpha(26),
-                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.warning, color: Colors.orange, size: 20),
-                      const SizedBox(width: 6),
+                      Icon(Icons.check, color: Colors.blue, size: 20.r),
+                      SizedBox(width: 6.w),
                       Text(
                         "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
-                        style: const TextStyle(
-                            color: Colors.orange,
-                            fontSize: 14,
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500),
                       ),
-                      const Spacer(),
                     ],
                   ),
                 ),
+
+                SizedBox(height: 8.h), // ระยะห่างระหว่าง 2 แถว
+
+                // --- ส่วนแสดงสถานะ "CER / แก้ไขส่วนที่ผิด" (แยกออกมาเป็น Row ใหม่) ---
+                Container(
+                  width: double.infinity,
+                  padding:
+                      EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+                  margin: EdgeInsets.only(bottom: 16.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_outlined,
+                          color: Colors.black54, size: 18.r),
+                      SizedBox(width: 6.w),
+                      Text(
+                        "${"result_gensub.cer".tr()} $cerPercent",
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // --- รายการ Segments ---
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
@@ -353,11 +412,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     final isEditing = editingIndex == index;
 
                     return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      padding: const EdgeInsets.all(12),
+                      margin: EdgeInsets.symmetric(vertical: 6.h),
+                      padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
                               color: Colors.black.withAlpha(13),
@@ -378,11 +437,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         ..selection = TextSelection.collapsed(
                                             offset: tempText.length),
                                   onChanged: (val) => tempText = val,
+                                  style: TextStyle(fontSize: 14.sp),
                                   decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       isDense: true),
                                 ),
-                                const SizedBox(height: 6),
+                                SizedBox(height: 6.h),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -391,13 +451,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         tempText = segment['text'] ?? '';
                                         editingIndex = null;
                                       }),
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.red),
+                                      icon: Icon(Icons.close,
+                                          color: Colors.red, size: 20.r),
                                       label: Text("result_gensub.cancel".tr(),
-                                          style: const TextStyle(
-                                              color: Colors.red)),
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 14.sp)),
                                     ),
-                                    const SizedBox(width: 8),
+                                    SizedBox(width: 8.w),
                                     TextButton.icon(
                                       onPressed: () async {
                                         final approveText = tempText;
@@ -437,11 +498,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                               "${"result_gensub.error".tr()} $e");
                                         }
                                       },
-                                      icon: const Icon(Icons.check,
-                                          color: Colors.blue),
+                                      icon: Icon(Icons.check,
+                                          color: Colors.blue, size: 20.r),
                                       label: Text("result_gensub.save".tr(),
-                                          style: const TextStyle(
-                                              color: Colors.blue)),
+                                          style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 14.sp)),
                                     ),
                                   ],
                                 ),
@@ -456,17 +518,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 });
                               },
                               child: Text(segment['text'] ?? '',
-                                  style: const TextStyle(
-                                      fontSize: 14,
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.w500)),
                             ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Text(
                             "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.black54),
+                            style: TextStyle(
+                                fontSize: 12.sp, color: Colors.black54),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -476,7 +538,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       ? Icons.pause_circle_filled
                                       : Icons.play_circle_fill,
                                   color: Colors.purple,
-                                  size: 28,
+                                  size: 28.r,
                                 ),
                                 onPressed: () async {
                                   await controller!.playSegment(
@@ -488,23 +550,32 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   );
                                 },
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               if (segment['approved'] == true)
                                 IconButton(
-                                  icon: const Icon(Icons.history,
-                                      color: Colors.grey),
+                                  icon: Icon(Icons.history,
+                                      color: Colors.grey, size: 24.r),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (_) => AlertDialog(
-                                        title:
-                                            Text("result_gensub.history".tr()),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.r)),
+                                        title: Text(
+                                            "result_gensub.history".tr(),
+                                            style: TextStyle(
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.bold)),
                                         content: Text(
-                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}"),
+                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}",
+                                            style: TextStyle(fontSize: 14.sp)),
                                         actions: [
                                           TextButton(
                                             child: Text(
-                                                "result_gensub.close".tr()),
+                                                "result_gensub.close".tr(),
+                                                style: TextStyle(
+                                                    fontSize: 14.sp)),
                                             onPressed: () =>
                                                 Navigator.pop(context),
                                           )
@@ -517,8 +588,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      icon: const Icon(Icons.check,
-                                          color: Colors.blue),
+                                      icon: Icon(Icons.check,
+                                          color: Colors.blue, size: 24.r),
                                       onPressed: () async {
                                         try {
                                           final res = await controller!
@@ -555,8 +626,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       },
                                     ),
                                     IconButton(
-                                      icon: const Icon(Icons.delete,
-                                          color: Colors.red),
+                                      icon: Icon(Icons.delete,
+                                          color: Colors.red, size: 24.r),
                                       onPressed: () async {
                                         try {
                                           await controller!.deleteSegment(

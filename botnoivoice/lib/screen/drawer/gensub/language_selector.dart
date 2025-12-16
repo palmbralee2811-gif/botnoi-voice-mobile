@@ -51,7 +51,9 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         return SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(ResponsiveDesignOrientation.isLandscape ? 10.w : 12.w),
+              padding: EdgeInsets.all(
+                ResponsiveDesignOrientation.isLandscape ? 10.w : 12.w,
+              ),
               child: Column(
                 children: [
                   Text(
@@ -61,12 +63,18 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                       fontSize: 18.sp,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   ...languageFilter.map((lang) {
                     return ListTile(
                       leading: lang['image'].toString().endsWith('.svg')
-    ? SvgPicture.asset(lang['image'].toString(), width: 30)
-    : Image.asset(lang['image'].toString(), width: 30),
+                          ? SvgPicture.asset(
+                              lang['image'].toString(),
+                              width: 30.w,
+                            )
+                          : Image.asset(
+                              lang['image'].toString(),
+                              width: 30.w,
+                            ),
                       title: Text(
                         _getDisplayName(context, lang),
                         style: GoogleFonts.prompt(fontSize: 16.sp),
@@ -99,8 +107,16 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           imagePath.endsWith('.svg')
-              ? SvgPicture.asset(imagePath, width: 24.w, height: 24.h)
-              : Image.asset(imagePath, width: 24.w, height: 24.h),
+              ? SvgPicture.asset(
+                  imagePath,
+                  width: 24.w,
+                  height: 24.h,
+                )
+              : Image.asset(
+                  imagePath,
+                  width: 24.w,
+                  height: 24.h,
+                ),
           SizedBox(width: 6.w),
           Flexible(
             child: FittedBox(
@@ -115,9 +131,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             ),
           ),
           Icon(
-            isExpanded
-                ? Icons.keyboard_arrow_up
-                : Icons.keyboard_arrow_down,
+            isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
             size: 20,
           ),
         ],

@@ -76,14 +76,18 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 Text(
                   "upload_gensub.title".tr(),
                   style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold), // .sp สำหรับ font
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ), // .sp สำหรับ font
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 6.h),
                 Text(
                   "upload_gensub.expand_title".tr(),
-                  style: const TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.black54,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20.h),
@@ -92,15 +96,24 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                     await controller.pickFile();
                     setState(() {});
                   },
-                  icon: const Icon(Icons.upload_file, color: Colors.blue),
+                  icon: Icon(
+                    Icons.upload_file,
+                    color: Colors.blue,
+                    size: 24.h,
+                  ),
                   label: Text(
                     "upload_gensub.upload".tr(),
-                    style: const TextStyle(color: Colors.blue),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.blue,
+                    ),
                   ),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.blue),
                     padding: EdgeInsets.symmetric(
-                        horizontal: 24.w, vertical: 12.h), // ปรับ padding ปุ่ม
+                      horizontal: 24.w,
+                      vertical: 12.h,
+                    ), // ปรับ padding ปุ่ม
                   ),
                 ),
               ],
@@ -128,14 +141,27 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.mic, color: Colors.blue),
+                Icon(
+                  Icons.mic,
+                  color: Colors.blue,
+                  size: 24.h,
+                ),
                 SizedBox(width: 8.w),
                 Expanded(
-                  child: Text(fileName,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text(
+                    fileName,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 24.h,
+                  ),
                   onPressed: () {
                     controller.clearFile();
                     setState(() {});
@@ -151,6 +177,9 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   "text_to_gensub.audio_language".tr(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                  ),
                 ),
                 LanguageSelector(
                   selectedLanguage: controller.selectedLanguageName,
@@ -181,22 +210,39 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("text_to_gensub.file_duration".tr()),
+                Text(
+                  "text_to_gensub.file_duration".tr(),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                  ),
+                ),
                 Text(
                   controller.audioDuration != null
                       ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
                       : "text_to_gensub.duration_auto_calculate".tr(),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 12.h),
             ExpansionTile(
-              title: Text("text_to_gensub.segmentation_settings".tr()),
+              title: Text(
+                "text_to_gensub.segmentation_settings".tr(),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                ),
+              ),
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("text_to_gensub.max_segment_duration".tr()),
+                    Text(
+                      "text_to_gensub.max_segment_duration".tr(),
+                      style: TextStyle(fontSize: 12.sp),
+                    ),
                     DropdownButton<String>(
                       value: [
                         "1 ${"units.seconds".tr()}",
@@ -215,11 +261,17 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                         for (var sec in [1, 2, 5, 10, 15, 20, 25, 30])
                           DropdownMenuItem(
                             value: "$sec ${"units.seconds".tr()}",
-                            child: Text("$sec ${"units.seconds".tr()}"),
+                            child: Text(
+                              "$sec ${"units.seconds".tr()}",
+                              style: TextStyle(fontSize: 12.sp),
+                            ),
                           ),
                         DropdownMenuItem(
                           value: "units.unlimited".tr(),
-                          child: Text("units.unlimited".tr()),
+                          child: Text(
+                            "units.unlimited".tr(),
+                            style: TextStyle(fontSize: 12.sp),
+                          ),
                         ),
                       ],
                       onChanged: (val) {
@@ -233,7 +285,10 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("text_to_gensub.max_silence_duration".tr()),
+                    Text(
+                      "text_to_gensub.max_silence_duration".tr(),
+                      style: TextStyle(fontSize: 12.sp),
+                    ),
                     DropdownButton<String>(
                       value: [
                         "0.1 ${"units.seconds".tr()}",
@@ -257,11 +312,17 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                         ])
                           DropdownMenuItem(
                             value: "$sec ${"units.seconds".tr()}",
-                            child: Text("$sec ${"units.seconds".tr()}"),
+                            child: Text(
+                              "$sec ${"units.seconds".tr()}",
+                              style: TextStyle(fontSize: 12.sp),
+                            ),
                           ),
                         DropdownMenuItem(
                           value: "units.unlimited".tr(),
-                          child: Text("units.unlimited".tr()),
+                          child: Text(
+                            "units.unlimited".tr(),
+                            style: TextStyle(fontSize: 12.sp),
+                          ),
                         ),
                       ],
                       onChanged: (val) {
@@ -356,10 +417,16 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                         color: Colors.white,
                       ),
                     )
-                  : const Icon(Icons.play_arrow),
-              label: Text(isLoading
-                  ? "text_to_gensub.transcribing".tr()
-                  : "text_to_gensub.transcribe_status".tr()),
+                  : Icon(
+                      Icons.play_arrow,
+                      size: 24.w,
+                    ),
+              label: Text(
+                isLoading
+                    ? "text_to_gensub.transcribing".tr()
+                    : "text_to_gensub.transcribe_status".tr(),
+                style: TextStyle(fontSize: 16.sp),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
@@ -431,30 +498,63 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
         ...widget.projects.map((project) {
           return Card(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r)),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
             elevation: 2,
             child: ListTile(
-              leading: Icon(Icons.audiotrack, color: Colors.blue, size: 36.r),
-              title: Text(project.projectName,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              leading: Icon(
+                Icons.audiotrack,
+                color: Colors.blue,
+                size: 36.r,
+              ),
+              title: Text(
+                project.projectName,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.grey,
+                    ),
                   ),
                   SizedBox(height: 2.h),
                   Row(
                     children: [
-                      Icon(Icons.timer, size: 14.r, color: Colors.grey),
+                      Icon(
+                        Icons.timer,
+                        size: 14.r,
+                        color: Colors.grey,
+                      ),
                       SizedBox(width: 4.w),
-                      Text(formatDuration(project.duration)),
+                      Text(
+                        formatDuration(project.duration),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey,
+                        ),
+                      ),
                       if (project.segments.isNotEmpty) ...[
                         SizedBox(width: 12.w),
-                        Icon(Icons.text_snippet,
-                            size: 14.r, color: Colors.grey),
+                        Icon(
+                          Icons.text_snippet,
+                          size: 14.r,
+                          color: Colors.grey,
+                        ),
                         SizedBox(width: 4.w),
-                        Text("${project.segments.length}"),
+                        Text(
+                          "${project.segments.length}",
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ],
                   ),
@@ -464,23 +564,43 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: 24.r,
+                    ),
                     onPressed: () async {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (_) => AlertDialog(
-                          title: Text("dialog.delete_project_title".tr()),
-                          content: Text("dialog.delete_project_content".tr()),
+                          title: Text(
+                            "dialog.delete_project_title".tr(),
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          content: Text(
+                            "dialog.delete_project_content".tr(),
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: Text("dialog.cancel".tr()),
+                              child: Text(
+                                "dialog.cancel".tr(),
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                ),
+                              ),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, true),
                               child: Text(
                                 "dialog.delete".tr(),
-                                style: const TextStyle(color: Colors.red),
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14.sp,
+                                ),
                               ),
                             ),
                           ],
