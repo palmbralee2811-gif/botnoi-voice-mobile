@@ -1,6 +1,7 @@
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_sharefile_function.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import สำหรับ Clipboard
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,26 +92,33 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   void _showSnack(String msg) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F5FB),
+      backgroundColor: const Color(0xFFFAFAFA), // พื้นหลังสีขาวนวล Clean
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black87, size: 24.r),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black87, size: 20.r),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 0.5, // เงาบางๆ
+        centerTitle: true,
         title: Text(
           "result_gensub.title".tr(),
           style: TextStyle(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               color: Colors.black87,
-              fontSize: 14.sp),
+              fontSize: 16.sp),
         ),
         actions: [
           TextButton.icon(
@@ -129,8 +137,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     return StatefulBuilder(
                       builder: (context, setState) {
                         return AlertDialog(
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.r)),
+                              borderRadius: BorderRadius.circular(20.r)),
                           title: Text("result_gensub.download".tr(),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -140,30 +149,29 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Select Format:",
-                                  style: TextStyle(fontSize: 14.sp)),
+                                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[700])),
                               SizedBox(height: 12.h),
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 decoration: BoxDecoration(
+                                  color: Colors.grey[50],
                                   border:
-                                      Border.all(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(8.r),
+                                      Border.all(color: Colors.grey.shade200),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     value: selectedFormat,
                                     isExpanded: true,
+                                    icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+                                    style: TextStyle(color: Colors.black87, fontSize: 14.sp),
                                     items: [
                                       DropdownMenuItem(
                                           value: "txt",
-                                          child: Text("Text file (.txt)",
-                                              style: TextStyle(
-                                                  fontSize: 14.sp))),
+                                          child: Text("Text file (.txt)")),
                                       DropdownMenuItem(
                                           value: "srt",
-                                          child: Text("Subtitle (.srt)",
-                                              style: TextStyle(
-                                                  fontSize: 14.sp))),
+                                          child: Text("Subtitle (.srt)")),
                                     ],
                                     onChanged: (val) {
                                       if (val != null) {
@@ -176,23 +184,24 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             ],
                           ),
                           actionsPadding:
-                              EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+                              EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
                           actions: [
                             Row(
                               children: [
                                 Expanded(
-                                  child: TextButton(
+                                  child: OutlinedButton(
                                     onPressed: () => Navigator.pop(context),
-                                    style: TextButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 12.h),
-                                      foregroundColor: Colors.grey[600],
+                                    style: OutlinedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                                      side: BorderSide(color: Colors.grey.shade300),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                                      foregroundColor: Colors.grey[700],
                                     ),
                                     child: Text("result_gensub.cancel".tr(),
                                         style: TextStyle(fontSize: 14.sp)),
                                   ),
                                 ),
-                                SizedBox(width: 8.w),
+                                SizedBox(width: 12.w),
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
@@ -222,13 +231,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
+                                      backgroundColor: const Color(0xFF4CAF50), // Green 500
                                       foregroundColor: Colors.white,
                                       padding:
                                           EdgeInsets.symmetric(vertical: 12.h),
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(8.r)),
+                                              BorderRadius.circular(12.r)),
                                       elevation: 0,
                                     ),
                                     child: Text("result_gensub.confirm".tr(),
@@ -247,11 +256,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 );
               }
             },
-            icon: Icon(Icons.save, color: Colors.green, size: 24.r),
+            icon: Icon(Icons.save_alt_rounded, color: const Color(0xFF4CAF50), size: 24.r),
             label: Text("result_gensub.save".tr(),
-                style: TextStyle(color: Colors.green, fontSize: 12.sp)),
+                style: TextStyle(color: const Color(0xFF4CAF50), fontSize: 14.sp, fontWeight: FontWeight.w600)),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 16.w),
         ],
       ),
       body: FutureBuilder<ProjectModel?>(
@@ -259,13 +268,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               controller == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(strokeWidth: 2));
           } else if (snapshot.hasError) {
             return Center(
-                child: Text(
-                    "${"result_gensub.error".tr()} ${snapshot.error.toString()}"));
+                child: Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Text(
+                      "${"result_gensub.error".tr()} ${snapshot.error.toString()}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red[400])),
+                ));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text("result_gensub.no_workspace".tr()));
+            return Center(child: Text("result_gensub.no_workspace".tr(), style: TextStyle(color: Colors.grey)));
           }
 
           final project = snapshot.data!;
@@ -273,7 +287,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           final approvedCount =
               segments.where((s) => s['approved'] == true).length;
 
-          // --- คำนวณค่า CER ---
           double totalCer = 0.0;
           int cerCount = 0;
           for (var s in segments) {
@@ -289,27 +302,35 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           }
 
           return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- ส่วนแสดงข้อมูลโปรเจกต์ (Project Info) ---
+                // --- Project Info Card ---
                 Container(
                   padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.black.withAlpha(13),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2)),
+                          color: Colors.black.withOpacity(0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4)),
                     ],
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.mic, color: Colors.purple, size: 32.r),
-                      SizedBox(width: 12.w),
+                      Container(
+                        padding: EdgeInsets.all(10.r),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF3E5F5), // Light Purple
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Icon(Icons.mic_rounded, color: const Color(0xFF9C27B0), size: 28.r),
+                      ),
+                      SizedBox(width: 16.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,83 +341,94 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 4.h),
                             Text(
-                              DateFormat('dd/MM/yyyy HH:mm')
+                              DateFormat('dd/MM/yyyy • HH:mm')
                                   .format(project.createdAt),
                               style: TextStyle(
-                                  fontSize: 12.sp, color: Colors.black54),
+                                  fontSize: 12.sp, color: Colors.grey[600]),
                             ),
                           ],
                         ),
                       ),
-                      Text(
-                        controller!.formatTime(project.duration),
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8.r)
+                        ),
+                        child: Text(
+                          controller!.formatTime(project.duration),
+                          style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87),
+                        ),
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 12.h),
+                SizedBox(height: 16.h),
 
-                // --- ส่วนแสดงสถานะ "ยืนยันข้อความ" (แยกออกมา) ---
+                // --- Status Row (Confirmed) ---
                 Container(
                   width: double.infinity,
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.grey.shade100)
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.check, color: Colors.blue, size: 20.r),
-                      SizedBox(width: 6.w),
+                      Icon(Icons.check_circle_rounded, color: const Color(0xFF2196F3), size: 20.r), // Blue
+                      SizedBox(width: 8.w),
                       Text(
                         "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
                         style: TextStyle(
-                            color: Colors.blue,
+                            color: const Color(0xFF2196F3),
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w500),
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 8.h), // ระยะห่างระหว่าง 2 แถว
+                SizedBox(height: 8.h),
 
-                // --- ส่วนแสดงสถานะ "CER / แก้ไขส่วนที่ผิด" (แยกออกมาเป็น Row ใหม่) ---
+                // --- Status Row (CER) ---
                 Container(
                   width: double.infinity,
                   padding:
-                      EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
-                  margin: EdgeInsets.only(bottom: 16.h),
+                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                  margin: EdgeInsets.only(bottom: 20.h),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: Colors.grey.shade100)
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.edit_outlined,
-                          color: Colors.black54, size: 18.r),
-                      SizedBox(width: 6.w),
+                      Icon(Icons.edit_note_rounded,
+                          color: Colors.grey[700], size: 22.r),
+                      SizedBox(width: 8.w),
                       Text(
                         "${"result_gensub.cer".tr()} $cerPercent",
                         style: TextStyle(
-                            color: Colors.black54,
+                            color: Colors.grey[700],
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w500),
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                 ),
 
-                // --- รายการ Segments ---
+                // --- Segments List ---
                 Column(
                   children: List.generate(segments.length, (index) {
                     final segment = segments[index];
@@ -413,14 +445,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
                     return Container(
                       margin: EdgeInsets.symmetric(vertical: 6.h),
-                      padding: EdgeInsets.all(12.w),
+                      padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black.withAlpha(13),
-                              blurRadius: 4,
+                              color: Colors.black.withOpacity(0.02),
+                              blurRadius: 8,
                               offset: const Offset(0, 2)),
                         ],
                       ),
@@ -437,29 +469,33 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         ..selection = TextSelection.collapsed(
                                             offset: tempText.length),
                                   onChanged: (val) => tempText = val,
-                                  style: TextStyle(fontSize: 14.sp),
-                                  decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
+                                  style: TextStyle(fontSize: 16.sp, height: 1.5),
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12.r),
+                                        borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                                      ),
+                                      contentPadding: EdgeInsets.all(12.w),
                                       isDense: true),
                                 ),
-                                SizedBox(height: 6.h),
+                                SizedBox(height: 12.h),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    TextButton.icon(
+                                    TextButton(
                                       onPressed: () => setState(() {
                                         tempText = segment['text'] ?? '';
                                         editingIndex = null;
                                       }),
-                                      icon: Icon(Icons.close,
-                                          color: Colors.red, size: 20.r),
-                                      label: Text("result_gensub.cancel".tr(),
+                                      child: Text("result_gensub.cancel".tr(),
                                           style: TextStyle(
-                                              color: Colors.red,
+                                              color: Colors.grey[600],
                                               fontSize: 14.sp)),
                                     ),
                                     SizedBox(width: 8.w),
-                                    TextButton.icon(
+                                    ElevatedButton.icon(
                                       onPressed: () async {
                                         final approveText = tempText;
                                         try {
@@ -498,19 +534,21 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                               "${"result_gensub.error".tr()} $e");
                                         }
                                       },
-                                      icon: Icon(Icons.check,
-                                          color: Colors.blue, size: 20.r),
-                                      label: Text("result_gensub.save".tr(),
-                                          style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 14.sp)),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h)
+                                      ),
+                                      icon: Icon(Icons.check, size: 18.r),
+                                      label: Text("result_gensub.save".tr(), style: TextStyle(fontSize: 14.sp)),
                                     ),
                                   ],
                                 ),
                               ],
                             )
                           else
-                            GestureDetector(
+                            InkWell(
                               onTap: () {
                                 setState(() {
                                   editingIndex = index;
@@ -519,143 +557,218 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                               },
                               child: Text(segment['text'] ?? '',
                                   style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500)),
+                                      fontSize: 16.sp,
+                                      height: 1.5,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.normal)),
                             ),
-                          SizedBox(height: 6.h),
-                          Text(
-                            "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
-                            style: TextStyle(
-                                fontSize: 12.sp, color: Colors.black54),
-                          ),
-                          SizedBox(height: 6.h),
+                          SizedBox(height: 8.h),
+                          Divider(color: Colors.grey[100]),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  controller!.playingIndex == index
-                                      ? Icons.pause_circle_filled
-                                      : Icons.play_circle_fill,
-                                  color: Colors.purple,
-                                  size: 28.r,
-                                ),
-                                onPressed: () async {
-                                  await controller!.playSegment(
-                                    index,
-                                    segments,
-                                    () {
-                                      if (mounted) setState(() {});
-                                    },
-                                  );
-                                },
+                              Text(
+                                "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
+                                style: TextStyle(
+                                    fontSize: 12.sp, color: Colors.grey[500], fontWeight: FontWeight.w500),
                               ),
-                              SizedBox(width: 8.w),
-                              if (segment['approved'] == true)
-                                IconButton(
-                                  icon: Icon(Icons.history,
-                                      color: Colors.grey, size: 24.r),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (_) => AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16.r)),
-                                        title: Text(
-                                            "result_gensub.history".tr(),
-                                            style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.bold)),
-                                        content: Text(
-                                            "${"result_gensub.history_text".tr()} \n${segment['original_text'] ?? '-'}",
-                                            style: TextStyle(fontSize: 14.sp)),
-                                        actions: [
-                                          TextButton(
-                                            child: Text(
-                                                "result_gensub.close".tr(),
-                                                style: TextStyle(
-                                                    fontSize: 14.sp)),
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                          )
-                                        ],
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      controller!.playingIndex == index
+                                          ? Icons.pause_circle_filled_rounded
+                                          : Icons.play_circle_fill_rounded,
+                                      color: const Color(0xFF9C27B0), // Purple
+                                      size: 32.r,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: BoxConstraints(),
+                                    onPressed: () async {
+                                      await controller!.playSegment(
+                                        index,
+                                        segments,
+                                        () {
+                                          if (mounted) setState(() {});
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  if (segment['approved'] == true)
+                                    // --- History Button (with Copy) ---
+                                    InkWell(
+                                      onTap: () {
+                                        final originalText = segment['original_text'] ?? '-';
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20.r)),
+                                            title: Row(
+                                              children: [
+                                                Icon(Icons.history_rounded, color: Colors.grey[700]),
+                                                SizedBox(width: 8.w),
+                                                Text(
+                                                    "result_gensub.history".tr(),
+                                                    style: TextStyle(
+                                                        fontSize: 18.sp,
+                                                        fontWeight: FontWeight.bold)),
+                                              ],
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "result_gensub.history_text".tr(), // "Original text:"
+                                                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                                                ),
+                                                SizedBox(height: 8.h),
+                                                Container(
+                                                  width: double.infinity,
+                                                  padding: EdgeInsets.all(12.w),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[50],
+                                                    borderRadius: BorderRadius.circular(12.r),
+                                                    border: Border.all(color: Colors.grey.shade200),
+                                                  ),
+                                                  child: SelectableText(
+                                                    originalText,
+                                                    style: TextStyle(fontSize: 14.sp, height: 1.5),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 12.h),
+                                                Align(
+                                                  alignment: Alignment.centerRight,
+                                                  child: TextButton.icon(
+                                                    onPressed: () {
+                                                      Clipboard.setData(ClipboardData(text: originalText));
+                                                      _showSnack("Copied to clipboard");
+                                                      Navigator.pop(context);
+                                                    },
+                                                    icon: Icon(Icons.copy_rounded, size: 16.r),
+                                                    label: Text("Copy", style: TextStyle(fontSize: 12.sp)),
+                                                    style: TextButton.styleFrom(
+                                                      foregroundColor: Colors.blue,
+                                                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                                                      backgroundColor: Colors.blue.withOpacity(0.1),
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                child: Text(
+                                                    "result_gensub.close".tr(),
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp, color: Colors.grey[600])),
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(6.r),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[100],
+                                          shape: BoxShape.circle
+                                        ),
+                                        child: Icon(Icons.history_rounded, color: Colors.grey[600], size: 20.r)
                                       ),
-                                    );
-                                  },
-                                )
-                              else
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.check,
-                                          color: Colors.blue, size: 24.r),
-                                      onPressed: () async {
-                                        try {
-                                          final res = await controller!
-                                              .updateAudioApproveSegment(
-                                            ref,
-                                            chunkId: segment['id'],
-                                            userId: widget.userId,
-                                            approveText: segment['text'],
-                                          );
-                                          if (res != null &&
-                                              res['data'] != null) {
-                                            setState(() {
-                                              segment['original_text'] =
-                                                  segment['text'];
-                                              segment['text'] = res['data']
-                                                      ['approve_text'] ??
-                                                  segment['text'];
-                                              segment['approved'] = res['data']
-                                                      ['approve'] ??
-                                                  true;
-                                            });
-                                            _showSnack(
-                                                "result_gensub.approve_success"
-                                                    .tr());
-                                          } else {
-                                            _showSnack(
-                                                "result_gensub.approve_fail"
-                                                    .tr());
-                                          }
-                                        } catch (e) {
-                                          _showSnack(
-                                              "${"result_gensub.error".tr()} $e");
-                                        }
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.delete,
-                                          color: Colors.red, size: 24.r),
-                                      onPressed: () async {
-                                        try {
-                                          await controller!.deleteSegment(
-                                              ref, index, segments, project);
-                                          setState(() {});
-                                          _showSnack(
-                                              "result_gensub.delete_success"
-                                                  .tr());
-                                          if (segments.isEmpty && mounted) {
-                                            Future.delayed(
-                                                const Duration(
-                                                    milliseconds: 400), () {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        const UploadRecScreen()),
+                                    )
+                                  else
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            try {
+                                              final res = await controller!
+                                                  .updateAudioApproveSegment(
+                                                ref,
+                                                chunkId: segment['id'],
+                                                userId: widget.userId,
+                                                approveText: segment['text'],
                                               );
-                                            });
-                                          }
-                                        } catch (e) {
-                                          _showSnack(
-                                              "${"result_gensub.delete_fail".tr()} $e");
-                                        }
-                                      },
+                                              if (res != null &&
+                                                  res['data'] != null) {
+                                                setState(() {
+                                                  segment['original_text'] =
+                                                      segment['text'];
+                                                  segment['text'] = res['data']
+                                                          ['approve_text'] ??
+                                                      segment['text'];
+                                                  segment['approved'] = res['data']
+                                                          ['approve'] ??
+                                                      true;
+                                                });
+                                                _showSnack(
+                                                    "result_gensub.approve_success"
+                                                        .tr());
+                                              } else {
+                                                _showSnack(
+                                                    "result_gensub.approve_fail"
+                                                        .tr());
+                                              }
+                                            } catch (e) {
+                                              _showSnack(
+                                                  "${"result_gensub.error".tr()} $e");
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(6.r),
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue[50],
+                                              shape: BoxShape.circle
+                                            ),
+                                            child: Icon(Icons.check_rounded, color: Colors.blue, size: 20.r),
+                                          ),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        InkWell(
+                                          onTap: () async {
+                                            try {
+                                              await controller!.deleteSegment(
+                                                  ref, index, segments, project);
+                                              setState(() {});
+                                              _showSnack(
+                                                  "result_gensub.delete_success"
+                                                      .tr());
+                                              if (segments.isEmpty && mounted) {
+                                                Future.delayed(
+                                                    const Duration(
+                                                        milliseconds: 400), () {
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            const UploadRecScreen()),
+                                                  );
+                                                });
+                                              }
+                                            } catch (e) {
+                                              _showSnack(
+                                                  "${"result_gensub.delete_fail".tr()} $e");
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(6.r),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red[50],
+                                              shape: BoxShape.circle
+                                            ),
+                                            child: Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20.r),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                ],
+                              ),
                             ],
                           ),
                         ],

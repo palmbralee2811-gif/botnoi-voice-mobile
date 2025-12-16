@@ -150,7 +150,7 @@ class ResultLogic {
           "end": end,
           "text": text,
           "approved": s['approve'] ?? false,
-          "original_text": null,
+          "original_text": s['botnoi_asr_text'],
           "s3_link": s['s3_link'],
           // --- เพิ่ม 3 บรรทัดนี้ เพื่อเก็บค่า CER ---
           "character_error": s['character_error'], 

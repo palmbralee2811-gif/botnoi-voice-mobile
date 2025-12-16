@@ -6,6 +6,7 @@ import 'package:botnoivoice/screen/drawer/gensub/record/record_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/topbar_gensub.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // 1. Import ScreenUtil
 
 class UploadRecScreen extends ConsumerStatefulWidget {
   const UploadRecScreen({super.key});
@@ -28,11 +29,16 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
     final controller = ref.watch(uploadRecordProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFFF8F9FD), // พื้นหลังโทนสว่าง Minimal
       appBar: const TopbarGensub(),
       drawer: const DrawerAppbar(),
       body: controller.loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.blue,
+              ),
+            )
           : IndexedStack(
               index: controller.selectedIndex,
               children: [
@@ -60,27 +66,62 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
                 ),
               ],
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: controller.selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          ref.read(uploadRecordProvider.notifier).changeTab(index);
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(
-              Icons.file_upload,
+      
+      // --- Modern Bottom Navigation Bar ---
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05), // เงาบางๆ ด้านบน
+              blurRadius: 10,
+              offset: const Offset(0, -5),
             ),
-            label: "upload_gensub.upload".tr(),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: controller.selectedIndex,
+          onTap: (index) {
+            ref.read(uploadRecordProvider.notifier).changeTab(index);
+          },
+          backgroundColor: Colors.white,
+          elevation: 0, // ปิดเงาเดิม
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey[400],
+          selectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 12.sp,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(
-              Icons.mic,
+          unselectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.normal,
+            fontSize: 12.sp,
+          ),
+          items: [
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4.h),
+                child: Icon(Icons.cloud_upload_outlined, size: 24.r),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4.h),
+                child: Icon(Icons.cloud_upload_rounded, size: 24.r),
+              ),
+              label: "upload_gensub.upload".tr(),
             ),
-            label: "record_gensub.record".tr(),
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4.h),
+                child: Icon(Icons.mic_none_rounded, size: 24.r),
+              ),
+              activeIcon: Padding(
+                padding: EdgeInsets.only(bottom: 4.h),
+                child: Icon(Icons.mic_rounded, size: 24.r),
+              ),
+              label: "record_gensub.record".tr(),
+            ),
+          ],
+        ),
       ),
     );
   }

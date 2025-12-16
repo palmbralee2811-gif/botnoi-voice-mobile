@@ -1,144 +1,4 @@
-// import 'package:botnoivoice/shared/style/style.dart';
-// import 'package:botnoivoice/shared/function/call_reload_data.dart';
-// import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
-// import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:provider/provider.dart';
-// import 'package:go_router/go_router.dart'; // สำหรับใช้ context.go()
-
-// class TopbarGensub extends StatefulWidget implements PreferredSizeWidget {
-//   const TopbarGensub({super.key});
-
-//   @override
-//   State<TopbarGensub> createState() => _TopbarGensubState();
-
-//   @override
-//   Size get preferredSize =>
-//       Size.fromHeight(ResponsiveDesignOrientation.isLandscape ? 80.h : 60.h);
-// }
-
-// class _TopbarGensubState extends State<TopbarGensub> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       _loadRemainingCredits();
-//     });
-//   }
-
-//   Future<void> _loadRemainingCredits() async {
-//     await context.read<CallReloadData>().callLoadCreditsApi();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     var remainingCredits =
-//         context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-
-//     return AppBar(
-//       backgroundColor: kWhite,
-//       elevation: 4.0,
-
-//       // 🔹 เปลี่ยนจากปุ่มเมนู → ปุ่มย้อนกลับ
-//       leading: Builder(
-//         builder: (context) => SizedBox(
-//           width: double.infinity,
-//           height:
-//               ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
-//           child: IconButton(
-//             icon: Icon(
-//               Icons.arrow_back_ios_new,
-//               size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
-//               color: kDark,
-//             ),
-//             onPressed: () {
-//               context.go('/home'); // 🔙 ไปหน้าโฮม
-//             },
-//             tooltip: 'กลับไปหน้าแรก',
-//           ),
-//         ),
-//       ),
-//       leadingWidth: ResponsiveDesignOrientation.isLandscape ? 35.w : 60.w,
-
-//       // 🔹 โลโก้ตรงกลาง (ไม่ต้องกด)
-//       title: SizedBox(
-//         height: 120.h,
-//         child: Center(
-//           child: SvgPicture.asset(
-//             'assets/images/logo/appbar-icon.svg',
-//             width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
-//             height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
-//             fit: BoxFit.contain,
-//           ),
-//         ),
-//       ),
-
-//       // 🔹 ด้านขวา (เครดิต)
-//       actions: [
-//         Container(
-//           height: ResponsiveDesignOrientation.isLandscape ? 35.h : 30.h,
-//           decoration: BoxDecoration(
-//             boxShadow: const [
-//               BoxShadow(
-//                 color: Color.fromARGB(255, 224, 221, 221),
-//                 blurRadius: 3.0,
-//               ),
-//             ],
-//             color: Colors.white,
-//             borderRadius: BorderRadius.circular(15.r),
-//           ),
-//           margin: EdgeInsets.only(right: 10.w),
-//           child: InkWell(
-//             onTap: () {
-//               showPaymentDialog(context);
-//             },
-//             borderRadius: BorderRadius.circular(15.r),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 SizedBox(width: 5.w),
-//                 SvgPicture.asset(
-//                   'assets/images/logo/credit-icon.svg',
-//                   width:
-//                       ResponsiveDesignOrientation.isLandscape ? 20.w : 20.w,
-//                   height:
-//                       ResponsiveDesignOrientation.isLandscape ? 20.h : 20.h,
-//                 ),
-//                 SizedBox(width: 4.w),
-//                 Text(
-//                   remainingCredits,
-//                   style: GoogleFonts.prompt(
-//                     fontSize: ResponsiveDesignOrientation.isLandscape
-//                         ? 8.sp
-//                         : 12.sp,
-//                     fontWeight: FontWeight.bold,
-//                     color: kDark,
-//                   ),
-//                 ),
-//                 SizedBox(width: 5.w),
-//               ],
-//             ),
-//           ),
-//         ),
-//         SizedBox(width: 5.w),
-//       ],
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/payment/payment_dialog.dart';
 import 'package:flutter/material.dart';
@@ -156,7 +16,7 @@ class TopbarGensub extends ConsumerStatefulWidget implements PreferredSizeWidget
 
   @override
   Size get preferredSize =>
-      Size.fromHeight(ResponsiveDesignOrientation.isLandscape ? 80.h : 60.h);
+      Size.fromHeight(ResponsiveDesignOrientation.isLandscape ? 70.h : 56.h);
 }
 
 class _TopbarGensubState extends ConsumerState<TopbarGensub> {
@@ -169,101 +29,94 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    // await context.read<CallReloadData>().callLoadCreditsApi();
-    // await ref.read(callReloadDataProvider).callLoadCreditsApi();
     await loadAllTokensIfLoggedIn(ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    // var remainingCredits = ref.watch(userTokenProvider).remainingCredits ?? 'N/A';
-
-    // Access credits directly from the immutable state
     final userTokenState = ref.watch(currentUserTokenStateProvider);
     final remainingCredits = userTokenState.remainingCredits ?? 'N/A';
 
     return AppBar(
-      backgroundColor: kWhite,
-      elevation: 4.0,
-
-      // 🔹 เปลี่ยนจากปุ่มเมนู → ปุ่มย้อนกลับ
-      leading: Builder(
-        builder: (context) => IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            size: 12.sp,
-            color: kDark,
-          ),
-          onPressed: () {
-            context.go('/home'); // Back to Home Screen
-          },
-          tooltip: 'Back',
-        ),
-      ),
-      leadingWidth: ResponsiveDesignOrientation.isLandscape ? 35.w : 60.w,
-
-      // 🔹 โลโก้ตรงกลาง (ไม่ต้องกด)
-      title: SizedBox(
-        height: 120.h,
-        child: Center(
-          child: SvgPicture.asset(
-            'assets/images/logo/appbar-icon.svg',
-            width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
-            height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
-            fit: BoxFit.contain,
-          ),
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white, // ป้องกันสีเพี้ยนเวลา Scroll
+      elevation: 0, // ลบเงาหนักๆ ออกเพื่อให้ดู Clean
+      
+      // เพิ่มเส้นขอบบางๆ ด้านล่างให้ดูมีสัดส่วน (Optional)
+      shape: Border(
+        bottom: BorderSide(
+          color: Colors.grey.shade200,
+          width: 1,
         ),
       ),
 
-      // 🔹 ด้านขวา (เครดิต)
+      // 🔹 ปุ่มย้อนกลับ Minimal
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios_new_rounded, // ใช้ Rounded icon ให้ดูนุ่มนวล
+          size: 20.sp,
+          color: Colors.black87,
+        ),
+        onPressed: () => context.go('/home'),
+        tooltip: 'Back',
+        splashRadius: 24, // ลดขนาดวงคลื่นเวลากด
+      ),
+      leadingWidth: 50.w,
+
+      // 🔹 โลโก้ตรงกลาง
+      centerTitle: true,
+      title: SvgPicture.asset(
+        'assets/images/logo/appbar-icon.svg',
+        height: 28.h,
+        fit: BoxFit.contain,
+      ),
+
+      // 🔹 ส่วนแสดงเครดิต (Modern Pill Style)
       actions: [
-        Container(
-          height: ResponsiveDesignOrientation.isLandscape ? 35.h : 30.h,
-          decoration: BoxDecoration(
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromARGB(255, 224, 221, 221),
-                blurRadius: 3.0,
-              ),
-            ],
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          margin: EdgeInsets.only(right: 10.w),
+        Padding(
+          padding: EdgeInsets.only(right: 16.w),
           child: InkWell(
-            onTap: () {
-              showPaymentDialog(context);
-            },
-            borderRadius: BorderRadius.circular(15.r),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: 5.w),
-                SvgPicture.asset(
-                  'assets/images/logo/credit-icon.svg',
-                  width:
-                      ResponsiveDesignOrientation.isLandscape ? 20.w : 20.w,
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 20.h : 20.h,
-                ),
-                SizedBox(width: 4.w),
-                Text(
-                  remainingCredits.toString(),
-                  style: GoogleFonts.prompt(
-                    fontSize: ResponsiveDesignOrientation.isLandscape
-                        ? 8.sp
-                        : 12.sp,
-                    fontWeight: FontWeight.bold,
-                    color: kDark,
+            onTap: () => showPaymentDialog(context),
+            borderRadius: BorderRadius.circular(30.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30.r),
+                border: Border.all(color: Colors.grey.shade200), // ขอบบางๆ
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05), // เงาฟุ้งๆ นุ่มๆ
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-                SizedBox(width: 5.w),
-              ],
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/logo/credit-icon.svg',
+                    width: 18.w,
+                    height: 18.h,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    remainingCredits.toString(),
+                    style: GoogleFonts.prompt(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87, // สีเข้มตัดกับพื้นขาว
+                    ),
+                  ),
+                  // Optional: เพิ่มไอคอน + เล็กๆ เพื่อสื่อว่าเติมเงินได้
+                  // SizedBox(width: 4.w),
+                  // Icon(Icons.add_circle, size: 14.sp, color: Colors.blue),
+                ],
+              ),
             ),
           ),
         ),
-        SizedBox(width: 5.w),
       ],
     );
   }

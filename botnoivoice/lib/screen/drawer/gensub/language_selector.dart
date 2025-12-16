@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
-import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart'; // ใช้ตัวนี้
+import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
 
 class LanguageSelector extends StatefulWidget {
   final String selectedLanguage;
@@ -28,11 +28,11 @@ class _LanguageSelectorState extends State<LanguageSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         setState(() => isExpanded = true);
         _openLanguageModal(context).whenComplete(() {
-          setState(() => isExpanded = false);
+          if (mounted) setState(() => isExpanded = false);
         });
       },
       child: _buildButtonContainer(
@@ -47,47 +47,115 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     await showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
+      isScrollControlled: true, // ให้ Modal ยืดตามเนื้อหาได้สวยงาม
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
       builder: (BuildContext context) {
-        return SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(
-                ResponsiveDesignOrientation.isLandscape ? 10.w : 12.w,
+        return Container(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          constraints: BoxConstraints(maxHeight: 0.8.sh), // สูงไม่เกิน 80% ของหน้าจอ
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // --- Drag Handle ---
+              SizedBox(height: 12.h),
+              Container(
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
               ),
-              child: Column(
-                children: [
-                  Text(
-                    'language'.tr(),
-                    style: GoogleFonts.prompt(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.sp,
-                    ),
+              SizedBox(height: 16.h),
+              
+              // --- Title ---
+              Text(
+                'language'.tr(),
+                style: GoogleFonts.prompt(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.sp,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              
+              // --- Divider ---
+              Divider(height: 1, color: Colors.grey.shade200),
+
+              // --- List ---
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveDesignOrientation.isLandscape ? 10.w : 16.w,
+                    vertical: 8.h,
                   ),
-                  SizedBox(height: 10.h),
-                  ...languageFilter.map((lang) {
-                    return ListTile(
-                      leading: lang['image'].toString().endsWith('.svg')
-                          ? SvgPicture.asset(
-                              lang['image'].toString(),
-                              width: 30.w,
-                            )
-                          : Image.asset(
-                              lang['image'].toString(),
-                              width: 30.w,
+                  child: Column(
+                    children: languageFilter.map((lang) {
+                      final bool isSelected = _getDisplayName(context, lang) == widget.selectedLanguage;
+                      
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 4.h),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.blue.withOpacity(0.05) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                          leading: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                )
+                              ]
                             ),
-                      title: Text(
-                        _getDisplayName(context, lang),
-                        style: GoogleFonts.prompt(fontSize: 16.sp),
-                      ),
-                      onTap: () {
-                        widget.onSelected(lang);
-                        Navigator.pop(context);
-                      },
-                    );
-                  }),
-                ],
+                            child: ClipOval(
+                              child: lang['image'].toString().endsWith('.svg')
+                                  ? SvgPicture.asset(
+                                      lang['image'].toString(),
+                                      width: 28.w,
+                                      height: 28.w,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      lang['image'].toString(),
+                                      width: 28.w,
+                                      height: 28.w,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                          ),
+                          title: Text(
+                            _getDisplayName(context, lang),
+                            style: GoogleFonts.prompt(
+                              fontSize: 16.sp,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                              color: isSelected ? Colors.blue : Colors.black87,
+                            ),
+                          ),
+                          trailing: isSelected 
+                              ? Icon(Icons.check_circle_rounded, color: Colors.blue, size: 20.sp)
+                              : null,
+                          onTap: () {
+                            widget.onSelected(lang);
+                            Navigator.pop(context);
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
-            ),
+              SizedBox(height: 20.h), // Safe area bottom padding
+            ],
           ),
         );
       },
@@ -95,44 +163,73 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   }
 
   Widget _buildButtonContainer(String imagePath, String text, bool isExpanded) {
+    // ปรับขนาด Container ตามดีไซน์ Minimal
     return Container(
-      width: ResponsiveDesignOrientation.isLandscape ? 90.w : 100.w,
-      height: ResponsiveDesignOrientation.isLandscape ? 55.h : 35.h,
+      // ตัด width: 100.w ออกเพื่อให้ยืดหดตาม Parent หรือใส่ Constraints ถ้าต้องการ
+      // แต่ถ้าต้องการ Fix width ตามเดิมก็สามารถใส่กลับได้
+      constraints: BoxConstraints(
+        minWidth: ResponsiveDesignOrientation.isLandscape ? 110.w : 120.w,
+        maxWidth: 200.w, 
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        border: Border.all(color: const Color(0xFFE2E3E9), width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r), // มุมมนมากขึ้น
+        border: Border.all(
+          color: isExpanded ? Colors.blue.withOpacity(0.5) : const Color(0xFFE0E0E0), // เปลี่ยนสีขอบเมื่อกด
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF9E9E9E).withOpacity(0.1), // เงาบางๆ
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
+          )
+        ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // จัดระยะห่างให้สวยงาม
         children: [
-          imagePath.endsWith('.svg')
-              ? SvgPicture.asset(
-                  imagePath,
-                  width: 24.w,
-                  height: 24.h,
-                )
-              : Image.asset(
-                  imagePath,
-                  width: 24.w,
-                  height: 24.h,
-                ),
-          SizedBox(width: 6.w),
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                text,
-                style: GoogleFonts.prompt(
-                  fontSize:
-                      ResponsiveDesignOrientation.isLandscape ? 12.sp : 16.sp,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipOval( // ตัดภาพธงเป็นวงกลม
+                child: imagePath.endsWith('.svg')
+                    ? SvgPicture.asset(
+                        imagePath,
+                        width: 20.w,
+                        height: 20.w,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        imagePath,
+                        width: 20.w,
+                        height: 20.w,
+                        fit: BoxFit.cover,
+                      ),
+              ),
+              SizedBox(width: 8.w),
+              Flexible(
+                child: Text(
+                  text,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.prompt(
+                    fontSize: ResponsiveDesignOrientation.isLandscape ? 13.sp : 14.sp,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
+          SizedBox(width: 8.w),
           Icon(
-            isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-            size: 20,
+            isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+            size: 20.sp,
+            color: Colors.grey[600],
           ),
         ],
       ),

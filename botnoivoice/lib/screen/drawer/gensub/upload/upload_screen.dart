@@ -41,19 +41,21 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ใช้ .w, .h สำหรับ padding
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(20.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (controller.filePath == null)
-            _buildUploadCard()
-          else
-            _buildSettingsCard(),
-          SizedBox(height: 20.h),
-          if (widget.projects.isNotEmpty) _buildProjectList(),
-        ],
+    return Container(
+      color: const Color(0xFFF8F9FD), // พื้นหลังโทนสว่าง
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (controller.filePath == null)
+              _buildUploadCard()
+            else
+              _buildSettingsCard(),
+            SizedBox(height: 24.h),
+            if (widget.projects.isNotEmpty) _buildProjectList(),
+          ],
+        ),
       ),
     );
   }
@@ -61,63 +63,78 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
   Widget _buildUploadCard() {
     return Center(
       child: Card(
+        color: Colors.white,
+        elevation: 0,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r)), // .r สำหรับ radius
-        elevation: 3,
-        child: SizedBox(
-          height: 200.h, // .h สำหรับ height
-          width: double.infinity,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "upload_gensub.title".tr(),
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                  ), // .sp สำหรับ font
-                  textAlign: TextAlign.center,
+          borderRadius: BorderRadius.circular(24.r),
+          side: BorderSide(color: Colors.grey.shade200),
+        ),
+        // 1. เปลี่ยนจาก Container เป็น Padding และเอา height: 220.h ออก
+        // เพื่อให้ Card ยืดตามเนื้อหา ไม่เกิด Overflow
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 24.w),
+          child: Column(
+            mainAxisSize:
+                MainAxisSize.min, // ให้ Column ใช้พื้นที่เท่าที่จำเป็น
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16.r),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  shape: BoxShape.circle,
                 ),
-                SizedBox(height: 6.h),
-                Text(
-                  "upload_gensub.expand_title".tr(),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.black54,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Icon(
+                  Icons.cloud_upload_rounded,
+                  color: Colors.blue,
+                  size: 40.r,
                 ),
-                SizedBox(height: 20.h),
-                OutlinedButton.icon(
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                "upload_gensub.title".tr(),
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8.h),
+              Text(
+                "upload_gensub.expand_title".tr(),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20.h),
+              SizedBox(
+                height: 40.h,
+                child: OutlinedButton.icon(
                   onPressed: () async {
                     await controller.pickFile();
                     setState(() {});
                   },
-                  icon: Icon(
-                    Icons.upload_file,
-                    color: Colors.blue,
-                    size: 24.h,
-                  ),
+                  icon: Icon(Icons.folder_open_rounded, size: 20.r),
                   label: Text(
                     "upload_gensub.upload".tr(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Colors.blue,
-                    ),
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
                   ),
                   style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.blue,
                     side: const BorderSide(color: Colors.blue),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.w,
-                      vertical: 12.h,
-                    ), // ปรับ padding ปุ่ม
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -132,36 +149,43 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
         PointCalculator.calculateTotalPoints(controller.audioDuration);
 
     return Card(
+      color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       elevation: 3,
+      shadowColor: Colors.black.withOpacity(0.1),
       child: Padding(
-        padding: EdgeInsets.all(24.w), // ปรับ padding ใน card
+        padding: EdgeInsets.all(24.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // File Name Header
             Row(
               children: [
-                Icon(
-                  Icons.mic,
-                  color: Colors.blue,
-                  size: 24.h,
+                Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Icon(Icons.audio_file_rounded,
+                      color: Colors.blue, size: 24.h),
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
                     fileName,
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                    size: 24.h,
-                  ),
+                  icon: Icon(Icons.delete_outline_rounded,
+                      color: Colors.red, size: 24.h),
                   onPressed: () {
                     controller.clearFile();
                     setState(() {});
@@ -169,16 +193,18 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
+            Divider(height: 32.h, color: Colors.grey.shade100),
+
+            // Language
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "text_to_gensub.audio_language".tr(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12.sp,
+                Expanded(
+                  child: Text(
+                    "text_to_gensub.audio_language".tr(),
+                    style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 LanguageSelector(
@@ -206,143 +232,99 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 16.h),
+
+            // Duration
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "text_to_gensub.file_duration".tr(),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                  ),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
                 ),
                 Text(
                   controller.audioDuration != null
                       ? "${controller.audioDuration!.inMinutes.toString().padLeft(2, '0')}:${(controller.audioDuration!.inSeconds % 60).toString().padLeft(2, '0')} ${'units.minutes'.tr()}"
                       : "text_to_gensub.duration_auto_calculate".tr(),
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 12.h),
-            ExpansionTile(
-              title: Text(
-                "text_to_gensub.segmentation_settings".tr(),
-                style: TextStyle(
-                  fontSize: 12.sp,
-                ),
-              ),
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "text_to_gensub.max_segment_duration".tr(),
-                      style: TextStyle(fontSize: 12.sp),
-                    ),
-                    DropdownButton<String>(
-                      value: [
-                        "1 ${"units.seconds".tr()}",
-                        "2 ${"units.seconds".tr()}",
-                        "5 ${"units.seconds".tr()}",
-                        "10 ${"units.seconds".tr()}",
-                        "15 ${"units.seconds".tr()}",
-                        "20 ${"units.seconds".tr()}",
-                        "25 ${"units.seconds".tr()}",
-                        "30 ${"units.seconds".tr()}",
-                        "units.unlimited".tr(),
-                      ].contains(controller.maxSegmentDuration)
-                          ? controller.maxSegmentDuration
-                          : "10 ${"units.seconds".tr()}",
-                      items: [
-                        for (var sec in [1, 2, 5, 10, 15, 20, 25, 30])
-                          DropdownMenuItem(
-                            value: "$sec ${"units.seconds".tr()}",
-                            child: Text(
-                              "$sec ${"units.seconds".tr()}",
-                              style: TextStyle(fontSize: 12.sp),
-                            ),
-                          ),
-                        DropdownMenuItem(
-                          value: "units.unlimited".tr(),
-                          child: Text(
-                            "units.unlimited".tr(),
-                            style: TextStyle(fontSize: 12.sp),
-                          ),
-                        ),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(() => controller.maxSegmentDuration = val);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "text_to_gensub.max_silence_duration".tr(),
-                      style: TextStyle(fontSize: 12.sp),
-                    ),
-                    DropdownButton<String>(
-                      value: [
-                        "0.1 ${"units.seconds".tr()}",
-                        "0.3 ${"units.seconds".tr()}",
-                        "0.5 ${"units.seconds".tr()}",
-                        "0.7 ${"units.seconds".tr()}",
-                        "0.9 ${"units.seconds".tr()}",
-                        "1.5 ${"units.seconds".tr()}",
-                        "units.unlimited".tr(),
-                      ].contains(controller.maxSilenceDuration)
-                          ? controller.maxSilenceDuration
-                          : "0.3 ${"units.seconds".tr()}",
-                      items: [
-                        for (var sec in [
-                          "0.1",
-                          "0.3",
-                          "0.5",
-                          "0.7",
-                          "0.9",
-                          "1.5"
-                        ])
-                          DropdownMenuItem(
-                            value: "$sec ${"units.seconds".tr()}",
-                            child: Text(
-                              "$sec ${"units.seconds".tr()}",
-                              style: TextStyle(fontSize: 12.sp),
-                            ),
-                          ),
-                        DropdownMenuItem(
-                          value: "units.unlimited".tr(),
-                          child: Text(
-                            "units.unlimited".tr(),
-                            style: TextStyle(fontSize: 12.sp),
-                          ),
-                        ),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(() => controller.maxSilenceDuration = val);
-                        }
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
             SizedBox(height: 16.h),
 
-            // --- UI แสดงผล Total Points (Responsive) ---
+            // Expansion Settings
+            Theme(
+              data: Theme.of(context)
+                  .copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text(
+                  "text_to_gensub.segmentation_settings".tr(),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                children: [
+                  SizedBox(height: 8.h),
+                  _buildDropdownRow(
+                    title: "text_to_gensub.max_segment_duration".tr(),
+                    value: controller.maxSegmentDuration,
+                    items: [
+                      "1 ${"units.seconds".tr()}",
+                      "2 ${"units.seconds".tr()}",
+                      "5 ${"units.seconds".tr()}",
+                      "10 ${"units.seconds".tr()}",
+                      "15 ${"units.seconds".tr()}",
+                      "20 ${"units.seconds".tr()}",
+                      "25 ${"units.seconds".tr()}",
+                      "30 ${"units.seconds".tr()}",
+                      "units.unlimited".tr(),
+                    ],
+                    onChanged: (val) {
+                      if (val != null) {
+                        setState(() => controller.maxSegmentDuration = val);
+                      }
+                    },
+                    labelBuilder: (val) => val, // String already contains format
+                  ),
+                  SizedBox(height: 12.h),
+                  _buildDropdownRow(
+                    title: "text_to_gensub.max_silence_duration".tr(),
+                    value: controller.maxSilenceDuration,
+                    items: [
+                      "0.1 ${"units.seconds".tr()}",
+                      "0.3 ${"units.seconds".tr()}",
+                      "0.5 ${"units.seconds".tr()}",
+                      "0.7 ${"units.seconds".tr()}",
+                      "0.9 ${"units.seconds".tr()}",
+                      "1.5 ${"units.seconds".tr()}",
+                      "units.unlimited".tr(),
+                    ],
+                    onChanged: (val) {
+                      if (val != null) {
+                        setState(() => controller.maxSilenceDuration = val);
+                      }
+                    },
+                    labelBuilder: (val) => val,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            // --- Total Points UI ---
             Container(
               padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.cyan, width: 1.5.w),
                 borderRadius: BorderRadius.circular(16.r),
+                color: Colors.cyan.withOpacity(0.03),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -352,6 +334,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                   Row(
@@ -375,15 +358,16 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ],
               ),
             ),
-            // -----------------------------
+            // ---------------------
 
-            SizedBox(height: 16.h),
+            SizedBox(height: 24.h),
+
+            // Transcribe Button
             ElevatedButton.icon(
               onPressed: isLoading
                   ? null
                   : () async {
                       setState(() => isLoading = true);
-
                       final success =
                           await controller.transcribeFile(ref, context);
 
@@ -417,20 +401,18 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                         color: Colors.white,
                       ),
                     )
-                  : Icon(
-                      Icons.play_arrow,
-                      size: 24.w,
-                    ),
+                  : Icon(Icons.play_arrow_rounded, size: 24.w),
               label: Text(
                 isLoading
                     ? "text_to_gensub.transcribing".tr()
                     : "text_to_gensub.transcribe_status".tr(),
-                style: TextStyle(fontSize: 16.sp),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
-                minimumSize: Size.fromHeight(50.h), // ปุ่มสูง 50.h
+                minimumSize: Size.fromHeight(50.h),
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
                 ),
@@ -438,14 +420,63 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             ),
             if (controller.transcribeStatus != null) ...[
               SizedBox(height: 12.h),
-              Text(
-                controller.transcribeStatus!,
-                style: const TextStyle(color: Colors.black54),
+              Center(
+                child: Text(
+                  controller.transcribeStatus!,
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                ),
               ),
             ],
           ],
         ),
       ),
+    );
+  }
+
+  // Helper widget for dropdown rows (Consistent with RecordScreen)
+  Widget _buildDropdownRow<T>({
+    required String title,
+    required T value,
+    required List<T> items,
+    required Function(T?) onChanged,
+    required String Function(T) labelBuilder,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<T>(
+              value: items.contains(value) ? value : items.first, // Safe check
+              isDense: true,
+              icon: Icon(Icons.keyboard_arrow_down,
+                  size: 20.w, color: Colors.grey),
+              style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+              items: items.map((item) {
+                return DropdownMenuItem<T>(
+                  value: item,
+                  child: Text(labelBuilder(item)),
+                );
+              }).toList(),
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -466,9 +497,12 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           decoration: BoxDecoration(
-              color: Colors.blue[50], borderRadius: BorderRadius.circular(8.r)),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -481,8 +515,12 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ),
               IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
                 icon: Icon(
-                  isDescending ? Icons.arrow_downward : Icons.arrow_upward,
+                  isDescending
+                      ? Icons.arrow_downward_rounded
+                      : Icons.arrow_upward_rounded,
                   color: Colors.blueAccent,
                   size: 20.r,
                 ),
@@ -494,127 +532,17 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             ],
           ),
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: 12.h),
         ...widget.projects.map((project) {
           return Card(
+            color: Colors.white,
+            shadowColor: Colors.black.withOpacity(0.05),
+            elevation: 4,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            elevation: 2,
-            child: ListTile(
-              leading: Icon(
-                Icons.audiotrack,
-                color: Colors.blue,
-                size: 36.r,
-              ),
-              title: Text(
-                project.projectName,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.timer,
-                        size: 14.r,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        formatDuration(project.duration),
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      if (project.segments.isNotEmpty) ...[
-                        SizedBox(width: 12.w),
-                        Icon(
-                          Icons.text_snippet,
-                          size: 14.r,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          "${project.segments.length}",
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                      size: 24.r,
-                    ),
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text(
-                            "dialog.delete_project_title".tr(),
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                          content: Text(
-                            "dialog.delete_project_content".tr(),
-                            style: TextStyle(fontSize: 14.sp),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: Text(
-                                "dialog.cancel".tr(),
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: Text(
-                                "dialog.delete".tr(),
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (confirm == true) {
-                        widget.onProjectDeleted(project);
-                      }
-                    },
-                  ),
-                  Icon(Icons.arrow_forward_ios, size: 16.r),
-                ],
-              ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16.r),
               onTap: () {
                 Navigator.push(
                   context,
@@ -629,6 +557,115 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   ),
                 );
               },
+              child: Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(12.r),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(Icons.audiotrack_rounded,
+                          color: Colors.blue, size: 28.r),
+                    ),
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            project.projectName,
+                            style: TextStyle(
+                                fontSize: 14.sp, fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Row(
+                            children: [
+                              Icon(Icons.timer_outlined,
+                                  size: 14.r, color: Colors.grey),
+                              SizedBox(width: 4.w),
+                              Text(
+                                formatDuration(project.duration),
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              if (project.segments.isNotEmpty) ...[
+                                SizedBox(width: 12.w),
+                                Icon(Icons.text_snippet_outlined,
+                                    size: 14.r, color: Colors.grey),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  "${project.segments.length}",
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.delete_outline_rounded,
+                              color: Colors.red.shade300, size: 20.r),
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: Text("dialog.delete_project_title".tr(),
+                                    style: TextStyle(fontSize: 16.sp)),
+                                content: Text(
+                                    "dialog.delete_project_content".tr(),
+                                    style: TextStyle(fontSize: 14.sp)),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: Text("dialog.cancel".tr()),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: Text(
+                                      "dialog.delete".tr(),
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirm == true) {
+                              widget.onProjectDeleted(project);
+                            }
+                          },
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded,
+                            size: 14.r, color: Colors.grey[400]),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         }),
