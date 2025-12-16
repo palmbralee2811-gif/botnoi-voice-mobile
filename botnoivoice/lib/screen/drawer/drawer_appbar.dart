@@ -241,7 +241,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
               fontWeight: FontWeight.w400,
               color: Colors.grey[600],
             ),
-            maxLines: 1,
+            maxLines: 5, // Default is 5 only
             overflow: TextOverflow.ellipsis,
           ),
         ],
