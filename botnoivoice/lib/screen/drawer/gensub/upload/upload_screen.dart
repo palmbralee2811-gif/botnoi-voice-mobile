@@ -9,10 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:botnoivoice/screen/drawer/gensub/language_selector.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-// --- 1. IMPORT ไฟล์คำนวณ Point ที่สร้างใหม่ (ปรับ Path ให้ตรงกับที่คุณวางไฟล์) ---
-// import 'path/to/point_calculator.dart';
-// หรือถ้ายังไม่อยากสร้างไฟล์แยกจริงๆ สามารถใช้ Class ด้านล่างที่ผมแปะไว้ท้ายไฟล์นี้ได้เลยครับ
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // 1. เพิ่ม Import ScreenUtil
 
 class UploadScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
@@ -44,8 +41,9 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ใช้ .w, .h สำหรับ padding
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -53,7 +51,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             _buildUploadCard()
           else
             _buildSettingsCard(),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           if (widget.projects.isNotEmpty) _buildProjectList(),
         ],
       ),
@@ -63,10 +61,11 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
   Widget _buildUploadCard() {
     return Center(
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r)), // .r สำหรับ radius
         elevation: 3,
         child: SizedBox(
-          height: 200,
+          height: 200.h, // .h สำหรับ height
           width: double.infinity,
           child: Center(
             child: Column(
@@ -76,17 +75,18 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
               children: [
                 Text(
                   "upload_gensub.title".tr(),
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold), // .sp สำหรับ font
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6.h),
                 Text(
                   "upload_gensub.expand_title".tr(),
                   style: const TextStyle(color: Colors.black54),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 OutlinedButton.icon(
                   onPressed: () async {
                     await controller.pickFile();
@@ -99,8 +99,8 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   ),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.blue),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 24.w, vertical: 12.h), // ปรับ padding ปุ่ม
                   ),
                 ),
               ],
@@ -115,22 +115,21 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
     final fileName =
         controller.filePath != null ? path.basename(controller.filePath!) : "";
 
-    // --- 2. เรียกใช้ฟังก์ชันคำนวณ Point ---
     int totalPoints =
         PointCalculator.calculateTotalPoints(controller.audioDuration);
 
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       elevation: 3,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24.w), // ปรับ padding ใน card
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 const Icon(Icons.mic, color: Colors.blue),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Expanded(
                   child: Text(fileName,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -144,7 +143,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -178,7 +177,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -190,7 +189,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             ExpansionTile(
               title: Text("text_to_gensub.segmentation_settings".tr()),
               children: [
@@ -275,22 +274,22 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 )
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
-            // --- UI แสดงผล Total Points ---
+            // --- UI แสดงผล Total Points (Responsive) ---
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.cyan, width: 1.5),
-                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.cyan, width: 1.5.w),
+                borderRadius: BorderRadius.circular(16.r),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Total points",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -298,15 +297,14 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                     children: [
                       SvgPicture.asset(
                         'assets/images/logo/credit-icon.svg',
-                        width: 20,
-                        height: 20,
+                        width: 20.w,
+                        height: 20.h,
                       ),
-                      const SizedBox(width: 8),
-                      // --- 3. แสดงผลตัวเลขที่คำนวณได้ ---
+                      SizedBox(width: 8.w),
                       Text(
                         "$totalPoints",
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.cyan,
                         ),
@@ -318,7 +316,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             ),
             // -----------------------------
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             ElevatedButton.icon(
               onPressed: isLoading
                   ? null
@@ -350,10 +348,10 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       }
                     },
               icon: isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
+                  ? SizedBox(
+                      width: 20.w,
+                      height: 20.h,
+                      child: const CircularProgressIndicator(
                         strokeWidth: 2,
                         color: Colors.white,
                       ),
@@ -365,14 +363,14 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(50),
+                minimumSize: Size.fromHeight(50.h), // ปุ่มสูง 50.h
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
               ),
             ),
             if (controller.transcribeStatus != null) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 controller.transcribeStatus!,
                 style: const TextStyle(color: Colors.black54),
@@ -401,16 +399,16 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
           decoration: BoxDecoration(
-              color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
+              color: Colors.blue[50], borderRadius: BorderRadius.circular(8.r)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "text_to_gensub.project".tr(),
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.blueAccent,
                 ),
@@ -419,7 +417,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                 icon: Icon(
                   isDescending ? Icons.arrow_downward : Icons.arrow_upward,
                   color: Colors.blueAccent,
-                  size: 20,
+                  size: 20.r,
                 ),
                 tooltip: isDescending ? "Newest First" : "Oldest First",
                 onPressed: () {
@@ -429,15 +427,14 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         ...widget.projects.map((project) {
           return Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r)),
             elevation: 2,
             child: ListTile(
-              leading:
-                  const Icon(Icons.audiotrack, color: Colors.blue, size: 36),
+              leading: Icon(Icons.audiotrack, color: Colors.blue, size: 36.r),
               title: Text(project.projectName,
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Column(
@@ -446,17 +443,17 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                   Text(
                     '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Row(
                     children: [
-                      const Icon(Icons.timer, size: 14, color: Colors.grey),
-                      const SizedBox(width: 4),
+                      Icon(Icons.timer, size: 14.r, color: Colors.grey),
+                      SizedBox(width: 4.w),
                       Text(formatDuration(project.duration)),
                       if (project.segments.isNotEmpty) ...[
-                        const SizedBox(width: 12),
-                        const Icon(Icons.text_snippet,
-                            size: 14, color: Colors.grey),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 12.w),
+                        Icon(Icons.text_snippet,
+                            size: 14.r, color: Colors.grey),
+                        SizedBox(width: 4.w),
                         Text("${project.segments.length}"),
                       ],
                     ],
@@ -495,7 +492,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                       }
                     },
                   ),
-                  const Icon(Icons.arrow_forward_ios, size: 16),
+                  Icon(Icons.arrow_forward_ios, size: 16.r),
                 ],
               ),
               onTap: () {

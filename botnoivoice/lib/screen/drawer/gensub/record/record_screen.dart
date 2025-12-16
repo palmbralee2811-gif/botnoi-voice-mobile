@@ -10,6 +10,7 @@ import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_log
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/screen/drawer/gensub/point_calculator.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // 1. เพิ่ม Import ScreenUtil
 
 class RecordScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
@@ -32,11 +33,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   bool _confirmed = false;
   bool _loading = false;
 
-  // --- 2. ตัวแปรสำหรับจับเวลา ---
   Timer? _timer;
   int _recordSeconds = 0;
 
-  // UI controls
   int _maxSegmentDuration = 10;
   double _maxSilenceDuration = 0.3;
 
@@ -48,39 +47,30 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   @override
   void initState() {
     super.initState();
-
     controller = RecordLogic(
       currentUserId: "USER_ID_PLACEHOLDER",
     );
-
     controller.initRecorder();
     controller.initPlayer();
   }
 
   @override
   void dispose() {
-    // --- 3. ยกเลิก Timer เมื่อปิดหน้าจอ ---
     _timer?.cancel();
     controller.dispose();
     super.dispose();
   }
 
-  // --- 4. ฟังก์ชันจัดรูปแบบเวลา (แปลงวินาที เป็น 00:00) ---
   String get _formattedTimer {
     final minutes = (_recordSeconds ~/ 60).toString().padLeft(2, '0');
     final seconds = (_recordSeconds % 60).toString().padLeft(2, '0');
     return "$minutes:$seconds";
   }
 
-  // --- 5. ฟังก์ชันจัดการการกดปุ่ม (เริ่ม/หยุด Timer + Logic เดิม) ---
   void _handleRecordingToggle() {
-    // เรียก logic เดิมของ controller
     controller.toggleRecording(context, (fn) {
-      _safeSetState(fn); // เรียก setState ของ logic เดิม
-
-      // เพิ่ม logic จับเวลา
+      _safeSetState(fn);
       if (controller.isRecording) {
-        // ถ้าสถานะเป็น Recording (เริ่มอัด) -> เริ่มนับเวลา
         _recordSeconds = 0;
         _timer?.cancel();
         _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -89,7 +79,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           });
         });
       } else {
-        // ถ้าหยุดอัด -> หยุดนับเวลา
         _timer?.cancel();
       }
     });
@@ -108,55 +97,55 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
   Widget _buildInitialUI() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w), // ปรับ padding
       child: SizedBox(
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding:
+                  EdgeInsets.symmetric(vertical: 20.h), // ปรับ vertical padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "record_gensub.title".tr(),
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold), // ปรับ fontSize
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h), // ปรับ height
                   Text(
                     "record_gensub.expand_title".tr(),
                     style: const TextStyle(color: Colors.black54),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h), // ปรับ height
                   GestureDetector(
-                    // --- 6. แก้ไข onTap ให้เรียกฟังก์ชันใหม่ ---
                     onTap: _handleRecordingToggle,
                     child: CircleAvatar(
-                      radius: 45,
+                      radius: 45.r, // ปรับ radius
                       backgroundColor: controller.isRecording
                           ? Colors.red
                           : Colors.lightBlueAccent,
                       child: Icon(
                         controller.isRecording ? Icons.stop : Icons.mic,
-                        size: 40,
+                        size: 40.r, // ปรับ icon size
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  
-                  // --- 7. แสดงเวลา หรือ ข้อความกดเพื่ออัด ---
+                  SizedBox(height: 15.h), // ปรับ height
+
                   if (controller.isRecording)
                     Text(
-                      _formattedTimer, // แสดงเวลา 00:05
-                      style: const TextStyle(
-                        fontSize: 20, 
+                      _formattedTimer,
+                      style: TextStyle(
+                        fontSize: 20.sp, // ปรับ fontSize
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87, // หรือ Colors.white ถ้าพื้นหลังดำ
+                        color: Colors.black87,
                       ),
                     )
                   else
@@ -192,18 +181,19 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: EdgeInsets.symmetric(
+              horizontal: 12.w, vertical: 4.h), // ปรับ padding
           decoration: BoxDecoration(
             color: Colors.blue[50],
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r), // ปรับ radius
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "text_to_gensub.project".tr(),
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp, // ปรับ fontSize
                   fontWeight: FontWeight.bold,
                   color: Colors.blueAccent,
                 ),
@@ -212,7 +202,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                 icon: Icon(
                   isDescending ? Icons.arrow_downward : Icons.arrow_upward,
                   color: Colors.blueAccent,
-                  size: 20,
+                  size: 20.r, // ปรับ icon size
                 ),
                 onPressed: () {
                   ref.read(uploadRecordProvider.notifier).toggleSort();
@@ -221,22 +211,22 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h), // ปรับ height
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: widget.projects.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          separatorBuilder: (_, __) => SizedBox(height: 8.h), // ปรับ height
           itemBuilder: (context, index) {
             final project = widget.projects[index];
             return Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r), // ปรับ radius
               ),
               elevation: 2,
               child: ListTile(
-                leading:
-                    const Icon(Icons.audiotrack, color: Colors.blue, size: 36),
+                leading: Icon(Icons.audiotrack,
+                    color: Colors.blue, size: 36.r), // ปรับ icon size
                 title: Text(
                   project.projectName,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -247,17 +237,18 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     Text(
                       '${"text_to_gensub.create_at".tr()} ${formatDate(project.createdAt)}',
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2.h), // ปรับ height
                     Row(
                       children: [
-                        const Icon(Icons.timer, size: 14, color: Colors.grey),
-                        const SizedBox(width: 4),
+                        Icon(Icons.timer,
+                            size: 14.r, color: Colors.grey), // ปรับ icon size
+                        SizedBox(width: 4.w), // ปรับ width
                         Text(formatDuration(project.duration)),
                         if (project.segments.isNotEmpty) ...[
-                          const SizedBox(width: 12),
-                          const Icon(Icons.text_snippet,
-                              size: 14, color: Colors.grey),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 12.w), // ปรับ width
+                          Icon(Icons.text_snippet,
+                              size: 14.r, color: Colors.grey), // ปรับ icon size
+                          SizedBox(width: 4.w), // ปรับ width
                           Text("${project.segments.length}"),
                         ],
                       ],
@@ -295,7 +286,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                         }
                       },
                     ),
-                    const Icon(Icons.arrow_forward_ios, size: 16),
+                    Icon(Icons.arrow_forward_ios, size: 16.r), // ปรับ icon size
                   ],
                 ),
                 onTap: () {
@@ -321,44 +312,45 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
   Widget _buildConfirmUI() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w), // ปรับ padding
       child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h), // ปรับ height
             Text(
               "record_gensub.title".tr(),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold), // ปรับ fontSize
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h), // ปรับ height
             Text(
               "record_gensub.expand_title".tr(),
               style: const TextStyle(color: Colors.black54),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40.h), // ปรับ height
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  iconSize: 64,
+                  iconSize: 64.r, // ปรับ iconSize
                   onPressed: () {
                     _safeSetState(() {
                       controller.recordedFilePath = null;
                       controller.audioDuration = null;
                       _confirmed = false;
-                      // รีเซ็ตเวลาเมื่อกดถังขยะทิ้ง
                       _recordSeconds = 0;
                       _timer?.cancel();
                     });
                   },
                   icon: const Icon(Icons.delete, color: Colors.red),
                 ),
-                const SizedBox(width: 40),
+                SizedBox(width: 40.w), // ปรับ width
                 IconButton(
-                  iconSize: 64,
+                  iconSize: 64.r, // ปรับ iconSize
                   onPressed: () => controller.togglePlay(_safeSetState),
                   icon: Icon(
                     controller.isPlaying
@@ -367,15 +359,15 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     color: Colors.blue,
                   ),
                 ),
-                const SizedBox(width: 40),
+                SizedBox(width: 40.w), // ปรับ width
                 IconButton(
-                  iconSize: 64,
+                  iconSize: 64.r, // ปรับ iconSize
                   onPressed: () => _safeSetState(() => _confirmed = true),
                   icon: const Icon(Icons.check_circle, color: Colors.green),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h), // ปรับ height
             Text("record_gensub.press_correct".tr(),
                 style: const TextStyle(color: Colors.black54)),
             if (widget.projects.isNotEmpty) _buildProjectList(),
@@ -390,7 +382,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         ? controller.recordedFilePath!.split('/').last
         : "";
 
-    // --- 3. คำนวณ Point ---
     int totalPoints =
         PointCalculator.calculateTotalPoints(controller.audioDuration);
 
@@ -398,19 +389,19 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       child: Column(
         children: [
           Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r)), // ปรับ radius
             elevation: 3,
-            margin: const EdgeInsets.all(20),
+            margin: EdgeInsets.all(20.w), // ปรับ margin
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.w), // ปรับ padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       const Icon(Icons.mic, color: Colors.blue),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w), // ปรับ width
                       Expanded(
                         child: Text(
                           fileName,
@@ -424,7 +415,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                             controller.recordedFilePath = null;
                             controller.audioDuration = null;
                             _confirmed = false;
-                             // รีเซ็ตเวลา
                             _recordSeconds = 0;
                             _timer?.cancel();
                           });
@@ -432,7 +422,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h), // ปรับ height
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -469,7 +459,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h), // ปรับ height
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -482,7 +472,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h), // ปรับ height
 
                   ExpansionTile(
                     title: Text("text_to_gensub.segmentation_settings".tr()),
@@ -532,23 +522,23 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h), // ปรับ height
 
-                  // --- 4. แสดงผล Total Points ---
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 20),
+                    padding: EdgeInsets.symmetric(
+                        vertical: 16.h, horizontal: 20.w), // ปรับ padding
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.cyan, width: 1.5),
-                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: Colors.cyan, width: 1.5.w), // ปรับ width
+                      borderRadius: BorderRadius.circular(16.r), // ปรับ radius
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "Total points",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18.sp, // ปรับ fontSize
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -556,14 +546,14 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                           children: [
                             SvgPicture.asset(
                               'assets/images/logo/credit-icon.svg',
-                              width: 20,
-                              height: 20,
+                              width: 20.w, // ปรับ width
+                              height: 20.h, // ปรับ height
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8.w), // ปรับ width
                             Text(
                               "$totalPoints",
-                              style: const TextStyle(
-                                fontSize: 18,
+                              style: TextStyle(
+                                fontSize: 18.sp, // ปรับ fontSize
                                 fontWeight: FontWeight.bold,
                                 color: Colors.cyan,
                               ),
@@ -574,7 +564,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h), // ปรับ height
 
                   ElevatedButton.icon(
                     onPressed: _loading
@@ -605,10 +595,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                             }
                           },
                     icon: _loading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
+                        ? SizedBox(
+                            width: 20.w, // ปรับ width
+                            height: 20.h, // ปรับ height
+                            child: const CircularProgressIndicator(
                               strokeWidth: 2,
                               color: Colors.white,
                             ),
@@ -622,9 +612,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(50),
+                      minimumSize: Size.fromHeight(50.h), // ปรับ height
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(12.r), // ปรับ radius
                       ),
                     ),
                   ),
@@ -632,7 +623,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h), // ปรับ height
           if (widget.projects.isNotEmpty) _buildProjectList(),
         ],
       ),
