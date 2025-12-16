@@ -14,9 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class AppBarBottom extends ConsumerStatefulWidget {
-  const AppBarBottom({
-    super.key,
-  });
+  const AppBarBottom({super.key});
 
   @override
   ConsumerState<AppBarBottom> createState() => _AppBarBottomState();
@@ -30,74 +28,74 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
   void initState() {
     super.initState();
     audioPlayer.onPlayerComplete.listen((event) {
-      setState(() {
-        isPlaying = false;
-      });
+      if (mounted) {
+        setState(() {
+          isPlaying = false;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final speakerProvider = context.watch<HomeSpeakerDataManagement>();
-    final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
+    final speakerProvider = ref.watch(homeSpeakerDataProvider); // ใช้ watch เพื่อ update UI
+    final isLandscape = ResponsiveDesignOrientation.isLandscape;
 
     String language = Localizations.localeOf(context).languageCode;
+    // Fallback logic
+    final defaultSpeaker = appbarBottomModel.firstWhere(
+      (speaker) => speaker['language'] == language,
+      orElse: () => appbarBottomModel.first,
+    );
 
-    final speakerInfo = appbarBottomModel
-        .firstWhere((speaker) => speaker['language'] == language);
+    final speakerName = speakerProvider.speakerName ?? defaultSpeaker['name'];
+    final speakerImagePath = speakerProvider.speakerImagePath ?? defaultSpeaker['image'];
+    final speakerAudio = speakerProvider.speakerAudio ?? defaultSpeaker['audio'];
+    final nationalFlagName = speakerProvider.nationalFlagName ?? defaultSpeaker['flagName'];
+    final nationalFlagPath = speakerProvider.nationalFlagPath ?? defaultSpeaker['flagPath'];
 
-    final speakerName = speakerProvider.speakerName ?? speakerInfo['name'];
-    final speakerImagePath =
-        speakerProvider.speakerImagePath ?? speakerInfo['image'];
-    final speakerAudio = speakerProvider.speakerAudio ?? speakerInfo['audio'];
-    final nationalFlagName =
-        speakerProvider.nationalFlagName ?? speakerInfo['flagName'];
-    final nationalFlagPath =
-        speakerProvider.nationalFlagPath ?? speakerInfo['flagPath'];
-
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: ResponsiveDesignOrientation.isLandscape ? 80.h : 60.h,
+      height: isLandscape ? 60.h : 50.h,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // 🔹 Play Button
           InkWell(
             onTap: () async {
               if (isPlaying) {
                 await audioPlayer.stop();
-                setState(() {
-                  isPlaying = false;
-                });
+                setState(() => isPlaying = false);
               } else {
                 if (speakerAudio != null && speakerAudio.isNotEmpty) {
-                  // ดาวน์โหลดไฟล์เสียงพร้อม Referer Header
-                  final response = await http.get(
-                    Uri.parse(speakerAudio),
-                    headers: {
-                      'Referer': 'https://voice.botnoi.ai/',
-                    },
-                  );
-                  final audioBytes = response.bodyBytes;
-                  if (audioBytes.isNotEmpty) {
-                    final mimeType =
-                        response.headers['content-type'] ?? 'audio/wav';
-                    await audioPlayer
-                        .play(BytesSource(audioBytes, mimeType: mimeType));
-                    setState(() {
-                      isPlaying = true;
-                    });
+                  try {
+                    final response = await http.get(
+                      Uri.parse(speakerAudio),
+                      headers: {'Referer': 'https://voice.botnoi.ai/'},
+                    );
+                    final audioBytes = response.bodyBytes;
+                    if (audioBytes.isNotEmpty) {
+                      final mimeType = response.headers['content-type'] ?? 'audio/wav';
+                      await audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
+                      setState(() => isPlaying = true);
+                    }
+                  } catch (e) {
+                    debugPrint("Audio Error: $e");
                   }
                 }
               }
             },
-            child: Padding(
-              padding: EdgeInsets.all(
-                  ResponsiveDesignOrientation.isLandscape ? 2.w : 8.w),
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: EdgeInsets.all(6.r),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.05),
+                shape: BoxShape.circle,
+              ),
               child: GradientIcon(
-                icon: isPlaying
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_outline,
-                size: ResponsiveDesignOrientation.isLandscape ? 18.sp : 24.sp,
+                icon: isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                size: isLandscape ? 20.sp : 24.sp,
                 gradient: const LinearGradient(
                   colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
                   begin: Alignment.topLeft,
@@ -106,106 +104,104 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
               ),
             ),
           ),
+          
+          SizedBox(width: 12.w),
+          
+          // 🔹 Vertical Divider
+          Container(
+            height: 24.h,
+            width: 1,
+            color: Colors.grey.shade200,
+          ),
+          
+          SizedBox(width: 12.w),
+
+          // 🔹 Speaker Info (Clickable Area)
           Expanded(
             child: InkWell(
               onTap: () {
-                // Stop the audio if it's playing
                 if (audioPlayer.state == PlayerState.playing) {
                   audioPlayer.stop();
                 }
-                // Redirect to SpeakerScreen
                 context.go('/speaker');
               },
-              child: Padding(
-                padding: EdgeInsets.all(
-                    ResponsiveDesignOrientation.isLandscape ? 2.w : 8.w),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius:
-                          ResponsiveDesignOrientation.isLandscape ? 22.r : 14.r,
-                      backgroundImage: CachedNetworkImageProvider(
-                        speakerImagePath!,
-                        headers: const {
-                          'Referer': 'https://voice.botnoi.ai/',
-                        },
-                      ),
+              borderRadius: BorderRadius.circular(8.r),
+              child: Row(
+                children: [
+                  // Speaker Image
+                  CircleAvatar(
+                    radius: isLandscape ? 16.r : 16.r,
+                    backgroundColor: Colors.grey.shade100,
+                    backgroundImage: CachedNetworkImageProvider(
+                      speakerImagePath!,
+                      headers: const {'Referer': 'https://voice.botnoi.ai/'},
                     ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 6.w
-                            : 8.w),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      child: Text(
-                        speakerName!,
-                        style: GoogleFonts.prompt(
-                          fontSize: ResponsiveDesignOrientation.isLandscape
-                              ? 8.sp
-                              : 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: kDark,
+                  ),
+                  SizedBox(width: 10.w),
+                  
+                  // Text Info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          speakerName!,
+                          style: GoogleFonts.prompt(
+                            fontSize: isLandscape ? 10.sp : 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: kDark,
+                            height: 1.2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow
-                            .ellipsis, // Optional: Truncate text with ellipsis if too long
+                        SizedBox(height: 2.h),
+                        Row(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                nationalFlagPath!,
+                                width: 12.w,
+                                height: 12.w,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(width: 6.w),
+                            Text(
+                              nationalFlagName!,
+                              style: GoogleFonts.prompt(
+                                fontSize: isLandscape ? 8.sp : 10.sp,
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Change Button / Arrow
+                  Row(
+                    children: [
+                      Text(
+                        'appbar_bottom.change'.tr(),
+                        style: GoogleFonts.prompt(
+                          fontSize: isLandscape ? 10.sp : 12.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blue,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 6.w
-                            : 8.w),
-                    Container(
-                      width:
-                          ResponsiveDesignOrientation.isLandscape ? 2.w : 4.w,
-                      height:
-                          ResponsiveDesignOrientation.isLandscape ? 2.w : 4.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.shade700,
+                      SizedBox(width: 4.w),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 10.sp,
+                        color: Colors.blue,
                       ),
-                    ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 6.w
-                            : 8.w),
-                    CircleAvatar(
-                      radius:
-                          ResponsiveDesignOrientation.isLandscape ? 16.r : 7.r,
-                      backgroundImage: AssetImage(nationalFlagPath!),
-                    ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 4.w
-                            : 8.w),
-                    Text(
-                      nationalFlagName!,
-                      style: GoogleFonts.prompt(
-                        fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 7.sp
-                            : 10.sp,
-                        color: kDark,
-                      ),
-                    ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 10.w
-                            : 14.w),
-                    Text(
-                      'appbar_bottom.change'.tr(),
-                      style: GoogleFonts.prompt(
-                        fontSize: ResponsiveDesignOrientation.isLandscape
-                            ? 8.sp
-                            : 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: kDark,
-                      ),
-                    ),
-                    SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 10.w
-                            : 16.w),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
