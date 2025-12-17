@@ -20,6 +20,9 @@ class DrawerAppbar extends ConsumerStatefulWidget {
 
 class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
   final DrawerAppbarLogic _logic = DrawerAppbarLogic();
+  // เพิ่ม ScrollController เพื่อใช้กับ Scrollbar ให้แม่นยำขึ้น
+  final ScrollController _scrollController = ScrollController(); 
+  
   String displayName = "Loading...";
   String uid = "Loading...";
   String profilePictureUrl = "";
@@ -44,18 +47,22 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
       );
     });
   }
+  
+  @override
+  void dispose() {
+    _scrollController.dispose(); // อย่าลืม dispose controller
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final emailProvider = ref.watch(emailLoginNotifierProvider);
     
-    // --- Responsive Logic for Tablet Landscape ---
     bool isTablet = MediaQuery.of(context).size.shortestSide > 550;
     bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     double scaleFactor = (isTablet && isLandscape) ? 0.7 : 1.0;
 
     return Drawer(
-      // ปรับความกว้างให้เหมาะสมกับ Tablet Landscape ไม่ให้กว้างเกินไป
       width: isTablet && isLandscape ? 280.w : 280.w, 
       elevation: 0, 
       shape: const RoundedRectangleBorder(
@@ -74,77 +81,102 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
 
             const Divider(height: 1, color: Color(0xFFF0F0F0)),
 
-            // --- 2. Menu Items ---
+            // --- 2. Menu Items (Scrollable Area) ---
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.h * scaleFactor, 
-                  horizontal: 16.w * scaleFactor
-                ),
-                children: [
-                  _buildSectionLabel('app_drawer.services'.tr(), scaleFactor),
-                  _DrawerTile(
-                    icon: Icons.subtitles_rounded,
-                    title: 'app_drawer.gensub'.tr(),
-                    scaleFactor: scaleFactor,
-                    onTap: () => context.push('/gensub'),
-                  ),
-                  _DrawerTile(
-                    icon: Icons.school_rounded,
-                    title: 'app_drawer.education'.tr(),
-                    scaleFactor: scaleFactor,
-                    onTap: () => context.push('/education'),
-                  ),
-                  
-                  SizedBox(height: 16.h * scaleFactor),
-                  _buildSectionLabel('app_drawer.account'.tr(), scaleFactor),
-                  
-                  _DrawerTile(
-                    icon: Icons.person_rounded,
-                    title: 'app_drawer.profile'.tr(),
-                    scaleFactor: scaleFactor,
-                    onTap: () => context.push('/account'),
-                  ),
-                  _DrawerTile(
-                    icon: Icons.card_giftcard_rounded,
-                    title: 'app_drawer.redeem'.tr(),
-                    scaleFactor: scaleFactor,
-                    onTap: () {
-                      context.pop();
-                      RedeemCouponDialog(
-                        context: context,
-                        ref: ref,
-                        text: 'app_drawer.redeem'.tr(),
-                      ).showModal(context);
-                    },
-                  ),
-                  _DrawerTile(
-                    icon: Icons.account_balance_wallet_rounded,
-                    title: 'app_drawer.buy_points'.tr(),
-                    scaleFactor: scaleFactor,
-                    onTap: () => showPaymentDialog(context),
-                  ),
-                  _DrawerTile(
-                    icon: Icons.stars_rounded,
-                    title: 'app_drawer.reward'.tr(),
-                    iconColor: Colors.amber,
-                    scaleFactor: scaleFactor,
-                    onTap: () => context.push('/reward'),
-                  ),
-
-                  // Show Security only for password login
-                  if (emailProvider.isLoggedIn &&
-                      emailProvider.user?.providerData[0].providerId == 'password') ...[
-                    SizedBox(height: 16.h * scaleFactor),
-                    _buildSectionLabel('app_drawer.system'.tr(), scaleFactor),
-                    _DrawerTile(
-                      icon: Icons.security_rounded,
-                      title: 'app_drawer.security'.tr(),
-                      scaleFactor: scaleFactor,
-                      onTap: () => context.push('/email-permission'),
+              // [UX FIX 1] ใช้ ShaderMask ทำ Fading Edge ด้านล่าง
+              // เพื่อให้รู้ว่ามีของอยู่ข้างล่าง (เหมือนมันจางหายไป)
+              child: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white, Colors.white, Colors.transparent],
+                    stops: [0.0, 0.95, 1.0], // จางแค่ 5% ล่างสุด
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.dstIn,
+                
+                // [UX FIX 2] ใช้ Scrollbar ครอบ ListView และเปิด thumbVisibility: true
+                child: Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true, // บังคับโชว์แท่ง Scrollbar เสมอ
+                  thickness: 4.0, // ขนาดแท่ง
+                  radius: const Radius.circular(10),
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.h * scaleFactor, 
+                      horizontal: 16.w * scaleFactor
                     ),
-                  ],
-                ],
+                    children: [
+                      _buildSectionLabel('app_drawer.services'.tr(), scaleFactor),
+                      _DrawerTile(
+                        icon: Icons.subtitles_rounded,
+                        title: 'app_drawer.gensub'.tr(),
+                        scaleFactor: scaleFactor,
+                        onTap: () => context.push('/gensub'),
+                      ),
+                      _DrawerTile(
+                        icon: Icons.school_rounded,
+                        title: 'app_drawer.education'.tr(),
+                        scaleFactor: scaleFactor,
+                        onTap: () => context.push('/education'),
+                      ),
+                      
+                      SizedBox(height: 16.h * scaleFactor),
+                      _buildSectionLabel('app_drawer.account'.tr(), scaleFactor),
+                      
+                      _DrawerTile(
+                        icon: Icons.person_rounded,
+                        title: 'app_drawer.profile'.tr(),
+                        scaleFactor: scaleFactor,
+                        onTap: () => context.push('/account'),
+                      ),
+                      _DrawerTile(
+                        icon: Icons.card_giftcard_rounded,
+                        title: 'app_drawer.redeem'.tr(),
+                        scaleFactor: scaleFactor,
+                        onTap: () {
+                          context.pop();
+                          RedeemCouponDialog(
+                            context: context,
+                            ref: ref,
+                            text: 'app_drawer.redeem'.tr(),
+                          ).showModal(context);
+                        },
+                      ),
+                      _DrawerTile(
+                        icon: Icons.account_balance_wallet_rounded,
+                        title: 'app_drawer.buy_points'.tr(),
+                        scaleFactor: scaleFactor,
+                        onTap: () => showPaymentDialog(context),
+                      ),
+                      // จุดที่มีปัญหา (อาจจะมองไม่เห็นในจอเล็ก)
+                      _DrawerTile(
+                        icon: Icons.stars_rounded,
+                        title: 'app_drawer.reward'.tr(),
+                        iconColor: Colors.amber,
+                        scaleFactor: scaleFactor,
+                        onTap: () => context.push('/reward'),
+                      ),
+
+                      if (emailProvider.isLoggedIn &&
+                          emailProvider.user?.providerData[0].providerId == 'password') ...[
+                        SizedBox(height: 16.h * scaleFactor),
+                        _buildSectionLabel('app_drawer.system'.tr(), scaleFactor),
+                        _DrawerTile(
+                          icon: Icons.security_rounded,
+                          title: 'app_drawer.security'.tr(),
+                          scaleFactor: scaleFactor,
+                          onTap: () => context.push('/email-permission'),
+                        ),
+                      ],
+                      
+                      // เพิ่มพื้นที่ว่างด้านล่างเพื่อให้ Scrollbar เลื่อนได้สุดสวยๆ และไม่โดน Fade บัง
+                      SizedBox(height: 20.h),
+                    ],
+                  ),
+                ),
               ),
             ),
 
@@ -179,8 +211,10 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
     );
   }
 
+  // ... (Keep existing _buildHeader and _buildSectionLabel code)
   Widget _buildHeader(double scaleFactor) {
-    return Padding(
+     // ... (คงเดิมตามโค้ดของคุณ)
+     return Padding(
       padding: EdgeInsets.fromLTRB(
         24.w * scaleFactor, 
         24.h * scaleFactor, 
@@ -250,6 +284,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
   }
 
   Widget _buildSectionLabel(String text, double scaleFactor) {
+    // ... (คงเดิมตามโค้ดของคุณ)
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: 12.w * scaleFactor, 
@@ -268,7 +303,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
   }
 }
 
-// --- Helper Widget for Uniform Tiles ---
+// ... (Keep existing _DrawerTile code)
 class _DrawerTile extends StatelessWidget {
   final IconData icon;
   final String title;
