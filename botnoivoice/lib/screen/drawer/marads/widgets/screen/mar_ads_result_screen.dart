@@ -3,8 +3,12 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_audio_player_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_speaker_selector_button.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_success_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
+import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
+import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +34,7 @@ class MarAdsResultScreen extends ConsumerStatefulWidget {
 class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   late TextEditingController _textController;
   final MarAdsDownloadLogic _downloadLogic = MarAdsDownloadLogic();
-  String _selectedCharacter = 'เอวา';
+  SpeakerEntity? _selectedSpeaker;
   String _selectedMode = 'Result';
   String? _currentAudioUrl;
   String? _currentFileName;
@@ -46,6 +50,14 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       if (mounted) setState(() {});
     });
     _initializeDownloader();
+
+    // กำหนดค่าเริ่มต้นให้กับ Speaker (เช่น id 1 หรือตัวแรกของ List)
+    if (SpeakerModel.speakerItem.isNotEmpty) {
+      // พยายามหา 'Ava' หรือตัวแรกสุด
+      _selectedSpeaker = SpeakerModel.speakerItem
+          .firstWhere((s) => s.speakerId == '1', // สมมติว่า ID 1 คือเอวา
+              orElse: () => SpeakerModel.speakerItem.first);
+    }
   }
 
   @override
@@ -191,63 +203,13 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       color: Colors.white,
       child: Row(
         children: [
-          _buildCharacterSelector(),
+          MarAdsSpeakerSelectorButton(
+            selectedSpeaker: _selectedSpeaker,
+            onTap: _handleCharacterSelectorTap,
+          ),
           const Spacer(),
           _buildResultSelector(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCharacterSelector() {
-    return GestureDetector(
-      onTap: _handleCharacterSelectorTap,
-      child: Container(
-        height: 33.h,
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF7F8FA),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-            color: const Color(0xFF868688),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 25.w,
-              height: 25.h,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey[300],
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.female,
-                  size: 16.sp,
-                  color: Colors.pink,
-                ),
-              ),
-            ),
-            SizedBox(width: 5.w),
-            Text(
-              _selectedCharacter,
-              style: GoogleFonts.prompt(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w400,
-                color: const Color(0xFF262626),
-              ),
-            ),
-            SizedBox(width: 5.w),
-            Icon(
-              Icons.keyboard_arrow_down,
-              size: 12.sp,
-              color: const Color(0xFF262626),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -511,45 +473,15 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   void _handleCharacterSelectorTap() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "เลือกคาแรกเตอร์",
-              style: GoogleFonts.prompt(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-            SizedBox(height: 12.h),
-            const Divider(),
-            ListTile(
-              title: const Text('เอวา'),
-              onTap: () {
-                setState(() => _selectedCharacter = 'เอวา');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('แจ็ค'),
-              onTap: () {
-                setState(() => _selectedCharacter = 'แจ็ค');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('มายด์'),
-              onTap: () {
-                setState(() => _selectedCharacter = 'มายด์');
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+      backgroundColor: Colors.transparent, // ให้เห็นมุมโค้งของ Modal
+      isScrollControlled: true, // ให้ Modal ยืดได้เต็มที่หากรายการเยอะ
+      builder: (context) => MarAdsSpeakerSelectionModal(
+        selectedSpeaker: _selectedSpeaker,
+        onSelect: (speaker) {
+          setState(() {
+            _selectedSpeaker = speaker;
+          });
+        },
       ),
     );
   }
@@ -593,7 +525,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   }
 
   Future<void> _handleCreateVoice() async {
-    // สั่งหุบคีย์บอร์ด (Unfocus) ก่อนจะเริ่มทำอะไรทั้งสิ้น
+    // สั่งหุบคีย์บอร์ด (Unfocus) ก่อนจะเริ่มทำอะไร
     // เพื่อป้องกันคีย์บอร์ดเด้งสู้กับ Dialog
     FocusManager.instance.primaryFocus?.unfocus();
 
@@ -614,12 +546,37 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     );
 
     try {
+      // หา Speaker ID (Default เป็น '1' ถ้าไม่มี)
+      final String spkId = _selectedSpeaker?.speakerId ?? '1';
+
+      // หา Language Code
+      // ลำดับความสำคัญ: languageCode -> language (ตัวพิมพ์เล็ก) -> 'th' (Default)
+      String langCode = _selectedSpeaker?.languageCode ?? '';
+      if (langCode.isEmpty) {
+        langCode = _selectedSpeaker?.language.toLowerCase() ?? '';
+      }
+      if (langCode.isEmpty) {
+        langCode = 'th';
+      }
+
+      // ดึงค่า V2 และ ชื่อ Speaker มา Log ดู
+      final bool isV2Speaker = _selectedSpeaker?.v2 ?? false;
+      final String debugName = _selectedSpeaker?.thaiName ??
+          _selectedSpeaker?.speakerName ??
+          'Unknown';
+
+      // ปริ้นท์ Log ออกมาดูเลยว่าส่งใครไป
+      print(
+          " Generating Audio for: $debugName (ID: $spkId) | V2: $isV2Speaker | Lang: $langCode");
+
       // เรียก API สร้างเสียง
       final audioUrl = await generateAudioPreview(
         ref: ref,
         context: context,
         text: _textController.text,
-        isV2: false,
+        isV2: isV2Speaker,
+        speakerId: spkId,
+        language: langCode,
       );
 
       if (audioUrl.isNotEmpty) {

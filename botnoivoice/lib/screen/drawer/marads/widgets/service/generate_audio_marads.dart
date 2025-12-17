@@ -135,6 +135,8 @@ Future<String> generateAudioPreview({
   required BuildContext context,
   required String text,
   required bool isV2,
+  String? speakerId,
+  String? language,
 }) async {
   // ถ้าต้องการ fix ค่า speaker = "1" และ language = "th"
   // ตามที่พี่เขาแนะนำ (ไม่ไปยุ่งกับ logic ของไฟล์เดิม)
@@ -146,8 +148,9 @@ Future<String> generateAudioPreview({
   // String language =
   //     context.read<HomeSpeakerDataManagement>().language ?? 'th';
 
-  String speakerId = "1"; // fix speaker
-  String language = "th"; // fix language
+// ใช้ค่าที่รับมา ถ้าไม่มีให้ใช้ค่า Default เดิม
+  final String finalSpeakerId = speakerId ?? "1";
+  final String finalLanguage = language ?? "th";
 
   final selectedToken =
       ref.watch(currentUserTokenStateProvider).credentialsToken;
@@ -174,12 +177,12 @@ Future<String> generateAudioPreview({
 
   Map<String, dynamic> payload = {
     "text": text,
-    "speaker": speakerId, // ใช้ค่า fix "1"
+    "speaker": finalSpeakerId,
     "volume": 1,
     "speed": 1,
     "type_media": "mp3",
     "save_file": "true",
-    "language": language, // ใช้ค่า fix "th"
+    "language": finalLanguage,
     "page": "mobilebotnoivoice",
   };
 
