@@ -7,6 +7,11 @@ class MarAdsUIStyle {
   static const Color grayLight = Color(0xFFC2C2C2);
   static const Color grayBackground = Color(0xFFF7F8FA);
 
+  static const Color textGrey = Color(0xFF888888);
+  static const Color errorColor = Color(0xFFFF5C5C); // สีแดงลบ
+  static const Color linkColor = Color(0xFF6A6AFA); // สีปุ่มยกเลิก
+  static const Color textBody = Color(0xFF4F4F4F); // สีเนื้อหา
+
   //  Gradient ฟ้า-ชมพู
   static const LinearGradient cyanPurpleGradient = LinearGradient(
     colors: [Color(0xFF01BFFB), Color(0xFFEB85FC)],
