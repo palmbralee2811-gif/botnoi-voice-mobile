@@ -1,0 +1,796 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_history_model.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_delete_confirm_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_history_card.dart'; // Import Widget ใหม่
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_success_dialog.dart';
+import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
+import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
+
+class MarAdsHistoryScreen extends ConsumerStatefulWidget {
+  const MarAdsHistoryScreen({super.key});
+
+  @override
+  ConsumerState<MarAdsHistoryScreen> createState() =>
+      _MarAdsHistoryScreenState();
+}
+
+class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  final PromptService _promptService = PromptService();
+  final MarAdsDownloadLogic _downloadLogic = MarAdsDownloadLogic();
+  List<MarAdsHistoryModel> _historyItems = [];
+  List<MarAdsHistoryModel> _filteredItems = [];
+  bool _isLoading = true;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  // เพิ่มบรรทัดนี้ครับ (คุณลืมประกาศตัวแปรนี้ ทำให้ข้างล่าง error)
+  Map<String, SpeakerEntity> _allSpeakerMap = {};
+
+  // ตัวแปรสำหรับ Pagination
+  int _currentPage = 1;
+  final int _itemsPerPage = 5;
+
+  // ตัวแปรสำหรับ Player State
+  bool _isPlaying = false;
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+  int? _playingIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    // สั่ง Initialize ปลั๊กอินก่อนเริ่มใช้งาน
+    Future.microtask(() async {
+      try {
+        await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+      } catch (e) {
+        debugPrint("FlutterDownloader already initialized or error: $e");
+      }
+      _downloadLogic.initialize();
+    });
+
+    // Setup AudioPlayer Listeners
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = state == PlayerState.playing;
+        });
+      }
+    });
+
+    _audioPlayer.onDurationChanged.listen((newDuration) {
+      if (mounted) {
+        setState(() {
+          _duration = newDuration;
+        });
+      }
+    });
+
+    _audioPlayer.onPositionChanged.listen((newPosition) {
+      if (mounted) {
+        setState(() {
+          _position = newPosition;
+        });
+      }
+    });
+
+    _audioPlayer.onPlayerComplete.listen((event) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+          _position = Duration.zero;
+        });
+      }
+    });
+
+    _searchController.addListener(_onSearchChanged);
+    _fetchHistory();
+  }
+
+  int get _totalPages {
+    if (_filteredItems.isEmpty) return 1;
+    return (_filteredItems.length / _itemsPerPage).ceil();
+  }
+
+  List<MarAdsHistoryModel> get _paginatedItems {
+    final startIndex = (_currentPage - 1) * _itemsPerPage;
+    final endIndex = startIndex + _itemsPerPage;
+    if (startIndex >= _filteredItems.length) return [];
+    return _filteredItems.sublist(
+      startIndex,
+      endIndex > _filteredItems.length ? _filteredItems.length : endIndex,
+    );
+  }
+
+  void _changePage(int newPage) {
+    if (newPage < 1 || newPage > _totalPages) return;
+    setState(() {
+      _currentPage = newPage;
+    });
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredItems = _historyItems.where((item) {
+        final title = item.title.toLowerCase();
+        final content = item.content.toLowerCase();
+        return title.contains(query) || content.contains(query);
+      }).toList();
+      _currentPage = 1;
+    });
+  }
+
+  Future<void> _fetchHistory() async {
+    try {
+      final userState = ref.read(currentUserTokenStateProvider);
+      String currentUserId = userState.userID ?? "";
+
+      if (currentUserId.isEmpty) {
+        print("Error: User ID not found");
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final result = await _promptService.getPromptHistory(
+          context: context, userId: currentUserId);
+
+      if (mounted) {
+        setState(() {
+          // บังคับให้ทุกรายการต้องสร้างเสียงใหม่ (Force hasAudio = false)
+          _historyItems = result
+              .map((item) => MarAdsHistoryModel(
+                    id: item.id,
+                    title: item.title,
+                    content: item.content,
+                    mode: item.mode,
+                    style: item.style,
+                    points: item.points,
+                    chars: item.chars,
+                    hasAudio: false, // Force reset
+                    duration: '00:00/00:00',
+                    audioUrl: '', // Clear old URL
+                    speakerId: item.speakerId,
+                    isV2FromApi: item.isV2,
+                  ))
+              .toList();
+
+          //สร้าง Map จาก Speaker ทั้งหมดที่มีในระบบ
+          // _allSpeakerMap = {
+          //   for (var s in SpeakerModel.speakerItem) s.speakerId.trim(): s
+          // };
+
+          // ต้องแน่ใจว่าใช้ Key ที่มี _${s.v2} ต่อท้าย
+          _allSpeakerMap = {
+            for (var s in SpeakerModel.speakerItem)
+              "${s.speakerId.trim()}_${s.v2 || s.engName.contains('V2') || s.speakerName.contains('V2')}":
+                  s
+          };
+          if (_searchController.text.isNotEmpty) {
+            final query = _searchController.text.toLowerCase();
+            _filteredItems = _historyItems.where((item) {
+              final title = item.title.toLowerCase();
+              final content = item.content.toLowerCase();
+              return title.contains(query) || content.contains(query);
+            }).toList();
+          } else {
+            _filteredItems = _historyItems;
+          }
+          _currentPage = 1;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print("Error: $e");
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    _downloadLogic.dispose();
+    super.dispose();
+  }
+
+  void _showDownloadDialog(String url) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => MarAdsDownloadOptionsDialog(
+        onConfirm: (selectedExtension) async {
+          final timestamp = DateTime.now().millisecondsSinceEpoch;
+          final finalFileName = "botnoi_marads_$timestamp.$selectedExtension";
+
+          await _downloadLogic.handleDownload(
+            context: context,
+            url: url,
+            existingFileName: finalFileName,
+            isShare: false,
+            onSuccess: () {
+              if (!mounted) return;
+              showDialog(
+                context: context,
+                builder: (context) => const MarAdsSuccessDialog(
+                  title: "ดาวน์โหลดสำเร็จ",
+                  subtitle: "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  //  แยก Logic การหา Speaker ออกมาให้ชัดเจน
+  SpeakerEntity _getSpeakerForItem(MarAdsHistoryModel item) {
+    // หาจาก Map ด้วย ID + V2 status
+    final String speakerKey = "${item.speakerId.trim()}_${item.isV2}";
+    SpeakerEntity? speaker = _allSpeakerMap[speakerKey];
+
+    // Fallback ถ้าไม่เจอให้ใช้ตัวแรกของระบบ
+    var finalSpeaker = speaker ?? SpeakerModel.speakerItem.first;
+
+    // Logic พิเศษ ถ้ามีภาษาไทย แต่ Speaker เป็นต่างชาติ ให้ลองหาตัว V2 มาแทน
+    final bool hasThaiChar = RegExp(r'[\u0E00-\u0E7F]').hasMatch(item.content);
+    if (hasThaiChar && finalSpeaker.languageCode.toUpperCase() != 'TH') {
+      final v2Key = "${item.speakerId.trim()}_true";
+      if (_allSpeakerMap.containsKey(v2Key)) {
+        finalSpeaker = _allSpeakerMap[v2Key]!;
+      }
+    }
+    return finalSpeaker;
+  }
+
+  //  ตัด String ภาษาให้เหลือ 2 ตัวอักษร (th-TH -> th)
+  String _extractLanguageCode(SpeakerEntity speaker) {
+    String rawLang = speaker.languageCode.isNotEmpty
+        ? speaker.languageCode
+        : speaker.language;
+    return rawLang.length >= 2 ? rawLang.substring(0, 2).toLowerCase() : 'th';
+  }
+
+  Future<void> _handleGenerateAudio(
+      int index, String text, SpeakerEntity speaker) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const MarAdsLoadingDialog(),
+    );
+
+    try {
+      final String finalLang = _extractLanguageCode(speaker);
+
+      final audioUrl = await generateAudioPreview(
+        ref: ref,
+        context: context,
+        text: text,
+        isV2: speaker.v2,
+        speakerId: speaker.speakerId,
+        language: finalLang,
+      );
+
+      // if (mounted) {
+      //   Navigator.of(context).pop();
+      // }
+
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      if (audioUrl.isNotEmpty) {
+        // เรียก API เพื่อบันทึก URL เสียงลงใน History
+        // ต้องแน่ใจว่า promptId มีค่า (item.id)
+        final historyItem = _historyItems[index];
+
+        // ป้องกันการยิง update ถ้าไม่มี ID (แก้ปัญหา request fail)
+        if (historyItem.id.isEmpty) {
+          print("Error: No Prompt ID found, cannot update history.");
+          // if (mounted) Navigator.of(context).pop();
+          return;
+        }
+        await _promptService.updatePromptHistory(
+          context: context,
+          promptId: historyItem.id,
+          audioUrl: audioUrl,
+          speakerId: speaker.speakerId,
+          isV2: speaker.v2,
+          language: finalLang, // ส่งภาษาไปด้วย
+          text: text, // ส่งข้อความไปด้วย
+          contentStyle: historyItem.style, // ส่ง style ไปด้วย
+        );
+
+        setState(() {
+          if (_playingIndex == index) {
+            _playingIndex = null;
+            _isPlaying = false;
+            _position = Duration.zero;
+            _duration = Duration.zero;
+            _audioPlayer.stop();
+          }
+
+          final oldItem = _historyItems[index];
+          _historyItems[index] = MarAdsHistoryModel(
+            id: oldItem.id,
+            title: oldItem.title,
+            content: oldItem.content,
+            mode: oldItem.mode,
+            style: oldItem.style,
+            points: oldItem.points,
+            chars: oldItem.chars,
+            hasAudio: true,
+            duration: oldItem.duration,
+            audioUrl: audioUrl,
+            speakerId: speaker.speakerId,
+          );
+        });
+
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => const MarAdsSuccessDialog(
+              title: "สร้างเสียงสำเร็จ",
+              subtitle: "ระบบได้ทำการสร้างเสียงเรียบร้อยแล้ว",
+            ),
+          );
+        }
+      }
+      // ปิด Loading Dialog เฉพาะเมื่อฟังก์ชันทำงานเสร็จสิ้นทั้งหมด
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+      print("Error generating audio: $e");
+    }
+  }
+
+  Future<void> _handleDeletePrompt(MarAdsHistoryModel item) async {
+    // เช็คก่อนลบ ถ้าไม่มี ID ให้แจ้งเตือนและหยุดทำงาน
+    if (item.id.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('รายการนี้ข้อมูลไม่สมบูรณ์ ไม่สามารถลบได้')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => MarAdsDeleteConfirmDialog(
+        onConfirm: () async {
+          final success = await _promptService.deletePrompt(
+            context: context,
+            promptId: item.id,
+          );
+
+          if (success) {
+            setState(() {
+              _historyItems.removeWhere((element) => element.id == item.id);
+              _filteredItems.removeWhere((element) => element.id == item.id);
+
+              if (_paginatedItems.isEmpty && _currentPage > 1) {
+                _currentPage--;
+              }
+            });
+
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (context) => const MarAdsSuccessDialog(
+                  title: "ลบสำเร็จ",
+                  subtitle: "ลบข้อมูลเรียบร้อยแล้ว",
+                ),
+              );
+            }
+          } else {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('เกิดข้อผิดพลาดในการลบข้อมูล')),
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  Future<void> _playAudio(String url, int index) async {
+    try {
+      if (url.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ไม่พบลิงก์เสียง')),
+        );
+        return;
+      }
+      if (_playingIndex == index) {
+        if (_isPlaying) {
+          await _audioPlayer.pause();
+        } else {
+          await _audioPlayer.resume();
+        }
+      } else {
+        await _audioPlayer.stop();
+        setState(() {
+          _playingIndex = index;
+          _position = Duration.zero;
+          _duration = Duration.zero;
+        });
+        await _audioPlayer.play(UrlSource(url));
+      }
+    } catch (e) {
+      print("Error playing audio: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('เล่นเสียงไม่สำเร็จ: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
+  void _showOptionsModal(MarAdsHistoryModel item) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 32.w,
+                height: 4.h,
+                margin: EdgeInsets.only(bottom: 16.h, top: 8.h),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
+              ),
+              _buildOptionItem(
+                icon: Icons.copy_rounded,
+                label: 'คัดลอก',
+                onTap: () {
+                  Navigator.pop(context);
+                  Clipboard.setData(ClipboardData(text: item.content));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'คัดลอกเรียบร้อย',
+                        style: GoogleFonts.prompt(),
+                      ),
+                      duration: const Duration(seconds: 1),
+                    ),
+                  );
+                },
+              ),
+              _buildOptionItem(
+                icon: Icons.edit_outlined,
+                label: 'แก้ไข',
+                onTap: () {
+                  Navigator.pop(context);
+                  context.push(
+                    Uri(
+                      path: '/marads/result',
+                      queryParameters: {'text': item.content},
+                    ).toString(),
+                  );
+                },
+              ),
+              _buildOptionItem(
+                icon: Icons.delete_outline,
+                label: 'ลบ',
+                onTap: () {
+                  Navigator.pop(context);
+                  _handleDeletePrompt(item);
+                },
+              ),
+              SizedBox(height: 16.h),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildOptionItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFF262626), size: 24.sp),
+      title: Text(
+        label,
+        style: GoogleFonts.prompt(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w400,
+          color: const Color(0xFF262626),
+        ),
+      ),
+      onTap: onTap,
+      contentPadding: EdgeInsets.symmetric(horizontal: 24.w),
+      minLeadingWidth: 24.w,
+    );
+  }
+
+  Widget _buildPaginationControls() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap:
+                _currentPage > 1 ? () => _changePage(_currentPage - 1) : null,
+            child: Icon(
+              Icons.arrow_left_rounded,
+              size: 32.sp,
+              color:
+                  _currentPage > 1 ? const Color(0xFF262626) : Colors.grey[300],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              color: Colors.white,
+            ),
+            child: Text(
+              '$_currentPage',
+              style: GoogleFonts.inter(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[600],
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          InkWell(
+            onTap: _currentPage < _totalPages
+                ? () => _changePage(_currentPage + 1)
+                : null,
+            child: Icon(
+              Icons.arrow_right_rounded,
+              size: 32.sp,
+              color: _currentPage < _totalPages
+                  ? const Color(0xFF262626)
+                  : Colors.grey[300],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // แยกฟังก์ชัน callback ออกมาเพื่อให้ build method ดูสะอาดขึ้น
+  void _onSelectSpeakerTapped(
+      MarAdsHistoryModel item, int realIndex, SpeakerEntity currentSpeaker) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => MarAdsSpeakerSelectionModal(
+        selectedSpeaker: currentSpeaker,
+        onSelect: (newSpeaker) {
+          setState(() {
+            // หยุดเพลงถ้ากำลังเล่นตัวที่ถูกเปลี่ยน
+            if (_playingIndex == realIndex) {
+              _playingIndex = null;
+              _isPlaying = false;
+              _audioPlayer.stop();
+            }
+            // อัปเดตข้อมูลใน list
+            _historyItems[realIndex] = MarAdsHistoryModel(
+              id: item.id,
+              title: item.title,
+              content: item.content,
+              mode: item.mode,
+              style: item.style,
+              points: item.points,
+              chars: item.chars,
+              hasAudio: false, // Reset audio เมื่อเปลี่ยน speaker
+              duration: '00:00/00:00',
+              audioUrl: '',
+              speakerId: newSpeaker.speakerId,
+              isV2FromApi: newSpeaker.v2,
+            );
+          });
+          // เรียกใช้งานผ่าน Future.microtask เพื่อป้องกัน Navigator Locked
+          // และแยกออกมาจากการ setState เพื่อไม่ให้เกิดการสร้างเสียงวนซ้ำ
+          Future.microtask(() {
+            _handleGenerateAudio(realIndex, item.content, newSpeaker);
+          });
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF7F8FA),
+      appBar: _buildAppBar(),
+      body: Column(
+        children: [
+          _buildSearchBar(),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _filteredItems.isEmpty
+                    ? RefreshIndicator(
+                        onRefresh: _fetchHistory,
+                        color: const Color(0xFF262626),
+                        child: ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            SizedBox(height: 200.h),
+                            Center(
+                                child: Text("ไม่พบประวัติ",
+                                    style: GoogleFonts.prompt())),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Expanded(
+                            child: RefreshIndicator(
+                              onRefresh: _fetchHistory,
+                              color: const Color(0xFF262626),
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w, vertical: 10.h),
+                                itemCount: _paginatedItems.length,
+                                itemBuilder: (context, index) {
+                                  final item = _paginatedItems[index];
+                                  final realIndex = _historyItems.indexOf(item);
+
+                                  //  เรียกใช้ Function หา Speaker
+                                  final SpeakerEntity finalSpeaker =
+                                      _getSpeakerForItem(item);
+
+                                  final bool isCurrentItemPlaying =
+                                      _playingIndex == realIndex;
+
+                                  // เรียกใช้ Widget ที่แยกออกมาแล้ว
+                                  return MarAdsHistoryCard(
+                                    item: item,
+                                    speaker: finalSpeaker,
+                                    isPlaying:
+                                        isCurrentItemPlaying && _isPlaying,
+                                    currentPosition: isCurrentItemPlaying
+                                        ? _position
+                                        : Duration.zero,
+                                    totalDuration: isCurrentItemPlaying
+                                        ? _duration
+                                        : Duration.zero,
+                                    searchQuery: _searchController.text,
+                                    onSelectSpeaker: () =>
+                                        _onSelectSpeakerTapped(
+                                            item, realIndex, finalSpeaker),
+                                    onPlayPause: () =>
+                                        _playAudio(item.audioUrl, realIndex),
+                                    onSeek: (value) async {
+                                      if (isCurrentItemPlaying) {
+                                        await _audioPlayer.seek(Duration(
+                                            milliseconds: value.toInt()));
+                                      }
+                                    },
+                                    onGenerateAudio: () => _handleGenerateAudio(
+                                        realIndex, item.content, finalSpeaker),
+                                    onDownload: () =>
+                                        _showDownloadDialog(item.audioUrl),
+                                    onOptions: () => _showOptionsModal(item),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          if (_filteredItems.isNotEmpty)
+                            _buildPaginationControls(),
+                        ],
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      toolbarHeight: ResponsiveDesignOrientation.isLandscape ? 150.h : 58.h,
+      title: Stack(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/marads');
+                }
+              },
+            ),
+          ),
+          Center(
+            child: Text(
+              'History',
+              style: GoogleFonts.prompt(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 48.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F8FA),
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  prefixIcon:
+                      Icon(Icons.search, color: Colors.grey, size: 24.sp),
+                  hintText: 'ค้นหา',
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 14.sp,
+                    color: Colors.grey,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+        ],
+      ),
+    );
+  }
+}

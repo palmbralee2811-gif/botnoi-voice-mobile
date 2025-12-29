@@ -19,6 +19,7 @@ class MarAdsHistoryCard extends StatelessWidget {
   final VoidCallback onPlayPause;
   final Function(double) onSeek;
   final VoidCallback onGenerateAudio;
+  final VoidCallback onDownload;
   final VoidCallback onOptions;
 
   const MarAdsHistoryCard({
@@ -33,6 +34,7 @@ class MarAdsHistoryCard extends StatelessWidget {
     required this.onPlayPause,
     required this.onSeek,
     required this.onGenerateAudio,
+    required this.onDownload,
     required this.onOptions,
   });
 
@@ -157,8 +159,12 @@ class MarAdsHistoryCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Icon(Icons.file_download_outlined,
-                  color: Colors.black54, size: 24.sp),
+              if (item.hasAudio && item.audioUrl.isNotEmpty)
+                InkWell(
+                  onTap: onDownload,
+                  child: Icon(Icons.file_download_outlined,
+                      color: Colors.black54, size: 24.sp),
+                ),
               SizedBox(width: 8.w),
               InkWell(
                 onTap: onOptions,
@@ -194,7 +200,7 @@ class MarAdsHistoryCard extends StatelessWidget {
           SizedBox(height: 12.h),
 
           // Action Area: Audio Player OR Generate Button
-          if (item.hasAudio)
+          if (item.hasAudio && item.audioUrl.isNotEmpty)
             _buildAudioPlayer(context, durationText)
           else
             _buildGenerateButton(),

@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_audio_player_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
@@ -21,10 +23,14 @@ import 'package:just_audio/just_audio.dart';
 
 class MarAdsResultScreen extends ConsumerStatefulWidget {
   final String? generatedText;
+  final String? promptId;
+  final String? contentStyle;
 
   const MarAdsResultScreen({
     super.key,
     this.generatedText,
+    this.promptId,
+    this.contentStyle,
   });
 
   @override
@@ -34,10 +40,12 @@ class MarAdsResultScreen extends ConsumerStatefulWidget {
 class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   late TextEditingController _textController;
   final MarAdsDownloadLogic _downloadLogic = MarAdsDownloadLogic();
+  final PromptService _promptService = PromptService();
   SpeakerEntity? _selectedSpeaker;
   String _selectedMode = 'Result';
   String? _currentAudioUrl;
   String? _currentFileName;
+  String? _localPromptId;
 
   @override
   void initState() {
@@ -45,6 +53,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     _textController = TextEditingController(
       text: widget.generatedText ?? '',
     );
+    _localPromptId = widget.promptId;
+
     // addListener เพื่อสั่ง rebuild เมื่อพิมพ์
     _textController.addListener(() {
       if (mounted) setState(() {});
@@ -53,10 +63,14 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
     // กำหนดค่าเริ่มต้นให้กับ Speaker (เช่น id 1 หรือตัวแรกของ List)
     if (SpeakerModel.speakerItem.isNotEmpty) {
-      // พยายามหา 'Ava' หรือตัวแรกสุด
-      _selectedSpeaker = SpeakerModel.speakerItem
-          .firstWhere((s) => s.speakerId == '1', // สมมติว่า ID 1 คือเอวา
-              orElse: () => SpeakerModel.speakerItem.first);
+      // 1. ลองหาจาก ID ที่ได้รับมา (ถ้าเป็นการเปิดจากหน้า History หรือสร้างเสร็จแล้ว)
+      _selectedSpeaker = SpeakerModel.speakerItem.firstWhere(
+        (s) => s.speakerId == widget.promptId, // สมมติส่ง ID มาใน promptId
+        orElse: () => SpeakerModel.speakerItem.firstWhere(
+          (s) => s.speakerId == '1', // ถ้าไม่เจอจริงๆ ให้เป็นเอวา
+          orElse: () => SpeakerModel.speakerItem.first,
+        ),
+      );
     }
   }
 
@@ -68,13 +82,25 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   }
 
   Future<void> _initializeDownloader() async {
-    if (!FlutterDownloader.initialized) {
+    try {
       await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+    } catch (e) {
+      // กรณี Init ซ้ำ หรือมี Error อื่นๆ ให้ปล่อยผ่านไป
+      debugPrint("FlutterDownloader init warning: $e");
     }
+
     _downloadLogic.initialize();
   }
 
   int get _characterCount => _textController.text.length;
+
+  String _generateRandomPromptId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final rnd = Random();
+    final randomString =
+        List.generate(5, (index) => chars[rnd.nextInt(chars.length)]).join();
+    return 'prompt_$randomString';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -532,6 +558,13 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     // รอแป๊บนึงให้คีย์บอร์ดลงสุด (Optional: ใส่หรือไม่ใส่ก็ได้ แต่ใส่ไว้ 0.2 วิ จะนุ่มนวลกว่า)
     await Future.delayed(const Duration(milliseconds: 200));
 
+    // เช็คว่า Text ว่างไหมก่อนยิง API
+    if (_textController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('กรุณาพิมพ์ข้อความก่อนสร้างเสียง')));
+      return;
+    }
+
     // โชว์ Loading Dialog
     BuildContext? dialogContext;
     AudioPlayer? preloadedPlayer;
@@ -560,7 +593,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       }
 
       // ดึงค่า V2 และ ชื่อ Speaker มา Log ดู
-      final bool isV2Speaker = _selectedSpeaker?.v2 ?? false;
+      final bool isV2Speaker = (_selectedSpeaker?.v2 ?? false) ||
+          (_selectedSpeaker?.engName ?? '').contains('V2') ||
+          (_selectedSpeaker?.speakerName ?? '').contains('V2');
       final String debugName = _selectedSpeaker?.thaiName ??
           _selectedSpeaker?.speakerName ??
           'Unknown';
@@ -569,7 +604,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       print(
           " Generating Audio for: $debugName (ID: $spkId) | V2: $isV2Speaker | Lang: $langCode");
 
-      // เรียก API สร้างเสียง
+      // เรียก API สร้างเสียงก่อน เพื่อเอาค่า audioUrl มาใช้ในบรรทัดถัดไป
       final audioUrl = await generateAudioPreview(
         ref: ref,
         context: context,
@@ -580,9 +615,71 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       );
 
       if (audioUrl.isNotEmpty) {
+        //  ถ้ามี promptId ส่งมา ให้ทำการบันทึกเสียงลง History ทันที
         _currentAudioUrl = audioUrl;
         _currentFileName =
             "botnoi_marads_${DateTime.now().millisecondsSinceEpoch}.mp3";
+
+        final String promptTitle = _textController.text.length > 20
+            ? "${_textController.text.substring(0, 20)}..."
+            : _textController.text;
+
+        // Save ลง History (ทำหลังจากได้เสียงแล้ว)
+        try {
+          if (_localPromptId == null || _localPromptId!.isEmpty) {
+            final newPromptId = _generateRandomPromptId();
+            _localPromptId = newPromptId; // อัปเดตตัวแปรทันที
+
+            //  ส่งข้อมูลครบชุด (Text + Audio + Style)
+            await _promptService.addWorkspacePrompt(
+              context: context,
+              payload: {
+                "prompt_id": newPromptId,
+                "text": _textController.text,
+                "title": promptTitle,
+                "category": "text",
+                "speaker": spkId,
+                "speaker_v2": isV2Speaker,
+                "language": langCode,
+                "audio": audioUrl,
+                "text_read": _textController.text,
+                "text_read_with_delay": _textController.text,
+                "volume": "100",
+                "speed": "1",
+                "is_download": true,
+                "isDownloaded": false,
+                "isEdit": false,
+                "isgenerate": true,
+                "isPlaying": false,
+                "prompt_style": {
+                  "TH_label": widget.contentStyle ?? "-",
+                  "EN_label": widget.contentStyle ?? "-",
+                  "value": widget.contentStyle ?? "-"
+                },
+              },
+            );
+            setState(() {
+              // ยืนยัน Speaker ที่เลือกไว้ใน State อีกครั้งป้องกันการหลุด
+              _selectedSpeaker = _selectedSpeaker;
+            });
+          } else {
+            // ถ้ามี ID อยู่แล้ว ให้ Update
+            await _promptService.updatePromptHistory(
+              context: context,
+              promptId: _localPromptId!,
+              audioUrl: audioUrl,
+              speakerId: spkId,
+              isV2: isV2Speaker,
+              language: langCode,
+              text: _textController.text,
+              contentStyle: widget.contentStyle ?? "-",
+              title: promptTitle,
+              category: "text",
+            );
+          }
+        } catch (e) {
+          print("⚠️ Failed to save history: $e");
+        }
 
         // สร้าง Player และโหลดเสียงรอเลย (Pre-load)
         preloadedPlayer = AudioPlayer();

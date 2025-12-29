@@ -255,6 +255,13 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                 context.go('/marads/advanced');
               },
             ),
+            ListTile(
+              title: const Text('History'),
+              onTap: () {
+                Navigator.pop(context);
+                context.go('/marads/history');
+              },
+            ),
           ],
         ),
       ),
@@ -417,7 +424,10 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
         context.push(
           Uri(
             path: '/marads/result',
-            queryParameters: {'text': generatedText},
+            queryParameters: {
+              'text': generatedText,
+              'style': _selectedContentStyle,
+            },
           ).toString(),
         );
       } else {

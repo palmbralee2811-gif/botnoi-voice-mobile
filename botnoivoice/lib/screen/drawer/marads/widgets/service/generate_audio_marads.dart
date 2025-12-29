@@ -118,9 +118,7 @@
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_snack_bar.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -138,22 +136,11 @@ Future<String> generateAudioPreview({
   String? speakerId,
   String? language,
 }) async {
-  // ถ้าต้องการ fix ค่า speaker = "1" และ language = "th"
-  // ตามที่พี่เขาแนะนำ (ไม่ไปยุ่งกับ logic ของไฟล์เดิม)
-  // สามารถเขียนแบบนี้ได้เลย
-
-  // NOTE: ถ้าไม่อยากใช้ค่าจาก HomeSpeakerDataManagement เลย ให้คอมเมนต์ออก
-  // String speakerId =
-  //     context.read<HomeSpeakerDataManagement>().speakerId ?? getDefaultSpeakerId(context);
-  // String language =
-  //     context.read<HomeSpeakerDataManagement>().language ?? 'th';
-
-// ใช้ค่าที่รับมา ถ้าไม่มีให้ใช้ค่า Default เดิม
   final String finalSpeakerId = speakerId ?? "1";
   final String finalLanguage = language ?? "th";
 
   final selectedToken =
-      ref.watch(currentUserTokenStateProvider).credentialsToken;
+      ref.read(currentUserTokenStateProvider).credentialsToken;
 
   if (selectedToken == null || selectedToken.isEmpty) {
     // Show Snackbar
@@ -167,7 +154,8 @@ Future<String> generateAudioPreview({
 
   _logger.i("Preview speakerId: $speakerId");
   _logger.i("Preview language: $language");
-  _logger.i("User CredentialsToken: $selectedToken");
+  // _logger.i("User CredentialsToken: $selectedToken");
+  _logger.i("User CredentialsToken: [HIDDEN]");
 
   String audioUrl = "";
 
@@ -209,12 +197,12 @@ Future<String> generateAudioPreview({
       // เพิ่มบรรทัดนี้เพื่อดูว่า Server ด่าว่าอะไร (เช่น "Point not enough")
       _logger.e("Server Response: ${response.body}");
 
-      if (context.mounted) {
-        NotificationPopup(
-          context: context, // ใช้ context ที่รับมา ปลอดภัยกว่า
-          text: 'home_screen.unable_to_create_sound'.tr(),
-        ).showAsError();
-      }
+      // if (context.mounted) {
+      //   NotificationPopup(
+      //     context: context, // ใช้ context ที่รับมา ปลอดภัยกว่า
+      //     text: 'home_screen.unable_to_create_sound'.tr(),
+      //   ).showAsError();
+      // }
     }
   } catch (e) {
     _logger.e("Error on generateAudioPreview: $e");

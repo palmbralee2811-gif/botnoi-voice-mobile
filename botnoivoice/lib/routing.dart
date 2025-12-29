@@ -6,6 +6,7 @@ import 'package:botnoivoice/screen/drawer/account/change_email_username_screen.d
 import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
 import 'package:botnoivoice/screen/drawer/reward/reward_screen.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/email_permission/email_permission_screen.dart';
@@ -139,8 +140,16 @@ final router = GoRouter(
       path: '/marads/result',
       builder: (context, state) {
         final generatedText = state.uri.queryParameters['text'];
-        return MarAdsResultScreen(generatedText: generatedText);
+        final contentStyle = state.uri.queryParameters['style'];
+        return MarAdsResultScreen(
+          generatedText: generatedText,
+          contentStyle: contentStyle,
+        );
       },
+    ),
+    GoRoute(
+      path: '/marads/history',
+      builder: (context, state) => const MarAdsHistoryScreen(),
     ),
   ],
 );
