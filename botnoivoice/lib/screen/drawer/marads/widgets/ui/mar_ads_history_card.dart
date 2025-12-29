@@ -213,12 +213,17 @@ class MarAdsHistoryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${item.mode} • ${item.style}',
-                style: GoogleFonts.inter(
-                  fontSize: 12.sp,
-                  color: Colors.grey,
-                ),
+              Row(
+                children: [
+                  if (item.style.isNotEmpty && item.style != '-')
+                    Text(
+                      item.style,
+                      style: GoogleFonts.inter(
+                        fontSize: 12.sp,
+                        color: Colors.grey,
+                      ),
+                    ),
+                ],
               ),
               Text(
                 '${item.points}  ${item.chars}',

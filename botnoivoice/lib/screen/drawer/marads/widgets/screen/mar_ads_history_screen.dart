@@ -136,6 +136,14 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     });
   }
 
+  //  รวม Logic เช็ค V2 ไว้ที่เดียว
+  bool _isSpeakerV2(SpeakerEntity s) {
+    return s.v2 || s.engName.contains('V2') || s.speakerName.contains('V2');
+  }
+
+  //  สร้าง Key สำหรับ Map ให้เป็นมาตรฐานเดียวกัน
+  String _generateMapKey(String id, bool isV2) => "${id.trim()}_$isV2";
+
   Future<void> _fetchHistory() async {
     try {
       final userState = ref.read(currentUserTokenStateProvider);
@@ -153,7 +161,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       if (mounted) {
         setState(() {
           // บังคับให้ทุกรายการต้องสร้างเสียงใหม่ (Force hasAudio = false)
-          _historyItems = result
+          _historyItems = result.reversed
               .map((item) => MarAdsHistoryModel(
                     id: item.id,
                     title: item.title,
@@ -169,11 +177,6 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                     isV2FromApi: item.isV2,
                   ))
               .toList();
-
-          //สร้าง Map จาก Speaker ทั้งหมดที่มีในระบบ
-          // _allSpeakerMap = {
-          //   for (var s in SpeakerModel.speakerItem) s.speakerId.trim(): s
-          // };
 
           // ต้องแน่ใจว่าใช้ Key ที่มี _${s.v2} ต่อท้าย
           _allSpeakerMap = {
@@ -313,6 +316,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           language: finalLang, // ส่งภาษาไปด้วย
           text: text, // ส่งข้อความไปด้วย
           contentStyle: historyItem.style, // ส่ง style ไปด้วย
+          title: historyItem.title,
+          category: 'text',
         );
 
         setState(() {

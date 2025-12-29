@@ -210,8 +210,10 @@ class _MarAdsSpeakerSelectionModalState
         return false;
 
       // Language
-      if (s.languageCode.toUpperCase() != _selectedLangCode &&
-          s.language.toUpperCase() != _selectedLangCode) return false;
+      final sLang = s.languageCode.toUpperCase();
+      final sLangName = s.language.toUpperCase();
+      if (sLang != _selectedLangCode && sLangName != _selectedLangCode)
+        return false;
 
       // Gender
       if (_selectedGender.isNotEmpty && s.gender != _selectedGender)
@@ -237,8 +239,8 @@ class _MarAdsSpeakerSelectionModalState
       // Search Text
       if (_searchController.text.isNotEmpty) {
         final query = _searchController.text.toLowerCase();
-        if (!s.thaiName.toLowerCase().contains(query) &&
-            !s.engName.toLowerCase().contains(query)) return false;
+        return s.thaiName.toLowerCase().contains(query) ||
+            s.engName.toLowerCase().contains(query);
       }
 
       return true;

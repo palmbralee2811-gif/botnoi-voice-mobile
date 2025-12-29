@@ -141,9 +141,12 @@ final router = GoRouter(
       builder: (context, state) {
         final generatedText = state.uri.queryParameters['text'];
         final contentStyle = state.uri.queryParameters['style'];
+        final speakerId = state.uri.queryParameters['speaker_id'];
+
         return MarAdsResultScreen(
           generatedText: generatedText,
           contentStyle: contentStyle,
+          speakerId: speakerId,
         );
       },
     ),

@@ -1,6 +1,10 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_advanced_logic.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import '../ui/mar_ads_mode_selector.dart';
 import '../ui/mar_ads_free_badge.dart';
 import '../ui/mar_ads_collapsible_section.dart';
@@ -11,34 +15,88 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:go_router/go_router.dart';
 
-class MarAdsAdvancedScreen extends StatefulWidget {
+class MarAdsAdvancedScreen extends ConsumerStatefulWidget {
   const MarAdsAdvancedScreen({super.key});
 
   @override
-  State<MarAdsAdvancedScreen> createState() => _MarAdsAdvancedScreenState();
+  ConsumerState<MarAdsAdvancedScreen> createState() =>
+      _MarAdsAdvancedScreenState();
 }
 
-class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
+class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
+  // เพิ่มตัวแปร Logic และ Logger
+  late final MarAdsAdvancedLogic _logic;
+  final Logger _logger = Logger();
+  bool _isLoading = false;
   String _selectedMode = 'Advanced mode';
-  String _selectedContentLength = '~15 วิ';
+  String _selectedContentLength = '~30 วิ';
   String _selectedSalesCharacter = 'แม่ค้าสาวสุดสวย';
   String _selectedContentStyle = 'จูงใจให้ใช้';
-  String _additionalInfo = '';
-  
+
+  //  Map สีสำหรับแสดงผล
+  String _selectedProductColor = '';
+  final Map<String, Color> _colorMap = {
+    'ดำ': const Color(0xFF262626),
+    'แดง': const Color(0xFFFF0000),
+    'ขาว': const Color(0xFFFFFFFF),
+    'ชมพู': const Color(0xFFFF40E5),
+    'น้ำเงิน': const Color(0xFF0055FF),
+  };
+
+  final List<String> _salesCharacters = const [
+    'แม่ค้าสาวสุดสวย',
+    'เด็กประถม',
+    'วัยรุ่นผู้ชาย',
+    'วัยรุ่นผู้หญิง',
+    'พ่อค้ามือทอง',
+    'ป้าข้างบ้าน',
+    'ลุงกำนัน',
+    'คุณตา',
+    'คุณยาย',
+  ];
+
+  final List<String> _contentStyles = const [
+    'จูงใจให้ใช้',
+    'ตลก',
+    'จริงจัง',
+    'ออดอ้อน',
+    'เรียกความสงสาร',
+    'รีวิวสินค้า'
+  ];
+
+  final Map<String, String> _characterToSpeakerId = {
+    'แม่ค้าสาวสุดสวย': '6',
+    'เด็กประถม': '2',
+    'วัยรุ่นผู้ชาย': '31',
+    'วัยรุ่นผู้หญิง': '3',
+    'พ่อค้ามือทอง': '5',
+    'ป้าข้างบ้าน': '89',
+    'ลุงกำนัน': '46',
+  };
+
   final TextEditingController _productController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _promotionController = TextEditingController();
-  final TextEditingController _targetCustomersController = TextEditingController();
+  final TextEditingController _targetCustomersController =
+      TextEditingController();
   final TextEditingController _sellingPointController = TextEditingController();
   final TextEditingController _whyBuyController = TextEditingController();
   final TextEditingController _sizeController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _materialController = TextEditingController();
-  
-  bool _isBasicInfoExpanded = false;
-  bool _isSalesStyleExpanded = false;
-  bool _isPromotionInfoExpanded = false;
+  final TextEditingController _additionalInfoController =
+      TextEditingController();
+
+  bool _isBasicInfoExpanded = true;
+  bool _isSalesStyleExpanded = true;
+  bool _isPromotionInfoExpanded = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _logic = MarAdsAdvancedLogic(PromptService());
+  }
 
   @override
   void dispose() {
@@ -50,8 +108,9 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
     _sellingPointController.dispose();
     _whyBuyController.dispose();
     _sizeController.dispose();
-  _modelController.dispose();
-  _materialController.dispose();
+    _modelController.dispose();
+    _materialController.dispose();
+    _additionalInfoController.dispose();
     super.dispose();
   }
 
@@ -72,87 +131,26 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
                     onTap: _handleModeSelectorTap,
                   ),
                   SizedBox(height: 5.h),
-                  MarAdsCollapsibleSection(
-                    title: 'ข้อมูลเบื้องต้น*',
-                    isExpanded: _isBasicInfoExpanded,
-                    onTap: () {
-                      setState(() {
-                        _isBasicInfoExpanded = !_isBasicInfoExpanded;
-                      });
-                    },
+                  _buildBasicInfoSection(),
+                  SizedBox(height: 16.h),
+                  _buildSalesStyleSection(),
+                  SizedBox(height: 16.h),
+                  _buildPromotionSection(),
+                  SizedBox(height: 16.h),
+                  MarAdsDropdown(
+                    // ใช้ Widget กลาง
+                    label: 'ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)',
+                    value: _selectedContentLength,
+                    showInfoIcon: true,
+                    onTap: _handleContentLengthTap,
                   ),
-                  if (_isBasicInfoExpanded) ...[
-                    MarAdsTextField(
-                      label: 'สินค้าที่ต้องการขาย*',
-                      placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
-                      controller: _productController,
-                      isRequired: true,
-                    ),
-                    MarAdsTextField(
-                      label: 'ช��่อแบรนด์/ชื่อยี่ห้อ',
-                      placeholder: 'บอทน้อย',
-                      controller: _brandController,
-                    ),
-                    MarAdsTextField(
-                      label: 'ราคา',
-                      placeholder: '129 บาท, 99 บาท จาก 129 บาท',
-                      controller: _priceController,
-                    ),
-                    _buildProductPropertiesButton(),
-                  ],
-                  _buildSpacer(),
-                  MarAdsCollapsibleSection(
-                    title: 'สไตล์การขาย',
-                    isExpanded: _isSalesStyleExpanded,
-                    onTap: () {
-                      setState(() {
-                        _isSalesStyleExpanded = !_isSalesStyleExpanded;
-                      });
-                    },
+                  MarAdsTextField(
+                    label: 'ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)',
+                    placeholder: 'พลาดไม่ได้, หมดเขตในอีก 3 วัน',
+                    controller: _additionalInfoController,
+                    height: 100.h,
+                    maxLines: null,
                   ),
-                  if (_isSalesStyleExpanded) ...[
-                    _buildSalesCharacterDropdown(),
-                    MarAdsDropdown(
-                      label: 'สไตล์เนื้อหา',
-                      value: _selectedContentStyle,
-                      onTap: _handleContentStyleTap,
-                    ),
-                  ],
-                  _buildSpacer(),
-                  MarAdsCollapsibleSection(
-                    title: 'ข้อมูลโปรโมชั่น (Optional)',
-                    isExpanded: _isPromotionInfoExpanded,
-                    onTap: () {
-                      setState(() {
-                        _isPromotionInfoExpanded = !_isPromotionInfoExpanded;
-                      });
-                    },
-                  ),
-                  if (_isPromotionInfoExpanded) ...[
-                    MarAdsTextField(
-                      label: 'โปรโมชั่น',
-                      placeholder: 'แถมฟรีหนังสือการสอน',
-                      controller: _promotionController,
-                    ),
-                    MarAdsTextField(
-                      label: 'ลูกค้าที่เป็นกลุ่มเป้าหมาย',
-                      placeholder: 'คนชอบเทคโนโลยี',
-                      controller: _targetCustomersController,
-                    ),
-                    MarAdsTextField(
-                      label: 'จุดขายทีดีกว่าคู่แข่ง',
-                      placeholder: 'ขายถูกที่สุดในย่าน',
-                      controller: _sellingPointController,
-                    ),
-                    MarAdsTextField(
-                      label: 'ทำไมลูกค้าถึงต้องซื้อ',
-                      placeholder: 'ประหยัดเงินจากของมือหนึ่ง',
-                      controller: _whyBuyController,
-                    ),
-                  ],
-                  _buildSpacer(),
-                  _buildContentLengthSection(),
-                  _buildAdditionalInfoSection(),
                 ],
               ),
             ),
@@ -173,14 +171,20 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(
-                Icons.menu,
-                size: ResponsiveDesignOrientation.isLandscape ? 22.sp : 32.sp,
-                color: const Color(0xFF3D3D3D),
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
+            child: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    size:
+                        ResponsiveDesignOrientation.isLandscape ? 22.sp : 32.sp,
+                    color: const Color(0xFF3D3D3D),
+                  ),
+                  onPressed: () {
+                    // ใช้ context ใหม่จาก Builder ซึ่งอยู่ใต้ Scaffold
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
               },
             ),
           ),
@@ -204,126 +208,236 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
     );
   }
 
-  Widget _buildSpacer() {
-    return Container(
-      width: double.infinity,
-      height: 16.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+  Widget _buildBasicInfoSection() {
+    return Column(
+      children: [
+        MarAdsCollapsibleSection(
+          title: 'ข้อมูลเบื้องต้น*',
+          isExpanded: _isBasicInfoExpanded,
+          onTap: () =>
+              setState(() => _isBasicInfoExpanded = !_isBasicInfoExpanded),
+        ),
+        if (_isBasicInfoExpanded) ...[
+          Divider(color: const Color(0xFFEEDDF3), height: 1.h, thickness: 1),
+          SizedBox(height: 16.h),
+          MarAdsTextField(
+            label: 'สินค้าที่ต้องการขาย*',
+            placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
+            controller: _productController,
+            isRequired: true,
+          ),
+          MarAdsTextField(
+            label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
+            placeholder: 'บอทน้อย',
+            controller: _brandController,
+          ),
+          MarAdsTextField(
+            label: 'ราคา',
+            placeholder: '129 บาท, 99 บาท จาก 129 บาท',
+            controller: _priceController,
+          ),
+          _buildProductPropertiesButton(),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSalesStyleSection() {
+    return Column(
+      children: [
+        MarAdsCollapsibleSection(
+          title: 'สไตล์การขาย',
+          isExpanded: _isSalesStyleExpanded,
+          onTap: () =>
+              setState(() => _isSalesStyleExpanded = !_isSalesStyleExpanded),
+        ),
+        if (_isSalesStyleExpanded) ...[
+          MarAdsDropdown(
+            label: 'คาแรกเตอร์คนขาย',
+            value: _selectedSalesCharacter,
+            onTap: _handleSalesCharacterTap,
+          ),
+          MarAdsDropdown(
+            label: 'สไตล์เนื้อหา',
+            value: _selectedContentStyle,
+            onTap: _handleContentStyleTap,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildPromotionSection() {
+    return Column(
+      children: [
+        MarAdsCollapsibleSection(
+          title: 'ข้อมูลโปรโมชั่น (Optional)',
+          isExpanded: _isPromotionInfoExpanded,
+          onTap: () => setState(
+              () => _isPromotionInfoExpanded = !_isPromotionInfoExpanded),
+        ),
+        if (_isPromotionInfoExpanded) ...[
+          Divider(color: const Color(0xFFEEDDF3), height: 1.h, thickness: 1),
+          SizedBox(height: 16.h),
+          MarAdsTextField(
+            label: 'โปรโมชั่น',
+            placeholder: 'แถมฟรีหนังสือการสอน',
+            controller: _promotionController,
+          ),
+          MarAdsTextField(
+            label: 'ลูกค้าที่เป็นกลุ่มเป้าหมาย',
+            placeholder: 'คนชอบเทคโนโลยี',
+            controller: _targetCustomersController,
+          ),
+          MarAdsTextField(
+            label: 'จุดขายทีดีกว่าคู่แข่ง',
+            placeholder: 'ขายถูกที่สุดในย่าน',
+            controller: _sellingPointController,
+            suffixIcon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
+          ),
+          MarAdsTextField(
+            label: 'ทำไมลูกค้าถึงต้องซื้อ',
+            placeholder: 'ประหยัดเงินจากของมือหนึ่ง',
+            controller: _whyBuyController,
+            suffixIcon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
+          ),
+        ],
+      ],
     );
   }
 
   Widget _buildProductPropertiesButton() {
+    // เช็คว่ามีการกรอกข้อมูลอะไรมาบ้างไหม
+    bool hasProperties = _sizeController.text.isNotEmpty ||
+        _modelController.text.isNotEmpty ||
+        _materialController.text.isNotEmpty ||
+        (_selectedProductColor.isNotEmpty &&
+            _selectedProductColor != 'ไม่ระบุ');
+
     return Container(
-      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () async {
-  final result = await context.push('/marads/product-properties');
-  if (result != null && result is Map<String, String>) {
-    setState(() {
-      _sizeController.text = result['size'] ?? '';
-      _modelController.text = result['model'] ?? '';
-      _materialController.text = result['material'] ?? '';
-    });
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      alignment: Alignment.centerLeft, // จัดชิดซ้าย
+      child: hasProperties
+          ? Wrap(
+              spacing: 8.w, // ระยะห่างแนวนอนระหว่าง Tags
+              runSpacing: 8.h,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                // แสดง Tags ตามข้อมูลที่มี
+                if (_sizeController.text.isNotEmpty)
+                  _buildInfoChip(_sizeController.text, () {
+                    setState(() {
+                      _sizeController.clear();
+                    });
+                  }),
+                if (_modelController.text.isNotEmpty)
+                  _buildInfoChip(_modelController.text, () {
+                    setState(() {
+                      _modelController.clear();
+                    });
+                  }),
+                if (_selectedProductColor.isNotEmpty &&
+                    _selectedProductColor != 'ไม่ระบุ')
+                  _buildColorChip(_selectedProductColor, () {
+                    setState(() {
+                      _selectedProductColor = '';
+                    });
+                  }),
+                if (_materialController.text.isNotEmpty)
+                  _buildInfoChip(_materialController.text, () {
+                    setState(() {
+                      _materialController.clear();
+                    });
+                  }),
+
+                // ปุ่ม + เล็กๆ
+                _buildSmallAddButton(),
+              ],
+            )
+          : _buildInitialAddButton(), // ถ้าไม่มีข้อมูล โชว์ปุ่มใหญ่เหมือนเดิม
+    );
   }
-},
-            child: Container(
-              height: 28.h,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: Colors.white,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'คุณสมบัติของสินค้า',
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF262626),
-                      height: 1.67,
-                      letterSpacing: 0.25,
-                    ),
-                  ),
-                  SizedBox(width: 5.w),
-                  Icon(
-                    Icons.add,
-                    size: 12.w,
-                    color: const Color(0xFF262626),
-                  ),
-                ],
+
+  // ปุ่มใหญ่ตอนแรก (คุณสมบัติของสินค้า +)
+  Widget _buildInitialAddButton() {
+    return GestureDetector(
+      onTap: _navigateToProductProperties,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          gradient: const LinearGradient(
+            colors: [Color(0xFFD6C8DD), Color(0xFFDEC9D4)], // สีม่วงจางๆ ตามธีม
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min, // หดขนาดเท่าเนื้อหา (ชิดซ้าย)
+          children: [
+            Text(
+              'คุณสมบัติของสินค้า',
+              style: GoogleFonts.prompt(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF262626),
               ),
             ),
-          ),
-        ],
+            SizedBox(width: 8.w),
+            Icon(Icons.add, size: 16.w, color: const Color(0xFF262626)),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSalesCharacterDropdown() {
+  // ปุ่ม + เล็กๆ
+  Widget _buildSmallAddButton() {
+    return GestureDetector(
+      onTap: _navigateToProductProperties,
+      child: Container(
+        width: 32.h,
+        height: 32.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.r),
+          gradient: const LinearGradient(
+            colors: [Color(0xFFD6C8DD), Color(0xFFDEC9D4)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Icon(Icons.add, size: 18.w, color: const Color(0xFF262626)),
+      ),
+    );
+  }
+
+  // Tag ข้อความทั่วไป
+  Widget _buildInfoChip(String label, VoidCallback onDelete) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.fromLTRB(12.w, 6.h, 8.w, 6.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2F2F2),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: const Color(0xFFE0E0E0)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'คาแร��เตอร์คนขาย',
-            style: GoogleFonts.inter(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
+            label,
+            style: GoogleFonts.prompt(
+              fontSize: 12.sp,
               color: const Color(0xFF262626),
-              height: 1.43,
-              letterSpacing: 0.25,
             ),
           ),
-          SizedBox(height: 5.h),
+          SizedBox(width: 6.w), // ระยะห่าง
           GestureDetector(
-            onTap: _handleSalesCharacterTap,
-            child: Container(
-              height: 46.h,
-              padding: const EdgeInsets.all(1.5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.r),
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF332261),
-                    Color(0xFF7E2449),
-                  ],
-                ),
-              ),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _selectedSalesCharacter,
-                      style: GoogleFonts.inter(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF262626),
-                        height: 1.67,
-                        letterSpacing: 0.25,
-                      ),
-                    ),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      size: 12.w,
-                      color: const Color(0xFF262626),
-                    ),
-                  ],
-                ),
-              ),
+            onTap: onDelete,
+            child: Icon(
+              Icons.close_rounded,
+              size: 14.sp,
+              color: const Color(0xFF888888),
             ),
           ),
         ],
@@ -331,148 +445,75 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
     );
   }
 
-  Widget _buildContentLengthSection() {
+  // Tag สี (มีวงกลมสีนำหน้า)
+  Widget _buildColorChip(String colorName, VoidCallback onDelete) {
+    final color = _colorMap[colorName] ?? Colors.grey;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.fromLTRB(12.w, 6.h, 8.w, 6.h),
+      decoration: BoxDecoration(
+        // ใช้ Gradient พื้นหลังจางๆ เพื่อให้ดูพรีเมียมเหมือนรูปตัวอย่าง
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFFD6C8DD).withOpacity(0.3),
+            const Color(0xFFDEC9D4).withOpacity(0.3)
+          ],
+        ),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: const Color(0xFFD6C8DD)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'ความยาวของเนื้อหา* (มีผล��่อพอยท์ที่ใช้)',
-                  style: GoogleFonts.inter(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF262626),
-                    height: 1.43,
-                    letterSpacing: 0.25,
-                  ),
-                ),
-              ),
-              SizedBox(width: 4.w),
-            ],
-          ),
-          SizedBox(height: 5.h),
-          GestureDetector(
-            onTap: _handleContentLengthTap,
-            child: Container(
-              height: 46.h,
-              padding: const EdgeInsets.all(1.5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.r),
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF332261),
-                    Color(0xFF7E2449),
-                  ],
-                ),
-              ),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _selectedContentLength,
-                      style: GoogleFonts.inter(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF262626),
-                        height: 1.67,
-                        letterSpacing: 0.25,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          Container(
+            width: 12.w,
+            height: 12.w,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: colorName == 'ขาว'
+                  ? Border.all(color: Colors.grey.shade300)
+                  : null,
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdditionalInfoSection() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+          SizedBox(width: 6.w),
           Text(
-            'ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)',
-            style: GoogleFonts.inter(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
+            colorName,
+            style: GoogleFonts.prompt(
+              fontSize: 12.sp,
               color: const Color(0xFF262626),
-              height: 1.43,
-              letterSpacing: 0.25,
             ),
           ),
-          SizedBox(height: 5.h),
+          SizedBox(width: 6.w),
           GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () async {
-              final result = await context.push('/marads/additional-info');
-              if (result != null && result is String) {
-                setState(() {
-                  _additionalInfo = result;
-                });
-              }
-            },
-            child: Container(
-              height: 80.h,
-              padding: const EdgeInsets.all(1.5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.r),
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF332261),
-                    Color(0xFF7E2449),
-                  ],
-                ),
-              ),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    _additionalInfo.isNotEmpty
-                        ? _additionalInfo
-                        : "พลาดไม่ได้, หมดเขตในอีก 3 วัน",
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: _additionalInfo.isNotEmpty
-                          ? const Color(0xFF262626)
-                          : const Color(0xFF888888),
-                      height: 1.67,
-                      letterSpacing: 0.25,
-                    ),
-                  ),
-                ),
-              ),
+            onTap: onDelete,
+            child: Icon(
+              Icons.close_rounded,
+              size: 14.sp,
+              color: const Color(0xFF888888),
             ),
           ),
         ],
       ),
     );
+  }
+
+  // ฟังก์ชันนำทางและรับค่ากลับ
+  Future<void> _navigateToProductProperties() async {
+    final result = await context.push('/marads/product-properties');
+
+    if (result != null && result is Map) {
+      // แก้ type check ให้กว้างขึ้นกันพลาด
+      setState(() {
+        _sizeController.text = result['size']?.toString() ?? '';
+        _modelController.text = result['model']?.toString() ?? '';
+        _materialController.text = result['material']?.toString() ?? '';
+        _selectedProductColor = result['color']?.toString() ?? '';
+      });
+    }
   }
 
   Widget _buildBottomButton() {
+    final bool isFormValid = _productController.text.isNotEmpty;
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(16.w),
@@ -489,7 +530,8 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
               SizedBox(width: 5.w),
               Text(
                 'สร้างได้ 10 ครั้ง',
-                style: GoogleFonts.inter(
+                //TODO : แก้ไขสร้างได้
+                style: GoogleFonts.prompt(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFF262626),
@@ -500,32 +542,43 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
             ],
           ),
           SizedBox(height: 8.h),
-          Container(
-            width: double.infinity,
-            height: 56.h,
-            decoration: BoxDecoration(
-              color: const Color(0xFF262626),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
+          Opacity(
+            opacity: isFormValid ? 1.0 : 0.5,
+            child: Container(
+              width: double.infinity,
+              height: 56.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFF262626),
+                borderRadius: BorderRadius.circular(20.r),
               ),
-              onPressed: () {
-                context.push('/marads/result');
-              },
-              child: Text(
-                'สร้างข้อความ',
-                style: GoogleFonts.prompt(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  height: 1.4,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
                 ),
+                onPressed:
+                    (isFormValid && !_isLoading) ? _handleCreateMessage : null,
+                child: _isLoading
+                    ? SizedBox(
+                        width: 24.w,
+                        height: 24.w,
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      )
+                    : Text(
+                        'สร้างข้อความ',
+                        style: GoogleFonts.prompt(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          height: 1.4,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -534,192 +587,181 @@ class _MarAdsAdvancedScreenState extends State<MarAdsAdvancedScreen> {
     );
   }
 
+  //// ฟังก์ชันแปลงคาแรกเตอร์เป็น Speaker ID
+  String? _getSpeakerIdFromCharacter(String character) {
+    return _characterToSpeakerId[character];
+  }
+
+  // เพิ่มฟังก์ชันสำหรับยิง API
+  Future<void> _handleCreateMessage() async {
+    if (_isLoading) return;
+    if (_productController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณากรอกชื่อสินค้า')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      _logger.i("MarAds Advanced: start create_prompt_ads");
+
+      final response = await _logic.createAdvancedPromptAds(
+        ref: ref,
+        context: context,
+        productName: _productController.text,
+        brandName: _brandController.text,
+        price: _priceController.text,
+
+        // Properties
+        size: _sizeController.text,
+        model: _modelController.text,
+        material: _materialController.text,
+        color: _selectedProductColor,
+
+        // Style
+        salesCharacter: _selectedSalesCharacter,
+        contentStyle: _selectedContentStyle,
+
+        // Promo
+        promotion: _promotionController.text,
+        targetCustomers: _targetCustomersController.text,
+        sellingPoint: _sellingPointController.text,
+        whyBuy: _whyBuyController.text,
+
+        contentLengthLabel: _selectedContentLength,
+        additionalInfo: _additionalInfoController.text,
+      );
+
+      _logger.i("Response: $response");
+
+      if (response != null && response['data'] != null) {
+        String generatedText = response['data'].toString();
+        // ลบวงเล็บ [ ] ออกถ้ามี
+        if (generatedText.startsWith('[') && generatedText.endsWith(']')) {
+          generatedText = generatedText.substring(1, generatedText.length - 1);
+        }
+
+        // หา Speaker ID จากคาแรกเตอร์ที่เลือก
+        final String? targetSpeakerId =
+            _getSpeakerIdFromCharacter(_selectedSalesCharacter);
+
+        // ไปหน้า Result พร้อมข้อความ
+        if (mounted) {
+          context.push(
+            Uri(
+              path: '/marads/result',
+              queryParameters: {
+                'text': generatedText,
+                'style': _selectedContentStyle,
+                'mode': 'advanced',
+                if (targetSpeakerId != null)
+                  'speaker_id': targetSpeakerId, // ส่ง ID ไปด้วย
+              },
+            ).toString(),
+          );
+        }
+      } else {
+        // กรณี response ผิดพลาดหรือไม่มา
+        if (mounted) context.push('/marads/result');
+      }
+    } catch (e, stack) {
+      _logger.e("Error creating ad", error: e, stackTrace: stack);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('เกิดข้อผิดพลาด: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   void _handleModeSelectorTap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('Basic mode'),
-              onTap: () {
-                setState(() => _selectedMode = 'Basic mode');
-                Navigator.pop(context);
-                context.go('/marads');
-              },
-            ),
-            ListTile(
-              title: const Text('Advanced mode'),
-              onTap: () {
-                setState(() => _selectedMode = 'Advanced mode');
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+    MarAdsModeSelector.show(context, _selectedMode, (mode) {
+      if (mode == 'Basic mode') {
+        context.go('/marads'); //นำทางไปยังหน้า Basic
+      } else if (mode == 'Advanced mode') {
+        setState(() => _selectedMode =
+            'Advanced mode'); // แค่อัปเดต UI ให้ Modal รู้ว่าเลือกอันนี้อยู่
+      } else if (mode == 'History') {
+        context.go('/marads/history');
+      }
+    });
   }
 
   void _handleSalesCharacterTap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "คาแรกเตอร์คนขาย",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-                height: 1.3,
-              ),
-            ),
-            SizedBox(height: 12.h),
-            const Divider(),
-            ListTile(
-              title: const Text('แม่ค้าสาวสุดสวย'),
-              onTap: () {
-                setState(() => _selectedSalesCharacter = 'แม่ค้าสาวสุดสวย');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('พนักงานขายมืออาชีพ'),
-              onTap: () {
-                setState(() => _selectedSalesCharacter = 'พนักงานขายมืออาชีพ');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('เจ้าของร้านเป็นกันเอง'),
-              onTap: () {
-                setState(() => _selectedSalesCharacter = 'เจ้าของร้านเป็นกันเอง');
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+    _showSelectionModal(
+      title: "คาแรกเตอร์คนขาย",
+      items: _salesCharacters, // ใช้ Constants
+      onSelected: (val) => setState(() => _selectedSalesCharacter = val),
     );
   }
 
   void _handleContentStyleTap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "สไตล์ของเนื้อหา",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-                height: 1.3,
-              ),
-            ),
-            SizedBox(height: 12.h),
-            const Divider(),
-            ListTile(
-              title: const Text('จูงใจให้ใช้'),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'จูงใจให้ใช้');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('ตลก'),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'ตลก');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('จริงจัง'),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'จริงจัง');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('ออดอ้อน'),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'ออดอ้อน');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('เรียกความสงสาร'),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'เรียกความสงสาร');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('รีวิวสินค้า'),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'รีวิวสินค้า');
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+    _showSelectionModal(
+      title: "สไตล์ของเนื้อหา",
+      items: _contentStyles, // ใช้ Constants
+      onSelected: (val) => setState(() => _selectedContentStyle = val),
     );
   }
 
   void _handleContentLengthTap() {
+    final List<String> lengths = ['~30 วิ', '~60 วิ'];
+
+    _showSelectionModal(
+      title: "ความยาวของเนื้อหา",
+      items: lengths,
+      onSelected: (val) => setState(() => _selectedContentLength = val),
+    );
+  }
+
+  void _showSelectionModal({
+    required String title,
+    required List<String> items,
+    required Function(String) onSelected,
+  }) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "ความยาวของเนื้อหา",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-                height: 1.3,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      builder: (context) => SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
+              16.w, 16.h, 16.w, MediaQuery.of(context).padding.bottom + 16.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.prompt(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                  height: 1.3,
+                ),
               ),
-            ),
-            SizedBox(height: 12.h),
-            const Divider(),
-            ListTile(
-              title: const Text('~15 วิ'),
-              onTap: () {
-                setState(() => _selectedContentLength = '~15 วิ');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('~30 วิ'),
-              onTap: () {
-                setState(() => _selectedContentLength = '~30 วิ');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('~60 วิ'),
-              onTap: () {
-                setState(() => _selectedContentLength = '~60 วิ');
-                Navigator.pop(context);
-              },
-            ),
-          ],
+              SizedBox(height: 12.h),
+              const Divider(),
+              ...items.map((item) => ListTile(
+                    title: Text(
+                      item,
+                      style: GoogleFonts.prompt(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF262626)),
+                    ),
+                    onTap: () {
+                      onSelected(item);
+                      Navigator.pop(context);
+                    },
+                  )),
+            ],
+          ),
         ),
       ),
     );

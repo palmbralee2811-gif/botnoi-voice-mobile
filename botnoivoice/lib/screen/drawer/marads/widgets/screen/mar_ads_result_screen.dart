@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_audio_player_dialog.dart';
@@ -25,12 +26,16 @@ class MarAdsResultScreen extends ConsumerStatefulWidget {
   final String? generatedText;
   final String? promptId;
   final String? contentStyle;
+  final String? speakerId;
+  final String? mode;
 
   const MarAdsResultScreen({
     super.key,
     this.generatedText,
     this.promptId,
     this.contentStyle,
+    this.speakerId,
+    this.mode,
   });
 
   @override
@@ -63,14 +68,19 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
     // กำหนดค่าเริ่มต้นให้กับ Speaker (เช่น id 1 หรือตัวแรกของ List)
     if (SpeakerModel.speakerItem.isNotEmpty) {
-      // 1. ลองหาจาก ID ที่ได้รับมา (ถ้าเป็นการเปิดจากหน้า History หรือสร้างเสร็จแล้ว)
-      _selectedSpeaker = SpeakerModel.speakerItem.firstWhere(
-        (s) => s.speakerId == widget.promptId, // สมมติส่ง ID มาใน promptId
-        orElse: () => SpeakerModel.speakerItem.firstWhere(
-          (s) => s.speakerId == '1', // ถ้าไม่เจอจริงๆ ให้เป็นเอวา
+      // 1. ลองหาจาก speakerId ที่ส่งมาจาก Advanced Mode ก่อน
+      if (widget.speakerId != null && widget.speakerId!.isNotEmpty) {
+        _selectedSpeaker = SpeakerModel.speakerItem.firstWhere(
+          (s) => s.speakerId == widget.speakerId,
           orElse: () => SpeakerModel.speakerItem.first,
-        ),
-      );
+        );
+      } else {
+        // 2. ถ้าไม่มี ให้ใช้ Default (เช่น เอวา ID: 1)
+        _selectedSpeaker = SpeakerModel.speakerItem.firstWhere(
+          (s) => s.speakerId == '1',
+          orElse: () => SpeakerModel.speakerItem.first,
+        );
+      }
     }
   }
 
@@ -250,7 +260,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         ),
         child: Container(
           height: 33.h,
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           decoration: BoxDecoration(
             color: const Color(0xFFF7F8FA),
             borderRadius: BorderRadius.circular(8.r),
@@ -261,11 +271,21 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               ShaderMask(
                 shaderCallback: (bounds) =>
                     MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
+                child: Icon(
+                  Icons.tune_rounded, // ไอคอนสื่อความหมายการปรับโหมด
+                  size: 14.sp,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 6.w),
+              ShaderMask(
+                shaderCallback: (bounds) =>
+                    MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                 child: Text(
                   _selectedMode,
                   style: GoogleFonts.inter(
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
                     height: 1.67,
                     letterSpacing: 0.25,
@@ -277,8 +297,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                 shaderCallback: (bounds) =>
                     MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
                 child: Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 12.sp,
+                  Icons.keyboard_arrow_down_rounded,
+                  size: 17.sp,
                   color: Colors.white,
                 ),
               ),
@@ -318,6 +338,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                 controller: _textController,
                 maxLines: null,
                 expands: true,
+                readOnly: _selectedMode == 'Result',
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -335,17 +356,20 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    _textController.clear();
-                    setState(() {});
-                  },
-                  child: Icon(
-                    Icons.close,
-                    size: 24.sp,
-                    color: const Color(0xFF4F4F4F),
-                  ),
-                ),
+                if (_selectedMode == 'Edit')
+                  GestureDetector(
+                    onTap: () {
+                      _textController.clear();
+                      setState(() {});
+                    },
+                    child: Icon(
+                      Icons.close,
+                      size: 24.sp,
+                      color: const Color(0xFF4F4F4F),
+                    ),
+                  )
+                else
+                  const SizedBox(), // ใส่ไว้กัน Layout ขยั
                 Text(
                   '$_characterCount ตัวอักษร',
                   style: GoogleFonts.inter(
@@ -515,39 +539,185 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   void _handleResultSelectorTap() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.transparent, // โปร่งใสเพื่อให้เห็นขอบโค้งมน
       builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 40.h), // เพิ่ม Padding
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "เลือกโหมด",
-              style: GoogleFonts.prompt(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+            // Drag Handle (ขีดเทาๆ ด้านบน)
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE0E0E0),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-            SizedBox(height: 12.h),
-            const Divider(),
-            ListTile(
-              title: const Text('Result'),
+            SizedBox(height: 24.h),
+
+            Text(
+              "เลือกโหมดการทำงาน",
+              style: GoogleFonts.prompt(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            // 1. ปุ่ม Result
+            _buildModeOption(
+              icon: Icons.remove_red_eye_outlined,
+              label: 'Result',
+              isSelected: _selectedMode == 'Result',
               onTap: () {
+                setState(() => _selectedMode = 'Result');
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              title: const Text('Edit'),
+            SizedBox(height: 12.h),
+
+            // 2. ปุ่ม Edit
+            _buildModeOption(
+              icon: Icons.edit_note_rounded,
+              label: 'Edit',
+              isSelected: _selectedMode == 'Edit',
               onTap: () {
                 setState(() => _selectedMode = 'Edit');
                 Navigator.pop(context);
+              },
+            ),
+            SizedBox(height: 12.h),
+
+            // 3. ปุ่ม History
+            _buildModeOption(
+              icon: Icons.history_rounded,
+              label: 'History',
+              isSelected: false, // History เป็นแค่ปุ่มทางผ่าน ไม่ต้องค้างสถานะ
+              onTap: () {
+                Navigator.pop(context);
+                // เปิด History เป็น Modal เต็มจอ
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => Container(
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF7F8FA),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20.r)),
+                      child: const MarAdsHistoryScreen(),
+                    ),
+                  ),
+                );
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  // Widget ช่วยสร้างปุ่มเลือกโหมดให้สวยงาม
+  Widget _buildModeOption({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 56.h, // ปุ่มใหญ่ กดง่าย
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          // ถ้าไม่ได้เลือก ให้มีขอบสีเทาบางๆ
+          border: isSelected
+              ? null
+              : Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF9747FF).withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+              : [],
+        ),
+        child: isSelected
+            // ถ้าเลือก: วาดขอบ Gradient สีรุ้ง
+            ? CustomPaint(
+                painter: GradientBorderPainter(
+                  gradient: MarAdsUIStyle.cyanPurpleGradient,
+                  radius: 16.r,
+                  strokeWidth: 2,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Icon สีรุ้ง
+                    ShaderMask(
+                      shaderCallback: (bounds) =>
+                          MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
+                      child: Icon(icon, size: 24.sp, color: Colors.white),
+                    ),
+                    SizedBox(width: 12.w),
+                    // Text สีรุ้ง
+                    ShaderMask(
+                      shaderCallback: (bounds) =>
+                          MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
+                      child: Text(
+                        label,
+                        style: GoogleFonts.prompt(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            // ถ้าไม่เลือก: แสดงสีเทาปกติ
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 24.sp, color: const Color(0xFF888888)),
+                  SizedBox(width: 12.w),
+                  Text(
+                    label,
+                    style: GoogleFonts.prompt(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF262626),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  // Helper: ดึงและจัด Format ภาษาให้เหลือ 2 ตัวอักษร
+  String _getSafeLanguageCode(SpeakerEntity? speaker) {
+    String lang = speaker?.languageCode ?? '';
+    if (lang.isEmpty) lang = speaker?.language.toLowerCase() ?? '';
+    if (lang.length >= 2) lang = lang.substring(0, 2).toLowerCase();
+    return lang.isEmpty ? 'th' : lang;
   }
 
   Future<void> _handleCreateVoice() async {
@@ -564,6 +734,20 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           const SnackBar(content: Text('กรุณาพิมพ์ข้อความก่อนสร้างเสียง')));
       return;
     }
+
+    String currentMode = widget.mode ?? 'basic'; // ตั้งค่าเริ่มต้น
+    try {
+      // พยายามดึงจาก GoRouterState อีกครั้งเพื่อความชัวร์
+      final state = GoRouterState.of(context);
+      final queryMode = state.uri.queryParameters['mode'];
+      if (queryMode != null && queryMode.isNotEmpty) {
+        currentMode = queryMode;
+      }
+    } catch (e) {
+      debugPrint("Error parsing mode from router: $e");
+    }
+
+    print(" Creating Voice with Mode: '$currentMode'");
 
     // โชว์ Loading Dialog
     BuildContext? dialogContext;
@@ -584,13 +768,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
       // หา Language Code
       // ลำดับความสำคัญ: languageCode -> language (ตัวพิมพ์เล็ก) -> 'th' (Default)
-      String langCode = _selectedSpeaker?.languageCode ?? '';
-      if (langCode.isEmpty) {
-        langCode = _selectedSpeaker?.language.toLowerCase() ?? '';
-      }
-      if (langCode.isEmpty) {
-        langCode = 'th';
-      }
+      final String langCode = _getSafeLanguageCode(_selectedSpeaker);
 
       // ดึงค่า V2 และ ชื่อ Speaker มา Log ดู
       final bool isV2Speaker = (_selectedSpeaker?.v2 ?? false) ||
@@ -636,6 +814,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               payload: {
                 "prompt_id": newPromptId,
                 "text": _textController.text,
+                "mode": currentMode,
                 "title": promptTitle,
                 "category": "text",
                 "speaker": spkId,
