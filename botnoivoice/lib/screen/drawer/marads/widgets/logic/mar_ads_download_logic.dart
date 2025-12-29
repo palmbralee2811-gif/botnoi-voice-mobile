@@ -156,6 +156,7 @@ class MarAdsDownloadLogic {
         },
         showNotification: true,
         openFileFromNotification: true,
+        saveInPublicStorage: true,
       );
 
       // // เรียก Callback แจ้งเตือนว่าสำเร็จ
