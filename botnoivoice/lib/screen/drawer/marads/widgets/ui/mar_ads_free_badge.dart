@@ -50,7 +50,7 @@ class MarAdsFreeBadge extends StatelessWidget {
             padding: EdgeInsets.only(right: 4.w),
             child: Text(
               remainingCount,
-              style: GoogleFonts.inter(
+              style: GoogleFonts.prompt(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
                 color: const Color(0xFF262626),

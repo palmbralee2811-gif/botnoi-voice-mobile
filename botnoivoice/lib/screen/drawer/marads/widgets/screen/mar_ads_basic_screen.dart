@@ -1,3 +1,4 @@
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -54,6 +55,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
+      drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
       body: Column(
         children: [
@@ -92,7 +94,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                     showInfoIcon: true,
                     onTap: _handleContentLengthTap,
                   ),
-                  _buildAdditionalInfoLabel(), // 👈 กล่องข้อมูลเสริมพิมพ์ได้
+                  _buildAdditionalInfoLabel(), // กล่องข้อมูลเสริมพิมพ์ได้
                 ],
               ),
             ),
@@ -113,14 +115,20 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new,
-                size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
-                color: kDark,
-              ),
-              onPressed: () {
-                context.pop();
+            child: Builder(
+              // หุ้มด้วย Builder เพื่อสร้าง context ใหม่ใต้ Scaffold
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    size:
+                        ResponsiveDesignOrientation.isLandscape ? 22.sp : 32.sp,
+                    color: kDark,
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
               },
             ),
           ),
@@ -234,38 +242,15 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   }
 
   void _handleModeSelectorTap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('Basic mode'),
-              onTap: () {
-                setState(() => _selectedMode = 'Basic mode');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Advanced mode'),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/marads/advanced');
-              },
-            ),
-            ListTile(
-              title: const Text('History'),
-              onTap: () {
-                Navigator.pop(context);
-                context.go('/marads/history');
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+    MarAdsModeSelector.show(context, _selectedMode, (mode) {
+      if (mode == 'Basic mode') {
+        setState(() => _selectedMode = 'Basic mode');
+      } else if (mode == 'Advanced mode') {
+        context.go('/marads/advanced');
+      } else if (mode == 'History') {
+        context.go('/marads/history');
+      }
+    });
   }
 
   void _handleContentStyleTap() {

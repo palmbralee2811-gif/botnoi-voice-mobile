@@ -34,7 +34,7 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
               Expanded(
                 child: Text(
                   widget.label,
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.prompt(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: const Color(0xFF262626),
@@ -55,41 +55,36 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
           GestureDetector(
             onTap: widget.onTap,
             child: Container(
-              height: 46.h,
-              padding: const EdgeInsets.all(1.5),
+              height: 50.h,
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               decoration: BoxDecoration(
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
-                gradient: MarAdsUIStyle.purplePinkGradient,
+                border: Border.all(
+                  color: const Color(0xFFDBDBDB), // สีขอบเทา
+                  width: 1.0,
+                ),
               ),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        widget.value,
-                        style: GoogleFonts.inter(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF262626),
-                          height: 1.25,
-                          letterSpacing: 0.25,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      widget.value,
+                      style: GoogleFonts.prompt(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF262626),
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      size: 12.w,
-                      color: const Color(0xFF262626),
-                    ),
-                  ],
-                ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 20.sp,
+                    color: const Color(0xFF262626),
+                  ),
+                ],
               ),
             ),
           ),

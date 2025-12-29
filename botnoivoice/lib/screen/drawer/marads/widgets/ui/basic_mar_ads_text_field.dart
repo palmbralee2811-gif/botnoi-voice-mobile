@@ -1,4 +1,3 @@
-import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +9,7 @@ class MarAdsTextField extends StatefulWidget {
   final bool isRequired;
   final double? height;
   final int? maxLines;
+  final Widget? suffixIcon;
 
   const MarAdsTextField({
     super.key,
@@ -19,6 +19,7 @@ class MarAdsTextField extends StatefulWidget {
     this.isRequired = false,
     this.height,
     this.maxLines = 1,
+    this.suffixIcon,
   });
 
   @override
@@ -51,7 +52,7 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
         children: [
           Text(
             widget.label,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.prompt(
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               color: const Color(0xFF262626),
@@ -59,45 +60,58 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
               letterSpacing: 0.25,
             ),
           ),
-          SizedBox(height: 5.h),
-          Container(
-            height: widget.height ?? 49.h,
-            padding: const EdgeInsets.all(1.5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              gradient: MarAdsUIStyle.purplePinkGradient,
-            ),
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.r),
+          SizedBox(height: 8.h),
+          SizedBox(
+            // ใช้ SizedBox คุมความสูงเฉพาะถ้ามีการกำหนด height (เช่นช่องกรอกยาวๆ)
+            // ถ้าช่องปกติให้ TextField จัดการความสูงเองเพื่อให้ Text อยู่กลางพอดี
+            height: widget.height,
+            child: TextField(
+              controller: widget.controller,
+              focusNode: _focusNode,
+              maxLines: widget.maxLines,
+              // ถ้า maxLines เป็น null (ช่องใหญ่) ให้ขยายเต็ม, ถ้าไม่ ให้เป็น false
+              expands: widget.maxLines == null,
+              textAlignVertical: widget.maxLines == null
+                  ? TextAlignVertical.top
+                  : TextAlignVertical.center,
+              style: GoogleFonts.prompt(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF262626),
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                hintText: widget.placeholder,
+                hintStyle: GoogleFonts.prompt(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFFC4C4C4), // สี Placeholder อ่อนๆ
                 ),
-                child: TextField(
-                  controller: widget.controller,
-                  focusNode: _focusNode,
-                  textAlignVertical: widget.maxLines != 1
-                      ? TextAlignVertical.top
-                      : TextAlignVertical.center,
-                  maxLines: widget.maxLines,
-                  expands: widget.maxLines == null,
-                  style: GoogleFonts.inter(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF262626),
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: widget.height != null ? 16.h : 14.h),
+                // เส้นขอบปกติ (สีเทาอ่อน)
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  borderSide: const BorderSide(
+                    color: Color(0xFFDBDBDB),
+                    width: 1.0,
                   ),
-                  decoration: InputDecoration(
-                    hintText: widget.placeholder,
-                    hintStyle: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF888888),
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 14.h),
+                ),
+                // เส้นขอบตอนกด (Focus)
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF9E9E9E),
+                    width: 1.0,
                   ),
-                )),
-          )
+                ),
+                suffixIcon: widget.suffixIcon,
+              ),
+            ),
+          ),
         ],
       ),
     );
