@@ -1,15 +1,12 @@
-import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MarAdsFreeBadge extends StatelessWidget {
-  final String remainingCount;
+class MarAdsPointsBadge extends StatelessWidget {
+  final String points;
 
-  const MarAdsFreeBadge({
-    super.key,
-    required this.remainingCount,
-  });
+  const MarAdsPointsBadge({super.key, required this.points});
 
   @override
   Widget build(BuildContext context) {
@@ -29,32 +26,23 @@ class MarAdsFreeBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ Style กลาง
-              borderRadius: BorderRadius.circular(100.r),
-            ),
-            child: Text(
-              'ฟรี',
-              style: GoogleFonts.prompt(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                height: 1.5,
-              ),
+          Padding(
+            padding: EdgeInsets.only(left: 4.w),
+            child: SvgPicture.asset(
+              'assets/images/logo/credit-icon.svg',
+              width: 20.w,
+              height: 20.h,
             ),
           ),
           SizedBox(width: 4.w),
           Padding(
             padding: EdgeInsets.only(right: 4.w),
             child: Text(
-              remainingCount,
+              points,
               style: GoogleFonts.prompt(
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                color: const Color(0xFF262626),
-                height: 1.5,
+                fontWeight: FontWeight.bold, // ใช้ Bold ให้เหมือน App Bar
+                color: const Color(0xFF262626), // หรือ kDark
               ),
             ),
           ),

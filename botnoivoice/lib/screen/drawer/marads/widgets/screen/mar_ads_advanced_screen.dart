@@ -1,13 +1,17 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_advanced_logic.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_basic_info_section.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_promotion_section.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_sales_style_section.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import '../ui/mar_ads_mode_selector.dart';
-import '../ui/mar_ads_free_badge.dart';
-import '../ui/mar_ads_collapsible_section.dart';
 import '../ui/basic_mar_ads_text_field.dart';
 import '../ui/mar_ads_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -96,6 +100,9 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
   void initState() {
     super.initState();
     _logic = MarAdsAdvancedLogic(PromptService());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadAllTokensIfLoggedIn(ref);
+    });
   }
 
   @override
@@ -131,11 +138,36 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                     onTap: _handleModeSelectorTap,
                   ),
                   SizedBox(height: 5.h),
-                  _buildBasicInfoSection(),
+                  AdvancedBasicInfoSection(
+                    isExpanded: _isBasicInfoExpanded,
+                    onToggle: () => setState(
+                        () => _isBasicInfoExpanded = !_isBasicInfoExpanded),
+                    productController: _productController,
+                    brandController: _brandController,
+                    priceController: _priceController,
+                    // ส่ง Function สร้างปุ่ม Tags เดิมเข้าไปแสดงผล
+                    productPropertiesButton: _buildProductPropertiesButton(),
+                  ),
                   SizedBox(height: 16.h),
-                  _buildSalesStyleSection(),
+                  AdvancedSalesStyleSection(
+                    isExpanded: _isSalesStyleExpanded,
+                    onToggle: () => setState(
+                        () => _isSalesStyleExpanded = !_isSalesStyleExpanded),
+                    selectedSalesCharacter: _selectedSalesCharacter,
+                    onTapSalesCharacter: _handleSalesCharacterTap,
+                    selectedContentStyle: _selectedContentStyle,
+                    onTapContentStyle: _handleContentStyleTap,
+                  ),
                   SizedBox(height: 16.h),
-                  _buildPromotionSection(),
+                  AdvancedPromotionSection(
+                    isExpanded: _isPromotionInfoExpanded,
+                    onToggle: () => setState(() =>
+                        _isPromotionInfoExpanded = !_isPromotionInfoExpanded),
+                    promotionController: _promotionController,
+                    targetCustomersController: _targetCustomersController,
+                    sellingPointController: _sellingPointController,
+                    whyBuyController: _whyBuyController,
+                  ),
                   SizedBox(height: 16.h),
                   MarAdsDropdown(
                     // ใช้ Widget กลาง
@@ -155,7 +187,14 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
               ),
             ),
           ),
-          _buildBottomButton(),
+          MarAdsCreateButton(
+            remainingCount: '10/10', // หรือค่าจากตัวแปร
+            isFormValid: _productController.text.isNotEmpty &&
+                _brandController.text.isNotEmpty &&
+                _priceController.text.isNotEmpty,
+            isLoading: _isLoading,
+            onPressed: _handleCreateMessage,
+          ),
         ],
       ),
     );
@@ -200,109 +239,17 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: EdgeInsets.only(right: 16.w),
-              child: const MarAdsFreeBadge(remainingCount: '10/10'),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final userToken = ref.watch(currentUserTokenStateProvider);
+                  final points = userToken.remainingCredits ?? 0;
+                  return MarAdsPointsBadge(points: points.toString());
+                },
+              ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildBasicInfoSection() {
-    return Column(
-      children: [
-        MarAdsCollapsibleSection(
-          title: 'ข้อมูลเบื้องต้น*',
-          isExpanded: _isBasicInfoExpanded,
-          onTap: () =>
-              setState(() => _isBasicInfoExpanded = !_isBasicInfoExpanded),
-        ),
-        if (_isBasicInfoExpanded) ...[
-          Divider(color: const Color(0xFFEEDDF3), height: 1.h, thickness: 1),
-          SizedBox(height: 16.h),
-          MarAdsTextField(
-            label: 'สินค้าที่ต้องการขาย*',
-            placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
-            controller: _productController,
-            isRequired: true,
-          ),
-          MarAdsTextField(
-            label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
-            placeholder: 'บอทน้อย',
-            controller: _brandController,
-          ),
-          MarAdsTextField(
-            label: 'ราคา',
-            placeholder: '129 บาท, 99 บาท จาก 129 บาท',
-            controller: _priceController,
-          ),
-          _buildProductPropertiesButton(),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildSalesStyleSection() {
-    return Column(
-      children: [
-        MarAdsCollapsibleSection(
-          title: 'สไตล์การขาย',
-          isExpanded: _isSalesStyleExpanded,
-          onTap: () =>
-              setState(() => _isSalesStyleExpanded = !_isSalesStyleExpanded),
-        ),
-        if (_isSalesStyleExpanded) ...[
-          MarAdsDropdown(
-            label: 'คาแรกเตอร์คนขาย',
-            value: _selectedSalesCharacter,
-            onTap: _handleSalesCharacterTap,
-          ),
-          MarAdsDropdown(
-            label: 'สไตล์เนื้อหา',
-            value: _selectedContentStyle,
-            onTap: _handleContentStyleTap,
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildPromotionSection() {
-    return Column(
-      children: [
-        MarAdsCollapsibleSection(
-          title: 'ข้อมูลโปรโมชั่น (Optional)',
-          isExpanded: _isPromotionInfoExpanded,
-          onTap: () => setState(
-              () => _isPromotionInfoExpanded = !_isPromotionInfoExpanded),
-        ),
-        if (_isPromotionInfoExpanded) ...[
-          Divider(color: const Color(0xFFEEDDF3), height: 1.h, thickness: 1),
-          SizedBox(height: 16.h),
-          MarAdsTextField(
-            label: 'โปรโมชั่น',
-            placeholder: 'แถมฟรีหนังสือการสอน',
-            controller: _promotionController,
-          ),
-          MarAdsTextField(
-            label: 'ลูกค้าที่เป็นกลุ่มเป้าหมาย',
-            placeholder: 'คนชอบเทคโนโลยี',
-            controller: _targetCustomersController,
-          ),
-          MarAdsTextField(
-            label: 'จุดขายทีดีกว่าคู่แข่ง',
-            placeholder: 'ขายถูกที่สุดในย่าน',
-            controller: _sellingPointController,
-            suffixIcon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
-          ),
-          MarAdsTextField(
-            label: 'ทำไมลูกค้าถึงต้องซื้อ',
-            placeholder: 'ประหยัดเงินจากของมือหนึ่ง',
-            controller: _whyBuyController,
-            suffixIcon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
-          ),
-        ],
-      ],
     );
   }
 
@@ -512,81 +459,6 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     }
   }
 
-  Widget _buildBottomButton() {
-    final bool isFormValid = _productController.text.isNotEmpty;
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.info_outline,
-                size: 12.w,
-                color: const Color(0xFF262626),
-              ),
-              SizedBox(width: 5.w),
-              Text(
-                'สร้างได้ 10 ครั้ง',
-                //TODO : แก้ไขสร้างได้
-                style: GoogleFonts.prompt(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xFF262626),
-                  height: 1.67,
-                  letterSpacing: 0.25,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Opacity(
-            opacity: isFormValid ? 1.0 : 0.5,
-            child: Container(
-              width: double.infinity,
-              height: 56.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFF262626),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                ),
-                onPressed:
-                    (isFormValid && !_isLoading) ? _handleCreateMessage : null,
-                child: _isLoading
-                    ? SizedBox(
-                        width: 24.w,
-                        height: 24.w,
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 3,
-                        ),
-                      )
-                    : Text(
-                        'สร้างข้อความ',
-                        style: GoogleFonts.prompt(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          height: 1.4,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   //// ฟังก์ชันแปลงคาแรกเตอร์เป็น Speaker ID
   String? _getSpeakerIdFromCharacter(String character) {
     return _characterToSpeakerId[character];
@@ -656,6 +528,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                 'text': generatedText,
                 'style': _selectedContentStyle,
                 'mode': 'advanced',
+                'product_name': _productController.text,
                 if (targetSpeakerId != null)
                   'speaker_id': targetSpeakerId, // ส่ง ID ไปด้วย
               },

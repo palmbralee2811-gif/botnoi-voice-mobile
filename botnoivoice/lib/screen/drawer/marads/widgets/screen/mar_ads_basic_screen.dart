@@ -1,12 +1,13 @@
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../ui/basic_mar_ads_text_field.dart';
 import '../ui/mar_ads_dropdown.dart';
 import '../ui/mar_ads_mode_selector.dart';
-import '../ui/mar_ads_free_badge.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -39,6 +40,9 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadAllTokensIfLoggedIn(ref);
+    });
     _logic = MarAdsLogic(PromptService());
   }
 
@@ -99,7 +103,12 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               ),
             ),
           ),
-          _buildBottomButton(),
+          MarAdsCreateButton(
+            remainingCount: '10/10',
+            isFormValid: _productController.text.isNotEmpty,
+            isLoading: _isLoading,
+            onPressed: _handleCreateMessage,
+          ),
         ],
       ),
     );
@@ -144,7 +153,13 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: EdgeInsets.only(right: 16.w),
-              child: const MarAdsFreeBadge(remainingCount: '10/10'),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final userToken = ref.watch(currentUserTokenStateProvider);
+                  final points = userToken.remainingCredits ?? 0;
+                  return MarAdsPointsBadge(points: points.toString());
+                },
+              ),
             ),
           ),
         ],
@@ -160,84 +175,6 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       controller: _additionalInfoController,
       height: 100.h, // กำหนดความสูง
       maxLines: null, // พิมพ์ได้ไม่จำกัดบรรทัด
-    );
-  }
-
-  /// ปุ่มล่างสุด + validate 3 ช่องบังคับ
-  Widget _buildBottomButton() {
-    final bool isFormValid = _productController.text.isNotEmpty &&
-        _brandController.text.isNotEmpty &&
-        _priceController.text.isNotEmpty;
-
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.info_outline,
-                size: 12.w,
-                color: const Color(0xFF262626),
-              ),
-              SizedBox(width: 5.w),
-              Text(
-                'สร้างได้ 10 ครั้ง',
-                style: GoogleFonts.inter(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xFF262626),
-                  height: 1.67,
-                  letterSpacing: 0.25,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Opacity(
-            opacity: isFormValid ? 1.0 : 0.25,
-            child: Container(
-              width: double.infinity,
-              height: 56.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFF262626),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                ),
-                onPressed:
-                    (isFormValid && !_isLoading) ? _handleCreateMessage : null,
-                child: _isLoading
-                    ? SizedBox(
-                        width: 24.w,
-                        height: 24.w,
-                        child: const CircularProgressIndicator(
-                          color: Colors.white, // สีขาวให้ตัดกับปุ่มสีเข้ม
-                          strokeWidth: 3,
-                        ),
-                      )
-                    : Text(
-                        'สร้างข้อความ',
-                        style: GoogleFonts.prompt(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          height: 1.4,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -412,6 +349,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             queryParameters: {
               'text': generatedText,
               'style': _selectedContentStyle,
+              'product_name': _productController.text,
             },
           ).toString(),
         );

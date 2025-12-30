@@ -4,11 +4,15 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_history_
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_edit_history_sheet.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_pagination.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_search_bar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_delete_confirm_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
-import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_history_card.dart'; // Import Widget ใหม่
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_history_card.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_success_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
@@ -494,12 +498,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 label: 'แก้ไข',
                 onTap: () {
                   Navigator.pop(context);
-                  context.push(
-                    Uri(
-                      path: '/marads/result',
-                      queryParameters: {'text': item.content},
-                    ).toString(),
-                  );
+                  _showEditPromptModal(item);
                 },
               ),
               _buildOptionItem(
@@ -516,6 +515,139 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         );
       },
     );
+  }
+
+  //  สำหรับแก้ไขข้อความ (Gradient Border + ปุ่มบันทึก)
+  void _showEditPromptModal(MarAdsHistoryModel item) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => MarAdsEditHistorySheet(
+        initialText: item.content,
+        onSave: (newText) async {
+          await _handleUpdateText(item, newText);
+          if (mounted) Navigator.pop(context); // ปิด Modal เมื่อบันทึกเสร็จ
+        },
+      ),
+    );
+  }
+
+  // ฟังก์ชัน Logic การบันทึกข้อมูล
+  Future<void> _handleUpdateText(
+      MarAdsHistoryModel item, String newText) async {
+    // แสดง Loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const MarAdsLoadingDialog(),
+    );
+
+    try {
+      final speaker = _getSpeakerForItem(item);
+      final lang = _extractLanguageCode(speaker);
+
+      // เรียก API Update (ใช้ service เดิม)
+      await _promptService.updatePromptHistory(
+        context: context,
+        promptId: item.id,
+        text: newText,
+        audioUrl: '', // ส่ง URL เดิมไปก่อน (ถ้า Server รองรับ)
+        speakerId: item.speakerId,
+        isV2: item.isV2FromApi,
+        language: lang,
+        contentStyle: item.style,
+        title: item.title,
+        category: 'text',
+      );
+
+      // อัปเดตข้อมูลใน List (Local State) เพื่อให้ UI เปลี่ยนทันที
+      setState(() {
+        final index =
+            _historyItems.indexWhere((element) => element.id == item.id);
+        if (index != -1) {
+          // หยุดเล่นเสียงถ้ากำลังเล่น Item ตัวนี้อยู่
+          if (_playingIndex == index) {
+            _playingIndex = null;
+            _isPlaying = false;
+            _audioPlayer.stop();
+          }
+
+          final old = _historyItems[index];
+          _historyItems[index] = MarAdsHistoryModel(
+              id: old.id,
+              title: old.title,
+              content: newText, // อัปเดตเนื้อหา
+              mode: old.mode,
+              style: old.style,
+              points: old.points,
+              chars: newText.length.toString(),
+              hasAudio: false,
+              duration: '00:00/00:00',
+              audioUrl: '',
+              speakerId: old.speakerId,
+              isV2FromApi: old.isV2FromApi);
+
+          // อัปเดตรายการที่ Filter อยู่ด้วย
+          if (_searchController.text.isEmpty) {
+            _filteredItems = _historyItems;
+          }
+        }
+      });
+
+      if (mounted) {
+        Navigator.pop(context); // ปิด Loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.white),
+                SizedBox(width: 8.w),
+                Text(
+                  'บันทึกข้อมูลสำเร็จ',
+                  style:
+                      GoogleFonts.prompt(color: Colors.white, fontSize: 14.sp),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF00C853),
+            behavior: SnackBarBehavior.floating, // ให้ลอยขึ้นมาเหนือขอบล่าง
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r), // มุมโค้งมน
+            ),
+            margin: EdgeInsets.all(16.w), // ระยะห่างจากขอบ
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // ปิด Loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white),
+                SizedBox(width: 8.w),
+                Text(
+                  'เกิดข้อผิดพลาดในการบันทึก',
+                  style:
+                      GoogleFonts.prompt(color: Colors.white, fontSize: 14.sp),
+                ),
+              ],
+            ),
+            backgroundColor:
+                MarAdsUIStyle.errorColor, // ใช้สีแดงจาก Style (0xFFFF5C5C)
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            margin: EdgeInsets.all(16.w),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildOptionItem({
@@ -536,57 +668,6 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       onTap: onTap,
       contentPadding: EdgeInsets.symmetric(horizontal: 24.w),
       minLeadingWidth: 24.w,
-    );
-  }
-
-  Widget _buildPaginationControls() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap:
-                _currentPage > 1 ? () => _changePage(_currentPage - 1) : null,
-            child: Icon(
-              Icons.arrow_left_rounded,
-              size: 32.sp,
-              color:
-                  _currentPage > 1 ? const Color(0xFF262626) : Colors.grey[300],
-            ),
-          ),
-          SizedBox(width: 8.w),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]!),
-              borderRadius: BorderRadius.circular(8.r),
-              color: Colors.white,
-            ),
-            child: Text(
-              '$_currentPage',
-              style: GoogleFonts.inter(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
-              ),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          InkWell(
-            onTap: _currentPage < _totalPages
-                ? () => _changePage(_currentPage + 1)
-                : null,
-            child: Icon(
-              Icons.arrow_right_rounded,
-              size: 32.sp,
-              color: _currentPage < _totalPages
-                  ? const Color(0xFF262626)
-                  : Colors.grey[300],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -640,7 +721,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       appBar: _buildAppBar(),
       body: Column(
         children: [
-          _buildSearchBar(),
+          MarAdsSearchBar(controller: _searchController),
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -715,7 +796,11 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                             ),
                           ),
                           if (_filteredItems.isNotEmpty)
-                            _buildPaginationControls(),
+                            MarAdsPagination(
+                              currentPage: _currentPage,
+                              totalPages: _totalPages,
+                              onPageChanged: _changePage,
+                            ),
                         ],
                       ),
           ),
@@ -759,41 +844,6 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 48.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7F8FA),
-                borderRadius: BorderRadius.circular(24.r),
-              ),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  prefixIcon:
-                      Icon(Icons.search, color: Colors.grey, size: 24.sp),
-                  hintText: 'ค้นหา',
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 14.sp,
-                    color: Colors.grey,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12.h),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
         ],
       ),
     );
