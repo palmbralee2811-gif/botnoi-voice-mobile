@@ -215,10 +215,11 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     super.dispose();
   }
 
-  void _showDownloadDialog(String url) {
+  void _showDownloadDialog(String url, String content) {
     showDialog(
       context: context,
       builder: (dialogContext) => MarAdsDownloadOptionsDialog(
+        points: content.length * 1,
         onConfirm: (selectedExtension) async {
           final timestamp = DateTime.now().millisecondsSinceEpoch;
           final finalFileName = "botnoi_marads_$timestamp.$selectedExtension";
@@ -787,8 +788,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                                     },
                                     onGenerateAudio: () => _handleGenerateAudio(
                                         realIndex, item.content, finalSpeaker),
-                                    onDownload: () =>
-                                        _showDownloadDialog(item.audioUrl),
+                                    onDownload: () => _showDownloadDialog(
+                                        item.audioUrl, item.content),
                                     onOptions: () => _showOptionsModal(item),
                                   );
                                 },

@@ -526,11 +526,13 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       );
       return;
     }
+    final int estimatedPoints = _textController.text.length * 1;
 
     // กรณีดาวน์โหลด: โชว์ Dialog ให้เลือกก่อน
     showDialog(
       context: context,
       builder: (dialogContext) => MarAdsDownloadOptionsDialog(
+        points: estimatedPoints,
         onConfirm: (selectedExtension) async {
           // เมื่อผู้ใช้กด "ตกลง" และเลือกนามสกุลมาแล้ว
 

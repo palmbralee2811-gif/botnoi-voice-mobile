@@ -9,7 +9,7 @@ class MarAdsDownloadOptionsDialog extends StatefulWidget {
 
   const MarAdsDownloadOptionsDialog({
     super.key,
-    this.points = 197, // Default ไว้ก่อน
+    required this.points,
     required this.onConfirm,
   });
 

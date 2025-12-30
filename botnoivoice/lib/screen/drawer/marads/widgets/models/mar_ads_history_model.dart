@@ -45,6 +45,10 @@ class MarAdsHistoryModel {
     //   }
     // }
 
+    final String textContent = json['text'] ?? '';
+    final int charCount = textContent.length;
+    final int calculatedPoints = charCount * 1; // สูตร: 1 ตัวอักษร = 2 pt
+
     return MarAdsHistoryModel(
       id: json['prompt_id'] ?? json['_id'] ?? '',
       title: json['title'] ?? 'ไม่ระบุหัวข้อ',
@@ -52,8 +56,8 @@ class MarAdsHistoryModel {
       mode: json['category'] == 'text' ? 'Basic mode' : 'Advanced mode',
       // style: styleLabel,
       style: _parseStyleLabel(json['prompt_style']),
-      points: '${json['point_used'] ?? 0} pt', //ค่อยแก้ไขภายหลัง
-      chars: '${(json['text'] ?? '').toString().length} ตัวอักษร',
+      points: '$calculatedPoints PT',
+      chars: '$charCount ตัวอักษร',
       hasAudio: json['audio'] != null && json['audio'].toString().isNotEmpty,
       duration: '00:00/00:00',
       audioUrl: json['audio'] ?? '',

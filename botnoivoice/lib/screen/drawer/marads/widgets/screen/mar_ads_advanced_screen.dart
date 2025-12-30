@@ -123,6 +123,20 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userToken = ref.watch(currentUserTokenStateProvider);
+    final int currentPoints =
+        int.tryParse(userToken.remainingCredits.toString()) ?? 0;
+
+    // คำนวณราคาตามความยาวที่เลือก ( ~30, ~60 วิ)
+    int costPerGen = 100; // เริ่มต้นที่ 30 วิ (100 Points)
+    if (_selectedContentLength.contains('60')) {
+      costPerGen = 150; // ถ้าเลือก 60 วิ เป็น 150 Points
+    }
+
+    // คำนวณจำนวนครั้งที่สามารถสร้างได้
+    final int canCreateTimes =
+        costPerGen == 0 ? 999 : (currentPoints / costPerGen).floor();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       drawer: const DrawerAppbar(),
@@ -188,7 +202,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
             ),
           ),
           MarAdsCreateButton(
-            remainingCount: '10/10', // หรือค่าจากตัวแปร
+            remainingCount: canCreateTimes.toString(),
             isFormValid: _productController.text.isNotEmpty &&
                 _brandController.text.isNotEmpty &&
                 _priceController.text.isNotEmpty,

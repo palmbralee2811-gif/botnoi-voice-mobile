@@ -226,7 +226,7 @@ class MarAdsHistoryCard extends StatelessWidget {
                 ],
               ),
               Text(
-                '${item.points}  ${item.chars}',
+                '${item.points} | ${item.chars}',
                 style: GoogleFonts.inter(
                   fontSize: 12.sp,
                   color: Colors.grey,
