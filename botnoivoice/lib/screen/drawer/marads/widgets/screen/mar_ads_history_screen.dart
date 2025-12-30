@@ -164,23 +164,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
       if (mounted) {
         setState(() {
-          // บังคับให้ทุกรายการต้องสร้างเสียงใหม่ (Force hasAudio = false)
-          _historyItems = result.reversed
-              .map((item) => MarAdsHistoryModel(
-                    id: item.id,
-                    title: item.title,
-                    content: item.content,
-                    mode: item.mode,
-                    style: item.style,
-                    points: item.points,
-                    chars: item.chars,
-                    hasAudio: false, // Force reset
-                    duration: '00:00/00:00',
-                    audioUrl: '', // Clear old URL
-                    speakerId: item.speakerId,
-                    isV2FromApi: item.isV2,
-                  ))
-              .toList();
+          // โหลดข้อมูลตามจริงจาก API (เพื่อให้ใช้เสียงเดิมได้ถ้ายังไม่หมดอายุ)
+          _historyItems = result.reversed.toList();
 
           // ต้องแน่ใจว่าใช้ Key ที่มี _${s.v2} ต่อท้าย
           _allSpeakerMap = {
@@ -443,7 +428,63 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           _position = Duration.zero;
           _duration = Duration.zero;
         });
-        await _audioPlayer.play(UrlSource(url));
+        try {
+          // 1. กำหนด Timeout 3 วินาที เพื่อเช็คว่าลิงก์ยังใช้งานได้ไหม (ลดเวลาลงเพื่อความเร็ว)
+          await _audioPlayer.setSource(UrlSource(url)).timeout(
+                const Duration(seconds: 3),
+                onTimeout: () => throw Exception('timeout'),
+              );
+          await _audioPlayer.resume();
+        } catch (e) {
+          // 2. หากเกิด Error หรือหมดอายุ ให้หยุด Player ทันทีเพื่อป้องกันแอปค้าง
+          await _audioPlayer.stop();
+          if (mounted) {
+            setState(() {
+              // 3. เปลี่ยนสถานะไอเทมเป็น hasAudio = false เพื่อให้ปุ่ม "สร้างเสียง" เด้งกลับมา
+              final oldItem = _historyItems[index];
+              _historyItems[index] = MarAdsHistoryModel(
+                id: oldItem.id,
+                title: oldItem.title,
+                content: oldItem.content,
+                mode: oldItem.mode,
+                style: oldItem.style,
+                points: oldItem.points,
+                chars: oldItem.chars,
+                hasAudio: false, 
+                duration: '00:00/00:00',
+                audioUrl: '',
+                speakerId: oldItem.speakerId,
+                // isV2FromApi: oldItem.isV2FromApi,
+              );
+              _historyItems[index] = MarAdsHistoryModel(
+                id: oldItem.id,
+                title: oldItem.title,
+                content: oldItem.content,
+                mode: oldItem.mode,
+                style: oldItem.style,
+                points: oldItem.points,
+                chars: oldItem.chars,
+                hasAudio: false,
+                duration: '00:00/00:00',
+                audioUrl: '',
+                speakerId: oldItem.speakerId,
+                isV2FromApi: oldItem.isV2FromApi,
+              );
+              _playingIndex = null;
+              _isPlaying = false;
+            });
+
+            _filteredItems = List.from(_historyItems);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                    'ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
       }
     } catch (e) {
       print("Error playing audio: $e");

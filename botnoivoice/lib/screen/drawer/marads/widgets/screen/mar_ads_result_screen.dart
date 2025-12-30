@@ -269,7 +269,11 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     return lang.isEmpty ? 'th' : lang;
   }
 
+  bool _isVoiceLoading = false; // สถานะ Loading สำหรับป้องกันการหักพอยท์ซ้ำ
+
   Future<void> _handleCreateVoice() async {
+    if (_isVoiceLoading) return; // ถ้ากำลังทำงานอยู่ให้หยุด เพื่อกัน Double Tap
+    setState(() => _isVoiceLoading = true);
     // สั่งหุบคีย์บอร์ด (Unfocus) ก่อนจะเริ่มทำอะไร
     // เพื่อป้องกันคีย์บอร์ดเด้งสู้กับ Dialog
     FocusManager.instance.primaryFocus?.unfocus();
@@ -385,6 +389,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
             "prompt_style": {"value": widget.contentStyle ?? "-"},
           };
 
+          // ลอจิกการแยก Add/Update เพื่อบันทึกประวัติการใช้พอยท์
           if (isNew) {
             await _promptService.addWorkspacePrompt(
                 context: context, payload: payload);
@@ -398,8 +403,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               language: langCode,
               text: _textController.text,
               title: promptTitle,
-              contentStyle:
-                  widget.contentStyle ?? "-", 
+              contentStyle: widget.contentStyle ?? "-",
               category: "text",
             );
           }
@@ -428,6 +432,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           Navigator.of(dialogContext!).pop();
           dialogContext = null;
         }
+        if (mounted) setState(() => _isVoiceLoading = false);
       }
     } catch (e) {
       preloadedPlayer?.dispose();
@@ -478,6 +483,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       if (dialogContext != null && mounted) {
         Navigator.of(dialogContext!).pop();
       }
+      if (mounted) setState(() => _isVoiceLoading = false);
     }
   }
 
