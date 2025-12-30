@@ -47,7 +47,7 @@ class MarAdsHistoryModel {
 
     final String textContent = json['text'] ?? '';
     final int charCount = textContent.length;
-    final int calculatedPoints = charCount * 1; // สูตร: 1 ตัวอักษร = 2 pt
+    final int calculatedPoints = charCount * 1;
 
     return MarAdsHistoryModel(
       id: json['prompt_id'] ?? json['_id'] ?? '',

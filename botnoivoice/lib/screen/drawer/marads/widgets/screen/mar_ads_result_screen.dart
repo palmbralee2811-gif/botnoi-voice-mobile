@@ -363,45 +363,32 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
         // Save ลง History (ทำหลังจากได้เสียงแล้ว)
         try {
-          if (_localPromptId == null || _localPromptId!.isEmpty) {
-            final newPromptId = _generateRandomPromptId();
-            _localPromptId = newPromptId; // อัปเดตตัวแปรทันที
+          final bool isNew =
+              (_localPromptId == null || _localPromptId!.isEmpty);
+          if (isNew) _localPromptId = _generateRandomPromptId();
 
-            //  ส่งข้อมูลครบชุด (Text + Audio + Style)
+          final payload = {
+            "prompt_id": _localPromptId,
+            "text": _textController.text,
+            "mode": currentMode,
+            "title": promptTitle,
+            "category": "text",
+            "speaker": spkId,
+            "speaker_v2": isV2Speaker,
+            "language": langCode,
+            "audio": audioUrl,
+            "is_download": true,
+            "content_length": GoRouterState.of(context)
+                    .uri
+                    .queryParameters['content_length'] ??
+                'กลาง',
+            "prompt_style": {"value": widget.contentStyle ?? "-"},
+          };
+
+          if (isNew) {
             await _promptService.addWorkspacePrompt(
-              context: context,
-              payload: {
-                "prompt_id": newPromptId,
-                "text": _textController.text,
-                "mode": currentMode,
-                "title": promptTitle,
-                "category": "text",
-                "speaker": spkId,
-                "speaker_v2": isV2Speaker,
-                "language": langCode,
-                "audio": audioUrl,
-                "text_read": _textController.text,
-                "text_read_with_delay": _textController.text,
-                "volume": "100",
-                "speed": "1",
-                "is_download": true,
-                "isDownloaded": false,
-                "isEdit": false,
-                "isgenerate": true,
-                "isPlaying": false,
-                "prompt_style": {
-                  "TH_label": widget.contentStyle ?? "-",
-                  "EN_label": widget.contentStyle ?? "-",
-                  "value": widget.contentStyle ?? "-"
-                },
-              },
-            );
-            setState(() {
-              // ยืนยัน Speaker ที่เลือกไว้ใน State อีกครั้งป้องกันการหลุด
-              _selectedSpeaker = _selectedSpeaker;
-            });
+                context: context, payload: payload);
           } else {
-            // ถ้ามี ID อยู่แล้ว ให้ Update
             await _promptService.updatePromptHistory(
               context: context,
               promptId: _localPromptId!,
@@ -410,13 +397,15 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               isV2: isV2Speaker,
               language: langCode,
               text: _textController.text,
-              contentStyle: widget.contentStyle ?? "-",
               title: promptTitle,
+              contentStyle:
+                  widget.contentStyle ?? "-", 
               category: "text",
             );
           }
+          if (mounted) setState(() {});
         } catch (e) {
-          print("⚠️ Failed to save history: $e");
+          debugPrint("⚠️ History Sync Error: $e");
         }
 
         // สร้าง Player และโหลดเสียงรอเลย (Pre-load)
