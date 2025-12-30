@@ -365,6 +365,9 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               'text': generatedText,
               'style': _selectedContentStyle,
               'product_name': _productController.text,
+              'content_length': _selectedContentLength.contains('15')
+                  ? 'สั้น'
+                  : (_selectedContentLength.contains('30') ? 'กลาง' : 'ยาว'),
             },
           ).toString(),
         );

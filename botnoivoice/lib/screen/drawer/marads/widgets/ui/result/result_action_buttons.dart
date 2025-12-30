@@ -6,11 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 class MarAdsResultActionButtons extends StatelessWidget {
   final VoidCallback onCreateVoice;
   final VoidCallback onMakePersuasive;
+  final bool isPersuasiveLoading;
 
   const MarAdsResultActionButtons({
     super.key,
     required this.onCreateVoice,
     required this.onMakePersuasive,
+    this.isPersuasiveLoading = false,
   });
 
   @override
@@ -67,67 +69,34 @@ class MarAdsResultActionButtons extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.r)),
               ),
-              onPressed: onMakePersuasive,
+              onPressed: isPersuasiveLoading ? null : onMakePersuasive,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'ทำให้ดูโน้มน้าวมากขึ้น',
-                    style: GoogleFonts.lexend(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF262626),
-                    ),
-                  ),
-                  SizedBox(width: 4.w),
-                  _buildPointsIcon(),
+                  isPersuasiveLoading
+                      ? SizedBox(
+                          width: 20.w,
+                          height: 20.h,
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF262626)),
+                          ),
+                        )
+                      : Text(
+                          'ทำให้ดูโน้มน้าวมากขึ้น',
+                          style: GoogleFonts.lexend(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF262626),
+                          ),
+                        ),
                 ],
               ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildPointsIcon() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 16.w,
-          height: 16.h,
-          decoration: const BoxDecoration(shape: BoxShape.circle),
-          child: Stack(
-            children: [
-              Container(
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Color(0xFF262626))),
-              Center(
-                child: ShaderMask(
-                  shaderCallback: (bounds) =>
-                      MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
-                  child: Text(
-                    'P',
-                    style: GoogleFonts.inter(
-                        fontSize: 8.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(width: 4.w),
-        Text(
-          '15',
-          style: GoogleFonts.lexend(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF262626)),
-        ),
-      ],
     );
   }
 }

@@ -25,6 +25,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:logger/logger.dart';
+
+final _logger = Logger();
 
 class MarAdsResultScreen extends ConsumerStatefulWidget {
   final String? generatedText;
@@ -57,6 +60,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   String? _currentAudioUrl;
   String? _currentFileName;
   String? _localPromptId;
+  bool _isPersuasiveLoading = false;
 
   @override
   void initState() {
@@ -147,6 +151,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           MarAdsResultActionButtons(
             onCreateVoice: _handleCreateVoice,
             onMakePersuasive: _handleMakeMorePersuasive,
+            isPersuasiveLoading:
+                _isPersuasiveLoading, // [เพิ่ม] ส่งสถานะโหลดไปที่ปุ่ม
           ),
         ],
       ),
@@ -562,12 +568,70 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     );
   }
 
-  void _handleMakeMorePersuasive() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('กำลังปรับปรุงข้อความให้โน้มน้าวมากขึ้น...'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  Future<void> _handleMakeMorePersuasive() async {
+    if (_textController.text.trim().isEmpty || _isPersuasiveLoading) return;
+
+    // ดึงข้อมูลเสริมจาก URL เผื่อมาจาก Advanced Mode
+    final state = GoRouterState.of(context);
+    final salesChar = state.uri.queryParameters['sales_character'] ?? "";
+    final contentLength = state.uri.queryParameters['content_length'] ?? "กลาง";
+    final currentMode = widget.mode ?? 'basic';
+
+    setState(() => _isPersuasiveLoading = true);
+
+    try {
+      // 2. สร้าง Payload โดยรักษา Context เดิม (เช่น คาแรกเตอร์ หรือ ชื่อสินค้า)
+      final Map<String, dynamic> payload = {
+        "mode": currentMode,
+        "language": "th",
+        "product_name": widget.productName ?? "สินค้า",
+        "content_style": widget.contentStyle ?? "จูงใจให้ใช้",
+        "content_length": contentLength,
+        "additional_info":
+            "ช่วยปรับปรุงข้อความต่อไปนี้ให้ดูน่าสนใจและโน้มน้าวใจ (Persuasive) มากขึ้น "
+                "${salesChar.isNotEmpty ? 'ในสไตล์ $salesChar' : ''}: ${_textController.text}",
+      };
+
+      // ถ้าเป็น Advanced mode ให้ใส่ field ที่จำเป็นเพิ่มเพื่อให้ AI เข้าใจบริบท
+      if (currentMode == 'advanced') {
+        payload["sales_character"] = salesChar;
+      }
+
+      final result = await _promptService.createPromptAds(
+        context: context,
+        payload: payload,
+      );
+
+      if (result != null && result['data'] != null) {
+        String newText = result['data'].toString();
+
+        // ล้างวงเล็บ [ ] ออกถ้า AI ส่งกลับมาเป็น List string
+        if (newText.startsWith('[') && newText.endsWith(']')) {
+          newText = newText.substring(1, newText.length - 1);
+        }
+
+        setState(() {
+          _textController.text = newText;
+          _currentAudioUrl = null; // ล้างเสียงเดิมทิ้ง
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ปรับปรุงข้อความเรียบร้อยแล้ว'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      _logger.e("Error making persuasive: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('เกิดข้อผิดพลาด: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isPersuasiveLoading = false);
+    }
   }
 }

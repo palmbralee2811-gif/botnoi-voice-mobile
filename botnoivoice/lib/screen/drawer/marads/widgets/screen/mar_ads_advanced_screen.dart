@@ -543,6 +543,9 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                 'style': _selectedContentStyle,
                 'mode': 'advanced',
                 'product_name': _productController.text,
+                'sales_character': _selectedSalesCharacter,
+                'content_length':
+                    _selectedContentLength.contains('30') ? 'กลาง' : 'ยาว',
                 if (targetSpeakerId != null)
                   'speaker_id': targetSpeakerId, // ส่ง ID ไปด้วย
               },
