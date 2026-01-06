@@ -5,6 +5,7 @@ import 'package:flutter/services.dart'; // Import สำหรับ Clipboard
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
@@ -108,7 +109,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Colors.black87, size: 20.r),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            // Navigator.pop(context);
+            context.pop();
+          },
         ),
         backgroundColor: Colors.white,
         elevation: 0.5, // เงาบางๆ
@@ -190,7 +194,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                               children: [
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () => Navigator.pop(context),
+                                    onPressed: () {
+                                      // Navigator.pop(context);
+                                      context.pop();
+                                    },
                                     style: OutlinedButton.styleFrom(
                                       padding: EdgeInsets.symmetric(vertical: 12.h),
                                       side: BorderSide(color: Colors.grey.shade300),
@@ -205,7 +212,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      Navigator.pop(context);
+                                      // Navigator.pop(context);
+                                      context.pop();
+
                                       try {
                                         File file;
                                         if (selectedFormat == "txt") {
@@ -646,7 +655,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                     onPressed: () {
                                                       Clipboard.setData(ClipboardData(text: originalText));
                                                       _showSnack("Copied to clipboard");
-                                                      Navigator.pop(context);
+
+                                                      // Navigator.pop(context);
+                                                      context.pop();
                                                     },
                                                     icon: Icon(Icons.copy_rounded, size: 16.r),
                                                     label: Text("Copy", style: TextStyle(fontSize: 12.sp)),
@@ -666,8 +677,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                     "result_gensub.close".tr(),
                                                     style: TextStyle(
                                                         fontSize: 14.sp, color: Colors.grey[600])),
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
+                                                onPressed: () {
+                                                  // Navigator.pop(context);
+                                                  context.pop();
+                                                },
                                               )
                                             ],
                                           ),
@@ -741,15 +754,21 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                       .tr());
                                               if (segments.isEmpty && mounted) {
                                                 Future.delayed(
-                                                    const Duration(
-                                                        milliseconds: 400), () {
-                                                  Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            const UploadRecScreen()),
-                                                  );
-                                                });
+                                                  const Duration(
+                                                    milliseconds: 400,
+                                                  ),
+                                                  () {
+                                                    // Navigator.pushReplacement(
+                                                    //   context,
+                                                    //   MaterialPageRoute(
+                                                    //     builder: (_) =>
+                                                    //         const UploadRecScreen(),
+                                                    //   ),
+                                                    // );
+
+                                                    context.go('/gensub');
+                                                  },
+                                                );
                                               }
                                             } catch (e) {
                                               _showSnack(
