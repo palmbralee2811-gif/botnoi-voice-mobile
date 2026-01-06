@@ -6,6 +6,7 @@ import 'package:botnoivoice/screen/drawer/account/change_email_username_screen.d
 import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/reward/reward_screen.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/email_permission/email_permission_screen.dart';
@@ -118,6 +119,20 @@ final router = GoRouter(
     GoRoute(
       path: '/gensub',
       builder: (context, state) => const UploadRecScreen(),
+    ),
+    GoRoute(
+      path: '/gensub/result',
+      builder: (context, state) {
+        // รับค่า Map ที่ส่งมาจากหน้าอื่น
+        final args = state.extra as Map<String, dynamic>;
+        return ResultScreen(
+          workspaceId: args['workspaceId'],
+          userId: args['userId'],
+          filePath: args['filePath'],
+          duration: args['duration'],
+          projectName: args['projectName'],
+        );
+      },
     ),
     // GoRoute(
     //   path: '/marads',

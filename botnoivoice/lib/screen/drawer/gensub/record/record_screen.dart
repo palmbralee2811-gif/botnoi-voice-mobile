@@ -11,7 +11,8 @@ import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_log
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:botnoivoice/screen/drawer/gensub/point_calculator.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart'; 
 
 class RecordScreen extends ConsumerStatefulWidget {
   final List<ProjectModel> projects;
@@ -555,16 +556,28 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
                             if (project != null && mounted) {
                               widget.onProjectCreated(project);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ResultScreen(
-                                      workspaceId: project.projectId,
-                                      userId: project.userId,
-                                      filePath: project.filePath,
-                                      duration: project.duration,
-                                      projectName: project.projectName),
-                                ),
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (_) => ResultScreen(
+                              //         workspaceId: project.projectId,
+                              //         userId: project.userId,
+                              //         filePath: project.filePath,
+                              //         duration: project.duration,
+                              //         projectName: project.projectName),
+                              //   ),
+                              // );
+
+                              // ใช้ context.push เพื่อเปิดหน้า Result แบบมีปุ่มย้อนกลับ
+                              context.push(
+                                '/gensub/result',
+                                extra: {
+                                  'workspaceId': project.projectId,
+                                  'userId': project.userId,
+                                  'filePath': project.filePath,
+                                  'duration': project.duration,
+                                  'projectName': project.projectName,
+                                },
                               );
                             }
                           },
@@ -720,16 +733,28 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16.r),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ResultScreen(
-                          workspaceId: project.projectId,
-                          userId: project.userId,
-                          filePath: project.filePath,
-                          duration: project.duration,
-                          projectName: project.projectName),
-                    ),
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (_) => ResultScreen(
+                  //         workspaceId: project.projectId,
+                  //         userId: project.userId,
+                  //         filePath: project.filePath,
+                  //         duration: project.duration,
+                  //         projectName: project.projectName),
+                  //   ),
+                  // );
+
+                  // ใช้ context.push เพื่อเปิดหน้า Result แบบมีปุ่มย้อนกลับ
+                  context.push(
+                    '/gensub/result',
+                    extra: {
+                      'workspaceId': project.projectId,
+                      'userId': project.userId,
+                      'filePath': project.filePath,
+                      'duration': project.duration,
+                      'projectName': project.projectName,
+                    },
                   );
                 },
                 child: Padding(
@@ -812,11 +837,17 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                                       style: TextStyle(fontSize: 14.sp)),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.pop(context, false),
+                                      onPressed: () {
+                                        // Navigator.pop(context, false);
+                                        context.pop(false);
+                                      },
                                       child: Text("dialog.cancel".tr()),
                                     ),
                                     TextButton(
-                                      onPressed: () => Navigator.pop(context, true),
+                                      onPressed: () {
+                                        // Navigator.pop(context, true);
+                                        context.pop(true);
+                                      },
                                       child: Text(
                                         "dialog.delete".tr(),
                                         style: const TextStyle(color: Colors.red),

@@ -1,6 +1,7 @@
 // lib/shared/widget/language_selector.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -143,7 +144,9 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                               : null,
                           onTap: () {
                             widget.onSelected(lang);
-                            Navigator.pop(context);
+                            
+                            // Navigator.pop(context);
+                            context.pop();
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
