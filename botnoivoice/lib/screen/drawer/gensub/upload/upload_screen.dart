@@ -1,7 +1,6 @@
 import 'package:botnoivoice/screen/drawer/gensub/point_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/upload/upload_screen_logic.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_logic.dart';
 import 'package:easy_localization/easy_localization.dart';

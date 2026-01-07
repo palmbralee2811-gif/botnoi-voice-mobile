@@ -1,16 +1,15 @@
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_sharefile_function.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Import สำหรับ Clipboard
+import 'package:flutter/services.dart'; 
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final _logger = Logger();
 
@@ -169,13 +168,15 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     isExpanded: true,
                                     icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
                                     style: TextStyle(color: Colors.black87, fontSize: 14.sp),
-                                    items: [
+                                    items: const [
                                       DropdownMenuItem(
-                                          value: "txt",
-                                          child: Text("Text file (.txt)")),
+                                        value: "txt",
+                                        child: Text("Text file (.txt)"),
+                                      ),
                                       DropdownMenuItem(
-                                          value: "srt",
-                                          child: Text("Subtitle (.srt)")),
+                                        value: "srt",
+                                        child: Text("Subtitle (.srt)"),
+                                      ),
                                     ],
                                     onChanged: (val) {
                                       if (val != null) {
@@ -288,7 +289,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       style: TextStyle(color: Colors.red[400])),
                 ));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text("result_gensub.no_workspace".tr(), style: TextStyle(color: Colors.grey)));
+            return Center(
+              child: Text(
+                "result_gensub.no_workspace".tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
+            );
           }
 
           final project = snapshot.data!;
@@ -484,7 +490,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12.r),
-                                        borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                                        borderSide: const BorderSide(
+                                          color: Colors.blue,
+                                          width: 1.5,
+                                        ),
                                       ),
                                       contentPadding: EdgeInsets.all(12.w),
                                       isDense: true),
@@ -592,7 +601,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       size: 32.r,
                                     ),
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
+                                    constraints: const BoxConstraints(),
                                     onPressed: () async {
                                       await controller!.playSegment(
                                         index,

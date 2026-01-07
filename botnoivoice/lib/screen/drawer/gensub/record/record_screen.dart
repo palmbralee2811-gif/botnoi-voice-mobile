@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:ui'; // เพิ่ม import นี้สำหรับ FontFeature
 
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/drawer/gensub/record/record_screen_logic.dart';
 import 'package:easy_localization/easy_localization.dart';

@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart'; // 1. เพิ่ม import intl
 
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
@@ -269,12 +268,10 @@ class _PaymentBottomSheetContent extends ConsumerWidget {
           // 6. Show Success Dialog
           NotificationDialog(
             context: context,
-            text: 'payment.received_points'
-                .tr(namedArgs: {'pointsTitle': '5,000'}),
-            onPressed: () {
-               context.pop(); // Close the payment sheet
-            },
-          ).showCheckmarkModalWithAction(context);
+            text: 'payment.received_points'.tr(
+              namedArgs: {'pointsTitle': '5,000'},
+            ),
+          ).showCheckmarkModal(context);
         }
       } else {
         // --- Error Case (Purchase Failed / Cancelled) ---

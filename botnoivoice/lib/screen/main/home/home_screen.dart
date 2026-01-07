@@ -335,9 +335,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.auto_awesome_rounded,
-                              color: Colors.white, size: 20.sp * scaleFactor),
-                          SizedBox(width: 8.w * scaleFactor),
                           Text(
                             'home_screen.create_sound'.tr(),
                             style: GoogleFonts.prompt(
@@ -347,33 +344,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
                           SizedBox(width: 12.w * scaleFactor),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w * scaleFactor,
-                                vertical: 4.h * scaleFactor),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius:
-                                  BorderRadius.circular(20.r * scaleFactor),
-                            ),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/logo/credit-icon.svg',
-                                  width: 14.w * scaleFactor,
-                                  height: 14.w * scaleFactor,
+                          Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/logo/credit-icon.svg',
+                                width: 16.w * scaleFactor,
+                                height: 16.w * scaleFactor,
+                              ),
+                              SizedBox(width: 4.w * scaleFactor),
+                              Text(
+                                '${_textController.text.length}',
+                                style: GoogleFonts.prompt(
+                                  fontSize: 14.sp * scaleFactor,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
                                 ),
-                                SizedBox(width: 4.w * scaleFactor),
-                                Text(
-                                  '${_textController.text.length}',
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 12.sp * scaleFactor,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
