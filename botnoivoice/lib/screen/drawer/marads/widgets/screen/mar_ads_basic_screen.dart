@@ -144,13 +144,13 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               builder: (context) {
                 return IconButton(
                   icon: Icon(
-                    Icons.menu,
+                    Icons.arrow_back_ios_new,
                     size:
-                        ResponsiveDesignOrientation.isLandscape ? 22.sp : 32.sp,
+                        ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
                     color: kDark,
                   ),
                   onPressed: () {
-                    Scaffold.of(context).openDrawer();
+                    context.go('/home');
                   },
                 );
               },

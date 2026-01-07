@@ -228,14 +228,13 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
               builder: (context) {
                 return IconButton(
                   icon: Icon(
-                    Icons.menu,
+                    Icons.arrow_back_ios_new,
                     size:
-                        ResponsiveDesignOrientation.isLandscape ? 22.sp : 32.sp,
+                        ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
                     color: const Color(0xFF3D3D3D),
                   ),
                   onPressed: () {
-                    // ใช้ context ใหม่จาก Builder ซึ่งอยู่ใต้ Scaffold
-                    Scaffold.of(context).openDrawer();
+                    context.go('/home');
                   },
                 );
               },
