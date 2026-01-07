@@ -59,7 +59,21 @@ class PromptService {
     _logger.i("Status => ${response.statusCode}");
     final responseBody = utf8.decode(response.bodyBytes);
     _logger.i("Response => $responseBody");
-    return jsonDecode(responseBody);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(responseBody);
+    } else {
+      // พยายามดึง message จาก server ถ้ามี
+      String errorMsg = "Server Error (${response.statusCode})";
+      try {
+        final jsonErr = jsonDecode(responseBody);
+        if (jsonErr['message'] != null)
+          errorMsg = jsonErr['message'];
+        else if (jsonErr['error'] != null) errorMsg = jsonErr['error'];
+      } catch (_) {}
+
+      throw Exception(errorMsg);
+    }
   }
 
   /// -----------------------------------------------------
@@ -116,7 +130,13 @@ class PromptService {
     _logger.i("Status => ${response.statusCode}");
     final responseBody = utf8.decode(response.bodyBytes);
     _logger.i("Response => $responseBody");
-    return jsonDecode(responseBody);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(responseBody);
+    } else {
+      throw Exception(
+          "Add History Failed: ${response.statusCode} - $responseBody");
+    }
   }
 
   /// -----------------------------------------------------

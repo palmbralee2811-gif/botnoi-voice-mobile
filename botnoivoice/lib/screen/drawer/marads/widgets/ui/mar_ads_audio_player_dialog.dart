@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,6 +30,11 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
 
+  //สำหรับเก็บ Subscription
+  StreamSubscription? _durationSubscription;
+  StreamSubscription? _positionSubscription;
+  StreamSubscription? _playerStateSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -36,16 +43,20 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
 
   /// โหลดและเล่นเสียงอัตโนมัติ
   Future<void> _initAudio() async {
-    // ฟังค่าความยาวเสียง (Duration)
-    _duration = widget.player.duration ?? Duration.zero;
+    // ฟังค่า Duration แบบ Real-time (เผื่อโหลดเสร็จทีหลัง)
+    _durationSubscription = widget.player.durationStream.listen((d) {
+      if (mounted && d != null) {
+        setState(() => _duration = d);
+      }
+    });
 
     // ฟังค่าตำแหน่งปัจจุบัน (Position) เพื่อขยับ Slider
-    widget.player.positionStream.listen((p) {
+    _positionSubscription = widget.player.positionStream.listen((p) {
       if (mounted) setState(() => _position = p);
     });
 
     // เมื่อเล่นจบ ให้ปุ่มกลับมาเป็น Play เหมือนเดิม
-    widget.player.playerStateStream.listen((state) {
+    _playerStateSubscription = widget.player.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
         if (mounted) {
           setState(() => _isPlaying = false);
@@ -54,6 +65,15 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
         }
       }
     });
+
+    // เช็คสถานะเริ่มต้น (กรณี Player เล่นอยู่แล้ว)
+    if (widget.player.playing) {
+      setState(() => _isPlaying = true);
+    } else {
+      // สั่งเล่นอัตโนมัติเมื่อเปิด Dialog
+      widget.player.play();
+      setState(() => _isPlaying = true);
+    }
   }
 
   void _togglePlay() {
@@ -74,6 +94,11 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
 
   @override
   void dispose() {
+    // ยกเลิกการฟัง Stream ทั้งหมดก่อนปิด
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _playerStateSubscription?.cancel();
+
     widget.player.dispose(); // ปิด player ที่รับเข้ามา
     super.dispose();
   }

@@ -278,14 +278,6 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         language: finalLang,
       );
 
-      // if (mounted) {
-      //   Navigator.of(context).pop();
-      // }
-
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.of(context).pop();
-      }
-
       if (audioUrl.isNotEmpty) {
         // เรียก API เพื่อบันทึก URL เสียงลงใน History
         // ต้องแน่ใจว่า promptId มีค่า (item.id)
@@ -335,6 +327,11 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           );
         });
 
+        // ปิด Loading ก่อนแสดง Success Dialog
+        if (mounted && Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
+
         if (mounted) {
           showDialog(
             context: context,
@@ -344,16 +341,27 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
             ),
           );
         }
-      }
-      // ปิด Loading Dialog เฉพาะเมื่อฟังก์ชันทำงานเสร็จสิ้นทั้งหมด
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.of(context).pop();
+      } else {
+        // กรณีไม่มี URL และไม่ Error (กันเหนียวเดี๋ยว Dialog ค้าง)
+        if (mounted && Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
       }
     } catch (e) {
+      // ปิด Loading ก่อนแสดง Error
       if (mounted && Navigator.canPop(context)) {
         Navigator.of(context).pop();
       }
+
       print("Error generating audio: $e");
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'เกิดข้อผิดพลาด: ${e.toString().replaceAll('Exception:', '').trim()}')),
+        );
+      }
     }
   }
 
@@ -450,20 +458,6 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 style: oldItem.style,
                 points: oldItem.points,
                 chars: oldItem.chars,
-                hasAudio: false, 
-                duration: '00:00/00:00',
-                audioUrl: '',
-                speakerId: oldItem.speakerId,
-                // isV2FromApi: oldItem.isV2FromApi,
-              );
-              _historyItems[index] = MarAdsHistoryModel(
-                id: oldItem.id,
-                title: oldItem.title,
-                content: oldItem.content,
-                mode: oldItem.mode,
-                style: oldItem.style,
-                points: oldItem.points,
-                chars: oldItem.chars,
                 hasAudio: false,
                 duration: '00:00/00:00',
                 audioUrl: '',
@@ -477,9 +471,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
             _filteredItems = List.from(_historyItems);
 
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                    'ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว'),
+              SnackBar(
+                content: Text(e.toString().contains('timeout')
+                    ? 'การเชื่อมต่อล่าช้า กรุณาลองใหม่'
+                    : 'ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว'),
                 backgroundColor: Colors.orange,
               ),
             );

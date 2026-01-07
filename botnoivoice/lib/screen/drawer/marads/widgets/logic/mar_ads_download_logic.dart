@@ -171,8 +171,11 @@ class MarAdsDownloadLogic {
     } catch (e) {
       _onDownloadSuccess = null;
       if (context.mounted) {
+        String msg = "เกิดข้อผิดพลาดในการดาวน์โหลด";
+        if (e.toString().contains("Permission"))
+          msg = "ไม่มีสิทธิ์เข้าถึงพื้นที่จัดเก็บ";
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("เกิดข้อผิดพลาด: $e")),
+          SnackBar(content: Text("$msg ($e)")),
         );
       }
     }

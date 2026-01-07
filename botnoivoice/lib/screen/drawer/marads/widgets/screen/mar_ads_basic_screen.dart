@@ -324,9 +324,13 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     if (_isLoading) return;
 
     // กันเหนียว validate อีกที
-    if (_productController.text.isEmpty ||
-        _brandController.text.isEmpty ||
-        _priceController.text.isEmpty) {
+    if (_productController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
@@ -381,6 +385,15 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
         error: e,
         stackTrace: stack,
       );
+      if (mounted) {
+        // แสดง Error ที่โยนมาจาก Service/Logic ให้ผู้ใช้เห็น
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception:', '').trim()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

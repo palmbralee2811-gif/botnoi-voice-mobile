@@ -195,18 +195,22 @@ Future<String> generateAudioPreview({
     } else {
       _logger.e("Failed to generate preview audio: ${response.statusCode}");
 
-      // เพิ่มบรรทัดนี้เพื่อดูว่า Server ด่าว่าอะไร (เช่น "Point not enough")
+      // เพิ่มบรรทัดนี้เพื่อดูว่า Server ด่าว่าอะไร
       _logger.e("Server Response: ${response.body}");
 
-      // if (context.mounted) {
-      //   NotificationPopup(
-      //     context: context, // ใช้ context ที่รับมา ปลอดภัยกว่า
-      //     text: 'home_screen.unable_to_create_sound'.tr(),
-      //   ).showAsError();
-      // }
+      // แกะ Error message จาก Server
+      String serverError = "Generate Failed (${response.statusCode})";
+      try {
+        final errJson = jsonDecode(utf8.decode(response.bodyBytes));
+        if (errJson['message'] != null) serverError = errJson['message'];
+      } catch (_) {}
+      // Throw Exception เพื่อให้ UI (ResultScreen) จับได้และแสดง Dialog
+      throw Exception(serverError);
     }
   } catch (e) {
     _logger.e("Error on generateAudioPreview: $e");
+    // Rethrow เพื่อให้ UI รู้ว่าพังจริงๆ
+    rethrow;
   }
 
   return audioUrl;

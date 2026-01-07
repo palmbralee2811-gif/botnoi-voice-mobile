@@ -309,14 +309,12 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     print(" Creating Voice with Mode: '$currentMode'");
 
     // โชว์ Loading Dialog
-    BuildContext? dialogContext;
     AudioPlayer? preloadedPlayer;
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        dialogContext = context;
         return const MarAdsLoadingDialog();
       },
     );
@@ -417,9 +415,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         await preloadedPlayer.setUrl(audioUrl);
 
         // ปิด Loading เมื่อ Buffer เสียงเสร็จแล้วจริงๆ
-        if (dialogContext != null && mounted) {
-          Navigator.of(dialogContext!).pop();
-          dialogContext = null;
+        if (mounted && Navigator.canPop(context)) {
+          Navigator.of(context).pop();
         }
 
         // เปิด Dialog เล่นเสียง โดยส่ง Player ที่พร้อมแล้วเข้าไป
@@ -428,19 +425,17 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         }
       } else {
         // กรณีไม่มี URL ก็ปิด Dialog ตามปกติ
-        if (dialogContext != null && mounted) {
-          Navigator.of(dialogContext!).pop();
-          dialogContext = null;
+        if (mounted && Navigator.canPop(context)) {
+          Navigator.of(context).pop();
         }
-        if (mounted) setState(() => _isVoiceLoading = false);
+        // if (mounted) setState(() => _isVoiceLoading = false);
       }
     } catch (e) {
       preloadedPlayer?.dispose();
 
       // ปิด Loading Dialog ก่อนแสดง Error
-      if (dialogContext != null && mounted) {
-        Navigator.of(dialogContext!).pop();
-        dialogContext = null;
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
       }
 
       showDialog(
@@ -480,10 +475,10 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         ),
       );
     } finally {
-      if (dialogContext != null && mounted) {
-        Navigator.of(dialogContext!).pop();
+      // ใช้ finally เพื่อรีเซ็ตสถานะปุ่มเสมอ ไม่ว่าจะสำเร็จหรือพัง
+      if (mounted) {
+        setState(() => _isVoiceLoading = false);
       }
-      if (mounted) setState(() => _isVoiceLoading = false);
     }
   }
 
@@ -619,9 +614,17 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       }
     } catch (e) {
       _logger.e("Error making persuasive: $e");
+
+      String errorMessage = e.toString().replaceAll('Exception:', '').trim();
+      if (e.toString().contains('401')) {
+        errorMessage = 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่';
+      } else if (e.toString().contains('500')) {
+        errorMessage = 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่';
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('เกิดข้อผิดพลาด: $e'),
+          content: Text(errorMessage),
           backgroundColor: Colors.red,
         ),
       );

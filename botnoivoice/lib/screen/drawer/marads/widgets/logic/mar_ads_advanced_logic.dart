@@ -43,10 +43,7 @@ class MarAdsAdvancedLogic {
     final token = ref.watch(currentUserTokenStateProvider).jwtToken;
 
     if (token == null || token.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("กรุณาเข้าสู่ระบบก่อนใช้งาน")),
-      );
-      throw Exception("NO_TOKEN");
+      throw Exception("ไม่พบข้อมูลผู้ใช้งาน (Token is null)");
     }
 
     String lengthValue;

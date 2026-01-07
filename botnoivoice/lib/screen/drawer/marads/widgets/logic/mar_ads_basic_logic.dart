@@ -112,12 +112,7 @@ class MarAdsLogic {
     final token = ref.watch(currentUserTokenStateProvider).jwtToken;
 
     if (token == null || token.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                "Something went wrong, Please try again. \n ### createPromptAdsFromForm: $token ###")),
-      );
-      throw Exception("NO_TOKEN");
+      throw Exception("ไม่พบข้อมูลผู้ใช้งาน (Token is null)");
     }
 
     String lengthValue;
