@@ -1,5 +1,5 @@
-import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
-import 'package:botnoivoice/screen/drawer/gensub/result/result_sharefile_function.dart';
+import 'package:botnoivoice/screen/drawer/gensub/result/gensub_result_screen_logic.dart';
+import 'package:botnoivoice/screen/drawer/gensub/result/gensub_result_sharefile_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';

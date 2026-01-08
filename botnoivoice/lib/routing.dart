@@ -6,7 +6,7 @@ import 'package:botnoivoice/screen/drawer/account/change_email_username_screen.d
 import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
-import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/result/gensub_result_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_advanced_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_basic_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
