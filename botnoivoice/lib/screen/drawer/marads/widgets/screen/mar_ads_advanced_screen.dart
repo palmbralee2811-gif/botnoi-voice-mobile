@@ -659,7 +659,9 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                     ),
                     onTap: () {
                       onSelected(item);
-                      Navigator.pop(context);
+
+                      // Close Dialog
+                      context.pop();
                     },
                   )),
             ],

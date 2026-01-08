@@ -554,19 +554,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
                             if (project != null && mounted) {
                               widget.onProjectCreated(project);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (_) => ResultScreen(
-                              //         workspaceId: project.projectId,
-                              //         userId: project.userId,
-                              //         filePath: project.filePath,
-                              //         duration: project.duration,
-                              //         projectName: project.projectName),
-                              //   ),
-                              // );
-
-                              // ใช้ context.push เพื่อเปิดหน้า Result แบบมีปุ่มย้อนกลับ
+                              
                               context.push(
                                 '/gensub/result',
                                 extra: {
@@ -731,19 +719,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16.r),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => ResultScreen(
-                  //         workspaceId: project.projectId,
-                  //         userId: project.userId,
-                  //         filePath: project.filePath,
-                  //         duration: project.duration,
-                  //         projectName: project.projectName),
-                  //   ),
-                  // );
-
-                  // ใช้ context.push เพื่อเปิดหน้า Result แบบมีปุ่มย้อนกลับ
                   context.push(
                     '/gensub/result',
                     extra: {
@@ -836,14 +811,14 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        // Navigator.pop(context, false);
+                                        // Close Dialog
                                         context.pop(false);
                                       },
                                       child: Text("dialog.cancel".tr()),
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        // Navigator.pop(context, true);
+                                        // Close Dialog
                                         context.pop(true);
                                       },
                                       child: Text(

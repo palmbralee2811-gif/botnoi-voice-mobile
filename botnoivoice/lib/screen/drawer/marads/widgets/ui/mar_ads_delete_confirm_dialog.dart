@@ -1,6 +1,7 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MarAdsDeleteConfirmDialog extends StatelessWidget {
@@ -67,7 +68,9 @@ class MarAdsDeleteConfirmDialog extends StatelessWidget {
                 // ปุ่มยกเลิก
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      context.pop();
+                    },
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       side: const BorderSide(
@@ -96,7 +99,8 @@ class MarAdsDeleteConfirmDialog extends StatelessWidget {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context); // ปิด Dialog ยืนยัน
+                        // Close Dialog After Confirm
+                        context.pop(); // ปิด Dialog ยืนยัน
                         onConfirm(); // เรียกฟังก์ชันลบ
                       },
                       style: ElevatedButton.styleFrom(

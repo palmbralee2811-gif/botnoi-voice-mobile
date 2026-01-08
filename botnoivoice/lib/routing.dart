@@ -7,6 +7,11 @@ import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_advanced_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_basic_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_result_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/product_properties.dart';
 import 'package:botnoivoice/screen/drawer/reward/reward_screen.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/email_permission/email_permission_screen.dart';
@@ -125,7 +130,7 @@ final router = GoRouter(
       builder: (context, state) {
         // รับค่า Map ที่ส่งมาจากหน้าอื่น
         final args = state.extra as Map<String, dynamic>;
-        return ResultScreen(
+        return GenSubResultScreen(
           workspaceId: args['workspaceId'],
           userId: args['userId'],
           filePath: args['filePath'],
@@ -164,9 +169,9 @@ final router = GoRouter(
       path: '/marads/history',
       builder: (context, state) => const MarAdsHistoryScreen(),
     ),
-    GoRoute(
-      path: '/voicebot',
-      builder: (context, state) => const VoicebotScreen(),
-    ),
+    // GoRoute(
+    //   path: '/voicebot',
+    //   builder: (context, state) => const VoicebotScreen(),
+    // ),
   ],
 );

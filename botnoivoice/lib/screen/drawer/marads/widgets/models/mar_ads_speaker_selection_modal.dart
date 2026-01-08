@@ -6,6 +6,7 @@ import 'package:botnoivoice/screen/main/speaker/widget/speaker_grid_item.dart';
 import 'package:botnoivoice/service/favorite/favorite_service.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -206,18 +207,21 @@ class _MarAdsSpeakerSelectionModalState
       if (!s.status) return false;
 
       // Favorites
-      if (_showOnlyFavorites && !_favoriteIds.contains(s.speakerId))
+      if (_showOnlyFavorites && !_favoriteIds.contains(s.speakerId)) {
         return false;
+      }
 
       // Language
       final sLang = s.languageCode.toUpperCase();
       final sLangName = s.language.toUpperCase();
-      if (sLang != _selectedLangCode && sLangName != _selectedLangCode)
+      if (sLang != _selectedLangCode && sLangName != _selectedLangCode) {
         return false;
+      }
 
       // Gender
-      if (_selectedGender.isNotEmpty && s.gender != _selectedGender)
+      if (_selectedGender.isNotEmpty && s.gender != _selectedGender) {
         return false;
+      }
 
       // Categories
       if (_selectedCategories.isNotEmpty) {
@@ -225,8 +229,9 @@ class _MarAdsSpeakerSelectionModalState
             (_selectedLangCode == 'TH') ? s.speechStyle : s.engSpeechStyle;
         final effectiveCats =
             (cats.isEmpty && _selectedLangCode != 'TH') ? s.speechStyle : cats;
-        if (!effectiveCats.any((c) => _selectedCategories.contains(c)))
+        if (!effectiveCats.any((c) => _selectedCategories.contains(c))) {
           return false;
+        }
       }
 
       // Styles
@@ -267,7 +272,9 @@ class _MarAdsSpeakerSelectionModalState
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  context.pop();
+                },
               ),
               Expanded(
                 child: Center(
@@ -395,7 +402,7 @@ class _MarAdsSpeakerSelectionModalState
               onPressed: _tempSelectedSpeaker != null
                   ? () {
                       widget.onSelect(_tempSelectedSpeaker!);
-                      Navigator.pop(context);
+                      context.pop();
                     }
                   : null, // ปิดปุ่มถ้ายังไม่เลือก
               style: ElevatedButton.styleFrom(

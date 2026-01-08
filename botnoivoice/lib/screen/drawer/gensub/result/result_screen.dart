@@ -1,7 +1,7 @@
 import 'package:botnoivoice/screen/drawer/gensub/result/result_screen_logic.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/result_sharefile_function.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,14 +13,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final _logger = Logger();
 
-class ResultScreen extends ConsumerStatefulWidget {
+class GenSubResultScreen extends ConsumerStatefulWidget {
   final String workspaceId;
   final String userId;
   final String filePath;
   final Duration duration;
   final String projectName;
 
-  const ResultScreen({
+  const GenSubResultScreen({
     super.key,
     required this.workspaceId,
     required this.userId,
@@ -30,10 +30,10 @@ class ResultScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ResultScreen> createState() => _ResultScreenState();
+  ConsumerState<GenSubResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends ConsumerState<ResultScreen> {
+class _ResultScreenState extends ConsumerState<GenSubResultScreen> {
   ResultLogic? controller;
   late Future<ProjectModel?> _futureProject;
   int? editingIndex;
@@ -96,7 +96,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       SnackBar(
         content: Text(msg),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       ),
     );
   }
@@ -109,7 +110,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Colors.black87, size: 20.r),
           onPressed: () {
-            // Navigator.pop(context);
             context.pop();
           },
         ),
@@ -152,7 +152,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Select Format:",
-                                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[700])),
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: Colors.grey[700])),
                               SizedBox(height: 12.h),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -166,8 +168,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                   child: DropdownButton<String>(
                                     value: selectedFormat,
                                     isExpanded: true,
-                                    icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
-                                    style: TextStyle(color: Colors.black87, fontSize: 14.sp),
+                                    icon: Icon(Icons.keyboard_arrow_down,
+                                        color: Colors.grey[600]),
+                                    style: TextStyle(
+                                        color: Colors.black87, fontSize: 14.sp),
                                     items: const [
                                       DropdownMenuItem(
                                         value: "txt",
@@ -196,13 +200,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 Expanded(
                                   child: OutlinedButton(
                                     onPressed: () {
-                                      // Navigator.pop(context);
                                       context.pop();
                                     },
                                     style: OutlinedButton.styleFrom(
-                                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                                      side: BorderSide(color: Colors.grey.shade300),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 12.h),
+                                      side: BorderSide(
+                                          color: Colors.grey.shade300),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.r)),
                                       foregroundColor: Colors.grey[700],
                                     ),
                                     child: Text("result_gensub.cancel".tr(),
@@ -213,7 +220,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      // Navigator.pop(context);
+                                      // Close Dialog
                                       context.pop();
 
                                       try {
@@ -241,7 +248,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF4CAF50), // Green 500
+                                      backgroundColor:
+                                          const Color(0xFF4CAF50), // Green 500
                                       foregroundColor: Colors.white,
                                       padding:
                                           EdgeInsets.symmetric(vertical: 12.h),
@@ -266,9 +274,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 );
               }
             },
-            icon: Icon(Icons.save_alt_rounded, color: const Color(0xFF4CAF50), size: 24.r),
+            icon: Icon(Icons.save_alt_rounded,
+                color: const Color(0xFF4CAF50), size: 24.r),
             label: Text("result_gensub.save".tr(),
-                style: TextStyle(color: const Color(0xFF4CAF50), fontSize: 14.sp, fontWeight: FontWeight.w600)),
+                style: TextStyle(
+                    color: const Color(0xFF4CAF50),
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600)),
           ),
           SizedBox(width: 16.w),
         ],
@@ -278,16 +290,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               controller == null) {
-            return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+            return const Center(
+                child: CircularProgressIndicator(strokeWidth: 2));
           } else if (snapshot.hasError) {
             return Center(
                 child: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Text(
-                      "${"result_gensub.error".tr()} ${snapshot.error.toString()}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red[400])),
-                ));
+              padding: EdgeInsets.all(20.w),
+              child: Text(
+                  "${"result_gensub.error".tr()} ${snapshot.error.toString()}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red[400])),
+            ));
           } else if (!snapshot.hasData || snapshot.data == null) {
             return Center(
               child: Text(
@@ -343,7 +356,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                           color: const Color(0xFFF3E5F5), // Light Purple
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: Icon(Icons.mic_rounded, color: const Color(0xFF9C27B0), size: 28.r),
+                        child: Icon(Icons.mic_rounded,
+                            color: const Color(0xFF9C27B0), size: 28.r),
                       ),
                       SizedBox(width: 16.w),
                       Expanded(
@@ -370,11 +384,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.w, vertical: 4.h),
                         decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(8.r)
-                        ),
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8.r)),
                         child: Text(
                           controller!.formatTime(project.duration),
                           style: TextStyle(
@@ -395,13 +409,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   padding:
                       EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey.shade100)
-                  ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: Colors.grey.shade100)),
                   child: Row(
                     children: [
-                      Icon(Icons.check_circle_rounded, color: const Color(0xFF2196F3), size: 20.r), // Blue
+                      Icon(Icons.check_circle_rounded,
+                          color: const Color(0xFF2196F3), size: 20.r), // Blue
                       SizedBox(width: 8.w),
                       Text(
                         "${"result_gensub.comfirm".tr()} $approvedCount/${segments.length}",
@@ -423,10 +437,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                       EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
                   margin: EdgeInsets.only(bottom: 20.h),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey.shade100)
-                  ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: Colors.grey.shade100)),
                   child: Row(
                     children: [
                       Icon(Icons.edit_note_rounded,
@@ -484,12 +497,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         ..selection = TextSelection.collapsed(
                                             offset: tempText.length),
                                   onChanged: (val) => tempText = val,
-                                  style: TextStyle(fontSize: 16.sp, height: 1.5),
+                                  style:
+                                      TextStyle(fontSize: 16.sp, height: 1.5),
                                   maxLines: null,
                                   decoration: InputDecoration(
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.r)),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12.r),
+                                        borderRadius:
+                                            BorderRadius.circular(12.r),
                                         borderSide: const BorderSide(
                                           color: Colors.blue,
                                           width: 1.5,
@@ -553,13 +570,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-                                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h)
-                                      ),
+                                          backgroundColor: Colors.blue,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r)),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16.w, vertical: 8.h)),
                                       icon: Icon(Icons.check, size: 18.r),
-                                      label: Text("result_gensub.save".tr(), style: TextStyle(fontSize: 14.sp)),
+                                      label: Text("result_gensub.save".tr(),
+                                          style: TextStyle(fontSize: 14.sp)),
                                     ),
                                   ],
                                 ),
@@ -588,7 +608,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                               Text(
                                 "${controller!.formatTime(start)} - ${controller!.formatTime(end)}",
                                 style: TextStyle(
-                                    fontSize: 12.sp, color: Colors.grey[500], fontWeight: FontWeight.w500),
+                                    fontSize: 12.sp,
+                                    color: Colors.grey[500],
+                                    fontWeight: FontWeight.w500),
                               ),
                               Row(
                                 children: [
@@ -617,31 +639,41 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                     // --- History Button (with Copy) ---
                                     InkWell(
                                       onTap: () {
-                                        final originalText = segment['original_text'] ?? '-';
+                                        final originalText =
+                                            segment['original_text'] ?? '-';
                                         showDialog(
                                           context: context,
                                           builder: (_) => AlertDialog(
                                             backgroundColor: Colors.white,
                                             shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20.r)),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        20.r)),
                                             title: Row(
                                               children: [
-                                                Icon(Icons.history_rounded, color: Colors.grey[700]),
+                                                Icon(Icons.history_rounded,
+                                                    color: Colors.grey[700]),
                                                 SizedBox(width: 8.w),
                                                 Text(
-                                                    "result_gensub.history".tr(),
+                                                    "result_gensub.history"
+                                                        .tr(),
                                                     style: TextStyle(
                                                         fontSize: 18.sp,
-                                                        fontWeight: FontWeight.bold)),
+                                                        fontWeight:
+                                                            FontWeight.bold)),
                                               ],
                                             ),
                                             content: Column(
                                               mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "result_gensub.history_text".tr(), // "Original text:"
-                                                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                                                  "result_gensub.history_text"
+                                                      .tr(), // "Original text:"
+                                                  style: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      color: Colors.grey[600]),
                                                 ),
                                                 SizedBox(height: 8.h),
                                                 Container(
@@ -649,33 +681,58 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                   padding: EdgeInsets.all(12.w),
                                                   decoration: BoxDecoration(
                                                     color: Colors.grey[50],
-                                                    borderRadius: BorderRadius.circular(12.r),
-                                                    border: Border.all(color: Colors.grey.shade200),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.r),
+                                                    border: Border.all(
+                                                        color: Colors
+                                                            .grey.shade200),
                                                   ),
                                                   child: SelectableText(
                                                     originalText,
-                                                    style: TextStyle(fontSize: 14.sp, height: 1.5),
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        height: 1.5),
                                                   ),
                                                 ),
                                                 SizedBox(height: 12.h),
                                                 Align(
-                                                  alignment: Alignment.centerRight,
+                                                  alignment:
+                                                      Alignment.centerRight,
                                                   child: TextButton.icon(
                                                     onPressed: () {
-                                                      Clipboard.setData(ClipboardData(text: originalText));
-                                                      _showSnack("Copied to clipboard");
+                                                      Clipboard.setData(
+                                                          ClipboardData(
+                                                              text:
+                                                                  originalText));
+                                                      _showSnack(
+                                                          "Copied to clipboard");
 
-                                                      // Navigator.pop(context);
+                                                      // Close Dialog
                                                       context.pop();
                                                     },
-                                                    icon: Icon(Icons.copy_rounded, size: 16.r),
-                                                    label: Text("Copy", style: TextStyle(fontSize: 12.sp)),
+                                                    icon: Icon(
+                                                        Icons.copy_rounded,
+                                                        size: 16.r),
+                                                    label: Text("Copy",
+                                                        style: TextStyle(
+                                                            fontSize: 12.sp)),
                                                     style: TextButton.styleFrom(
-                                                      foregroundColor: Colors.blue,
-                                                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                                                      backgroundColor: Colors.blue.withOpacity(0.1),
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))
-                                                    ),
+                                                        foregroundColor: Colors
+                                                            .blue,
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    12.w,
+                                                                vertical: 8.h),
+                                                        backgroundColor: Colors
+                                                            .blue
+                                                            .withOpacity(0.1),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8.r))),
                                                   ),
                                                 )
                                               ],
@@ -685,9 +742,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                 child: Text(
                                                     "result_gensub.close".tr(),
                                                     style: TextStyle(
-                                                        fontSize: 14.sp, color: Colors.grey[600])),
+                                                        fontSize: 14.sp,
+                                                        color:
+                                                            Colors.grey[600])),
                                                 onPressed: () {
-                                                  // Navigator.pop(context);
+                                                  // Close Dialog
                                                   context.pop();
                                                 },
                                               )
@@ -696,13 +755,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                         );
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(6.r),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[100],
-                                          shape: BoxShape.circle
-                                        ),
-                                        child: Icon(Icons.history_rounded, color: Colors.grey[600], size: 20.r)
-                                      ),
+                                          padding: EdgeInsets.all(6.r),
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[100],
+                                              shape: BoxShape.circle),
+                                          child: Icon(Icons.history_rounded,
+                                              color: Colors.grey[600],
+                                              size: 20.r)),
                                     )
                                   else
                                     Row(
@@ -725,9 +784,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                   segment['text'] = res['data']
                                                           ['approve_text'] ??
                                                       segment['text'];
-                                                  segment['approved'] = res['data']
-                                                          ['approve'] ??
-                                                      true;
+                                                  segment['approved'] =
+                                                      res['data']['approve'] ??
+                                                          true;
                                                 });
                                                 _showSnack(
                                                     "result_gensub.approve_success"
@@ -745,10 +804,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                           child: Container(
                                             padding: EdgeInsets.all(6.r),
                                             decoration: BoxDecoration(
-                                              color: Colors.blue[50],
-                                              shape: BoxShape.circle
-                                            ),
-                                            child: Icon(Icons.check_rounded, color: Colors.blue, size: 20.r),
+                                                color: Colors.blue[50],
+                                                shape: BoxShape.circle),
+                                            child: Icon(Icons.check_rounded,
+                                                color: Colors.blue, size: 20.r),
                                           ),
                                         ),
                                         SizedBox(width: 12.w),
@@ -756,7 +815,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                           onTap: () async {
                                             try {
                                               await controller!.deleteSegment(
-                                                  ref, index, segments, project);
+                                                  ref,
+                                                  index,
+                                                  segments,
+                                                  project);
                                               setState(() {});
                                               _showSnack(
                                                   "result_gensub.delete_success"
@@ -767,14 +829,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                                     milliseconds: 400,
                                                   ),
                                                   () {
-                                                    // Navigator.pushReplacement(
-                                                    //   context,
-                                                    //   MaterialPageRoute(
-                                                    //     builder: (_) =>
-                                                    //         const UploadRecScreen(),
-                                                    //   ),
-                                                    // );
-
+                                                    // Redirect to GenSub Screen
                                                     context.go('/gensub');
                                                   },
                                                 );
@@ -787,10 +842,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                                           child: Container(
                                             padding: EdgeInsets.all(6.r),
                                             decoration: BoxDecoration(
-                                              color: Colors.red[50],
-                                              shape: BoxShape.circle
-                                            ),
-                                            child: Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20.r),
+                                                color: Colors.red[50],
+                                                shape: BoxShape.circle),
+                                            child: Icon(
+                                                Icons.delete_outline_rounded,
+                                                color: Colors.red,
+                                                size: 20.r),
                                           ),
                                         ),
                                       ],

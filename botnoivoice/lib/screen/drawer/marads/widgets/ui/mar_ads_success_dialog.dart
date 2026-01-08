@@ -1,6 +1,7 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MarAdsSuccessDialog extends StatelessWidget {
@@ -15,7 +16,7 @@ class MarAdsSuccessDialog extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.buttonText = 'ตกลง', // ค่า default คือ "ตกลง" แต่แก้ได้
-    this.onPressed, // ถ้าไม่ส่งมา จะทำงานเป็น Navigator.pop (ปิด Dialog)
+    this.onPressed, // ถ้าไม่ส่งมา จะทำงานเป็น context.pop(); (ปิด Dialog)
   });
 
   @override
@@ -58,7 +59,10 @@ class MarAdsSuccessDialog extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton(
                 // ถ้ามี onPressed ให้ทำตามนั้น ถ้าไม่มีให้ปิด Dialog
-                onPressed: onPressed ?? () => Navigator.pop(context),
+                onPressed: onPressed ??
+                    () {
+                      context.pop();
+                    },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFF888888), width: 1),
                   shape: RoundedRectangleBorder(

@@ -24,10 +24,10 @@ lib/screen/drawer/marads/
 import 'package:botnoivoice/screen/drawer/marads/mar_ads_screen.dart';
 
 // Navigate to the screen
-Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => const MarAdsScreen()),
-);
+GoRoute(
+  path: '/marads',
+  builder: (context, state) => const MarAdsScreen(),
+),
 ```
 
 ## Components

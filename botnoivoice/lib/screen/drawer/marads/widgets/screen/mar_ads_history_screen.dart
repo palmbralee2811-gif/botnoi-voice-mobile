@@ -286,7 +286,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         // ป้องกันการยิง update ถ้าไม่มี ID (แก้ปัญหา request fail)
         if (historyItem.id.isEmpty) {
           print("Error: No Prompt ID found, cannot update history.");
-          // if (mounted) Navigator.of(context).pop();
+          // if (mounted) context.pop();
           return;
         }
         await _promptService.updatePromptHistory(
@@ -328,8 +328,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         });
 
         // ปิด Loading ก่อนแสดง Success Dialog
-        if (mounted && Navigator.canPop(context)) {
-          Navigator.of(context).pop();
+        if (mounted && context.canPop()) {
+          context.pop();
         }
 
         if (mounted) {
@@ -343,14 +343,14 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         }
       } else {
         // กรณีไม่มี URL และไม่ Error (กันเหนียวเดี๋ยว Dialog ค้าง)
-        if (mounted && Navigator.canPop(context)) {
-          Navigator.of(context).pop();
+        if (mounted && context.canPop()) {
+          context.pop();
         }
       }
     } catch (e) {
       // ปิด Loading ก่อนแสดง Error
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.of(context).pop();
+      if (mounted && context.canPop()) {
+        context.pop();
       }
 
       print("Error generating audio: $e");
@@ -517,8 +517,13 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 icon: Icons.copy_rounded,
                 label: 'คัดลอก',
                 onTap: () {
-                  Navigator.pop(context);
+                  // Close Dialog
+                  context.pop();
+
+                  // Copy to Clipboard
                   Clipboard.setData(ClipboardData(text: item.content));
+
+                  // Notify with SnackBar
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
@@ -534,7 +539,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 icon: Icons.edit_outlined,
                 label: 'แก้ไข',
                 onTap: () {
-                  Navigator.pop(context);
+                  // Close Dialog
+                  context.pop();
+
                   _showEditPromptModal(item);
                 },
               ),
@@ -542,7 +549,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 icon: Icons.delete_outline,
                 label: 'ลบ',
                 onTap: () {
-                  Navigator.pop(context);
+                  // Close Dialog
+                  context.pop();
+
                   _handleDeletePrompt(item);
                 },
               ),
@@ -564,7 +573,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         initialText: item.content,
         onSave: (newText) async {
           await _handleUpdateText(item, newText);
-          if (mounted) Navigator.pop(context); // ปิด Modal เมื่อบันทึกเสร็จ
+          if (mounted) {
+            // Close Dialog When Save Complete
+            context.pop();
+          } 
         },
       ),
     );
@@ -633,7 +645,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       });
 
       if (mounted) {
-        Navigator.pop(context); // ปิด Loading
+        // Close Loading Dialog
+        context.pop();
+
+        // Notify with SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
@@ -659,7 +674,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        Navigator.pop(context); // ปิด Loading
+        // Close Loading Dialog
+        context.pop();
+
+        // Notify with SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(

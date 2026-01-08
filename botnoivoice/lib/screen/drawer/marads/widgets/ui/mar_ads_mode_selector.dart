@@ -1,6 +1,7 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MarAdsModeSelector extends StatelessWidget {
@@ -135,7 +136,8 @@ class _MarAdsModeSheet extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context); // ปิด Modal ก่อน
+        // Close Dialog Before Run Function
+        context.pop(); // ปิด Modal ก่อน
         onSelect(mode); // ส่งค่ากลับ
       },
       child: Container(

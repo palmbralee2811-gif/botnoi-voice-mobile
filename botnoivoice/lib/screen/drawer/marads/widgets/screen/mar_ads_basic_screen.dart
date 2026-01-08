@@ -229,42 +229,42 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               title: const Text('จูงใจให้ใช้'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'จูงใจให้ใช้');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('ตลก'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'ตลก');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('จริงจัง'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'จริงจัง');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('ออดอ้อน'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'ออดอ้อน');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('เรียกความสงสาร'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'เรียกความสงสาร');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('รีวิวสินค้า'),
               onTap: () {
                 setState(() => _selectedContentStyle = 'รีวิวสินค้า');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
           ],
@@ -297,21 +297,21 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               title: const Text('~15 วิ'),
               onTap: () {
                 setState(() => _selectedContentLength = '~15 วิ');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('~30 วิ'),
               onTap: () {
                 setState(() => _selectedContentLength = '~30 วิ');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
             ListTile(
               title: const Text('~60 วิ'),
               onTap: () {
                 setState(() => _selectedContentLength = '~60 วิ');
-                Navigator.pop(context);
+                context.pop();
               },
             ),
           ],

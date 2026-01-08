@@ -28,21 +28,24 @@ class MarAdsLoadingDialog extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  CircularProgressIndicator(
+                  const CircularProgressIndicator(
                     value: 1,
                     strokeWidth: 3,
-                    color: const Color(0xFFF0F0F0),
+                    color: Color(0xFFF0F0F0),
                   ),
                   // วงกลมหมุน
-                  CircularProgressIndicator(
+                  const CircularProgressIndicator(
                     strokeWidth: 3,
-                    color: const Color(0xFF262626),
+                    color: Color(0xFF262626),
                     strokeCap: StrokeCap.round,
                   ),
                   // ข้อความตรงกลาง
                   Center(
-                    child:
-                        Icon(Icons.mic, color: Color(0xFF262626), size: 25.sp),
+                    child: Icon(
+                      Icons.mic,
+                      color: const Color(0xFF262626),
+                      size: 25.sp,
+                    ),
                   ),
                 ],
               ),

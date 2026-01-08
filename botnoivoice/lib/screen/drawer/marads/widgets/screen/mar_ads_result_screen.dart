@@ -415,8 +415,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         await preloadedPlayer.setUrl(audioUrl);
 
         // ปิด Loading เมื่อ Buffer เสียงเสร็จแล้วจริงๆ
-        if (mounted && Navigator.canPop(context)) {
-          Navigator.of(context).pop();
+        if (mounted && context.canPop()) {
+          context.pop();
         }
 
         // เปิด Dialog เล่นเสียง โดยส่ง Player ที่พร้อมแล้วเข้าไป
@@ -425,8 +425,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         }
       } else {
         // กรณีไม่มี URL ก็ปิด Dialog ตามปกติ
-        if (mounted && Navigator.canPop(context)) {
-          Navigator.of(context).pop();
+        if (mounted && context.canPop()) {
+          context.pop();
         }
         // if (mounted) setState(() => _isVoiceLoading = false);
       }
@@ -434,8 +434,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       preloadedPlayer?.dispose();
 
       // ปิด Loading Dialog ก่อนแสดง Error
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.of(context).pop();
+      if (mounted && context.canPop()) {
+        context.pop();
       }
 
       showDialog(
@@ -466,7 +466,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           actions: [
             Center(
               child: TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  context.pop();
+                },
                 child: Text("ตกลง",
                     style: GoogleFonts.prompt(color: Colors.black)),
               ),
@@ -490,7 +492,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         player: player,
         fileName: _currentFileName ?? "unknown.mp3",
         onDownload: () {
-          Navigator.pop(context);
+          // Close Dialog
+          context.pop();
+
           // เรียกฟังก์ชันดาวน์โหลด
           if (_currentAudioUrl != null) {
             _handleDownload(_currentAudioUrl!,
@@ -499,7 +503,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         },
         // ปุ่มแชร์: โหลด + เปิด Share Sheet
         onShare: () {
-          Navigator.pop(context);
+          // Close Dialog
+          context.pop();
+
           if (_currentAudioUrl != null) {
             _handleDownload(_currentAudioUrl!,
                 existingFileName: _currentFileName, isShare: true);

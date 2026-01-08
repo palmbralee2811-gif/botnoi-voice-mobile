@@ -376,27 +376,9 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                         setState(() => isLoading = false);
                       }
 
-                      // if (success &&
-                      //     mounted &&
-                      //     controller.lastProject != null) {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (_) => ResultScreen(
-                      //         workspaceId: controller.lastProject!.projectId,
-                      //         userId: controller.lastProject!.userId,
-                      //         filePath: controller.lastProject!.filePath,
-                      //         duration: controller.lastProject!.duration,
-                      //         projectName: controller.lastProject!.projectName,
-                      //       ),
-                      //     ),
-                      //   );
-                      // }
-
                       if (success &&
                           mounted &&
                           controller.lastProject != null) {
-                        // ใช้ context.push เพื่อไปหน้า Result และส่งค่าผ่าน extra
                         context.push(
                           '/gensub/result',
                           extra: {
@@ -561,20 +543,6 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
             child: InkWell(
               borderRadius: BorderRadius.circular(16.r),
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (_) => ResultScreen(
-                //       workspaceId: project.projectId,
-                //       userId: project.userId,
-                //       filePath: project.filePath,
-                //       duration: project.duration,
-                //       projectName: project.projectName,
-                //     ),
-                //   ),
-                // );
-
-                // ใช้ context.push เพื่อเปิดหน้า Result แบบมีปุ่มย้อนกลับ
                 context.push(
                   '/gensub/result',
                   extra: {
@@ -668,14 +636,12 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      // Navigator.pop(context, false);
                                       context.pop(false);
                                     },
                                     child: Text("dialog.cancel".tr()),
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      // Navigator.pop(context, true);
                                       context.pop(true);
                                     },
                                     child: Text(

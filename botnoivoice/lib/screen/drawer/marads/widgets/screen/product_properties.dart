@@ -1,6 +1,7 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/basic_mar_ads_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductPropertiesScreen extends StatefulWidget {
@@ -69,7 +70,9 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
             size: 20.sp,
             color: const Color(0xFF262626),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            context.pop();
+          },
         ),
         iconTheme: const IconThemeData(color: Color(0xFF262626)),
       ),
@@ -228,8 +231,11 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
   Widget _buildColorOption(String label, {Color? color}) {
     return ListTile(
       onTap: () {
-        setState(() => _selectedColor = label);
-        Navigator.pop(context);
+        setState(() {
+          _selectedColor = label;
+        });
+
+        context.pop();
       },
       contentPadding: EdgeInsets.symmetric(horizontal: 24.w),
       minLeadingWidth: 20.w,
@@ -273,7 +279,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
             'color': _selectedColor,
             'material': _materialController.text,
           };
-          Navigator.pop(context, result);
+          context.pop(result);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF262626),

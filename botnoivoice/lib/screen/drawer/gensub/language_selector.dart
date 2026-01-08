@@ -145,7 +145,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                           onTap: () {
                             widget.onSelected(lang);
                             
-                            // Navigator.pop(context);
+                            // Close Dialog
                             context.pop();
                           },
                           shape: RoundedRectangleBorder(

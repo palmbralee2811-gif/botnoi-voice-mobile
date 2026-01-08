@@ -67,9 +67,11 @@ class PromptService {
       String errorMsg = "Server Error (${response.statusCode})";
       try {
         final jsonErr = jsonDecode(responseBody);
-        if (jsonErr['message'] != null)
+        if (jsonErr['message'] != null) {
           errorMsg = jsonErr['message'];
-        else if (jsonErr['error'] != null) errorMsg = jsonErr['error'];
+        } else if (jsonErr['error'] != null) {
+          errorMsg = jsonErr['error'];
+        }
       } catch (_) {}
 
       throw Exception(errorMsg);

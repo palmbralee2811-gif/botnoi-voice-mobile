@@ -8,6 +8,7 @@ import 'package:botnoivoice/service/permission/android_permission.dart';
 import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 class MarAdsDownloadLogic {
@@ -97,7 +98,9 @@ class MarAdsDownloadLogic {
     final file = await downloadFileToTemporaryDirectory(url, fileName);
 
     // 3. ปิด Loading
-    if (context.mounted) Navigator.pop(context);
+    if (context.mounted) {
+      context.pop();
+    }
 
     // 4. เช็คผลลัพธ์
     if (file != null) {
@@ -172,8 +175,11 @@ class MarAdsDownloadLogic {
       _onDownloadSuccess = null;
       if (context.mounted) {
         String msg = "เกิดข้อผิดพลาดในการดาวน์โหลด";
-        if (e.toString().contains("Permission"))
+
+        if (e.toString().contains("Permission")) {
           msg = "ไม่มีสิทธิ์เข้าถึงพื้นที่จัดเก็บ";
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("$msg ($e)")),
         );

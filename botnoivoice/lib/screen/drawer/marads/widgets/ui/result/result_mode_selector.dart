@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../marads_ui_style.dart';
 
@@ -112,7 +113,10 @@ class MarAdsResultModeSelector extends StatelessWidget {
               label: 'Result',
               isSelected: selectedMode == 'Result',
               onTap: () {
-                Navigator.pop(context);
+                // Close Dialog
+                context.pop();
+
+                // Call Function
                 onModeChanged('Result');
               },
             ),
@@ -123,7 +127,10 @@ class MarAdsResultModeSelector extends StatelessWidget {
               label: 'Edit',
               isSelected: selectedMode == 'Edit',
               onTap: () {
-                Navigator.pop(context);
+                // Close Dialog
+                context.pop();
+
+                // Call Function
                 onModeChanged('Edit');
               },
             ),
@@ -134,7 +141,10 @@ class MarAdsResultModeSelector extends StatelessWidget {
               label: 'History',
               isSelected: false,
               onTap: () {
-                Navigator.pop(context);
+                // Close Dialog
+                context.pop();
+
+                // Call Function
                 onHistoryPressed();
               },
             ),

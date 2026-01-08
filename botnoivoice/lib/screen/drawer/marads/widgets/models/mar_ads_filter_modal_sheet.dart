@@ -7,8 +7,8 @@ import 'package:botnoivoice/screen/main/speaker/widget/speaker_modal_selection.d
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 
 class MarAdsFilterModalSheet extends StatefulWidget {
   final String initialLangCode;
@@ -33,7 +33,6 @@ class MarAdsFilterModalSheet extends StatefulWidget {
 }
 
 class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
-  final Logger _logger = Logger();
 
   late String _langCode;
   late String _langName;
@@ -258,7 +257,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
             child: ElevatedButton(
               onPressed: () {
                 // ส่ง Map กลับไปให้หน้าหลัก
-                Navigator.pop(context, {
+                context.pop({
                   'langCode': _langCode,
                   'langName': _langName,
                   'langImage': _langImage,
