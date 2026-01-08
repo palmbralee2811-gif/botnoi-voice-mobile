@@ -180,6 +180,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
       fileName: widget.filePath.split('/').last,
       showNotification: true,
       openFileFromNotification: true,
+      saveInPublicStorage: true,
     );
   }
 
