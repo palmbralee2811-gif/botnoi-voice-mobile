@@ -134,28 +134,39 @@ final router = GoRouter(
         );
       },
     ),
-    // GoRoute(
-    //   path: '/marads',
-    //   builder: (context, state) => const MarAdsScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/marads/advanced',
-    //   builder: (context, state) => const MarAdsAdvancedScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/marads/product-properties',
-    //   builder: (context, state) => const ProductPropertiesScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/marads/result',
-    //   builder: (context, state) {
-    //     final generatedText = state.uri.queryParameters['text'];
-    //     return MarAdsResultScreen(generatedText: generatedText);
-    //   },
-    // ),
-    // GoRoute(
-    //   path: '/voicebot',
-    //   builder: (context, state) => const VoicebotScreen(),
-    // ),
+    GoRoute(
+      path: '/marads',
+      builder: (context, state) => const MarAdsScreen(),
+    ),
+    GoRoute(
+      path: '/marads/advanced',
+      builder: (context, state) => const MarAdsAdvancedScreen(),
+    ),
+    GoRoute(
+      path: '/marads/product-properties',
+      builder: (context, state) => const ProductPropertiesScreen(),
+    ),
+    GoRoute(
+      path: '/marads/result',
+      builder: (context, state) {
+        final generatedText = state.uri.queryParameters['text'];
+        final contentStyle = state.uri.queryParameters['style'];
+        final speakerId = state.uri.queryParameters['speaker_id'];
+
+        return MarAdsResultScreen(
+          generatedText: generatedText,
+          contentStyle: contentStyle,
+          speakerId: speakerId,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/marads/history',
+      builder: (context, state) => const MarAdsHistoryScreen(),
+    ),
+    GoRoute(
+      path: '/voicebot',
+      builder: (context, state) => const VoicebotScreen(),
+    ),
   ],
 );

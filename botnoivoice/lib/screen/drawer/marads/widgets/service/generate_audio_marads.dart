@@ -118,9 +118,7 @@
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
-import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_snack_bar.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
@@ -130,41 +128,36 @@ import 'package:http/http.dart' as http;
 final _logger = Logger();
 
 /// Generate audio (เวอร์ชันใหม่ – อย่าชนชื่อกับของเดิม)
-Future<String> generateAudioPreview(
-  WidgetRef ref,
-  String text,
-  String audioUrl,
-  bool isGenerateAudio, {
+Future<String> generateAudioPreview({
+  required WidgetRef ref,
+  required BuildContext context,
+  required String text,
   required bool isV2,
+  String? speakerId,
+  String? language,
 }) async {
-  // ถ้าต้องการ fix ค่า speaker = "1" และ language = "th"
-  // ตามที่พี่เขาแนะนำ (ไม่ไปยุ่งกับ logic ของไฟล์เดิม)
-  // สามารถเขียนแบบนี้ได้เลย
-
-  // NOTE: ถ้าไม่อยากใช้ค่าจาก HomeSpeakerDataManagement เลย ให้คอมเมนต์ออก
-  // String speakerId =
-  //     context.read<HomeSpeakerDataManagement>().speakerId ?? getDefaultSpeakerId(context);
-  // String language =
-  //     context.read<HomeSpeakerDataManagement>().language ?? 'th';
-
-  String speakerId = "1"; // fix speaker
-  String language = "th"; // fix language
+  final String finalSpeakerId = speakerId ?? "1";
+  final String finalLanguage = language ?? "th";
 
   final selectedToken =
-      ref.watch(currentUserTokenStateProvider).credentialsToken;
+      ref.read(currentUserTokenStateProvider).credentialsToken;
 
   if (selectedToken == null || selectedToken.isEmpty) {
     // Show Snackbar
     NotificationSnackBar(
-      context: ref.context,
-      text: "User CredentialsToken is null or empty",
-      color: Colors.red
-    ).showSnackBar();
+            context: context,
+            text: "User CredentialsToken is null or empty",
+            color: Colors.red)
+        .showSnackBar();
+    return "";
   }
 
   _logger.i("Preview speakerId: $speakerId");
   _logger.i("Preview language: $language");
-  _logger.i("User CredentialsToken: $selectedToken");
+  // _logger.i("User CredentialsToken: $selectedToken");
+  _logger.i("User CredentialsToken: [HIDDEN]");
+
+  String audioUrl = "";
 
   String url = isV2
       ? "$apiUrl/openapi/v1/generate_audio_v2"
@@ -172,18 +165,19 @@ Future<String> generateAudioPreview(
 
   Map<String, dynamic> payload = {
     "text": text,
-    "speaker": speakerId, // ใช้ค่า fix "1"
+    "speaker": finalSpeakerId,
     "volume": 1,
     "speed": 1,
     "type_media": "mp3",
     "save_file": "true",
-    "language": language, // ใช้ค่า fix "th"
+    "language": finalLanguage,
     "page": "mobilebotnoivoice",
   };
 
   Map<String, String> headers = {
     'Botnoi-Token': selectedToken ?? '',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Referer': apiReferer
   };
 
   try {
@@ -199,19 +193,24 @@ Future<String> generateAudioPreview(
       audioUrl = jsonData['audio_url'];
       _logger.i("generateAudioPreview -> $audioUrl");
     } else {
-      isGenerateAudio = false;
-      audioUrl = '';
       _logger.e("Failed to generate preview audio: ${response.statusCode}");
 
-      if (ref.context.mounted) {
-        NotificationPopup(
-          context: ref.context,
-          text: 'home_screen.unable_to_create_sound'.tr(),
-        ).showAsError();
-      }
+      // เพิ่มบรรทัดนี้เพื่อดูว่า Server ด่าว่าอะไร
+      _logger.e("Server Response: ${response.body}");
+
+      // แกะ Error message จาก Server
+      String serverError = "Generate Failed (${response.statusCode})";
+      try {
+        final errJson = jsonDecode(utf8.decode(response.bodyBytes));
+        if (errJson['message'] != null) serverError = errJson['message'];
+      } catch (_) {}
+      // Throw Exception เพื่อให้ UI (ResultScreen) จับได้และแสดง Dialog
+      throw Exception(serverError);
     }
   } catch (e) {
     _logger.e("Error on generateAudioPreview: $e");
+    // Rethrow เพื่อให้ UI รู้ว่าพังจริงๆ
+    rethrow;
   }
 
   return audioUrl;

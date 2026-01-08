@@ -1,25 +1,45 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:logger/logger.dart';
 
-class MarAdsLogic {
+class MarAdsAdvancedLogic {
   final PromptService _promptService;
   final Logger _logger = Logger();
 
-  MarAdsLogic(this._promptService);
+  MarAdsAdvancedLogic(this._promptService);
 
-  Future<dynamic> createPromptAdsFromForm({
+  Future<dynamic> createAdvancedPromptAds({
     required WidgetRef ref,
     required BuildContext context,
+
+    // --- ข้อมูลพื้นฐาน ---
     required String productName,
     required String brandName,
     required String price,
+
+    // --- คุณสมบัติสินค้า ---
+    String? size,
+    String? model,
+    String? material,
+    String? color,
+
+    // --- สไตล์ ---
+    required String salesCharacter,
     required String contentStyle,
+
+    // --- โปรโมชั่น (Optional) ---
+    String? promotion,
+    String? targetCustomers,
+    String? sellingPoint,
+    String? whyBuy,
+
+    // --- การตั้งค่า ---
     required String contentLengthLabel,
-    required String additionalInfo,
+    String? additionalInfo,
   }) async {
+    //  Token จาก Riverpod
     final token = ref.watch(currentUserTokenStateProvider).jwtToken;
 
     if (token == null || token.isEmpty) {
@@ -28,9 +48,6 @@ class MarAdsLogic {
 
     String lengthValue;
     switch (contentLengthLabel) {
-      case '~15 วิ':
-        lengthValue = 'สั้น';
-        break;
       case '~30 วิ':
         lengthValue = 'กลาง';
         break;
@@ -38,21 +55,36 @@ class MarAdsLogic {
         lengthValue = 'ยาว';
         break;
       default:
-        lengthValue = 'สั้น';
+        lengthValue = 'กลาง';
     }
 
+    // สร้าง Payload สำหรับ Advanced Mode
     final payload = {
-      "mode": "basic",
+      "mode": "advanced",
       "language": "th",
       "product_name": productName,
       "product_brand": brandName,
       "price": price,
+
+      // Advanced Fields
+      "size": size ?? "",
+      "model": model ?? "",
+      "specific": material ?? "",
+      "color": (color == 'ไม่ระบุ') ? "" : (color ?? ""),
+
+      "sales_character": salesCharacter,
       "content_style": contentStyle,
+
+      "promotion_price": promotion ?? "",
+      "target_customer": targetCustomers ?? "",
+      "advantage": sellingPoint ?? "",
+      "reason_to_buy": whyBuy ?? "",
+
       "content_length": lengthValue,
-      "additional_info": additionalInfo,
+      "additional_info": additionalInfo ?? "",
     };
 
-    _logger.i("Payload => $payload");
+    _logger.i("Advanced Payload => $payload");
 
     try {
       final res = await _promptService.createPromptAds(
@@ -60,7 +92,6 @@ class MarAdsLogic {
         token: token,
         payload: payload,
       );
-
       _logger.i("API Response => $res");
       return res;
     } catch (e, stack) {
