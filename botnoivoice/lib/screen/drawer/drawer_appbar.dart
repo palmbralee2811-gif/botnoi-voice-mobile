@@ -195,6 +195,30 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
 
           ListTile(
             contentPadding: EdgeInsets.only(
+              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
+            ),
+            leading: Icon(
+              Icons.star,
+              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              color: kDark,
+            ),
+            title: Text(
+              'GenSkript',
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              context.push('/genskript');
+            },
+          ),
+          SizedBox(height: 10.h),
+
+          ListTile(
+            contentPadding: EdgeInsets.only(
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.account_circle_outlined,
