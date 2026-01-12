@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:go_router/go_router.dart';
 import '../data/app_data.dart' as models;
 import '../widgets/file_type_selector.dart';
 import '../services/document_service.dart';
@@ -156,7 +157,9 @@ class _GenskriptHomeState extends State<GenskriptHome> {
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.menu, color: Colors.black87),
-        onPressed: () {},
+        onPressed: () {
+          context.pop();
+        },
       ),
       centerTitle: true,
       title: SizedBox(
