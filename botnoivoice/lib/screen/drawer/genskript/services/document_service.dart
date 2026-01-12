@@ -8,13 +8,6 @@ import '../data/api_constants.dart';
 
 // Initialize the logger
 var logger = Logger(
-  printer: PrettyPrinter(
-    methodCount: 0, // Reduces noise in logs
-    errorMethodCount: 5,
-    lineLength: 80,
-    colors: true,
-    printEmojis: false, // Ensure logger itself doesn't add emojis
-  ),
 );
 
 class DocumentService {

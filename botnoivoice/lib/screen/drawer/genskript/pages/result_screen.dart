@@ -1,6 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
+
 import '../services/script_service.dart';
 import '../services/download_service.dart';
 import '../services/translation_service.dart';
@@ -10,7 +15,7 @@ import '../data/app_data.dart';
 import '../data/api_constants.dart';
 import '../widgets/star_p_badge.dart';
 
-// Initialize Logger (No Emojis)
+// Initialize Logger
 var logger = Logger(
   printer: PrettyPrinter(
     methodCount: 0,
@@ -46,17 +51,13 @@ class _ResultScreenState extends State<ResultScreen> {
   // --- STATE VARIABLES ---
   late TextEditingController _editController;
 
-  // Audio Player State
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _isPlaying = false;
-  Duration _duration = Duration.zero;
-  Duration _position = Duration.zero;
-  String? _currentAudioUrl;
-
+  // JustAudio Player State
+  final AudioPlayer _player = AudioPlayer(); 
+  
   String _selectedSpeed = '1x';
   String _selectedVolume = '100%';
-  int userPoints = 2000; 
-
+  
+  // Settings Arrays
   final List<String> speedOptions = [
     '0.5x', '0.6x', '0.7x', '0.8x', '0.9x', 
     '1x', '1.2x', '1.5x', '2.0x'
@@ -70,127 +71,20 @@ class _ResultScreenState extends State<ResultScreen> {
   void initState() {
     super.initState();
     _editController = TextEditingController(text: widget.script);
-    _currentAudioUrl = widget.audioUrl;
-
-    _initAudioPlayer();
-  }
-
-  void _initAudioPlayer() async {
-    // 1. Set Release Mode (Important for Android stability)
-    await _audioPlayer.setReleaseMode(ReleaseMode.stop);
-
-    // 2. Listen to Audio Player Streams
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      if (mounted) {
-        setState(() {
-          _isPlaying = state == PlayerState.playing;
-        });
-      }
-    });
-
-    _audioPlayer.onDurationChanged.listen((newDuration) {
-      if (mounted) {
-        setState(() {
-          _duration = newDuration;
-        });
-      }
-    });
-
-    _audioPlayer.onPositionChanged.listen((newPosition) {
-      if (mounted) {
-        setState(() {
-          _position = newPosition;
-        });
-      }
-    });
-
-    // Log errors from the player itself
-    _audioPlayer.onLog.listen((msg) {
-      logger.d("AudioPlayer Log: $msg");
-    });
-
-    // Auto-load if URL exists initially
-    if (_currentAudioUrl != null && _currentAudioUrl!.startsWith('http')) {
-       _prepareAudio(_currentAudioUrl!);
-    }
-  }
-
-  /// Prepares the audio source (Encodes URL + Sets Source)
-  Future<void> _prepareAudio(String url) async {
-    try {
-      // 1. Encode URL (Fixes 'MEDIA_ERROR_UNKNOWN' caused by spaces in S3 URLs)
-      final String encodedUrl = Uri.encodeFull(url);
-      logger.d("Preparing audio source: $encodedUrl");
-      
-      // 2. Stop previous playback to reset state
-      await _audioPlayer.stop(); 
-      
-      // 3. Set the new source
-      await _audioPlayer.setSourceUrl(encodedUrl);
-      
-      // 4. Set volume
-      await _audioPlayer.setVolume(1.0);
-      
-    } catch (e) {
-      logger.e("Error setting audio source", error: e);
-      if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Failed to load audio file.")),
-        );
-      }
-    }
   }
 
   @override
   void dispose() {
     _editController.dispose();
-    _audioPlayer.dispose();
+    _player.dispose(); // Dispose JustAudio player
     super.dispose();
-  }
-
-  // --- Helpers for Audio ---
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
-  }
-
-  Future<void> _handlePlayPause() async {
-    if (_currentAudioUrl == null) return;
-    
-    try {
-      if (_isPlaying) {
-        await _audioPlayer.pause();
-      } else {
-        // Encode URL before playing to be safe
-        final String encodedUrl = Uri.encodeFull(_currentAudioUrl!);
-        
-        // If the player lost state or is at start, force play with Source
-        if (_position == Duration.zero || _duration == Duration.zero) {
-           await _audioPlayer.play(UrlSource(encodedUrl));
-        } else {
-           await _audioPlayer.resume();
-        }
-      }
-    } catch (e) {
-      logger.e("Audio Play/Pause Error", error: e);
-      
-      // Fallback: Try reloading and playing from scratch
-      try {
-        await _prepareAudio(_currentAudioUrl!);
-        final String encodedUrl = Uri.encodeFull(_currentAudioUrl!);
-        await _audioPlayer.play(UrlSource(encodedUrl));
-      } catch (e2) {
-         logger.e("Retry Play failed", error: e2);
-      }
-    }
   }
 
   // --- LOGIC: CREATE VOICE ---
   Future<void> _handleCreateVoice() async {
     if (_editController.text.isEmpty) return;
 
+    // 1. Show Loading
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -201,38 +95,90 @@ class _ResultScreenState extends State<ResultScreen> {
 
     String? resultUrl;
     try {
+      // Determine language code safely
+      String langCode = 'th';
+      if (widget.language.toLowerCase().contains('en')) {
+        langCode = 'en';
+      }
+
       resultUrl = await VoiceService.handleCreateVoice(
         scriptText: _editController.text,
         speed: _selectedSpeed,
         volume: _selectedVolume,
-        languageValue: widget.language == "ไทย" ? "th" : "en",
+        languageValue: langCode,
       );
     } catch (e) {
       logger.e("Error in handleCreateVoice wrapper", error: e);
     }
 
+    // 2. Hide Loading
     if (mounted) Navigator.pop(context);
 
+    // 3. Handle Result
     if (resultUrl != null && resultUrl.isNotEmpty) {
-      setState(() {
-        _currentAudioUrl = resultUrl;
-        // Reset UI state
-        _position = Duration.zero;
-        _duration = Duration.zero;
-        _isPlaying = false;
-      });
-      
-      // Prepare the new source immediately
-      await _prepareAudio(resultUrl);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Voice generated successfully!")),
-      );
+      _loadAndShowDialog(resultUrl);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Error generating voice")),
       );
     }
+  }
+
+  /// Loads audio with headers to bypass 403 Error
+  Future<void> _loadAndShowDialog(String url) async {
+    try {
+      logger.d("Attempting to load URL with headers: $url");
+      
+      // Stop previous playback
+      await _player.stop();
+
+      // Encode URL (Handle spaces)
+      final Uri uri = Uri.parse(Uri.encodeFull(url));
+
+      // ✅ FIX 403: Use AudioSource.uri to attach Headers (Referer)
+      await _player.setAudioSource(
+        AudioSource.uri(
+          uri,
+          headers: {
+            // This header is often required by S3/CloudFront to allow access
+            'Referer': 'https://voice.botnoi.ai/', 
+            'User-Agent': 'BotnoiVoiceMobile',
+          },
+        ),
+      );
+      
+      if (mounted) {
+        _showAudioPlayerDialog(_player, url);
+      }
+    } catch (e) {
+      logger.e("Error loading audio for dialog", error: e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Could not play audio (403): $e")),
+        );
+      }
+    }
+  }
+
+  // Show the Custom Dialog
+  void _showAudioPlayerDialog(AudioPlayer player, String url) {
+    showDialog(
+      context: context,
+      builder: (context) => GenskriptAudioPlayerDialog(
+        player: player,
+        fileName: url.split('/').last, // Extract filename from URL
+        onDownload: () {
+          Navigator.pop(context); // Close dialog
+          DownloadService.handleDownloadAll(); 
+          ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(content: Text("Downloading...")));
+        },
+        onShare: () {
+          // Navigator.pop(context); 
+          logger.d("Share button clicked");
+        },
+      ),
+    );
   }
 
   // --- LOGIC: TRANSLATION ---
@@ -354,7 +300,8 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   void _executeTranslation(String targetLang) async {
-    if (userPoints < 100) {
+    // Check points logic (mocked here)
+    if (2000 < 100) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Insufficient Points")));
       return;
     }
@@ -377,7 +324,6 @@ class _ResultScreenState extends State<ResultScreen> {
       if (result != null) {
         setState(() {
           _editController.text = result;
-          userPoints -= 100;
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Translated to $targetLang successfully!")));
       } else {
@@ -391,38 +337,14 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Action List
+    // Footer Actions
     final List<Map<String, dynamic>> footerActions = [
-      {
-        'label': "Link Script",
-        'icon': Icons.link,
-        'action': () => ScriptService.handleJoinScript(),
-      },
-      {
-        'label': "Download All",
-        'icon': Icons.download_rounded,
-        'action': () => DownloadService.handleDownloadAll(),
-      },
-      {
-        'label': "Translate",
-        'icon': Icons.translate,
-        'action': () => _showLanguagePicker(context),
-      },
-      {
-        'label': "Create Free Video",
-        'icon': Icons.card_giftcard,
-        'action': () => VideoService.handleFreeVideo(),
-      },
-      {
-        'label': "Auto Voice",
-        'icon': Icons.settings_voice,
-        'action': () => _handleCreateVoice(),
-      },
-      {
-        'label': "Create Video",
-        'icon': Icons.movie_creation_outlined,
-        'action': () => VideoService.handleCreateVideo(),
-      },
+      {'label': "Link Script", 'icon': Icons.link, 'action': () => ScriptService.handleJoinScript()},
+      {'label': "Download All", 'icon': Icons.download_rounded, 'action': () => DownloadService.handleDownloadAll()},
+      {'label': "Translate", 'icon': Icons.translate, 'action': () => _showLanguagePicker(context)},
+      {'label': "Create Free Video", 'icon': Icons.card_giftcard, 'action': () => VideoService.handleFreeVideo()},
+      {'label': "Auto Voice", 'icon': Icons.settings_voice, 'action': () => _handleCreateVoice()},
+      {'label': "Create Video", 'icon': Icons.movie_creation_outlined, 'action': () => VideoService.handleCreateVideo()},
     ];
 
     return Container(
@@ -474,12 +396,6 @@ class _ResultScreenState extends State<ResultScreen> {
               ],
             ),
             
-            const SizedBox(height: 15),
-
-            // Audio Player UI (Only if URL exists)
-            if (_currentAudioUrl != null && _currentAudioUrl!.isNotEmpty)
-              _buildAudioPlayerUI(),
-
             const SizedBox(height: 20),
 
             // Footer Actions
@@ -528,104 +444,7 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  Widget _buildAudioPlayerUI() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-      child: Row(
-        children: [
-          // Play/Pause Icon
-          InkWell(
-            onTap: _handlePlayPause,
-            child: Icon(
-              _isPlaying ? Icons.pause_circle_outline : Icons.play_arrow_outlined,
-              color: Colors.cyan,
-              size: 32,
-            ),
-          ),
-          const SizedBox(width: 8),
-
-          // Duration Text
-          Text(
-            "${_formatDuration(_position)} / ${_formatDuration(_duration)}",
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-
-          // Slider
-          Expanded(
-            child: SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                activeTrackColor: Colors.grey[300], 
-                inactiveTrackColor: Colors.grey[200],
-                thumbColor: Colors.cyan, 
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6), 
-                trackHeight: 4.0,
-                overlayShape: SliderComponentShape.noOverlay,
-              ),
-              child: Slider(
-                min: 0,
-                max: _duration.inSeconds.toDouble() > 0 ? _duration.inSeconds.toDouble() : 1.0,
-                value: _position.inSeconds.toDouble().clamp(0, (_duration.inSeconds.toDouble() > 0 ? _duration.inSeconds.toDouble() : 1.0)),
-                onChanged: (value) async {
-                  try {
-                    final position = Duration(seconds: value.toInt());
-                    await _audioPlayer.seek(position);
-                    await _audioPlayer.resume();
-                  } catch (e) {
-                    logger.e("Slider Error", error: e);
-                  }
-                },
-              ),
-            ),
-          ),
-          
-          const SizedBox(width: 10),
-
-          Text(
-            "${_editController.text.length} PT",
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-          ),
-          
-          const SizedBox(width: 10),
-
-          // Download Button
-          Container(
-            height: 32,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9C88FF), Color(0xFF00B0FF)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                if (_currentAudioUrl != null) {
-                  try {
-                    DownloadService.handleDownloadAll(); 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Downloading...")));
-                  } catch (e) {
-                     logger.e("Download Error", error: e);
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text(
-                "Download",
-                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // --- Helper Widgets ---
 
   Widget _buildScriptEditor() {
     return Container(
@@ -792,5 +611,218 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Icon(icon, size: 20, color: color),
       ),
     );
+  }
+}
+
+// ------------------------------------------------------------------------
+// GenskriptAudioPlayerDialog (Custom Dialog UI)
+// ------------------------------------------------------------------------
+class GenskriptAudioPlayerDialog extends StatefulWidget {
+  final AudioPlayer player;
+  final String fileName;
+  final VoidCallback onDownload;
+  final VoidCallback onShare;
+
+  const GenskriptAudioPlayerDialog({
+    super.key,
+    required this.player,
+    required this.fileName,
+    required this.onDownload,
+    required this.onShare,
+  });
+
+  @override
+  State<GenskriptAudioPlayerDialog> createState() => _GenskriptAudioPlayerDialogState();
+}
+
+class _GenskriptAudioPlayerDialogState extends State<GenskriptAudioPlayerDialog> {
+  bool _isPlaying = false;
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+
+  StreamSubscription? _durationSubscription;
+  StreamSubscription? _positionSubscription;
+  StreamSubscription? _playerStateSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initAudio();
+  }
+
+  Future<void> _initAudio() async {
+    // 1. Listen for duration
+    _durationSubscription = widget.player.durationStream.listen((d) {
+      if (mounted && d != null) {
+        setState(() => _duration = d);
+      }
+    });
+
+    // 2. Listen for position
+    _positionSubscription = widget.player.positionStream.listen((p) {
+      if (mounted) setState(() => _position = p);
+    });
+
+    // 3. Listen for completion
+    _playerStateSubscription = widget.player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        if (mounted) {
+          setState(() => _isPlaying = false);
+          widget.player.seek(Duration.zero);
+          widget.player.pause();
+        }
+      }
+    });
+
+    // 4. Auto-Play if ready
+    if (widget.player.playing) {
+      setState(() => _isPlaying = true);
+    } else {
+      widget.player.play();
+      setState(() => _isPlaying = true);
+    }
+  }
+
+  void _togglePlay() {
+    if (_isPlaying) {
+      widget.player.pause();
+    } else {
+      widget.player.play();
+    }
+    setState(() => _isPlaying = !_isPlaying);
+  }
+
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(d.inMinutes.remainder(60));
+    final seconds = twoDigits(d.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+
+  @override
+  void dispose() {
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _playerStateSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        title: Center(
+            child: Text("Create Voice Success",
+                style: GoogleFonts.prompt(fontWeight: FontWeight.bold))),
+        content: SizedBox(
+          width: 300.w,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("File: ${widget.fileName}", style: TextStyle(fontSize: 12.sp), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
+              SizedBox(height: 20.h),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        iconSize: 40.sp,
+                        onPressed: _togglePlay,
+                        icon: Icon(
+                          _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
+                          color: const Color(0xFF262626),
+                        ),
+                      ),
+                      Expanded(
+                        child: Slider(
+                          min: 0,
+                          max: _duration.inMilliseconds.toDouble() > 0 ? _duration.inMilliseconds.toDouble() : 1.0,
+                          value: _position.inMilliseconds.toDouble().clamp(0, (_duration.inMilliseconds.toDouble() > 0 ? _duration.inMilliseconds.toDouble() : 1.0)),
+                          activeColor: const Color(0xFF262626),
+                          inactiveColor: Colors.grey[300],
+                          onChanged: (value) async {
+                            final position = Duration(milliseconds: value.toInt());
+                            await widget.player.seek(position);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(_formatDuration(_position), style: GoogleFonts.inter(fontSize: 10.sp)),
+                        Text(_formatDuration(_duration), style: GoogleFonts.inter(fontSize: 10.sp)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        side: const BorderSide(color: Color(0xFF262626)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                      ),
+                      onPressed: widget.onShare,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.share, size: 18.sp, color: const Color(0xFF262626)),
+                          SizedBox(width: 5.w),
+                          Text("Share", style: GoogleFonts.prompt(color: const Color(0xFF262626), fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF262626),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                      onPressed: widget.onDownload,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.download, size: 18.sp, color: Colors.white),
+                          SizedBox(width: 5.w),
+                          Text("Download", style: GoogleFonts.prompt(color: Colors.white, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () {
+                    // Stop playing when closing the dialog
+                    widget.player.stop();
+                    Navigator.pop(context);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    side: const BorderSide(color: Color(0xFFE5E5E5), width: 1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    foregroundColor: const Color(0xFF262626),
+                  ),
+                  child: Text("Close", style: GoogleFonts.prompt(color: const Color(0xFF262626), fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }

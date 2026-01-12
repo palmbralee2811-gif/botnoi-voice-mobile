@@ -4,20 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import '../data/api_constants.dart';
 
-// Initialize Logger (No Emojis)
 var logger = Logger(
-  printer: PrettyPrinter(
-    methodCount: 0,
-    errorMethodCount: 5,
-    lineLength: 80,
-    colors: true,
-    printEmojis: false,
-    printTime: false,
-  ),
 );
 
 class VoiceService {
-  // Helper to generate random ID (e.g., Q8ZDY)
   static String _generateRandomId(int length) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     Random rnd = Random();
@@ -31,7 +21,8 @@ class VoiceService {
     required String scriptText,
     required String speed,
     required String volume,
-    String languageValue = "th",
+    required String languageValue, // e.g. 'th', 'en'
+    String? speakerId,             // ✅ Optional: Allow passing specific speaker
   }) async {
     try {
       if (ApiConstants.Token.isEmpty) {
@@ -45,12 +36,26 @@ class VoiceService {
       final double speedNum = double.tryParse(cleanSpeed) ?? 1.0;
       final double volumeNum = double.tryParse(cleanVolume) ?? 100.0;
 
+      // 2. Select Safe Speaker ID based on Language
+      // If caller didn't provide an ID, pick a default that supports the language.
+      String selectedSpeaker = speakerId ?? "1"; 
+      if (speakerId == null) {
+        if (languageValue.toLowerCase() == 'th') {
+          selectedSpeaker = "1";  // Speaker 1 supports Thai
+        } else if (languageValue.toLowerCase() == 'en') {
+          selectedSpeaker = "55"; // Example: Speaker 55 supports English
+        } else {
+          selectedSpeaker = "1";  // Fallback
+        }
+      }
+
       // --- Generate IDs ---
       final String randomStr = _generateRandomId(5);
       final String workspaceId = "genskript_$randomStr";
       final String audioId = "${workspaceId}_script_1";
 
-      logger.d("Step 1: Generating Audio ($audioId)...");
+      logger.d("Step 1: Generating Audio ($audioId)");
+      logger.d("👉 Config: Speaker=$selectedSpeaker | Lang=$languageValue");
 
       // ==========================================
       // STEP 1: POST to Generate Audio
@@ -58,7 +63,7 @@ class VoiceService {
       final Map<String, dynamic> generatePayload = {
         "audio_id": audioId,
         "text": scriptText,
-        "speaker": "5",
+        "speaker": selectedSpeaker, // ✅ Use the validated speaker ID
         "volume": volumeNum,
         "speed": speedNum,
         "language": languageValue
@@ -76,35 +81,31 @@ class VoiceService {
         final genBody = utf8.decode(genResponse.bodyBytes);
         final genData = jsonDecode(genBody);
         
-        logger.d("Step 1 Raw Response: $genData"); 
+        logger.d("Step 1 Response: $genData"); 
 
         audioUrl = genData['data'] ?? 
                    genData['audio_url'] ?? 
                    genData['url'] ?? 
                    genData['file_url'];
-
-        logger.d("Step 1 Extracted URL: $audioUrl");
       } else {
-        logger.e("Step 1 Failed: ${genResponse.statusCode} - ${genResponse.body}");
-        return null;
+        logger.e("⛔ Step 1 Failed: ${genResponse.statusCode} - ${genResponse.body}");
+        return null; 
       }
 
       if (audioUrl == null || audioUrl.isEmpty) {
-        logger.e("Step 1 Error: URL is null. Server returned: ${genResponse.body}");
+        logger.e("Step 1 Error: URL is null.");
         return null;
       }
 
       // ==========================================
       // STEP 2: POST to Save Workspace (Create New)
       // ==========================================
-      // ⚠️ FIX: Use the base endpoint (do not append /workspaceId to URL)
       final String saveWorkspaceUrl = ApiConstants.workspaceEndpoint;
 
-      logger.d("Step 2: Saving to Workspace (Creating New)...");
-      logger.d("Step 2 URL: $saveWorkspaceUrl");
-
+      logger.d("Step 2: Saving Workspace...");
+      
       final Map<String, dynamic> workspacePayload = {
-        "title": workspaceId, // ID is sent here instead
+        "title": workspaceId, 
         "audio": audioUrl,
         "isDownload": false,
         "isDownloaded": false,
@@ -120,7 +121,7 @@ class VoiceService {
             "isgenerate": true,
             "ispaid": false,
             "script": scriptText,
-            "speaker": "5",
+            "speaker": selectedSpeaker, // ✅ Consistent Speaker ID
             "speed": cleanSpeed,
             "text": scriptText,
             "text_read": scriptText.replaceAll(' ', ''),
@@ -129,13 +130,12 @@ class VoiceService {
             "word_count": scriptText.length,
           }
         ],
-        "speaker": "5",
+        "speaker": selectedSpeaker, // ✅ Consistent Speaker ID
         "speed": cleanSpeed,
         "volume": cleanVolume,
         "word_count": scriptText.length,
       };
 
-      // ⚠️ FIX: Changed from PUT to POST
       final saveResponse = await http.post(
         Uri.parse(saveWorkspaceUrl),
         headers: ApiConstants.generateHeaders,
@@ -143,10 +143,9 @@ class VoiceService {
       );
 
       if (saveResponse.statusCode == 200 || saveResponse.statusCode == 201) {
-        logger.d("Step 2 Success: Workspace saved/created.");
+        logger.d("Step 2 Success: Workspace saved.");
       } else {
-        logger.e("Step 2 Failed (${saveResponse.statusCode}): ${saveResponse.body}");
-        // We still return audioUrl because Step 1 (Audio Gen) succeeded
+        logger.w("Step 2 Warning: Failed to save workspace (${saveResponse.statusCode}), but audio was generated.");
       }
 
       return audioUrl;

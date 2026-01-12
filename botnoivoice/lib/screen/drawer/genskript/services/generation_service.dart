@@ -8,14 +8,6 @@ import '../data/api_constants.dart';
 
 // Initialize Logger with no emojis
 var logger = Logger(
-  printer: PrettyPrinter(
-    methodCount: 0,
-    errorMethodCount: 5,
-    lineLength: 80,
-    colors: true,
-    printEmojis: false, // Strictly disable emojis
-    printTime: false,
-  ),
 );
 
 class GenerationService {
