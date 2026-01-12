@@ -18,7 +18,7 @@ class ApiConstants {
   static const String convertPptx = "$baseUrl/api/pptx/convert-pptx-img";
 
   // --- 1. กุญแจสำหรับการอัปโหลดรูปภาพ ---
-  static const String Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjgwMTIwOTUsImlhdCI6MTc2NzkyNTY5NSwibmJmIjoxNzY3OTI1Njk1LCJ1aWQiOiIwNzk4MGM4Zi1jNzVkLTUyY2MtOTk0YS04YTVlN2YwZjY4MGYiLCJ1c2VyX2lkIjoiTVY0all1aXkwMVVVazlBOUZpYWNQVUl1dTBxMSIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.4zVlA0kgN6Gj-j-UFTcVSUJhlnt1W8N3KrQkBxbx088";
+  static const String Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjgyNzU0NDMsImlhdCI6MTc2ODE4OTA0MywibmJmIjoxNzY4MTg5MDQzLCJ1aWQiOiIwNzk4MGM4Zi1jNzVkLTUyY2MtOTk0YS04YTVlN2YwZjY4MGYiLCJ1c2VyX2lkIjoiTVY0all1aXkwMVVVazlBOUZpYWNQVUl1dTBxMSIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.IOv9t6WDHfNLuQNOIKeAeYiqQbF9jxSxJkszzCxGAAE";
   
   // Headers สำหรับอัปโหลดรูปภาพ (Multipart)
   static Map<String, String> get uploadHeaders => {

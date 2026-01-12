@@ -2,11 +2,23 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../data/app_data.dart'; // ดึงโมเดลมาจากที่นี่ที่เดียว
+import 'package:logger/logger.dart'; // Import Logger
+import '../data/app_data.dart';
 import '../data/api_constants.dart';
 
+// Initialize Logger with no emojis
+var logger = Logger(
+  printer: PrettyPrinter(
+    methodCount: 0,
+    errorMethodCount: 5,
+    lineLength: 80,
+    colors: true,
+    printEmojis: false, // Strictly disable emojis
+    printTime: false,
+  ),
+);
+
 class GenerationService {
-  // สร้างตัวแปรเก็บผลลัพธ์ล่าสุดไว้ที่นี่ (ถ้าต้องการใช้ข้ามหน้า)
   static GenerationResult? lastGenerationResult;
 
   static Future<GenerationResult?> generate({
@@ -17,7 +29,9 @@ class GenerationService {
     required double temperature,
   }) async {
     try {
-      // 1. จัดเตรียม Payload
+      logger.d("Starting generation with prompt: $prompt");
+
+      // 1. Prepare Payload
       final Map<String, dynamic> requestBody = {
         "custom_prompt": prompt,
         "language": language == 'ไทย' ? 'th' : 'en',
@@ -27,36 +41,37 @@ class GenerationService {
             ? [
                 {
                   "url": imageUrl,
-                  "position": "first" // ใช้ "first" ตามที่ API ต้องการ
+                  "position": "first"
                 }
               ]
             : [],
       };
 
-      // 2. ส่งคำขอไปยัง API
+      // 2. Send Request
       final response = await http.post(
         Uri.parse(ApiConstants.generateEndpoint),
         headers: ApiConstants.generateHeaders,
         body: jsonEncode(requestBody),
       );
 
-      print("--- GENERATION DEBUG ---");
-      print("Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      // Force UTF-8 decoding to handle Thai characters correctly
+      final String decodedBody = utf8.decode(response.bodyBytes);
 
-      // 3. จัดการผลลัพธ์
+      logger.d("Status Code: ${response.statusCode}");
+      logger.d("Response Body: $decodedBody");
+
+      // 3. Handle Result
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final Map<String, dynamic> responseData = jsonDecode(decodedBody);
         
-        // แปลง JSON เป็น Object จากคลาสใน app_data.dart
         lastGenerationResult = GenerationResult.fromJson(responseData);
         return lastGenerationResult;
       } else {
-        print("Generation Failed: ${response.body}");
+        logger.e("Generation Failed: $decodedBody");
         return null;
       }
     } catch (e) {
-      print("Generation Service Error: $e");
+      logger.e("Generation Service Error", error: e);
       return null;
     }
   }
