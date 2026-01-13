@@ -178,7 +178,9 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
                             ? 4.w
                             : 8.w),
                     Text(
-                      nationalFlagName!,
+                      nationalFlagName!.length > 7
+                          ? '${nationalFlagName.substring(0, 7)}...'
+                          : nationalFlagName,
                       style: GoogleFonts.prompt(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 7.sp
