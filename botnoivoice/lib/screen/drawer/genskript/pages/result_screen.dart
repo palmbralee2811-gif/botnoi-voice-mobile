@@ -15,16 +15,18 @@ import 'package:http/http.dart' as http;
 
 import '../services/script_service.dart';
 import '../services/translation_service.dart';
-import '../services/video_service.dart';
+import '../services/video_service.dart'; 
 import '../services/voice_service.dart';
 import '../services/download_service.dart'; 
 import '../data/app_data.dart';
+import '../data/api_constants.dart';
 import '../widgets/star_p_badge.dart';
 
-// ✅ Import your widgets (Ensure these files exist in your project)
+// ✅ Import all your dialog widgets
 import '../widgets/genskript_audio_player_dialog.dart'; 
 import '../widgets/genskript_download_options_dialog.dart'; 
 import '../widgets/genskript_success_dialog.dart'; 
+import '../widgets/genskript_video_creation_dialog.dart'; 
 
 var logger = Logger();
 
@@ -53,7 +55,7 @@ class _ResultScreenState extends State<ResultScreen> {
   final AudioPlayer _player = AudioPlayer(); 
   
   // Settings
-  int userPoints = 2000; 
+  int userPoints = 5000; // Mock balance
   String _selectedSpeed = '1x';
   String _selectedVolume = '100%';
   String? _currentFileName; 
@@ -83,132 +85,126 @@ class _ResultScreenState extends State<ResultScreen> {
     super.dispose();
   }
 
-  // --- 1. DOWNLOAD LOGIC (Save to Device) ---
-  Future<void> _executeDownload({
-    required String url,
-    required String fileName,
-    required Function onSuccess,
-  }) async {
-    bool hasPermission = false;
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if (androidInfo.version.sdkInt >= 33) {
-        hasPermission = true; 
-      } else {
-        var status = await Permission.storage.request();
-        hasPermission = status.isGranted;
-      }
-    } else {
-      hasPermission = true; 
-    }
+  // ==========================================
+  //  VIDEO GENERATION LOGIC (NEW)
+  // ==========================================
+  Future<void> _handleCreateVideo() async {
+    if (_editController.text.trim().isEmpty) return;
 
-    if (!hasPermission) {
-      logger.e("Storage permission denied");
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please grant storage permission to download.")));
-      return;
-    }
+    // 1. Calculate Points based on your screenshots/logic
+    int audioPoints = _editController.text.length; 
+    int videoPoints = 200; 
 
-    Directory? directory;
-    if (Platform.isAndroid) {
-      directory = Directory('/storage/emulated/0/Download');
-      if (!await directory.exists()) directory = await getExternalStorageDirectory();
-    } else {
-      directory = await getApplicationDocumentsDirectory();
-    }
-
-    if (directory == null) return;
-
-    try {
-      await FlutterDownloader.enqueue(
-        url: url,
-        headers: {'Referer': 'https://voice.botnoi.ai/', 'User-Agent': 'BotnoiVoiceMobile'},
-        savedDir: directory.path,
-        fileName: fileName,
-        showNotification: true,
-        openFileFromNotification: true,
-        saveInPublicStorage: true,
-      );
-      onSuccess();
-    } catch (e) {
-      logger.e("Download failed: $e");
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download failed: $e")));
-    }
+    // 2. Show Confirmation Dialog
+    showDialog(
+      context: context,
+      builder: (context) => GenskriptVideoCreationDialog(
+        videoPoints: videoPoints,
+        voicePoints: audioPoints,
+        onConfirm: () {
+          _processVideoCreation(audioPoints, videoPoints);
+        },
+      ),
+    );
   }
 
-  // --- 2. SHARE LOGIC (Download to Temp & Share) ---
-  Future<void> _downloadAndShare(String url) async {
+  Future<void> _processVideoCreation(int audioPoints, int videoPoints) async {
+    // 3. Show Loading
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (c) => const Center(child: CircularProgressIndicator(color: Colors.white)),
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: Colors.cyan),
+              SizedBox(height: 20.h),
+              Text("กำลังเตรียมการสร้างวิดีโอ HQ...", style: GoogleFonts.prompt(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8.h),
+              Text("ปิดหน้าต่างนี้ได้เลย\nระบบจะประมวลผลต่อในเบื้องหลัง", textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: 12.sp, color: Colors.grey)),
+            ],
+          ),
+        ),
+      ),
     );
 
     try {
-      final tempDir = await getTemporaryDirectory();
-      final fileName = "share_${DateTime.now().millisecondsSinceEpoch}.mp3";
-      final file = File('${tempDir.path}/$fileName');
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Referer': 'https://voice.botnoi.ai/', 'User-Agent': 'BotnoiVoiceMobile'},
+      String? videoUrl = await VideoService.handleCreateVideo(
+        scriptText: _editController.text,
+        imageUrl: widget.imageUrl ?? "https://via.placeholder.com/500x500.png?text=No+Image", 
+        language: "th", 
+        audioPoints: audioPoints,
+        videoPoints: videoPoints,
       );
 
-      if (response.statusCode == 200) {
-        await file.writeAsBytes(response.bodyBytes);
-        
-        if (mounted) Navigator.pop(context); 
+      if (mounted) Navigator.pop(context); // Close loading
 
-        logger.d("Sharing file: ${file.path}");
-        await Share.shareXFiles([XFile(file.path)], text: 'Created with Genskript!');
+      if (videoUrl != null) {
+        _showVideoSuccessDialog(videoUrl);
       } else {
-        throw Exception("Failed to download for share: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to create video.")));
       }
     } catch (e) {
-      if (mounted && Navigator.canPop(context)) Navigator.pop(context); 
-      logger.e("Share failed", error: e);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Unable to share audio.")));
+      if (mounted) Navigator.pop(context);
+      logger.e("Video Create Error", error: e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
 
-  // --- MAIN HANDLER ---
-  Future<void> _handleDownload(String url, {String? existingFileName, bool isShare = false}) async {
-    if (isShare) {
-      await _downloadAndShare(url);
-      return;
-    }
-
-    final int estimatedPoints = _editController.text.length * 1; 
-
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (dialogContext) => GenskriptDownloadOptionsDialog(
-          points: estimatedPoints,
-          onConfirm: (selectedExtension) async {
-            final timestamp = DateTime.now().millisecondsSinceEpoch;
-            final finalFileName = "botnoi_genskript_$timestamp.$selectedExtension";
-
-            await _executeDownload(
-              url: url, 
-              fileName: finalFileName,
-              onSuccess: () {
-                if (!mounted) return;
-                showDialog(
-                  context: context,
-                  builder: (context) => const GenskriptSuccessDialog(
-                    title: "Download Successful",
-                    subtitle: "File saved to device successfully.",
-                  ),
-                );
-              }
-            );
-          },
-        ),
-      );
-    }
+  void _showVideoSuccessDialog(String videoUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => GenskriptSuccessDialog(
+        title: "Video Generation Started",
+        subtitle: "Your video is being processed. You can download or share it below.",
+      ),
+    ).then((_) {
+      // Bottom sheet to download/share the video result
+      if(mounted) {
+        showModalBottomSheet(
+          context: context,
+          builder: (c) => Container(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Video Options", style: GoogleFonts.prompt(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                SizedBox(height: 20.h),
+                ListTile(
+                  leading: const Icon(Icons.download, color: Colors.cyan),
+                  title: Text("Download Video", style: GoogleFonts.prompt()),
+                  onTap: () {
+                    Navigator.pop(c);
+                    _executeDownload(
+                      url: videoUrl, 
+                      fileName: "genskript_video_${DateTime.now().millisecondsSinceEpoch}.mp4",
+                      onSuccess: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Video Downloaded!")))
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.share, color: Colors.cyan),
+                  title: Text("Share Video", style: GoogleFonts.prompt()),
+                  onTap: () {
+                    Navigator.pop(c);
+                    _downloadAndShare(videoUrl); 
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    });
   }
 
-  // --- LOGIC: CREATE VOICE ---
+  // ==========================================
+  //  VOICE GENERATION LOGIC (Existing code kept intact)
+  // ==========================================
   Future<void> _handleCreateVoice() async {
     if (_editController.text.trim().isEmpty) return;
 
@@ -255,15 +251,10 @@ class _ResultScreenState extends State<ResultScreen> {
           headers: {'Referer': 'https://voice.botnoi.ai/', 'User-Agent': 'BotnoiVoiceMobile'},
         ),
       );
-      
-      if (mounted) {
-        _showAudioPlayerDialog(_player, url);
-      }
+      if (mounted) _showAudioPlayerDialog(_player, url);
     } catch (e) {
       logger.e("Error loading audio", error: e);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Could not play audio: $e")));
-      }
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Could not play audio: $e")));
     }
   }
 
@@ -284,7 +275,115 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  // --- TRANSLATION LOGIC ---
+  // ==========================================
+  //  SHARED DOWNLOAD & SHARE UTILS
+  // ==========================================
+  Future<void> _executeDownload({required String url, required String fileName, required Function onSuccess}) async {
+    bool hasPermission = false;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt >= 33) {
+        hasPermission = true; 
+      } else {
+        var status = await Permission.storage.request();
+        hasPermission = status.isGranted;
+      }
+    } else {
+      hasPermission = true; 
+    }
+
+    if (!hasPermission) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please grant storage permission.")));
+      return;
+    }
+
+    Directory? directory;
+    if (Platform.isAndroid) {
+      directory = Directory('/storage/emulated/0/Download');
+      if (!await directory.exists()) directory = await getExternalStorageDirectory();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    if (directory == null) return;
+
+    try {
+      await FlutterDownloader.enqueue(
+        url: url,
+        headers: {'Referer': 'https://voice.botnoi.ai/', 'User-Agent': 'BotnoiVoiceMobile'},
+        savedDir: directory.path,
+        fileName: fileName,
+        showNotification: true,
+        openFileFromNotification: true,
+        saveInPublicStorage: true,
+      );
+      onSuccess();
+    } catch (e) {
+      logger.e("Download failed: $e");
+    }
+  }
+
+  Future<void> _downloadAndShare(String url) async {
+    showDialog(context: context, barrierDismissible: false, builder: (c) => const Center(child: CircularProgressIndicator(color: Colors.white)));
+    try {
+      final tempDir = await getTemporaryDirectory();
+      String ext = url.endsWith(".mp4") ? "mp4" : "mp3";
+      final fileName = "share_${DateTime.now().millisecondsSinceEpoch}.$ext";
+      final file = File('${tempDir.path}/$fileName');
+
+      final response = await http.get(Uri.parse(url), headers: {'Referer': 'https://voice.botnoi.ai/', 'User-Agent': 'BotnoiVoiceMobile'});
+
+      if (response.statusCode == 200) {
+        await file.writeAsBytes(response.bodyBytes);
+        if (mounted) Navigator.pop(context); 
+        await Share.shareXFiles([XFile(file.path)], text: 'Created with Genskript!');
+      } else {
+        throw Exception("Share download failed");
+      }
+    } catch (e) {
+      if (mounted && Navigator.canPop(context)) Navigator.pop(context); 
+      logger.e("Share failed", error: e);
+    }
+  }
+
+  Future<void> _handleDownload(String url, {String? existingFileName, bool isShare = false}) async {
+    if (isShare) {
+      await _downloadAndShare(url);
+      return;
+    }
+
+    final int estimatedPoints = _editController.text.length * 1; 
+
+    if (mounted) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => GenskriptDownloadOptionsDialog(
+          points: estimatedPoints,
+          onConfirm: (selectedExtension) async {
+            final timestamp = DateTime.now().millisecondsSinceEpoch;
+            final finalFileName = "botnoi_genskript_$timestamp.$selectedExtension";
+
+            await _executeDownload(
+              url: url, 
+              fileName: finalFileName,
+              onSuccess: () {
+                if (!mounted) return;
+                showDialog(
+                  context: context,
+                  builder: (context) => const GenskriptSuccessDialog(
+                    title: "Download Successful",
+                    subtitle: "File saved to device successfully.",
+                  ),
+                );
+              }
+            );
+          },
+        ),
+      );
+    }
+  }
+
+  // --- TRANSLATION LOGIC (Helper) ---
   void _showLanguagePicker(BuildContext context) {
     String? tempSelected = ""; 
     showModalBottomSheet(
@@ -379,17 +478,14 @@ class _ResultScreenState extends State<ResultScreen> {
       {'label': "Link Script", 'icon': Icons.link, 'action': () => ScriptService.handleJoinScript()},
       {'label': "Download All", 'icon': Icons.download_rounded, 'action': () => DownloadService.handleDownloadAll()},
       {'label': "Translate", 'icon': Icons.translate, 'action': () => _showLanguagePicker(context)},
-      {'label': "Create Free Video", 'icon': Icons.card_giftcard, 'action': () => VideoService.handleFreeVideo()},
+      {'label': "Create Free Video", 'icon': Icons.card_giftcard, 'action': () => VideoService.handleFreeVideo(context)},
       {'label': "Auto Voice", 'icon': Icons.settings_voice, 'action': () => _handleCreateVoice()},
-      {'label': "Create Video", 'icon': Icons.movie_creation_outlined, 'action': () => VideoService.handleCreateVideo()},
+      {'label': "Create Video", 'icon': Icons.movie_creation_outlined, 'action': () => _handleCreateVideo()},
     ];
 
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-      ),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: const BorderRadius.vertical(top: Radius.circular(32))),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,8 +517,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: SizedBox(
-                    width: double.infinity,
-                    height: 55,
+                    width: double.infinity, height: 55,
                     child: ElevatedButton.icon(
                       onPressed: item['action'] as VoidCallback,
                       icon: Icon(item['icon'] as IconData, size: 22, color: Colors.cyan),
@@ -442,10 +537,159 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  Widget _buildScriptEditor() { return Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(color: const Color(0xFFF3F4F6), borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.grey.shade200)), child: TextField(controller: _editController, maxLines: 12, minLines: 5, cursorColor: Colors.cyan, style: const TextStyle(fontSize: 15, height: 1.5, color: Colors.black87), onChanged: (text) { setState(() {}); }, decoration: const InputDecoration(border: InputBorder.none, hintText: "Click to start writing...", hintStyle: TextStyle(color: Colors.grey, fontSize: 14)))); }
-  Widget _buildGenerateButton() { return OutlinedButton(onPressed: _handleCreateVoice, style: OutlinedButton.styleFrom(foregroundColor: Colors.cyan, side: const BorderSide(color: Colors.cyan), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap), child: const Text("Create Voice", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14))); }
-  Widget _buildDropdownSelector({required IconData icon, required String currentValue, required List<String> options, required String title, required Function(String) onChanged}) { return Expanded(child: InkWell(onTap: () => _showTranslatorStylePicker(context, title, options, currentValue, onChanged), borderRadius: BorderRadius.circular(8), child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12), decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: 1.5), borderRadius: BorderRadius.circular(12)), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(icon, size: 20, color: Colors.black87), const SizedBox(width: 8), Text(currentValue, style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500)), const SizedBox(width: 6), const Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.black54)])))); }
-  void _showTranslatorStylePicker(BuildContext context, String title, List<String> options, String selectedValue, Function(String) onSelect) { showModalBottomSheet(context: context, backgroundColor: Colors.transparent, builder: (context) => Container(decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(20))), child: Column(mainAxisSize: MainAxisSize.min, children: [Container(margin: const EdgeInsets.only(top: 12, bottom: 8), height: 4, width: 40, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2))), Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), const Divider(), ConstrainedBox(constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.4), child: ListView.builder(shrinkWrap: true, itemCount: options.length, itemBuilder: (context, index) { final item = options[index]; final isSelected = item == selectedValue; return ListTile(title: Text(item, style: TextStyle(color: isSelected ? Colors.cyan : Colors.black87, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)), trailing: isSelected ? const Icon(Icons.check, color: Colors.cyan) : null, onTap: () { onSelect(item); Navigator.pop(context); }); })), const SizedBox(height: 20)]))); }
-  Widget _buildHeader(BuildContext context) { return Row(children: [InkWell(onTap: () {}, child: const Row(children: [Icon(Icons.account_circle_outlined, color: Colors.grey, size: 26), SizedBox(width: 8), Text("Select Voice", style: TextStyle(color: Colors.grey, fontSize: 15)), Icon(Icons.keyboard_arrow_down, color: Colors.grey, size: 20)])), const Spacer(), _buildIconButton(Icons.copy_outlined, () { ScriptService.copyToClipboard(_editController.text, context); })]); }
-  Widget _buildIconButton(IconData icon, VoidCallback tap, {Color color = Colors.grey}) { return InkWell(onTap: tap, borderRadius: BorderRadius.circular(8), child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)), child: Icon(icon, size: 20, color: color))); }
+  // --- HELPER WIDGETS ---
+
+  Widget _buildScriptEditor() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: TextField(
+        controller: _editController,
+        maxLines: 12,
+        minLines: 5,
+        cursorColor: Colors.cyan,
+        style: const TextStyle(fontSize: 15, height: 1.5, color: Colors.black87),
+        onChanged: (text) { setState(() {}); },
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          hintText: "Click to start writing...",
+          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGenerateButton() {
+    return OutlinedButton(
+      onPressed: _handleCreateVoice,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.cyan,
+        side: const BorderSide(color: Colors.cyan),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: const Text("Create Voice", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+    );
+  }
+
+  Widget _buildDropdownSelector({
+    required IconData icon,
+    required String currentValue,
+    required List<String> options,
+    required String title,
+    required Function(String) onChanged,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: () => _showTranslatorStylePicker(context, title, options, currentValue, onChanged),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 20, color: Colors.black87),
+              const SizedBox(width: 8),
+              Text(currentValue, style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500)),
+              const SizedBox(width: 6),
+              const Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.black54),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTranslatorStylePicker(BuildContext context, String title, List<String> options, String selectedValue, Function(String) onSelect) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 8),
+              height: 4,
+              width: 40,
+              decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
+            ),
+            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Divider(),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.4),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: options.length,
+                itemBuilder: (context, index) {
+                  final item = options[index];
+                  final isSelected = item == selectedValue;
+                  return ListTile(
+                    title: Text(item, style: TextStyle(color: isSelected ? Colors.cyan : Colors.black87, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                    trailing: isSelected ? const Icon(Icons.check, color: Colors.cyan) : null,
+                    onTap: () {
+                      onSelect(item);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {},
+          child: const Row(
+            children: [
+              Icon(Icons.account_circle_outlined, color: Colors.grey, size: 26),
+              SizedBox(width: 8),
+              Text("Select Voice", style: TextStyle(color: Colors.grey, fontSize: 15)),
+              Icon(Icons.keyboard_arrow_down, color: Colors.grey, size: 20),
+            ],
+          ),
+        ),
+        const Spacer(),
+        _buildIconButton(Icons.copy_outlined, () {
+          ScriptService.copyToClipboard(_editController.text, context);
+        }),
+      ],
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, VoidCallback tap, {Color color = Colors.grey}) {
+    return InkWell(
+      onTap: tap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, size: 20, color: color),
+      ),
+    );
+  }
 }
