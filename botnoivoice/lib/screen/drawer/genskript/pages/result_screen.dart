@@ -86,7 +86,7 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   // ==========================================
-  //  VIDEO GENERATION LOGIC (NEW)
+  //  VIDEO GENERATION LOGIC (FIXED)
   // ==========================================
   Future<void> _handleCreateVideo() async {
     if (_editController.text.trim().isEmpty) return;
@@ -101,14 +101,16 @@ class _ResultScreenState extends State<ResultScreen> {
       builder: (context) => GenskriptVideoCreationDialog(
         videoPoints: videoPoints,
         voicePoints: audioPoints,
-        onConfirm: () {
-          _processVideoCreation(audioPoints, videoPoints);
+        // ✅ FIX 1: Callback now accepts the selected 'codec' string
+        onConfirm: (String selectedCodec) {
+          _processVideoCreation(audioPoints, videoPoints, selectedCodec);
         },
       ),
     );
   }
 
-  Future<void> _processVideoCreation(int audioPoints, int videoPoints) async {
+  // ✅ FIX 2: Added 'videoCodec' parameter
+  Future<void> _processVideoCreation(int audioPoints, int videoPoints, String videoCodec) async {
     // 3. Show Loading
     showDialog(
       context: context,
@@ -121,7 +123,7 @@ class _ResultScreenState extends State<ResultScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: Colors.cyan),
+              CircularProgressIndicator(color: Colors.blue),
               SizedBox(height: 20.h),
               Text("กำลังเตรียมการสร้างวิดีโอ HQ...", style: GoogleFonts.prompt(fontSize: 16.sp, fontWeight: FontWeight.bold)),
               SizedBox(height: 8.h),
@@ -139,6 +141,8 @@ class _ResultScreenState extends State<ResultScreen> {
         language: "th", 
         audioPoints: audioPoints,
         videoPoints: videoPoints,
+        // ✅ FIX 3: Pass the codec received from the dialog
+        videoCodec: videoCodec, 
       );
 
       if (mounted) Navigator.pop(context); // Close loading
@@ -175,7 +179,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 Text("Video Options", style: GoogleFonts.prompt(fontSize: 18.sp, fontWeight: FontWeight.bold)),
                 SizedBox(height: 20.h),
                 ListTile(
-                  leading: const Icon(Icons.download, color: Colors.cyan),
+                  leading: const Icon(Icons.download, color: Colors.blue),
                   title: Text("Download Video", style: GoogleFonts.prompt()),
                   onTap: () {
                     Navigator.pop(c);
@@ -187,7 +191,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.share, color: Colors.cyan),
+                  leading: const Icon(Icons.share, color: Colors.blue),
                   title: Text("Share Video", style: GoogleFonts.prompt()),
                   onTap: () {
                     Navigator.pop(c);
@@ -435,7 +439,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     width: double.infinity, height: 50,
                     child: ElevatedButton(
                       onPressed: tempSelected!.isEmpty ? null : () => Navigator.pop(context, tempSelected),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.cyan, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                       child: const Text("Confirm", style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                   ),
@@ -520,7 +524,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     width: double.infinity, height: 55,
                     child: ElevatedButton.icon(
                       onPressed: item['action'] as VoidCallback,
-                      icon: Icon(item['icon'] as IconData, size: 22, color: Colors.cyan),
+                      icon: Icon(item['icon'] as IconData, size: 22, color: Colors.blue),
                       label: Text(item['label'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                       style: ElevatedButton.styleFrom(foregroundColor: Colors.black87, backgroundColor: Colors.white, elevation: 0, side: BorderSide(color: Colors.grey.shade200), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)), alignment: Alignment.centerLeft, padding: const EdgeInsets.symmetric(horizontal: 20)),
                     ),
@@ -530,7 +534,7 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
 
             const SizedBox(height: 6),
-            Center(child: TextButton.icon(onPressed: widget.onBack, icon: const Icon(Icons.arrow_back, size: 16), label: const Text("Back to Form"), style: TextButton.styleFrom(foregroundColor: Colors.cyan))),
+            Center(child: TextButton.icon(onPressed: widget.onBack, icon: const Icon(Icons.arrow_back, size: 16), label: const Text("Back to Form"), style: TextButton.styleFrom(foregroundColor: Colors.blue))),
           ],
         ),
       ),
@@ -551,7 +555,7 @@ class _ResultScreenState extends State<ResultScreen> {
         controller: _editController,
         maxLines: 12,
         minLines: 5,
-        cursorColor: Colors.cyan,
+        cursorColor: Colors.blue,
         style: const TextStyle(fontSize: 15, height: 1.5, color: Colors.black87),
         onChanged: (text) { setState(() {}); },
         decoration: const InputDecoration(
@@ -567,8 +571,8 @@ class _ResultScreenState extends State<ResultScreen> {
     return OutlinedButton(
       onPressed: _handleCreateVoice,
       style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.cyan,
-        side: const BorderSide(color: Colors.cyan),
+        foregroundColor: Colors.blue,
+        side: const BorderSide(color: Colors.blue),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         minimumSize: Size.zero,
@@ -639,8 +643,8 @@ class _ResultScreenState extends State<ResultScreen> {
                   final item = options[index];
                   final isSelected = item == selectedValue;
                   return ListTile(
-                    title: Text(item, style: TextStyle(color: isSelected ? Colors.cyan : Colors.black87, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-                    trailing: isSelected ? const Icon(Icons.check, color: Colors.cyan) : null,
+                    title: Text(item, style: TextStyle(color: isSelected ? Colors.blue : Colors.black87, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                    trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
                     onTap: () {
                       onSelect(item);
                       Navigator.pop(context);

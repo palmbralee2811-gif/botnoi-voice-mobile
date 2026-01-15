@@ -6,7 +6,8 @@ import 'package:go_router/go_router.dart';
 class GenskriptVideoCreationDialog extends StatefulWidget {
   final int videoPoints;
   final int voicePoints;
-  final VoidCallback onConfirm;
+  // ✅ Callback now accepts the selected Codec string ('h264' or 'h265')
+  final Function(String) onConfirm;
 
   const GenskriptVideoCreationDialog({
     super.key,
@@ -20,7 +21,8 @@ class GenskriptVideoCreationDialog extends StatefulWidget {
 }
 
 class _GenskriptVideoCreationDialogState extends State<GenskriptVideoCreationDialog> {
-  String _videoFormat = 'H.264 (General)';
+  // ✅ Default format
+  String _selectedCodec = 'h264'; 
 
   @override
   Widget build(BuildContext context) {
@@ -53,21 +55,20 @@ class _GenskriptVideoCreationDialogState extends State<GenskriptVideoCreationDia
             SizedBox(height: 10.h),
 
             // Points Calculation
-            _buildPointRow("พอยท์ที่ใช้สร้างวิดีโอ :", "${widget.videoPoints} PT", Colors.cyan),
+            _buildPointRow("พอยท์ที่ใช้สร้างวิดีโอ :", "${widget.videoPoints} PT", Colors.blue),
             SizedBox(height: 8.h),
-            _buildPointRow("พอยท์ที่ใช้สร้างเสียง :", "${widget.voicePoints} PT", Colors.cyan),
+            _buildPointRow("พอยท์ที่ใช้สร้างเสียง :", "${widget.voicePoints} PT", Colors.blue),
             const Divider(),
-            _buildPointRow("พอยท์ที่ต้องใช้ทั้งหมด :", "$total PT", Colors.cyan, isBold: true),
+            _buildPointRow("พอยท์ที่ต้องใช้ทั้งหมด :", "$total PT", Colors.blue, isBold: true),
             
             SizedBox(height: 15.h),
 
-            // Format Dropdown with Overflow Fix
+            // ✅ Format Dropdown
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("รูปแบบไฟล์วิดีโอ :", style: GoogleFonts.prompt(fontSize: 14.sp)),
                 SizedBox(width: 10.w),
-                // ✅ Expanded prevents "Right Overflowed by 43 pixels"
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -77,11 +78,27 @@ class _GenskriptVideoCreationDialogState extends State<GenskriptVideoCreationDia
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        value: _videoFormat,
-                        isExpanded: true, // Ensures text wraps if needed
+                        value: _selectedCodec,
+                        isExpanded: true,
                         style: GoogleFonts.prompt(fontSize: 14.sp, color: Colors.black),
-                        items: ['H.264 (General)'].map((e) => DropdownMenuItem(value: e, child: Text(e, overflow: TextOverflow.ellipsis))).toList(),
-                        onChanged: (v) {},
+                        // ✅ Options: H.264 & H.265
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'h264', 
+                            child: Text("H.264 (General)", overflow: TextOverflow.ellipsis)
+                          ),
+                          DropdownMenuItem(
+                            value: 'h265', 
+                            child: Text("H.265 (High Quality)", overflow: TextOverflow.ellipsis)
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedCodec = value;
+                            });
+                          }
+                        },
                       ),
                     ),
                   ),
@@ -95,7 +112,7 @@ class _GenskriptVideoCreationDialogState extends State<GenskriptVideoCreationDia
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, color: Colors.cyan, size: 18.sp),
+                Icon(Icons.info_outline, color: Colors.blue, size: 18.sp),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
@@ -116,10 +133,10 @@ class _GenskriptVideoCreationDialogState extends State<GenskriptVideoCreationDia
                     onPressed: () => context.pop(),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
-                      side: const BorderSide(color: Colors.cyan),
+                      side: const BorderSide(color: Colors.blue),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
                     ),
-                    child: Text("ยกเลิก", style: GoogleFonts.prompt(color: Colors.cyan, fontSize: 16.sp)),
+                    child: Text("ยกเลิก", style: GoogleFonts.prompt(color: Colors.blue, fontSize: 16.sp)),
                   ),
                 ),
                 SizedBox(width: 12.w),
@@ -127,10 +144,11 @@ class _GenskriptVideoCreationDialogState extends State<GenskriptVideoCreationDia
                   child: ElevatedButton(
                     onPressed: () {
                       context.pop(); // Close dialog
-                      widget.onConfirm(); // Trigger API flow
+                      // ✅ Pass selected codec back to parent
+                      widget.onConfirm(_selectedCodec); 
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.cyan,
+                      backgroundColor: Colors.blue,
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
                     ),

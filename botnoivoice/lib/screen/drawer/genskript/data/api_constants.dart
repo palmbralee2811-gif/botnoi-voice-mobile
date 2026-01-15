@@ -18,7 +18,7 @@ class ApiConstants {
 
   // --- 1. กุญแจสำหรับการอัปโหลดรูปภาพ ---
   static const String Token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Njg0NTg3MzEsImlhdCI6MTc2ODM3MjMzMSwibmJmIjoxNzY4MzcyMzMxLCJ1aWQiOiIwNzk4MGM4Zi1jNzVkLTUyY2MtOTk0YS04YTVlN2YwZjY4MGYiLCJ1c2VyX2lkIjoiTVY0all1aXkwMVVVazlBOUZpYWNQVUl1dTBxMSIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.xf1Gz7gBJB80OJMNugZAvuVUodxNyuUVBn781RQ1XjY";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Njg1MzAxODYsImlhdCI6MTc2ODQ0Mzc4NiwibmJmIjoxNzY4NDQzNzg2LCJ1aWQiOiIwNzk4MGM4Zi1jNzVkLTUyY2MtOTk0YS04YTVlN2YwZjY4MGYiLCJ1c2VyX2lkIjoiTVY0all1aXkwMVVVazlBOUZpYWNQVUl1dTBxMSIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.dq_SAozY0ZIGz2i2bmOcu-ZUdLU-R4SP0elre6p5rpM";
 
   // Headers สำหรับอัปโหลดรูปภาพ (Multipart)
   static Map<String, String> get uploadHeaders => {

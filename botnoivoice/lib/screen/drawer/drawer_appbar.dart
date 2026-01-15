@@ -198,7 +198,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
               left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
             ),
             leading: Icon(
-              Icons.star,
+              Icons.edit_note,
               size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
               color: kDark,
             ),

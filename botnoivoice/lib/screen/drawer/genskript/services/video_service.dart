@@ -8,7 +8,6 @@ import '../data/api_constants.dart';
 var logger = Logger();
 
 class VideoService {
-  // Helper to generate IDs
   static String generateWorkspaceId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     Random rnd = Random();
@@ -19,15 +18,69 @@ class VideoService {
     return "genskript_$randomStr";
   }
 
-  // ✅ POLLING HELPER: Matches Log #7 URL Structure
-  static Future<String?> _pollTaskStatus(String taskId, Map<String, String> headers) async {
-    // ⚠️ CRITICAL FIX: Status is checked at 'document-flow', not 'audio-img-flow'
-    final String statusUrl = "https://api-voice-staging.botnoi.ai/api/genai/document-flow/tasks/$taskId";
+  // ✅ UPDATED: Now accepts 'token' parameter
+  static Future<void> _saveWorkspaceToHistory({
+    required String token, // <--- NEW PARAMETER
+    required String workspaceId,
+    required String scriptText,
+    required String audioUrl,
+    required String language,
+    String? videoUrl,
+  }) async {
+    final String scriptId = "${workspaceId}_script_1";
     
+    final Map<String, dynamic> payload = {
+      "title": workspaceId,
+      "text": scriptText,
+      "audio": audioUrl,
+      "isgenerate": true,
+      "language": {"value": language, "label": "Thai"}, 
+      "speaker": "5",
+      "speed": "1",
+      "volume": "100",
+      "scripts": [
+        {
+          "script_id": scriptId,
+          "script": scriptText,
+          "audio": audioUrl,
+          "isgenerate": true,
+          "speaker": "5",
+          "ispaid": true
+        }
+      ]
+    };
+
+    if (videoUrl != null) {
+      payload['video_url'] = videoUrl;
+      payload['final_video_url'] = videoUrl;
+      (payload['scripts'] as List)[0]['video_url'] = videoUrl;
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse("https://api-voice-staging.botnoi.ai/api/genai/genskript-workspaces/$workspaceId"),
+        headers: {
+          'Content-Type': 'application/json',
+          'botnoi-token': token, // ✅ Uses the passed Staging Token
+        },
+        body: jsonEncode(payload),
+      );
+      
+      if (response.statusCode == 200) {
+        logger.i("✅ Workspace Saved (Video: ${videoUrl != null})");
+      } else {
+        logger.e("❌ Failed to save history: ${response.body}");
+      }
+    } catch (e) {
+      logger.e("❌ Save History Error: $e");
+    }
+  }
+
+  static Future<String?> _pollTaskStatus(String taskId, Map<String, String> headers) async {
+    final String statusUrl = "https://api-voice-staging.botnoi.ai/api/genai/document-flow/tasks/$taskId";
     logger.i("⏳ Polling Status: $statusUrl");
 
-    // Wait up to ~5 minutes
-    int maxRetries = 30; 
+    int maxRetries = 60; 
     
     for (int i = 0; i < maxRetries; i++) {
       await Future.delayed(const Duration(seconds: 10));
@@ -40,16 +93,17 @@ class VideoService {
           final statusData = data['data'] ?? data; 
           final String status = (statusData['status'] ?? "pending").toString().toLowerCase();
           
-          if (i % 3 == 0) logger.d("Poll Attempt ${i+1}: $status");
+          if (i % 3 == 0) logger.d("Attempt ${i+1}: $status");
 
           if (status == "success" || status == "completed" || status == "done") {
-             // Extract URL from 'result' object or root keys
-             // Looking for the MP4 link seen in Log #8
-             String? realUrl = statusData['result_url'] ?? statusData['video_url'] ?? statusData['url'];
+             String? realUrl = statusData['final_video_url'] ?? statusData['result_url'] ?? statusData['video_url'];
              
-             // Sometimes it's nested in 'result'
-             if (realUrl == null && statusData['result'] != null) {
-               realUrl = statusData['result']['video_url'] ?? statusData['result']['url'];
+             if (realUrl == null && statusData['result'] is Map) {
+                final result = statusData['result'];
+                realUrl = result['video_url'] ?? result['url'];
+                if (realUrl == null && result['slides'] is List && result['slides'].isNotEmpty) {
+                  realUrl = result['slides'][0]['video_url'];
+                }
              }
 
              if (realUrl != null) {
@@ -65,15 +119,11 @@ class VideoService {
         logger.w("Polling error: $e");
       }
     }
-    
-    logger.e("❌ Polling timed out.");
     return null;
   }
 
   static void handleFreeVideo(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Free Video creation coming soon!")),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Coming soon!")));
   }
 
   static Future<String?> handleCreateVideo({
@@ -82,8 +132,8 @@ class VideoService {
     required String language,
     required int audioPoints,
     required int videoPoints,
+    String videoCodec = "h264",
   }) async {
-    // 1. Validate Token
     if (ApiConstants.Token.isEmpty) {
       logger.e("❌ Error: Token is empty!");
       return null;
@@ -91,22 +141,46 @@ class VideoService {
 
     final String workspaceId = generateWorkspaceId();
     final String audioId = "${workspaceId}_0";
-    final String scriptId = "${workspaceId}_script_1";
+    final Map<String, String> standardHeaders = Map<String, String>.from(ApiConstants.generateHeaders);
+    standardHeaders['Content-Type'] = 'application/json';
 
     try {
       // ---------------------------------------------------------
-      // 1. GENERATE VOICE (POST)
+      // STEP 1: GET STAGING TOKEN (MOVED TO TOP)
       // ---------------------------------------------------------
-      logger.d("VideoService Step 1: Generating Voice...");
-      
+      logger.d("Step 1: Fetching Staging Token...");
+      const String logUserId = "MV4jYuiy01UUk9A9FiacPUIuu0q1";
+      String genAiToken = ApiConstants.Token; 
+
+      try {
+        final tokenResponse = await http.get(
+          Uri.parse("https://api-voice-staging.botnoi.ai/db/dashboard/get_token?user_id=$logUserId"), 
+          headers: standardHeaders
+        );
+        if (tokenResponse.statusCode == 200) {
+           final dynamic decoded = jsonDecode(utf8.decode(tokenResponse.bodyBytes));
+           if (decoded is Map) {
+             if (decoded['token'] is String) genAiToken = decoded['token'];
+             else if (decoded['data'] is String) genAiToken = decoded['data'];
+             else if (decoded['data'] is Map && decoded['data']['token'] is String) genAiToken = decoded['data']['token'];
+           }
+        }
+      } catch (_) {
+        logger.w("⚠️ Failed to fetch specific token, using default.");
+      }
+
+      // ---------------------------------------------------------
+      // STEP 2: GENERATE VOICE
+      // ---------------------------------------------------------
+      logger.d("Step 2: Generating Voice...");
       final genVoicePayload = {
         "audio_id": audioId, "language": language, "speaker": "5", "speaker_v2": false, 
-        "speed": "1", "text": scriptText, "text_delay": "", "type_media": "mp3", "volume": "100"
+        "speed": "1", "text": scriptText, "type_media": "mp3", "volume": "100"
       };
-
+      
       final genResponse = await http.post(
         Uri.parse("https://api-voice-staging.botnoi.ai/voice/v1/generate_voice?provider=studio"),
-        headers: ApiConstants.generateHeaders,
+        headers: standardHeaders,
         body: jsonEncode(genVoicePayload),
       );
 
@@ -123,59 +197,36 @@ class VideoService {
       if (audioUrl.isEmpty) throw Exception("Audio URL is empty.");
 
       // ---------------------------------------------------------
-      // 2, 3, 4. DEDUCT POINTS & SAVE WORKSPACE
+      // STEP 3: DEDUCT POINTS
       // ---------------------------------------------------------
-      await http.post(Uri.parse("https://api-voice-staging.botnoi.ai/api/dashboard/download_voice"), headers: ApiConstants.generateHeaders, body: jsonEncode({"point": audioPoints, "data": [{"audio_id": audioId, "language": language, "message": scriptText, "page": "studio", "speaker": "5", "version": "v1", "point": audioPoints}]}));
-      await http.put(Uri.parse("https://api-voice-staging.botnoi.ai/api/genai/genskript-workspaces/$workspaceId"), headers: ApiConstants.generateHeaders, body: jsonEncode({"title": workspaceId, "language": {"value": language}, "scripts": [{"script_id": scriptId, "audio": audioUrl, "script": scriptText}]}));
-      await http.post(Uri.parse("https://api-voice-staging.botnoi.ai/api/dashboard/download_voice"), headers: ApiConstants.generateHeaders, body: jsonEncode({"point": videoPoints, "data": [{"audio_id": "${workspaceId}_hq_video", "message": "HQ Video", "point": videoPoints}]}));
+      await http.post(Uri.parse("https://api-voice-staging.botnoi.ai/api/dashboard/download_voice"), headers: standardHeaders, body: jsonEncode({"point": audioPoints, "data": [{"audio_id": audioId, "language": language, "message": scriptText, "page": "studio", "speaker": "5", "version": "v1", "point": audioPoints}]}));
+      await http.post(Uri.parse("https://api-voice-staging.botnoi.ai/api/dashboard/download_voice"), headers: standardHeaders, body: jsonEncode({"point": videoPoints, "data": [{"audio_id": "${workspaceId}_hq_video", "message": "HQ Video", "point": videoPoints}]}));
 
       // ---------------------------------------------------------
-      // 4.5 GET LATEST TOKEN (Log #5)
+      // STEP 4: SAVE WORKSPACE (Now using correct token)
       // ---------------------------------------------------------
-      // ⚠️ IMPORTANT: Using the specific User ID from your logs because Staging requires it.
-      const String fetchUserId = "MV4jYuiy01UUk9A9FiacPUIuu0q1";
-      String activeToken = ApiConstants.Token; 
-
-      try {
-        final tokenResponse = await http.get(
-          Uri.parse("https://api-voice-staging.botnoi.ai/db/dashboard/get_token?user_id=$fetchUserId"),
-          headers: ApiConstants.generateHeaders,
-        );
-
-        if (tokenResponse.statusCode == 200) {
-           final dynamic decoded = jsonDecode(utf8.decode(tokenResponse.bodyBytes));
-           if (decoded is Map) {
-             if (decoded['token'] is String) activeToken = decoded['token'];
-             else if (decoded['data'] is String) activeToken = decoded['data'];
-             else if (decoded['data'] is Map && decoded['data']['token'] is String) activeToken = decoded['data']['token'];
-           }
-           logger.d("Step 4.5: Active Token Fetched Successfully.");
-        }
-      } catch (e) {
-        logger.w("Step 4.5 Failed. Using default token.");
-      }
+      logger.d("Step 4: Saving Initial Workspace...");
+      await _saveWorkspaceToHistory(
+        token: genAiToken, // ✅ PASS CORRECT TOKEN
+        workspaceId: workspaceId,
+        scriptText: scriptText,
+        audioUrl: audioUrl,
+        language: language,
+        videoUrl: null, 
+      );
 
       // ---------------------------------------------------------
-      // 5. CREATE VIDEO TASK (Log #6)
+      // STEP 5: CREATE VIDEO TASK
       // ---------------------------------------------------------
-      logger.d("VideoService Step 5: Creating Video Task...");
-      
-      final Map<String, String> taskHeaders = Map<String, String>.from(ApiConstants.generateHeaders);
-      taskHeaders['botnoi-token'] = activeToken; // ✅ Use fetched token
+      logger.d("Step 5: Creating Video Task...");
+      final Map<String, String> taskHeaders = {'Content-Type': 'application/json', 'botnoi-token': genAiToken};
 
       final taskPayload = {
         "genskript_id": workspaceId,
         "type_user": "starter",
         "delay_seconds": 2,
-        "codec_video": "h264",
-        "data": [
-          {
-            "script_id": scriptId,
-            "text": scriptText,
-            "audio_url": audioUrl, // ✅ Matches Log #6
-            "image_url": imageUrl  // ✅ Matches Log #6
-          }
-        ]
+        "codec_video": videoCodec,
+        "data": [{"image_url": imageUrl, "audio_url": audioUrl}]
       };
 
       final taskResponse = await http.post(
@@ -185,25 +236,33 @@ class VideoService {
       );
 
       if (taskResponse.statusCode >= 200 && taskResponse.statusCode < 300) {
-        
         final respData = jsonDecode(utf8.decode(taskResponse.bodyBytes));
-        // Try 'task_id' (common) or 'data.task_id'
         String? taskId = respData['data']?['task_id'] ?? respData['task_id'];
 
         if (taskId != null) {
           logger.i("🚀 Task Started: $taskId. Polling...");
-          // ✅ Poll the 'document-flow' endpoint (Matches Log #7)
-          return await _pollTaskStatus(taskId, taskHeaders);
-        } else {
-          logger.e("⛔ No task_id found in response: ${taskResponse.body}");
-          return null;
-        }
-
-      } else {
-        logger.e("Video Task Creation Failed: ${taskResponse.body}");
-        return null;
+          
+          // Poll for result
+          String? finalVideoUrl = await _pollTaskStatus(taskId, taskHeaders);
+          
+          if (finalVideoUrl != null) {
+             // ---------------------------------------------------------
+             // STEP 6: UPDATE WORKSPACE WITH VIDEO URL
+             // ---------------------------------------------------------
+             logger.d("Step 6: Saving Video URL to History...");
+             await _saveWorkspaceToHistory(
+                token: genAiToken, // ✅ PASS CORRECT TOKEN
+                workspaceId: workspaceId,
+                scriptText: scriptText,
+                audioUrl: audioUrl,
+                language: language,
+                videoUrl: finalVideoUrl, 
+             );
+             return finalVideoUrl;
+          }
+        } 
       }
-
+      return null;
     } catch (e) {
       logger.e("Video Creation Error", error: e);
       return null;
