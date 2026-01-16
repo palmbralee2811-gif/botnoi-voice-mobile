@@ -44,6 +44,11 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       loadAllTokensIfLoggedIn(ref);
     });
     _logic = MarAdsLogic(PromptService());
+
+    // สั่ง Rebuild หน้าจอทุกครั้งที่พิมพ์ เพื่อให้ปุ่มตรวจสอบ isNotEmpty ได้ทันที
+    _productController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -73,7 +78,8 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     final int canCreateTimes =
         costPerGen == 0 ? 999 : (currentPoints / costPerGen).floor();
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color(0xFFFFFFFF),
       drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
       body: Column(
@@ -93,12 +99,12 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                     isRequired: true,
                   ),
                   MarAdsTextField(
-                    label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
+                    label: 'ชื่อแบรนด์/ชื่อยี่ห้อ (ไม่จำเป็นต้องกรอก)',
                     placeholder: 'บอทน้อย',
                     controller: _brandController,
                   ),
                   MarAdsTextField(
-                    label: 'ราคา',
+                    label: 'ราคา (ไม่จำเป็นต้องกรอก)',
                     placeholder: '129 บาท, 99 บาท จาก 129 บาท',
                     controller: _priceController,
                   ),
@@ -208,60 +214,137 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   void _handleContentStyleTap() {
     showModalBottomSheet(
       context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
       builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "สไตล์ของเนื้อหา",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-                height: 1.3,
+            // 4. ติ่งสีเทาด้านบน (Gray Handle)
+            Center(
+              child: Container(
+                width: 36.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE0E0E0),
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
               ),
             ),
-            SizedBox(height: 12.h),
-            const Divider(),
+            SizedBox(height: 16.h),
+            // 1. หัวข้อ + กากบาทมุมขวา
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "สไตล์ของเนื้อหา",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    height: 1.3,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => context.pop(),
+                  child: Icon(
+                    Icons.close,
+                    size: 24.sp,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            // 3. รายการเลือก (Bold เมื่อถูกเลือก)
             ListTile(
-              title: const Text('จูงใจให้ใช้'),
+              title: Text(
+                'จูงใจให้ใช้',
+                style: TextStyle(
+                  fontWeight: _selectedContentStyle == 'จูงใจให้ใช้'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentStyle = 'จูงใจให้ใช้');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('ตลก'),
+              title: Text(
+                'ตลก',
+                style: TextStyle(
+                  fontWeight: _selectedContentStyle == 'ตลก'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentStyle = 'ตลก');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('จริงจัง'),
+              title: Text(
+                'จริงจัง',
+                style: TextStyle(
+                  fontWeight: _selectedContentStyle == 'จริงจัง'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentStyle = 'จริงจัง');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('ออดอ้อน'),
+              title: Text(
+                'ออดอ้อน',
+                style: TextStyle(
+                  fontWeight: _selectedContentStyle == 'ออดอ้อน'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentStyle = 'ออดอ้อน');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('เรียกความสงสาร'),
+              title: Text(
+                'เรียกความสงสาร',
+                style: TextStyle(
+                  fontWeight: _selectedContentStyle == 'เรียกความสงสาร'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentStyle = 'เรียกความสงสาร');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('รีวิวสินค้า'),
+              title: Text(
+                'รีวิวสินค้า',
+                style: TextStyle(
+                  fontWeight: _selectedContentStyle == 'รีวิวสินค้า'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentStyle = 'รีวิวสินค้า');
                 context.pop();
@@ -276,39 +359,91 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   void _handleContentLengthTap() {
     showModalBottomSheet(
       context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
       builder: (context) => Container(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "ความยาวของเนื้อหา",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-                height: 1.3,
+            // 4. ติ่งสีเทาด้านบน
+            Center(
+              child: Container(
+                width: 36.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE0E0E0),
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
               ),
             ),
-            SizedBox(height: 12.h),
-            const Divider(),
+            SizedBox(height: 16.h),
+            // 1. หัวข้อ + กากบาท
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "ความยาวของเนื้อหา",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    height: 1.3,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => context.pop(),
+                  child: Icon(
+                    Icons.close,
+                    size: 24.sp,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
             ListTile(
-              title: const Text('~15 วิ'),
+              title: Text(
+                '~15 วิ',
+                style: TextStyle(
+                  fontWeight: _selectedContentLength == '~15 วิ'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentLength = '~15 วิ');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('~30 วิ'),
+              title: Text(
+                '~30 วิ',
+                style: TextStyle(
+                  fontWeight: _selectedContentLength == '~30 วิ'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentLength = '~30 วิ');
                 context.pop();
               },
             ),
             ListTile(
-              title: const Text('~60 วิ'),
+              title: Text(
+                '~60 วิ',
+                style: TextStyle(
+                  fontWeight: _selectedContentLength == '~60 วิ'
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: const Color(0xFF262626),
+                ),
+              ),
               onTap: () {
                 setState(() => _selectedContentLength = '~60 วิ');
                 context.pop();

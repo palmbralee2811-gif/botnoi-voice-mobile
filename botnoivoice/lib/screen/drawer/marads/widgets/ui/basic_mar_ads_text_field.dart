@@ -45,6 +45,8 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isFocused = _focusNode.hasFocus;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
       child: Column(
@@ -61,15 +63,26 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
             ),
           ),
           SizedBox(height: 8.h),
-          SizedBox(
-            // ใช้ SizedBox คุมความสูงเฉพาะถ้ามีการกำหนด height (เช่นช่องกรอกยาวๆ)
-            // ถ้าช่องปกติให้ TextField จัดการความสูงเองเพื่อให้ Text อยู่กลางพอดี
+          Container(
             height: widget.height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: isFocused
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFD6C8DD)
+                            .withOpacity(0.6), // สีเงาม่วงอ่อนๆ
+                        blurRadius: 12, // ความฟุ้งของเงา
+                        offset: const Offset(0, 4), // ทิศทางเงา
+                        spreadRadius: 0,
+                      )
+                    ]
+                  : [], // ถ้าไม่ Focus ไม่มีเงา
+            ),
             child: TextField(
               controller: widget.controller,
               focusNode: _focusNode,
               maxLines: widget.maxLines,
-              // ถ้า maxLines เป็น null (ช่องใหญ่) ให้ขยายเต็ม, ถ้าไม่ ให้เป็น false
               expands: widget.maxLines == null,
               textAlignVertical: widget.maxLines == null
                   ? TextAlignVertical.top
@@ -87,12 +100,11 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
                 hintStyle: GoogleFonts.prompt(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFFC4C4C4), // สี Placeholder อ่อนๆ
+                  color: const Color(0xFFC4C4C4),
                 ),
                 contentPadding: EdgeInsets.symmetric(
                     horizontal: 16.w,
                     vertical: widget.height != null ? 16.h : 14.h),
-                // เส้นขอบปกติ (สีเทาอ่อน)
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.r),
                   borderSide: const BorderSide(
@@ -100,11 +112,11 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
                     width: 1.0,
                   ),
                 ),
-                // เส้นขอบตอนกด (Focus)
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.r),
                   borderSide: const BorderSide(
-                    color: Color(0xFF9E9E9E),
+                    // เปลี่ยนสีขอบตอน Focus ให้เข้ากับเงา หรือใช้สีเทาเข้มแบบเดิม
+                    color: Color(0xFFDBDBDB),
                     width: 1.0,
                   ),
                 ),
