@@ -138,7 +138,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
         costPerGen == 0 ? 999 : (currentPoints / costPerGen).floor();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: const Color(0xFFFFFFFF),
       drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
       body: Column(
@@ -598,7 +598,8 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
   void _handleSalesCharacterTap() {
     _showSelectionModal(
       title: "คาแรกเตอร์คนขาย",
-      items: _salesCharacters, // ใช้ Constants
+      items: _salesCharacters,
+      selectedValue: _selectedSalesCharacter, // ส่งค่าที่เลือกปัจจุบัน
       onSelected: (val) => setState(() => _selectedSalesCharacter = val),
     );
   }
@@ -607,6 +608,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     _showSelectionModal(
       title: "สไตล์ของเนื้อหา",
       items: _contentStyles, // ใช้ Constants
+      selectedValue: _selectedContentStyle,
       onSelected: (val) => setState(() => _selectedContentStyle = val),
     );
   }
@@ -617,6 +619,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     _showSelectionModal(
       title: "ความยาวของเนื้อหา",
       items: lengths,
+      selectedValue: _selectedContentLength,
       onSelected: (val) => setState(() => _selectedContentLength = val),
     );
   }
@@ -625,45 +628,77 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     required String title,
     required List<String> items,
     required Function(String) onSelected,
+    required String selectedValue, // รับค่ามาเพื่อเช็คตัวหนา
   }) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
+      isScrollControlled:
+          true, // หรือ false ถ้าไม่ต้องการให้เต็มจอมาก แต่ true ยืดหยุ่นกว่า
       backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
       builder: (context) => SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.fromLTRB(
-              16.w, 16.h, 16.w, MediaQuery.of(context).padding.bottom + 16.h),
+          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: GoogleFonts.prompt(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                  height: 1.3,
+              // 1. ติ่งสีเทาด้านบน
+              Center(
+                child: Container(
+                  width: 36.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE0E0E0),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
               ),
-              SizedBox(height: 12.h),
-              const Divider(),
+              SizedBox(height: 16.h),
+
+              // 2. หัวข้อ + ปุ่มปิด
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.prompt(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      height: 1.3,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Icon(
+                      Icons.close,
+                      size: 24.sp,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.h),
               ...items.map((item) => ListTile(
                     title: Text(
                       item,
                       style: GoogleFonts.prompt(
                           fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: item == selectedValue
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           color: const Color(0xFF262626)),
                     ),
                     onTap: () {
                       onSelected(item);
 
-                      // Close Dialog
                       context.pop();
                     },
                   )),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
