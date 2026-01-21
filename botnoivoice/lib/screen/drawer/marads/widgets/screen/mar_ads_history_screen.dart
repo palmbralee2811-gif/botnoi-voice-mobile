@@ -946,7 +946,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                     if (context.canPop()) {
                       context.pop();
                     } else {
-                      context.go('/marads');
+                      context.go('/home');
                     }
                   },
                 );
