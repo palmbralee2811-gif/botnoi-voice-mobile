@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_history_model.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
@@ -6,21 +7,25 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_edit_history_sheet.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_pagination.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_search_bar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_delete_confirm_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_history_card.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_mode_selector.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_success_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:botnoivoice/shared/style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
@@ -41,6 +46,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
   List<MarAdsHistoryModel> _filteredItems = [];
   bool _isLoading = true;
   final AudioPlayer _audioPlayer = AudioPlayer();
+
+  String _selectedMode = 'History';
 
   // เพิ่มบรรทัดนี้ครับ (คุณลืมประกาศตัวแปรนี้ ทำให้ข้างล่าง error)
   Map<String, SpeakerEntity> _allSpeakerMap = {};
@@ -137,6 +144,19 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         return title.contains(query) || content.contains(query);
       }).toList();
       _currentPage = 1;
+    });
+  }
+
+  // เพิ่มฟังก์ชันจัดการเปลี่ยนโหมด
+  void _handleModeSelectorTap() {
+    MarAdsModeSelector.show(context, _selectedMode, (mode) {
+      if (mode == 'Basic mode') {
+        context.go('/marads');
+      } else if (mode == 'Advanced mode') {
+        context.go('/marads/advanced');
+      } else if (mode == 'History') {
+        setState(() => _selectedMode = 'History');
+      }
     });
   }
 
@@ -356,6 +376,19 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       print("Error generating audio: $e");
 
       if (mounted) {
+        // [เพิ่มส่วนนี้] เช็คว่า Error เกิดจาก ID ถูกลบไปแล้วหรือไม่
+        if (e.toString().contains("prompt_id not found")) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'ไม่พบรายการนี้ในระบบ (อาจถูกลบไปแล้ว) ระบบกำลังรีเฟรชข้อมูล...'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          // รีโหลดข้อมูลใหม่เพื่อลบรายการที่ค้างอยู่ออก
+          _fetchHistory();
+          return;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
@@ -385,7 +418,26 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           );
 
           if (success) {
+            final indexToRemove =
+                _historyItems.indexWhere((element) => element.id == item.id);
+
             setState(() {
+              if (indexToRemove != -1) {
+                // กรณีลบตัวที่กำลังเล่นอยู่ -> ให้หยุดเล่นและรีเซ็ตค่า
+                if (_playingIndex == indexToRemove) {
+                  _audioPlayer.stop();
+                  _playingIndex = null;
+                  _isPlaying = false;
+                  _position = Duration.zero;
+                  _duration = Duration.zero;
+                }
+                // กรณีลบตัวที่อยู่ "ก่อนหน้า" ตัวที่กำลังเล่น -> ต้องลด Index ลง 1 เพื่อให้ชี้ถูกตัว
+                else if (_playingIndex != null &&
+                    indexToRemove < _playingIndex!) {
+                  _playingIndex = _playingIndex! - 1;
+                }
+              }
+
               _historyItems.removeWhere((element) => element.id == item.id);
               _filteredItems.removeWhere((element) => element.id == item.id);
 
@@ -576,7 +628,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           if (mounted) {
             // Close Dialog When Save Complete
             context.pop();
-          } 
+          }
         },
       ),
     );
@@ -773,9 +825,15 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
+      drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
       body: Column(
         children: [
+          // เพิ่ม Mode Selector ไว้ด้านบนสุดของ Body
+          MarAdsModeSelector(
+            selectedMode: _selectedMode,
+            onTap: _handleModeSelectorTap,
+          ),
           MarAdsSearchBar(controller: _searchController),
           Expanded(
             child: _isLoading
@@ -874,28 +932,46 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new,
-                size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                if (context.canPop()) {
-                  context.pop();
-                } else {
-                  context.go('/marads');
-                }
+            // ใช้ Builder เพื่อให้ Context ถูกต้องสำหรับ Drawer หรือ Navigation
+            child: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    size:
+                        ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
+                    color: kDark, // ใช้สีจาก style.dart หรือ Colors.black
+                  ),
+                  onPressed: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/marads');
+                    }
+                  },
+                );
               },
             ),
           ),
           Center(
-            child: Text(
-              'History',
-              style: GoogleFonts.prompt(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+            child: SvgPicture.asset(
+              'assets/images/logo/appbar-icon.svg',
+              width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
+              height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
+              fit: BoxFit.contain,
+            ),
+          ),
+          // เพิ่ม Badge แสดง Points ด้านขวา
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 16.w),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final userToken = ref.watch(currentUserTokenStateProvider);
+                  final points = userToken.remainingCredits ?? 0;
+                  return MarAdsPointsBadge(points: points.toString());
+                },
               ),
             ),
           ),
