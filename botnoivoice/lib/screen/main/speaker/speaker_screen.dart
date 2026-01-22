@@ -19,6 +19,7 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -152,12 +153,26 @@ class _SpeakerScreenState extends ConsumerState<SpeakerScreen> {
     return speechStylesSet.toList();
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: const AppBarSpeakerScreen(),
-        body: _isLoading
+    // 1. ตั้งค่า System UI ให้โปร่งใส เพื่อให้เห็นพื้นหลังแอปเต็มจอ
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark, // ไอคอนสีเข้ม (สำหรับพื้นหลังสว่าง)
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
+    // 2. เอา SafeArea ตัวนอกออก ให้ Scaffold เป็น Root
+    return Scaffold(
+      appBar: const AppBarSpeakerScreen(),
+      // 3. ใช้ SafeArea ครอบเฉพาะ Body แทน
+      // กำหนด top: false เพราะ AppBar จัดการพื้นที่ด้านบนให้อยู่แล้ว
+      // กำหนด bottom: true เพื่อไม่ให้เนื้อหาด้านล่างโดนขอบจอทับ
+      body: SafeArea(
+        top: false, 
+        bottom: true, 
+        child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : buildFilterNavbar(context),
       ),

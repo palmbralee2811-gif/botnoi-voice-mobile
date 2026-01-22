@@ -14,6 +14,7 @@ import 'package:botnoivoice/shared/widget/gradient/gradient_row.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -187,24 +188,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return false; // ส่งค่ากลับว่า ไม่สำเร็จ
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
+    // ตั้งค่าให้ Status Bar และ Navigation Bar ด้านล่างเป็นสีใส
+    // เพื่อให้ UI ของเราแสดงผลไปถึงขอบจอ
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // ทำให้ Status Bar ใส
+      statusBarIconBrightness: Brightness.dark, // ไอคอนสีเข้ม (ปรับเป็น light ถ้าพื้นหลังมืด)
+      systemNavigationBarColor: Colors.transparent, // ทำให้ Navigation Bar ด้านล่างใส
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
+    // เอา SafeArea ด้านนอกออก เปลี่ยน Scaffold เป็นตัวหลัก
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: const DrawerAppbar(),
       appBar: const AppBarTop(),
-      body: Column(
-        children: [
-          Expanded(
-            child: buildTextBox(),
-          ),
-          Container(
-            width: double.infinity,
-            color: Colors.white,
-            height: ResponsiveDesignOrientation.isLandscape ? 75.h : 90.h,
-            child: buildGenerateButton(context),
-          ),
-        ],
+      // ย้าย SafeArea มาไว้ที่ body แทน
+      // กำหนด top: false เพราะปกติ AppBar จะจัดการพื้นที่ด้านบนให้อยู่แล้ว
+      // กำหนด bottom: true เพื่อกันไม่ให้เนื้อหาไปทับกับขอบล่าง (เช่น ขีด Home ของ iPhone)
+      body: SafeArea(
+        top: false, 
+        bottom: true, 
+        child: Column(
+          children: [
+            Expanded(
+              child: buildTextBox(),
+            ),
+            Container(
+              width: double.infinity,
+              color: Colors.white,
+              height: ResponsiveDesignOrientation.isLandscape ? 75.h : 90.h,
+              child: buildGenerateButton(context),
+            ),
+          ],
+        ),
       ),
     );
   }
