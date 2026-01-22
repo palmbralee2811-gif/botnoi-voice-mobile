@@ -234,12 +234,28 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.9,
         decoration: BoxDecoration(
-          color: const Color(0xFFF7F8FA),
+          color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          child: const MarAdsHistoryScreen(),
+        child: Column(
+          children: [
+            SizedBox(height: 12.h), // ระยะห่างด้านบน
+            // [เพิ่ม] ติ่งเทาๆ (Drag Handle)
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[300], // สีเทา
+                borderRadius: BorderRadius.circular(2.r), // มนๆ
+              ),
+            ),
+            SizedBox(height: 12.h), // ระยะห่างระหว่างติ่งกับเนื้อหา
+
+            // [เพิ่ม] เนื้อหา History (ใช้ Expanded เพื่อให้ยืดเต็มพื้นที่ที่เหลือ)
+            const Expanded(
+              child: MarAdsHistoryScreen(isModal: true),
+            ),
+          ],
         ),
       ),
     );

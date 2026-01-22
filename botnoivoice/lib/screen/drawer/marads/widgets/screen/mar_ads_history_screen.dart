@@ -31,7 +31,9 @@ import 'package:go_router/go_router.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 
 class MarAdsHistoryScreen extends ConsumerStatefulWidget {
-  const MarAdsHistoryScreen({super.key});
+  final bool isModal; // [1] เพิ่มตัวแปรรับค่า
+
+  const MarAdsHistoryScreen({super.key, this.isModal = false});
 
   @override
   ConsumerState<MarAdsHistoryScreen> createState() =>
@@ -62,13 +64,17 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
   Duration _position = Duration.zero;
   int? _playingIndex;
 
+  bool _isNewestFirst = true;
+
   @override
   void initState() {
     super.initState();
     // สั่ง Initialize ปลั๊กอินก่อนเริ่มใช้งาน
     Future.microtask(() async {
       try {
-        await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+        if (!FlutterDownloader.initialized) {
+          await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+        }
       } catch (e) {
         debugPrint("FlutterDownloader already initialized or error: $e");
       }
@@ -826,15 +832,85 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       drawer: const DrawerAppbar(),
-      appBar: _buildAppBar(),
+      //ถ้าเป็น Modal ไม่ต้องโชว์ AppBar
+      appBar: widget.isModal ? null : _buildAppBar(),
       body: Column(
         children: [
-          // เพิ่ม Mode Selector ไว้ด้านบนสุดของ Body
-          MarAdsModeSelector(
-            selectedMode: _selectedMode,
-            onTap: _handleModeSelectorTap,
+          // ถ้าเป็น Modal ไม่ต้องโชว์ Mode Selector
+          if (!widget.isModal)
+            MarAdsModeSelector(
+              selectedMode: _selectedMode,
+              onTap: _handleModeSelectorTap,
+            ),
+          MarAdsSearchBar(
+            controller: _searchController,
+            onSortTap: () {
+              setState(() {
+                _isNewestFirst = !_isNewestFirst;
+                // กลับด้าน List ทั้งตัวหลักและตัวกรอง
+                _historyItems = _historyItems.reversed.toList();
+                _filteredItems = _filteredItems.reversed.toList();
+                // รีเซ็ตหน้า Pagination กลับไปหน้า 1
+                _currentPage = 1;
+              });
+
+              // (Optional) แสดง SnackBar แจ้งเตือน
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  padding: EdgeInsets
+                      .zero, // ลบ padding เดิมเพื่อให้ Container ชิดขอบ
+                  duration:
+                      const Duration(seconds: 2), // เพิ่มเวลาเล็กน้อยให้อ่านทัน
+                  behavior: SnackBarBehavior.floating,
+                  margin:
+                      EdgeInsets.only(bottom: 50.h, left: 24.w, right: 24.w),
+
+                  // [2] สร้าง Container ที่มี Gradient Background
+                  content: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    decoration: BoxDecoration(
+                      gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ธีมไล่สี
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _isNewestFirst
+                              ? Icons.arrow_downward_rounded
+                              : Icons.arrow_upward_rounded,
+                          color: Colors.white,
+                          size: 20.sp,
+                        ),
+                        SizedBox(width: 12.w),
+                        Text(
+                          _isNewestFirst
+                              ? "เรียงตาม ใหม่ -> เก่า"
+                              : "เรียงตาม เก่า -> ใหม่",
+                          style: GoogleFonts.prompt(
+                            fontSize: 14.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
-          MarAdsSearchBar(controller: _searchController),
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())

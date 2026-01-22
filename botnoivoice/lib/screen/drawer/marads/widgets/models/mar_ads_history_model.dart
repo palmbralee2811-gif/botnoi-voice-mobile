@@ -56,7 +56,7 @@ class MarAdsHistoryModel {
       mode: json['category'] == 'text' ? 'Basic mode' : 'Advanced mode',
       // style: styleLabel,
       style: _parseStyleLabel(json['prompt_style']),
-      points: '$calculatedPoints PT',
+      points: '$calculatedPoints pt',
       chars: '$charCount ตัวอักษร',
       hasAudio: json['audio'] != null && json['audio'].toString().isNotEmpty,
       duration: '00:00/00:00',

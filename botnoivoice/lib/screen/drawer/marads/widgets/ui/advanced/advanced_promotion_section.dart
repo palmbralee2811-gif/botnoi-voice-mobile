@@ -10,6 +10,8 @@ class AdvancedPromotionSection extends StatelessWidget {
   final TextEditingController targetCustomersController;
   final TextEditingController sellingPointController;
   final TextEditingController whyBuyController;
+  final VoidCallback? onRandomSellingPoint;
+  final VoidCallback? onRandomWhyBuy;
 
   const AdvancedPromotionSection({
     super.key,
@@ -19,6 +21,8 @@ class AdvancedPromotionSection extends StatelessWidget {
     required this.targetCustomersController,
     required this.sellingPointController,
     required this.whyBuyController,
+    this.onRandomSellingPoint,
+    this.onRandomWhyBuy,
   });
 
   @override
@@ -47,13 +51,25 @@ class AdvancedPromotionSection extends StatelessWidget {
             label: 'จุดขายทีดีกว่าคู่แข่ง',
             placeholder: 'ขายถูกที่สุดในย่าน',
             controller: sellingPointController,
-            suffixIcon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
+            suffixIcon: IconButton(
+              onPressed: onRandomSellingPoint,
+              icon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
+              splashRadius: 20,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+              padding: EdgeInsets.zero,
+            ),
           ),
           MarAdsTextField(
             label: 'ทำไมลูกค้าถึงต้องซื้อ',
             placeholder: 'ประหยัดเงินจากของมือหนึ่ง',
             controller: whyBuyController,
-            suffixIcon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
+            suffixIcon: IconButton(
+              onPressed: onRandomWhyBuy,
+              icon: const Icon(Icons.shuffle, color: Color(0xFF9E9E9E)),
+              splashRadius: 20,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ],
       ],

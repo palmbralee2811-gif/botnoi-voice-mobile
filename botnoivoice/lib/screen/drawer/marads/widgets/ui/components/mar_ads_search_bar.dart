@@ -4,8 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MarAdsSearchBar extends StatelessWidget {
   final TextEditingController controller;
+  final VoidCallback? onSortTap;
 
-  const MarAdsSearchBar({super.key, required this.controller});
+  const MarAdsSearchBar({
+    super.key,
+    required this.controller,
+    this.onSortTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +44,18 @@ class MarAdsSearchBar extends StatelessWidget {
               ),
             ),
           ),
+          // เพิ่มปุ่ม Sort ด้านขวา
+          if (onSortTap != null) ...[
+            SizedBox(width: 12.w),
+            InkWell(
+              onTap: onSortTap,
+              child: Icon(
+                Icons.swap_vert, // ไอคอนลูกศรขึ้นลง
+                color: const Color(0xFF262626),
+                size: 24.sp,
+              ),
+            ),
+          ],
         ],
       ),
     );
