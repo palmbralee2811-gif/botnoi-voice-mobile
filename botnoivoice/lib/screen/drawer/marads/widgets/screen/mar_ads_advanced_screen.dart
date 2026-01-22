@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_advanced_logic.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_mock_data.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_basic_info_section.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_promotion_section.dart';
@@ -96,6 +98,28 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
   bool _isSalesStyleExpanded = true;
   bool _isPromotionInfoExpanded = true;
 
+  void _randomizeText({
+    required TextEditingController controller,
+    required Map<int, String> thData,
+    required Map<int, String> enData,
+  }) {
+    // เช็คภาษาปัจจุบันของ App
+    final String currentLang = Localizations.localeOf(context).languageCode;
+
+    // เลือก Data ตามภาษา (ถ้าไม่ใช่ th ให้ใช้ en)
+    final Map<int, String> selectedData =
+        (currentLang == 'th') ? thData : enData;
+
+    if (selectedData.isNotEmpty) {
+      final random = Random();
+      final List<String> values = selectedData.values.toList();
+      // สุ่มและใส่ค่าลง Controller
+      setState(() {
+        controller.text = values[random.nextInt(values.length)];
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -181,6 +205,21 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                     targetCustomersController: _targetCustomersController,
                     sellingPointController: _sellingPointController,
                     whyBuyController: _whyBuyController,
+                    onRandomSellingPoint: () {
+                      _randomizeText(
+                        controller: _sellingPointController,
+                        thData: MarAdsMockData
+                            .thAdvantage, // จุดขายที่ดีกว่าคู่แข่ง
+                        enData: MarAdsMockData.enAdvantage,
+                      );
+                    },
+                    onRandomWhyBuy: () {
+                      _randomizeText(
+                        controller: _whyBuyController,
+                        thData: MarAdsMockData.thReason,
+                        enData: MarAdsMockData.enReason,
+                      );
+                    },
                   ),
                   SizedBox(height: 16.h),
                   MarAdsDropdown(
