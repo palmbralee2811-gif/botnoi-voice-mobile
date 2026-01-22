@@ -379,5 +379,86 @@
   },
   "select_languages": {
     "thai": "ไทย"
+  },
+  "marads_basic": {
+    "label_product": "สินค้าที่ต้องการขาย*",
+    "placeholder_product": "คอร์สสอนภาษา, โทรศัพท์มือถือ, ...",
+    "label_brand": "ชื่อแบรนด์/ชื่อยี่ห้อ (ไม่จำเป็นต้องกรอก)",
+    "placeholder_brand": "บอทน้อย",
+    "label_price": "ราคา (ไม่จำเป็นต้องกรอก)",
+    "placeholder_price": "129 บาท, 99 บาท จาก 129 บาท",
+    "label_style": "สไตล์เนื้อหา",
+    "label_length": "ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)",
+    "label_extra": "ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)",
+    "placeholder_extra": "พลาดไม่ได้, หมดเขตในอีก 3 วัน",
+    "error_required": "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน",
+    "header_style": "สไตล์ของเนื้อหา",
+    "header_length": "ความยาวของเนื้อหา",
+    
+    "style_persuasive": "จูงใจให้ใช้",
+    "style_funny": "ตลก",
+    "style_serious": "จริงจัง",
+    "style_pleading": "ออดอ้อน",
+    "style_sympathy": "เรียกความสงสาร",
+    "style_review": "รีวิวสินค้า",
+    
+    "length_15": "~15 วิ",
+    "length_30": "~30 วิ",
+    "length_60": "~60 วิ",
+
+    "text_remaining": "สร้างได้ {} ครั้ง",  
+    "btn_create": "สร้างข้อความ"
+  },
+  "marads_adv": {
+    "label_length": "ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)",
+    "label_extra": "ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)",
+    "placeholder_extra": "พลาดไม่ได้, หมดเขตในอีก 3 วัน",
+    "header_character": "คาแรกเตอร์คนขาย",
+    "header_style": "สไตล์ของเนื้อหา",
+    "header_length": "ความยาวของเนื้อหา",
+    "btn_properties": "คุณสมบัติของสินค้า",
+    "error_no_product": "กรุณากรอกชื่อสินค้าที่ต้องการขาย",
+    
+    "char_beauty": "แม่ค้าสาวสุดสวย",
+    "char_kid": "เด็กประถม",
+    "char_teen_boy": "วัยรุ่นผู้ชาย",
+    "char_teen_girl": "วัยรุ่นผู้หญิง",
+    "char_pro_seller": "พ่อค้ามือทอง",
+    "char_auntie": "ป้าข้างบ้าน",
+    "char_chief": "ลุงกำนัน",
+    "char_grandpa": "คุณตา",
+    "char_grandma": "คุณยาย",
+
+    "color_black": "ดำ",
+    "color_red": "แดง",
+    "color_white": "ขาว",
+    "color_pink": "ชมพู",
+    "color_blue": "น้ำเงิน",
+
+    "section_basic_info": "ข้อมูลเบื้องต้น*",
+    "section_promotion": "ข้อมูลโปรโมชั่น (ไม่จำเป็นต้องกรอก)",
+    "section_sales_style": "สไตล์การขาย",
+    "label_promotion": "โปรโมชั่น",
+    "placeholder_promotion": "แถมฟรีหนังสือการสอน",
+    "label_target": "ลูกค้าที่เป็นกลุ่มเป้าหมาย",
+    "placeholder_target": "คนชอบเทคโนโลยี",
+    "label_selling_point": "จุดขายที่ดีกว่าคู่แข่ง",
+    "placeholder_selling_point": "ขายถูกที่สุดในย่าน",
+    "label_why_buy": "ทำไมลูกค้าถึงต้องซื้อ",
+    "placeholder_why_buy": "ประหยัดเงินจากของมือหนึ่ง"
+  },
+  "marads_props": {
+    "title": "คุณสมบัติของสินค้า",
+    "subtitle": "(ไม่จำเป็นต้องกรอกทั้งหมด)",
+    "label_size": "ขนาด/ปริมาณ",
+    "placeholder_size": "256 GB, 1 ลิตร",
+    "label_model": "รุ่น/ลาย/ประเภท",
+    "placeholder_model": "iPhone 15, ลายดอกไม้",
+    "label_material": "วัสดุ/วัตถุดิบ/สเปค",
+    "placeholder_material": "ผ้าไหม, ชิป M4",
+    "label_color": "สีของสินค้า",
+    "header_select_color": "เลือกสีของสินค้า",
+    "color_unspecified": "ไม่ระบุ",
+    "btn_save": "บันทึก"
   }
 }

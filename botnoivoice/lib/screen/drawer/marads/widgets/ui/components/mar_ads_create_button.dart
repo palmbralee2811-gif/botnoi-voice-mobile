@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +31,7 @@ class MarAdsCreateButton extends StatelessWidget {
                   size: 12.w, color: const Color(0xFF262626)),
               SizedBox(width: 5.w),
               Text(
-                'สร้างได้ $remainingCount ครั้ง',
+                'marads_basic.text_remaining'.tr(args: [remainingCount]),
                 style: GoogleFonts.prompt(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
@@ -62,7 +63,7 @@ class MarAdsCreateButton extends StatelessWidget {
                         height: 24.w,
                         child: const CircularProgressIndicator(
                             color: Colors.white, strokeWidth: 3))
-                    : Text('สร้างข้อความ',
+                    : Text('marads_basic.btn_create'.tr(),
                         style: GoogleFonts.prompt(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w600,

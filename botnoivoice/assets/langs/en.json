@@ -377,5 +377,86 @@
   },
   "select_languages": {
     "thai": "Thai"
+  },
+  "marads_basic": {
+    "label_product": "Product to sell*",
+    "placeholder_product": "Language teaching courses, Smart Phones",
+    "label_brand": "Brand Name (Optional)",
+    "placeholder_brand": "Botnoi",
+    "label_price": "Price (Optional)",
+    "placeholder_price": "Very cheap, only 99 Baht from 129 Baht",
+    "label_style": "Content Style",
+    "label_length": "Content Length* (Affects points)",
+    "label_extra": "Additional Info (Optional)",
+    "placeholder_extra": "Don't miss out, today only!",
+    "error_required": "Please fill in all required fields",
+    "header_style": "Content Style",
+    "header_length": "Content Length",
+
+    "style_persuasive": "Persuasive",
+    "style_funny": "Funny",
+    "style_serious": "Serious",
+    "style_begging": "Begging",
+    "style_sympathy": "Sympathy",
+    "style_review": "Product Review",
+
+    "length_15": "~15 sec",
+    "length_30": "~30 sec",
+    "length_60": "~60 sec",
+    
+    "text_remaining": "Quotas {} times",     
+    "btn_create": "Generate"          
+  },
+  "marads_adv": {
+    "label_length": "Content Length* (Affects points)",
+    "label_extra": "Additional Info (Optional)",
+    "placeholder_extra": "Don't miss out, ends in 3 days",
+    "header_character": "Sales Character",
+    "header_style": "Content Style",
+    "header_length": "Content Length",
+    "btn_properties": "Product Properties",
+    "error_no_product": "Please enter the product name",
+
+    "char_beauty": "Beautiful Seller",
+    "char_kid": "Elementary Kid",
+    "char_teen_boy": "Teenage Boy",
+    "char_teen_girl": "Teenage Girl",
+    "char_pro_seller": "Pro Seller",
+    "char_auntie": "Auntie Next Door",
+    "char_chief": "Village Chief",
+    "char_grandpa": "Grandpa",
+    "char_grandma": "Grandma",
+
+    "color_black": "Black",
+    "color_red": "Red",
+    "color_white": "White",
+    "color_pink": "Pink",
+    "color_blue": "Blue",
+
+    "section_basic_info": "Basic information*",
+    "section_promotion": "Promotion Info (Optional)",
+    "section_sales_style": "Sales Style",
+    "label_promotion": "Promotion",
+    "placeholder_promotion": "Free textbooks",
+    "label_target": "Target Audience",
+    "placeholder_target": "Tech enthusiasts",
+    "label_selling_point": "Selling Points",
+    "placeholder_selling_point": "Cheapest in the area",
+    "label_why_buy": "Why Buy",
+    "placeholder_why_buy": "Save money on new items"     
+  },
+  "marads_props": {
+    "title": "Product Properties",
+    "subtitle": "(Fields are optional)",
+    "label_size": "Size/Quantity",
+    "placeholder_size": "256 GB, 1 Liter",
+    "label_model": "Model/Type/Pattern",
+    "placeholder_model": "iPhone 15, Floral pattern",
+    "label_material": "Material/Spec",
+    "placeholder_material": "Silk, M4 Chip",
+    "label_color": "Product Color",
+    "header_select_color": "Select Color",
+    "color_unspecified": "Unspecified",
+    "btn_save": "Save"
   }
 }

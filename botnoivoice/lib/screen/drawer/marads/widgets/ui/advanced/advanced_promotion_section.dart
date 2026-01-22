@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../mar_ads_collapsible_section.dart';
@@ -30,7 +31,7 @@ class AdvancedPromotionSection extends StatelessWidget {
     return Column(
       children: [
         MarAdsCollapsibleSection(
-          title: 'ข้อมูลโปรโมชั่น (Optional)',
+          title: 'marads_adv.section_promotion'.tr(),
           isExpanded: isExpanded,
           onTap: onToggle,
         ),
@@ -38,18 +39,18 @@ class AdvancedPromotionSection extends StatelessWidget {
           Divider(color: const Color(0xFFEEDDF3), height: 1.h, thickness: 1),
           SizedBox(height: 16.h),
           MarAdsTextField(
-            label: 'โปรโมชั่น',
-            placeholder: 'แถมฟรีหนังสือการสอน',
+            label: 'marads_adv.label_promotion'.tr(),
+            placeholder: 'marads_adv.placeholder_promotion'.tr(),
             controller: promotionController,
           ),
           MarAdsTextField(
-            label: 'ลูกค้าที่เป็นกลุ่มเป้าหมาย',
-            placeholder: 'คนชอบเทคโนโลยี',
+            label: 'marads_adv.label_target'.tr(),
+            placeholder: 'marads_adv.placeholder_target'.tr(),
             controller: targetCustomersController,
           ),
           MarAdsTextField(
-            label: 'จุดขายทีดีกว่าคู่แข่ง',
-            placeholder: 'ขายถูกที่สุดในย่าน',
+            label: 'marads_adv.label_selling_point'.tr(),
+            placeholder: 'marads_adv.placeholder_selling_point'.tr(),
             controller: sellingPointController,
             suffixIcon: IconButton(
               onPressed: onRandomSellingPoint,
@@ -60,8 +61,8 @@ class AdvancedPromotionSection extends StatelessWidget {
             ),
           ),
           MarAdsTextField(
-            label: 'ทำไมลูกค้าถึงต้องซื้อ',
-            placeholder: 'ประหยัดเงินจากของมือหนึ่ง',
+            label: 'marads_adv.label_why_buy'.tr(),
+            placeholder: 'marads_adv.placeholder_why_buy'.tr(),
             controller: whyBuyController,
             suffixIcon: IconButton(
               onPressed: onRandomWhyBuy,

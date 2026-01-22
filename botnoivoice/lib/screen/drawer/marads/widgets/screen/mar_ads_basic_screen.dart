@@ -2,6 +2,7 @@ import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -60,6 +61,34 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     super.dispose();
   }
 
+  // [เพิ่ม] Helper: แปลงค่า Logic (ไทย) -> UI (ภาษาปัจจุบัน) สำหรับ Style
+  String _getLocalizedStyleDisplay(BuildContext context, String logicValue) {
+    switch (logicValue) {
+      case 'จูงใจให้ใช้':
+        return 'marads_basic.style_persuasive'.tr();
+      case 'ตลก':
+        return 'marads_basic.style_funny'.tr();
+      case 'จริงจัง':
+        return 'marads_basic.style_serious'.tr();
+      case 'ออดอ้อน':
+        return 'marads_basic.style_begging'.tr();
+      case 'เรียกความสงสาร':
+        return 'marads_basic.style_sympathy'.tr();
+      case 'รีวิวสินค้า':
+        return 'marads_basic.style_review'.tr();
+      default:
+        return logicValue;
+    }
+  }
+
+  // [เพิ่ม] Helper: แปลงค่า Logic -> UI สำหรับ Length
+  String _getLocalizedLengthDisplay(BuildContext context, String logicValue) {
+    if (logicValue.contains('15')) return 'marads_basic.length_15'.tr();
+    if (logicValue.contains('30')) return 'marads_basic.length_30'.tr();
+    if (logicValue.contains('60')) return 'marads_basic.length_60'.tr();
+    return logicValue;
+  }
+
   @override
   Widget build(BuildContext context) {
     // [เพิ่ม] 1. ดึงข้อมูล Point และคำนวณจำนวนครั้ง
@@ -93,29 +122,31 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                     onTap: _handleModeSelectorTap,
                   ),
                   MarAdsTextField(
-                    label: 'สินค้าที่ต้องการขาย*',
-                    placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
+                    label: 'marads_basic.label_product'.tr(),
+                    placeholder: 'marads_basic.placeholder_product'.tr(),
                     controller: _productController,
                     isRequired: true,
                   ),
                   MarAdsTextField(
-                    label: 'ชื่อแบรนด์/ชื่อยี่ห้อ (ไม่จำเป็นต้องกรอก)',
-                    placeholder: 'บอทน้อย',
+                    label: 'marads_basic.label_brand'.tr(),
+                    placeholder: 'marads_basic.placeholder_brand'.tr(),
                     controller: _brandController,
                   ),
                   MarAdsTextField(
-                    label: 'ราคา (ไม่จำเป็นต้องกรอก)',
-                    placeholder: '129 บาท, 99 บาท จาก 129 บาท',
+                    label: 'marads_basic.label_price'.tr(),
+                    placeholder: 'marads_basic.placeholder_price'.tr(),
                     controller: _priceController,
                   ),
                   MarAdsDropdown(
-                    label: 'สไตล์เนื้อหา',
-                    value: _selectedContentStyle,
+                    label: 'marads_basic.label_style'.tr(),
+                    value: _getLocalizedStyleDisplay(
+                        context, _selectedContentStyle),
                     onTap: _handleContentStyleTap,
                   ),
                   MarAdsDropdown(
-                    label: 'ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)',
-                    value: _selectedContentLength,
+                    label: 'marads_basic.label_length'.tr(),
+                    value: _getLocalizedLengthDisplay(
+                        context, _selectedContentLength),
                     showInfoIcon: true,
                     onTap: _handleContentLengthTap,
                   ),
@@ -191,8 +222,8 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   /// กล่อง "ข้อมูลเสริมอื่นๆ" ให้พิมพ์ได้เลย
   Widget _buildAdditionalInfoLabel() {
     return MarAdsTextField(
-      label: 'ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)',
-      placeholder: 'พลาดไม่ได้, หมดเขตในอีก 3 วัน',
+      label: 'marads_basic.label_extra'.tr(),
+      placeholder: 'marads_basic.placeholder_extra'.tr(),
       controller: _additionalInfoController,
       height: 100.h, // กำหนดความสูง
       maxLines: null, // พิมพ์ได้ไม่จำกัดบรรทัด
@@ -240,7 +271,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "สไตล์ของเนื้อหา",
+                  'marads_basic.header_style'.tr(),
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -262,7 +293,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             // 3. รายการเลือก (Bold เมื่อถูกเลือก)
             ListTile(
               title: Text(
-                'จูงใจให้ใช้',
+                'marads_basic.style_persuasive'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentStyle == 'จูงใจให้ใช้'
                       ? FontWeight.bold
@@ -277,7 +308,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                'ตลก',
+                'marads_basic.style_funny'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentStyle == 'ตลก'
                       ? FontWeight.bold
@@ -292,7 +323,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                'จริงจัง',
+                'marads_basic.style_serious'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentStyle == 'จริงจัง'
                       ? FontWeight.bold
@@ -307,7 +338,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                'ออดอ้อน',
+                'marads_basic.style_begging'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentStyle == 'ออดอ้อน'
                       ? FontWeight.bold
@@ -322,7 +353,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                'เรียกความสงสาร',
+                'marads_basic.style_sympathy'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentStyle == 'เรียกความสงสาร'
                       ? FontWeight.bold
@@ -337,7 +368,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                'รีวิวสินค้า',
+                'marads_basic.style_review'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentStyle == 'รีวิวสินค้า'
                       ? FontWeight.bold
@@ -385,7 +416,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "ความยาวของเนื้อหา",
+                  'marads_basic.header_length'.tr(),
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -406,7 +437,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             SizedBox(height: 16.h),
             ListTile(
               title: Text(
-                '~15 วิ',
+                'marads_basic.length_15'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentLength == '~15 วิ'
                       ? FontWeight.bold
@@ -421,7 +452,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                '~30 วิ',
+                'marads_basic.length_30'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentLength == '~30 วิ'
                       ? FontWeight.bold
@@ -436,7 +467,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             ListTile(
               title: Text(
-                '~60 วิ',
+                'marads_basic.length_60'.tr(),
                 style: TextStyle(
                   fontWeight: _selectedContentLength == '~60 วิ'
                       ? FontWeight.bold
@@ -461,8 +492,8 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     // กันเหนียว validate อีกที
     if (_productController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน'),
+        SnackBar(
+          content: Text('marads_basic.error_required'.tr()),
           backgroundColor: Colors.red,
         ),
       );

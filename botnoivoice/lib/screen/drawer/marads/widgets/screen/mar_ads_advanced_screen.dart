@@ -8,6 +8,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_sa
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,6 +80,77 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     'ป้าข้างบ้าน': '89',
     'ลุงกำนัน': '46',
   };
+
+  // [เพิ่ม] Helper: แปลงชื่อคาแรกเตอร์เป็นภาษาปัจจุบัน
+  String _getLocalizedCharacterDisplay(String logicValue) {
+    switch (logicValue) {
+      case 'แม่ค้าสาวสุดสวย':
+        return 'marads_adv.char_beauty'.tr();
+      case 'เด็กประถม':
+        return 'marads_adv.char_kid'.tr();
+      case 'วัยรุ่นผู้ชาย':
+        return 'marads_adv.char_teen_boy'.tr();
+      case 'วัยรุ่นผู้หญิง':
+        return 'marads_adv.char_teen_girl'.tr();
+      case 'พ่อค้ามือทอง':
+        return 'marads_adv.char_pro_seller'.tr();
+      case 'ป้าข้างบ้าน':
+        return 'marads_adv.char_auntie'.tr();
+      case 'ลุงกำนัน':
+        return 'marads_adv.char_chief'.tr();
+      case 'คุณตา':
+        return 'marads_adv.char_grandpa'.tr();
+      case 'คุณยาย':
+        return 'marads_adv.char_grandma'.tr();
+      default:
+        return logicValue;
+    }
+  }
+
+  // [เพิ่ม] Helper: แปลงสไตล์เนื้อหา (ใช้ Key เดิมจาก Basic ได้ หรือสร้างใหม่ก็ได้)
+  String _getLocalizedStyleDisplay(String logicValue) {
+    switch (logicValue) {
+      case 'จูงใจให้ใช้':
+        return 'marads_basic.style_persuasive'.tr();
+      case 'ตลก':
+        return 'marads_basic.style_funny'.tr();
+      case 'จริงจัง':
+        return 'marads_basic.style_serious'.tr();
+      case 'ออดอ้อน':
+        return 'marads_basic.style_begging'.tr();
+      case 'เรียกความสงสาร':
+        return 'marads_basic.style_sympathy'.tr();
+      case 'รีวิวสินค้า':
+        return 'marads_basic.style_review'.tr();
+      default:
+        return logicValue;
+    }
+  }
+
+  // [เพิ่ม] Helper: แปลงสี
+  String _getLocalizedColorDisplay(String logicValue) {
+    switch (logicValue) {
+      case 'ดำ':
+        return 'marads_adv.color_black'.tr();
+      case 'แดง':
+        return 'marads_adv.color_red'.tr();
+      case 'ขาว':
+        return 'marads_adv.color_white'.tr();
+      case 'ชมพู':
+        return 'marads_adv.color_pink'.tr();
+      case 'น้ำเงิน':
+        return 'marads_adv.color_blue'.tr();
+      default:
+        return logicValue;
+    }
+  }
+
+  // [เพิ่ม] Helper: แปลงความยาว
+  String _getLocalizedLengthDisplay(String logicValue) {
+    if (logicValue.contains('30')) return 'marads_basic.length_30'.tr();
+    if (logicValue.contains('60')) return 'marads_basic.length_60'.tr();
+    return logicValue;
+  }
 
   final TextEditingController _productController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
@@ -191,10 +263,15 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                     isExpanded: _isSalesStyleExpanded,
                     onToggle: () => setState(
                         () => _isSalesStyleExpanded = !_isSalesStyleExpanded),
-                    selectedSalesCharacter: _selectedSalesCharacter,
+                    // selectedSalesCharacter: _selectedSalesCharacter,
                     onTapSalesCharacter: _handleSalesCharacterTap,
-                    selectedContentStyle: _selectedContentStyle,
+                    // selectedContentStyle: _selectedContentStyle,
                     onTapContentStyle: _handleContentStyleTap,
+
+                    selectedSalesCharacter:
+                        _getLocalizedCharacterDisplay(_selectedSalesCharacter),
+                    selectedContentStyle:
+                        _getLocalizedStyleDisplay(_selectedContentStyle),
                   ),
                   SizedBox(height: 16.h),
                   AdvancedPromotionSection(
@@ -224,14 +301,14 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                   SizedBox(height: 16.h),
                   MarAdsDropdown(
                     // ใช้ Widget กลาง
-                    label: 'ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)',
-                    value: _selectedContentLength,
+                    label: 'marads_adv.label_length'.tr(),
+                    value: _getLocalizedLengthDisplay(_selectedContentLength),
                     showInfoIcon: true,
                     onTap: _handleContentLengthTap,
                   ),
                   MarAdsTextField(
-                    label: 'ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)',
-                    placeholder: 'พลาดไม่ได้, หมดเขตในอีก 3 วัน',
+                    label: 'marads_adv.label_extra'.tr(),
+                    placeholder: 'marads_adv.placeholder_extra'.tr(),
                     controller: _additionalInfoController,
                     height: 100.h,
                     maxLines: null,
@@ -376,7 +453,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
           mainAxisSize: MainAxisSize.min, // หดขนาดเท่าเนื้อหา (ชิดซ้าย)
           children: [
             Text(
-              'คุณสมบัติของสินค้า',
+              'marads_adv.btn_properties'.tr(),
               style: GoogleFonts.prompt(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
@@ -526,7 +603,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
             children: [
               const Icon(Icons.error_outline, color: Colors.white),
               SizedBox(width: 8.w),
-              const Text('กรุณากรอกชื่อสินค้าที่ต้องการขาย'),
+              Text('marads_adv.error_no_product'.tr()),
             ],
           ),
           backgroundColor: Colors.redAccent,
@@ -636,19 +713,21 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
 
   void _handleSalesCharacterTap() {
     _showSelectionModal(
-      title: "คาแรกเตอร์คนขาย",
+      title: 'marads_adv.header_character'.tr(),
       items: _salesCharacters,
       selectedValue: _selectedSalesCharacter, // ส่งค่าที่เลือกปัจจุบัน
       onSelected: (val) => setState(() => _selectedSalesCharacter = val),
+      itemBuilder: (val) => _getLocalizedCharacterDisplay(val),
     );
   }
 
   void _handleContentStyleTap() {
     _showSelectionModal(
-      title: "สไตล์ของเนื้อหา",
+      title: 'marads_adv.header_style'.tr(),
       items: _contentStyles, // ใช้ Constants
       selectedValue: _selectedContentStyle,
       onSelected: (val) => setState(() => _selectedContentStyle = val),
+      itemBuilder: (val) => _getLocalizedStyleDisplay(val),
     );
   }
 
@@ -656,10 +735,11 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     final List<String> lengths = ['~30 วิ', '~60 วิ'];
 
     _showSelectionModal(
-      title: "ความยาวของเนื้อหา",
+      title: 'marads_adv.header_length'.tr(),
       items: lengths,
       selectedValue: _selectedContentLength,
       onSelected: (val) => setState(() => _selectedContentLength = val),
+      itemBuilder: (val) => _getLocalizedLengthDisplay(val),
     );
   }
 
@@ -668,6 +748,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     required List<String> items,
     required Function(String) onSelected,
     required String selectedValue, // รับค่ามาเพื่อเช็คตัวหนา
+    String Function(String)? itemBuilder,
   }) {
     showModalBottomSheet(
       context: context,
@@ -723,7 +804,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
               SizedBox(height: 16.h),
               ...items.map((item) => ListTile(
                     title: Text(
-                      item,
+                      itemBuilder != null ? itemBuilder(item) : item,
                       style: GoogleFonts.prompt(
                           fontSize: 14.sp,
                           fontWeight: item == selectedValue
