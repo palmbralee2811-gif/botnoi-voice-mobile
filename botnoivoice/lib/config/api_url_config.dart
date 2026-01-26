@@ -9,9 +9,6 @@ String _stagingUrl = "https://api-voice-staging.botnoi.ai";
 /// Returns the API URL for the current environment (Production or Staging)
 String get apiUrl => _productionUrl;
 
-/// Referer URL for API requests
-String get apiReferer => "https://api-voice.botnoi.ai";
-
 /// Check if the app is running in debugging mode
 bool get isDebuggingMode {
   return apiUrl == _stagingUrl;

@@ -20,8 +20,8 @@ Future<File?> downloadFileToTemporaryDirectory(
         followRedirects: false,
         receiveTimeout: const Duration(seconds: 60),
         headers: {
-          'Referer': apiReferer, // บัตรผ่านสำหรับ AWS S3
-          'Origin': apiReferer,
+          'Referer': apiUrl, // บัตรผ่านสำหรับ AWS S3
+          'Origin': apiUrl,
         },
       ),
     );

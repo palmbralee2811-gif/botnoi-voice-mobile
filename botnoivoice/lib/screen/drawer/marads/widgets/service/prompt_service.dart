@@ -30,7 +30,7 @@ class PromptService {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": "Bearer $token",
-      "Referer": apiReferer,
+      "Referer": apiUrl,
     };
   }
 

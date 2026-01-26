@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:botnoivoice/config/api_url_config.dart'; // Import config เพื่อใช้ apiReferer
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/home/function/create_ios_app_folder.dart';
 import 'package:botnoivoice/screen/main/home/function/download_file_to_temp.dart';
 import 'package:botnoivoice/service/permission/android_permission.dart';
@@ -154,8 +154,8 @@ class MarAdsDownloadLogic {
         savedDir: folderPath,
         fileName: fileName,
         headers: {
-          "Referer": apiReferer,
-          "Origin": apiReferer,
+          "Referer": apiUrl,
+          "Origin": apiUrl,
         },
         showNotification: true,
         openFileFromNotification: true,

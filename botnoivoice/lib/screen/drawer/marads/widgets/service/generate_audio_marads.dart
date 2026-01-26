@@ -175,9 +175,9 @@ Future<String> generateAudioPreview({
   };
 
   Map<String, String> headers = {
-    'Botnoi-Token': selectedToken ?? '',
+    'Botnoi-Token': selectedToken,
     'Content-Type': 'application/json',
-    'Referer': apiReferer
+    'Referer': apiUrl
   };
 
   try {
