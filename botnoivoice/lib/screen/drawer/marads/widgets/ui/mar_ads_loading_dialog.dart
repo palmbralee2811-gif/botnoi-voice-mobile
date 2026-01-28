@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Widget สำหรับ Dialog กำลังสร้างเสียง
 class MarAdsLoadingDialog extends StatelessWidget {
-  const MarAdsLoadingDialog({super.key});
+  final String? title;
+
+  const MarAdsLoadingDialog({super.key, this.title,});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class MarAdsLoadingDialog extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             Text(
-              "กำลังสร้างเสียง",
+              title ?? "กำลังประมวลผล",
               style: GoogleFonts.prompt(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,

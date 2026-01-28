@@ -151,6 +151,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                     onTap: _handleContentLengthTap,
                   ),
                   _buildAdditionalInfoLabel(), // กล่องข้อมูลเสริมพิมพ์ได้
+                  SizedBox(height: 150.h),
                 ],
               ),
             ),
@@ -226,7 +227,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       placeholder: 'marads_basic.placeholder_extra'.tr(),
       controller: _additionalInfoController,
       height: 100.h, // กำหนดความสูง
-      maxLines: null, // พิมพ์ได้ไม่จำกัดบรรทัด
+      maxLines: 1, // พิมพ์ได้ไม่จำกัดบรรทัด
     );
   }
 

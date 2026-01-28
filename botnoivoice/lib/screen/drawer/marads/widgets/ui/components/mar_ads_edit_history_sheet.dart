@@ -72,7 +72,7 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                   children: [
                     TextField(
                       controller: _controller,
-                      maxLines: 8,
+                      maxLines: 20,
                       minLines: 5,
                       maxLength: null,
                       buildCounter: (context,
@@ -101,10 +101,10 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                             context.pop();
                           },
                           child: Icon(Icons.close,
-                              color: Colors.grey, size: 24.sp),
+                              color: Colors.black, size: 24.sp,),
                         ),
                         Text(
-                          '${_controller.text.length} / 999',
+                          '${_controller.text.length}',
                           style: GoogleFonts.inter(
                             fontSize: 12.sp,
                             color: _controller.text.length >= 1000
@@ -114,18 +114,6 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                         ),
                       ],
                     ),
-                    // [เพิ่ม] ข้อความแจ้งเตือนสีแดงเมื่อเกิน
-                    if (_controller.text.length >= 1000)
-                      Padding(
-                        padding: EdgeInsets.only(top: 8.h),
-                        child: Text(
-                          "ข้อความเกิน 1,000 ตัว ไม่สามารถบันทึกได้",
-                          style: GoogleFonts.prompt(
-                            fontSize: 12.sp,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
