@@ -1,9 +1,12 @@
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_delete_confirm_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // [1] Riverpod Import
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MarAdsResultTextBox extends StatelessWidget {
+class MarAdsResultTextBox extends ConsumerWidget {
   final TextEditingController controller;
   final String mode; // 'Result' or 'Edit'
   final VoidCallback onClear;
@@ -15,8 +18,15 @@ class MarAdsResultTextBox extends StatelessWidget {
     required this.onClear,
   });
 
+  void _handleClearText(BuildContext context) {
+    if (controller.text.isEmpty) return;
+
+    controller.clear();
+    onClear();
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: EdgeInsets.all(2.w),
       decoration: BoxDecoration(
@@ -41,20 +51,17 @@ class MarAdsResultTextBox extends StatelessWidget {
           children: [
             SizedBox(
               height: 300.h,
-              // ใช้ ValueListenableBuilder เพื่อลดการ Rebuild ทั้งก้อน
               child: TextField(
-                // เพิ่ม Key เพื่อช่วยให้ Framework แยกแยะ State ได้แม่นยำขึ้น
                 key: const ValueKey('marads_result_textfield'),
                 controller: controller,
-                maxLines: null, 
+                maxLines: null,
                 expands: true,
                 readOnly: mode == 'Result',
                 textAlignVertical: TextAlignVertical.top,
-                
-                // ป้องกันการ Crash จากการลากเลือกข้อความ (Selection)
-                // ถ้ายัง Crash อยู่ ให้เปลี่ยนเป็น false (แต่จะเลือกข้อความไม่ได้)
                 enableInteractiveSelection: true,
-
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(1000),
+                ],
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -62,33 +69,25 @@ class MarAdsResultTextBox extends StatelessWidget {
                   height: 1.43,
                   letterSpacing: 0.25,
                 ),
-                
-                // ใช้ ClampingScrollPhysics เพื่อป้องกันการแย่ง Scroll กับ ListView แม่
                 scrollPhysics: const ClampingScrollPhysics(),
-                
-                // เพิ่ม onTapOutside: 
-                // ทำให้ TextField หุบคีย์บอร์ดเองได้เมื่อจิ้มข้างนอก 
-                // *คุณจึงสามารถไปลบ GestureDetector ที่หน้าจอแม่ (Parent) ออกได้เลย*
-                // ซึ่งจะช่วยแก้ปัญหา Gesture ตีกันจน Crash ได้ถาวร
                 onTapOutside: (event) {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
-
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
-                  isDense: true, 
+                  isDense: true,
                 ),
               ),
             ),
             SizedBox(height: 20.h),
-            
+
             // ValueListenableBuilder สำหรับตัวนับคำ
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: controller,
               builder: (context, value, child) {
                 final textLength = value.text.length;
-                final isOverLimit = textLength >= 1000;
+                final isLimitReached = textLength >= 1000;
 
                 return Column(
                   children: [
@@ -103,42 +102,30 @@ class MarAdsResultTextBox extends StatelessWidget {
                                   padding: EdgeInsets.only(right: 8.w),
                                   child: GestureDetector(
                                     onTap: () {
-                                      controller.clear(); 
-                                      onClear();
+                                      _handleClearText(context);
                                     },
-                                    child: Icon(Icons.close,
-                                        size: 24.sp, color: const Color(0xFF4F4F4F)),
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 24.sp,
+                                      color: const Color(0xFF4F4F4F),
+                                    ),
                                   ),
                                 ),
                             ],
                           ),
                         ),
                         Text(
-                          '$textLength ตัวอักษร',
+                          '$textLength',
                           style: GoogleFonts.inter(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
-                            color: isOverLimit
-                                ? Colors.red
+                            color: isLimitReached
+                                ? Colors.deepOrange
                                 : const Color(0xFF888888),
                           ),
                         ),
                       ],
                     ),
-                    if (isOverLimit)
-                      Padding(
-                        padding: EdgeInsets.only(top: 8.h),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            "ข้อความเกิน 1,000 ตัว ไม่สามารถสร้างเสียงได้",
-                            style: GoogleFonts.prompt(
-                              fontSize: 12.sp,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ),
                   ],
                 );
               },
