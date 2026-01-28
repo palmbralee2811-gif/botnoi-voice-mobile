@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
@@ -61,6 +62,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   String? _currentFileName;
   String? _localPromptId;
   bool _isPersuasiveLoading = false;
+  
+  // ประกาศ GlobalKey สำหรับ Scaffold
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -128,7 +132,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // ผูก Key กับ Scaffold
       backgroundColor: const Color(0xFFF7F8FA),
+      drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
       body: Column(
         children: [
@@ -180,7 +186,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                 color: const Color(0xFF3D3D3D),
               ),
               onPressed: () {
-                context.go('/home');
+                _scaffoldKey.currentState?.openDrawer();
               },
             ),
           ),
