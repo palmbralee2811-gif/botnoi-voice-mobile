@@ -41,11 +41,20 @@ class MarAdsResultTextBox extends StatelessWidget {
           children: [
             SizedBox(
               height: 300.h,
+              // ใช้ ValueListenableBuilder เพื่อลดการ Rebuild ทั้งก้อน
               child: TextField(
+                // เพิ่ม Key เพื่อช่วยให้ Framework แยกแยะ State ได้แม่นยำขึ้น
+                key: const ValueKey('marads_result_textfield'),
                 controller: controller,
-                maxLines: null,
+                maxLines: null, 
                 expands: true,
                 readOnly: mode == 'Result',
+                textAlignVertical: TextAlignVertical.top,
+                
+                // ป้องกันการ Crash จากการลากเลือกข้อความ (Selection)
+                // ถ้ายัง Crash อยู่ ให้เปลี่ยนเป็น false (แต่จะเลือกข้อความไม่ได้)
+                enableInteractiveSelection: true,
+
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -53,56 +62,87 @@ class MarAdsResultTextBox extends StatelessWidget {
                   height: 1.43,
                   letterSpacing: 0.25,
                 ),
+                
+                // ใช้ ClampingScrollPhysics เพื่อป้องกันการแย่ง Scroll กับ ListView แม่
+                scrollPhysics: const ClampingScrollPhysics(),
+                
+                // เพิ่ม onTapOutside: 
+                // ทำให้ TextField หุบคีย์บอร์ดเองได้เมื่อจิ้มข้างนอก 
+                // *คุณจึงสามารถไปลบ GestureDetector ที่หน้าจอแม่ (Parent) ออกได้เลย*
+                // ซึ่งจะช่วยแก้ปัญหา Gesture ตีกันจน Crash ได้ถาวร
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
+                  isDense: true, 
                 ),
               ),
             ),
             SizedBox(height: 20.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // จัดการพื้นที่ด้านซ้าย: แสดงปุ่มลบ (ถ้ามี) + ข้อความเตือน (ถ้าเกิน)
-                Expanded(
-                  child: Row(
-                    children: [
-                      if (mode == 'Edit')
-                        Padding(
-                          padding: EdgeInsets.only(right: 8.w),
-                          child: GestureDetector(
-                            onTap: onClear,
-                            child: Icon(Icons.close,
-                                size: 24.sp, color: const Color(0xFF4F4F4F)),
+            
+            // ValueListenableBuilder สำหรับตัวนับคำ
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller,
+              builder: (context, value, child) {
+                final textLength = value.text.length;
+                final isOverLimit = textLength >= 1000;
+
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              if (mode == 'Edit')
+                                Padding(
+                                  padding: EdgeInsets.only(right: 8.w),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      controller.clear(); 
+                                      onClear();
+                                    },
+                                    child: Icon(Icons.close,
+                                        size: 24.sp, color: const Color(0xFF4F4F4F)),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
-                    ],
-                  ),
-                ),
-                Text(
-                  '${controller.text.length} ตัวอักษร',
-                  style: GoogleFonts.inter(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                    color: controller.text.length >= 1000
-                        ? Colors.red
-                        : const Color(0xFF888888),
-                  ),
-                ),
-              ],
+                        Text(
+                          '$textLength ตัวอักษร',
+                          style: GoogleFonts.inter(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: isOverLimit
+                                ? Colors.red
+                                : const Color(0xFF888888),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isOverLimit)
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            "ข้อความเกิน 1,000 ตัว ไม่สามารถสร้างเสียงได้",
+                            style: GoogleFonts.prompt(
+                              fontSize: 12.sp,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
-            // ส่วนนี้ต่อท้าย Row เพื่อให้แสดงข้อความเตือนด้านล่างสุด
-            if (controller.text.length >= 1000)
-              Padding(
-                padding: EdgeInsets.only(top: 8.h),
-                child: Text(
-                  "ข้อความเกิน 1,000 ตัว ไม่สามารถสร้างเสียงได้",
-                  style: GoogleFonts.prompt(
-                    fontSize: 12.sp,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
           ],
         ),
       ),
