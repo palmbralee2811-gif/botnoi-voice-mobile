@@ -63,24 +63,46 @@ class MarAdsResultTextBox extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (mode == 'Edit')
-                  GestureDetector(
-                    onTap: onClear,
-                    child: Icon(Icons.close,
-                        size: 24.sp, color: const Color(0xFF4F4F4F)),
-                  )
-                else
-                  const SizedBox(),
+                // จัดการพื้นที่ด้านซ้าย: แสดงปุ่มลบ (ถ้ามี) + ข้อความเตือน (ถ้าเกิน)
+                Expanded(
+                  child: Row(
+                    children: [
+                      if (mode == 'Edit')
+                        Padding(
+                          padding: EdgeInsets.only(right: 8.w),
+                          child: GestureDetector(
+                            onTap: onClear,
+                            child: Icon(Icons.close,
+                                size: 24.sp, color: const Color(0xFF4F4F4F)),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
                 Text(
                   '${controller.text.length} ตัวอักษร',
                   style: GoogleFonts.inter(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
-                    color: const Color(0xFF888888),
+                    color: controller.text.length >= 1000
+                        ? Colors.red
+                        : const Color(0xFF888888),
                   ),
                 ),
               ],
             ),
+            // ส่วนนี้ต่อท้าย Row เพื่อให้แสดงข้อความเตือนด้านล่างสุด
+            if (controller.text.length >= 1000)
+              Padding(
+                padding: EdgeInsets.only(top: 8.h),
+                child: Text(
+                  "ข้อความเกิน 1,000 ตัว ไม่สามารถสร้างเสียงได้",
+                  style: GoogleFonts.prompt(
+                    fontSize: 12.sp,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

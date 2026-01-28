@@ -6,12 +6,14 @@ class MarAdsResultActionButtons extends StatelessWidget {
   final VoidCallback onCreateVoice;
   final VoidCallback onMakePersuasive;
   final bool isPersuasiveLoading;
+  final bool isCreateEnabled;
 
   const MarAdsResultActionButtons({
     super.key,
     required this.onCreateVoice,
     required this.onMakePersuasive,
     this.isPersuasiveLoading = false,
+    this.isCreateEnabled = true,
   });
 
   @override
@@ -25,23 +27,26 @@ class MarAdsResultActionButtons extends StatelessWidget {
             width: double.infinity,
             height: 52.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF262626),
+              color: isCreateEnabled ? const Color(0xFF262626) : Colors.grey,
               borderRadius: BorderRadius.circular(20.r),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 4)),
-              ],
+              boxShadow: isCreateEnabled // ซ่อนเงาเมื่อ Disable
+                  ? [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 4)),
+                    ]
+                  : [],
             ),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
+                disabledBackgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.r)),
               ),
-              onPressed: onCreateVoice,
+              onPressed: isCreateEnabled ? onCreateVoice : null,
               child: Text(
                 'สร้างเสียง',
                 style: GoogleFonts.lexend(

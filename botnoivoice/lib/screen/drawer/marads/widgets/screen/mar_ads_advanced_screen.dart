@@ -199,6 +199,11 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadAllTokensIfLoggedIn(ref);
     });
+
+    // เพิ่ม Listener เพื่อให้ปุ่มตรวจสอบค่าในช่อง Product Name ได้ทันที
+    _productController.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -234,6 +239,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
         costPerGen == 0 ? 999 : (currentPoints / costPerGen).floor();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFFFFFFF),
       drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
@@ -319,9 +325,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
           ),
           MarAdsCreateButton(
             remainingCount: canCreateTimes.toString(),
-            isFormValid: _productController.text.isNotEmpty &&
-                _brandController.text.isNotEmpty &&
-                _priceController.text.isNotEmpty,
+            isFormValid: _productController.text.isNotEmpty,
             isLoading: _isLoading,
             onPressed: _handleCreateMessage,
           ),

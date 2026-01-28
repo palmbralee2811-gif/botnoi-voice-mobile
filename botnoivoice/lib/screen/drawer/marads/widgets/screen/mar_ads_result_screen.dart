@@ -141,7 +141,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                   controller: _textController,
                   mode: _selectedMode,
                   onClear: () {
-                    _textController.clear();
+                    _textController.text = widget.generatedText ?? '';
                     setState(() {});
                   },
                 ),
@@ -151,8 +151,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           MarAdsResultActionButtons(
             onCreateVoice: _handleCreateVoice,
             onMakePersuasive: _handleMakeMorePersuasive,
-            isPersuasiveLoading:
-                _isPersuasiveLoading, // [เพิ่ม] ส่งสถานะโหลดไปที่ปุ่ม
+            isPersuasiveLoading: _isPersuasiveLoading, // ส่งสถานะโหลดไปที่ปุ่ม
+            isCreateEnabled: _textController.text.length <
+                1000, // ต้องน้อยกว่า 1000 (999 ได้)
           ),
         ],
       ),
@@ -421,6 +422,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               category: "text",
             );
           }
+          //อัปเดต Point ทันทีหลังจากสร้างเสียงสำเร็จ
+          loadAllTokensIfLoggedIn(ref);
+
           if (mounted) setState(() {});
         } catch (e) {
           debugPrint("⚠️ History Sync Error: $e");

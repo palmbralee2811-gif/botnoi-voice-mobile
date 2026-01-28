@@ -74,7 +74,7 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                       controller: _controller,
                       maxLines: 8,
                       minLines: 5,
-                      maxLength: 250,
+                      maxLength: null,
                       buildCounter: (context,
                               {required currentLength,
                               required isFocused,
@@ -104,16 +104,28 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                               color: Colors.grey, size: 24.sp),
                         ),
                         Text(
-                          '${_controller.text.length} / 250',
+                          '${_controller.text.length} / 999',
                           style: GoogleFonts.inter(
                             fontSize: 12.sp,
-                            color: _controller.text.length > 250
+                            color: _controller.text.length >= 1000
                                 ? Colors.red
                                 : Colors.grey,
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    // [เพิ่ม] ข้อความแจ้งเตือนสีแดงเมื่อเกิน
+                    if (_controller.text.length >= 1000)
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: Text(
+                          "ข้อความเกิน 1,000 ตัว ไม่สามารถบันทึกได้",
+                          style: GoogleFonts.prompt(
+                            fontSize: 12.sp,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -126,7 +138,8 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
               height: 50.h,
               child: ElevatedButton(
                 onPressed: (_controller.text.trim().isNotEmpty &&
-                        _controller.text != widget.initialText)
+                        _controller.text != widget.initialText &&
+                        _controller.text.length < 1000)
                     ? () async {
                         await widget.onSave(_controller.text);
                         // การปิด Modal จะจัดการโดย Parent หรือเรียก pop ที่นี่ตาม flow เดิม

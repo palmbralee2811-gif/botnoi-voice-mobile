@@ -286,6 +286,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
   Future<void> _handleGenerateAudio(
       int index, String text, SpeakerEntity speaker) async {
+    await _audioPlayer.stop();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -328,34 +329,14 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           category: 'text',
         );
 
-        setState(() {
-          if (_playingIndex == index) {
-            _playingIndex = null;
-            _isPlaying = false;
-            _position = Duration.zero;
-            _duration = Duration.zero;
-            _audioPlayer.stop();
-          }
+        // อัปเดต Point ทันทีหลังจากสร้างเสียงสำเร็จ
+        loadAllTokensIfLoggedIn(ref);
 
-          final oldItem = _historyItems[index];
-          _historyItems[index] = MarAdsHistoryModel(
-            id: oldItem.id,
-            title: oldItem.title,
-            content: oldItem.content,
-            mode: oldItem.mode,
-            style: oldItem.style,
-            points: oldItem.points,
-            chars: oldItem.chars,
-            hasAudio: true,
-            duration: oldItem.duration,
-            audioUrl: audioUrl,
-            speakerId: speaker.speakerId,
-          );
-        });
+        await _fetchHistory();
 
         // ปิด Loading ก่อนแสดง Success Dialog
-        if (mounted && context.canPop()) {
-          context.pop();
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop();
         }
 
         if (mounted) {

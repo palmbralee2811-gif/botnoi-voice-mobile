@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MarAdsDropdown extends StatefulWidget {
@@ -43,10 +44,56 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
                 ),
               ),
               if (widget.showInfoIcon)
-                Icon(
-                  Icons.info_outline,
-                  size: 12.w,
-                  color: const Color(0xFF262626),
+                // ใช้ Tooltip แบบ Tap เพื่อแสดงข้อมูลเมื่อกด
+                Tooltip(
+                  triggerMode: TooltipTriggerMode.tap,
+                  preferBelow: false,
+                  padding: EdgeInsets.all(12.w),
+                  showDuration: const Duration(seconds: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF424242), // พื้นหลังสีเทาเข้มตามรูป
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  richMessage: TextSpan(
+                    style: GoogleFonts.prompt(
+                      fontSize: 12.sp,
+                      color: Colors.white,
+                      height: 1.5,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: 'การสร้างข้อความมีผลต่อพอยท์ที่ใช้ ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      // [เพิ่ม] ใช้ WidgetSpan เพื่อแทรกรูป SVG
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment
+                            .middle, // จัดให้อยู่กึ่งกลางบรรทัด
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: 4.w, right: 2.w, bottom: 2.h),
+                          child: SvgPicture.asset(
+                            'assets/images/logo/credit-icon.svg',
+                            height: 16.sp, // ปรับขนาดให้พอดีกับตัวหนังสือ
+                          ),
+                        ),
+                      ),
+                      const TextSpan(
+                          text: '\n50 พอยท์/ครั้ง สำหรับ ~15 วินาที\n'),
+                      const TextSpan(
+                          text: '100 พอยท์/ครั้ง สำหรับ ~30 วินาที\n'),
+                      const TextSpan(text: '150 พอยท์/ครั้ง สำหรับ ~60 วินาที')
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 6.w), // เพิ่มระยะห่างจาก Text นิดหน่อย
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 16.w, // ปรับขนาดไอคอนให้กดง่ายขึ้นเล็กน้อย
+                      color: const Color(0xFF262626),
+                    ),
+                  ),
                 ),
             ],
           ),
