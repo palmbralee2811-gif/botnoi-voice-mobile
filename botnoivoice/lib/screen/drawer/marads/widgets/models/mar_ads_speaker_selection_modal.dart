@@ -382,10 +382,19 @@ class _MarAdsSpeakerSelectionModalState
                         onSpeakerTap: (idx, item) {
                           _logger.d(
                               "Tapped: ${item.thaiName} (ID: ${item.speakerId})");
-                          _playAudio(item.audio);
-                          setState(() {
-                            _tempSelectedSpeaker = item;
-                          });
+                          // เช็คว่าถ้ากดตัวเดิม ให้ Unselect (ยกเลิกการเลือก)
+                          if (_tempSelectedSpeaker?.speakerId.trim() ==
+                              item.speakerId.trim()) {
+                            _audioPlayer.stop(); // หยุดเล่นเสียง
+                            setState(() {
+                              _tempSelectedSpeaker = null;
+                            });
+                          } else {
+                            _playAudio(item.audio);
+                            setState(() {
+                              _tempSelectedSpeaker = item;
+                            });
+                          }
                         },
                         onFavoriteToggle: (id) => _toggleFavorite(id),
                       );

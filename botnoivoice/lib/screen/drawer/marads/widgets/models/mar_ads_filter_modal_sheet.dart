@@ -33,7 +33,6 @@ class MarAdsFilterModalSheet extends StatefulWidget {
 }
 
 class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
-
   late String _langCode;
   late String _langName;
   late String _langImage;
@@ -81,7 +80,8 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
         }
       }
     }
-    return stylesSet.toList()..sort();
+    // return stylesSet.toList()..sort();
+    return stylesSet.toList();
   }
 
   List<String> _getCategories() {
@@ -106,7 +106,8 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
         }
       }
     }
-    return catSet.toList()..sort();
+    // return catSet.toList()..sort();
+    return catSet.toList();
   }
 
   @override
@@ -133,27 +134,35 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
                     child: Column(
                       children: [
                         SizedBox(height: 10.h),
-                        ModalHeader(title: 'language'.tr()),
+                        // เพิ่ม Padding ครอบ ModalHeader เพื่อดัน "ภาษา" และ "X" เข้ามาจากขอบจอ
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: ModalHeader(title: 'language'.tr()),
+                        ),
                         ...languageFilter
-                            .map((lang) => buildLanguageFilterWidget(
-                                  thaiName: lang['thaiName'] as String,
-                                  englishName: lang['englishName'] as String,
-                                  indonesianName:
-                                      lang['indonesianName'] as String,
-                                  imagePath: lang['image'] as String,
-                                  lang: lang['code'] as String,
-                                  context: context,
-                                  setState: setState,
-                                  selectedLanguage: _langName,
-                                  onSelected: (code, name, img) {
-                                    setState(() {
-                                      _langCode = code;
-                                      _langName = name;
-                                      _langImage = img;
-                                      _styles.clear();
-                                      _categories.clear();
-                                    });
-                                  },
+                            // ใช้ Transform.scale ครอบเพื่อปรับขนาด List ให้เล็กลง (0.95 = 95%)
+                            .map((lang) => Transform.scale(
+                                  scale: 0.95,
+                                  child: buildLanguageFilterWidget(
+                                    thaiName: lang['thaiName'] as String,
+                                    englishName: lang['englishName'] as String,
+                                    indonesianName:
+                                        lang['indonesianName'] as String,
+                                    imagePath: lang['image'] as String,
+                                    lang: lang['code'] as String,
+                                    context: context,
+                                    setState: setState,
+                                    selectedLanguage: _langName,
+                                    onSelected: (code, name, img) {
+                                      setState(() {
+                                        _langCode = code;
+                                        _langName = name;
+                                        _langImage = img;
+                                        _styles.clear();
+                                        _categories.clear();
+                                      });
+                                    },
+                                  ),
                                 ))
                             .toList()
                       ],
