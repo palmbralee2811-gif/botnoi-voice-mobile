@@ -56,19 +56,20 @@ class _MarAdsSpeakerSelectionModalState
     // ตั้งค่าตัวเลือกเริ่มต้น
     _tempSelectedSpeaker = widget.selectedSpeaker;
 
-    // Set ค่าเริ่มต้น Filter ตาม Speaker ที่ส่งเข้ามา (ถ้ามี)
-    if (widget.selectedSpeaker != null) {
-      _selectedLangCode = widget.selectedSpeaker!.languageCode.isEmpty
-          ? 'TH'
-          : widget.selectedSpeaker!.languageCode.toUpperCase();
-      // หาชื่อและรูปภาษาจาก List
-      final langData = languageFilter.firstWhere(
-        (l) => l['code'] == _selectedLangCode,
-        orElse: () => languageFilter[0],
-      );
-      _selectedLangName = langData['thaiName'] as String;
-      _selectedLangImage = langData['image'] as String;
-    }
+    //ลองเก็บก่อนเผื่อ Speaker ค้างอยู่ที่ V1
+    // // Set ค่าเริ่มต้น Filter ตาม Speaker ที่ส่งเข้ามา (ถ้ามี)
+    // if (widget.selectedSpeaker != null) {
+    //   _selectedLangCode = widget.selectedSpeaker!.languageCode.isEmpty
+    //       ? 'TH'
+    //       : widget.selectedSpeaker!.languageCode.toUpperCase();
+    //   // หาชื่อและรูปภาษาจาก List
+    //   final langData = languageFilter.firstWhere(
+    //     (l) => l['code'] == _selectedLangCode,
+    //     orElse: () => languageFilter[0],
+    //   );
+    //   _selectedLangName = langData['thaiName'] as String;
+    //   _selectedLangImage = langData['image'] as String;
+    // }
 
     _loadFavorites();
     _searchController.addListener(() {

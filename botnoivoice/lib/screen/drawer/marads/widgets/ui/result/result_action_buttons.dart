@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MarAdsResultActionButtons extends StatelessWidget {
@@ -7,6 +8,7 @@ class MarAdsResultActionButtons extends StatelessWidget {
   final VoidCallback onMakePersuasive;
   final bool isPersuasiveLoading;
   final bool isCreateEnabled;
+  final int pointCost;
 
   const MarAdsResultActionButtons({
     super.key,
@@ -14,6 +16,7 @@ class MarAdsResultActionButtons extends StatelessWidget {
     required this.onMakePersuasive,
     this.isPersuasiveLoading = false,
     this.isCreateEnabled = true,
+    required this.pointCost,
   });
 
   @override
@@ -47,13 +50,35 @@ class MarAdsResultActionButtons extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20.r)),
               ),
               onPressed: isCreateEnabled ? onCreateVoice : null,
-              child: Text(
-                'สร้างเสียง',
-                style: GoogleFonts.lexend(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'สร้างเสียง',
+                    style: GoogleFonts.lexend(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  if (isCreateEnabled) ...[
+                    SizedBox(width: 8.w),
+                    SvgPicture.asset(
+                      'assets/images/logo/credit-icon.svg',
+                      width: 20.w,
+                      height: 20.h,
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      '$pointCost',
+                      style: GoogleFonts.lexend(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ),

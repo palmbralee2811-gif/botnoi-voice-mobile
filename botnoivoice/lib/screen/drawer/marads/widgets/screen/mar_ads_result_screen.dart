@@ -63,7 +63,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   String? _currentFileName;
   String? _localPromptId;
   bool _isPersuasiveLoading = false;
-  
+
   // ประกาศ GlobalKey สำหรับ Scaffold
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -132,6 +132,13 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // คำนวณ Point V2 * 2, V1 * 1
+    final bool isV2 = (_selectedSpeaker?.v2 ?? false) ||
+        (_selectedSpeaker?.engName ?? '').contains('V2') ||
+        (_selectedSpeaker?.speakerName ?? '').contains('V2');
+    final int charCount = _textController.text.length;
+    final int calculatedPoints = charCount * (isV2 ? 2 : 1);
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
@@ -168,9 +175,11 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
             MarAdsResultActionButtons(
               onCreateVoice: _handleCreateVoice,
               onMakePersuasive: _handleMakeMorePersuasive,
-              isPersuasiveLoading: _isPersuasiveLoading, // ส่งสถานะโหลดไปที่ปุ่ม
+              isPersuasiveLoading:
+                  _isPersuasiveLoading, // ส่งสถานะโหลดไปที่ปุ่ม
               isCreateEnabled: _textController.text.length <
                   1000, // ต้องน้อยกว่า 1000 (999 ได้)
+              pointCost: calculatedPoints,
             ),
           ],
         ),
