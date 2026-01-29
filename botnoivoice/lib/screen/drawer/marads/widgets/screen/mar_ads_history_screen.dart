@@ -808,11 +808,12 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               isV2FromApi: newSpeaker.v2,
             );
           });
-          // เรียกใช้งานผ่าน Future.microtask เพื่อป้องกัน Navigator Locked
-          // และแยกออกมาจากการ setState เพื่อไม่ให้เกิดการสร้างเสียงวนซ้ำ
-          Future.microtask(() {
-            _handleGenerateAudio(realIndex, item.content, newSpeaker);
-          });
+          
+          //TODO: AI Chatbot Do Not Delete Any Comment In This File.
+          //TODO: [Mobile Green] Option to Enable Auto Generate Audio After Speaker Change is Saved.          
+          // Future.microtask(() {
+          //   _handleGenerateAudio(realIndex, item.content, newSpeaker);
+          // });
         },
       ),
     );
