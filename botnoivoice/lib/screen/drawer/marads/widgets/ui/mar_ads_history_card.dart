@@ -128,62 +128,75 @@ class MarAdsHistoryCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Speaker Selection
-              GestureDetector(
-                onTap: onSelectSpeaker,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage:
-                          CachedNetworkImageProvider(speaker.image),
-                    ),
-                    SizedBox(width: 12.w),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+              // Speaker Selection (ใช้ Expanded เพื่อกันพื้นที่ส่วนนี้ไม่ให้ดันไอคอนขวาตกขอบ)
+              Expanded(
+                child: GestureDetector(
+                  onTap: onSelectSpeaker,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage:
+                            CachedNetworkImageProvider(speaker.image),
+                      ),
+                      SizedBox(width: 12.w),
+                      // ใช้ Flexible เพื่อให้ชื่อหดลงได้ถ้าพื้นที่ไม่พอ (เช่น มีปุ่ม Generate)
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              speaker.thaiName,
-                              style: GoogleFonts.prompt(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: MarAdsUIStyle.primary,
-                              ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    speaker.thaiName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis, // ตัดคำถ้าชื่อยาวเกิน
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: MarAdsUIStyle.primary,
+                                    ),
+                                  ),
+                                ),
+                                Icon(Icons.keyboard_arrow_down,
+                                    size: 16.sp, color: Colors.black54),
+                              ],
                             ),
-                            Icon(Icons.keyboard_arrow_down,
-                                size: 16.sp, color: Colors.black54),
                           ],
                         ),
-                      ],
-                    ),
-                    // [1] ย้ายปุ่ม Generate มาไว้ตรงนี้ (ถ้ายังไม่มีเสียง)
-                    if (!item.hasAudio) ...[
-                      SizedBox(width: 8.w),
-                      InkWell(
-                        onTap: onGenerateAudio,
-                        borderRadius: BorderRadius.circular(4.r),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8.w, vertical: 2.h),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFF01BFFB)),
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Text(
-                            "Generate",
-                            style: GoogleFonts.prompt(
-                                fontSize: 10.sp,
-                                color: const Color(0xFF01BFFB)),
+                      ),
+                      // [1] ปุ่ม Generate
+                      if (!item.hasAudio) ...[
+                        SizedBox(width: 8.w),
+                        InkWell(
+                          onTap: onGenerateAudio,
+                          borderRadius: BorderRadius.circular(4.r),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: const Color(0xFF01BFFB)),
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: Text(
+                              "Generate",
+                              style: GoogleFonts.prompt(
+                                  fontSize: 10.sp,
+                                  color: const Color(0xFF01BFFB)),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-              const Spacer(),
-              // [2] ปุ่ม Download โชว์ตลอด แต่เปลี่ยนสีถ้าไม่มีไฟล์
+              
+              // ลบ Spacer() ออก เพราะเราใช้ Expanded ที่ Widget ด้านซ้ายแล้ว
+              // แต่เพิ่มระยะห่างนิดหน่อยเพื่อความสวยงาม
+              SizedBox(width: 8.w),
+
+              // [2] ปุ่ม Download
               InkWell(
                 onTap: item.hasAudio ? onDownload : null,
                 child: Icon(
@@ -202,7 +215,7 @@ class MarAdsHistoryCard extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           const Divider(
-              color: Color(0xFFF5F5F5), thickness: 2), // เพิ่มเส้นคั่นสีเทาจางๆ
+              color: Color(0xFFF5F5F5), thickness: 2),
           SizedBox(height: 2.h),
 
           // Title
@@ -221,8 +234,7 @@ class MarAdsHistoryCard extends StatelessWidget {
             item.content,
             GoogleFonts.sarabun(
               fontSize: 14.sp,
-              color: MarAdsUIStyle
-                  .textBody, // หรือ MarAdsUIStyle.textBody ถ้าเพิ่มแล้ว
+              color: MarAdsUIStyle.textBody,
               height: 1.5,
             ),
             maxLines: 3,
@@ -279,12 +291,11 @@ class MarAdsHistoryCard extends StatelessWidget {
                     shaderCallback: (Rect bounds) =>
                         gradient.createShader(bounds),
                     child: Icon(
-                      // ใช้แบบ Outlined ตามดีไซน์ (วงกลมโปร่ง)
                       isPlaying
                           ? Icons.pause_circle_outlined
                           : Icons.play_circle_outlined,
                       color: Colors.white,
-                      size: 30.sp, // เพิ่มขนาดเล็กน้อยให้กดง่าย
+                      size: 30.sp,
                     ),
                   )
                 : Icon(
@@ -305,7 +316,6 @@ class MarAdsHistoryCard extends StatelessWidget {
                 thumbShape: RingSliderThumbShape(
                     gradient: gradient, radius: 8.r, ringThickness: 2.5),
                 overlayShape: RoundSliderOverlayShape(overlayRadius: 16.r),
-                // สีพื้นฐาน (เผื่อ Shape ไม่ทำงาน)
                 activeTrackColor: Colors.transparent,
                 inactiveTrackColor: inactiveColor.withOpacity(0.3),
               ),
