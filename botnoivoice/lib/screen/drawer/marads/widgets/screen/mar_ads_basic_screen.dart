@@ -4,6 +4,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_p
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../ui/basic_mar_ads_text_field.dart';
@@ -91,10 +92,18 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     // [เพิ่ม] 1. ดึงข้อมูล Point และคำนวณจำนวนครั้ง
     final userToken = ref.watch(currentUserTokenStateProvider);
     final int currentPoints =
         int.tryParse(userToken.remainingCredits.toString()) ?? 0;
+    
     // [เพิ่ม] คำนวณราคาตามความยาวที่เลือก (~15, ~30, ~60 วิ)
     int costPerGen = 50; // เริ่มต้นที่ 50 (สำหรับ 15 วิ)
     if (_selectedContentLength.contains('30')) {
@@ -106,63 +115,68 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     // ถ้า cost เป็น 0 ให้โชว์เลขเยอะๆ หรือสัญลักษณ์ infinity, ถ้าไม่ 0 ก็เอา point / cost
     final int canCreateTimes =
         costPerGen == 0 ? 999 : (currentPoints / costPerGen).floor();
+        
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFFFFFFF),
       drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  MarAdsModeSelector(
-                    selectedMode: _selectedMode,
-                    onTap: _handleModeSelectorTap,
-                  ),
-                  MarAdsTextField(
-                    label: 'marads_basic.label_product'.tr(),
-                    placeholder: 'marads_basic.placeholder_product'.tr(),
-                    controller: _productController,
-                    isRequired: true,
-                  ),
-                  MarAdsTextField(
-                    label: 'marads_basic.label_brand'.tr(),
-                    placeholder: 'marads_basic.placeholder_brand'.tr(),
-                    controller: _brandController,
-                  ),
-                  MarAdsTextField(
-                    label: 'marads_basic.label_price'.tr(),
-                    placeholder: 'marads_basic.placeholder_price'.tr(),
-                    controller: _priceController,
-                  ),
-                  MarAdsDropdown(
-                    label: 'marads_basic.label_style'.tr(),
-                    value: _getLocalizedStyleDisplay(
-                        context, _selectedContentStyle),
-                    onTap: _handleContentStyleTap,
-                  ),
-                  MarAdsDropdown(
-                    label: 'marads_basic.label_length'.tr(),
-                    value: _getLocalizedLengthDisplay(
-                        context, _selectedContentLength),
-                    showInfoIcon: true,
-                    onTap: _handleContentLengthTap,
-                  ),
-                  _buildAdditionalInfoLabel(), // กล่องข้อมูลเสริมพิมพ์ได้
-                  SizedBox(height: 150.h),
-                ],
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    MarAdsModeSelector(
+                      selectedMode: _selectedMode,
+                      onTap: _handleModeSelectorTap,
+                    ),
+                    MarAdsTextField(
+                      label: 'marads_basic.label_product'.tr(),
+                      placeholder: 'marads_basic.placeholder_product'.tr(),
+                      controller: _productController,
+                      isRequired: true,
+                    ),
+                    MarAdsTextField(
+                      label: 'marads_basic.label_brand'.tr(),
+                      placeholder: 'marads_basic.placeholder_brand'.tr(),
+                      controller: _brandController,
+                    ),
+                    MarAdsTextField(
+                      label: 'marads_basic.label_price'.tr(),
+                      placeholder: 'marads_basic.placeholder_price'.tr(),
+                      controller: _priceController,
+                    ),
+                    MarAdsDropdown(
+                      label: 'marads_basic.label_style'.tr(),
+                      value: _getLocalizedStyleDisplay(
+                          context, _selectedContentStyle),
+                      onTap: _handleContentStyleTap,
+                    ),
+                    MarAdsDropdown(
+                      label: 'marads_basic.label_length'.tr(),
+                      value: _getLocalizedLengthDisplay(
+                          context, _selectedContentLength),
+                      showInfoIcon: true,
+                      onTap: _handleContentLengthTap,
+                    ),
+                    _buildAdditionalInfoLabel(), // กล่องข้อมูลเสริมพิมพ์ได้
+                    SizedBox(height: 150.h),
+                  ],
+                ),
               ),
             ),
-          ),
-          MarAdsCreateButton(
-            remainingCount: canCreateTimes.toString(),
-            isFormValid: _productController.text.isNotEmpty,
-            isLoading: _isLoading,
-            onPressed: _handleCreateMessage,
-          ),
-        ],
+            MarAdsCreateButton(
+              remainingCount: canCreateTimes.toString(),
+              isFormValid: _productController.text.isNotEmpty,
+              isLoading: _isLoading,
+              onPressed: _handleCreateMessage,
+            ),
+          ],
+        ),
       ),
     );
   }

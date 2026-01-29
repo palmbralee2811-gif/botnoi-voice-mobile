@@ -10,6 +10,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_p
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -224,6 +225,13 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     final userToken = ref.watch(currentUserTokenStateProvider);
     final int currentPoints =
         int.tryParse(userToken.remainingCredits.toString()) ?? 0;
@@ -243,95 +251,100 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
       backgroundColor: const Color(0xFFFFFFFF),
       drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  MarAdsModeSelector(
-                    selectedMode: _selectedMode,
-                    onTap: _handleModeSelectorTap,
-                  ),
-                  SizedBox(height: 5.h),
-                  AdvancedBasicInfoSection(
-                    isExpanded: _isBasicInfoExpanded,
-                    onToggle: () => setState(
-                        () => _isBasicInfoExpanded = !_isBasicInfoExpanded),
-                    productController: _productController,
-                    brandController: _brandController,
-                    priceController: _priceController,
-                    // ส่ง Function สร้างปุ่ม Tags เดิมเข้าไปแสดงผล
-                    productPropertiesButton: _buildProductPropertiesButton(),
-                  ),
-                  SizedBox(height: 16.h),
-                  AdvancedSalesStyleSection(
-                    isExpanded: _isSalesStyleExpanded,
-                    onToggle: () => setState(
-                        () => _isSalesStyleExpanded = !_isSalesStyleExpanded),
-                    // selectedSalesCharacter: _selectedSalesCharacter,
-                    onTapSalesCharacter: _handleSalesCharacterTap,
-                    // selectedContentStyle: _selectedContentStyle,
-                    onTapContentStyle: _handleContentStyleTap,
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    MarAdsModeSelector(
+                      selectedMode: _selectedMode,
+                      onTap: _handleModeSelectorTap,
+                    ),
+                    SizedBox(height: 5.h),
+                    AdvancedBasicInfoSection(
+                      isExpanded: _isBasicInfoExpanded,
+                      onToggle: () => setState(
+                          () => _isBasicInfoExpanded = !_isBasicInfoExpanded),
+                      productController: _productController,
+                      brandController: _brandController,
+                      priceController: _priceController,
+                      // ส่ง Function สร้างปุ่ม Tags เดิมเข้าไปแสดงผล
+                      productPropertiesButton: _buildProductPropertiesButton(),
+                    ),
+                    SizedBox(height: 16.h),
+                    AdvancedSalesStyleSection(
+                      isExpanded: _isSalesStyleExpanded,
+                      onToggle: () => setState(
+                          () => _isSalesStyleExpanded = !_isSalesStyleExpanded),
+                      // selectedSalesCharacter: _selectedSalesCharacter,
+                      onTapSalesCharacter: _handleSalesCharacterTap,
+                      // selectedContentStyle: _selectedContentStyle,
+                      onTapContentStyle: _handleContentStyleTap,
 
-                    selectedSalesCharacter:
-                        _getLocalizedCharacterDisplay(_selectedSalesCharacter),
-                    selectedContentStyle:
-                        _getLocalizedStyleDisplay(_selectedContentStyle),
-                  ),
-                  SizedBox(height: 16.h),
-                  AdvancedPromotionSection(
-                    isExpanded: _isPromotionInfoExpanded,
-                    onToggle: () => setState(() =>
-                        _isPromotionInfoExpanded = !_isPromotionInfoExpanded),
-                    promotionController: _promotionController,
-                    targetCustomersController: _targetCustomersController,
-                    sellingPointController: _sellingPointController,
-                    whyBuyController: _whyBuyController,
-                    onRandomSellingPoint: () {
-                      _randomizeText(
-                        controller: _sellingPointController,
-                        thData: MarAdsMockData
-                            .thAdvantage, // จุดขายที่ดีกว่าคู่แข่ง
-                        enData: MarAdsMockData.enAdvantage,
-                      );
-                    },
-                    onRandomWhyBuy: () {
-                      _randomizeText(
-                        controller: _whyBuyController,
-                        thData: MarAdsMockData.thReason,
-                        enData: MarAdsMockData.enReason,
-                      );
-                    },
-                  ),
-                  SizedBox(height: 16.h),
-                  MarAdsDropdown(
-                    // ใช้ Widget กลาง
-                    label: 'marads_adv.label_length'.tr(),
-                    value: _getLocalizedLengthDisplay(_selectedContentLength),
-                    showInfoIcon: true,
-                    onTap: _handleContentLengthTap,
-                  ),
-                  MarAdsTextField(
-                    label: 'marads_adv.label_extra'.tr(),
-                    placeholder: 'marads_adv.placeholder_extra'.tr(),
-                    controller: _additionalInfoController,
-                    height: 100.h,
-                    maxLines: null, // Enable Multi-line
-                    textInputAction: TextInputAction.done, // Enable "Done" button
-                  ),
-                  SizedBox(height: 150.h),
-                ],
+                      selectedSalesCharacter: _getLocalizedCharacterDisplay(
+                          _selectedSalesCharacter),
+                      selectedContentStyle:
+                          _getLocalizedStyleDisplay(_selectedContentStyle),
+                    ),
+                    SizedBox(height: 16.h),
+                    AdvancedPromotionSection(
+                      isExpanded: _isPromotionInfoExpanded,
+                      onToggle: () => setState(() =>
+                          _isPromotionInfoExpanded = !_isPromotionInfoExpanded),
+                      promotionController: _promotionController,
+                      targetCustomersController: _targetCustomersController,
+                      sellingPointController: _sellingPointController,
+                      whyBuyController: _whyBuyController,
+                      onRandomSellingPoint: () {
+                        _randomizeText(
+                          controller: _sellingPointController,
+                          thData: MarAdsMockData
+                              .thAdvantage, // จุดขายที่ดีกว่าคู่แข่ง
+                          enData: MarAdsMockData.enAdvantage,
+                        );
+                      },
+                      onRandomWhyBuy: () {
+                        _randomizeText(
+                          controller: _whyBuyController,
+                          thData: MarAdsMockData.thReason,
+                          enData: MarAdsMockData.enReason,
+                        );
+                      },
+                    ),
+                    SizedBox(height: 16.h),
+                    MarAdsDropdown(
+                      // ใช้ Widget กลาง
+                      label: 'marads_adv.label_length'.tr(),
+                      value: _getLocalizedLengthDisplay(_selectedContentLength),
+                      showInfoIcon: true,
+                      onTap: _handleContentLengthTap,
+                    ),
+                    MarAdsTextField(
+                      label: 'marads_adv.label_extra'.tr(),
+                      placeholder: 'marads_adv.placeholder_extra'.tr(),
+                      controller: _additionalInfoController,
+                      height: 100.h,
+                      maxLines: null, // Enable Multi-line
+                      textInputAction:
+                          TextInputAction.done, // Enable "Done" button
+                    ),
+                    SizedBox(height: 150.h),
+                  ],
+                ),
               ),
             ),
-          ),
-          MarAdsCreateButton(
-            remainingCount: canCreateTimes.toString(),
-            isFormValid: _productController.text.isNotEmpty,
-            isLoading: _isLoading,
-            onPressed: _handleCreateMessage,
-          ),
-        ],
+            MarAdsCreateButton(
+              remainingCount: canCreateTimes.toString(),
+              isFormValid: _productController.text.isNotEmpty,
+              isLoading: _isLoading,
+              onPressed: _handleCreateMessage,
+            ),
+          ],
+        ),
       ),
     );
   }

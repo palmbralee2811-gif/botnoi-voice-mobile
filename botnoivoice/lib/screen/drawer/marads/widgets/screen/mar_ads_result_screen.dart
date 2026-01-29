@@ -18,6 +18,7 @@ import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -131,37 +132,48 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     return Scaffold(
       key: _scaffoldKey, // ผูก Key กับ Scaffold
       backgroundColor: const Color(0xFFF7F8FA),
       drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          _buildModeSelectorRow(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: MarAdsResultTextBox(
-                  controller: _textController,
-                  mode: _selectedMode,
-                  onClear: () {
-                    _textController.text = widget.generatedText ?? '';
-                    setState(() {});
-                  },
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            _buildModeSelectorRow(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.w),
+                  child: MarAdsResultTextBox(
+                    controller: _textController,
+                    mode: _selectedMode,
+                    onClear: () {
+                      _textController.text = widget.generatedText ?? '';
+                      setState(() {});
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          MarAdsResultActionButtons(
-            onCreateVoice: _handleCreateVoice,
-            onMakePersuasive: _handleMakeMorePersuasive,
-            isPersuasiveLoading: _isPersuasiveLoading, // ส่งสถานะโหลดไปที่ปุ่ม
-            isCreateEnabled: _textController.text.length <
-                1000, // ต้องน้อยกว่า 1000 (999 ได้)
-          ),
-        ],
+            MarAdsResultActionButtons(
+              onCreateVoice: _handleCreateVoice,
+              onMakePersuasive: _handleMakeMorePersuasive,
+              isPersuasiveLoading: _isPersuasiveLoading, // ส่งสถานะโหลดไปที่ปุ่ม
+              isCreateEnabled: _textController.text.length <
+                  1000, // ต้องน้อยกว่า 1000 (999 ได้)
+            ),
+          ],
+        ),
       ),
     );
   }
