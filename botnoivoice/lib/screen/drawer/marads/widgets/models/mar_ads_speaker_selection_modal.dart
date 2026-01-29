@@ -9,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -254,6 +255,13 @@ class _MarAdsSpeakerSelectionModalState
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     final filteredSpeakers = _getFilteredSpeakers();
 
     return Container(
@@ -264,174 +272,179 @@ class _MarAdsSpeakerSelectionModalState
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header: ปุ่มย้อนกลับ และ ชื่อหน้า
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    "เปลี่ยนเสียง",
-                    style: GoogleFonts.prompt(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header: ปุ่มย้อนกลับ และ ชื่อหน้า
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+                  onPressed: () {
+                    context.pop();
+                  },
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      "เปลี่ยนเสียง",
+                      style: GoogleFonts.prompt(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 48.w),
-            ],
-          ),
+                SizedBox(width: 48.w),
+              ],
+            ),
 
-          SizedBox(height: 12.h),
+            SizedBox(height: 12.h),
 
-          // Search Bar และ Filter Icons
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    style: GoogleFonts.prompt(fontSize: 14.sp),
-                    decoration: InputDecoration(
-                      hintText: 'ค้นหา',
-                      hintStyle: GoogleFonts.prompt(color: Colors.grey),
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 8.h),
+            // Search Bar และ Filter Icons
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      style: GoogleFonts.prompt(fontSize: 14.sp),
+                      decoration: InputDecoration(
+                        hintText: 'ค้นหา',
+                        hintStyle: GoogleFonts.prompt(color: Colors.grey),
+                        prefixIcon:
+                            const Icon(Icons.search, color: Colors.grey),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 8.h),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 10.w),
-              // ปุ่ม Filter (Mockup: ในอนาคตอาจเปิด Modal เลือกภาษา/เพศ)
-              GestureDetector(
-                onTap: _showFilterModal, // เรียกฟังก์ชันเปิด Modal
-                child: Container(
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    // เปลี่ยนสีไอคอนถ้ามีการ Filter อยู่ (ยกเว้นภาษาที่เป็น Default)
-                    color: (_selectedGender.isNotEmpty ||
-                            _selectedStyles.isNotEmpty ||
-                            _selectedCategories.isNotEmpty)
-                        ? Colors.black.withOpacity(0.1)
-                        : Colors.transparent,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.tune, color: Colors.black, size: 24.sp),
-                ),
-              ),
-              SizedBox(width: 10.w),
-              // ปุ่ม Heart Filter (กรองเฉพาะรายการโปรด)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _showOnlyFavorites = !_showOnlyFavorites;
-                  });
-                },
-                child: Icon(
-                  _showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
-                  color: _showOnlyFavorites ? Colors.red : Colors.grey,
-                  size: 24.sp,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-
-          Expanded(
-            child: _isLoadingFav
-                ? const Center(child: CircularProgressIndicator())
-                : GridView.builder(
-                    itemCount: filteredSpeakers.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.7,
-                      crossAxisSpacing: 8.w,
-                      mainAxisSpacing: 11.h,
+                SizedBox(width: 10.w),
+                // ปุ่ม Filter (Mockup: ในอนาคตอาจเปิด Modal เลือกภาษา/เพศ)
+                GestureDetector(
+                  onTap: _showFilterModal, // เรียกฟังก์ชันเปิด Modal
+                  child: Container(
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      // เปลี่ยนสีไอคอนถ้ามีการ Filter อยู่ (ยกเว้นภาษาที่เป็น Default)
+                      color: (_selectedGender.isNotEmpty ||
+                              _selectedStyles.isNotEmpty ||
+                              _selectedCategories.isNotEmpty)
+                          ? Colors.black.withOpacity(0.1)
+                          : Colors.transparent,
+                      shape: BoxShape.circle,
                     ),
-                    itemBuilder: (context, index) {
-                      final speaker = filteredSpeakers[index];
-
-                      // เช็คกับ _tempSelectedSpeaker (ตัวที่จิ้มล่าสุด)
-                      final isSelected = speaker.speakerId.trim() ==
-                          _tempSelectedSpeaker?.speakerId.trim();
-                      final isFavorite =
-                          _favoriteIds.contains(speaker.speakerId);
-
-                      return SpeakerGridItem(
-                        key: ValueKey(speaker.speakerId),
-                        speakerItem: speaker,
-                        index: index,
-                        isSelected: isSelected,
-                        isFavorite: isFavorite,
-                        onSpeakerTap: (idx, item) {
-                          _logger.d(
-                              "Tapped: ${item.thaiName} (ID: ${item.speakerId})");
-                          // เช็คว่าถ้ากดตัวเดิม ให้ Unselect (ยกเลิกการเลือก)
-                          if (_tempSelectedSpeaker?.speakerId.trim() ==
-                              item.speakerId.trim()) {
-                            _audioPlayer.stop(); // หยุดเล่นเสียง
-                            setState(() {
-                              _tempSelectedSpeaker = null;
-                            });
-                          } else {
-                            _playAudio(item.audio);
-                            setState(() {
-                              _tempSelectedSpeaker = item;
-                            });
-                          }
-                        },
-                        onFavoriteToggle: (id) => _toggleFavorite(id),
-                      );
-                    },
+                    child: Icon(Icons.tune, color: Colors.black, size: 24.sp),
                   ),
-          ),
-
-          // ปุ่ม "ตกลง" ด้านล่าง
-          SizedBox(height: 10.h),
-          SizedBox(
-            width: double.infinity,
-            height: 50.h,
-            child: ElevatedButton(
-              onPressed: _tempSelectedSpeaker != null
-                  ? () {
-                      widget.onSelect(_tempSelectedSpeaker!);
-                      context.pop();
-                    }
-                  : null, // ปิดปุ่มถ้ายังไม่เลือก
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF262626),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.r),
                 ),
-              ),
-              child: Text(
-                "ตกลง",
-                style: GoogleFonts.prompt(
-                  color: Colors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
+                SizedBox(width: 10.w),
+                // ปุ่ม Heart Filter (กรองเฉพาะรายการโปรด)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showOnlyFavorites = !_showOnlyFavorites;
+                    });
+                  },
+                  child: Icon(
+                    _showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
+                    color: _showOnlyFavorites ? Colors.red : Colors.grey,
+                    size: 24.sp,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+
+            Expanded(
+              child: _isLoadingFav
+                  ? const Center(child: CircularProgressIndicator())
+                  : GridView.builder(
+                      itemCount: filteredSpeakers.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 0.7,
+                        crossAxisSpacing: 8.w,
+                        mainAxisSpacing: 11.h,
+                      ),
+                      itemBuilder: (context, index) {
+                        final speaker = filteredSpeakers[index];
+
+                        // เช็คกับ _tempSelectedSpeaker (ตัวที่จิ้มล่าสุด)
+                        final isSelected = speaker.speakerId.trim() ==
+                            _tempSelectedSpeaker?.speakerId.trim();
+                        final isFavorite =
+                            _favoriteIds.contains(speaker.speakerId);
+
+                        return SpeakerGridItem(
+                          key: ValueKey(speaker.speakerId),
+                          speakerItem: speaker,
+                          index: index,
+                          isSelected: isSelected,
+                          isFavorite: isFavorite,
+                          onSpeakerTap: (idx, item) {
+                            _logger.d(
+                                "Tapped: ${item.thaiName} (ID: ${item.speakerId})");
+                            // เช็คว่าถ้ากดตัวเดิม ให้ Unselect (ยกเลิกการเลือก)
+                            if (_tempSelectedSpeaker?.speakerId.trim() ==
+                                item.speakerId.trim()) {
+                              _audioPlayer.stop(); // หยุดเล่นเสียง
+                              setState(() {
+                                _tempSelectedSpeaker = null;
+                              });
+                            } else {
+                              _playAudio(item.audio);
+                              setState(() {
+                                _tempSelectedSpeaker = item;
+                              });
+                            }
+                          },
+                          onFavoriteToggle: (id) => _toggleFavorite(id),
+                        );
+                      },
+                    ),
+            ),
+
+            // ปุ่ม "ตกลง" ด้านล่าง
+            SizedBox(height: 10.h),
+            SizedBox(
+              width: double.infinity,
+              height: 50.h,
+              child: ElevatedButton(
+                onPressed: _tempSelectedSpeaker != null
+                    ? () {
+                        widget.onSelect(_tempSelectedSpeaker!);
+                        context.pop();
+                      }
+                    : null, // ปิดปุ่มถ้ายังไม่เลือก
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF262626),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                ),
+                child: Text(
+                  "ตกลง",
+                  style: GoogleFonts.prompt(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: 10.h), // Safe area
-        ],
+            SizedBox(height: 10.h), // Safe area
+          ],
+        ),
       ),
     );
   }

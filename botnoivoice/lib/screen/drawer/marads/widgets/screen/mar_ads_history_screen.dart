@@ -821,171 +821,182 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       drawer: const DrawerAppbar(),
       //ถ้าเป็น Modal ไม่ต้องโชว์ AppBar
       appBar: widget.isModal ? null : _buildAppBar(),
-      body: Column(
-        children: [
-          // ถ้าเป็น Modal ไม่ต้องโชว์ Mode Selector
-          if (!widget.isModal)
-            MarAdsModeSelector(
-              selectedMode: _selectedMode,
-              onTap: _handleModeSelectorTap,
-            ),
-          MarAdsSearchBar(
-            controller: _searchController,
-            onSortTap: () {
-              setState(() {
-                _isNewestFirst = !_isNewestFirst;
-                // กลับด้าน List ทั้งตัวหลักและตัวกรอง
-                _historyItems = _historyItems.reversed.toList();
-                _filteredItems = _filteredItems.reversed.toList();
-                // รีเซ็ตหน้า Pagination กลับไปหน้า 1
-                _currentPage = 1;
-              });
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            // ถ้าเป็น Modal ไม่ต้องโชว์ Mode Selector
+            if (!widget.isModal)
+              MarAdsModeSelector(
+                selectedMode: _selectedMode,
+                onTap: _handleModeSelectorTap,
+              ),
+            MarAdsSearchBar(
+              controller: _searchController,
+              onSortTap: () {
+                setState(() {
+                  _isNewestFirst = !_isNewestFirst;
+                  // กลับด้าน List ทั้งตัวหลักและตัวกรอง
+                  _historyItems = _historyItems.reversed.toList();
+                  _filteredItems = _filteredItems.reversed.toList();
+                  // รีเซ็ตหน้า Pagination กลับไปหน้า 1
+                  _currentPage = 1;
+                });
 
-              // (Optional) แสดง SnackBar แจ้งเตือน
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  padding: EdgeInsets
-                      .zero, // ลบ padding เดิมเพื่อให้ Container ชิดขอบ
-                  duration:
-                      const Duration(seconds: 2), // เพิ่มเวลาเล็กน้อยให้อ่านทัน
-                  behavior: SnackBarBehavior.floating,
-                  margin:
-                      EdgeInsets.only(bottom: 50.h, left: 24.w, right: 24.w),
+                // (Optional) แสดง SnackBar แจ้งเตือน
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    padding: EdgeInsets
+                        .zero, // ลบ padding เดิมเพื่อให้ Container ชิดขอบ
+                    duration:
+                        const Duration(seconds: 2), // เพิ่มเวลาเล็กน้อยให้อ่านทัน
+                    behavior: SnackBarBehavior.floating,
+                    margin:
+                        EdgeInsets.only(bottom: 50.h, left: 24.w, right: 24.w),
 
-                  // [2] สร้าง Container ที่มี Gradient Background
-                  content: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                    decoration: BoxDecoration(
-                      gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ธีมไล่สี
-                      borderRadius: BorderRadius.circular(12.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _isNewestFirst
-                              ? Icons.arrow_downward_rounded
-                              : Icons.arrow_upward_rounded,
-                          color: Colors.white,
-                          size: 20.sp,
-                        ),
-                        SizedBox(width: 12.w),
-                        Text(
-                          _isNewestFirst
-                              ? "เรียงตาม ใหม่ -> เก่า"
-                              : "เรียงตาม เก่า -> ใหม่",
-                          style: GoogleFonts.prompt(
-                            fontSize: 14.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                    // [2] สร้าง Container ที่มี Gradient Background
+                    content: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ธีมไล่สี
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _filteredItems.isEmpty
-                    ? RefreshIndicator(
-                        onRefresh: _fetchHistory,
-                        color: const Color(0xFF262626),
-                        child: ListView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: [
-                            SizedBox(height: 200.h),
-                            Center(
-                                child: Text("ไม่พบประวัติ",
-                                    style: GoogleFonts.prompt())),
-                          ],
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          Expanded(
-                            child: RefreshIndicator(
-                              onRefresh: _fetchHistory,
-                              color: const Color(0xFF262626),
-                              child: ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w, vertical: 10.h),
-                                itemCount: _paginatedItems.length,
-                                itemBuilder: (context, index) {
-                                  final item = _paginatedItems[index];
-                                  final realIndex = _historyItems.indexOf(item);
-
-                                  //  เรียกใช้ Function หา Speaker
-                                  final SpeakerEntity finalSpeaker =
-                                      _getSpeakerForItem(item);
-
-                                  final bool isCurrentItemPlaying =
-                                      _playingIndex == realIndex;
-
-                                  // เรียกใช้ Widget ที่แยกออกมาแล้ว
-                                  return MarAdsHistoryCard(
-                                    item: item,
-                                    speaker: finalSpeaker,
-                                    isPlaying:
-                                        isCurrentItemPlaying && _isPlaying,
-                                    currentPosition: isCurrentItemPlaying
-                                        ? _position
-                                        : Duration.zero,
-                                    totalDuration: isCurrentItemPlaying
-                                        ? _duration
-                                        : Duration.zero,
-                                    searchQuery: _searchController.text,
-                                    onSelectSpeaker: () =>
-                                        _onSelectSpeakerTapped(
-                                            item, realIndex, finalSpeaker),
-                                    onPlayPause: () =>
-                                        _playAudio(item.audioUrl, realIndex),
-                                    onSeek: (value) async {
-                                      if (isCurrentItemPlaying) {
-                                        await _audioPlayer.seek(Duration(
-                                            milliseconds: value.toInt()));
-                                      }
-                                    },
-                                    onGenerateAudio: () => _handleGenerateAudio(
-                                        realIndex, item.content, finalSpeaker),
-                                    onDownload: () => _showDownloadDialog(
-                                        item.audioUrl, item.content),
-                                    onOptions: () => _showOptionsModal(item),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          if (_filteredItems.isNotEmpty)
-                            MarAdsPagination(
-                              currentPage: _currentPage,
-                              totalPages: _totalPages,
-                              onPageChanged: _changePage,
-                            ),
                         ],
                       ),
-          ),
-        ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _isNewestFirst
+                                ? Icons.arrow_downward_rounded
+                                : Icons.arrow_upward_rounded,
+                            color: Colors.white,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            _isNewestFirst
+                                ? "เรียงตาม ใหม่ -> เก่า"
+                                : "เรียงตาม เก่า -> ใหม่",
+                            style: GoogleFonts.prompt(
+                              fontSize: 14.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _filteredItems.isEmpty
+                      ? RefreshIndicator(
+                          onRefresh: _fetchHistory,
+                          color: const Color(0xFF262626),
+                          child: ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(height: 200.h),
+                              Center(
+                                  child: Text("ไม่พบประวัติ",
+                                      style: GoogleFonts.prompt())),
+                            ],
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: RefreshIndicator(
+                                onRefresh: _fetchHistory,
+                                color: const Color(0xFF262626),
+                                child: ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 10.h),
+                                  itemCount: _paginatedItems.length,
+                                  itemBuilder: (context, index) {
+                                    final item = _paginatedItems[index];
+                                    final realIndex = _historyItems.indexOf(item);
+
+                                    //  เรียกใช้ Function หา Speaker
+                                    final SpeakerEntity finalSpeaker =
+                                        _getSpeakerForItem(item);
+
+                                    final bool isCurrentItemPlaying =
+                                        _playingIndex == realIndex;
+
+                                    // เรียกใช้ Widget ที่แยกออกมาแล้ว
+                                    return MarAdsHistoryCard(
+                                      item: item,
+                                      speaker: finalSpeaker,
+                                      isPlaying:
+                                          isCurrentItemPlaying && _isPlaying,
+                                      currentPosition: isCurrentItemPlaying
+                                          ? _position
+                                          : Duration.zero,
+                                      totalDuration: isCurrentItemPlaying
+                                          ? _duration
+                                          : Duration.zero,
+                                      searchQuery: _searchController.text,
+                                      onSelectSpeaker: () =>
+                                          _onSelectSpeakerTapped(
+                                              item, realIndex, finalSpeaker),
+                                      onPlayPause: () =>
+                                          _playAudio(item.audioUrl, realIndex),
+                                      onSeek: (value) async {
+                                        if (isCurrentItemPlaying) {
+                                          await _audioPlayer.seek(Duration(
+                                              milliseconds: value.toInt()));
+                                        }
+                                      },
+                                      onGenerateAudio: () => _handleGenerateAudio(
+                                          realIndex, item.content, finalSpeaker),
+                                      onDownload: () => _showDownloadDialog(
+                                          item.audioUrl, item.content),
+                                      onOptions: () => _showOptionsModal(item),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            if (_filteredItems.isNotEmpty)
+                              MarAdsPagination(
+                                currentPage: _currentPage,
+                                totalPages: _totalPages,
+                                onPageChanged: _changePage,
+                              ),
+                          ],
+                        ),
+            ),
+          ],
+        ),
       ),
     );
   }
