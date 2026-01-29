@@ -166,14 +166,6 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     });
   }
 
-  //  รวม Logic เช็ค V2 ไว้ที่เดียว
-  bool _isSpeakerV2(SpeakerEntity s) {
-    return s.v2 || s.engName.contains('V2') || s.speakerName.contains('V2');
-  }
-
-  //  สร้าง Key สำหรับ Map ให้เป็นมาตรฐานเดียวกัน
-  String _generateMapKey(String id, bool isV2) => "${id.trim()}_$isV2";
-
   Future<void> _fetchHistory() async {
     try {
       final userState = ref.read(currentUserTokenStateProvider);

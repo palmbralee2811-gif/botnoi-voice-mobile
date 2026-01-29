@@ -1,6 +1,5 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_filter_modal_sheet.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
-import 'package:botnoivoice/screen/main/speaker/model/language_filter.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/screen/main/speaker/widget/speaker_grid_item.dart';
 import 'package:botnoivoice/service/favorite/favorite_service.dart';
@@ -46,7 +45,6 @@ class _MarAdsSpeakerSelectionModalState
   String _selectedLangName = 'ไทย';
   String _selectedLangImage = 'assets/images/national_flag/thai.png';
   String _selectedGender = ''; // ว่าง = ทั้งหมด
-  String _selectedGenderName = 'ช/ญ'; // สำหรับแสดงผล
   Set<String> _selectedStyles = {}; // เก็บ Style ที่เลือก
   Set<String> _selectedCategories = {};
 
@@ -197,7 +195,6 @@ class _MarAdsSpeakerSelectionModalState
         _selectedLangName = result['langName'];
         _selectedLangImage = result['langImage'];
         _selectedGender = result['gender'];
-        _selectedGenderName = result['genderName'];
         _selectedCategories = result['categories'];
         _selectedStyles = result['styles'];
       });

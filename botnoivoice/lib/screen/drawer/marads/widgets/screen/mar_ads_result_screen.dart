@@ -401,8 +401,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
         // ใช้ productName เป็น Title
         String promptTitle =
-            (effectiveProductName != null && effectiveProductName!.isNotEmpty)
-                ? effectiveProductName!
+            (effectiveProductName != null && effectiveProductName.isNotEmpty)
+                ? effectiveProductName
                 : (_textController.text.length > 20
                     ? "${_textController.text.substring(0, 20)}..."
                     : _textController.text);

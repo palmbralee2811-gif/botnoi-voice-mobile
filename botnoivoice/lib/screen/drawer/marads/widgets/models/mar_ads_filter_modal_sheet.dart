@@ -141,30 +141,30 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
                         ),
                         ...languageFilter
                             // ใช้ Transform.scale ครอบเพื่อปรับขนาด List ให้เล็กลง (0.95 = 95%)
-                            .map((lang) => Transform.scale(
-                                  scale: 0.95,
-                                  child: buildLanguageFilterWidget(
-                                    thaiName: lang['thaiName'] as String,
-                                    englishName: lang['englishName'] as String,
-                                    indonesianName:
-                                        lang['indonesianName'] as String,
-                                    imagePath: lang['image'] as String,
-                                    lang: lang['code'] as String,
-                                    context: context,
-                                    setState: setState,
-                                    selectedLanguage: _langName,
-                                    onSelected: (code, name, img) {
-                                      setState(() {
-                                        _langCode = code;
-                                        _langName = name;
-                                        _langImage = img;
-                                        _styles.clear();
-                                        _categories.clear();
-                                      });
-                                    },
-                                  ),
-                                ))
-                            .toList()
+                            .map(
+                          (lang) => Transform.scale(
+                            scale: 0.95,
+                            child: buildLanguageFilterWidget(
+                              thaiName: lang['thaiName'] as String,
+                              englishName: lang['englishName'] as String,
+                              indonesianName: lang['indonesianName'] as String,
+                              imagePath: lang['image'] as String,
+                              lang: lang['code'] as String,
+                              context: context,
+                              setState: setState,
+                              selectedLanguage: _langName,
+                              onSelected: (code, name, img) {
+                                setState(() {
+                                  _langCode = code;
+                                  _langName = name;
+                                  _langImage = img;
+                                  _styles.clear();
+                                  _categories.clear();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

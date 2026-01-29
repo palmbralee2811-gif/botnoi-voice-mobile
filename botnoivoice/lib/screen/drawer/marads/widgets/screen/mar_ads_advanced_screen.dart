@@ -128,24 +128,6 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
     }
   }
 
-  // [เพิ่ม] Helper: แปลงสี
-  String _getLocalizedColorDisplay(String logicValue) {
-    switch (logicValue) {
-      case 'ดำ':
-        return 'marads_adv.color_black'.tr();
-      case 'แดง':
-        return 'marads_adv.color_red'.tr();
-      case 'ขาว':
-        return 'marads_adv.color_white'.tr();
-      case 'ชมพู':
-        return 'marads_adv.color_pink'.tr();
-      case 'น้ำเงิน':
-        return 'marads_adv.color_blue'.tr();
-      default:
-        return logicValue;
-    }
-  }
-
   // [เพิ่ม] Helper: แปลงความยาว
   String _getLocalizedLengthDisplay(String logicValue) {
     if (logicValue.contains('30')) return 'marads_basic.length_30'.tr();

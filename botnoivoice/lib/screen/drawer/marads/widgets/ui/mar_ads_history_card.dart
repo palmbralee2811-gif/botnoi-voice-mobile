@@ -150,7 +150,8 @@ class MarAdsHistoryCard extends StatelessWidget {
                                   child: Text(
                                     speaker.thaiName,
                                     maxLines: 1,
-                                    overflow: TextOverflow.ellipsis, // ตัดคำถ้าชื่อยาวเกิน
+                                    overflow: TextOverflow
+                                        .ellipsis, // ตัดคำถ้าชื่อยาวเกิน
                                     style: GoogleFonts.prompt(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w600,
@@ -175,7 +176,8 @@ class MarAdsHistoryCard extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8.w, vertical: 2.h),
                             decoration: BoxDecoration(
-                              border: Border.all(color: const Color(0xFF01BFFB)),
+                              border:
+                                  Border.all(color: const Color(0xFF01BFFB)),
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(
@@ -191,7 +193,7 @@ class MarAdsHistoryCard extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               // ลบ Spacer() ออก เพราะเราใช้ Expanded ที่ Widget ด้านซ้ายแล้ว
               // แต่เพิ่มระยะห่างนิดหน่อยเพื่อความสวยงาม
               SizedBox(width: 8.w),
@@ -214,8 +216,7 @@ class MarAdsHistoryCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 2.h),
-          const Divider(
-              color: Color(0xFFF5F5F5), thickness: 2),
+          const Divider(color: Color(0xFFF5F5F5), thickness: 2),
           SizedBox(height: 2.h),
 
           // Title
@@ -278,7 +279,7 @@ class MarAdsHistoryCard extends StatelessWidget {
   Widget _buildAudioPlayer(BuildContext context, String durationText,
       {required bool isEnabled}) {
     const List<Color> activeGradient = [Color(0xFF9340FF), Color(0xFF34BDFA)];
-    final Gradient gradient = LinearGradient(colors: activeGradient);
+    const Gradient gradient = LinearGradient(colors: activeGradient);
     final Color inactiveColor = Colors.grey[300]!;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6.h),
@@ -311,10 +312,15 @@ class MarAdsHistoryCard extends StatelessWidget {
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 trackHeight: 4.h,
-                trackShape: GradientSliderTrackShape(
-                    gradient: gradient, darkenInactive: false),
+                trackShape: const GradientSliderTrackShape(
+                  gradient: gradient,
+                  darkenInactive: false,
+                ),
                 thumbShape: RingSliderThumbShape(
-                    gradient: gradient, radius: 8.r, ringThickness: 2.5),
+                  gradient: gradient,
+                  radius: 8.r,
+                  ringThickness: 2.5,
+                ),
                 overlayShape: RoundSliderOverlayShape(overlayRadius: 16.r),
                 activeTrackColor: Colors.transparent,
                 inactiveTrackColor: inactiveColor.withOpacity(0.3),

@@ -237,9 +237,11 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
               SizedBox(height: 12.h),
               const Divider(),
               _buildColorOption('ไม่ระบุ'),
-              ..._colorMap.entries.map((e) {
-                return _buildColorOption(e.key, color: e.value);
-              }).toList(),
+              ..._colorMap.entries.map(
+                (e) {
+                  return _buildColorOption(e.key, color: e.value);
+                },
+              ),
             ],
           ),
         ),
