@@ -336,7 +336,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
         // ปิด Loading ก่อนแสดง Success Dialog
         if (mounted) {
-          Navigator.of(context, rootNavigator: true).pop();
+          // Navigator.of(context, rootNavigator: true).pop();
+
+          //TODO: [Mobile Green]: Test this function
+          context.pop();
         }
 
         if (mounted) {
@@ -623,8 +626,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
   // ฟังก์ชัน Logic การบันทึกข้อมูล
   Future<void> _handleUpdateText(
-      MarAdsHistoryModel item, String newText) async {
-    // แสดง Loading
+    MarAdsHistoryModel item,
+    String newText,
+  ) async {
+    // 1. แสดง Loading Dialog ค้างไว้
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -635,8 +640,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       final speaker = _getSpeakerForItem(item);
       final lang = _extractLanguageCode(speaker);
 
-      // เรียก API Update (ใช้ service เดิม)
-      await _promptService.updatePromptHistory(
+      // 2. สร้าง Future สองตัว: เวลา 3 วินาที และ การเรียก API
+      final minLoadingTime = Future.delayed(const Duration(seconds: 3));
+
+      final apiCall = _promptService.updatePromptHistory(
         context: context,
         promptId: item.id,
         text: newText,
@@ -648,6 +655,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         title: item.title,
         category: 'text',
       );
+
+      // 3. รอให้ "ทั้งคู่" เสร็จสิ้น (ถ้ายิง API ไว ก็จะรอจนครบ 3 วิ, ถ้า API ช้า ก็จะรอจน API เสร็จ)
+      await Future.wait([minLoadingTime, apiCall]);
 
       // อัปเดตข้อมูลใน List (Local State) เพื่อให้ UI เปลี่ยนทันที
       setState(() {
@@ -713,7 +723,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        // Close Loading Dialog
+        // Close Loading Dialog (ปิดเมื่อเกิด Error เช่นกัน)
         context.pop();
 
         // Notify with SnackBar
