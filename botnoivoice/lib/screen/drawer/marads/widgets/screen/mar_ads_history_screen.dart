@@ -541,64 +541,68 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 32.w,
-                height: 4.h,
-                margin: EdgeInsets.only(bottom: 16.h, top: 8.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2.r),
+        return SafeArea(
+          top: false,
+          bottom: true,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 32.w,
+                  height: 4.h,
+                  margin: EdgeInsets.only(bottom: 16.h, top: 8.h),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
-              ),
-              _buildOptionItem(
-                icon: Icons.copy_rounded,
-                label: 'คัดลอก',
-                onTap: () {
-                  // Close Dialog
-                  context.pop();
+                _buildOptionItem(
+                  icon: Icons.copy_rounded,
+                  label: 'คัดลอก',
+                  onTap: () {
+                    // Close Dialog
+                    context.pop();
 
-                  // Copy to Clipboard
-                  Clipboard.setData(ClipboardData(text: item.content));
+                    // Copy to Clipboard
+                    Clipboard.setData(ClipboardData(text: item.content));
 
-                  // Notify with SnackBar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'คัดลอกเรียบร้อย',
-                        style: GoogleFonts.prompt(),
+                    // Notify with SnackBar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'คัดลอกเรียบร้อย',
+                          style: GoogleFonts.prompt(),
+                        ),
+                        duration: const Duration(seconds: 1),
                       ),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                },
-              ),
-              _buildOptionItem(
-                icon: Icons.edit_outlined,
-                label: 'แก้ไข',
-                onTap: () {
-                  // Close Dialog
-                  context.pop();
+                    );
+                  },
+                ),
+                _buildOptionItem(
+                  icon: Icons.edit_outlined,
+                  label: 'แก้ไข',
+                  onTap: () {
+                    // Close Dialog
+                    context.pop();
 
-                  _showEditPromptModal(item);
-                },
-              ),
-              _buildOptionItem(
-                icon: Icons.delete_outline,
-                label: 'ลบ',
-                onTap: () {
-                  // Close Dialog
-                  context.pop();
+                    _showEditPromptModal(item);
+                  },
+                ),
+                _buildOptionItem(
+                  icon: Icons.delete_outline,
+                  label: 'ลบ',
+                  onTap: () {
+                    // Close Dialog
+                    context.pop();
 
-                  _handleDeletePrompt(item);
-                },
-              ),
-              SizedBox(height: 16.h),
-            ],
+                    _handleDeletePrompt(item);
+                  },
+                ),
+                SizedBox(height: 16.h),
+              ],
+            ),
           ),
         );
       },
@@ -808,9 +812,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               isV2FromApi: newSpeaker.v2,
             );
           });
-          
+
           //TODO: AI Chatbot Do Not Delete Any Comment In This File.
-          //TODO: [Mobile Green] Option to Enable Auto Generate Audio After Speaker Change is Saved.          
+          //TODO: [Mobile Green] Option to Enable Auto Generate Audio After Speaker Change is Saved.
           // Future.microtask(() {
           //   _handleGenerateAudio(realIndex, item.content, newSpeaker);
           // });
@@ -864,18 +868,19 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                     elevation: 0,
                     padding: EdgeInsets
                         .zero, // ลบ padding เดิมเพื่อให้ Container ชิดขอบ
-                    duration:
-                        const Duration(seconds: 2), // เพิ่มเวลาเล็กน้อยให้อ่านทัน
+                    duration: const Duration(
+                        seconds: 2), // เพิ่มเวลาเล็กน้อยให้อ่านทัน
                     behavior: SnackBarBehavior.floating,
                     margin:
                         EdgeInsets.only(bottom: 50.h, left: 24.w, right: 24.w),
 
                     // [2] สร้าง Container ที่มี Gradient Background
                     content: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 12.h),
                       decoration: BoxDecoration(
-                        gradient: MarAdsUIStyle.cyanPurpleGradient, // ใช้ธีมไล่สี
+                        gradient:
+                            MarAdsUIStyle.cyanPurpleGradient, // ใช้ธีมไล่สี
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
@@ -937,13 +942,15 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                                 onRefresh: _fetchHistory,
                                 color: const Color(0xFF262626),
                                 child: ListView.builder(
-                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 16.w, vertical: 10.h),
                                   itemCount: _paginatedItems.length,
                                   itemBuilder: (context, index) {
                                     final item = _paginatedItems[index];
-                                    final realIndex = _historyItems.indexOf(item);
+                                    final realIndex =
+                                        _historyItems.indexOf(item);
 
                                     //  เรียกใช้ Function หา Speaker
                                     final SpeakerEntity finalSpeaker =
@@ -976,8 +983,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                                               milliseconds: value.toInt()));
                                         }
                                       },
-                                      onGenerateAudio: () => _handleGenerateAudio(
-                                          realIndex, item.content, finalSpeaker),
+                                      onGenerateAudio: () =>
+                                          _handleGenerateAudio(realIndex,
+                                              item.content, finalSpeaker),
                                       onDownload: () => _showDownloadDialog(
                                           item.audioUrl, item.content),
                                       onOptions: () => _showOptionsModal(item),
