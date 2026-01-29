@@ -94,7 +94,8 @@
     "marads": "MarAds",
     "services": "บริการ",
     "account": "บัญชี",
-    "system": "ระบบ"
+    "system": "ระบบ",
+    "voice": "Voice Studio"
   },
   "account": {
     "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",

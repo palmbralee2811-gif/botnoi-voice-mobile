@@ -94,7 +94,8 @@
     "marads": "MarAds",
     "services": "Services",
     "account": "Account",
-    "system": "System"
+    "system": "System",
+    "voice": "Voice Studio"
   },
   "account": {
     "uid_copy_success": "UID copied successfully",

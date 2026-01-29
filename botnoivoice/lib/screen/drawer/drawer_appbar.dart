@@ -144,10 +144,34 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
               ],
             ),
           ),
-          ListTile(
+                    ListTile(
             contentPadding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
               top: ResponsiveDesignOrientation.isLandscape ? 10.h : 30.h,
+            ),
+            leading: Icon(
+              Icons.voice_chat,
+              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              color: kDark,
+            ),
+            title: Text(
+              'app_drawer.voice'.tr(), // Gensub
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              context.push('/home');
+            },
+          ),
+          SizedBox(height: 10.h),
+
+          ListTile(
+            contentPadding: EdgeInsets.only(
+              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
             ),
             leading: Icon(
               Icons.subtitles_outlined,

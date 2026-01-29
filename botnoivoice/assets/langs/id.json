@@ -94,7 +94,8 @@
     "marads": "MarAds",
     "services": "Layanan",
     "account": "Akun",
-    "system": "Sistem"
+    "system": "Sistem",
+    "voice": "Voice Studio"
   },
   "account": {
     "uid_copy_success": "UID berhasil disalin",
