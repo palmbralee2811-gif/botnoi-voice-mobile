@@ -317,7 +317,8 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                     placeholder: 'marads_adv.placeholder_extra'.tr(),
                     controller: _additionalInfoController,
                     height: 100.h,
-                    maxLines: 1, // maxLines = 5 do have "done" button on iPhone and can't close the keyboard.
+                    maxLines: null, // Enable Multi-line
+                    textInputAction: TextInputAction.done, // Enable "Done" button
                   ),
                   SizedBox(height: 150.h),
                 ],

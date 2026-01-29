@@ -226,8 +226,9 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       label: 'marads_basic.label_extra'.tr(),
       placeholder: 'marads_basic.placeholder_extra'.tr(),
       controller: _additionalInfoController,
-      height: 100.h, // กำหนดความสูง
-      maxLines: 1, // พิมพ์ได้ไม่จำกัดบรรทัด
+      height: 100.h,
+      maxLines: null,
+      textInputAction: TextInputAction.done, // Enable "Done" button
     );
   }
 

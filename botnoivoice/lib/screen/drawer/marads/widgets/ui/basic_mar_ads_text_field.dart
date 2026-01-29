@@ -10,6 +10,7 @@ class MarAdsTextField extends StatefulWidget {
   final double? height;
   final int? maxLines;
   final Widget? suffixIcon;
+  final TextInputAction? textInputAction;
 
   const MarAdsTextField({
     super.key,
@@ -20,6 +21,7 @@ class MarAdsTextField extends StatefulWidget {
     this.height,
     this.maxLines = 1,
     this.suffixIcon,
+    this.textInputAction,
   });
 
   @override
@@ -70,28 +72,43 @@ class _MarAdsTextFieldState extends State<MarAdsTextField> {
               boxShadow: isFocused
                   ? [
                       BoxShadow(
-                        color: const Color(0xFFD6C8DD)
-                            .withOpacity(0.6), // สีเงาม่วงอ่อนๆ
-                        blurRadius: 12, // ความฟุ้งของเงา
-                        offset: const Offset(0, 4), // ทิศทางเงา
+                        color: const Color(0xFFD6C8DD).withOpacity(0.6),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                         spreadRadius: 0,
                       )
                     ]
-                  : [], // ถ้าไม่ Focus ไม่มีเงา
+                  : [],
             ),
             child: TextField(
               controller: widget.controller,
               focusNode: _focusNode,
+              
+              // [สำคัญ] ถ้า maxLines เป็น null (กล่องใหญ่) ให้ใช้ multiline
+              keyboardType: widget.maxLines == null 
+                  ? TextInputType.multiline 
+                  : TextInputType.text,
+                  
+              // [เพิ่ม] รับค่าปุ่ม Done หรือปุ่มอื่นๆ
+              textInputAction: widget.textInputAction, 
+
               maxLines: widget.maxLines,
-              expands: widget.maxLines == null,
+              expands: widget.maxLines == null, // ขยายเต็มพื้นที่ถ้า maxLines เป็น null
               textAlignVertical: widget.maxLines == null
-                  ? TextAlignVertical.top
+                  ? TextAlignVertical.top // พิมพ์ชิดบน
                   : TextAlignVertical.center,
+                  
               style: GoogleFonts.prompt(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
                 color: const Color(0xFF262626),
               ),
+              
+              // [เพิ่ม] ถ้ามีปุ่ม Done ให้กดแล้วปิดคีย์บอร์ด
+               onSubmitted: (_) {
+                _focusNode.unfocus(); // Close the keyboard with the "Done" button
+              },
+              
               decoration: InputDecoration(
                 isDense: true,
                 filled: true,

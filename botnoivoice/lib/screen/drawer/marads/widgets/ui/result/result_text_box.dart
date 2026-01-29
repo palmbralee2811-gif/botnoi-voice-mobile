@@ -1,7 +1,7 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // [1] Riverpod Import
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -58,6 +58,11 @@ class MarAdsResultTextBox extends ConsumerWidget {
                 readOnly: mode == 'Result',
                 textAlignVertical: TextAlignVertical.top,
                 enableInteractiveSelection: true,
+                textInputAction: TextInputAction.done, // Enable "Done" button
+                onSubmitted: (_) {
+                  FocusManager.instance.primaryFocus?.unfocus(); // Close the keyboard with the "Done" button
+                },
+
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(1000),
                 ],
