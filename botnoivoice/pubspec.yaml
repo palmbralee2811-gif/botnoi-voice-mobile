@@ -124,6 +124,7 @@ flutter:
     - assets/app_icon/
     - assets/images/
     - assets/images/auth_screen/
+    - assets/images/drawer_appbar/
     - assets/images/gender/
     - assets/images/icon/
     - assets/images/logo/
