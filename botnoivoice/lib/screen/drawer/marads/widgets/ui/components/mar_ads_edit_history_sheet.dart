@@ -105,6 +105,7 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                         onChanged: (val) {
                           setState(() {});
                         },
+                        textInputAction: TextInputAction.done, // Enable "Done" button
                       ),
                       SizedBox(height: 16.h),
                       Row(

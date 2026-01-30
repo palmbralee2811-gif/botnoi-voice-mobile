@@ -535,36 +535,40 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   // เพิ่มฟังก์ชันโชว์ Dialog
   void _showAudioPlayerDialog(AudioPlayer player) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => MarAdsAudioPlayerDialog(
         player: player,
         fileName: _currentFileName ?? "unknown.mp3",
         onDownload: () {
-          // Close Dialog
-          context.pop();
-
           // เรียกฟังก์ชันดาวน์โหลด
           if (_currentAudioUrl != null) {
-            _handleDownload(_currentAudioUrl!,
-                existingFileName: _currentFileName, isShare: false);
+            _handleDownload(
+              _currentAudioUrl!,
+              existingFileName: _currentFileName,
+              isShare: false,
+            );
           }
         },
         // ปุ่มแชร์: โหลด + เปิด Share Sheet
         onShare: () {
-          // Close Dialog
-          context.pop();
-
           if (_currentAudioUrl != null) {
-            _handleDownload(_currentAudioUrl!,
-                existingFileName: _currentFileName, isShare: true);
+            _handleDownload(
+              _currentAudioUrl!,
+              existingFileName: _currentFileName,
+              isShare: true,
+            );
           }
         },
       ),
     );
   }
 
-  Future<void> _handleDownload(String url,
-      {String? existingFileName, bool isShare = false}) async {
+  Future<void> _handleDownload(
+    String url, {
+    String? existingFileName,
+    bool isShare = false,
+  }) async {
     // กรณีแชร์: ไม่ต้องเลือกนามสกุล ให้โหลดเลย (Logic เดิม)
     if (isShare) {
       await _downloadLogic.handleDownload(

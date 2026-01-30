@@ -262,6 +262,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                      textInputAction: TextInputAction.done, // Enable "Done" button
                       cursorColor: const Color(0xFF000000),
                       style: GoogleFonts.prompt(
                         fontSize: ResponsiveDesignOrientation.isLandscape
