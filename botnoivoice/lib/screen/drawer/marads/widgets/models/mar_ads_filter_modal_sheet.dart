@@ -178,7 +178,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ModalHeader(title: 'marads_filter_modal_sheet.all'.tr()),
+          ModalHeader(title: 'marads_filter_modal_sheet.filter'.tr()),
           SizedBox(height: 20.h),
 
           // เลือกภาษา

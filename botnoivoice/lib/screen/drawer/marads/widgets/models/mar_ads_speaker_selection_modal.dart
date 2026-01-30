@@ -342,7 +342,7 @@ class _MarAdsSpeakerSelectionModalState
                       controller: _searchController,
                       style: GoogleFonts.prompt(fontSize: 14.sp),
                       decoration: InputDecoration(
-                        hintText: 'select'.tr(),
+                        hintText: 'marads_history.search_hint'.tr(),
                         hintStyle: GoogleFonts.prompt(color: Colors.grey),
                         prefixIcon:
                             const Icon(Icons.search, color: Colors.grey),

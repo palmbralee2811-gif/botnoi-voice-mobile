@@ -519,6 +519,6 @@
   },
   "marads_filter_modal_sheet": {
     "filter": "Filter",
-    "All": "Semua"
+    "all": "Semua"
   }
 }
