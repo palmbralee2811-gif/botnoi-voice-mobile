@@ -658,6 +658,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           _currentAudioUrl = null; // ล้างเสียงเดิมทิ้ง
         });
 
+        loadAllTokensIfLoggedIn(ref);
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('ปรับปรุงข้อความเรียบร้อยแล้ว'),
