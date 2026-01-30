@@ -64,7 +64,7 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
                     children: [
                       TextSpan(
                         text: 'marads_basic.point_usage_info'.tr(),
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       // [เพิ่ม] ใช้ WidgetSpan เพื่อแทรกรูป SVG
                       WidgetSpan(
