@@ -259,8 +259,9 @@ class _MarAdsSpeakerSelectionModalState
             ? s.voiceStyle
             : (s.engVoiceStyle.isNotEmpty ? s.engVoiceStyle : s.voiceStyle);
 
-        if (!speakerStyles.any((st) => _selectedStyles.contains(st)))
+        if (!speakerStyles.any((st) => _selectedStyles.contains(st))) {
           return false;
+        }
       }
 
       // Search Text
