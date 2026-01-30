@@ -5,6 +5,7 @@ import 'package:botnoivoice/screen/main/speaker/widget/speaker_grid_item.dart';
 import 'package:botnoivoice/service/favorite/favorite_service.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -41,12 +42,14 @@ class _MarAdsSpeakerSelectionModalState
   SpeakerEntity? _tempSelectedSpeaker; // ตัวที่กำลังเลือกอยู่ (ยังไม่กดตกลง)
   bool _showOnlyFavorites = false; // สถานะกรองเฉพาะรายการโปรด
 
-  String _selectedLangCode = 'TH'; // ค่าเริ่มต้นภาษาไทย
-  String _selectedLangName = 'ไทย';
-  String _selectedLangImage = 'assets/images/national_flag/thai.png';
+  late String _selectedLangCode;
+  late String _selectedLangName;
+  late String _selectedLangImage;
   String _selectedGender = ''; // ว่าง = ทั้งหมด
+  late String _selectedGenderName;
   Set<String> _selectedStyles = {}; // เก็บ Style ที่เลือก
   Set<String> _selectedCategories = {};
+  bool _isInit = false;
 
   @override
   void initState() {
@@ -73,6 +76,19 @@ class _MarAdsSpeakerSelectionModalState
     _searchController.addListener(() {
       setState(() {}); // รีเฟรชหน้าจอเมื่อพิมพ์ค้นหา
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInit) {
+      // ดึงค่าเริ่มต้นตาม Locale ของแอป
+      _selectedLangCode = tr('default_language_filter_code');
+      _selectedLangName = tr('default_language_filter_name');
+      _selectedLangImage = tr('default_language_filter_image_path');
+      _selectedGenderName = 'male_female'.tr();
+      _isInit = true;
+    }
   }
 
   //   Dispose Player และ Controller
@@ -224,20 +240,27 @@ class _MarAdsSpeakerSelectionModalState
 
       // Categories
       if (_selectedCategories.isNotEmpty) {
-        final cats =
-            (_selectedLangCode == 'TH') ? s.speechStyle : s.engSpeechStyle;
-        final effectiveCats =
-            (cats.isEmpty && _selectedLangCode != 'TH') ? s.speechStyle : cats;
-        if (!effectiveCats.any((c) => _selectedCategories.contains(c))) {
+        final isAppThai = context.locale.languageCode == 'th';
+
+        final List<String> speakerCats = isAppThai
+            ? s.speechStyle
+            : (s.engSpeechStyle.isNotEmpty ? s.engSpeechStyle : s.speechStyle);
+
+        if (!speakerCats.any((c) => _selectedCategories.contains(c))) {
           return false;
         }
       }
 
       // Styles
       if (_selectedStyles.isNotEmpty) {
-        final styles =
-            _selectedLangCode == 'TH' ? s.voiceStyle : s.engVoiceStyle;
-        if (!styles.any((st) => _selectedStyles.contains(st))) return false;
+        final isAppThai = context.locale.languageCode == 'th';
+
+        final List<String> speakerStyles = isAppThai
+            ? s.voiceStyle
+            : (s.engVoiceStyle.isNotEmpty ? s.engVoiceStyle : s.voiceStyle);
+
+        if (!speakerStyles.any((st) => _selectedStyles.contains(st)))
+          return false;
       }
 
       // Search Text
@@ -288,7 +311,7 @@ class _MarAdsSpeakerSelectionModalState
                 Expanded(
                   child: Center(
                     child: Text(
-                      "เปลี่ยนเสียง",
+                      'style'.tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
@@ -317,7 +340,7 @@ class _MarAdsSpeakerSelectionModalState
                       controller: _searchController,
                       style: GoogleFonts.prompt(fontSize: 14.sp),
                       decoration: InputDecoration(
-                        hintText: 'ค้นหา',
+                        hintText: 'select'.tr(),
                         hintStyle: GoogleFonts.prompt(color: Colors.grey),
                         prefixIcon:
                             const Icon(Icons.search, color: Colors.grey),
@@ -431,7 +454,7 @@ class _MarAdsSpeakerSelectionModalState
                   ),
                 ),
                 child: Text(
-                  "ตกลง",
+                  'confirm'.tr(),
                   style: GoogleFonts.prompt(
                     color: Colors.white,
                     fontSize: 16.sp,
