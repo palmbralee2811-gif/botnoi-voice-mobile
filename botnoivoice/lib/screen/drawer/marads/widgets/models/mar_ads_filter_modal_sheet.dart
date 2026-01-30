@@ -178,7 +178,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ModalHeader(title: 'filter'.tr()),
+          ModalHeader(title: 'marads_filter_modal_sheet.all'.tr()),
           SizedBox(height: 20.h),
 
           // เลือกภาษา
@@ -306,7 +306,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
               );
             },
             child: _buildFilterDisplayBox(
-              _categories.isEmpty ? 'unlimited'.tr() : _categories.join(", "),
+              _categories.isEmpty ? 'marads_filter_modal_sheet.all'.tr() : _categories.join(", "),
               null,
               hasArrow: true,
             ),
@@ -339,7 +339,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
               );
             },
             child: _buildFilterDisplayBox(
-              _styles.isEmpty ? 'unlimited'.tr() : _styles.join(", "),
+              _styles.isEmpty ? 'marads_filter_modal_sheet.all'.tr() : _styles.join(", "),
               null,
               hasArrow: true,
             ),

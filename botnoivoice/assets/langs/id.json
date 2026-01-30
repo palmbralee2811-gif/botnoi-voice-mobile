@@ -516,5 +516,9 @@
     "mode_result": "Hasil",
     "mode_edit": "Edit",
     "mode_history": "Riwayat"
+  },
+  "marads_filter_modal_sheet": {
+    "filter": "Filter",
+    "All": "Semua"
   }
 }

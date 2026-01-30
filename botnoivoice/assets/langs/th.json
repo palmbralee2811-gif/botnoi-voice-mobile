@@ -3,8 +3,6 @@
   "default_language_filter_name": "ไทย",
   "default_language_filter_image_path": "assets/images/national_flag/thai.png",
   "default_language_filter_code": "TH",
-  "filter": "ตัวกรอง",
-  "unlimited": "ทั้งหมด",
   "gender": "เพศ",
   "male_female": "ช/ญ",
   "style": "สไตล์",
@@ -526,5 +524,9 @@
     "mode_result": "ผลลัพธ์",
     "mode_edit": "แก้ไข",
     "mode_history": "ประวัติ"
+  },
+  "marads_filter_modal_sheet": {
+    "filter": "ตัวกรอง",
+    "all": "ทั้งหมด"
   }
 }

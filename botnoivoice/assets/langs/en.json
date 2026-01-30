@@ -3,8 +3,6 @@
   "default_language_filter_name": "English",
   "default_language_filter_image_path": "assets/images/national_flag/english.png",
   "default_language_filter_code": "EN",
-  "filter": "Filter",
-  "unlimited": "Unlimited",
   "gender": "Gender",
   "male_female": "M/F",
   "style": "Style",
@@ -524,5 +522,9 @@
     "mode_result": "Result",
     "mode_edit": "Edit",
     "mode_history": "History"
+  },
+  "marads_filter_modal_sheet": {
+    "filter": "Filter",
+    "all": "All"
   }
 }
