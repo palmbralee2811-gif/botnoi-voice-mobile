@@ -85,8 +85,12 @@ class ResultLogic {
       }
 
       try {
-        final resp =
-            await http.get(Uri.parse(s3Link), headers: {'Referer': refererUrl});
+        final resp = await http.get(
+          Uri.parse(s3Link),
+          headers: {
+            'Referer': refererUrl,
+          },
+        );
         if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
           final tmpDir = await getTemporaryDirectory();
           final ext =
@@ -226,7 +230,8 @@ class ResultLogic {
         filePath: filePath,
         segments: segments,
         userId: userId,
-        audioS3Link: audioS3Link);
+        audioS3Link: audioS3Link,
+    );
   }
 
   double _parseTime(String timeStr) {
