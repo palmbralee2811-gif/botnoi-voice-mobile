@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -61,8 +62,8 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
                       height: 1.5,
                     ),
                     children: [
-                      const TextSpan(
-                        text: 'การสร้างข้อความมีผลต่อพอยท์ที่ใช้ ',
+                      TextSpan(
+                        text: 'marads_basic.point_usage_info'.tr(),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       // [เพิ่ม] ใช้ WidgetSpan เพื่อแทรกรูป SVG
@@ -78,11 +79,10 @@ class _MarAdsDropdownState extends State<MarAdsDropdown> {
                           ),
                         ),
                       ),
-                      const TextSpan(
-                          text: '\n50 พอยท์/ครั้ง สำหรับ ~15 วินาที\n'),
-                      const TextSpan(
-                          text: '100 พอยท์/ครั้ง สำหรับ ~30 วินาที\n'),
-                      const TextSpan(text: '150 พอยท์/ครั้ง สำหรับ ~60 วินาที')
+                      TextSpan(
+                          text: '\n${'marads_basic.point_rate_15s'.tr()}\n'),
+                      TextSpan(text: '${'marads_basic.point_rate_30s'.tr()}\n'),
+                      TextSpan(text: 'marads_basic.point_rate_60s'.tr())
                     ],
                   ),
                   child: Padding(

@@ -1,4 +1,5 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -157,7 +158,7 @@ class _MarAdsEditHistorySheetState extends State<MarAdsEditHistorySheet> {
                     ),
                   ),
                   child: Text(
-                    "บันทึก",
+                    "marads_props.btn_save".tr(),
                     style: GoogleFonts.prompt(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,

@@ -1,4 +1,5 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +42,7 @@ class MarAdsDeleteConfirmDialog extends StatelessWidget {
 
             // หัวข้อ
             Text(
-              "ลบข้อความ Generate นี้",
+              "marads_history.confirm_delete_title".tr(),
               textAlign: TextAlign.center,
               style: GoogleFonts.prompt(
                 fontSize: 18.sp,
@@ -53,7 +54,7 @@ class MarAdsDeleteConfirmDialog extends StatelessWidget {
 
             // รายละเอียด
             Text(
-              "คุณยืนยันที่จะลบกล่องเสียงที่เลือกนี้ใช่หรือไม่",
+              "marads_history.confirm_delete_msg".tr(),
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 14.sp,
@@ -80,7 +81,7 @@ class MarAdsDeleteConfirmDialog extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "ยกเลิก",
+                      "dialog.cancel".tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
@@ -112,7 +113,7 @@ class MarAdsDeleteConfirmDialog extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        "ตกลง",
+                        "confirm".tr(),
                         style: GoogleFonts.prompt(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,

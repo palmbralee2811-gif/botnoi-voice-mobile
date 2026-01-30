@@ -3,6 +3,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/gradient_slider_shap
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -148,7 +149,9 @@ class MarAdsHistoryCard extends StatelessWidget {
                               children: [
                                 Flexible(
                                   child: Text(
-                                    speaker.thaiName,
+                                    context.locale.languageCode == 'th'
+                                        ? speaker.thaiName
+                                        : speaker.engName,
                                     maxLines: 1,
                                     overflow: TextOverflow
                                         .ellipsis, // ตัดคำถ้าชื่อยาวเกิน
@@ -181,7 +184,7 @@ class MarAdsHistoryCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(
-                              "Generate",
+                              "marads_history.generate".tr(),
                               style: GoogleFonts.prompt(
                                   fontSize: 10.sp,
                                   color: const Color(0xFF01BFFB)),
@@ -221,7 +224,7 @@ class MarAdsHistoryCard extends StatelessWidget {
 
           // Title
           _buildHighlightedText(
-            item.title,
+            item.title.isEmpty ? 'marads_history.no_title'.tr() : item.title,
             GoogleFonts.prompt(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -254,7 +257,9 @@ class MarAdsHistoryCard extends StatelessWidget {
                 children: [
                   if (item.style.isNotEmpty && item.style != '-')
                     Text(
-                      item.style,
+                      context.locale.languageCode == 'th'
+                          ? item.style
+                          : item.styleEn,
                       style: GoogleFonts.prompt(
                         fontSize: 12.sp,
                         color: Colors.grey,
@@ -263,7 +268,7 @@ class MarAdsHistoryCard extends StatelessWidget {
                 ],
               ),
               Text(
-                '${item.points}  ${item.chars}',
+                '${item.points} pt  ${item.chars} ${'marads_history.chars_unit'.tr()}',
                 style: GoogleFonts.prompt(
                   fontSize: 12.sp,
                   color: Colors.grey,

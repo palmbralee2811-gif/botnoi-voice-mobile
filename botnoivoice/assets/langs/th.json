@@ -3,6 +3,8 @@
   "default_language_filter_name": "ไทย",
   "default_language_filter_image_path": "assets/images/national_flag/thai.png",
   "default_language_filter_code": "TH",
+  "filter": "ตัวกรอง",
+  "unlimited": "ทั้งหมด",
   "gender": "เพศ",
   "male_female": "ช/ญ",
   "style": "สไตล์",
@@ -215,7 +217,12 @@
     "unable_to_save_file": "ไม่สามารถบันทึกไฟล์ได้",
     "audio_created_successfully": "สร้างเสียงสำเร็จ",
     "download": "ดาวน์โหลด",
-    "close": "ปิด"
+    "close": "ปิด",
+    "file_label": "ไฟล์:",
+    "share_text": "เสียงโฆษณาจาก Botnoi Voice",
+   "download_failed": "ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+   "download_error": "เกิดข้อผิดพลาดในการดาวน์โหลด",
+   "storage_permission_error": "ไม่มีสิทธิ์เข้าถึงพื้นที่จัดเก็บ"
   },
   "notification": {
     "close": "ปิด"
@@ -408,7 +415,11 @@
     "length_60": "~60 วิ",
 
     "text_remaining": "สร้างได้ {} ครั้ง",  
-    "btn_create": "สร้างข้อความ"
+    "btn_create": "สร้างข้อความ",
+    "point_usage_info": "การสร้างข้อความมีผลต่อพอยท์ที่ใช้ ",
+    "point_rate_15s": "50 พอยท์/ครั้ง สำหรับ ~15 วินาที",
+    "point_rate_30s": "100 พอยท์/ครั้ง สำหรับ ~30 วินาที",
+    "point_rate_60s": "150 พอยท์/ครั้ง สำหรับ ~60 วินาที"
   },
   "marads_adv": {
     "label_length": "ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)",
@@ -461,5 +472,59 @@
     "header_select_color": "เลือกสีของสินค้า",
     "color_unspecified": "ไม่ระบุ",
     "btn_save": "บันทึก"
+  },
+  "marads_history": {
+    "download_title": "ดาวน์โหลดไฟล์",
+    "select_extension": "เลือกนามสกุลไฟล์",
+    "download_warning": "หมายเหตุ : หากดาวน์โหลดเสียงแล้วเสียงพื้นหลังจะหายไป",
+    "confirm_delete_title": "ลบข้อความ Generate นี้",
+    "confirm_delete_msg": "คุณยืนยันที่จะลบกล่องเสียงที่เลือกนี้ใช่หรือไม่",
+    "processing": "กำลังประมวลผล",
+    "no_title": "ไม่ระบุหัวข้อ",
+    "generate": "สร้างเสียง",
+    "chars_unit": "ตัวอักษร",
+    "download_success": "ดาวน์โหลดสำเร็จ",
+    "download_success_msg": "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+    "generate_success": "สร้างเสียงสำเร็จ",
+    "generate_success_msg": "ระบบได้ทำการสร้างเสียงเรียบร้อยแล้ว",
+    "item_not_found": "ไม่พบรายการนี้ในระบบ (อาจถูกลบไปแล้ว) ระบบกำลังรีเฟรชข้อมูล...",
+    "incomplete_data": "รายการนี้ข้อมูลไม่สมบูรณ์ ไม่สามารถลบได้",
+    "delete_success": "ลบสำเร็จ",
+    "delete_success_msg": "ลบข้อมูลเรียบร้อยแล้ว",
+    "delete_error": "เกิดข้อผิดพลาดในการลบข้อมูล",
+    "no_audio_link": "ไม่พบลิงก์เสียง",
+    "connection_timeout": "การเชื่อมต่อล่าช้า กรุณาลองใหม่",
+    "link_expired": "ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว",
+    "play_failed": "เล่นเสียงไม่สำเร็จ",
+    "copy": "คัดลอก",
+    "copied": "คัดลอกเรียบร้อย",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "save_success": "บันทึกข้อมูลสำเร็จ",
+    "save_error": "เกิดข้อผิดพลาดในการบันทึก",
+    "sort_newest": "เรียงตาม ใหม่ -> เก่า",
+    "sort_oldest": "เรียงตาม เก่า -> ใหม่",
+    "no_history": "ไม่พบประวัติ",
+    "search_hint": "ค้นหา"
+  },
+"marads_result": {
+    "select_voice": "เลือกเสียง",
+    "make_persuasive": "ทำให้ดูโน้มน้าวมากขึ้น",
+    "create_voice": "สร้างเสียง",
+    "please_type_message": "กรุณาพิมพ์ข้อความก่อนสร้างเสียง",
+    "create_voice_failed": "สร้างเสียงไม่สำเร็จ",
+    "try_again_error": "กรุณาลองใหม่อีกครั้ง",
+    "download_success": "ดาวน์โหลดสำเร็จ",
+    "download_success_msg": "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+    "persuasive_success": "ปรับปรุงข้อความเรียบร้อยแล้ว",
+    "session_expired": "เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่",
+    "system_error": "ระบบขัดข้องชั่วคราว กรุณาลองใหม่",
+    "ok": "ตกลง"
+  },
+  "marads_mode_selector": {
+    "select_mode": "เลือกโหมดการทำงาน",
+    "mode_result": "ผลลัพธ์",
+    "mode_edit": "แก้ไข",
+    "mode_history": "ประวัติ"
   }
 }

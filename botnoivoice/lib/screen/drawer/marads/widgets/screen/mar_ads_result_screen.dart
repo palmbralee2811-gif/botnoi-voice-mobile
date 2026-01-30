@@ -17,6 +17,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/result/result_text_b
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -328,7 +329,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     // เช็คว่า Text ว่างไหมก่อนยิง API
     if (_textController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('กรุณาพิมพ์ข้อความก่อนสร้างเสียง')));
+          SnackBar(content: Text('marads_result.please_type_message'.tr())));
       return;
     }
 
@@ -498,13 +499,13 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "สร้างเสียงไม่สำเร็จ",
+                "marads_result.create_voice_failed".tr(),
                 style: GoogleFonts.prompt(
                     fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10.h),
               Text(
-                "กรุณาลองใหม่อีกครั้ง\n($e)",
+                "${'marads_result.try_again_error'.tr()}\n($e)",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 12.sp, color: Colors.grey),
               ),
@@ -516,7 +517,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                 onPressed: () {
                   context.pop();
                 },
-                child: Text("ตกลง",
+                child: Text("marads_result.ok".tr(),
                     style: GoogleFonts.prompt(color: Colors.black)),
               ),
             )
@@ -599,9 +600,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               if (!mounted) return;
               showDialog(
                 context: context,
-                builder: (context) => const MarAdsSuccessDialog(
-                  title: "ดาวน์โหลดสำเร็จ",
-                  subtitle: "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+                builder: (context) => MarAdsSuccessDialog(
+                  title: "marads_result.download_success".tr(),
+                  subtitle: "marads_result.download_success_msg".tr(),
                 ),
               );
             },
@@ -661,8 +662,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
         loadAllTokensIfLoggedIn(ref);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ปรับปรุงข้อความเรียบร้อยแล้ว'),
+          SnackBar(
+            content: Text('marads_result.persuasive_success'.tr()),
             backgroundColor: Colors.green,
           ),
         );
@@ -672,9 +673,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
       String errorMessage = e.toString().replaceAll('Exception:', '').trim();
       if (e.toString().contains('401')) {
-        errorMessage = 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่';
+        errorMessage = 'marads_result.session_expired'.tr();
       } else if (e.toString().contains('500')) {
-        errorMessage = 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่';
+        errorMessage = 'marads_result.system_error'.tr();
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +42,7 @@ class _MarAdsDownloadOptionsDialogState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "ดาวน์โหลดไฟล์",
+                  "marads_history.download_title".tr(),
                   style: GoogleFonts.prompt(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
@@ -60,7 +61,7 @@ class _MarAdsDownloadOptionsDialogState
 
             // 3. Dropdown เลือกนามสกุล
             Text(
-              "เลือกนามสกุลไฟล์",
+              "marads_history.select_extension".tr(),
               style: GoogleFonts.prompt(
                   fontSize: 14.sp, fontWeight: FontWeight.w600),
             ),
@@ -101,7 +102,7 @@ class _MarAdsDownloadOptionsDialogState
                 SizedBox(width: 5.w),
                 Expanded(
                   child: Text(
-                    "หมายเหตุ : หากดาวน์โหลดเสียงแล้วเสียงพื้นหลังจะหายไป",
+                    "marads_history.download_warning".tr(),
                     style: GoogleFonts.inter(
                       fontSize: 12
                           .sp, // [แก้ไข] ปรับขนาดให้อ่านง่ายขึ้นนิดนึง (จาก 10 -> 12)
@@ -130,7 +131,7 @@ class _MarAdsDownloadOptionsDialogState
                       ),
                     ),
                     child: Text(
-                      "ยกเลิก",
+                      "dialog.cancel".tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 16.sp,
                         color: const Color(0xFF888888),
@@ -157,7 +158,7 @@ class _MarAdsDownloadOptionsDialogState
                       ),
                     ),
                     child: Text(
-                      "ตกลง",
+                      "confirm".tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 16.sp,
                         color: Colors.white,

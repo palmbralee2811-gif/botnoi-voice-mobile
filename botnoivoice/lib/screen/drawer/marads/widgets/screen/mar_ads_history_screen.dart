@@ -20,6 +20,7 @@ import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/shared/style/style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -236,9 +237,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               if (!mounted) return;
               showDialog(
                 context: context,
-                builder: (context) => const MarAdsSuccessDialog(
-                  title: "ดาวน์โหลดสำเร็จ",
-                  subtitle: "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+                builder: (context) => MarAdsSuccessDialog(
+                  title: "marads_history.download_success".tr(),
+                  subtitle: "marads_history.download_success_msg".tr(),
                 ),
               );
             },
@@ -337,9 +338,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         if (mounted) {
           showDialog(
             context: context,
-            builder: (context) => const MarAdsSuccessDialog(
-              title: "สร้างเสียงสำเร็จ",
-              subtitle: "ระบบได้ทำการสร้างเสียงเรียบร้อยแล้ว",
+            builder: (context) => MarAdsSuccessDialog(
+              title: "marads_history.generate_success".tr(),
+              subtitle: "marads_history.generate_success_msg".tr(),
             ),
           );
         }
@@ -361,9 +362,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         // [เพิ่มส่วนนี้] เช็คว่า Error เกิดจาก ID ถูกลบไปแล้วหรือไม่
         if (e.toString().contains("prompt_id not found")) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                  'ไม่พบรายการนี้ในระบบ (อาจถูกลบไปแล้ว) ระบบกำลังรีเฟรชข้อมูล...'),
+            SnackBar(
+              content: Text('marads_history.item_not_found'.tr()),
               backgroundColor: Colors.orange,
             ),
           );
@@ -384,8 +384,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     // เช็คก่อนลบ ถ้าไม่มี ID ให้แจ้งเตือนและหยุดทำงาน
     if (item.id.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('รายการนี้ข้อมูลไม่สมบูรณ์ ไม่สามารถลบได้')),
+        SnackBar(content: Text('marads_history.incomplete_data'.tr())),
       );
       return;
     }
@@ -431,16 +430,16 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
             if (mounted) {
               showDialog(
                 context: context,
-                builder: (context) => const MarAdsSuccessDialog(
-                  title: "ลบสำเร็จ",
-                  subtitle: "ลบข้อมูลเรียบร้อยแล้ว",
+                builder: (context) => MarAdsSuccessDialog(
+                  title: "marads_history.delete_success".tr(),
+                  subtitle: "marads_history.delete_success_msg".tr(),
                 ),
               );
             }
           } else {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('เกิดข้อผิดพลาดในการลบข้อมูล')),
+                SnackBar(content: Text('marads_history.delete_error'.tr())),
               );
             }
           }
@@ -453,7 +452,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     try {
       if (url.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ไม่พบลิงก์เสียง')),
+          SnackBar(content: Text('marads_history.no_audio_link'.tr())),
         );
         return;
       }
@@ -490,6 +489,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 content: oldItem.content,
                 mode: oldItem.mode,
                 style: oldItem.style,
+                styleEn: oldItem.styleEn,
                 points: oldItem.points,
                 chars: oldItem.chars,
                 hasAudio: false,
@@ -507,8 +507,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().contains('timeout')
-                    ? 'การเชื่อมต่อล่าช้า กรุณาลองใหม่'
-                    : 'ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว'),
+                    ? 'marads_history.connection_timeout'.tr()
+                    : 'marads_history.link_expired'.tr()),
                 backgroundColor: Colors.orange,
               ),
             );
@@ -519,7 +519,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       print("Error playing audio: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('เล่นเสียงไม่สำเร็จ: ${e.toString()}')),
+          SnackBar(
+              content: Text(
+                  '${'marads_history.play_failed'.tr()}: ${e.toString()}')),
         );
       }
     }
@@ -552,7 +554,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 ),
                 _buildOptionItem(
                   icon: Icons.copy_rounded,
-                  label: 'คัดลอก',
+                  label: 'marads_history.copy'.tr(),
                   onTap: () {
                     // Close Dialog
                     context.pop();
@@ -564,7 +566,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'คัดลอกเรียบร้อย',
+                          'marads_history.copied'.tr(),
                           style: GoogleFonts.prompt(),
                         ),
                         duration: const Duration(seconds: 1),
@@ -574,7 +576,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 ),
                 _buildOptionItem(
                   icon: Icons.edit_outlined,
-                  label: 'แก้ไข',
+                  label: 'marads_history.edit'.tr(),
                   onTap: () {
                     // Close Dialog
                     context.pop();
@@ -584,7 +586,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 ),
                 _buildOptionItem(
                   icon: Icons.delete_outline,
-                  label: 'ลบ',
+                  label: 'marads_history.delete'.tr(),
                   onTap: () {
                     // Close Dialog
                     context.pop();
@@ -674,6 +676,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               content: newText, // อัปเดตเนื้อหา
               mode: old.mode,
               style: old.style,
+              styleEn: old.styleEn,
               points: old.points,
               chars: newText.length.toString(),
               hasAudio: false,
@@ -701,7 +704,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 const Icon(Icons.check_circle_outline, color: Colors.white),
                 SizedBox(width: 8.w),
                 Text(
-                  'บันทึกข้อมูลสำเร็จ',
+                  'marads_history.save_success'.tr(),
                   style:
                       GoogleFonts.prompt(color: Colors.white, fontSize: 14.sp),
                 ),
@@ -730,7 +733,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 const Icon(Icons.error_outline, color: Colors.white),
                 SizedBox(width: 8.w),
                 Text(
-                  'เกิดข้อผิดพลาดในการบันทึก',
+                  'marads_history.save_error'.tr(),
                   style:
                       GoogleFonts.prompt(color: Colors.white, fontSize: 14.sp),
                 ),
@@ -795,6 +798,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               content: item.content,
               mode: item.mode,
               style: item.style,
+              styleEn: item.styleEn,
               points: item.points,
               chars: item.chars,
               hasAudio: false, // Reset audio เมื่อเปลี่ยน speaker
@@ -803,6 +807,11 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               speakerId: newSpeaker.speakerId,
               isV2FromApi: newSpeaker.v2,
             );
+            // หาตำแหน่งของ item ตัวเก่าใน _filteredItems แล้วแทนที่ด้วยตัวใหม่จาก _historyItems
+            final int filteredIndex = _filteredItems.indexOf(item);
+            if (filteredIndex != -1) {
+              _filteredItems[filteredIndex] = _historyItems[realIndex];
+            }
           });
 
           //TODO: AI Chatbot Do Not Delete Any Comment In This File.
@@ -823,6 +832,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
+
+    // เช็คว่าคีย์บอร์ดเปิดอยู่หรือไม่ (ถ้าค่า > 0 แสดงว่าคีย์บอร์ดกินพื้นที่หน้าจออยู่)
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
@@ -895,8 +907,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                           SizedBox(width: 12.w),
                           Text(
                             _isNewestFirst
-                                ? "เรียงตาม ใหม่ -> เก่า"
-                                : "เรียงตาม เก่า -> ใหม่",
+                                ? "marads_history.sort_newest".tr()
+                                : "marads_history.sort_oldest".tr(),
                             style: GoogleFonts.prompt(
                               fontSize: 14.sp,
                               color: Colors.white,
@@ -922,7 +934,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                             children: [
                               SizedBox(height: 200.h),
                               Center(
-                                  child: Text("ไม่พบประวัติ",
+                                  child: Text("marads_history.no_history".tr(),
                                       style: GoogleFonts.prompt())),
                             ],
                           ),
@@ -986,7 +998,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                                 ),
                               ),
                             ),
-                            if (_filteredItems.isNotEmpty)
+                            if (_filteredItems.isNotEmpty && !isKeyboardOpen)
                               MarAdsPagination(
                                 currentPage: _currentPage,
                                 totalPages: _totalPages,

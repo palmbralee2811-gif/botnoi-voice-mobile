@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -54,7 +55,7 @@ class MarAdsResultActionButtons extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'สร้างเสียง',
+                    'marads_result.create_voice'.tr(),
                     style: GoogleFonts.lexend(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
@@ -113,7 +114,7 @@ class MarAdsResultActionButtons extends StatelessWidget {
                           ),
                         )
                       : Text(
-                          'ทำให้ดูโน้มน้าวมากขึ้น',
+                          'marads_result.make_persuasive'.tr(),
                           style: GoogleFonts.lexend(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w600,

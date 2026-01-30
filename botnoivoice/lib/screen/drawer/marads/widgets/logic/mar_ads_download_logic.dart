@@ -6,6 +6,7 @@ import 'package:botnoivoice/screen/main/home/function/create_ios_app_folder.dart
 import 'package:botnoivoice/screen/main/home/function/download_file_to_temp.dart';
 import 'package:botnoivoice/service/permission/android_permission.dart';
 import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:go_router/go_router.dart';
@@ -114,14 +115,14 @@ class MarAdsDownloadLogic {
       if (context.mounted) {
         await Share.shareXFiles(
           [XFile(file.path)],
-          text: 'เสียงโฆษณาจาก Botnoi Voice',
+          text: 'audio_player.share_text'.tr(),
         );
       }
     } else {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"),
+          SnackBar(
+            content: Text("audio_player.download_failed".tr()),
           ),
         );
       }
@@ -142,7 +143,7 @@ class MarAdsDownloadLogic {
         if (context.mounted) {
           OpenAppSettingsDialog(
             context: context,
-            text: 'สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า',
+            text: 'audio_player.permission_denied'.tr(),
           ).showPermissionDeniedDialog();
         }
         return;
@@ -176,10 +177,10 @@ class MarAdsDownloadLogic {
     } catch (e) {
       _onDownloadSuccess = null;
       if (context.mounted) {
-        String msg = "เกิดข้อผิดพลาดในการดาวน์โหลด";
+        String msg = "audio_player.download_error".tr();
 
         if (e.toString().contains("Permission")) {
-          msg = "ไม่มีสิทธิ์เข้าถึงพื้นที่จัดเก็บ";
+          msg = "audio_player.storage_permission_error".tr();
         }
 
         ScaffoldMessenger.of(context).showSnackBar(

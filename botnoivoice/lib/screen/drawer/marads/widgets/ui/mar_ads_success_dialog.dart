@@ -1,4 +1,5 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -8,14 +9,14 @@ class MarAdsSuccessDialog extends StatelessWidget {
   // เพิ่มตัวแปรรับค่า
   final String title;
   final String subtitle;
-  final String buttonText;
+  final String? buttonText;
   final VoidCallback? onPressed;
 
   const MarAdsSuccessDialog({
     super.key,
     required this.title,
     required this.subtitle,
-    this.buttonText = 'ตกลง', // ค่า default คือ "ตกลง" แต่แก้ได้
+    this.buttonText, // ค่า default คือ "ตกลง" แต่แก้ได้
     this.onPressed, // ถ้าไม่ส่งมา จะทำงานเป็น context.pop(); (ปิด Dialog)
   });
 
@@ -71,7 +72,7 @@ class MarAdsSuccessDialog extends StatelessWidget {
                   foregroundColor: const Color(0xFF888888),
                 ),
                 child: Text(
-                  buttonText,
+                  buttonText ?? 'confirm'.tr(),
                   style: GoogleFonts.prompt(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,

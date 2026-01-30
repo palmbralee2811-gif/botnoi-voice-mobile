@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,7 +33,7 @@ class MarAdsSearchBar extends StatelessWidget {
                 decoration: InputDecoration(
                   prefixIcon:
                       Icon(Icons.search, color: Colors.grey, size: 20.sp),
-                  hintText: 'ค้นหา',
+                  hintText: 'marads_history.search_hint'.tr(),
                   hintStyle: GoogleFonts.inter(
                     fontSize: 13.sp,
                     color: Colors.grey,

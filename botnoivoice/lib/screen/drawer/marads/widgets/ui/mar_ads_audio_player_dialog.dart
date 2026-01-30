@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -112,14 +113,14 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: Center(
-            child: Text("สร้างเสียงสำเร็จ",
+            child: Text("audio_player.audio_created_successfully".tr(),
                 style: GoogleFonts.prompt(fontWeight: FontWeight.bold))),
         content: SizedBox(
           width: 300.w, // ความกว้างเท่ากับ Loading Dialog
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("File: ${widget.fileName}",
+              Text("${'audio_player.file_label'.tr()} ${widget.fileName}",
                   style: TextStyle(fontSize: 12.sp)),
               SizedBox(height: 20.h),
 
@@ -192,7 +193,7 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
                           Icon(Icons.share,
                               size: 18.sp, color: const Color(0xFF262626)),
                           SizedBox(width: 5.w),
-                          Text("แชร์",
+                          Text("share".tr(),
                               style: GoogleFonts.prompt(
                                 color: const Color(0xFF262626),
                                 fontWeight: FontWeight.w600,
@@ -217,7 +218,7 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
                           Icon(Icons.download,
                               size: 18.sp, color: Colors.white),
                           SizedBox(width: 5.w),
-                          Text("ดาวน์โหลด",
+                          Text("audio_player.download".tr(),
                               style: GoogleFonts.prompt(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -246,7 +247,7 @@ class _MarAdsAudioPlayerDialogState extends State<MarAdsAudioPlayerDialog> {
                     foregroundColor: const Color(0xFF262626),
                   ),
                   child: Text(
-                    "ปิด",
+                    "audio_player.close".tr(),
                     style: GoogleFonts.prompt(
                       color: const Color(0xFF262626),
                       fontWeight: FontWeight.w600,
