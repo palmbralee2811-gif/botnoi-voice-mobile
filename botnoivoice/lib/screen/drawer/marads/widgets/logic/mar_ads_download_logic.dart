@@ -167,8 +167,8 @@ class MarAdsDownloadLogic {
         savedDir: folderPath,
         fileName: fileName,
         headers: {
-          "Referer": apiUrl,
-          "Origin": apiUrl,
+          'Referer': refererUrl,
+          'Origin': refererUrl,
         },
         showNotification: true,
         openFileFromNotification: true,

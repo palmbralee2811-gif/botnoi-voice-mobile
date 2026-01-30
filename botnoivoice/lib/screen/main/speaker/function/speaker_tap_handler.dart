@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ Future<void> handleSpeakerTap({
       final response = await http.get(
         Uri.parse(audioURL),
         headers: {
-          'Referer': 'https://voice.botnoi.ai/',
+          'Referer': refererUrl,
         },
       );
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/home/function/random_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,9 +27,9 @@ class ResultLogic {
   late AudioPlayer audioPlayer;
   StreamSubscription<Duration>? positionSub;
   StreamSubscription<PlayerState>? stateSub;
-  
-  int? playingIndex;      
-  int? _loadedIndex;      
+
+  int? playingIndex;
+  int? _loadedIndex;
   bool _isDisposed = false;
 
   ResultLogic({
@@ -54,20 +55,20 @@ class ResultLogic {
     }
     positionSub = null;
     stateSub = null;
-    
+
     try {
       await audioPlayer.stop();
     } catch (e) {
       _logger.w('Error stopping audio: $e');
     }
-    
+
     try {
       await audioPlayer.dispose();
     } catch (e) {
       _logger.w('Error disposing audio player: $e');
     }
   }
-  
+
   Future<void> setProjectAudioSource(String localPath, String? s3Link) async {
     if (_isDisposed) return;
 
@@ -76,19 +77,22 @@ class ResultLogic {
     if (s3Link != null && s3Link.isNotEmpty && s3Link.startsWith('http')) {
       try {
         await audioPlayer.setAudioSource(
-          AudioSource.uri(Uri.parse(s3Link), headers: {'Referer': 'https://voice.botnoi.ai/'}),
+          AudioSource.uri(Uri.parse(s3Link), headers: {'Referer': refererUrl}),
         );
         return;
       } catch (e) {
         _logger.e("S3 setAudioSource failed: $e");
       }
-      
+
       try {
-        final resp = await http.get(Uri.parse(s3Link), headers: {'Referer': 'https://voice.botnoi.ai/'});
+        final resp =
+            await http.get(Uri.parse(s3Link), headers: {'Referer': refererUrl});
         if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
           final tmpDir = await getTemporaryDirectory();
-          final ext = _guessExtensionFromContentType(resp.headers['content-type']);
-          final tmpPath = p.join(tmpDir.path, 'botnoi_${DateTime.now().millisecondsSinceEpoch}$ext');
+          final ext =
+              _guessExtensionFromContentType(resp.headers['content-type']);
+          final tmpPath = p.join(tmpDir.path,
+              'botnoi_${DateTime.now().millisecondsSinceEpoch}$ext');
           final f = File(tmpPath);
           await f.writeAsBytes(resp.bodyBytes);
           await audioPlayer.setFilePath(tmpPath);
@@ -98,7 +102,7 @@ class ResultLogic {
         _logger.e("Fallback download error: $e", stackTrace: st);
       }
     }
-    
+
     if (localPath.trim().isNotEmpty) {
       final file = File(localPath);
       if (await file.exists()) {
@@ -133,16 +137,19 @@ class ResultLogic {
       }
 
       final rawSegments = (chunksJson['data'] as List<dynamic>? ?? []);
-      final projectData = rawSegments.isNotEmpty ? rawSegments.first : chunksJson;
+      final projectData =
+          rawSegments.isNotEmpty ? rawSegments.first : chunksJson;
       final projectNameFromApi = projectData['project_name'] as String?;
 
       final segments = rawSegments.map<Map<String, dynamic>>((s) {
         final durationStr = (s['duration'] ?? '') as String;
         final parts = durationStr.split(' - ');
         final start = parts.isNotEmpty ? _parseTime(parts[0]) : 0.0;
-        final end = parts.length > 1 ? _parseTime(parts[1]) : duration.inSeconds.toDouble();
-        final text = (s['approve_text']?.toString().isNotEmpty == true) 
-            ? s['approve_text'] 
+        final end = parts.length > 1
+            ? _parseTime(parts[1])
+            : duration.inSeconds.toDouble();
+        final text = (s['approve_text']?.toString().isNotEmpty == true)
+            ? s['approve_text']
             : (s['botnoi_asr_text'] ?? '');
         return {
           "id": s['chunk_id'],
@@ -153,7 +160,7 @@ class ResultLogic {
           "original_text": s['botnoi_asr_text'],
           "s3_link": s['s3_link'],
           // --- เพิ่ม 3 บรรทัดนี้ เพื่อเก็บค่า CER ---
-          "character_error": s['character_error'], 
+          "character_error": s['character_error'],
           "total_char": s['total_char'],
           "cer": s['cer'],
           // ------------------------------------
@@ -170,18 +177,18 @@ class ResultLogic {
         } else {
           createdAt = DateTime.now();
         }
-        
+
         String finalProjectName = initialProjectName;
         if (finalProjectName.isEmpty) {
-           if (projectNameFromApi != null && projectNameFromApi.isNotEmpty) {
-             finalProjectName = projectNameFromApi;
-           } else {
-             finalProjectName = projectIdFromChunk;
-           }
+          if (projectNameFromApi != null && projectNameFromApi.isNotEmpty) {
+            finalProjectName = projectNameFromApi;
+          } else {
+            finalProjectName = projectIdFromChunk;
+          }
         }
-        
+
         String? projectLevelS3 = audioS3Link;
-        
+
         await setProjectAudioSource(filePath, projectLevelS3);
 
         return ProjectModel(
@@ -198,7 +205,7 @@ class ResultLogic {
     } catch (e, st) {
       _logger.e("fetchWorkspace error: $e", stackTrace: st);
     }
-    
+
     const text = 'No text found';
     final segments = [
       {
@@ -212,22 +219,24 @@ class ResultLogic {
     ];
     await setProjectAudioSource(filePath, audioS3Link);
     return ProjectModel(
-      projectId: workspaceId,
-      projectName: initialProjectName,
-      createdAt: DateTime.now(),
-      duration: duration,
-      filePath: filePath,
-      segments: segments,
-      userId: userId,
-      audioS3Link: audioS3Link
-    );
+        projectId: workspaceId,
+        projectName: initialProjectName,
+        createdAt: DateTime.now(),
+        duration: duration,
+        filePath: filePath,
+        segments: segments,
+        userId: userId,
+        audioS3Link: audioS3Link);
   }
 
   double _parseTime(String timeStr) {
     try {
-      final parts = timeStr.trim().split(':').map((p) => int.tryParse(p) ?? 0).toList();
+      final parts =
+          timeStr.trim().split(':').map((p) => int.tryParse(p) ?? 0).toList();
       if (parts.length == 2) return (parts[0] * 60 + parts[1]).toDouble();
-      if (parts.length == 3) return (parts[0] * 3600 + parts[1] * 60 + parts[2]).toDouble();
+      if (parts.length == 3) {
+        return (parts[0] * 3600 + parts[1] * 60 + parts[2]).toDouble();
+      }
     } catch (_) {}
     return 0.0;
   }
@@ -240,58 +249,68 @@ class ResultLogic {
     if (_isDisposed) return;
 
     final segment = segments[index];
-    _logger.d('Play request - Index: $index, Loaded: $_loadedIndex, Playing: $playingIndex');
+    _logger.d(
+        'Play request - Index: $index, Loaded: $_loadedIndex, Playing: $playingIndex');
 
     bool isSameAsLoaded = (_loadedIndex == index);
 
     if (isSameAsLoaded) {
-       if (audioPlayer.playing) {
-         _logger.d("Action: PAUSE");
-         await audioPlayer.pause();
-         playingIndex = null;
-         onUpdate();
-       } else {
-         _logger.d("Action: RESUME");
-         if (audioPlayer.processingState == ProcessingState.completed) {
-             await audioPlayer.seek(Duration.zero); 
-         }
-         playingIndex = index;
-         onUpdate();
-         await audioPlayer.play();
-       }
-       return;
+      if (audioPlayer.playing) {
+        _logger.d("Action: PAUSE");
+        await audioPlayer.pause();
+        playingIndex = null;
+        onUpdate();
+      } else {
+        _logger.d("Action: RESUME");
+        if (audioPlayer.processingState == ProcessingState.completed) {
+          await audioPlayer.seek(Duration.zero);
+        }
+        playingIndex = index;
+        onUpdate();
+        await audioPlayer.play();
+      }
+      return;
     }
 
     _logger.d("Action: LOAD NEW SEGMENT");
-    
+
     playingIndex = index;
     _loadedIndex = index;
     onUpdate();
 
-    try { 
-      await audioPlayer.stop(); 
+    try {
+      await audioPlayer.stop();
     } catch (e) {
       _logger.w('Stop error: $e');
     }
-    
-    final startSec = (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
-    final endSec = (segment['end'] is num) ? (segment['end'] as num).toDouble() : duration.inSeconds.toDouble();
+
+    final startSec =
+        (segment['start'] is num) ? (segment['start'] as num).toDouble() : 0.0;
+    final endSec = (segment['end'] is num)
+        ? (segment['end'] as num).toDouble()
+        : duration.inSeconds.toDouble();
     final timelineStart = Duration(milliseconds: (startSec * 1000).round());
     final timelineEnd = Duration(milliseconds: (endSec * 1000).round());
 
     bool newSourceSet = false;
     bool isChunkSource = false;
 
-    final segS3 = (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
+    final segS3 =
+        (segment['s3_link'] is String) ? segment['s3_link'] as String : null;
 
     if (segS3 != null && segS3.isNotEmpty && segS3.startsWith('http')) {
       try {
         _logger.d("Loading chunk audio: $segS3");
         await audioPlayer.setAudioSource(
-          AudioSource.uri(Uri.parse(segS3), headers: {'Referer': 'https://voice.botnoi.ai/'})
+          AudioSource.uri(
+            Uri.parse(segS3),
+            headers: {
+              'Referer': refererUrl,
+            },
+          ),
         );
         newSourceSet = true;
-        isChunkSource = true; 
+        isChunkSource = true;
       } catch (e, st) {
         _logger.e("Failed to load chunk: $e", stackTrace: st);
       }
@@ -301,7 +320,10 @@ class ResultLogic {
       try {
         _logger.d("Loading full S3 audio: $audioS3Link");
         await audioPlayer.setAudioSource(
-          AudioSource.uri(Uri.parse(audioS3Link!), headers: {'Referer': 'https://voice.botnoi.ai/'})
+          AudioSource.uri(
+            Uri.parse(audioS3Link!),
+            headers: {'Referer': refererUrl},
+          ),
         );
         newSourceSet = true;
         isChunkSource = false;
@@ -346,10 +368,11 @@ class ResultLogic {
         _logger.d("Playing chunk (no clip)");
         await audioPlayer.setClip(start: Duration.zero, end: null);
       } else {
-        _logger.d("Playing full file with clip ($timelineStart to $timelineEnd)");
+        _logger
+            .d("Playing full file with clip ($timelineStart to $timelineEnd)");
         await audioPlayer.setClip(start: timelineStart, end: timelineEnd);
       }
-      
+
       await audioPlayer.play();
     } catch (e, st) {
       _logger.e("Play error: $e", stackTrace: st);
@@ -364,15 +387,15 @@ class ResultLogic {
       if (!isChunkSource) {
         if (pos >= timelineEnd) {
           try {
-             await audioPlayer.pause();
-             await audioPlayer.seek(timelineStart);
+            await audioPlayer.pause();
+            await audioPlayer.seek(timelineStart);
           } catch (e) {
             _logger.w('Seek error: $e');
           }
-          
+
           if (playingIndex == index) {
-             playingIndex = null;
-             onUpdate();
+            playingIndex = null;
+            onUpdate();
           }
         }
       }
@@ -383,7 +406,7 @@ class ResultLogic {
     WidgetRef ref,
     int index,
     List<Map<String, dynamic>> segments,
-    ProjectModel project
+    ProjectModel project,
   ) async {
     if (_isDisposed) return;
 
@@ -395,7 +418,7 @@ class ResultLogic {
   Future<void> saveEdits(
     WidgetRef ref,
     ProjectModel project,
-    List<Map<String, dynamic>> segments
+    List<Map<String, dynamic>> segments,
   ) async {
     if (_isDisposed) return;
 
@@ -404,7 +427,7 @@ class ResultLogic {
         ref,
         chunkId: s['id'],
         userId: userId,
-        approveText: s['text']
+        approveText: s['text'],
       );
     }
   }
@@ -413,17 +436,20 @@ class ResultLogic {
     WidgetRef ref, {
     required String chunkId,
     required String userId,
-    required String approveText
+    required String approveText,
   }) async {
     return await updateAudioApprove(
       ref,
       chunkId: chunkId,
       userId: userId,
-      approveText: approveText
+      approveText: approveText,
     );
   }
 
-  Future<void> finalizeProjectApprove(WidgetRef ref, ProjectModel project) async {
+  Future<void> finalizeProjectApprove(
+    WidgetRef ref,
+    ProjectModel project,
+  ) async {
     if (_isDisposed) return;
 
     try {
@@ -433,7 +459,7 @@ class ResultLogic {
         projectId: project.projectId,
         userId: project.userId,
         cer: 0.0,
-        duration: durationStr
+        duration: durationStr,
       );
     } catch (e, st) {
       _logger.e("finalizeProjectApprove error: $e", stackTrace: st);
@@ -459,7 +485,8 @@ class ResultLogic {
     final buffer = StringBuffer();
     int index = 1;
     for (var s in project.segments) {
-      final start = srtTime(Duration(milliseconds: (s['start'] * 1000).round()));
+      final start =
+          srtTime(Duration(milliseconds: (s['start'] * 1000).round()));
       final end = srtTime(Duration(milliseconds: (s['end'] * 1000).round()));
       buffer.writeln("$index");
       buffer.writeln("$start --> $end");

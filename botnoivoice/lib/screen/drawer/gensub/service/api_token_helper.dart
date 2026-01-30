@@ -14,13 +14,13 @@ String getSelectedBotnoiToken(WidgetRef ref) {
 
 /// Headers สำหรับ JSON Requests (ใช้ Botnoi-Token และใช้ 'token' ที่ถูกส่งมา)
 Map<String, String> getJsonHeadersWithAuth(String token) => {
-  "Content-Type": "application/json",
-  "Authorization": "Bearer $token", //  ใช้ token ที่รับเข้ามาใน Argument
-  "Referer": apiUrl,
+  'Content-Type': 'application/json',
+  'Authorization': 'Bearer $token', //  ใช้ token ที่รับเข้ามาใน Argument
+  'Referer': refererUrl,
 };
 
 /// Headers สำหรับ Multipart Form Data Requests (ใช้ Botnoi-Token และใช้ 'token' ที่ถูกส่งมา)
 Map<String, String> getMultipartHeadersWithAuth(String token) => {
-  "Authorization": "Bearer $token", //  ใช้ token ที่รับเข้ามาใน Argument
-  "Referer": apiUrl,
+  'Authorization': 'Bearer $token', //  ใช้ token ที่รับเข้ามาใน Argument
+  'Referer': refererUrl,
 };

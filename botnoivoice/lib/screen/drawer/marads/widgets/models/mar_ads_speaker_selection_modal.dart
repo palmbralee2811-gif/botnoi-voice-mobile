@@ -1,3 +1,4 @@
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_filter_modal_sheet.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
@@ -166,7 +167,7 @@ class _MarAdsSpeakerSelectionModalState
       // ใช้ http.get เพื่อรองรับ Header/Referer ตามไฟล์ตัวอย่าง
       final response = await http.get(
         Uri.parse(audioUrl),
-        headers: {'Referer': 'https://voice.botnoi.ai/'},
+        headers: {'Referer': refererUrl},
       );
 
       if (response.statusCode == 200) {

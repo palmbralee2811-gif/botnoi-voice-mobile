@@ -27,10 +27,10 @@ class PromptService {
 
   Map<String, String> _headers(String token) {
     return {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      "Authorization": "Bearer $token",
-      "Referer": apiUrl,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+      'Referer': refererUrl,
     };
   }
 

@@ -1,3 +1,4 @@
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -84,8 +85,8 @@ class SpeakerGridItem extends StatelessWidget {
                   image: ResizeImage(
                     CachedNetworkImageProvider(
                       Uri.encodeFull(speakerItem.squareImage),
-                      headers: const {
-                        'Referer': 'https://voice.botnoi.ai/',
+                      headers: {
+                        'Referer': refererUrl,
                         'Accept': 'image/webp,*/*',
                       },
                       // Custom cache config: keep for 7 days, max 50 files
