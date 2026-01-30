@@ -47,11 +47,6 @@ class AppLanguageButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // แสดงรูปธงชาติ
-            // Image.asset(
-            //   flagAsset,
-            //   width: 30.w,
-            //   height: 20.h,
-            // ),
             Image.asset(
               flagAsset,
               width: flagWidth, // ใช้ขนาดธงจากตัวแปร

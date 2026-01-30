@@ -203,9 +203,9 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
                       ),
                     ),
                     SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 10.w
-                            : 16.w),
+                      width:
+                          ResponsiveDesignOrientation.isLandscape ? 10.w : 16.w,
+                    ),
                   ],
                 ),
               ),

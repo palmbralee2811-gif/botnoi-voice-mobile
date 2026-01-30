@@ -391,9 +391,9 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
             SizedBox(width: 8.w),
           ],
           Expanded(
-              child: Text(text,
-                  style: GoogleFonts.prompt(),
-                  overflow: TextOverflow.ellipsis)),
+            child: Text(text,
+                style: GoogleFonts.prompt(), overflow: TextOverflow.ellipsis),
+          ),
           if (hasArrow)
             Icon(Icons.arrow_forward_ios, size: 14.sp, color: Colors.grey)
           else

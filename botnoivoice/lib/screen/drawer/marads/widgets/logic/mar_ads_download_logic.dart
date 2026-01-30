@@ -59,7 +59,11 @@ class MarAdsDownloadLogic {
   }
 
   @pragma('vm:entry-point')
-  static void downloadCallback(String id, int status, int progress) {
+  static void downloadCallback(
+    String id,
+    int status,
+    int progress,
+  ) {
     final SendPort? send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send?.send([id, status, progress]);
@@ -86,7 +90,10 @@ class MarAdsDownloadLogic {
 
   // --- Logic การแชร์ (โหลดลง Temp) ---
   Future<void> _handleShareProcess(
-      BuildContext context, String url, String fileName) async {
+    BuildContext context,
+    String url,
+    String fileName,
+  ) async {
     // 1. แสดง Loading
     showDialog(
       context: context,
@@ -114,24 +121,29 @@ class MarAdsDownloadLogic {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text("ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง")),
+            content: Text("ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง"),
+          ),
         );
       }
     }
   }
 
   // --- Logic การบันทึกลงเครื่อง (FlutterDownloader) ---
-  Future<void> _handleSaveToDeviceProcess(BuildContext context, String url,
-      String fileName, VoidCallback onSuccess) async {
+  Future<void> _handleSaveToDeviceProcess(
+    BuildContext context,
+    String url,
+    String fileName,
+    VoidCallback onSuccess,
+  ) async {
     if (Platform.isAndroid) {
       final hasPermission =
           await AndroidPermission().requestAndroidPermission();
       if (!hasPermission) {
         if (context.mounted) {
           OpenAppSettingsDialog(
-                  context: context,
-                  text: 'สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า')
-              .showPermissionDeniedDialog();
+            context: context,
+            text: 'สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า',
+          ).showPermissionDeniedDialog();
         }
         return;
       }
@@ -161,16 +173,6 @@ class MarAdsDownloadLogic {
         openFileFromNotification: true,
         saveInPublicStorage: true,
       );
-
-      // // เรียก Callback แจ้งเตือนว่าสำเร็จ
-      // if (context.mounted) {
-      //   // (Optional) ใส่ Delay นิดนึง (0.5วิ) ให้ความรู้สึกว่าระบบได้ประมวลผลแล้วค่อยเด้ง Dialog
-      //   await Future.delayed(const Duration(milliseconds: 500));
-
-      //   if (context.mounted) {
-      //     onSuccess();
-      //   }
-      // }
     } catch (e) {
       _onDownloadSuccess = null;
       if (context.mounted) {

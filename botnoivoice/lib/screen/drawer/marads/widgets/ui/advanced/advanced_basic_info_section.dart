@@ -10,7 +10,7 @@ class AdvancedBasicInfoSection extends StatelessWidget {
   final TextEditingController productController;
   final TextEditingController brandController;
   final TextEditingController priceController;
-  final Widget productPropertiesButton; // รับ Widget ปุ่ม Tags เข้ามาแสดงผล
+  final Widget productPropertiesButton;
 
   const AdvancedBasicInfoSection({
     super.key,

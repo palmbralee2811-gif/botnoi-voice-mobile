@@ -1,6 +1,4 @@
-// (สร้างไฟล์ใหม่ ใส่โค้ดนี้ลงไปทั้งหมด)
 class MarAdsMockData {
-  // เหตุผล (Reason) -> สำหรับ "จุดขายที่ดีกว่าคู่แข่ง"
   static const Map<int, String> thAdvantage = {
     1: 'เราใช้วัตถุดิบสดใหม่และคุณภาพสูงกว่า',
     2: 'สูตรพิเศษที่ทำให้รสชาติดีกว่าและเป็นที่ชื่นชอบมากกว่า',
@@ -75,7 +73,6 @@ class MarAdsMockData {
     34: 'A better and more suitable learning environment',
   };
 
-  // จุดเด่น (Advantage) -> สำหรับ "ทำไมลูกค้าถึงต้องซื้อ"
   static const Map<int, String> thReason = {
     1: 'ประหยัดเวลาในการทำงาน',
     2: 'ความสะดวกสบายในการใช้ชีวิต',

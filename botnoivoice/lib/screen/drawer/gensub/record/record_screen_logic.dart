@@ -48,14 +48,17 @@ class RecordLogic {
     bool hasPermission = await GenSubPermission().requestPermissionGenSub();
     if (!hasPermission) {
       OpenAppSettingsDialog(
-              context: context, text: 'audio_player.permission_denied'.tr())
-          .showPermissionDeniedDialog();
+        context: context,
+        text: 'audio_player.permission_denied'.tr(),
+      ).showPermissionDeniedDialog();
     }
     return hasPermission;
   }
 
   Future<void> toggleRecording(
-      BuildContext context, Function(void Function()) setState) async {
+    BuildContext context,
+    Function(void Function()) setState,
+  ) async {
     bool hasPermission = await _checkRequestPermissions(context);
     if (!hasPermission) return;
 
@@ -145,7 +148,7 @@ class RecordLogic {
   }) async {
     if (recordedFilePath == null) return null;
 
-    // 🚩 ตัวแปรสำหรับจำ ID โปรเจค
+    // ตัวแปรสำหรับจำ ID โปรเจค
     String? createdProjectId;
     String? createdUserId;
 
@@ -171,7 +174,7 @@ class RecordLogic {
       );
       _logger.d("Insert workspace result: $insertResult");
 
-      // ✅ เก็บ ID ไว้ลบถ้า Error
+      // เก็บ ID ไว้ลบถ้า Error
       createdProjectId = insertResult["data"]?["project_id"];
       createdUserId = insertResult["data"]?["user_id"];
 
@@ -231,12 +234,12 @@ class RecordLogic {
         stackTrace: st,
       );
 
-      // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
+      // Rollback: ลบโปรเจคทิ้งถ้าเกิด Error
       if (createdProjectId != null) {
         _logger.e("Rolling back: Deleting invalid project $createdProjectId");
         try {
           await deleteAsrWorkspace(
-              ref, createdProjectId, createdUserId ?? currentUserId);
+              ref, createdProjectId, createdUserId ?? currentUserId,);
         } catch (delErr, st) {
           _logger.e(
             "Rollback failed: $delErr",
@@ -283,7 +286,10 @@ class RecordLogic {
     }
   }
 
-  Future<void> deleteProject(WidgetRef ref, String projectId) async {
+  Future<void> deleteProject(
+    WidgetRef ref,
+    String projectId,
+  ) async {
     try {
       await deleteAsrWorkspace(
         ref,

@@ -10,7 +10,7 @@ class ProjectModel {
   final String filePath;
   final List<Map<String, dynamic>> segments;
   final String userId;
-  final String? audioS3Link; // ✅ เพิ่มฟิลด์ S3 link
+  final String? audioS3Link;
 
   ProjectModel({
     required this.projectId,
@@ -20,7 +20,7 @@ class ProjectModel {
     required this.filePath,
     required this.segments,
     required this.userId,
-    required this.audioS3Link, // ✅ เพิ่มใน constructor
+    required this.audioS3Link,
   });
 
   ProjectModel copyWith({
@@ -31,7 +31,7 @@ class ProjectModel {
     String? filePath,
     List<Map<String, dynamic>>? segments,
     String? userId,
-    String? audioS3Link, // ✅ เพิ่ม copyWith
+    String? audioS3Link,
   }) {
     return ProjectModel(
       projectId: projectId ?? this.projectId,
@@ -82,10 +82,6 @@ class ProjectModel {
           ? List<Map<String, dynamic>>.from(json['segments'])
           : [],
       userId: json['user_id']?.toString() ?? '',
-
-      /// ⭐ รองรับ key จาก API:
-      /// - audio_s3_link
-      /// - audioS3Link
       audioS3Link:
           json['audio_s3_link']?.toString() ?? json['audioS3Link']?.toString(),
     );
@@ -105,6 +101,6 @@ class ProjectModel {
         'file_path': filePath,
         'segments': segments,
         'user_id': userId,
-        'audio_s3_link': audioS3Link, // ⭐ เซฟลง JSON
+        'audio_s3_link': audioS3Link,
       };
 }

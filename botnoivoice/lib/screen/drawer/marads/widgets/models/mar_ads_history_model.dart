@@ -31,20 +31,6 @@ class MarAdsHistoryModel {
   });
 
   factory MarAdsHistoryModel.fromJson(Map<String, dynamic> json) {
-    // String styleLabel = '-';
-    // // ดึง Style ให้ครอบคลุมทุก format ที่ backend อาจส่งมา
-    // if (json['prompt_style'] != null) {
-    //   if (json['prompt_style'] is Map) {
-    //     styleLabel = json['prompt_style']['TH_label'] ??
-    //         json['prompt_style']['value'] ??
-    //         json['prompt_style']['EN_label'] ??
-    //         '-';
-    //   } else {
-    //     //  รับทุกกรณีที่เป็นไปได้ (String หรืออื่นๆ)
-    //     styleLabel = json['prompt_style'].toString();
-    //   }
-    // }
-
     final String textContent = json['text'] ?? '';
     final int charCount = textContent.length;
     final int calculatedPoints = charCount * 1;
@@ -54,7 +40,6 @@ class MarAdsHistoryModel {
       title: json['title'] ?? 'ไม่ระบุหัวข้อ',
       content: json['text'] ?? '',
       mode: json['category'] == 'text' ? 'Basic mode' : 'Advanced mode',
-      // style: styleLabel,
       style: _parseStyleLabel(json['prompt_style']),
       points: '$calculatedPoints pt',
       chars: '$charCount ตัวอักษร',

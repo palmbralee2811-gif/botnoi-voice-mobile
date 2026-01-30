@@ -6,7 +6,7 @@ import 'package:botnoivoice/screen/drawer/gensub/record/record_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/topbar_gensub.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // 1. Import ScreenUtil
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UploadRecScreen extends ConsumerStatefulWidget {
   const UploadRecScreen({super.key});
@@ -29,7 +29,7 @@ class _UploadRecScreenState extends ConsumerState<UploadRecScreen> {
     final controller = ref.watch(uploadRecordProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FD), // พื้นหลังโทนสว่าง Minimal
+      backgroundColor: const Color(0xFFF8F9FD),
       appBar: const TopbarGensub(),
       drawer: const DrawerAppbar(),
       body: controller.loading

@@ -1,6 +1,4 @@
-// Placeholder for the existing dependencies (you might need to adjust imports)
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import your necessary services/dependencies here
 
 /// Define the state for EmailToken (Assuming this file is named user_token_state.dart or similar)
 class UserTokenState {

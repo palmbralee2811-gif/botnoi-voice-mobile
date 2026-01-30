@@ -29,14 +29,6 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
     'น้ำเงิน': const Color(0xFF0055FF),
   };
 
-//   @override
-//   void dispose() {
-//     _sizeController.dispose();
-//     _modelController.dispose();
-//     _materialController.dispose();
-//     super.dispose();
-//   }
-
   String _getLocalizedColorName(String key) {
     if (key == 'ไม่ระบุ') return 'marads_props.color_unspecified'.tr();
     // ใช้ Key ร่วมกับหน้า Advanced

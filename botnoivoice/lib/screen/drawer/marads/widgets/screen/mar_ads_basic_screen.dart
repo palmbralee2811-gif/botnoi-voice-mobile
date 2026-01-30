@@ -192,7 +192,6 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
           Align(
             alignment: Alignment.centerLeft,
             child: Builder(
-              // หุ้มด้วย Builder เพื่อสร้าง context ใหม่ใต้ Scaffold
               builder: (context) {
                 return IconButton(
                   icon: Icon(
