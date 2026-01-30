@@ -265,138 +265,140 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       ),
       builder: (context) => Container(
         padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 4. ติ่งสีเทาด้านบน (Gray Handle)
-            Center(
-              child: Container(
-                width: 36.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2.r),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 4. ติ่งสีเทาด้านบน (Gray Handle)
+              Center(
+                child: Container(
+                  width: 36.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE0E0E0),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16.h),
-            // 1. หัวข้อ + กากบาทมุมขวา
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'marads_basic.header_style'.tr(),
+              SizedBox(height: 16.h),
+              // 1. หัวข้อ + กากบาทมุมขวา
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'marads_basic.header_style'.tr(),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      height: 1.3,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Icon(
+                      Icons.close,
+                      size: 24.sp,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.h),
+              // 3. รายการเลือก (Bold เมื่อถูกเลือก)
+              ListTile(
+                title: Text(
+                  'marads_basic.style_persuasive'.tr(),
                   style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                    height: 1.3,
+                    fontWeight: _selectedContentStyle == 'จูงใจให้ใช้'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: Icon(
-                    Icons.close,
-                    size: 24.sp,
-                    color: Colors.black54,
+                onTap: () {
+                  setState(() => _selectedContentStyle = 'จูงใจให้ใช้');
+                  context.pop();
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'marads_basic.style_funny'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentStyle == 'ตลก'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            // 3. รายการเลือก (Bold เมื่อถูกเลือก)
-            ListTile(
-              title: Text(
-                'marads_basic.style_persuasive'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentStyle == 'จูงใจให้ใช้'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
-                ),
+                onTap: () {
+                  setState(() => _selectedContentStyle = 'ตลก');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'จูงใจให้ใช้');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.style_funny'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentStyle == 'ตลก'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
+              ListTile(
+                title: Text(
+                  'marads_basic.style_serious'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentStyle == 'จริงจัง'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
+                  ),
                 ),
+                onTap: () {
+                  setState(() => _selectedContentStyle = 'จริงจัง');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'ตลก');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.style_serious'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentStyle == 'จริงจัง'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
+              ListTile(
+                title: Text(
+                  'marads_basic.style_begging'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentStyle == 'ออดอ้อน'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
+                  ),
                 ),
+                onTap: () {
+                  setState(() => _selectedContentStyle = 'ออดอ้อน');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'จริงจัง');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.style_begging'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentStyle == 'ออดอ้อน'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
+              ListTile(
+                title: Text(
+                  'marads_basic.style_sympathy'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentStyle == 'เรียกความสงสาร'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
+                  ),
                 ),
+                onTap: () {
+                  setState(() => _selectedContentStyle = 'เรียกความสงสาร');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'ออดอ้อน');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.style_sympathy'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentStyle == 'เรียกความสงสาร'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
+              ListTile(
+                title: Text(
+                  'marads_basic.style_review'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentStyle == 'รีวิวสินค้า'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
+                  ),
                 ),
+                onTap: () {
+                  setState(() => _selectedContentStyle = 'รีวิวสินค้า');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'เรียกความสงสาร');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.style_review'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentStyle == 'รีวิวสินค้า'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
-                ),
-              ),
-              onTap: () {
-                setState(() => _selectedContentStyle = 'รีวิวสินค้า');
-                context.pop();
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -410,92 +412,94 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       ),
       builder: (context) => Container(
         padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 4. ติ่งสีเทาด้านบน
-            Center(
-              child: Container(
-                width: 36.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2.r),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 4. ติ่งสีเทาด้านบน
+              Center(
+                child: Container(
+                  width: 36.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE0E0E0),
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16.h),
-            // 1. หัวข้อ + กากบาท
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'marads_basic.header_length'.tr(),
+              SizedBox(height: 16.h),
+              // 1. หัวข้อ + กากบาท
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'marads_basic.header_length'.tr(),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      height: 1.3,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Icon(
+                      Icons.close,
+                      size: 24.sp,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.h),
+              ListTile(
+                title: Text(
+                  'marads_basic.length_15'.tr(),
                   style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                    height: 1.3,
+                    fontWeight: _selectedContentLength == '~15 วิ'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: Icon(
-                    Icons.close,
-                    size: 24.sp,
-                    color: Colors.black54,
+                onTap: () {
+                  setState(() => _selectedContentLength = '~15 วิ');
+                  context.pop();
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'marads_basic.length_30'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentLength == '~30 วิ'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            ListTile(
-              title: Text(
-                'marads_basic.length_15'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentLength == '~15 วิ'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
-                ),
+                onTap: () {
+                  setState(() => _selectedContentLength = '~30 วิ');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentLength = '~15 วิ');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.length_30'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentLength == '~30 วิ'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
+              ListTile(
+                title: Text(
+                  'marads_basic.length_60'.tr(),
+                  style: TextStyle(
+                    fontWeight: _selectedContentLength == '~60 วิ'
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: const Color(0xFF262626),
+                  ),
                 ),
+                onTap: () {
+                  setState(() => _selectedContentLength = '~60 วิ');
+                  context.pop();
+                },
               ),
-              onTap: () {
-                setState(() => _selectedContentLength = '~30 วิ');
-                context.pop();
-              },
-            ),
-            ListTile(
-              title: Text(
-                'marads_basic.length_60'.tr(),
-                style: TextStyle(
-                  fontWeight: _selectedContentLength == '~60 วิ'
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: const Color(0xFF262626),
-                ),
-              ),
-              onTap: () {
-                setState(() => _selectedContentLength = '~60 วิ');
-                context.pop();
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
