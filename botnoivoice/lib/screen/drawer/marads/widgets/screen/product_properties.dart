@@ -1,4 +1,5 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/basic_mar_ads_text_field.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -28,13 +29,24 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
     'น้ำเงิน': const Color(0xFF0055FF),
   };
 
-//   @override
-//   void dispose() {
-//     _sizeController.dispose();
-//     _modelController.dispose();
-//     _materialController.dispose();
-//     super.dispose();
-//   }
+  String _getLocalizedColorName(String key) {
+    if (key == 'ไม่ระบุ') return 'marads_props.color_unspecified'.tr();
+    // ใช้ Key ร่วมกับหน้า Advanced
+    switch (key) {
+      case 'ดำ':
+        return 'marads_adv.color_black'.tr();
+      case 'แดง':
+        return 'marads_adv.color_red'.tr();
+      case 'ขาว':
+        return 'marads_adv.color_white'.tr();
+      case 'ชมพู':
+        return 'marads_adv.color_pink'.tr();
+      case 'น้ำเงิน':
+        return 'marads_adv.color_blue'.tr();
+      default:
+        return key;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +56,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
         title: Column(
           children: [
             Text(
-              'คุณสมบัติของสินค้า',
+              'marads_props.title'.tr(),
               style: GoogleFonts.prompt(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
@@ -52,7 +64,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
               ),
             ),
             Text(
-              '(ไม่จำเป็นต้องกรอกทั้งหมด)',
+              'marads_props.subtitle'.tr(),
               style: GoogleFonts.prompt(
                 fontSize: 11.sp, // ตัวเล็กกว่าและสีจางลง เพื่อเป็นคำอธิบาย
                 fontWeight: FontWeight.w400,
@@ -85,19 +97,19 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
               child: Column(
                 children: [
                   MarAdsTextField(
-                    label: 'ขนาด/ปริมาณ',
-                    placeholder: '256 GB',
+                    label: 'marads_props.label_size'.tr(),
+                    placeholder: 'marads_props.placeholder_size'.tr(),
                     controller: _sizeController,
                   ),
                   MarAdsTextField(
-                    label: 'รุ่น/ลาย/ประเภท',
-                    placeholder: 'No.11',
+                    label: 'marads_props.label_model'.tr(),
+                    placeholder: 'marads_props.placeholder_model'.tr(),
                     controller: _modelController,
                   ),
                   _buildColorDropdown(),
                   MarAdsTextField(
-                    label: 'วัสดุ/วัตถุดิบ/สเปค',
-                    placeholder: 'M4 Chip',
+                    label: 'marads_props.label_material'.tr(),
+                    placeholder: 'marads_props.placeholder_material'.tr(),
                     controller: _materialController,
                   ),
                 ],
@@ -125,7 +137,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'สีของสินค้า',
+            'marads_props.label_color'.tr(),
             style: GoogleFonts.prompt(
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
@@ -166,7 +178,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
                         SizedBox(width: 10.w),
                       ],
                       Text(
-                        _selectedColor,
+                        _getLocalizedColorName(_selectedColor),
                         style: GoogleFonts.prompt(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
@@ -206,7 +218,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'เลือกสีของสินค้า',
+                'marads_props.header_select_color'.tr(),
                 style: GoogleFonts.prompt(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
@@ -217,9 +229,11 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
               SizedBox(height: 12.h),
               const Divider(),
               _buildColorOption('ไม่ระบุ'),
-              ..._colorMap.entries.map((e) {
-                return _buildColorOption(e.key, color: e.value);
-              }).toList(),
+              ..._colorMap.entries.map(
+                (e) {
+                  return _buildColorOption(e.key, color: e.value);
+                },
+              ),
             ],
           ),
         ),
@@ -253,7 +267,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
             )
           : null,
       title: Text(
-        label,
+        _getLocalizedColorName(label),
         style: GoogleFonts.prompt(
           fontSize: 16.sp,
           fontWeight: FontWeight.w400,
@@ -290,7 +304,7 @@ class _ProductPropertiesScreenState extends State<ProductPropertiesScreen> {
           ),
         ),
         child: Text(
-          'บันทึก',
+          'marads_props.btn_save'.tr(),
           style: GoogleFonts.prompt(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,

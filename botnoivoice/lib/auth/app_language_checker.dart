@@ -2,13 +2,11 @@ import 'dart:ui';
 import 'package:botnoivoice/shared/function/app_language_function.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/auth/auth_checker.dart';
-import 'package:botnoivoice/screen/splash/splash_screen.dart'; // เพิ่มหน้าจอ Splash
-import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
+import 'package:botnoivoice/screen/splash/splash_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 /// Auto Detection Android and iOS on Device Primary Language (Thai, English, Indonesia).
-///
 /// ตรวจสอบภาษาเครื่องอัตโนมัติบน Android และ iOS (ไทย, อังกฤษ, อินโดนีเซีย)
-///
 /// ตรวจสอบภาษาเครื่องอัตโนมัติและเลือกภาษาเริ่มต้น
 class AppLanguageChecker extends StatefulWidget {
   const AppLanguageChecker({super.key});

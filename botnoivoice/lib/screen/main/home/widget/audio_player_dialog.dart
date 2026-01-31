@@ -24,8 +24,11 @@ class AudioPlayerDialog extends StatefulWidget {
   final String filePath;
   final String audioUrl;
 
-  const AudioPlayerDialog(
-      {super.key, required this.filePath, required this.audioUrl});
+  const AudioPlayerDialog({
+    super.key,
+    required this.filePath,
+    required this.audioUrl,
+  });
 
   @override
   State<AudioPlayerDialog> createState() => _AudioPlayerDialogState();
@@ -56,11 +59,11 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
 
     // Show Alert if Permission Denied
     if (!hasPermission) {
+      //สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า
       OpenAppSettingsDialog(
-              context: context,
-              text: 'audio_player.permission_denied'
-                  .tr()) //สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า
-          .showPermissionDeniedDialog();
+        context: context,
+        text: 'audio_player.permission_denied'.tr(),
+      ).showPermissionDeniedDialog();
     } else {
       _startDownload().whenComplete(() {
         _logger.d("Widget File Path: ${widget.filePath}");
@@ -145,7 +148,9 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
   /// Initialize the downloader using FlutterDownloader
   Future<void> _initDownloader() async {
     IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+      _port.sendPort,
+      'downloader_send_port',
+    );
     _port.listen((dynamic data) {
       String id = data[0];
       int status = data[1];

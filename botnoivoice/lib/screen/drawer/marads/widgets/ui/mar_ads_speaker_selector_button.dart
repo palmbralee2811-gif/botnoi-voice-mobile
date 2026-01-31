@@ -1,6 +1,7 @@
 // Path: lib/screen/drawer/marads/widgets/ui/mar_ads_speaker_selector_button.dart
 
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -57,7 +58,11 @@ class MarAdsSpeakerSelectorButton extends StatelessWidget {
 
             // แสดงชื่อ (ใช้ logic ภาษาตามที่มี หรือ default เป็น name)
             Text(
-              selectedSpeaker?.thaiName ?? 'เลือกเสียง', // Default text
+              selectedSpeaker != null
+                  ? (context.locale.languageCode == 'th'
+                      ? selectedSpeaker!.thaiName
+                      : selectedSpeaker!.engName)
+                  : 'marads_result.select_voice'.tr(),
               style: GoogleFonts.prompt(
                 fontSize: 12.sp, // ปรับขนาดให้อ่านง่ายขึ้น
                 fontWeight: FontWeight.w400,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../basic_mar_ads_text_field.dart';
@@ -9,7 +10,7 @@ class AdvancedBasicInfoSection extends StatelessWidget {
   final TextEditingController productController;
   final TextEditingController brandController;
   final TextEditingController priceController;
-  final Widget productPropertiesButton; // รับ Widget ปุ่ม Tags เข้ามาแสดงผล
+  final Widget productPropertiesButton;
 
   const AdvancedBasicInfoSection({
     super.key,
@@ -26,7 +27,7 @@ class AdvancedBasicInfoSection extends StatelessWidget {
     return Column(
       children: [
         MarAdsCollapsibleSection(
-          title: 'ข้อมูลเบื้องต้น*',
+          title: 'marads_adv.section_basic_info'.tr(),
           isExpanded: isExpanded,
           onTap: onToggle,
         ),
@@ -34,19 +35,19 @@ class AdvancedBasicInfoSection extends StatelessWidget {
           Divider(color: const Color(0xFFEEDDF3), height: 1.h, thickness: 1),
           SizedBox(height: 16.h),
           MarAdsTextField(
-            label: 'สินค้าที่ต้องการขาย*',
-            placeholder: 'คอร์สสอนภาษา, โทรศัพท์มือถือ, ...',
+            label: 'marads_basic.label_product'.tr(),
+            placeholder: 'marads_basic.placeholder_product'.tr(),
             controller: productController,
             isRequired: true,
           ),
           MarAdsTextField(
-            label: 'ชื่อแบรนด์/ชื่อยี่ห้อ',
-            placeholder: 'บอทน้อย',
+            label: 'marads_basic.label_brand'.tr(),
+            placeholder: 'marads_basic.placeholder_brand'.tr(),
             controller: brandController,
           ),
           MarAdsTextField(
-            label: 'ราคา',
-            placeholder: '129 บาท, 99 บาท จาก 129 บาท',
+            label: 'marads_basic.label_price'.tr(),
+            placeholder: 'marads_basic.placeholder_price'.tr(),
             controller: priceController,
           ),
           // แสดงปุ่มที่รับเข้ามา

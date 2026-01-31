@@ -33,7 +33,6 @@ class MarAdsFilterModalSheet extends StatefulWidget {
 }
 
 class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
-
   late String _langCode;
   late String _langName;
   late String _langImage;
@@ -41,6 +40,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
   late String _genderName;
   late Set<String> _categories;
   late Set<String> _styles;
+  bool _isInit = false; // ตัวแปรกันไม่ให้รันซ้ำ
 
   @override
   void initState() {
@@ -51,62 +51,123 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
     _gender = widget.initialGender;
     _categories = Set.from(widget.initialCategories);
     _styles = Set.from(widget.initialStyles);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) return; // ทำงานแค่ครั้งแรก
 
     // หาชื่อ Gender เริ่มต้น
-    final g = genderFilter.firstWhere((element) => element['code'] == _gender,
-        orElse: () => {'thaiName': 'ช/ญ'});
-    _genderName = g['thaiName'] as String;
+    final g = genderFilter.firstWhere(
+      (element) => element['code'] == _gender,
+      orElse: () => genderFilter[0],
+    );
+
+    String locale = context.locale.languageCode;
+    _genderName = (locale == 'th')
+        ? g['thaiName'] as String
+        : (locale == 'id')
+            ? g['indonesianName'] as String
+            : g['englishName'] as String;
+    _isInit = true;
   }
 
   // ย้าย Logic Helper มาไว้ที่นี่
   List<String> _getVoiceStyles() {
     Set<String> stylesSet = {};
     final targetLang = _langCode.trim().toUpperCase();
-    final isThai = targetLang == 'TH';
+    final isAppLanguageThai = context.locale.languageCode == 'th';
 
     for (var speaker in SpeakerModel.speakerItem) {
       if (!speaker.status) continue;
       final spkLangCode = speaker.languageCode.trim().toUpperCase();
       final spkLangName = speaker.language.trim().toUpperCase();
 
-      if (spkLangCode == targetLang || spkLangName == targetLang) {
-        if (isThai) {
-          stylesSet.addAll(speaker.voiceStyle);
-        } else {
-          if (speaker.engVoiceStyle.isNotEmpty) {
-            stylesSet.addAll(speaker.engVoiceStyle);
-          } else {
-            stylesSet.addAll(speaker.voiceStyle);
-          }
+      if (spkLangCode != targetLang && spkLangName != targetLang) continue;
+
+      // หา Style
+      if (_categories.isNotEmpty) {
+        final speakerCats = isAppLanguageThai
+            ? speaker.speechStyle
+            : (speaker.engSpeechStyle.isNotEmpty
+                ? speaker.engSpeechStyle
+                : speaker.speechStyle);
+
+        // ถ้า Speaker คนนี้ไม่มี Category ที่เลือกเลย -> ข้าม (ไม่เอา Style เขามาโชว์)
+        if (!speakerCats.any((c) => _categories.contains(c))) continue;
+      }
+
+      // ดึง Category ตามภาษาเครื่อง (App Language)
+      if (isAppLanguageThai) {
+        stylesSet.addAll(speaker.voiceStyle);
+      } else {
+        if (speaker.engVoiceStyle.isNotEmpty) {
+          stylesSet.addAll(speaker.engVoiceStyle);
         }
       }
     }
-    return stylesSet.toList()..sort();
+    // return stylesSet.toList()..sort();
+    return stylesSet.where((s) => s.isNotEmpty).toList()..sort();
   }
 
   List<String> _getCategories() {
     Set<String> catSet = {};
     final targetLang = _langCode.trim().toUpperCase();
-    final isThai = targetLang == 'TH';
+    final isAppLanguageThai = context.locale.languageCode == 'th';
 
     for (var speaker in SpeakerModel.speakerItem) {
       if (!speaker.status) continue;
       final spkLangCode = speaker.languageCode.trim().toUpperCase();
       final spkLangName = speaker.language.trim().toUpperCase();
 
-      if (spkLangCode == targetLang || spkLangName == targetLang) {
-        if (isThai) {
-          catSet.addAll(speaker.speechStyle);
-        } else {
-          if (speaker.engSpeechStyle.isNotEmpty) {
-            catSet.addAll(speaker.engSpeechStyle);
-          } else {
-            catSet.addAll(speaker.speechStyle);
-          }
+      if (spkLangCode != targetLang && spkLangName != targetLang) continue;
+
+      // หา Category
+      if (_styles.isNotEmpty) {
+        final speakerStyles = isAppLanguageThai
+            ? speaker.voiceStyle
+            : (speaker.engVoiceStyle.isNotEmpty
+                ? speaker.engVoiceStyle
+                : speaker.voiceStyle);
+
+        // ถ้า Speaker คนนี้ไม่มี Style ที่เลือกเลย -> ข้าม
+        if (!speakerStyles.any((s) => _styles.contains(s))) continue;
+      }
+
+      // ดึง Style ตามภาษาเครื่อง (App Language)
+      if (isAppLanguageThai) {
+        catSet.addAll(speaker.speechStyle);
+      } else {
+        if (speaker.engSpeechStyle.isNotEmpty) {
+          catSet.addAll(speaker.engSpeechStyle);
         }
       }
     }
-    return catSet.toList()..sort();
+    // return catSet.toList()..sort();
+    return catSet.where((c) => c.isNotEmpty).toList()..sort();
+  }
+
+  // ฟังก์ชันจัดเรียงภาษา
+  List<Map<String, dynamic>> _getSortedLanguageFilter(BuildContext context) {
+    List<Map<String, dynamic>> sortedList =
+        languageFilter.map((e) => Map<String, dynamic>.from(e)).toList();
+    final deviceLang = context.locale.languageCode.toUpperCase();
+
+    // กำหนด ID: ภาษาเครื่อง = 1, อื่นๆ = index + 2
+    for (int i = 0; i < sortedList.length; i++) {
+      final lang = sortedList[i];
+      if ((lang['code'] as String).toUpperCase() == deviceLang) {
+        lang['id'] = 1;
+      } else {
+        lang['id'] = i + 2;
+      }
+    }
+
+    // เรียงตาม ID
+    sortedList.sort((a, b) => (a['id'] as int).compareTo(b['id'] as int));
+
+    return sortedList;
   }
 
   @override
@@ -117,11 +178,12 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ModalHeader(title: "ตัวกรอง"),
+          ModalHeader(title: 'marads_filter_modal_sheet.filter'.tr()),
           SizedBox(height: 20.h),
 
           // เลือกภาษา
-          Text("ภาษา", style: GoogleFonts.prompt(fontWeight: FontWeight.w600)),
+          Text('language'.tr(),
+              style: GoogleFonts.prompt(fontWeight: FontWeight.w600)),
           SizedBox(height: 8.h),
           InkWell(
             onTap: () {
@@ -133,29 +195,37 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
                     child: Column(
                       children: [
                         SizedBox(height: 10.h),
-                        ModalHeader(title: 'language'.tr()),
-                        ...languageFilter
-                            .map((lang) => buildLanguageFilterWidget(
-                                  thaiName: lang['thaiName'] as String,
-                                  englishName: lang['englishName'] as String,
-                                  indonesianName:
-                                      lang['indonesianName'] as String,
-                                  imagePath: lang['image'] as String,
-                                  lang: lang['code'] as String,
-                                  context: context,
-                                  setState: setState,
-                                  selectedLanguage: _langName,
-                                  onSelected: (code, name, img) {
-                                    setState(() {
-                                      _langCode = code;
-                                      _langName = name;
-                                      _langImage = img;
-                                      _styles.clear();
-                                      _categories.clear();
-                                    });
-                                  },
-                                ))
-                            .toList()
+                        // เพิ่ม Padding ครอบ ModalHeader เพื่อดัน "ภาษา" และ "X" เข้ามาจากขอบจอ
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: ModalHeader(title: 'language'.tr()),
+                        ),
+                        ..._getSortedLanguageFilter(context)
+                            // ใช้ Transform.scale ครอบเพื่อปรับขนาด List ให้เล็กลง (0.95 = 95%)
+                            .map(
+                          (lang) => Transform.scale(
+                            scale: 0.95,
+                            child: buildLanguageFilterWidget(
+                              thaiName: lang['thaiName'] as String,
+                              englishName: lang['englishName'] as String,
+                              indonesianName: lang['indonesianName'] as String,
+                              imagePath: lang['image'] as String,
+                              lang: lang['code'] as String,
+                              context: context,
+                              setState: setState,
+                              selectedLanguage: _langName,
+                              onSelected: (code, name, img) {
+                                setState(() {
+                                  _langCode = code;
+                                  _langName = name;
+                                  _langImage = img;
+                                  _styles.clear();
+                                  _categories.clear();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -168,17 +238,23 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
           SizedBox(height: 16.h),
 
           // เลือกเพศ
-          Text("เพศ", style: GoogleFonts.prompt(fontWeight: FontWeight.w600)),
+          Text('gender'.tr(),
+              style: GoogleFonts.prompt(fontWeight: FontWeight.w600)),
           SizedBox(height: 8.h),
           Row(
             children: genderFilter.map((g) {
               final isSelected = _gender == g['code'];
+              String currentGenderName = (context.locale.languageCode == 'th')
+                  ? g['thaiName'] as String
+                  : (context.locale.languageCode == 'id')
+                      ? g['indonesianName'] as String
+                      : g['englishName'] as String;
               return Expanded(
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
                       _gender = g['code'] as String;
-                      _genderName = g['thaiName'] as String;
+                      _genderName = currentGenderName;
                     });
                   },
                   child: Container(
@@ -191,7 +267,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
                     ),
                     child: Center(
                       child: Text(
-                        g['thaiName'] as String,
+                        currentGenderName,
                         style: GoogleFonts.prompt(
                           color: isSelected ? Colors.white : Colors.black,
                         ),
@@ -206,7 +282,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
           SizedBox(height: 16.h),
 
           // หมวดหมู่
-          Text("หมวดหมู่",
+          Text('category'.tr(),
               style: GoogleFonts.prompt(fontWeight: FontWeight.w600)),
           SizedBox(height: 8.h),
           InkWell(
@@ -214,14 +290,23 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
               final cats = _getCategories();
               showModalSelection(
                 context: context,
-                title: "เลือกหมวดหมู่",
+                title: 'category'.tr(),
                 items: cats,
                 selectedItems: _categories,
-                onConfirm: (newSet) => setState(() => _categories = newSet),
+                onConfirm: (newSet) {
+                  setState(() {
+                    _categories = newSet;
+                    // รีเฟรชหา Style ที่เป็นไปได้สำหรับ Category นี้
+                    final validStyles = _getVoiceStyles();
+                    // ตัด Style เก่าที่ไม่อยู่ในรายการใหม่ออก
+                    _styles =
+                        _styles.where((s) => validStyles.contains(s)).toSet();
+                  });
+                },
               );
             },
             child: _buildFilterDisplayBox(
-              _categories.isEmpty ? "ทั้งหมด" : _categories.join(", "),
+              _categories.isEmpty ? 'marads_filter_modal_sheet.all'.tr() : _categories.join(", "),
               null,
               hasArrow: true,
             ),
@@ -229,7 +314,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
           SizedBox(height: 16.h),
 
           // สไตล์เสียง
-          Text("สไตล์เสียง",
+          Text('style'.tr(),
               style: GoogleFonts.prompt(fontWeight: FontWeight.w600)),
           SizedBox(height: 8.h),
           InkWell(
@@ -237,14 +322,24 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
               final styles = _getVoiceStyles();
               showModalSelection(
                 context: context,
-                title: "เลือกสไตล์",
+                title: 'style'.tr(),
                 items: styles,
                 selectedItems: _styles,
-                onConfirm: (newSet) => setState(() => _styles = newSet),
+                onConfirm: (newSet) {
+                  setState(() {
+                    _styles = newSet;
+                    // รีเฟรชหา Category ที่เป็นไปได้สำหรับ Style นี้
+                    final validCategories = _getCategories();
+                    // ตัด Category เก่าที่ไม่อยู่ในรายการใหม่ออก
+                    _categories = _categories
+                        .where((c) => validCategories.contains(c))
+                        .toSet();
+                  });
+                },
               );
             },
             child: _buildFilterDisplayBox(
-              _styles.isEmpty ? "ทั้งหมด" : _styles.join(", "),
+              _styles.isEmpty ? 'marads_filter_modal_sheet.all'.tr() : _styles.join(", "),
               null,
               hasArrow: true,
             ),
@@ -271,7 +366,7 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
                 backgroundColor: Colors.black,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
               ),
-              child: Text("ดูผลลัพธ์",
+              child: Text('confirm'.tr(),
                   style: GoogleFonts.prompt(color: Colors.white)),
             ),
           ),
@@ -296,9 +391,9 @@ class _MarAdsFilterModalSheetState extends State<MarAdsFilterModalSheet> {
             SizedBox(width: 8.w),
           ],
           Expanded(
-              child: Text(text,
-                  style: GoogleFonts.prompt(),
-                  overflow: TextOverflow.ellipsis)),
+            child: Text(text,
+                style: GoogleFonts.prompt(), overflow: TextOverflow.ellipsis),
+          ),
           if (hasArrow)
             Icon(Icons.arrow_forward_ios, size: 14.sp, color: Colors.grey)
           else

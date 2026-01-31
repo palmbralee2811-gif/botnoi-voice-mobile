@@ -30,23 +30,13 @@ class _AppBarTopState extends ConsumerState<AppBarTop> {
   }
 
   Future<void> _loadRemainingCredits() async {
-    // await context.read<CallReloadData>().callLoadCreditsApi();
-    // await ref.read(callReloadDataProvider).callLoadCreditsApi();
     await loadAllTokensIfLoggedIn(ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    // var remainingCredits = context.watch<CallReloadData>().remainingCredits ?? 'N/A';
-    // final userTokenState = _ref.read(userTokenProvider);
-
-    // Access credits directly from the immutable state
     final userTokenState = ref.watch(currentUserTokenStateProvider);
-    // final normalCredits = userTokenState.remainingNormalCredits ?? 0;
-    // final monthlyPoints = userTokenState.remainingMonthlyPoints ?? 0;
-    // var remainingCredits = normalCredits + monthlyPoints;
     var remainingCredits = userTokenState.remainingCredits ?? 'N/A';
-
 
     return AppBar(
       backgroundColor: kWhite,

@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -45,10 +46,43 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
     });
   }
 
+  Widget _buildIconWithFallback({
+    required String path,
+    required IconData fallbackIcon,
+    required double size,
+  }) {
+    // กรณีเป็น SVG
+    if (path.endsWith('.svg')) {
+      return SvgPicture.asset(
+        path,
+        width: size,
+        height: size,
+      );
+    } 
+    // กรณีเป็น WebP หรือรูปภาพอื่นๆ
+    else {
+      return Image.asset(
+        path,
+        width: size,
+        height: size,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(
+            fallbackIcon,
+            size: size,
+            color: kDark,
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // final emailProvider = context.read<EmailLogin>();
     final emailProvider = ref.watch(emailLoginNotifierProvider);
+
+    final double iconSize =
+        ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp;
 
     return Drawer(
       width: 257.w,
@@ -144,15 +178,42 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
               ],
             ),
           ),
+          
+          // 1. Voice Studio (WebP)
           ListTile(
             contentPadding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
               top: ResponsiveDesignOrientation.isLandscape ? 10.h : 30.h,
             ),
-            leading: Icon(
-              Icons.subtitles_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
+            leading: _buildIconWithFallback(
+              path: 'assets/images/drawer_appbar/voice-studio-icon.webp',
+              fallbackIcon: Icons.voice_chat,
+              size: iconSize,
+            ),
+            title: Text(
+              'app_drawer.voice'.tr(), // Voice Studio
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
+                fontWeight: FontWeight.w600,
+                color: kDark,
+              ),
+            ),
+            onTap: () {
+              context.push('/home');
+            },
+          ),
+          SizedBox(height: 10.h),
+
+          // 2. Gensub (SVG)
+          ListTile(
+            contentPadding: EdgeInsets.only(
+              left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
+            ),
+            leading: _buildIconWithFallback(
+              path: 'assets/images/drawer_appbar/gensub-icon.svg',
+              fallbackIcon: Icons.subtitles_outlined,
+              size: iconSize,
             ),
             title: Text(
               'app_drawer.gensub'.tr(), // Gensub
@@ -169,17 +230,18 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
           ),
           SizedBox(height: 10.h),
 
+          // 3. Marads (SVG)
           ListTile(
             contentPadding: EdgeInsets.only(
               left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w,
             ),
-            leading: Icon(
-              Icons.ads_click_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
-              color: kDark,
+            leading: _buildIconWithFallback(
+              path: 'assets/images/drawer_appbar/marads-icon.svg',
+              fallbackIcon: Icons.ads_click_outlined,
+              size: iconSize,
             ),
             title: Text(
-              'app_drawer.marads'.tr(), // Gensub
+              'app_drawer.marads'.tr(), // Marads
               style: GoogleFonts.prompt(
                 fontSize:
                     ResponsiveDesignOrientation.isLandscape ? 13.sp : 20.sp,
@@ -222,7 +284,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.account_circle_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              size: iconSize,
               color: kDark,
             ),
             title: Text(
@@ -244,7 +306,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.local_offer_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              size: iconSize,
               color: kDark,
             ),
             title: Text(
@@ -268,7 +330,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.school_outlined, // ไอคอนหมวกรับปริญญา
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              size: iconSize,
               color: kDark,
             ),
             title: Text(
@@ -318,7 +380,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.card_giftcard_outlined,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              size: iconSize,
               color: kDark,
             ),
             title: Text(
@@ -348,7 +410,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                 left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
             leading: Icon(
               Icons.credit_card,
-              size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+              size: iconSize,
               color: kDark,
             ),
             title: Text(
@@ -373,7 +435,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                   left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.security_outlined,
-                size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+                size: iconSize,
                 color: kDark,
               ),
               title: Text(
@@ -412,7 +474,7 @@ class _DrawerAppbarState extends ConsumerState<DrawerAppbar> {
                   left: ResponsiveDesignOrientation.isLandscape ? 20.w : 30.w),
               leading: Icon(
                 Icons.language,
-                size: ResponsiveDesignOrientation.isLandscape ? 16.sp : 24.sp,
+                size: iconSize,
                 color: kDark,
               ),
               title: Text(

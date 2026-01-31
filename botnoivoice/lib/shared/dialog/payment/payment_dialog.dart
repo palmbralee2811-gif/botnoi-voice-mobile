@@ -14,6 +14,8 @@ void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    isDismissible: false, // ป้องกันการกดที่พื้นหลัง (Barrier) แล้วปิด
+    enableDrag: false,    // ป้องกันการใช้นิ้วลากลง (Swipe Down) เพื่อปิด
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
     ),

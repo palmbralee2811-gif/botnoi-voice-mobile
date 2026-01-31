@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_marads.dart';
@@ -16,7 +17,9 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/result/result_text_b
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,6 +64,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   String? _currentFileName;
   String? _localPromptId;
   bool _isPersuasiveLoading = false;
+
+  // ประกาศ GlobalKey สำหรับ Scaffold
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -127,34 +133,57 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // คำนวณ Point V2 * 2, V1 * 1
+    final bool isV2 = (_selectedSpeaker?.v2 ?? false) ||
+        (_selectedSpeaker?.engName ?? '').contains('V2') ||
+        (_selectedSpeaker?.speakerName ?? '').contains('V2');
+    final int charCount = _textController.text.length;
+    final int calculatedPoints = charCount * (isV2 ? 2 : 1);
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     return Scaffold(
+      key: _scaffoldKey, // ผูก Key กับ Scaffold
       backgroundColor: const Color(0xFFF7F8FA),
+      drawer: const DrawerAppbar(),
       appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          _buildModeSelectorRow(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: MarAdsResultTextBox(
-                  controller: _textController,
-                  mode: _selectedMode,
-                  onClear: () {
-                    _textController.clear();
-                    setState(() {});
-                  },
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            _buildModeSelectorRow(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.w),
+                  child: MarAdsResultTextBox(
+                    controller: _textController,
+                    mode: _selectedMode,
+                    onClear: () {
+                      _textController.text = widget.generatedText ?? '';
+                      setState(() {});
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          MarAdsResultActionButtons(
-            onCreateVoice: _handleCreateVoice,
-            onMakePersuasive: _handleMakeMorePersuasive,
-            isPersuasiveLoading:
-                _isPersuasiveLoading, // [เพิ่ม] ส่งสถานะโหลดไปที่ปุ่ม
-          ),
-        ],
+            MarAdsResultActionButtons(
+              onCreateVoice: _handleCreateVoice,
+              onMakePersuasive: _handleMakeMorePersuasive,
+              isPersuasiveLoading:
+                  _isPersuasiveLoading, // ส่งสถานะโหลดไปที่ปุ่ม
+              isCreateEnabled: _textController.text.length <
+                  1000, // ต้องน้อยกว่า 1000 (999 ได้)
+              pointCost: calculatedPoints,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -179,7 +208,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                 color: const Color(0xFF3D3D3D),
               ),
               onPressed: () {
-                context.go('/home');
+                _scaffoldKey.currentState?.openDrawer();
               },
             ),
           ),
@@ -234,12 +263,28 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.9,
         decoration: BoxDecoration(
-          color: const Color(0xFFF7F8FA),
+          color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          child: const MarAdsHistoryScreen(),
+        child: Column(
+          children: [
+            SizedBox(height: 12.h), // ระยะห่างด้านบน
+            // [เพิ่ม] ติ่งเทาๆ (Drag Handle)
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[300], // สีเทา
+                borderRadius: BorderRadius.circular(2.r), // มนๆ
+              ),
+            ),
+            SizedBox(height: 12.h), // ระยะห่างระหว่างติ่งกับเนื้อหา
+
+            // [เพิ่ม] เนื้อหา History (ใช้ Expanded เพื่อให้ยืดเต็มพื้นที่ที่เหลือ)
+            const Expanded(
+              child: MarAdsHistoryScreen(isModal: true),
+            ),
+          ],
         ),
       ),
     );
@@ -284,7 +329,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     // เช็คว่า Text ว่างไหมก่อนยิง API
     if (_textController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('กรุณาพิมพ์ข้อความก่อนสร้างเสียง')));
+          SnackBar(content: Text('marads_result.please_type_message'.tr())));
       return;
     }
 
@@ -357,8 +402,8 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
         // ใช้ productName เป็น Title
         String promptTitle =
-            (effectiveProductName != null && effectiveProductName!.isNotEmpty)
-                ? effectiveProductName!
+            (effectiveProductName != null && effectiveProductName.isNotEmpty)
+                ? effectiveProductName
                 : (_textController.text.length > 20
                     ? "${_textController.text.substring(0, 20)}..."
                     : _textController.text);
@@ -405,6 +450,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               category: "text",
             );
           }
+          //อัปเดต Point ทันทีหลังจากสร้างเสียงสำเร็จ
+          loadAllTokensIfLoggedIn(ref);
+
           if (mounted) setState(() {});
         } catch (e) {
           debugPrint("⚠️ History Sync Error: $e");
@@ -451,13 +499,13 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "สร้างเสียงไม่สำเร็จ",
+                "marads_result.create_voice_failed".tr(),
                 style: GoogleFonts.prompt(
                     fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10.h),
               Text(
-                "กรุณาลองใหม่อีกครั้ง\n($e)",
+                "${'marads_result.try_again_error'.tr()}\n($e)",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 12.sp, color: Colors.grey),
               ),
@@ -469,7 +517,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
                 onPressed: () {
                   context.pop();
                 },
-                child: Text("ตกลง",
+                child: Text("marads_result.ok".tr(),
                     style: GoogleFonts.prompt(color: Colors.black)),
               ),
             )
@@ -487,36 +535,40 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
   // เพิ่มฟังก์ชันโชว์ Dialog
   void _showAudioPlayerDialog(AudioPlayer player) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => MarAdsAudioPlayerDialog(
         player: player,
         fileName: _currentFileName ?? "unknown.mp3",
         onDownload: () {
-          // Close Dialog
-          context.pop();
-
           // เรียกฟังก์ชันดาวน์โหลด
           if (_currentAudioUrl != null) {
-            _handleDownload(_currentAudioUrl!,
-                existingFileName: _currentFileName, isShare: false);
+            _handleDownload(
+              _currentAudioUrl!,
+              existingFileName: _currentFileName,
+              isShare: false,
+            );
           }
         },
         // ปุ่มแชร์: โหลด + เปิด Share Sheet
         onShare: () {
-          // Close Dialog
-          context.pop();
-
           if (_currentAudioUrl != null) {
-            _handleDownload(_currentAudioUrl!,
-                existingFileName: _currentFileName, isShare: true);
+            _handleDownload(
+              _currentAudioUrl!,
+              existingFileName: _currentFileName,
+              isShare: true,
+            );
           }
         },
       ),
     );
   }
 
-  Future<void> _handleDownload(String url,
-      {String? existingFileName, bool isShare = false}) async {
+  Future<void> _handleDownload(
+    String url, {
+    String? existingFileName,
+    bool isShare = false,
+  }) async {
     // กรณีแชร์: ไม่ต้องเลือกนามสกุล ให้โหลดเลย (Logic เดิม)
     if (isShare) {
       await _downloadLogic.handleDownload(
@@ -552,9 +604,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
               if (!mounted) return;
               showDialog(
                 context: context,
-                builder: (context) => const MarAdsSuccessDialog(
-                  title: "ดาวน์โหลดสำเร็จ",
-                  subtitle: "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+                builder: (context) => MarAdsSuccessDialog(
+                  title: "marads_result.download_success".tr(),
+                  subtitle: "marads_result.download_success_msg".tr(),
                 ),
               );
             },
@@ -611,9 +663,11 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           _currentAudioUrl = null; // ล้างเสียงเดิมทิ้ง
         });
 
+        loadAllTokensIfLoggedIn(ref);
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ปรับปรุงข้อความเรียบร้อยแล้ว'),
+          SnackBar(
+            content: Text('marads_result.persuasive_success'.tr()),
             backgroundColor: Colors.green,
           ),
         );
@@ -623,9 +677,9 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
 
       String errorMessage = e.toString().replaceAll('Exception:', '').trim();
       if (e.toString().contains('401')) {
-        errorMessage = 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่';
+        errorMessage = 'marads_result.session_expired'.tr();
       } else if (e.toString().contains('500')) {
-        errorMessage = 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่';
+        errorMessage = 'marads_result.system_error'.tr();
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

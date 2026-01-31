@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/main/home/model/appbar_bottom_model.dart';
@@ -74,7 +75,7 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
                   final response = await http.get(
                     Uri.parse(speakerAudio),
                     headers: {
-                      'Referer': 'https://voice.botnoi.ai/',
+                      'Referer': refererUrl,
                     },
                   );
                   final audioBytes = response.bodyBytes;
@@ -126,8 +127,8 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
                           ResponsiveDesignOrientation.isLandscape ? 22.r : 14.r,
                       backgroundImage: CachedNetworkImageProvider(
                         speakerImagePath!,
-                        headers: const {
-                          'Referer': 'https://voice.botnoi.ai/',
+                        headers: {
+                          'Referer': refererUrl,
                         },
                       ),
                     ),
@@ -203,9 +204,9 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
                       ),
                     ),
                     SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 10.w
-                            : 16.w),
+                      width:
+                          ResponsiveDesignOrientation.isLandscape ? 10.w : 16.w,
+                    ),
                   ],
                 ),
               ),

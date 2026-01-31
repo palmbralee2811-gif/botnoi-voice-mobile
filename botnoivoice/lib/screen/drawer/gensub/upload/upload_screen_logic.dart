@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
-
 import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
 import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
@@ -93,7 +92,7 @@ class UploadLogic {
 
     transcribeStatus = "text_to_gensub.transcribe_status".tr();
 
-    // 🚩 ตัวแปรสำหรับจำ ID โปรเจคที่เพิ่งสร้าง เผื่อต้องลบทิ้งกรณี Error
+    // ตัวแปรสำหรับจำ ID โปรเจคที่เพิ่งสร้าง เผื่อต้องลบทิ้งกรณี Error
     String? createdProjectId;
     String? createdUserId;
 
@@ -119,7 +118,7 @@ class UploadLogic {
       );
       _logger.d(" insert workspace result = $insertResult");
 
-      // ✅ เก็บค่า ID ไว้ใช้ลบกรณี Error
+      // เก็บค่า ID ไว้ใช้ลบกรณี Error
       createdProjectId = insertResult["data"]?["project_id"];
       createdUserId = insertResult["data"]?["user_id"];
 
@@ -203,7 +202,7 @@ class UploadLogic {
       );
       transcribeStatus = " Something went wrong: $e";
 
-      // 🔥🔥🔥 Rollback: ลบโปรเจคทิ้งถ้าเกิด Error 🔥🔥🔥
+      // Rollback: ลบโปรเจคทิ้งถ้าเกิด Error
       if (createdProjectId != null) {
         _logger.w("Rolling back: Deleting invalid project $createdProjectId");
         try {

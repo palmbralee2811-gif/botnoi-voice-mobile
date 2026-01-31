@@ -50,7 +50,7 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
         ),
       ),
 
-      // 🔹 ปุ่มย้อนกลับ Minimal
+      // ปุ่มย้อนกลับ Minimal
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_ios_new_rounded, // ใช้ Rounded icon ให้ดูนุ่มนวล
@@ -63,7 +63,7 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
       ),
       leadingWidth: 50.w,
 
-      // 🔹 โลโก้ตรงกลาง
+      // โลโก้ตรงกลาง
       centerTitle: true,
       title: SvgPicture.asset(
         'assets/images/logo/appbar-icon.svg',
@@ -71,7 +71,7 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
         fit: BoxFit.contain,
       ),
 
-      // 🔹 ส่วนแสดงเครดิต (Modern Pill Style)
+      // ส่วนแสดงเครดิต (Modern Pill Style)
       actions: [
         Padding(
           padding: EdgeInsets.only(right: 16.w),
@@ -109,9 +109,6 @@ class _TopbarGensubState extends ConsumerState<TopbarGensub> {
                       color: Colors.black87, // สีเข้มตัดกับพื้นขาว
                     ),
                   ),
-                  // Optional: เพิ่มไอคอน + เล็กๆ เพื่อสื่อว่าเติมเงินได้
-                  // SizedBox(width: 4.w),
-                  // Icon(Icons.add_circle, size: 14.sp, color: Colors.blue),
                 ],
               ),
             ),

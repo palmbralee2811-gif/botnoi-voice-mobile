@@ -1,7 +1,9 @@
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_history_model.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/gradient_slider_shape.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -107,10 +109,11 @@ class MarAdsHistoryCard extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: const Color(0xFFEEDDF3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -126,45 +129,87 @@ class MarAdsHistoryCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Speaker Selection
-              GestureDetector(
-                onTap: onSelectSpeaker,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage:
-                          CachedNetworkImageProvider(speaker.image),
-                    ),
-                    SizedBox(width: 12.w),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+              // Speaker Selection (ใช้ Expanded เพื่อกันพื้นที่ส่วนนี้ไม่ให้ดันไอคอนขวาตกขอบ)
+              Expanded(
+                child: GestureDetector(
+                  onTap: onSelectSpeaker,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage:
+                            CachedNetworkImageProvider(speaker.image),
+                      ),
+                      SizedBox(width: 12.w),
+                      // ใช้ Flexible เพื่อให้ชื่อหดลงได้ถ้าพื้นที่ไม่พอ (เช่น มีปุ่ม Generate)
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              speaker.thaiName,
-                              style: GoogleFonts.prompt(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: MarAdsUIStyle.primary,
-                              ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    context.locale.languageCode == 'th'
+                                        ? speaker.thaiName
+                                        : speaker.engName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow
+                                        .ellipsis, // ตัดคำถ้าชื่อยาวเกิน
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: MarAdsUIStyle.primary,
+                                    ),
+                                  ),
+                                ),
+                                Icon(Icons.keyboard_arrow_down,
+                                    size: 16.sp, color: Colors.black54),
+                              ],
                             ),
-                            Icon(Icons.keyboard_arrow_down,
-                                size: 16.sp, color: Colors.black54),
                           ],
                         ),
+                      ),
+                      // [1] ปุ่ม Generate
+                      if (!item.hasAudio) ...[
+                        SizedBox(width: 8.w),
+                        InkWell(
+                          onTap: onGenerateAudio,
+                          borderRadius: BorderRadius.circular(4.r),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: const Color(0xFF01BFFB)),
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: Text(
+                              "marads_history.generate".tr(),
+                              style: GoogleFonts.prompt(
+                                  fontSize: 10.sp,
+                                  color: const Color(0xFF01BFFB)),
+                            ),
+                          ),
+                        ),
                       ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              const Spacer(),
-              if (item.hasAudio && item.audioUrl.isNotEmpty)
-                InkWell(
-                  onTap: onDownload,
-                  child: Icon(Icons.file_download_outlined,
-                      color: Colors.black54, size: 24.sp),
+
+              // ลบ Spacer() ออก เพราะเราใช้ Expanded ที่ Widget ด้านซ้ายแล้ว
+              // แต่เพิ่มระยะห่างนิดหน่อยเพื่อความสวยงาม
+              SizedBox(width: 8.w),
+
+              // [2] ปุ่ม Download
+              InkWell(
+                onTap: item.hasAudio ? onDownload : null,
+                child: Icon(
+                  Icons.file_download_outlined,
+                  color: item.hasAudio ? Colors.black54 : Colors.grey[300],
+                  size: 24.sp,
                 ),
+              ),
               SizedBox(width: 8.w),
               InkWell(
                 onTap: onOptions,
@@ -173,11 +218,13 @@ class MarAdsHistoryCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 2.h),
+          const Divider(color: Color(0xFFF5F5F5), thickness: 2),
+          SizedBox(height: 2.h),
 
           // Title
           _buildHighlightedText(
-            item.title,
+            item.title.isEmpty ? 'marads_history.no_title'.tr() : item.title,
             GoogleFonts.prompt(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -191,22 +238,15 @@ class MarAdsHistoryCard extends StatelessWidget {
             item.content,
             GoogleFonts.sarabun(
               fontSize: 14.sp,
-              color: MarAdsUIStyle
-                  .textBody, // หรือ MarAdsUIStyle.textBody ถ้าเพิ่มแล้ว
+              color: MarAdsUIStyle.textBody,
               height: 1.5,
             ),
             maxLines: 3,
           ),
           SizedBox(height: 12.h),
 
-          // Action Area: Audio Player OR Generate Button
-          if (item.hasAudio && item.audioUrl.isNotEmpty)
-            _buildAudioPlayer(context, durationText)
-          else
-            _buildGenerateButton(),
+          _buildAudioPlayer(context, durationText, isEnabled: item.hasAudio),
 
-          SizedBox(height: 8.h),
-          const Divider(),
           SizedBox(height: 8.h),
 
           // Footer Info
@@ -217,8 +257,10 @@ class MarAdsHistoryCard extends StatelessWidget {
                 children: [
                   if (item.style.isNotEmpty && item.style != '-')
                     Text(
-                      item.style,
-                      style: GoogleFonts.inter(
+                      context.locale.languageCode == 'th'
+                          ? item.style
+                          : item.styleEn,
+                      style: GoogleFonts.prompt(
                         fontSize: 12.sp,
                         color: Colors.grey,
                       ),
@@ -226,8 +268,8 @@ class MarAdsHistoryCard extends StatelessWidget {
                 ],
               ),
               Text(
-                '${item.points} | ${item.chars}',
-                style: GoogleFonts.inter(
+                '${item.points} pt  ${item.chars} ${'marads_history.chars_unit'.tr()}',
+                style: GoogleFonts.prompt(
                   fontSize: 12.sp,
                   color: Colors.grey,
                 ),
@@ -239,29 +281,54 @@ class MarAdsHistoryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAudioPlayer(BuildContext context, String durationText) {
+  Widget _buildAudioPlayer(BuildContext context, String durationText,
+      {required bool isEnabled}) {
+    const List<Color> activeGradient = [Color(0xFF9340FF), Color(0xFF34BDFA)];
+    const Gradient gradient = LinearGradient(colors: activeGradient);
+    final Color inactiveColor = Colors.grey[300]!;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         children: [
           InkWell(
-            onTap: onPlayPause,
-            child: Icon(
-              isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
-              color: MarAdsUIStyle.primary,
-              size: 32.sp,
-            ),
+            onTap: isEnabled ? onPlayPause : null,
+            child: isEnabled
+                ? ShaderMask(
+                    shaderCallback: (Rect bounds) =>
+                        gradient.createShader(bounds),
+                    child: Icon(
+                      isPlaying
+                          ? Icons.pause_circle_outlined
+                          : Icons.play_circle_outlined,
+                      color: Colors.white,
+                      size: 30.sp,
+                    ),
+                  )
+                : Icon(
+                    isPlaying
+                        ? Icons.pause_circle_outlined
+                        : Icons.play_circle_outlined,
+                    color: inactiveColor,
+                    size: 30.sp,
+                  ),
           ),
-          SizedBox(width: 8.w),
+          SizedBox(width: 12.w),
           Expanded(
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
-                activeTrackColor: MarAdsUIStyle.primary,
-                inactiveTrackColor: Colors.grey[300],
-                thumbColor: MarAdsUIStyle.primary,
-                trackHeight: 2.h,
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.r),
-                overlayShape: RoundSliderOverlayShape(overlayRadius: 14.r),
+                trackHeight: 4.h,
+                trackShape: const GradientSliderTrackShape(
+                  gradient: gradient,
+                  darkenInactive: false,
+                ),
+                thumbShape: RingSliderThumbShape(
+                  gradient: gradient,
+                  radius: 8.r,
+                  ringThickness: 2.5,
+                ),
+                overlayShape: RoundSliderOverlayShape(overlayRadius: 16.r),
+                activeTrackColor: Colors.transparent,
+                inactiveTrackColor: inactiveColor.withOpacity(0.3),
               ),
               child: Slider(
                 min: 0,
@@ -271,50 +338,20 @@ class MarAdsHistoryCard extends StatelessWidget {
                 value: currentPosition.inMilliseconds
                     .toDouble()
                     .clamp(0.0, totalDuration.inMilliseconds.toDouble()),
-                onChanged: onSeek,
+                onChanged: isEnabled ? onSeek : null,
               ),
             ),
           ),
+          SizedBox(width: 12.w),
           Text(
             durationText,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.prompt(
               fontSize: 12.sp,
-              color: Colors.grey,
+              color: const Color(0xFF9E9E9E),
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildGenerateButton() {
-    return InkWell(
-      onTap: onGenerateAudio,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8.h),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: MarAdsUIStyle.primary.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: MarAdsUIStyle.primary, width: 1),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.graphic_eq_rounded,
-                color: MarAdsUIStyle.primary, size: 20.sp),
-            SizedBox(width: 8.w),
-            Text(
-              'สร้างเสียง',
-              style: GoogleFonts.prompt(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: MarAdsUIStyle.primary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

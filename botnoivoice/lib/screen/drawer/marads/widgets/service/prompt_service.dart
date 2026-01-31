@@ -27,10 +27,10 @@ class PromptService {
 
   Map<String, String> _headers(String token) {
     return {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      "Authorization": "Bearer $token",
-      "Referer": apiReferer,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+      'Referer': refererUrl,
     };
   }
 
@@ -235,6 +235,19 @@ class PromptService {
     final url = Uri.parse(
         "$baseUrl/api/marketplace/update_prompt_history?prompt_id=$promptId");
 
+    // Helper สำหรับแปลง Style ไทยเป็นอังกฤษ แก้ตอนส่งข้อมูลเข้า History
+    String getStyleEn(String style) {
+      const map = {
+        'จูงใจให้ใช้': 'Persuasive',
+        'ตลก': 'Funny',
+        'จริงจัง': 'Serious',
+        'ออดอ้อน': 'Begging',
+        'เรียกความสงสาร': 'Sympathy',
+        'รีวิวสินค้า': 'Product Review'
+      };
+      return map[style] ?? style;
+    }
+
     //  สร้าง Payload ตามที่ API ต้องการ
     final payload = {
       "prompt_id": promptId,
@@ -247,7 +260,11 @@ class PromptService {
       "text": text,
       "volume": "100",
       "speed": "1",
-      "prompt_style": {"TH_label": contentStyle, "value": contentStyle},
+      "prompt_style": {
+        "TH_label": contentStyle,
+        "EN_label": getStyleEn(contentStyle), // [เพิ่ม] ส่ง EN_label ลง DB
+        "value": contentStyle
+      },
       if (title != null) "title": title,
       if (category != null) "category": category,
     };

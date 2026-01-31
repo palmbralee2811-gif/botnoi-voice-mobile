@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -99,7 +100,7 @@ class MarAdsResultModeSelector extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             Text(
-              "เลือกโหมดการทำงาน",
+              "marads_mode_selector.select_mode".tr(),
               style: GoogleFonts.prompt(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -110,7 +111,7 @@ class MarAdsResultModeSelector extends StatelessWidget {
             _buildModeOption(
               context: context,
               icon: Icons.remove_red_eye_outlined,
-              label: 'Result',
+              label: 'marads_mode_selector.mode_result'.tr(),
               isSelected: selectedMode == 'Result',
               onTap: () {
                 // Close Dialog
@@ -124,7 +125,7 @@ class MarAdsResultModeSelector extends StatelessWidget {
             _buildModeOption(
               context: context,
               icon: Icons.edit_note_rounded,
-              label: 'Edit',
+              label: 'marads_mode_selector.mode_edit'.tr(),
               isSelected: selectedMode == 'Edit',
               onTap: () {
                 // Close Dialog
@@ -138,7 +139,7 @@ class MarAdsResultModeSelector extends StatelessWidget {
             _buildModeOption(
               context: context,
               icon: Icons.history_rounded,
-              label: 'History',
+              label: 'marads_mode_selector.mode_history'.tr(),
               isSelected: false,
               onTap: () {
                 // Close Dialog

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../mar_ads_collapsible_section.dart';
 import '../mar_ads_dropdown.dart';
@@ -25,18 +26,18 @@ class AdvancedSalesStyleSection extends StatelessWidget {
     return Column(
       children: [
         MarAdsCollapsibleSection(
-          title: 'สไตล์การขาย',
+          title: 'marads_adv.section_sales_style'.tr(),
           isExpanded: isExpanded,
           onTap: onToggle,
         ),
         if (isExpanded) ...[
           MarAdsDropdown(
-            label: 'คาแรกเตอร์คนขาย',
+            label: 'marads_adv.header_character'.tr(),
             value: selectedSalesCharacter,
             onTap: onTapSalesCharacter,
           ),
           MarAdsDropdown(
-            label: 'สไตล์เนื้อหา',
+            label: 'marads_adv.header_style'.tr(),
             value: selectedContentStyle,
             onTap: onTapContentStyle,
           ),

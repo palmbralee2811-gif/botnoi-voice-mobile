@@ -94,7 +94,8 @@
     "marads": "MarAds",
     "services": "Services",
     "account": "Account",
-    "system": "System"
+    "system": "System",
+    "voice": "Voice Studio"
   },
   "account": {
     "uid_copy_success": "UID copied successfully",
@@ -214,7 +215,12 @@
     "unable_to_save_file": "Unable to save the file.",
     "audio_created_successfully": "Voice Generated!",
     "download": "Download",
-    "close": "Close"
+    "close": "Close",
+    "file_label": "File:",
+    "share_text": "Ad audio from Botnoi Voice",
+   "download_failed": "Download failed. Please try again.",
+   "download_error": "Download error",
+   "storage_permission_error": "No storage permission"
   },
   "notification": {
     "close": "Close"
@@ -377,5 +383,148 @@
   },
   "select_languages": {
     "thai": "Thai"
+  },
+  "marads_basic": {
+    "label_product": "Product to sell*",
+    "placeholder_product": "Language teaching courses, Smart Phones",
+    "label_brand": "Brand Name (Optional)",
+    "placeholder_brand": "Botnoi",
+    "label_price": "Price (Optional)",
+    "placeholder_price": "Very cheap, only 99 Baht from 129 Baht",
+    "label_style": "Content Style",
+    "label_length": "Content Length* (Affects points)",
+    "label_extra": "Additional Info (Optional)",
+    "placeholder_extra": "Don't miss out, today only!",
+    "error_required": "Please fill in all required fields",
+    "header_style": "Content Style",
+    "header_length": "Content Length",
+
+    "style_persuasive": "Persuasive",
+    "style_funny": "Funny",
+    "style_serious": "Serious",
+    "style_begging": "Begging",
+    "style_sympathy": "Sympathy",
+    "style_review": "Product Review",
+
+    "length_15": "~15 sec",
+    "length_30": "~30 sec",
+    "length_60": "~60 sec",
+    
+    "text_remaining": "Quotas {} times",     
+    "btn_create": "Generate",
+    "point_usage_info": "Content generation affects points usage ",
+    "point_rate_15s": "50 points/time for ~15 sec",
+    "point_rate_30s": "100 points/time for ~30 sec",
+    "point_rate_60s": "150 points/time for ~60 sec"
+  },
+  "marads_adv": {
+    "label_length": "Content Length* (Affects points)",
+    "label_extra": "Additional Info (Optional)",
+    "placeholder_extra": "Don't miss out, ends in 3 days",
+    "header_character": "Sales Character",
+    "header_style": "Content Style",
+    "header_length": "Content Length",
+    "btn_properties": "Product Properties",
+    "error_no_product": "Please enter the product name",
+
+    "char_beauty": "Beautiful Seller",
+    "char_kid": "Elementary Kid",
+    "char_teen_boy": "Teenage Boy",
+    "char_teen_girl": "Teenage Girl",
+    "char_pro_seller": "Pro Seller",
+    "char_auntie": "Auntie Next Door",
+    "char_chief": "Village Chief",
+    "char_grandpa": "Grandpa",
+    "char_grandma": "Grandma",
+
+    "color_black": "Black",
+    "color_red": "Red",
+    "color_white": "White",
+    "color_pink": "Pink",
+    "color_blue": "Blue",
+
+    "section_basic_info": "Basic information*",
+    "section_promotion": "Promotion Info (Optional)",
+    "section_sales_style": "Sales Style",
+    "label_promotion": "Promotion",
+    "placeholder_promotion": "Free textbooks",
+    "label_target": "Target Audience",
+    "placeholder_target": "Tech enthusiasts",
+    "label_selling_point": "Selling Points",
+    "placeholder_selling_point": "Cheapest in the area",
+    "label_why_buy": "Why Buy",
+    "placeholder_why_buy": "Save money on new items"     
+  },
+  "marads_props": {
+    "title": "Product Properties",
+    "subtitle": "(Fields are optional)",
+    "label_size": "Size/Quantity",
+    "placeholder_size": "256 GB, 1 Liter",
+    "label_model": "Model/Type/Pattern",
+    "placeholder_model": "iPhone 15, Floral pattern",
+    "label_material": "Material/Spec",
+    "placeholder_material": "Silk, M4 Chip",
+    "label_color": "Product Color",
+    "header_select_color": "Select Color",
+    "color_unspecified": "Unspecified",
+    "btn_save": "Save"
+  },
+  "marads_history": {
+    "download_title": "Download File",
+    "select_extension": "Select File Extension",
+    "download_warning": "Note: Background music will be excluded from the download.",
+    "confirm_delete_title": "Delete this generated audio",
+    "confirm_delete_msg": "Are you sure you want to delete this item?",
+    "processing": "Processing",
+    "no_title": "No Title",
+    "generate": "Generate",
+    "chars_unit": "chars",
+    "download_success": "Download Successful",
+    "download_success_msg": "Audio file saved to device successfully.",
+    "generate_success": "Generation Successful",
+    "generate_success_msg": "Audio generated successfully.",
+    "item_not_found": "Item not found (may be deleted). Refreshing data...",
+    "incomplete_data": "Incomplete data, cannot delete.",
+    "delete_success": "Delete Successful",
+    "delete_success_msg": "Data deleted successfully.",
+    "delete_error": "Error deleting data.",
+    "no_audio_link": "Audio link not found.",
+    "connection_timeout": "Connection timeout, please try again.",
+    "link_expired": "Audio link expired. System reset for regeneration.",
+    "play_failed": "Playback failed",
+    "copy": "Copy",
+    "copied": "Copied",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save_success": "Saved successfully",
+    "save_error": "Error saving data",
+    "sort_newest": "Sort Newest -> Oldest",
+    "sort_oldest": "Sort Oldest -> Newest",
+    "no_history": "No history found",
+    "search_hint": "Search"
+  },
+  "marads_result": {
+    "select_voice": "Select Voice",
+    "make_persuasive": "Make it more persuasive",
+    "create_voice": "Generate Audio",
+    "please_type_message": "Please type a message before generating audio.",
+    "create_voice_failed": "Generation Failed",
+    "try_again_error": "Please try again.",
+    "download_success": "Download Successful",
+    "download_success_msg": "Audio file saved to device successfully.",
+    "persuasive_success": "Text improved successfully.",
+    "session_expired": "Session expired. Please log in again.",
+    "system_error": "Temporary system error. Please try again.",
+    "ok": "OK"
+  },
+  "marads_mode_selector": {
+    "select_mode": "Select Mode",
+    "mode_result": "Result",
+    "mode_edit": "Edit",
+    "mode_history": "History"
+  },
+  "marads_filter_modal_sheet": {
+    "filter": "Filter",
+    "all": "All"
   }
 }

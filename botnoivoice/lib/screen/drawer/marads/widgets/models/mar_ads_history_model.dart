@@ -4,6 +4,7 @@ class MarAdsHistoryModel {
   final String content;
   final String mode;
   final String style;
+  final String styleEn;
   final String points;
   final String chars;
   final bool hasAudio;
@@ -21,6 +22,7 @@ class MarAdsHistoryModel {
     required this.content,
     this.mode = 'Basic mode',
     this.style = '-',
+    this.styleEn = '-',
     this.points = '0 pt',
     this.chars = '0 ตัวอักษร',
     this.hasAudio = false,
@@ -31,33 +33,19 @@ class MarAdsHistoryModel {
   });
 
   factory MarAdsHistoryModel.fromJson(Map<String, dynamic> json) {
-    // String styleLabel = '-';
-    // // ดึง Style ให้ครอบคลุมทุก format ที่ backend อาจส่งมา
-    // if (json['prompt_style'] != null) {
-    //   if (json['prompt_style'] is Map) {
-    //     styleLabel = json['prompt_style']['TH_label'] ??
-    //         json['prompt_style']['value'] ??
-    //         json['prompt_style']['EN_label'] ??
-    //         '-';
-    //   } else {
-    //     //  รับทุกกรณีที่เป็นไปได้ (String หรืออื่นๆ)
-    //     styleLabel = json['prompt_style'].toString();
-    //   }
-    // }
-
     final String textContent = json['text'] ?? '';
     final int charCount = textContent.length;
     final int calculatedPoints = charCount * 1;
 
     return MarAdsHistoryModel(
       id: json['prompt_id'] ?? json['_id'] ?? '',
-      title: json['title'] ?? 'ไม่ระบุหัวข้อ',
+      title: json['title'] ?? '',
       content: json['text'] ?? '',
       mode: json['category'] == 'text' ? 'Basic mode' : 'Advanced mode',
-      // style: styleLabel,
       style: _parseStyleLabel(json['prompt_style']),
-      points: '$calculatedPoints PT',
-      chars: '$charCount ตัวอักษร',
+      styleEn: _parseStyleLabelEn(json['prompt_style']),
+      points: '$calculatedPoints',
+      chars: '$charCount',
       hasAudio: json['audio'] != null && json['audio'].toString().isNotEmpty,
       duration: '00:00/00:00',
       audioUrl: json['audio'] ?? '',
@@ -79,6 +67,30 @@ class MarAdsHistoryModel {
           '-';
     }
     return styleJson.toString();
+  }
+
+  // เพิ่มฟังก์ชันแกะภาษาอังกฤษ (พร้อมตัวแปลงสำหรับข้อมูลเก่า)
+  static String _parseStyleLabelEn(dynamic styleJson) {
+    String label = '-';
+    if (styleJson is Map) {
+      label = styleJson['EN_label'] ??
+          styleJson['value'] ??
+          styleJson['TH_label'] ??
+          '-';
+    } else if (styleJson != null) {
+      label = styleJson.toString();
+    }
+
+    // Fallback: ถ้าได้มาเป็นภาษาไทย ให้แปลงเป็นอังกฤษ
+    const map = {
+      'จูงใจให้ใช้': 'Persuasive',
+      'ตลก': 'Funny',
+      'จริงจัง': 'Serious',
+      'ออดอ้อน': 'Begging',
+      'เรียกความสงสาร': 'Sympathy',
+      'รีวิวสินค้า': 'Product Review'
+    };
+    return map[label] ?? label;
   }
 
   // แยก Logic การเช็ค Boolean (รองรับทั้ง String "true"/"1" และ bool)

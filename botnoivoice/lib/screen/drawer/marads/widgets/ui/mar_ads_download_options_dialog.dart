@@ -1,4 +1,4 @@
-import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -42,7 +42,7 @@ class _MarAdsDownloadOptionsDialogState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "ดาวน์โหลดไฟล์",
+                  "marads_history.download_title".tr(),
                   style: GoogleFonts.prompt(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
@@ -59,61 +59,9 @@ class _MarAdsDownloadOptionsDialogState
             ),
             SizedBox(height: 20.h),
 
-            // 2. Tab (เฉพาะเสียง / วิดีโอ) - ทำ UI หลอกไว้ก่อน
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      // ใช้ ShaderMask เพื่อให้ตัวหนังสือเป็น Gradient
-                      ShaderMask(
-                        shaderCallback: (bounds) => MarAdsUIStyle
-                            .cyanPurpleGradient
-                            .createShader(bounds),
-                        child: Text(
-                          "เฉพาะเสียง",
-                          style: GoogleFonts.prompt(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors
-                                .white, // ต้องเป็นสีขาวเพื่อให้ Shader ทำงาน
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5.h),
-                      // เส้นใต้ Gradient
-                      Container(
-                        height: 2.h,
-                        decoration: const BoxDecoration(
-                          gradient: MarAdsUIStyle.cyanPurpleGradient,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        "วิดีโอ",
-                        style: GoogleFonts.prompt(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(height: 5.h),
-                      Container(height: 2.h, color: Colors.transparent),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.h),
-
             // 3. Dropdown เลือกนามสกุล
             Text(
-              "เลือกนามสกุลไฟล์",
+              "marads_history.select_extension".tr(),
               style: GoogleFonts.prompt(
                   fontSize: 14.sp, fontWeight: FontWeight.w600),
             ),
@@ -146,52 +94,26 @@ class _MarAdsDownloadOptionsDialogState
                 ),
               ),
             ),
-            SizedBox(height: 10.h),
-            const Divider(),
-            SizedBox(height: 10.h),
+            SizedBox(height: 16.h),
 
-            // 4. ยืนยันพอยท์
-            Text(
-              "ยืนยันการดาวน์โหลดไฟล์",
-              style: GoogleFonts.prompt(
-                  fontSize: 14.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.h),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("พอยท์ที่ต้องจ่ายทั้งหมด:",
-                    style: GoogleFonts.prompt(fontSize: 14.sp)),
-                // ใช้ ShaderMask กับตัวเลขพอยท์
-                ShaderMask(
-                  shaderCallback: (bounds) =>
-                      MarAdsUIStyle.cyanPurpleGradient.createShader(bounds),
+                Icon(Icons.info_outline, size: 18.sp, color: Colors.grey[600]),
+                SizedBox(width: 5.w),
+                Expanded(
                   child: Text(
-                    "${widget.points} PT",
-                    style: GoogleFonts.prompt(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    "marads_history.download_warning".tr(),
+                    style: GoogleFonts.inter(
+                      fontSize: 12
+                          .sp, // [แก้ไข] ปรับขนาดให้อ่านง่ายขึ้นนิดนึง (จาก 10 -> 12)
+                      color: Colors.grey[600],
+                      height: 1.4, // เพิ่มความสูงบรรทัดให้อ่านง่าย
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10.h),
-            Row(
-              children: [
-                Icon(Icons.info_outline, size: 16.sp, color: Colors.blue),
-                SizedBox(width: 5.w),
-                Expanded(
-                  child: Text(
-                    "หมายเหตุ : หากดาวน์โหลดเสียงแล้วเสียงพื้นหลังจะหายไป",
-                    style:
-                        GoogleFonts.inter(fontSize: 10.sp, color: Colors.grey),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 24.h),
 
             // 5. ปุ่ม ยกเลิก / ตกลง
             Row(
@@ -209,7 +131,7 @@ class _MarAdsDownloadOptionsDialogState
                       ),
                     ),
                     child: Text(
-                      "ยกเลิก",
+                      "dialog.cancel".tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 16.sp,
                         color: const Color(0xFF888888),
@@ -224,7 +146,7 @@ class _MarAdsDownloadOptionsDialogState
                     onPressed: () {
                       // Close Dialog
                       context.pop();
-                      
+
                       // Call onConfirm Function
                       widget.onConfirm(_selectedFormat);
                     },
@@ -236,7 +158,7 @@ class _MarAdsDownloadOptionsDialogState
                       ),
                     ),
                     child: Text(
-                      "ตกลง",
+                      "confirm".tr(),
                       style: GoogleFonts.prompt(
                         fontSize: 16.sp,
                         color: Colors.white,

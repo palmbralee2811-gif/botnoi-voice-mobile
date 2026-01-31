@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_download_logic.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_history_model.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
@@ -6,27 +7,34 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/service/generate_audio_
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_edit_history_sheet.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_pagination.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_search_bar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_delete_confirm_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_download_options_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_history_card.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_loading_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_mode_selector.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_success_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/marads_ui_style.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
+import 'package:botnoivoice/shared/style/style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 
 class MarAdsHistoryScreen extends ConsumerStatefulWidget {
-  const MarAdsHistoryScreen({super.key});
+  final bool isModal; // [1] เพิ่มตัวแปรรับค่า
+
+  const MarAdsHistoryScreen({super.key, this.isModal = false});
 
   @override
   ConsumerState<MarAdsHistoryScreen> createState() =>
@@ -42,6 +50,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
   bool _isLoading = true;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
+  String _selectedMode = 'History';
+
   // เพิ่มบรรทัดนี้ครับ (คุณลืมประกาศตัวแปรนี้ ทำให้ข้างล่าง error)
   Map<String, SpeakerEntity> _allSpeakerMap = {};
 
@@ -55,13 +65,17 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
   Duration _position = Duration.zero;
   int? _playingIndex;
 
+  bool _isNewestFirst = true;
+
   @override
   void initState() {
     super.initState();
     // สั่ง Initialize ปลั๊กอินก่อนเริ่มใช้งาน
     Future.microtask(() async {
       try {
-        await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+        if (!FlutterDownloader.initialized) {
+          await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+        }
       } catch (e) {
         debugPrint("FlutterDownloader already initialized or error: $e");
       }
@@ -140,13 +154,18 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     });
   }
 
-  //  รวม Logic เช็ค V2 ไว้ที่เดียว
-  bool _isSpeakerV2(SpeakerEntity s) {
-    return s.v2 || s.engName.contains('V2') || s.speakerName.contains('V2');
+  // เพิ่มฟังก์ชันจัดการเปลี่ยนโหมด
+  void _handleModeSelectorTap() {
+    MarAdsModeSelector.show(context, _selectedMode, (mode) {
+      if (mode == 'Basic mode') {
+        context.go('/marads');
+      } else if (mode == 'Advanced mode') {
+        context.go('/marads/advanced');
+      } else if (mode == 'History') {
+        setState(() => _selectedMode = 'History');
+      }
+    });
   }
-
-  //  สร้าง Key สำหรับ Map ให้เป็นมาตรฐานเดียวกัน
-  String _generateMapKey(String id, bool isV2) => "${id.trim()}_$isV2";
 
   Future<void> _fetchHistory() async {
     try {
@@ -218,9 +237,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               if (!mounted) return;
               showDialog(
                 context: context,
-                builder: (context) => const MarAdsSuccessDialog(
-                  title: "ดาวน์โหลดสำเร็จ",
-                  subtitle: "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+                builder: (context) => MarAdsSuccessDialog(
+                  title: "marads_history.download_success".tr(),
+                  subtitle: "marads_history.download_success_msg".tr(),
                 ),
               );
             },
@@ -260,6 +279,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
   Future<void> _handleGenerateAudio(
       int index, String text, SpeakerEntity speaker) async {
+    await _audioPlayer.stop();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -302,42 +322,25 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           category: 'text',
         );
 
-        setState(() {
-          if (_playingIndex == index) {
-            _playingIndex = null;
-            _isPlaying = false;
-            _position = Duration.zero;
-            _duration = Duration.zero;
-            _audioPlayer.stop();
-          }
+        // อัปเดต Point ทันทีหลังจากสร้างเสียงสำเร็จ
+        loadAllTokensIfLoggedIn(ref);
 
-          final oldItem = _historyItems[index];
-          _historyItems[index] = MarAdsHistoryModel(
-            id: oldItem.id,
-            title: oldItem.title,
-            content: oldItem.content,
-            mode: oldItem.mode,
-            style: oldItem.style,
-            points: oldItem.points,
-            chars: oldItem.chars,
-            hasAudio: true,
-            duration: oldItem.duration,
-            audioUrl: audioUrl,
-            speakerId: speaker.speakerId,
-          );
-        });
+        await _fetchHistory();
 
         // ปิด Loading ก่อนแสดง Success Dialog
-        if (mounted && context.canPop()) {
+        if (mounted) {
+          // Navigator.of(context, rootNavigator: true).pop();
+
+          //TODO: [Mobile Green]: Test this function
           context.pop();
         }
 
         if (mounted) {
           showDialog(
             context: context,
-            builder: (context) => const MarAdsSuccessDialog(
-              title: "สร้างเสียงสำเร็จ",
-              subtitle: "ระบบได้ทำการสร้างเสียงเรียบร้อยแล้ว",
+            builder: (context) => MarAdsSuccessDialog(
+              title: "marads_history.generate_success".tr(),
+              subtitle: "marads_history.generate_success_msg".tr(),
             ),
           );
         }
@@ -356,6 +359,18 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       print("Error generating audio: $e");
 
       if (mounted) {
+        // [เพิ่มส่วนนี้] เช็คว่า Error เกิดจาก ID ถูกลบไปแล้วหรือไม่
+        if (e.toString().contains("prompt_id not found")) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('marads_history.item_not_found'.tr()),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          // รีโหลดข้อมูลใหม่เพื่อลบรายการที่ค้างอยู่ออก
+          _fetchHistory();
+          return;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
@@ -369,8 +384,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     // เช็คก่อนลบ ถ้าไม่มี ID ให้แจ้งเตือนและหยุดทำงาน
     if (item.id.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('รายการนี้ข้อมูลไม่สมบูรณ์ ไม่สามารถลบได้')),
+        SnackBar(content: Text('marads_history.incomplete_data'.tr())),
       );
       return;
     }
@@ -385,7 +399,26 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           );
 
           if (success) {
+            final indexToRemove =
+                _historyItems.indexWhere((element) => element.id == item.id);
+
             setState(() {
+              if (indexToRemove != -1) {
+                // กรณีลบตัวที่กำลังเล่นอยู่ -> ให้หยุดเล่นและรีเซ็ตค่า
+                if (_playingIndex == indexToRemove) {
+                  _audioPlayer.stop();
+                  _playingIndex = null;
+                  _isPlaying = false;
+                  _position = Duration.zero;
+                  _duration = Duration.zero;
+                }
+                // กรณีลบตัวที่อยู่ "ก่อนหน้า" ตัวที่กำลังเล่น -> ต้องลด Index ลง 1 เพื่อให้ชี้ถูกตัว
+                else if (_playingIndex != null &&
+                    indexToRemove < _playingIndex!) {
+                  _playingIndex = _playingIndex! - 1;
+                }
+              }
+
               _historyItems.removeWhere((element) => element.id == item.id);
               _filteredItems.removeWhere((element) => element.id == item.id);
 
@@ -397,16 +430,16 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
             if (mounted) {
               showDialog(
                 context: context,
-                builder: (context) => const MarAdsSuccessDialog(
-                  title: "ลบสำเร็จ",
-                  subtitle: "ลบข้อมูลเรียบร้อยแล้ว",
+                builder: (context) => MarAdsSuccessDialog(
+                  title: "marads_history.delete_success".tr(),
+                  subtitle: "marads_history.delete_success_msg".tr(),
                 ),
               );
             }
           } else {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('เกิดข้อผิดพลาดในการลบข้อมูล')),
+                SnackBar(content: Text('marads_history.delete_error'.tr())),
               );
             }
           }
@@ -419,7 +452,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
     try {
       if (url.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ไม่พบลิงก์เสียง')),
+          SnackBar(content: Text('marads_history.no_audio_link'.tr())),
         );
         return;
       }
@@ -456,6 +489,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 content: oldItem.content,
                 mode: oldItem.mode,
                 style: oldItem.style,
+                styleEn: oldItem.styleEn,
                 points: oldItem.points,
                 chars: oldItem.chars,
                 hasAudio: false,
@@ -473,8 +507,8 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().contains('timeout')
-                    ? 'การเชื่อมต่อล่าช้า กรุณาลองใหม่'
-                    : 'ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว'),
+                    ? 'marads_history.connection_timeout'.tr()
+                    : 'marads_history.link_expired'.tr()),
                 backgroundColor: Colors.orange,
               ),
             );
@@ -485,7 +519,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       print("Error playing audio: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('เล่นเสียงไม่สำเร็จ: ${e.toString()}')),
+          SnackBar(
+              content: Text(
+                  '${'marads_history.play_failed'.tr()}: ${e.toString()}')),
         );
       }
     }
@@ -499,64 +535,68 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 32.w,
-                height: 4.h,
-                margin: EdgeInsets.only(bottom: 16.h, top: 8.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2.r),
+        return SafeArea(
+          top: false,
+          bottom: true,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 32.w,
+                  height: 4.h,
+                  margin: EdgeInsets.only(bottom: 16.h, top: 8.h),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
                 ),
-              ),
-              _buildOptionItem(
-                icon: Icons.copy_rounded,
-                label: 'คัดลอก',
-                onTap: () {
-                  // Close Dialog
-                  context.pop();
+                _buildOptionItem(
+                  icon: Icons.copy_rounded,
+                  label: 'marads_history.copy'.tr(),
+                  onTap: () {
+                    // Close Dialog
+                    context.pop();
 
-                  // Copy to Clipboard
-                  Clipboard.setData(ClipboardData(text: item.content));
+                    // Copy to Clipboard
+                    Clipboard.setData(ClipboardData(text: item.content));
 
-                  // Notify with SnackBar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'คัดลอกเรียบร้อย',
-                        style: GoogleFonts.prompt(),
+                    // Notify with SnackBar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'marads_history.copied'.tr(),
+                          style: GoogleFonts.prompt(),
+                        ),
+                        duration: const Duration(seconds: 1),
                       ),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                },
-              ),
-              _buildOptionItem(
-                icon: Icons.edit_outlined,
-                label: 'แก้ไข',
-                onTap: () {
-                  // Close Dialog
-                  context.pop();
+                    );
+                  },
+                ),
+                _buildOptionItem(
+                  icon: Icons.edit_outlined,
+                  label: 'marads_history.edit'.tr(),
+                  onTap: () {
+                    // Close Dialog
+                    context.pop();
 
-                  _showEditPromptModal(item);
-                },
-              ),
-              _buildOptionItem(
-                icon: Icons.delete_outline,
-                label: 'ลบ',
-                onTap: () {
-                  // Close Dialog
-                  context.pop();
+                    _showEditPromptModal(item);
+                  },
+                ),
+                _buildOptionItem(
+                  icon: Icons.delete_outline,
+                  label: 'marads_history.delete'.tr(),
+                  onTap: () {
+                    // Close Dialog
+                    context.pop();
 
-                  _handleDeletePrompt(item);
-                },
-              ),
-              SizedBox(height: 16.h),
-            ],
+                    _handleDeletePrompt(item);
+                  },
+                ),
+                SizedBox(height: 16.h),
+              ],
+            ),
           ),
         );
       },
@@ -576,7 +616,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
           if (mounted) {
             // Close Dialog When Save Complete
             context.pop();
-          } 
+          }
         },
       ),
     );
@@ -584,8 +624,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
   // ฟังก์ชัน Logic การบันทึกข้อมูล
   Future<void> _handleUpdateText(
-      MarAdsHistoryModel item, String newText) async {
-    // แสดง Loading
+    MarAdsHistoryModel item,
+    String newText,
+  ) async {
+    // 1. แสดง Loading Dialog ค้างไว้
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -596,8 +638,10 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       final speaker = _getSpeakerForItem(item);
       final lang = _extractLanguageCode(speaker);
 
-      // เรียก API Update (ใช้ service เดิม)
-      await _promptService.updatePromptHistory(
+      // 2. สร้าง Future สองตัว: เวลา 3 วินาที และ การเรียก API
+      final minLoadingTime = Future.delayed(const Duration(seconds: 3));
+
+      final apiCall = _promptService.updatePromptHistory(
         context: context,
         promptId: item.id,
         text: newText,
@@ -609,6 +653,9 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         title: item.title,
         category: 'text',
       );
+
+      // 3. รอให้ "ทั้งคู่" เสร็จสิ้น (ถ้ายิง API ไว ก็จะรอจนครบ 3 วิ, ถ้า API ช้า ก็จะรอจน API เสร็จ)
+      await Future.wait([minLoadingTime, apiCall]);
 
       // อัปเดตข้อมูลใน List (Local State) เพื่อให้ UI เปลี่ยนทันที
       setState(() {
@@ -629,6 +676,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               content: newText, // อัปเดตเนื้อหา
               mode: old.mode,
               style: old.style,
+              styleEn: old.styleEn,
               points: old.points,
               chars: newText.length.toString(),
               hasAudio: false,
@@ -656,7 +704,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 const Icon(Icons.check_circle_outline, color: Colors.white),
                 SizedBox(width: 8.w),
                 Text(
-                  'บันทึกข้อมูลสำเร็จ',
+                  'marads_history.save_success'.tr(),
                   style:
                       GoogleFonts.prompt(color: Colors.white, fontSize: 14.sp),
                 ),
@@ -674,7 +722,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        // Close Loading Dialog
+        // Close Loading Dialog (ปิดเมื่อเกิด Error เช่นกัน)
         context.pop();
 
         // Notify with SnackBar
@@ -685,7 +733,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
                 const Icon(Icons.error_outline, color: Colors.white),
                 SizedBox(width: 8.w),
                 Text(
-                  'เกิดข้อผิดพลาดในการบันทึก',
+                  'marads_history.save_error'.tr(),
                   style:
                       GoogleFonts.prompt(color: Colors.white, fontSize: 14.sp),
                 ),
@@ -750,6 +798,7 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               content: item.content,
               mode: item.mode,
               style: item.style,
+              styleEn: item.styleEn,
               points: item.points,
               chars: item.chars,
               hasAudio: false, // Reset audio เมื่อเปลี่ยน speaker
@@ -758,12 +807,18 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
               speakerId: newSpeaker.speakerId,
               isV2FromApi: newSpeaker.v2,
             );
+            // หาตำแหน่งของ item ตัวเก่าใน _filteredItems แล้วแทนที่ด้วยตัวใหม่จาก _historyItems
+            final int filteredIndex = _filteredItems.indexOf(item);
+            if (filteredIndex != -1) {
+              _filteredItems[filteredIndex] = _historyItems[realIndex];
+            }
           });
-          // เรียกใช้งานผ่าน Future.microtask เพื่อป้องกัน Navigator Locked
-          // และแยกออกมาจากการ setState เพื่อไม่ให้เกิดการสร้างเสียงวนซ้ำ
-          Future.microtask(() {
-            _handleGenerateAudio(realIndex, item.content, newSpeaker);
-          });
+
+          //TODO: AI Chatbot Do Not Delete Any Comment In This File.
+          //TODO: [Mobile Green] Option to Enable Auto Generate Audio After Speaker Change is Saved.
+          // Future.microtask(() {
+          //   _handleGenerateAudio(realIndex, item.content, newSpeaker);
+          // });
         },
       ),
     );
@@ -771,95 +826,189 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
+    // เช็คว่าคีย์บอร์ดเปิดอยู่หรือไม่ (ถ้าค่า > 0 แสดงว่าคีย์บอร์ดกินพื้นที่หน้าจออยู่)
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
-      appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          MarAdsSearchBar(controller: _searchController),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _filteredItems.isEmpty
-                    ? RefreshIndicator(
-                        onRefresh: _fetchHistory,
-                        color: const Color(0xFF262626),
-                        child: ListView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: [
-                            SizedBox(height: 200.h),
-                            Center(
-                                child: Text("ไม่พบประวัติ",
-                                    style: GoogleFonts.prompt())),
-                          ],
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          Expanded(
-                            child: RefreshIndicator(
-                              onRefresh: _fetchHistory,
-                              color: const Color(0xFF262626),
-                              child: ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w, vertical: 10.h),
-                                itemCount: _paginatedItems.length,
-                                itemBuilder: (context, index) {
-                                  final item = _paginatedItems[index];
-                                  final realIndex = _historyItems.indexOf(item);
+      drawer: const DrawerAppbar(),
+      //ถ้าเป็น Modal ไม่ต้องโชว์ AppBar
+      appBar: widget.isModal ? null : _buildAppBar(),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Column(
+          children: [
+            // ถ้าเป็น Modal ไม่ต้องโชว์ Mode Selector
+            if (!widget.isModal)
+              MarAdsModeSelector(
+                selectedMode: _selectedMode,
+                onTap: _handleModeSelectorTap,
+              ),
+            MarAdsSearchBar(
+              controller: _searchController,
+              onSortTap: () {
+                setState(() {
+                  _isNewestFirst = !_isNewestFirst;
+                  // กลับด้าน List ทั้งตัวหลักและตัวกรอง
+                  _historyItems = _historyItems.reversed.toList();
+                  _filteredItems = _filteredItems.reversed.toList();
+                  // รีเซ็ตหน้า Pagination กลับไปหน้า 1
+                  _currentPage = 1;
+                });
 
-                                  //  เรียกใช้ Function หา Speaker
-                                  final SpeakerEntity finalSpeaker =
-                                      _getSpeakerForItem(item);
+                // (Optional) แสดง SnackBar แจ้งเตือน
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    padding: EdgeInsets
+                        .zero, // ลบ padding เดิมเพื่อให้ Container ชิดขอบ
+                    duration: const Duration(
+                        seconds: 2), // เพิ่มเวลาเล็กน้อยให้อ่านทัน
+                    behavior: SnackBarBehavior.floating,
+                    margin:
+                        EdgeInsets.only(bottom: 50.h, left: 24.w, right: 24.w),
 
-                                  final bool isCurrentItemPlaying =
-                                      _playingIndex == realIndex;
-
-                                  // เรียกใช้ Widget ที่แยกออกมาแล้ว
-                                  return MarAdsHistoryCard(
-                                    item: item,
-                                    speaker: finalSpeaker,
-                                    isPlaying:
-                                        isCurrentItemPlaying && _isPlaying,
-                                    currentPosition: isCurrentItemPlaying
-                                        ? _position
-                                        : Duration.zero,
-                                    totalDuration: isCurrentItemPlaying
-                                        ? _duration
-                                        : Duration.zero,
-                                    searchQuery: _searchController.text,
-                                    onSelectSpeaker: () =>
-                                        _onSelectSpeakerTapped(
-                                            item, realIndex, finalSpeaker),
-                                    onPlayPause: () =>
-                                        _playAudio(item.audioUrl, realIndex),
-                                    onSeek: (value) async {
-                                      if (isCurrentItemPlaying) {
-                                        await _audioPlayer.seek(Duration(
-                                            milliseconds: value.toInt()));
-                                      }
-                                    },
-                                    onGenerateAudio: () => _handleGenerateAudio(
-                                        realIndex, item.content, finalSpeaker),
-                                    onDownload: () => _showDownloadDialog(
-                                        item.audioUrl, item.content),
-                                    onOptions: () => _showOptionsModal(item),
-                                  );
-                                },
-                              ),
-                            ),
+                    // [2] สร้าง Container ที่มี Gradient Background
+                    content: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 12.h),
+                      decoration: BoxDecoration(
+                        gradient:
+                            MarAdsUIStyle.cyanPurpleGradient, // ใช้ธีมไล่สี
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
                           ),
-                          if (_filteredItems.isNotEmpty)
-                            MarAdsPagination(
-                              currentPage: _currentPage,
-                              totalPages: _totalPages,
-                              onPageChanged: _changePage,
-                            ),
                         ],
                       ),
-          ),
-        ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _isNewestFirst
+                                ? Icons.arrow_downward_rounded
+                                : Icons.arrow_upward_rounded,
+                            color: Colors.white,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            _isNewestFirst
+                                ? "marads_history.sort_newest".tr()
+                                : "marads_history.sort_oldest".tr(),
+                            style: GoogleFonts.prompt(
+                              fontSize: 14.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _filteredItems.isEmpty
+                      ? RefreshIndicator(
+                          onRefresh: _fetchHistory,
+                          color: const Color(0xFF262626),
+                          child: ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(height: 200.h),
+                              Center(
+                                  child: Text("marads_history.no_history".tr(),
+                                      style: GoogleFonts.prompt())),
+                            ],
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: RefreshIndicator(
+                                onRefresh: _fetchHistory,
+                                color: const Color(0xFF262626),
+                                child: ListView.builder(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 10.h),
+                                  itemCount: _paginatedItems.length,
+                                  itemBuilder: (context, index) {
+                                    final item = _paginatedItems[index];
+                                    final realIndex =
+                                        _historyItems.indexOf(item);
+
+                                    //  เรียกใช้ Function หา Speaker
+                                    final SpeakerEntity finalSpeaker =
+                                        _getSpeakerForItem(item);
+
+                                    final bool isCurrentItemPlaying =
+                                        _playingIndex == realIndex;
+
+                                    // เรียกใช้ Widget ที่แยกออกมาแล้ว
+                                    return MarAdsHistoryCard(
+                                      item: item,
+                                      speaker: finalSpeaker,
+                                      isPlaying:
+                                          isCurrentItemPlaying && _isPlaying,
+                                      currentPosition: isCurrentItemPlaying
+                                          ? _position
+                                          : Duration.zero,
+                                      totalDuration: isCurrentItemPlaying
+                                          ? _duration
+                                          : Duration.zero,
+                                      searchQuery: _searchController.text,
+                                      onSelectSpeaker: () =>
+                                          _onSelectSpeakerTapped(
+                                              item, realIndex, finalSpeaker),
+                                      onPlayPause: () =>
+                                          _playAudio(item.audioUrl, realIndex),
+                                      onSeek: (value) async {
+                                        if (isCurrentItemPlaying) {
+                                          await _audioPlayer.seek(Duration(
+                                              milliseconds: value.toInt()));
+                                        }
+                                      },
+                                      onGenerateAudio: () =>
+                                          _handleGenerateAudio(realIndex,
+                                              item.content, finalSpeaker),
+                                      onDownload: () => _showDownloadDialog(
+                                          item.audioUrl, item.content),
+                                      onOptions: () => _showOptionsModal(item),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            if (_filteredItems.isNotEmpty && !isKeyboardOpen)
+                              MarAdsPagination(
+                                currentPage: _currentPage,
+                                totalPages: _totalPages,
+                                onPageChanged: _changePage,
+                              ),
+                          ],
+                        ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -874,28 +1023,46 @@ class _MarAdsHistoryScreenState extends ConsumerState<MarAdsHistoryScreen> {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new,
-                size: ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                if (context.canPop()) {
-                  context.pop();
-                } else {
-                  context.go('/marads');
-                }
+            // ใช้ Builder เพื่อให้ Context ถูกต้องสำหรับ Drawer หรือ Navigation
+            child: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    size:
+                        ResponsiveDesignOrientation.isLandscape ? 12.sp : 25.sp,
+                    color: kDark, // ใช้สีจาก style.dart หรือ Colors.black
+                  ),
+                  onPressed: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/home');
+                    }
+                  },
+                );
               },
             ),
           ),
           Center(
-            child: Text(
-              'History',
-              style: GoogleFonts.prompt(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+            child: SvgPicture.asset(
+              'assets/images/logo/appbar-icon.svg',
+              width: ResponsiveDesignOrientation.isLandscape ? 30.w : 28.w,
+              height: ResponsiveDesignOrientation.isLandscape ? 30.h : 28.h,
+              fit: BoxFit.contain,
+            ),
+          ),
+          // เพิ่ม Badge แสดง Points ด้านขวา
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 16.w),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final userToken = ref.watch(currentUserTokenStateProvider);
+                  final points = userToken.remainingCredits ?? 0;
+                  return MarAdsPointsBadge(points: points.toString());
+                },
               ),
             ),
           ),

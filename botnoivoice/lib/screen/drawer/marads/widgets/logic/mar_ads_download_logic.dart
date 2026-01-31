@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:botnoivoice/config/api_url_config.dart'; // Import config เพื่อใช้ apiReferer
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/home/function/create_ios_app_folder.dart';
 import 'package:botnoivoice/screen/main/home/function/download_file_to_temp.dart';
 import 'package:botnoivoice/service/permission/android_permission.dart';
 import 'package:botnoivoice/shared/dialog/open_app_settings/open_app_settings_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:go_router/go_router.dart';
@@ -59,7 +60,11 @@ class MarAdsDownloadLogic {
   }
 
   @pragma('vm:entry-point')
-  static void downloadCallback(String id, int status, int progress) {
+  static void downloadCallback(
+    String id,
+    int status,
+    int progress,
+  ) {
     final SendPort? send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send?.send([id, status, progress]);
@@ -86,7 +91,10 @@ class MarAdsDownloadLogic {
 
   // --- Logic การแชร์ (โหลดลง Temp) ---
   Future<void> _handleShareProcess(
-      BuildContext context, String url, String fileName) async {
+    BuildContext context,
+    String url,
+    String fileName,
+  ) async {
     // 1. แสดง Loading
     showDialog(
       context: context,
@@ -107,31 +115,36 @@ class MarAdsDownloadLogic {
       if (context.mounted) {
         await Share.shareXFiles(
           [XFile(file.path)],
-          text: 'เสียงโฆษณาจาก Botnoi Voice',
+          text: 'audio_player.share_text'.tr(),
         );
       }
     } else {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง")),
+          SnackBar(
+            content: Text("audio_player.download_failed".tr()),
+          ),
         );
       }
     }
   }
 
   // --- Logic การบันทึกลงเครื่อง (FlutterDownloader) ---
-  Future<void> _handleSaveToDeviceProcess(BuildContext context, String url,
-      String fileName, VoidCallback onSuccess) async {
+  Future<void> _handleSaveToDeviceProcess(
+    BuildContext context,
+    String url,
+    String fileName,
+    VoidCallback onSuccess,
+  ) async {
     if (Platform.isAndroid) {
       final hasPermission =
           await AndroidPermission().requestAndroidPermission();
       if (!hasPermission) {
         if (context.mounted) {
           OpenAppSettingsDialog(
-                  context: context,
-                  text: 'สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า')
-              .showPermissionDeniedDialog();
+            context: context,
+            text: 'audio_player.permission_denied'.tr(),
+          ).showPermissionDeniedDialog();
         }
         return;
       }
@@ -154,30 +167,20 @@ class MarAdsDownloadLogic {
         savedDir: folderPath,
         fileName: fileName,
         headers: {
-          "Referer": apiReferer,
-          "Origin": apiReferer,
+          'Referer': refererUrl,
+          'Origin': refererUrl,
         },
         showNotification: true,
         openFileFromNotification: true,
         saveInPublicStorage: true,
       );
-
-      // // เรียก Callback แจ้งเตือนว่าสำเร็จ
-      // if (context.mounted) {
-      //   // (Optional) ใส่ Delay นิดนึง (0.5วิ) ให้ความรู้สึกว่าระบบได้ประมวลผลแล้วค่อยเด้ง Dialog
-      //   await Future.delayed(const Duration(milliseconds: 500));
-
-      //   if (context.mounted) {
-      //     onSuccess();
-      //   }
-      // }
     } catch (e) {
       _onDownloadSuccess = null;
       if (context.mounted) {
-        String msg = "เกิดข้อผิดพลาดในการดาวน์โหลด";
+        String msg = "audio_player.download_error".tr();
 
         if (e.toString().contains("Permission")) {
-          msg = "ไม่มีสิทธิ์เข้าถึงพื้นที่จัดเก็บ";
+          msg = "audio_player.storage_permission_error".tr();
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
