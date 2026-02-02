@@ -30,7 +30,7 @@ dependencies:
   google_sign_in: ^6.2.1
 
   # LINE Login
-  flutter_line_sdk: ^2.3.8
+  flutter_line_sdk: ^2.6.2
 
   # Audio Player
   http: ^1.2.1
@@ -62,7 +62,7 @@ dependencies:
   email_validator: ^3.0.0
 
   # RevenueCat: In-App Purchase (IAP) Platform supports iOS, Android, Flutter, React Native, Unity and etc.
-  purchases_flutter: ^8.2.1
+  purchases_flutter: ^8.11.0
 
   # Timezone
   timezone: ^0.10.0

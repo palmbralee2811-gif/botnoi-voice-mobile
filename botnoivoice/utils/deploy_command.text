@@ -1,3 +1,6 @@
+# FVM
+fvm flutter clean && fvm flutter pub get && fvm flutter run
+
 flutter clean && flutter pub get && flutter run 
 
 flutter clean && flutter pub get
