@@ -14,18 +14,18 @@ import 'package:botnoivoice/shared/widget/gradient/gradient_text_style.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -38,7 +38,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   /// ฟังก์ชันสมัครสมาชิก
   Future<void> _registerUser() async {
-    final emailRegisterProvider = context.read<EmailRegister>();
+    // final emailRegisterProvider = context.read<EmailRegister>();
+    final emailRegisterProvider = ref.read(emailRegisterNotifierProvider.notifier);
 
     if (_isLoading) return; // ป้องกันการกดปุ่มซ้ำ
     setState(() => _isLoading = true); // เริ่มสถานะการทำงาน
@@ -337,7 +338,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
           child: LineLoginButton(
             onPressed: () {
-              openLineLogin(context);
+              openLineLogin(ref);
             },
           ),
         ),
@@ -348,7 +349,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
           child: GoogleLoginButton(
             onPressed: () {
-              openGoogleLogin(context);
+              openGoogleLogin(ref);
             },
           ),
         ),
@@ -360,7 +361,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 right: ResponsiveDesignOrientation.isLandscape ? 35.w : 15.w),
             child: AppleLoginButton(
               onPressed: () {
-                openAppleLogin(context);
+                openAppleLogin(ref);
               },
             ),
           ),
@@ -425,3 +426,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+

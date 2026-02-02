@@ -1,7 +1,24 @@
+buildscript {
+    ext.kotlin_version = '1.9.0' // ใช้เวอร์ชัน Kotlin ที่ทันสมัย
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        // กำหนดเวอร์ชัน Android Gradle Plugin (AGP) ที่ทันสมัย
+        classpath 'com.android.tools.build:gradle:8.1.0'
+        // กำหนดเวอร์ชัน Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
+        // *** สำคัญ: เพิ่มบรรทัดนี้เพื่อช่วยให้ปลั๊กอินเก่ารู้จัก Flutter ***
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
     }
     
     // This code finds any subproject that is an Android library (a plugin)
@@ -26,8 +43,8 @@ subprojects {
     project.configurations.all {
         resolutionStrategy.eachDependency { details ->
             if (details.requested.group == 'com.android.support'
-                    && !details.requested.name.contains('multidex') ) {
-                details.useVersion "27.1.1"
+                        && !details.requested.name.contains('multidex') ) {
+                details.useVersion "28.0.0" // เปลี่ยนจาก 27.1.1 เป็น 28.0.0 หรือสูงกว่า
             }
         }
     }

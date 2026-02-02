@@ -1,7 +1,7 @@
 name: botnoivoice
 description: "Botnoi Voice Mobile"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.2.2+47 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
+version: 1.2.8+65 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -73,6 +73,15 @@ dependencies:
   #internet_checker
   internet_connection_checker_plus: ^2.7.0
 
+  # State Management
+  flutter_riverpod: ^2.5.1
+
+  # Upload Audio File from Device
+  file_picker: ^6.1.1
+  
+  #sound manage
+  flutter_sound: ^9.28.0
+
   # Router
   go_router: ^14.8.1
 
@@ -86,6 +95,9 @@ dependencies:
   # Preview Image in Speaker Screen (speaker_grid_item.dart)
   transparent_image: ^2.0.1
   flutter_cache_manager: ^3.4.1
+
+  # Media Type
+  http_parser: ^4.0.2
 
 dev_dependencies:
   flutter_test:
@@ -112,6 +124,7 @@ flutter:
     - assets/app_icon/
     - assets/images/
     - assets/images/auth_screen/
+    - assets/images/drawer_appbar/
     - assets/images/gender/
     - assets/images/icon/
     - assets/images/logo/

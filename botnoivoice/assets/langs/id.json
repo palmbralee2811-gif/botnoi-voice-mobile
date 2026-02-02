@@ -1,311 +1,524 @@
 {
-    "language": "Bahasa",
-    "default_language_filter_name": "Bahasa Indonesia",
-    "default_language_filter_image_path": "assets/images/national_flag/indonesian.png",
-    "default_language_filter_code": "ID",
-    "gender": "Jenis Kelamin",
-    "male_female": "L/P",
-    "style": "Gaya",
-    "style_plural": "{count} Gaya",
-    "category": "Kategori",
-    "category_plural": "{count} Kategori",
+  "language": "Bahasa",
+  "default_language_filter_name": "Bahasa Indonesia",
+  "default_language_filter_image_path": "assets/images/national_flag/indonesian.png",
+  "default_language_filter_code": "ID",
+  "gender": "Jenis Kelamin",
+  "male_female": "L/P",
+  "style": "Gaya",
+  "style_plural": "{count} Gaya",
+  "category": "Kategori",
+  "category_plural": "{count} Kategori",
+  "confirm": "Konfirmasi",
+  "reset": "Atur Ulang",
+  "share": "Bagikan",
+  "select": "Pilih",
+  "no_internet_connection": "Tidak Ada Koneksi Internet",
+  "add_favorite": "Anda telah menambahkan {count} favorit.",
+  "remove_favorite": "Anda telah menghapus {count} favorit.",
+  "welcome_message": {
+    "line1": "Konversi Teks ke Ucapan",
+    "line2": "BOTNOI",
+    "line3": "SUARA"
+  },
+  "auth": {
+    "sign_in": "Masuk",
+    "sign_in_with_username_email": "Masuk dengan Nama Pengguna atau Email",
+    "sign_in_with_line": "Masuk dengan LINE",
+    "sign_in_with_google": "Masuk dengan Google",
+    "sign_in_with_apple": "Masuk dengan Apple",
+    "delete_account_button": "Hapus Akun"
+  },
+  "sign_in": {
+    "error_occurred": "Terjadi kesalahan. Silakan coba lagi.",
+    "welcome_message": "SELAMAT DATANG DI BOTNOI VOICE",
+    "username_or_email": "Nama Pengguna atau Email",
+    "please_enter_username_or_email": "Silakan masukkan nama pengguna atau email Anda",
+    "password": "Kata Sandi",
+    "please_enter_password": "Silakan masukkan kata sandi Anda",
+    "register": "Daftar",
+    "forgot_password": "Lupa kata sandi?",
+    "or": "atau"
+  },
+  "register": {
+    "sign_up": "Daftar",
+    "email": "Email",
+    "username": "Nama Pengguna",
+    "password": "Kata Sandi",
+    "confirm_password": "Konfirmasi Kata Sandi",
+    "or": "atau",
+    "please_enter_your_label": "Silakan masukkan {Label} Anda",
+    "password_minimum_length": "Kata sandi harus terdiri dari setidaknya 6 karakter",
+    "password_mismatch": "Kata sandi tidak cocok",
+    "back_to_sign_in": "Kembali ke masuk",
+    "email_invalid_format": "Format email tidak valid",
+    "username_invalid": "Nama pengguna tidak valid. Harap gunakan huruf a-z, A-Z, angka, serta simbol _ atau -",
+    "please_enter_password": "Silakan masukkan kata sandi Anda"
+  },
+  "confirm_forget_password": {
+    "check_your_email": "Periksa email Anda",
+    "copy_link_from_your_inbox": "Salin tautan dari kotak masuk email Anda",
+    "link": "Tautan",
+    "please_enter_link_from_email": "Silakan masukkan tautan yang diterima dari email Anda",
     "confirm": "Konfirmasi",
-    "reset": "Atur Ulang",
-    "share": "Bagikan",
-    "select": "Pilih",
-    "no_internet_connection": "Tidak Ada Koneksi Internet",
-    "add_favorite": "Anda telah menambahkan {count} favorit.",
-    "remove_favorite": "Anda telah menghapus {count} favorit.",
-    "welcome_message": {
-        "line1": "Konversi Teks ke Ucapan",
-        "line2": "BOTNOI",
-        "line3": "SUARA"
-    },
-    "auth": {
-        "sign_in": "Masuk",
-        "sign_in_with_username_email": "Masuk dengan Nama Pengguna atau Email",
-        "sign_in_with_line": "Masuk dengan LINE",
-        "sign_in_with_google": "Masuk dengan Google",
-        "sign_in_with_apple": "Masuk dengan Apple",
-        "delete_account_button": "Hapus Akun"
-    },
-    "sign_in": {
-        "error_occurred": "Terjadi kesalahan. Silakan coba lagi.",
-        "welcome_message": "SELAMAT DATANG DI BOTNOI VOICE",
-        "username_or_email": "Nama Pengguna atau Email",
-        "please_enter_username_or_email": "Silakan masukkan nama pengguna atau email Anda",
-        "password": "Kata Sandi",
-        "please_enter_password": "Silakan masukkan kata sandi Anda",
-        "register": "Daftar",
-        "forgot_password": "Lupa kata sandi?",
-        "or": "atau"
-    },
-    "register": {
-        "sign_up": "Daftar",
-        "email": "Email",
-        "username": "Nama Pengguna",
-        "password": "Kata Sandi",
-        "confirm_password": "Konfirmasi Kata Sandi",
-        "or": "atau",
-        "please_enter_your_label": "Silakan masukkan {Label} Anda",
-        "password_minimum_length": "Kata sandi harus terdiri dari setidaknya 6 karakter",
-        "password_mismatch": "Kata sandi tidak cocok",
-        "back_to_sign_in": "Kembali ke masuk",
-        "email_invalid_format": "Format email tidak valid",
-        "username_invalid": "Nama pengguna tidak valid. Harap gunakan huruf a-z, A-Z, angka, serta simbol _ atau -",
-        "please_enter_password": "Silakan masukkan kata sandi Anda"
-    },
-    "confirm_forget_password": {
-        "check_your_email": "Periksa email Anda",
-        "copy_link_from_your_inbox": "Salin tautan dari kotak masuk email Anda",
-        "link": "Tautan",
-        "please_enter_link_from_email": "Silakan masukkan tautan yang diterima dari email Anda",
-        "confirm": "Konfirmasi",
-        "link_invalid_try_again": "Tautan tidak benar. Silakan coba lagi"
-    },
-    "forget_password": {
-        "forgot_password": "Lupa kata sandi",
-        "confirm_email": "Konfirmasi email Anda untuk mengatur ulang kata sandi",
-        "email": "Email",
-        "please_enter_email": "Silakan masukkan email Anda",
-        "invalid_email_format": "Format email tidak valid",
-        "send": "Kirim"
-    },
-    "new_password": {
-        "password_reset_success": "Atur ulang kata sandi berhasil",
-        "error_occurred": "Terjadi kesalahan:",
-        "reset_password": "Atur ulang kata sandi",
-        "password_length": "Kata sandi harus terdiri dari setidaknya 6 karakter",
-        "password": "Kata Sandi",
-        "please_enter_password": "Silakan masukkan kata sandi Anda",
-        "password_min_length": "Kata sandi harus terdiri dari setidaknya 6 karakter",
-        "confirm_password": "Konfirmasi Kata Sandi",
-        "password_mismatch": "Kata sandi tidak cocok",
-        "confirm": "Konfirmasi"
-    },
-    "app_drawer": {
-        "profile": "Profil",
-        "buy_points": "Beli Poin",
-        "security": "Keamanan",
-        "reward": "Hadiah",
-        "redeem": "Tukar Kupon",
-        "education": "Pendidikan"
-    },
-    "account": {
-        "uid_copy_success": "UID berhasil disalin",
-        "profile": "Profil",
-        "login_with": "Masuk dengan",
-        "email": "Email",
-        "username": "Nama Pengguna",
-        "password": "Kata Sandi",
-        "logout": "Keluar"
-    },
-    "change_email_username": {
-        "username_changed_successfully": "Nama pengguna berhasil diubah",
-        "change_username": "Ubah nama pengguna",
-        "set_new_username_for_login": "Tetapkan nama pengguna baru untuk masuk",
-        "new_username": "Nama pengguna baru",
-        "please_enter_your_username": "Silakan masukkan nama pengguna Anda",
-        "invalid_username": "Nama pengguna tidak valid. Harap gunakan huruf a-z, A-Z, angka, serta simbol garis bawah (_) atau tanda hubung (-).",
-        "confirm_new_username": "Konfirmasi nama pengguna baru",
-        "please_confirm_your_username": "Silakan konfirmasi nama pengguna Anda",
-        "usernames_must_match": "Kedua kolom nama pengguna harus sama",
-        "confirm": "Konfirmasi"
-    },
-    "delete_account": {
-        "delete_account": "Hapus Akun",
-        "please_read": "Harap baca dengan saksama",
-        "account_deletion_warning": "Menghapus akun Anda adalah tindakan yang tidak dapat dibatalkan. Anda tidak akan dapat lagi menggunakan akun ini untuk produk dan layanan, termasuk poin yang tersisa, paket berlangganan, serta hak istimewa dan promosi. Harap lanjutkan dengan hati-hati.",
-        "confirm_account_deletion": "Jika Anda ingin melanjutkan penghapusan akun, silakan tekan tombol.",
-        "confirm_account_deletion_button": "Konfirmasi Penghapusan Akun",
-        "cancel": "Batal",
-        "confirm_account_deletion_below": "Konfirmasi penghapusan akun di bawah ini"
-    },
-    "confirm_delete_account": {
-        "unable_to_delete_account": "Tidak dapat menghapus akun. Anda tidak terdaftar masuk dengan akun email atau Akun Apple.",
-        "incorrect_password": "Kata sandi salah",
-        "error_try_again": "Terjadi kesalahan. Silakan coba lagi.",
-        "confirm_password": "Konfirmasi kata sandi",
-        "confirm_password_to_delete": "Konfirmasi kata sandi Anda untuk melanjutkan penghapusan akun.",
-        "please_enter_your_password": "Silakan masukkan kata sandi Anda",
-        "confirm": "Konfirmasi"
-    },
-    "email_permission": {
-        "security": "Keamanan",
-        "email_access": "Akses Email",
-        "on": "Diaktifkan",
-        "off": "Dinonaktifkan",
-        "email_access_description": "Aktifkan akses email untuk menggunakan fitur pemulihan kata sandi dan menerima notifikasi penting tentang penggunaan aplikasi Anda"
-    },
-    "payment": {
-        "buy_points": "Beli Poin",
-        "price": "49,000",
-        "currency": "IDR",
-        "get_points": "Dapatkan {productTitle} poin",
-        "buy_now": "Beli Sekarang",
-        "received_points": "Anda telah menerima {pointsTitle} poin.",
-        "error_occurred": "Terjadi kesalahan selama transaksi. Silakan coba lagi",
+    "link_invalid_try_again": "Tautan tidak benar. Silakan coba lagi"
+  },
+  "forget_password": {
+    "forgot_password": "Lupa kata sandi",
+    "confirm_email": "Konfirmasi email Anda untuk mengatur ulang kata sandi",
+    "email": "Email",
+    "please_enter_email": "Silakan masukkan email Anda",
+    "invalid_email_format": "Format email tidak valid",
+    "send": "Kirim"
+  },
+  "new_password": {
+    "password_reset_success": "Atur ulang kata sandi berhasil",
+    "error_occurred": "Terjadi kesalahan:",
+    "reset_password": "Atur ulang kata sandi",
+    "password_length": "Kata sandi harus terdiri dari setidaknya 6 karakter",
+    "password": "Kata Sandi",
+    "please_enter_password": "Silakan masukkan kata sandi Anda",
+    "password_min_length": "Kata sandi harus terdiri dari setidaknya 6 karakter",
+    "confirm_password": "Konfirmasi Kata Sandi",
+    "password_mismatch": "Kata sandi tidak cocok",
+    "confirm": "Konfirmasi"
+  },
+  "app_drawer": {
+    "profile": "Profil",
+    "buy_points": "Beli Poin",
+    "security": "Keamanan",
+    "reward": "Hadiah",
+    "redeem": "Tukar Kupon",
+    "education": "Pendidikan",
+    "gensub": "GenSub",
+    "marads": "MarAds",
+    "services": "Layanan",
+    "account": "Akun",
+    "system": "Sistem",
+    "voice": "Voice Studio"
+  },
+  "account": {
+    "uid_copy_success": "UID berhasil disalin",
+    "profile": "Profil",
+    "login_with": "Masuk dengan",
+    "email": "Email",
+    "username": "Nama Pengguna",
+    "password": "Kata Sandi",
+    "logout": "Keluar"
+  },
+  "change_email_username": {
+    "username_changed_successfully": "Nama pengguna berhasil diubah",
+    "change_username": "Ubah nama pengguna",
+    "set_new_username_for_login": "Tetapkan nama pengguna baru untuk masuk",
+    "new_username": "Nama pengguna baru",
+    "please_enter_your_username": "Silakan masukkan nama pengguna Anda",
+    "invalid_username": "Nama pengguna tidak valid. Harap gunakan huruf a-z, A-Z, angka, serta simbol garis bawah (_) atau tanda hubung (-).",
+    "confirm_new_username": "Konfirmasi nama pengguna baru",
+    "please_confirm_your_username": "Silakan konfirmasi nama pengguna Anda",
+    "usernames_must_match": "Kedua kolom nama pengguna harus sama",
+    "confirm": "Konfirmasi"
+  },
+  "delete_account": {
+    "delete_account": "Hapus Akun",
+    "please_read": "Harap baca dengan saksama",
+    "account_deletion_warning": "Menghapus akun Anda adalah tindakan yang tidak dapat dibatalkan. Anda tidak akan dapat lagi menggunakan akun ini untuk produk dan layanan, termasuk poin yang tersisa, paket berlangganan, serta hak istimewa dan promosi. Harap lanjutkan dengan hati-hati.",
+    "confirm_account_deletion": "Jika Anda ingin melanjutkan penghapusan akun, silakan tekan tombol.",
+    "confirm_account_deletion_button": "Konfirmasi Penghapusan Akun",
+    "cancel": "Batal",
+    "confirm_account_deletion_below": "Konfirmasi penghapusan akun di bawah ini"
+  },
+  "confirm_delete_account": {
+    "unable_to_delete_account": "Tidak dapat menghapus akun. Anda tidak terdaftar masuk dengan akun email atau Akun Apple.",
+    "incorrect_password": "Kata sandi salah",
+    "error_try_again": "Terjadi kesalahan. Silakan coba lagi.",
+    "confirm_password": "Konfirmasi kata sandi",
+    "confirm_password_to_delete": "Konfirmasi kata sandi Anda untuk melanjutkan penghapusan akun.",
+    "please_enter_your_password": "Silakan masukkan kata sandi Anda",
+    "confirm": "Konfirmasi"
+  },
+  "email_permission": {
+    "security": "Keamanan",
+    "email_access": "Akses Email",
+    "on": "Diaktifkan",
+    "off": "Dinonaktifkan",
+    "email_access_description": "Aktifkan akses email untuk menggunakan fitur pemulihan kata sandi dan menerima notifikasi penting tentang penggunaan aplikasi Anda"
+  },
+  "payment": {
+    "buy_points": "Beli Poin",
+    "price": "49,000",
+    "currency": "IDR",
+    "get_points": "Dapatkan {productTitle} poin",
+    "buy_now": "Beli Sekarang",
+    "received_points": "Anda telah menerima {pointsTitle} poin.",
+    "error_occurred": "Terjadi kesalahan selama transaksi. Silakan coba lagi",
 
-        "normal_points": "Poin",
-        "monthly_points": "Poin Bulanan"
-    },
-    "change_username_provider": {
-        "username_taken": "Nama pengguna ini sudah digunakan oleh akun lain. Silakan pilih nama pengguna yang berbeda"
-    },
-    "delete_account_provider": {
-        "apple_signin_canceled": "Pengguna membatalkan Masuk dengan Apple.",
-        "incorrect_password": "Kata sandi yang Anda masukkan salah. Silakan coba lagi",
-        "error_confirming_password": "Terjadi kesalahan saat mengonfirmasi kata sandi Anda. Silakan coba lagi",
-        "not_logged_in_with_username_and_password": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan",
-        "unable_to_delete_account_status_code": "Tidak dapat menghapus akun Anda. Kode status:",
-        "error_deleting_account": "Terjadi kesalahan saat menghapus akun Anda:",
-        "not_logged_in_with_user_and_password": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan",
-        "account_deleted_successfully": "Akun Anda telah berhasil dihapus",
-        "not_logged_in_with_username_and_password_again": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan"
-    },
-    "forget_password_provider": {
-        "no_account_found": "Tidak ditemukan akun yang terkait dengan alamat email ini",
-        "invalid_email_format": "Format alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
-        "error_sending_reset_email": "Terjadi kesalahan saat mengirim email reset kata sandi. Silakan coba lagi",
-        "link_expired": "Tautan yang Anda gunakan telah kedaluwarsa. Silakan minta yang baru",
-        "code_incorrect_or_used": "Kode yang Anda masukkan salah atau sudah digunakan",
-        "weak_new_password": "Kata sandi baru Anda tidak cukup kuat. Silakan pilih kata sandi yang lebih kuat",
-        "error_resetting_password": "Terjadi kesalahan saat mengatur ulang kata sandi Anda. Silakan coba lagi"
-    },
-    "login_provider": {
-        "invalid_username": "Nama pengguna yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
-        "error_logging_in": "Terjadi kesalahan saat masuk:",
-        "please_verify_email_before_login": "Silakan verifikasi alamat email Anda sebelum masuk",
-        "please_verify_email": "Silakan verifikasi alamat email Anda:",
-        "invalid_email": "Alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
-        "incorrect_password": "Kata sandi yang Anda masukkan salah. Silakan coba lagi",
-        "account_suspended": "Akun ini terkena suspensi. Silakan hubungi support untuk bantuan",
-        "username_or_password_incorrect": "Nama pengguna atau kata sandi yang Anda masukkan salah. Silakan coba lagi"
-    },
-    "register_provider": {
-        "username_taken": "Nama pengguna ini sudah digunakan. Silakan pilih nama pengguna yang berbeda",
-        "error_checking_username": "Terjadi kesalahan saat memeriksa nama pengguna. Silakan coba lagi",
-        "error_connecting_server": "Terjadi kesalahan saat menghubungkan ke server. Silakan periksa koneksi Anda dan coba lagi",
-        "passwords_do_not_match": "Kata sandi yang Anda masukkan tidak cocok. Silakan periksa dan coba lagi",
-        "please_verify_email": "Silakan verifikasi alamat email Anda:",
-        "unable_to_send_verification_email": "Kami tidak dapat mengirim email verifikasi. Silakan coba lagi",
-        "email_used_by_another_account": "Alamat email ini sudah terkait dengan akun lain",
-        "invalid_email_format": "Format alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
-        "password_not_strong_enough": "Kata sandi Anda tidak cukup kuat. Silakan pilih kata sandi yang lebih kuat",
-        "action_not_allowed": "Tindakan ini tidak diizinkan. Silakan hubungi support jika Anda yakin ini adalah kesalahan",
-        "error_registering": "Terjadi kesalahan saat mendaftarkan akun Anda. Silakan coba lagi",
-        "no_uid_or_username": "Tidak ada UID atau nama pengguna yang diberikan. Silakan periksa input Anda dan coba lagi"
-    },
-    "android_permission": {
-        "permission_denied": "Izin akses ditolak",
-        "go_to_settings_to_enable_permission": "Silakan pergi ke pengaturan untuk mengaktifkan izin akses file",
-        "go_to_settings_page": "Pergi ke halaman pengaturan",
-        "cancel": "Batal"
-    },
-    "audio_player": {
-        "permission_denied": "Izin akses ditolak. Silakan pergi ke pengaturan.",
-        "audio_file_not_found": "File audio tidak ditemukan atau file kosong.",
-        "error_playing_audio": "Kesalahan saat memutar file audio:",
-        "unable_to_save_file": "Tidak dapat menyimpan file.",
-        "audio_created_successfully": "Suara berhasil dibuat!",
-        "download": "Unduh",
-        "close": "Tutup"
-    },
-    "notification": {
-        "close": "Tutup"
-    },
-    "disable_email_permission": {
-        "disable_email_access": "Nonaktifkan Akses Email",
-        "email_access_disabled_warning": "Menonaktifkan akses email dapat membatasi Anda dari menggunakan fitur pemulihan kata sandi atau menerima notifikasi penting tentang penggunaan aplikasi Anda. Harap lanjutkan dengan hati-hati.",
-        "do_you_want_to_disable": "Apakah Anda yakin ingin menonaktifkan akses email?",
-        "yes": "Ya",
-        "no": "Tidak"
-    },
-    "email_permission_dialog": {
-        "request_email_permission": "Permintaan Izin Pengumpulan Data Email",
-        "email_permission_info": "Untuk mengaktifkan pemulihan kata sandi dan memberi tahu Anda tentang pembaruan penting terkait penggunaan aplikasi, kami meminta izin Anda untuk mengumpulkan dan menyimpan data email dengan aman. Data Anda tidak akan digunakan untuk iklan tanpa persetujuan eksplisit Anda.",
-        "revoke_permission_later": "Anda dapat mencabut izin ini kapan saja di pengaturan.",
-        "agree": "Setuju",
-        "disagree": "Tidak Setuju"
-    },
-    "enable_email_permission": {
-        "email_used": "Kami telah menggunakan email yang Anda berikan sebelumnya. Jika Anda ingin memperbaruinya, silakan kunjungi Akun Saya.",
-        "understood": "Dipahami"
-    },
-    "offline_email_permission": {
-        "unable_to_change_password": "Tidak dapat mengubah kata sandi karena akses email dinonaktifkan. Silakan aktifkan akses email di menu Keamanan untuk melanjutkan",
-        "understood": "Dipahami "
-    },
-    "home_screen": {
-        "please_type_message": "Silakan ketik pesan Anda",
-        "type_message_in_selected_language": "Ketik pesan Anda dalam bahasa yang dipilih...",
-        "create_sound": "Buat",
-        "unable_to_create_sound": "Tidak dapat membuat suara",
-        "forbidden_language_mismatch": "Silakan ketik teks sesuai bahasa yang Anda pilih"
-    },
-    "appbar_bottom": {
-        "thai": "Thai",
-        "change": "Ubah"
-    },
-    "term": {
-        "read": "Saya telah membaca dan menerima ",
-        "service": "Syarat dan Ketentuan Layanan",
-        "and": " dan ",
-        "policy": "Kebijakan Privasi."
-    },
-    "reward_screen": {
-        "notification_dialog_success": "Berhasil di tukar",
-        "notification_dialog_error": "Terjadi kesalahan",
-        "appbar_title": "Hadiah",
-        "text_header": "Hadiah eksklusif dari Botnoi",
-        "widget_title01": "Poin Harian",
-        "widget_text01": "Kumpulkan 100 poin \nTersedia setiap hari",
-        "widget_text_button01": "Hanya {Timeout} jam tersisa",
-        "widget_title02": "Eksklusif untuk pengguna baru",
-        "widget_text02": "Kumpulkan 1,000 poin \nKhusus untuk pengguna baru",
-        "widget_text_button02": "Berhasil di tukar",
-        "widget_display_points": "Dapatkan {points} poin"
-    },
-    "reward_service": {
-        "error_message": "Terjadi kesalahan:",
-        "coupon_already_used": "Kupon Anda sudah digunakan.",
-        "coupon_not_found": "Kupon tidak ditemukan. Kupon mungkin sudah tidak berlaku atau kupon yang Anda masukkan salah.",
-        "coupon_expired_or_not_found": "Kupon tidak ditemukan dalam sistem atau kupon telah kedaluwarsa.",
-        "api_call_error": "Terjadi kesalahan saat memanggil API:",
-        "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini",
+    "normal_points": "Poin",
+    "monthly_points": "Poin Bulanan"
+  },
+  "change_username_provider": {
+    "username_taken": "Nama pengguna ini sudah digunakan oleh akun lain. Silakan pilih nama pengguna yang berbeda"
+  },
+  "delete_account_provider": {
+    "apple_signin_canceled": "Pengguna membatalkan Masuk dengan Apple.",
+    "incorrect_password": "Kata sandi yang Anda masukkan salah. Silakan coba lagi",
+    "error_confirming_password": "Terjadi kesalahan saat mengonfirmasi kata sandi Anda. Silakan coba lagi",
+    "not_logged_in_with_username_and_password": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan",
+    "unable_to_delete_account_status_code": "Tidak dapat menghapus akun Anda. Kode status:",
+    "error_deleting_account": "Terjadi kesalahan saat menghapus akun Anda:",
+    "not_logged_in_with_user_and_password": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan",
+    "account_deleted_successfully": "Akun Anda telah berhasil dihapus",
+    "not_logged_in_with_username_and_password_again": "Anda tidak masuk dengan nama pengguna dan kata sandi. Silakan masuk untuk melanjutkan"
+  },
+  "forget_password_provider": {
+    "no_account_found": "Tidak ditemukan akun yang terkait dengan alamat email ini",
+    "invalid_email_format": "Format alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
+    "error_sending_reset_email": "Terjadi kesalahan saat mengirim email reset kata sandi. Silakan coba lagi",
+    "link_expired": "Tautan yang Anda gunakan telah kedaluwarsa. Silakan minta yang baru",
+    "code_incorrect_or_used": "Kode yang Anda masukkan salah atau sudah digunakan",
+    "weak_new_password": "Kata sandi baru Anda tidak cukup kuat. Silakan pilih kata sandi yang lebih kuat",
+    "error_resetting_password": "Terjadi kesalahan saat mengatur ulang kata sandi Anda. Silakan coba lagi"
+  },
+  "login_provider": {
+    "invalid_username": "Nama pengguna yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
+    "error_logging_in": "Terjadi kesalahan saat masuk:",
+    "please_verify_email_before_login": "Silakan verifikasi alamat email Anda sebelum masuk",
+    "please_verify_email": "Silakan verifikasi alamat email Anda:",
+    "invalid_email": "Alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
+    "incorrect_password": "Kata sandi yang Anda masukkan salah. Silakan coba lagi",
+    "account_suspended": "Akun ini terkena suspensi. Silakan hubungi support untuk bantuan",
+    "username_or_password_incorrect": "Nama pengguna atau kata sandi yang Anda masukkan salah. Silakan coba lagi"
+  },
+  "register_provider": {
+    "username_taken": "Nama pengguna ini sudah digunakan. Silakan pilih nama pengguna yang berbeda",
+    "error_checking_username": "Terjadi kesalahan saat memeriksa nama pengguna. Silakan coba lagi",
+    "error_connecting_server": "Terjadi kesalahan saat menghubungkan ke server. Silakan periksa koneksi Anda dan coba lagi",
+    "passwords_do_not_match": "Kata sandi yang Anda masukkan tidak cocok. Silakan periksa dan coba lagi",
+    "please_verify_email": "Silakan verifikasi alamat email Anda:",
+    "unable_to_send_verification_email": "Kami tidak dapat mengirim email verifikasi. Silakan coba lagi",
+    "email_used_by_another_account": "Alamat email ini sudah terkait dengan akun lain",
+    "invalid_email_format": "Format alamat email yang Anda masukkan tidak valid. Silakan periksa dan coba lagi",
+    "password_not_strong_enough": "Kata sandi Anda tidak cukup kuat. Silakan pilih kata sandi yang lebih kuat",
+    "action_not_allowed": "Tindakan ini tidak diizinkan. Silakan hubungi support jika Anda yakin ini adalah kesalahan",
+    "error_registering": "Terjadi kesalahan saat mendaftarkan akun Anda. Silakan coba lagi",
+    "no_uid_or_username": "Tidak ada UID atau nama pengguna yang diberikan. Silakan periksa input Anda dan coba lagi"
+  },
+  "android_permission": {
+    "permission_denied": "Izin akses ditolak",
+    "go_to_settings_to_enable_permission": "Silakan pergi ke pengaturan untuk mengaktifkan izin akses file",
+    "go_to_settings_page": "Pergi ke halaman pengaturan",
+    "cancel": "Batal"
+  },
+  "audio_player": {
+    "permission_denied": "Izin akses ditolak. Silakan pergi ke pengaturan.",
+    "audio_file_not_found": "File audio tidak ditemukan atau file kosong.",
+    "error_playing_audio": "Kesalahan saat memutar file audio:",
+    "unable_to_save_file": "Tidak dapat menyimpan file.",
+    "audio_created_successfully": "Suara berhasil dibuat!",
+    "download": "Unduh",
+    "close": "Tutup",
+    "file_label": "Berkas:",
+    "share_text": "Audio iklan dari Botnoi Voice",
+    "download_failed": "Gagal mengunduh. Silakan coba lagi.",
+    "download_error": "Terjadi kesalahan saat mengunduh",
+    "storage_permission_error": "Tidak ada izin penyimpanan"
+  },
+  "notification": {
+    "close": "Tutup"
+  },
+  "disable_email_permission": {
+    "disable_email_access": "Nonaktifkan Akses Email",
+    "email_access_disabled_warning": "Menonaktifkan akses email dapat membatasi Anda dari menggunakan fitur pemulihan kata sandi atau menerima notifikasi penting tentang penggunaan aplikasi Anda. Harap lanjutkan dengan hati-hati.",
+    "do_you_want_to_disable": "Apakah Anda yakin ingin menonaktifkan akses email?",
+    "yes": "Ya",
+    "no": "Tidak"
+  },
+  "email_permission_dialog": {
+    "request_email_permission": "Permintaan Izin Pengumpulan Data Email",
+    "email_permission_info": "Untuk mengaktifkan pemulihan kata sandi dan memberi tahu Anda tentang pembaruan penting terkait penggunaan aplikasi, kami meminta izin Anda untuk mengumpulkan dan menyimpan data email dengan aman. Data Anda tidak akan digunakan untuk iklan tanpa persetujuan eksplisit Anda.",
+    "revoke_permission_later": "Anda dapat mencabut izin ini kapan saja di pengaturan.",
+    "agree": "Setuju",
+    "disagree": "Tidak Setuju"
+  },
+  "enable_email_permission": {
+    "email_used": "Kami telah menggunakan email yang Anda berikan sebelumnya. Jika Anda ingin memperbaruinya, silakan kunjungi Akun Saya.",
+    "understood": "Dipahami"
+  },
+  "offline_email_permission": {
+    "unable_to_change_password": "Tidak dapat mengubah kata sandi karena akses email dinonaktifkan. Silakan aktifkan akses email di menu Keamanan untuk melanjutkan",
+    "understood": "Dipahami "
+  },
+  "home_screen": {
+    "please_type_message": "Silakan ketik pesan Anda",
+    "type_message_in_selected_language": "Ketik pesan Anda dalam bahasa yang dipilih...",
+    "create_sound": "Buat",
+    "unable_to_create_sound": "Tidak dapat membuat suara",
+    "forbidden_language_mismatch": "Silakan ketik teks sesuai bahasa yang Anda pilih"
+  },
+  "appbar_bottom": {
+    "thai": "Thai",
+    "change": "Ubah"
+  },
+  "term": {
+    "read": "Saya telah membaca dan menerima ",
+    "service": "Syarat dan Ketentuan Layanan",
+    "and": " dan ",
+    "policy": "Kebijakan Privasi."
+  },
+  "reward_screen": {
+    "notification_dialog_success": "Berhasil di tukar",
+    "notification_dialog_error": "Terjadi kesalahan",
+    "appbar_title": "Hadiah",
+    "text_header": "Hadiah eksklusif dari Botnoi",
+    "widget_title01": "Poin Harian",
+    "widget_text01": "Kumpulkan 100 poin \nTersedia setiap hari",
+    "widget_text_button01": "Hanya {Timeout} jam tersisa",
+    "widget_title02": "Eksklusif untuk pengguna baru",
+    "widget_text02": "Kumpulkan 1,000 poin \nKhusus untuk pengguna baru",
+    "widget_text_button02": "Berhasil di tukar",
+    "widget_display_points": "Dapatkan {points} poin"
+  },
+  "reward_service": {
+    "error_message": "Terjadi kesalahan:",
+    "coupon_already_used": "Kupon Anda sudah digunakan.",
+    "coupon_not_found": "Kupon tidak ditemukan. Kupon mungkin sudah tidak berlaku atau kupon yang Anda masukkan salah.",
+    "coupon_expired_or_not_found": "Kupon tidak ditemukan dalam sistem atau kupon telah kedaluwarsa.",
+    "api_call_error": "Terjadi kesalahan saat memanggil API:",
+    "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini",
 
-
-        "success_get_education": "Selamat, Anda telah bergabung dengan proyek ini.",
-        "already_subscribed": "Anda sudah menjadi anggota Langganan. Mohon tunggu hingga langganan Anda saat ini berakhir sebelum dapat mengklaim hak Anda lagi.",
-        "failure_provider": "Proyek Edukasi harus menggunakan akun yang masuk dengan email saja.",
-        "failcase_whitelist": "Email Anda belum ada dalam daftar Edukasi. Mohon minta Admin sekolah Anda membaca detailnya dan menghubungi kami untuk mengajukan permohonan bergabung dengan proyek di halaman FB Botnoi Voice.",
-        "failure_case": "Terjadi kesalahan saat mendaftar untuk proyek Pendidikan."
-
-    },
-    "redeem_coupon_dialog": {
-        "title": "Tukarkan Kupon",
-        "use": "Tukarkan",
-        "input": "Masukkan Kupon",
-        "success": "Kupon {coupon_name} berhasil ditukarkan"
-    },
-    "redeem_coupon_service": {
-        "error_message": "Terjadi kesalahan:",
-        "coupon_already_used": "Kupon \"{coupon_name}\" sudah digunakan.",
-        "coupon_not_found": "Kupon \"{coupon_name}\" tidak ditemukan atau salah.",
-        "coupon_expired_or_not_found": "Kupon \"{coupon_name}\" kedaluwarsa atau tidak terdaftar.",
-        "api_call_error": "Terjadi kesalahan saat memanggil API:",
-        "coupon_code_empty": "Silakan masukkan kupon",
-        "not_session": "Pengguna belum login",
-        "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
-    },
-    "education_screen": {
-        "appbar_title": "Pendidikan",
-        "text_header": "Langganan Pendidikan",
-        "widget_title01": "Dapatkan akses ke konten dan fitur pendidikan eksklusif.",
-        "widget_button": "Dapatkan Langganan"
-        
-    },
-    "favorite_screen": {
-        "background_text": "Tidak ada penutur pilihan dalam bahasa ini."
-    }
+    "success_get_education": "Selamat, Anda telah bergabung dengan proyek ini.",
+    "already_subscribed": "Anda sudah menjadi anggota Langganan. Mohon tunggu hingga langganan Anda saat ini berakhir sebelum dapat mengklaim hak Anda lagi.",
+    "failure_provider": "Proyek Edukasi harus menggunakan akun yang masuk dengan email saja.",
+    "failcase_whitelist": "Email Anda belum ada dalam daftar Edukasi. Mohon minta Admin sekolah Anda membaca detailnya dan menghubungi kami untuk mengajukan permohonan bergabung dengan proyek di halaman FB Botnoi Voice.",
+    "failure_case": "Terjadi kesalahan saat mendaftar untuk proyek Pendidikan."
+  },
+  "redeem_coupon_dialog": {
+    "title": "Tukarkan Kupon",
+    "use": "Tukarkan",
+    "input": "Masukkan Kupon",
+    "success": "Kupon {coupon_name} berhasil ditukarkan"
+  },
+  "redeem_coupon_service": {
+    "error_message": "Terjadi kesalahan:",
+    "coupon_already_used": "Kupon \"{coupon_name}\" sudah digunakan.",
+    "coupon_not_found": "Kupon \"{coupon_name}\" tidak ditemukan atau salah.",
+    "coupon_expired_or_not_found": "Kupon \"{coupon_name}\" kedaluwarsa atau tidak terdaftar.",
+    "api_call_error": "Terjadi kesalahan saat memanggil API:",
+    "coupon_code_empty": "Silakan masukkan kupon",
+    "not_session": "Pengguna belum login",
+    "no_daily_coupon_to_redeem": "Kupon harian belum tersedia untuk hari ini"
+  },
+  "education_screen": {
+    "appbar_title": "Pendidikan",
+    "text_header": "Langganan Pendidikan",
+    "widget_title01": "Dapatkan akses ke konten dan fitur pendidikan eksklusif.",
+    "widget_button": "Dapatkan Langganan"
+  },
+  "favorite_screen": {
+    "background_text": "Tidak ada penutur pilihan dalam bahasa ini."
+  },
+  "text_to_gensub": {
+    "audio_language": "Bahasa Audio",
+    "file_duration": "Durasi File",
+    "duration_auto_calculate": "Hitung otomatis saat transkripsi",
+    "transcribe_status": "Mulai transkripsi",
+    "segmentation_settings": "Konfigurasi pemotongan teks",
+    "max_segment_duration": "Durasi Maksimum Segmen",
+    "max_silence_duration": "Durasi Hening Maksimum",
+    "transcribing": "Memuat...",
+    "transcribe_audio": "Transkripsi Audio",
+    "create_at": "Dibuat saat:",
+    "project": "Proyek Botnoi GenSub"
+  },
+  "result_gensub": {
+    "title": "GenSub",
+    "upload": "Unggah file baru",
+    "save": "Simpan",
+    "download": "Unduh teks",
+    "text_format": "Format file teks:",
+    "confirm": "Konfirmasi",
+    "cancel": "Batal",
+    "saved_txt": "File TXT berhasil disimpan:",
+    "saved_srt": "File SRT berhasil disimpan:",
+    "error": "Kesalahan:",
+    "no_workspace": "Workspace tidak ditemukan",
+    "comfirm": "Teks telah dikonfirmasi",
+    "save_success": "Berhasil disimpan",
+    "save_fail": "Gagal menyimpan, silakan coba lagi",
+    "approve_success": "Berhasil disetujui",
+    "approve_fail": "Gagal menyetujui, silakan coba lagi",
+    "delete_success": "Berhasil dihapus",
+    "delete_fail": "Gagal menghapus:",
+    "history": "Riwayat",
+    "history_text": "Teks sebelum diedit:",
+    "close": "Tutup",
+    "cer": "Kesalahan teks"
+  },
+  "upload_gensub": {
+    "upload": "Unggah Berkas",
+    "title": "Unggah Berkas Audio",
+    "expand_title": "Transkripsi dari File Audio yang Diunggah"
+  },
+  "record_gensub": {
+    "record": "Rekam Audio",
+    "title": "Merekam dan Mentranskripsikan Audio",
+    "expand_title": "Transkripsi dari File Audio yang Direkam",
+    "press_to": "Tekan tombol untuk merekam audio",
+    "press_correct": "Tekan ✓ untuk mengirim data"
+  },
+  "units": {
+    "seconds": "detik",
+    "minutes": "menit",
+    "unlimited": "Tak terbatas"
+  },
+  "languages": {
+    "th": "Thai",
+    "en": "Inggris",
+    "id": "Indonesia"
+  },
+  "dialog": {
+    "delete_project_title": "Hapus Proyek",
+    "delete_project_content": "Apakah Anda yakin ingin menghapus proyek ini?",
+    "cancel": "Batal",
+    "delete": "Hapus"
+  },
+  "select_languages": {
+    "thai": "Thai"
+  },
+  "marads_basic": {
+    "label_product": "Produk yang akan dijual*",
+    "placeholder_product": "Kursus bahasa, Ponsel pintar",
+    "label_brand": "Nama Merek (Opsional)",
+    "placeholder_brand": "Botnoi",
+    "label_price": "Harga (Opsional)",
+    "placeholder_price": "Sangat murah, hanya 99 Baht dari 129 Baht",
+    "label_style": "Gaya Konten",
+    "label_length": "Panjang Konten* (Mempengaruhi poin)",
+    "label_extra": "Info Tambahan (Opsional)",
+    "placeholder_extra": "Jangan lewatkan, hanya hari ini!",
+    "error_required": "Harap isi semua kolom yang wajib diisi",
+    "header_style": "Gaya Konten",
+    "header_length": "Panjang Konten",
+    "style_persuasive": "Persuasif",
+    "style_funny": "Lucu",
+    "style_serious": "Serius",
+    "style_begging": "Memohon",
+    "style_sympathy": "Simpati",
+    "style_review": "Ulasan Produk",
+    "length_15": "~15 detik",
+    "length_30": "~30 detik",
+    "length_60": "~60 detik",
+    "text_remaining": "Kuota {} kali",
+    "btn_create": "Buat",
+    "point_usage_info": "Pembuatan konten perlu poin ",
+    "point_rate_15s": "50 poin/kali untuk ~15 detik",
+    "point_rate_30s": "100 poin/kali untuk ~30 detik",
+    "point_rate_60s": "150 poin/kali untuk ~60 detik"
+  },
+  "marads_adv": {
+    "label_length": "Panjang Konten* (Mempengaruhi poin)",
+    "label_extra": "Info Tambahan (Opsional)",
+    "placeholder_extra": "Jangan lewatkan, berakhir dalam 3 hari",
+    "header_character": "Karakter Penjual",
+    "header_style": "Gaya Konten",
+    "header_length": "Panjang Konten",
+    "btn_properties": "Properti Produk",
+    "error_no_product": "Silakan masukkan nama produk",
+    "char_beauty": "Penjual Cantik",
+    "char_kid": "Anak SD",
+    "char_teen_boy": "Remaja Laki-laki",
+    "char_teen_girl": "Remaja Perempuan",
+    "char_pro_seller": "Penjual Profesional",
+    "char_auntie": "Tante Sebelah Rumah",
+    "char_chief": "Kepala Desa",
+    "char_grandpa": "Kakek",
+    "char_grandma": "Nenek",
+    "color_black": "Hitam",
+    "color_red": "Merah",
+    "color_white": "Putih",
+    "color_pink": "Merah Muda",
+    "color_blue": "Biru",
+    "section_basic_info": "Informasi Dasar*",
+    "section_promotion": "Info Promosi (Opsional)",
+    "section_sales_style": "Gaya Penjualan",
+    "label_promotion": "Promosi",
+    "placeholder_promotion": "Buku pelajaran gratis",
+    "label_target": "Target Audiens",
+    "placeholder_target": "Penggemar teknologi",
+    "label_selling_point": "Nilai Jual",
+    "placeholder_selling_point": "Termurah di daerah ini",
+    "label_why_buy": "Mengapa Membeli",
+    "placeholder_why_buy": "Hemat uang untuk barang baru"
+  },
+  "marads_props": {
+    "title": "Properti Produk",
+    "subtitle": "(Kolom bersifat opsional)",
+    "label_size": "Ukuran/Jumlah",
+    "placeholder_size": "256 GB, 1 Liter",
+    "label_model": "Model/Tipe/Pola",
+    "placeholder_model": "iPhone 15, Pola bunga",
+    "label_material": "Bahan/Spesifikasi",
+    "placeholder_material": "Sutra, Chip M4",
+    "label_color": "Warna Produk",
+    "header_select_color": "Pilih Warna",
+    "color_unspecified": "Tidak ditentukan",
+    "btn_save": "Simpan"
+  },
+  "marads_history": {
+    "download_title": "Unduh File",
+    "select_extension": "Pilih Ekstensi File",
+    "download_warning": "Catatan: Musik latar tidak akan disertakan dalam unduhan.",
+    "confirm_delete_title": "Hapus audio yang dibuat ini",
+    "confirm_delete_msg": "Apakah Anda yakin ingin menghapus item ini?",
+    "processing": "Memproses",
+    "no_title": "Tanpa Judul",
+    "generate": "Buat",
+    "chars_unit": "karakter",
+    "download_success": "Unduhan Berhasil",
+    "download_success_msg": "File audio berhasil disimpan ke perangkat.",
+    "generate_success": "Pembuatan Berhasil",
+    "generate_success_msg": "Audio berhasil dibuat.",
+    "item_not_found": "Item tidak ditemukan (mungkin telah dihapus). Memperbarui data...",
+    "incomplete_data": "Data tidak lengkap, tidak dapat menghapus.",
+    "delete_success": "Hapus Berhasil",
+    "delete_success_msg": "Data berhasil dihapus.",
+    "delete_error": "Kesalahan saat menghapus data.",
+    "no_audio_link": "Tautan audio tidak ditemukan.",
+    "connection_timeout": "Koneksi habis waktu, silakan coba lagi.",
+    "link_expired": "Tautan audio kedaluwarsa. Sistem diatur ulang untuk pembuatan ulang.",
+    "play_failed": "Pemutaran gagal",
+    "copy": "Salin",
+    "copied": "Disalin",
+    "edit": "Edit",
+    "delete": "Hapus",
+    "save_success": "Berhasil disimpan",
+    "save_error": "Kesalahan menyimpan data",
+    "sort_newest": "Urutkan Terbaru -> Terlama",
+    "sort_oldest": "Urutkan Terlama -> Terbaru",
+    "no_history": "Tidak ada riwayat ditemukan",
+    "search_hint": "Cari"
+  },
+  "marads_result": {
+    "select_voice": "Pilih Suara",
+    "make_persuasive": "Buat lebih persuasif",
+    "create_voice": "Buat Audio",
+    "please_type_message": "Silakan ketik pesan sebelum membuat audio.",
+    "create_voice_failed": "Pembuatan Gagal",
+    "try_again_error": "Silakan coba lagi.",
+    "download_success": "Unduhan Berhasil",
+    "download_success_msg": "File audio berhasil disimpan ke perangkat.",
+    "persuasive_success": "Teks berhasil ditingkatkan.",
+    "session_expired": "Sesi berakhir. Silakan masuk lagi.",
+    "system_error": "Kesalahan sistem sementara. Silakan coba lagi.",
+    "ok": "OK"
+  },
+  "marads_mode_selector": {
+    "select_mode": "Pilih Mode",
+    "mode_result": "Hasil",
+    "mode_edit": "Edit",
+    "mode_history": "Riwayat"
+  },
+  "marads_filter_modal_sheet": {
+    "filter": "Filter",
+    "all": "Semua"
+  }
 }

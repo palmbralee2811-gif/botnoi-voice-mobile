@@ -1,12 +1,14 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 Future<void> handleSpeakerTap({
   required BuildContext context,
+  required WidgetRef ref,
   required int index,
   required SpeakerEntity speakerItem,
   required AudioPlayer audioPlayer,
@@ -26,7 +28,7 @@ Future<void> handleSpeakerTap({
       final response = await http.get(
         Uri.parse(audioURL),
         headers: {
-          'Referer': 'https://voice.botnoi.ai/',
+          'Referer': refererUrl,
         },
       );
 
@@ -64,7 +66,8 @@ Future<void> handleSpeakerTap({
       break;
   }
 
-  final homeSpeakerProvider = context.read<HomeSpeakerDataManagement>();
+  // เข้าถึง Notifier ด้วย ref.read() และเรียกใช้ฟังก์ชันเดิม
+  final homeSpeakerProvider = ref.read(homeSpeakerDataProvider.notifier);
   homeSpeakerProvider.setLanguage(speakerItem.language.toLowerCase());
   homeSpeakerProvider.setSpeakerId(speakerItem.speakerId);
   homeSpeakerProvider.setSpeakerName(speakerName);

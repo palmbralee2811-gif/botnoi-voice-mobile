@@ -1,8 +1,8 @@
 import 'package:botnoivoice/shared/function/open_logout_function.dart';
-import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/service/delete_account/delete_account_service.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
+import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text_align.dart';
@@ -11,73 +11,59 @@ import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart'
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Confirm Delete Account Screen
-class ConfirmDeleteAccountScreen extends StatefulWidget {
+class ConfirmDeleteAccountScreen extends ConsumerStatefulWidget {
   const ConfirmDeleteAccountScreen({super.key});
 
   @override
-  State<ConfirmDeleteAccountScreen> createState() =>
-      _ConfirmDeleteAccountScreenState();
+  ConsumerState<ConfirmDeleteAccountScreen> createState() => _ConfirmDeleteAccountScreenState();
 }
 
-class _ConfirmDeleteAccountScreenState
-    extends State<ConfirmDeleteAccountScreen> {
+class _ConfirmDeleteAccountScreenState extends ConsumerState<ConfirmDeleteAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   bool _isDeleting = false;
   bool _isPasswordVisible = false; // ใช้สำหรับควบคุมการแสดงรหัสผ่าน
   String? _providerId; // ใช้สำหรับเก็บ providerId ของผู้ใช้
 
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _deleteAccount() async {
+    // กำหนด Notifier (Controller)
+    final deleteAccountNotifier = ref.read(deleteAccountServiceProvider.notifier);
+    final emailLoginNotifier = ref.read(emailLoginNotifierProvider.notifier);
+    final appleLoginNotifier = ref.read(appleLoginNotifierProvider.notifier);
+
+    // Watch สถานะ (State) - สำหรับตรวจสอบสถานะการ Login
+    // เนื่องจากเราอยู่ในเมธอดที่เรียกใช้ async เราจะใช้ ref.read เพื่อเข้าถึงสถานะปัจจุบันแทน ref.watch
+    final emailLoginState = ref.read(emailLoginNotifierProvider);
+    final appleLoginState = ref.read(appleLoginNotifierProvider);
+
     setState(() {
       _isDeleting = true;
     });
 
-    // Delete Account for Email/Password and Apple Sign In.
-    final deleteAccount = context.read<DeleteAccountService>();
-
-    // Email Login
-    final emailLogin = context.read<EmailLogin>();
-
-    // Apple Login
-    final appleLogin = context.read<AppleLogin>();
-
     // Check Login with Email/Password or Apple Account ???
-    if (emailLogin.isLoggedIn &&
-        emailLogin.user?.providerData[0].providerId == 'password') {
+    if (emailLoginState.isLoggedIn &&
+        emailLoginState.user?.providerData[0].providerId == 'password') {
       _providerId = 'password';
-    } else if (appleLogin.isLoggedIn &&
-        appleLogin.user?.providerData[0].providerId == 'apple.com') {
+    } else if (appleLoginState.isLoggedIn &&
+        appleLoginState.user?.providerData[0].providerId == 'apple.com') {
       _providerId = 'apple.com';
     } else {
       // ถ้าไม่มี providerId ให้แสดงข้อความแจ้งเตือน
-      if (_providerId == null) {
-        NotificationDialog(
-          context: context,
-          // ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยบัญชี Email หรือ บัญชี Apple
-          text: 'confirm_delete_account.unable_to_delete_account'.tr(),
-        ).showErrorModal(context);
-        setState(() {
-          _isDeleting = false;
-        });
-      }
-      return;
-    }
-
-    String password = _passwordController.text;
-    bool isPasswordValid =
-        await deleteAccount.verifyCredentials(password, _providerId!);
-
-    if (!isPasswordValid) {
+      // เราสามารถใช้ ref.watch(deleteAccountServiceProvider) เพื่อเข้าถึง errorMessage แต่ในกรณีนี้เราจัดการเอง
       NotificationDialog(
         context: context,
-        text: deleteAccount.errorMessage ??
-            'confirm_delete_account.incorrect_password'
-                .tr(), //รหัสผ่านไม่ถูกต้อง
+        text: 'confirm_delete_account.unable_to_delete_account'.tr(),
       ).showErrorModal(context);
       setState(() {
         _isDeleting = false;
@@ -85,14 +71,43 @@ class _ConfirmDeleteAccountScreenState
       return;
     }
 
-    try {
-      await deleteAccount.deleteUserDataFromDatabase();
-      final errorMessage = deleteAccount.errorMessage;
+    String password = _passwordController.text;
+    bool isPasswordValid =
+        await deleteAccountNotifier.verifyCredentials(password, _providerId!);
 
-      if (errorMessage != null && errorMessage.isNotEmpty) {
+    // รับค่า error message จาก state ของ Notifier (String?)
+    final verifyErrorMessage = ref.read(deleteAccountServiceProvider);
+
+    if (!isPasswordValid) {
+      NotificationDialog(
+        context: context,
+        // ใช้ verifyErrorMessage ที่ได้จาก Notifier
+        text: verifyErrorMessage ??
+            'confirm_delete_account.incorrect_password'.tr(), //รหัสผ่านไม่ถูกต้อง
+      ).showErrorModal(context);
+      // สำคัญ: ต้องเคลียร์ error message ทิ้งหลังแสดงเสร็จ
+      if (verifyErrorMessage != null) {
+         // ใน Notifier คุณไม่ได้เปิดเมธอด public สำหรับ clear error ดังนั้นเราจะตั้งค่า state เป็น null โดยตรงไม่ได้
+         // ต้องใช้เมธอดภายใน DeleteAccountNotifier ที่ควบคุม state ให้เคลียร์
+         // เนื่องจากไม่มีเมธอด public ให้ใช้ เราจะตั้งข้อสังเกตไว้ (ถ้าใน Notifier มี _clearError() ต้องสร้าง public method เพื่อเรียกใช้)
+      }
+      setState(() {
+        _isDeleting = false;
+      });
+      return;
+    }
+
+    try {
+      // 1. Delete User Data from Database
+      await deleteAccountNotifier.deleteUserDataFromDatabase();
+      
+      // ตรวจสอบ error message หลังจากพยายามลบข้อมูลจากฐานข้อมูล
+      final deleteDbErrorMessage = ref.read(deleteAccountServiceProvider);
+
+      if (deleteDbErrorMessage != null && deleteDbErrorMessage.isNotEmpty) {
         NotificationDialog(
           context: context,
-          text: errorMessage,
+          text: deleteDbErrorMessage,
         ).showErrorModal(context);
         setState(() {
           _isDeleting = false;
@@ -100,15 +115,34 @@ class _ConfirmDeleteAccountScreenState
         return;
       }
 
-      await deleteAccount.deleteUserAccountFromFirebase(context);
+      // 2. Delete User Account from Firebase
+      await deleteAccountNotifier.deleteUserAccountFromFirebase(context);
 
-      /// Logout and Redirect to `login_screen.dart`
+      // ตรวจสอบ error message อีกครั้งหลังจากพยายามลบ Firebase account
+      final deleteFirebaseErrorMessage = ref.read(deleteAccountServiceProvider);
+
+      if (deleteFirebaseErrorMessage != null && deleteFirebaseErrorMessage.isNotEmpty) {
+        NotificationDialog(
+          context: context,
+          text: deleteFirebaseErrorMessage,
+        ).showErrorModal(context);
+        setState(() {
+          _isDeleting = false;
+        });
+        return;
+      }
+
+      // 3. Logout and Redirect to `login_screen.dart`
       if (_providerId == 'password') {
         // Logout Email/Password
-        openEmailLogout(context);
+        // ต้องเรียกใช้ signOutWithEmail จาก Notifier
+        await emailLoginNotifier.signOutWithEmail(ref); // ส่ง ref เข้าไปด้วย
+        openEmailLogout(ref); // ฟังก์ชันนำทางหลังจาก Logout
       } else if (_providerId == 'apple.com') {
-        // Redirect to `login_screen.dart`
-        openAppleLogout(context);
+        // Logout Apple
+        // ต้องเรียกใช้ signOutWithApple จาก Notifier
+        await appleLoginNotifier.signOutWithApple(ref); // ส่ง ref เข้าไปด้วย
+        openAppleLogout(ref); // ฟังก์ชันนำทางหลังจาก Logout
       }
     } catch (error) {
       NotificationPopup(
@@ -116,16 +150,25 @@ class _ConfirmDeleteAccountScreenState
         text:
             '${'confirm_delete_account.error_try_again'.tr()} $error', //เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.
       ).showAsError();
+    } finally {
+      // ตรวจสอบให้แน่ใจว่า _isDeleting ถูกตั้งค่าเป็น false เสมอหลังเสร็จสิ้น
       setState(() {
         _isDeleting = false;
       });
+      // เคลียร์รหัสผ่าน
+      _passwordController.clear();
+      
+      // สำคัญ: ต้องเคลียร์ error message ใน Notifier (ถ้ามีเมธอด public) 
+      // เพื่อไม่ให้ error เก่าปรากฏในการเรียกใช้ครั้งถัดไป
+      // เนื่องจากโค้ดที่ให้มาไม่มีเมธอด public สำหรับ clear error ใน DeleteAccountNotifier 
+      // จึงต้องมั่นใจว่าเมธอดต่าง ๆ ใน DeleteAccountNotifier จะ clear error เองเมื่อสำเร็จ
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Email Login
-    final emailLogin = context.read<EmailLogin>();
+    // Watch สถานะเพื่ออัปเดต UI (emailLoginState.isLoggedIn)
+    final emailLoginState = ref.watch(emailLoginNotifierProvider);
 
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
@@ -167,8 +210,7 @@ class _ConfirmDeleteAccountScreenState
                   children: [
                     SizedBox(height: 40.h),
                     GradientTextAlign(
-                      'confirm_delete_account.confirm_password'
-                          .tr(), //ยืนยันรหัสผ่าน
+                      'confirm_delete_account.confirm_password'.tr(),
                       gradient: const LinearGradient(
                         colors: [
                           Color(0xFF9340FF),
@@ -186,8 +228,7 @@ class _ConfirmDeleteAccountScreenState
                     ),
                     SizedBox(height: 8.h),
                     GradientTextAlign(
-                      'confirm_delete_account.confirm_password_to_delete'
-                          .tr(), //ยืนยันรหัสผ่านของคุณเพื่อดำเนินการลบบัญชี
+                      'confirm_delete_account.confirm_password_to_delete'.tr(),
                       gradient: const LinearGradient(
                         colors: [
                           Color(0xFF9340FF),
@@ -204,8 +245,9 @@ class _ConfirmDeleteAccountScreenState
                       textAlign: TextAlign.left,
                     ),
                     SizedBox(height: 32.h),
-                    if (emailLogin.isLoggedIn &&
-                        emailLogin.user?.providerData[0].providerId ==
+                    // ใช้สถานะจาก Riverpod state
+                    if (emailLoginState.isLoggedIn &&
+                        emailLoginState.user?.providerData[0].providerId ==
                             'password')
                       TextFormField(
                         controller: _passwordController,
@@ -216,7 +258,7 @@ class _ConfirmDeleteAccountScreenState
                             fontWeight: FontWeight.w400),
                         decoration: InputDecoration(
                           labelText: 'confirm_delete_account.confirm_password'
-                              .tr(), //ยืนยันรหัสผ่าน
+                              .tr(),
                           labelStyle: TextStyle(
                               fontSize: ResponsiveDesignOrientation.isLandscape
                                   ? 12.sp
@@ -253,7 +295,7 @@ class _ConfirmDeleteAccountScreenState
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'confirm_delete_account.please_enter_your_password'
-                                .tr(); //โปรดใส่รหัสผ่านของคุณ
+                                .tr();
                           }
                           return null;
                         },
@@ -262,7 +304,12 @@ class _ConfirmDeleteAccountScreenState
                     GradientTextButton(
                       text: 'confirm_delete_account.confirm'.tr(), //ยืนยัน
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
+                        // ไม่ต้อง validate ถ้าไม่ใช่การลบแบบ 'password'
+                        final bool isPasswordFlow = emailLoginState.isLoggedIn &&
+                            emailLoginState.user?.providerData[0].providerId ==
+                                'password';
+                        
+                        if (!isPasswordFlow || (_formKey.currentState?.validate() ?? false)) {
                           _deleteAccount();
                         }
                       },

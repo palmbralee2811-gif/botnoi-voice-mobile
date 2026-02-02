@@ -42,14 +42,21 @@ class FilterOption extends StatelessWidget {
                 ),
           SizedBox(
               width: ResponsiveDesignOrientation.isLandscape ? 10.w : 20.w),
-          Text(
-            text,
-            style: GoogleFonts.prompt(
-              fontSize:
-                  ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          
+          // --- แก้ไขตรงนี้ ---
+          Expanded( // 1. ใช้ Expanded ครอบ เพื่อให้ Text กินพื้นที่เท่าที่เหลือ
+            child: Text(
+              text,
+              style: GoogleFonts.prompt(
+                fontSize:
+                    ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+              maxLines: 1, // 2. (Optional) บังคับบรรทัดเดียว ป้องกัน UI เพี้ยนแนวตั้ง
+              overflow: TextOverflow.ellipsis, // 3. ถ้าข้อความยาวเกิน ให้ขึ้น ...
             ),
           ),
+          // ----------------
         ],
       ),
     );

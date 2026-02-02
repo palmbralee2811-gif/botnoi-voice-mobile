@@ -13,75 +13,118 @@ Future<void> showLanguageBottomSheet({
 }) async {
   String selectedLanguage = await loadSelectedLanguage();
 
+  if (!context.mounted) return;
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return GestureDetector(
-        onTap: () {
-          // Close Drawer App Language Selection Dialog
-          context.pop();
-        },
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          width: double.infinity,
-          height: ResponsiveDesignOrientation.isLandscape ? 400.h : 300.h,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildHeader(context),
-              Flexible(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: appLanguageModel.map((lang) {
-                      return _buildLanguageOption(
-                        context,
-                        onLanguageSelected,
-                        lang['code']!,
-                        lang['name']!,
-                        lang['image']!,
-                        selectedLanguage,
-                      );
-                    }).toList(),
-                  ),
+      // --- Responsive Logic for Tablet Landscape ---
+      bool isTablet = MediaQuery.of(context).size.shortestSide > 550;
+      bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+      // ลดขนาดลง 30% ถ้าเป็น Tablet แนวนอน
+      double scaleFactor = (isTablet && isLandscape) ? 0.7 : 1.0;
+
+      return Container(
+        // ปรับความสูงให้พอดีกับเนื้อหา และ Scale ตาม Device
+        constraints: BoxConstraints(
+          maxHeight: 0.8.sh,
+          minHeight: (ResponsiveDesignOrientation.isLandscape ? 300.h : 350.h) * scaleFactor,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r * scaleFactor)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 12.h * scaleFactor),
+            // --- Drag Handle ---
+            Container(
+              width: 40.w * scaleFactor,
+              height: 4.h * scaleFactor,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2.r * scaleFactor),
+              ),
+            ),
+            
+            // --- Header ---
+            _buildHeader(context, scaleFactor),
+            
+            Divider(height: 1, color: Colors.grey.shade100),
+
+            // --- Language List ---
+            Flexible(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.w * scaleFactor, 
+                  vertical: 10.h * scaleFactor
+                ),
+                child: Column(
+                  children: appLanguageModel.map((lang) {
+                    final bool isSelected = lang['code'] == selectedLanguage;
+                    return _buildLanguageOption(
+                      context,
+                      onLanguageSelected,
+                      lang['code']!,
+                      lang['name']!,
+                      lang['image']!,
+                      isSelected,
+                      scaleFactor,
+                    );
+                  }).toList(),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20.h * scaleFactor), // Safe area / Bottom padding
+          ],
         ),
       );
     },
   );
 }
 
-Widget _buildHeader(BuildContext context) {
+Widget _buildHeader(BuildContext context, double scaleFactor) {
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+    padding: EdgeInsets.symmetric(
+      horizontal: 24.w * scaleFactor, 
+      vertical: 16.h * scaleFactor
+    ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           'language'.tr(),
           style: GoogleFonts.prompt(
-            fontSize: ResponsiveDesignOrientation.isLandscape ? 12.sp : 16.sp,
-            fontWeight: FontWeight.w600,
+            fontSize: (ResponsiveDesignOrientation.isLandscape ? 18.sp : 18.sp) * scaleFactor,
+            fontWeight: FontWeight.w700,
+            color: Colors.black87,
           ),
         ),
         InkWell(
-          onTap: () {
-            // Close Drawer App Language Selection Dialog
-            context.pop();
-          },
-          child: Icon(
-            Icons.close,
-            size: ResponsiveDesignOrientation.isLandscape ? 14.sp : 24.sp,
-            color: Colors.black,
+          onTap: () => context.pop(),
+          borderRadius: BorderRadius.circular(20.r * scaleFactor),
+          child: Container(
+            padding: EdgeInsets.all(6.r * scaleFactor),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.close_rounded,
+              size: (ResponsiveDesignOrientation.isLandscape ? 20.sp : 20.sp) * scaleFactor,
+              color: Colors.grey.shade600,
+            ),
           ),
         ),
       ],
@@ -95,50 +138,81 @@ Widget _buildLanguageOption(
   String languageCode,
   String languageName,
   String imagePath,
-  String selectedLanguage,
+  bool isSelected,
+  double scaleFactor,
 ) {
-  return Column(
-    children: [
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () async {
-            await _onLanguageSelected(
-                context, onLanguageSelected, languageCode);
-          },
-          highlightColor: Colors.grey[300],
-          splashColor: Colors.transparent,
-          borderRadius: BorderRadius.circular(8.r),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(imagePath, width: 26.w, height: 26.h),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Text(
-                    languageName,
-                    style: GoogleFonts.prompt(
-                      fontSize: ResponsiveDesignOrientation.isLandscape
-                          ? 12.sp
-                          : 14.sp,
-                      fontWeight: selectedLanguage == languageCode
-                          ? FontWeight.w600
-                          : FontWeight.w400,
-                    ),
-                    softWrap: true, // ข้อความสามารถขึ้นบรรทัดใหม่ได้
-                    maxLines: null, // ไม่จำกัดจำนวนบรรทัด
-                    overflow: TextOverflow.visible,
-                  ),
+  return Container(
+    margin: EdgeInsets.only(bottom: 12.h * scaleFactor),
+    decoration: BoxDecoration(
+      color: isSelected ? Colors.blue.withOpacity(0.04) : Colors.white,
+      borderRadius: BorderRadius.circular(12.r * scaleFactor),
+      border: Border.all(
+        color: isSelected ? Colors.blue : Colors.grey.shade200,
+        width: isSelected ? 1.5 : 1,
+      ),
+    ),
+    child: InkWell(
+      onTap: () async {
+        await _onLanguageSelected(
+            context, onLanguageSelected, languageCode);
+      },
+      borderRadius: BorderRadius.circular(12.r * scaleFactor),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: 12.h * scaleFactor, 
+          horizontal: 16.w * scaleFactor
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Flag Image with Shadow
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ]
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  imagePath, 
+                  width: 32.w * scaleFactor, 
+                  height: 32.w * scaleFactor, // ใช้ width เพื่อให้เป็นวงกลมสมบูรณ์
+                  fit: BoxFit.cover
                 ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(width: 16.w * scaleFactor),
+            
+            // Language Name
+            Expanded(
+              child: Text(
+                languageName,
+                style: GoogleFonts.prompt(
+                  fontSize: (ResponsiveDesignOrientation.isLandscape ? 16.sp : 16.sp) * scaleFactor,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  color: isSelected ? Colors.blue.shade700 : Colors.black87,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            // Checkmark Icon if selected
+            if (isSelected)
+              Icon(
+                Icons.check_circle_rounded,
+                color: Colors.blue,
+                size: 24.sp * scaleFactor,
+              ),
+          ],
         ),
       ),
-      SizedBox(height: 16.h),
-    ],
+    ),
   );
 }
 
@@ -147,22 +221,18 @@ Future<void> _onLanguageSelected(
   Function(String) onLanguageSelected,
   String languageCode,
 ) async {
+  // Logic เดิม
   saveSelectedLanguage(languageCode);
   onLanguageSelected(languageCode);
   context.setLocale(Locale(languageCode));
 
-  if (context.mounted) {
-    // Close Drawer App Language Selection Dialog
-    context.pop();
-  }
+  // ใช้ mounted check เพื่อความปลอดภัย
+  if (!context.mounted) return;
+  context.pop(); // Close BottomSheet
 
-  if (context.mounted) {
-    // Close Drawer
-    context.pop();
-  }
+  if (!context.mounted) return;
+  context.pop(); // Close Drawer (ถ้าเปิดอยู่)
 
-  if (context.mounted) {
-    // Redirect to HomeScreen
-    context.go('/home');
-  }
+  if (!context.mounted) return;
+  context.go('/home'); // Redirect
 }

@@ -5,21 +5,21 @@ import 'package:botnoivoice/shared/widget/gradient/gradient_text_button.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:botnoivoice/service/email/email_forget_password.dart';
 
-class NewPasswordScreen extends StatefulWidget {
+class NewPasswordScreen extends ConsumerStatefulWidget {
   final String resetCode;
 
   const NewPasswordScreen({super.key, required this.resetCode});
 
   @override
-  State<NewPasswordScreen> createState() => _NewPasswordScreenState();
+  ConsumerState<NewPasswordScreen> createState() => _NewPasswordScreenState();
 }
 
-class _NewPasswordScreenState extends State<NewPasswordScreen> {
+class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -29,7 +29,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
   /// ฟังก์ชันรีเซ็ตรหัสผ่าน
   Future<void> _resetPassword(String code, String newPassword) async {
-    final emailForgetPasswordProvider = context.read<EmailForgetPassword>();
+    final emailForgetPasswordProvider = ref.read(emailForgetPasswordNotifierProvider.notifier);
 
     try {
       await emailForgetPasswordProvider.confirmPasswordReset(code, newPassword);

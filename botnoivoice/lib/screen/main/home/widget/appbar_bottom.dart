@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/home_speaker_data_management.dart';
 import 'package:botnoivoice/shared/style/style.dart';
 import 'package:botnoivoice/screen/main/home/model/appbar_bottom_model.dart';
@@ -7,22 +8,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_icon.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-class AppBarBottom extends StatefulWidget {
+class AppBarBottom extends ConsumerStatefulWidget {
   const AppBarBottom({
     super.key,
   });
 
   @override
-  State<AppBarBottom> createState() => _AppBarBottomState();
+  ConsumerState<AppBarBottom> createState() => _AppBarBottomState();
 }
 
-class _AppBarBottomState extends State<AppBarBottom> {
+class _AppBarBottomState extends ConsumerState<AppBarBottom> {
   AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
 
@@ -38,7 +39,9 @@ class _AppBarBottomState extends State<AppBarBottom> {
 
   @override
   Widget build(BuildContext context) {
-    final speakerProvider = context.watch<HomeSpeakerDataManagement>();
+    // final speakerProvider = context.watch<HomeSpeakerDataManagement>();
+    final speakerProvider = ref.read(homeSpeakerDataProvider.notifier);
+
     String language = Localizations.localeOf(context).languageCode;
 
     final speakerInfo = appbarBottomModel
@@ -72,7 +75,7 @@ class _AppBarBottomState extends State<AppBarBottom> {
                   final response = await http.get(
                     Uri.parse(speakerAudio),
                     headers: {
-                      'Referer': 'https://voice.botnoi.ai/',
+                      'Referer': refererUrl,
                     },
                   );
                   final audioBytes = response.bodyBytes;
@@ -124,8 +127,8 @@ class _AppBarBottomState extends State<AppBarBottom> {
                           ResponsiveDesignOrientation.isLandscape ? 22.r : 14.r,
                       backgroundImage: CachedNetworkImageProvider(
                         speakerImagePath!,
-                        headers: const {
-                          'Referer': 'https://voice.botnoi.ai/',
+                        headers: {
+                          'Referer': refererUrl,
                         },
                       ),
                     ),
@@ -138,11 +141,14 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       child: Text(
                         speakerName!,
                         style: GoogleFonts.prompt(
-                          fontSize: ResponsiveDesignOrientation.isLandscape ? 8.sp : 14.sp,
+                          fontSize: ResponsiveDesignOrientation.isLandscape
+                              ? 8.sp
+                              : 14.sp,
                           fontWeight: FontWeight.w600,
                           color: kDark,
                         ),
-                        overflow: TextOverflow.ellipsis, // Optional: Truncate text with ellipsis if too long
+                        overflow: TextOverflow
+                            .ellipsis, // Optional: Truncate text with ellipsis if too long
                       ),
                     ),
                     SizedBox(
@@ -173,7 +179,9 @@ class _AppBarBottomState extends State<AppBarBottom> {
                             ? 4.w
                             : 8.w),
                     Text(
-                      nationalFlagName!,
+                      nationalFlagName!.length > 7
+                          ? '${nationalFlagName.substring(0, 7)}...'
+                          : nationalFlagName,
                       style: GoogleFonts.prompt(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 7.sp
@@ -196,9 +204,9 @@ class _AppBarBottomState extends State<AppBarBottom> {
                       ),
                     ),
                     SizedBox(
-                        width: ResponsiveDesignOrientation.isLandscape
-                            ? 10.w
-                            : 16.w),
+                      width:
+                          ResponsiveDesignOrientation.isLandscape ? 10.w : 16.w,
+                    ),
                   ],
                 ),
               ),

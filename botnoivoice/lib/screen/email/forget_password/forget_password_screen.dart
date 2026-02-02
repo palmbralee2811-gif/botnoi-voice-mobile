@@ -8,23 +8,24 @@ import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart'
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class ForgetPasswordScreen extends StatefulWidget {
+class ForgetPasswordScreen extends ConsumerStatefulWidget {
   const ForgetPasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  ConsumerState<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
 
   void sendPasswordResetEmail() async {
-    final emailForgetPassword = context.read<EmailForgetPassword>();
+    // final emailForgetPassword = context.read<EmailForgetPassword>();
+    final emailForgetPassword = ref.read(emailForgetPasswordNotifierProvider.notifier);
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       await emailForgetPassword.sendPasswordResetEmail(_emailController.text);

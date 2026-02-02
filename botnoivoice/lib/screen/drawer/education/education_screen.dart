@@ -1,49 +1,45 @@
 import 'package:botnoivoice/service/reward/reward_service.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:botnoivoice/screen/drawer/reward/widget/reward_card_widget.dart'; // ตรวจสอบ Path ให้ถูกต้อง
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:botnoivoice/screen/drawer/reward/widget/reward_card_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/screen/appbar/appbar_template.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:easy_localization/easy_localization.dart';
 
-class EducationScreen extends StatefulWidget {
+class EducationScreen extends ConsumerStatefulWidget {
   const EducationScreen({super.key});
 
   @override
-  State<EducationScreen> createState() => _EducationScreenState();
+  ConsumerState<EducationScreen> createState() => _EducationScreenState();
 }
 
-class _EducationScreenState extends State<EducationScreen> {
-
+class _EducationScreenState extends ConsumerState<EducationScreen> {
   bool isRedeemedEducation = true;
 
   @override
   Widget build(BuildContext context) {
     final bool isTablet = MediaQuery.of(context).size.width > 600;
     final bool isLandscape = ResponsiveDesignOrientation.isLandscape;
-    final rewardServiceProvider = context.watch<RewardService>();
+
+    // เพื่อให้ Widget Rebuild เมื่อมีการโหลด
+    final bool isLoading = ref.watch(isLoadingProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarTemplate(
-
         title: 'education_screen.appbar_title'.tr(),
-
         onPressed: () {
           context.pop();
         },
       ),
       body: Stack(
-
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 16.w),
             child: SingleChildScrollView(
-
               child: Column(
                 children: [
                   RewardCard(
@@ -51,8 +47,9 @@ class _EducationScreenState extends State<EducationScreen> {
                     title: 'education_screen.text_header'.tr(),
                     description: 'education_screen.widget_title01'.tr(),
                     buttonText: 'education_screen.widget_button'.tr(),
-
-                    onTap: () => _handleEducationSubscription(context),
+                    onTap: () {
+                      _handleEducationSubscription(ref);
+                    },
                     isTablet: isTablet,
                     isLandscape: isLandscape,
                     isRedeemed: isRedeemedEducation,
@@ -61,8 +58,8 @@ class _EducationScreenState extends State<EducationScreen> {
               ),
             ),
           ),
-
-          if (rewardServiceProvider.isLoading)
+          // ใช้ตัวแปร isLoading ที่ watch มาจาก Provider
+          if (isLoading)
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0.5),
@@ -79,38 +76,46 @@ class _EducationScreenState extends State<EducationScreen> {
     );
   }
 
-  //--- MOVED from reward_screen.dart ---
-  Future<void> _handleEducationSubscription(BuildContext context) async {
-    final rewardProvider = context.read<RewardService>();
+  //--- Logic การกดปุ่ม ---
+  Future<void> _handleEducationSubscription(WidgetRef ref) async {
+    final rewardService = ref.read(rewardServiceProvider);
 
     try {
-      await rewardProvider.getEducationSubscription(context);
+      // เรียกฟังก์ชันใน Service
+      await rewardService.getEducationSubscription(ref);
 
-      if (rewardProvider.errorMessage == null) {
+      // ดึง Error Message ล่าสุดจาก Provider
+      final errorMessage = ref.read(errorMessageProvider);
+
+      if (errorMessage == null) {
         setState(() {
           isRedeemedEducation = false; // Disable button after success
         });
 
-        NotificationDialog(
-          context: context,
-
-          text: '"Subscription activated successfully!"',
-
-          onPressed: () {},
-        ).showCheckmarkModalWithAction(context);
+        if (mounted) {
+          NotificationDialog(
+            context: context,
+            text: '"Subscription activated successfully!"',
+            onPressed: () {},
+          ).showCheckmarkModalWithAction(context);
+        }
       } else {
+        if (mounted) {
+          NotificationDialog(
+            context: context,
+            text: errorMessage,
+            onPressed: () {},
+          ).showErrorModal(context);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         NotificationDialog(
           context: context,
-          text: rewardProvider.errorMessage!,
+          text: "An error occurred: $e",
           onPressed: () {},
         ).showErrorModal(context);
       }
-    } catch (e) {
-      NotificationDialog(
-        context: context,
-        text: "An error occurred: $e",
-        onPressed: () {},
-      ).showErrorModal(context);
     }
   }
 }

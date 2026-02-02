@@ -1,312 +1,532 @@
 {
-    "language": "ภาษา",
-    "default_language_filter_name": "ไทย",
-    "default_language_filter_image_path": "assets/images/national_flag/thai.png",
-    "default_language_filter_code": "TH",
-    "gender": "เพศ",
-    "male_female": "ช/ญ",
-    "style": "สไตล์",
-    "style_plural": "{count} สไตล์",
-    "category": "หมวดหมู่",
-    "category_plural": "{count} หมวดหมู่",
-    "confirm": "ตกลง",
-    "reset": "รีเซ็ท",
-    "share": "แชร์",
-    "select": "เลือก",
-    "no_internet_connection": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-    "add_favorite": "เพิ่มรายการโปรดแล้ว {count} รายการ",
-    "remove_favorite": "ลบรายการโปรดแล้ว {count} รายการ",
-    "welcome_message": {
-        "line1": "เปลี่ยนข้อความเป็นเสียง",
-        "line2": "บอทน้อย",
-        "line3": "วอยซ์"
-    },
-    "auth": {
-        "sign_in": "เข้าสู่ระบบ",
-        "sign_in_with_username_email": "เข้าสู่ระบบด้วยชื่อผู้ใช้งานหรืออีเมล",
-        "sign_in_with_line": "เข้าสู่ระบบด้วย LINE",
-        "sign_in_with_google": "เข้าสู่ระบบด้วย Google",
-        "sign_in_with_apple": "เข้าสู่ระบบด้วย Apple",
-        "delete_account_button": "ลบบัญชี"
-    },
-    "sign_in": {
-        "error_occurred": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-        "welcome_message": "สวัสดี, Botnoi Voice ยินดีต้อนรับ",
-        "username_or_email": "ชื่อผู้ใช้งานหรืออีเมล",
-        "please_enter_username_or_email": "โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ",
-        "password": "รหัสผ่าน",
-        "please_enter_password": "โปรดใส่รหัสผ่านของคุณ",
-        "register": "สมัครใช้งาน",
-        "forgot_password": "ลืมรหัสผ่าน?",
-        "or": "หรือ"
-    },
-    "register": {
-        "sign_up": "สมัครใช้งาน",
-        "email": "อีเมล",
-        "username": "ชื่อผู้ใช้งาน",
-        "password": "รหัสผ่าน",
-        "confirm_password": "ยืนยันรหัสผ่าน",
-        "or": "หรือ",
-        "please_enter_your_label": "โปรดใส่{Label}ของคุณ",
-        "password_minimum_length": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
-        "password_mismatch": "รหัสผ่านไม่ตรงกัน",
-        "back_to_sign_in": "กลับไปที่เข้าสู่ระบบ",
-        "email_invalid_format": "รูปแบบอีเมลไม่ถูกต้อง",
-        "username_invalid": "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
-        "please_enter_password": "โปรดใส่รหัสผ่านของคุณ"
-    },
-    "confirm_forget_password": {
-        "check_your_email": "ตรวจสอบอีเมลของคุณ",
-        "copy_link_from_your_inbox": "คัดลอกลิงค์จากกล่องจดหมายของคุณ",
-        "link": "ลิงค์",
-        "please_enter_link_from_email": "โปรดใส่ลิงค์ที่ได้รับจากอีเมล",
-        "confirm": "ยืนยัน",
-        "link_invalid_try_again": "ลิงค์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง"
-    },
-    "forget_password": {
-        "forgot_password": "ลืมรหัสผ่าน",
-        "confirm_email": "ยืนยันอีเมลของคุณเพื่อตั้งรหัสผ่านใหม่",
-        "email": "อีเมล",
-        "please_enter_email": "โปรดใส่อีเมลของคุณ",
-        "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
-        "send": "ส่ง"
-    },
-    "new_password": {
-        "password_reset_success": "ตั้งรหัสผ่านใหม่สำเร็จ",
-        "error_occurred": "เกิดข้อผิดพลาด:",
-        "reset_password": "ตั้งรหัสผ่านใหม่",
-        "password_length": "รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป",
-        "password": "รหัสผ่าน",
-        "please_enter_password": "โปรดใส่รหัสผ่านของคุณ",
-        "password_min_length": "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร",
-        "confirm_password": "ยืนยันรหัสผ่าน",
-        "password_mismatch": "รหัสผ่านไม่ตรงกัน",
-        "confirm": "ยืนยัน"
-    },
-    "app_drawer": {
-        "profile": "ข้อมูลส่วนตัว",
-        "buy_points": "ซื้อพอยต์",
-        "security": "ความปลอดภัย",
-        "reward": "ฟรีพอยต์",
+  "language": "ภาษา",
+  "default_language_filter_name": "ไทย",
+  "default_language_filter_image_path": "assets/images/national_flag/thai.png",
+  "default_language_filter_code": "TH",
+  "gender": "เพศ",
+  "male_female": "ช/ญ",
+  "style": "สไตล์",
+  "style_plural": "{count} สไตล์",
+  "category": "หมวดหมู่",
+  "category_plural": "{count} หมวดหมู่",
+  "confirm": "ตกลง",
+  "reset": "รีเซ็ท",
+  "share": "แชร์",
+  "select": "เลือก",
+  "no_internet_connection": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+  "add_favorite": "เพิ่มรายการโปรดแล้ว {count} รายการ",
+  "remove_favorite": "ลบรายการโปรดแล้ว {count} รายการ",
+  "welcome_message": {
+    "line1": "เปลี่ยนข้อความเป็นเสียง",
+    "line2": "บอทน้อย",
+    "line3": "วอยซ์"
+  },
+  "auth": {
+    "sign_in": "เข้าสู่ระบบ",
+    "sign_in_with_username_email": "เข้าสู่ระบบด้วยชื่อผู้ใช้งานหรืออีเมล",
+    "sign_in_with_line": "เข้าสู่ระบบด้วย LINE",
+    "sign_in_with_google": "เข้าสู่ระบบด้วย Google",
+    "sign_in_with_apple": "เข้าสู่ระบบด้วย Apple",
+    "delete_account_button": "ลบบัญชี"
+  },
+  "sign_in": {
+    "error_occurred": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+    "welcome_message": "สวัสดี, Botnoi Voice ยินดีต้อนรับ",
+    "username_or_email": "ชื่อผู้ใช้งานหรืออีเมล",
+    "please_enter_username_or_email": "โปรดใส่ชื่อผู้ใช้งานหรืออีเมลของคุณ",
+    "password": "รหัสผ่าน",
+    "please_enter_password": "โปรดใส่รหัสผ่านของคุณ",
+    "register": "สมัครใช้งาน",
+    "forgot_password": "ลืมรหัสผ่าน?",
+    "or": "หรือ"
+  },
+  "register": {
+    "sign_up": "สมัครใช้งาน",
+    "email": "อีเมล",
+    "username": "ชื่อผู้ใช้งาน",
+    "password": "รหัสผ่าน",
+    "confirm_password": "ยืนยันรหัสผ่าน",
+    "or": "หรือ",
+    "please_enter_your_label": "โปรดใส่{Label}ของคุณ",
+    "password_minimum_length": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+    "password_mismatch": "รหัสผ่านไม่ตรงกัน",
+    "back_to_sign_in": "กลับไปที่เข้าสู่ระบบ",
+    "email_invalid_format": "รูปแบบอีเมลไม่ถูกต้อง",
+    "username_invalid": "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+    "please_enter_password": "โปรดใส่รหัสผ่านของคุณ"
+  },
+  "confirm_forget_password": {
+    "check_your_email": "ตรวจสอบอีเมลของคุณ",
+    "copy_link_from_your_inbox": "คัดลอกลิงค์จากกล่องจดหมายของคุณ",
+    "link": "ลิงค์",
+    "please_enter_link_from_email": "โปรดใส่ลิงค์ที่ได้รับจากอีเมล",
+    "confirm": "ยืนยัน",
+    "link_invalid_try_again": "ลิงค์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง"
+  },
+  "forget_password": {
+    "forgot_password": "ลืมรหัสผ่าน",
+    "confirm_email": "ยืนยันอีเมลของคุณเพื่อตั้งรหัสผ่านใหม่",
+    "email": "อีเมล",
+    "please_enter_email": "โปรดใส่อีเมลของคุณ",
+    "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
+    "send": "ส่ง"
+  },
+  "new_password": {
+    "password_reset_success": "ตั้งรหัสผ่านใหม่สำเร็จ",
+    "error_occurred": "เกิดข้อผิดพลาด:",
+    "reset_password": "ตั้งรหัสผ่านใหม่",
+    "password_length": "รหัสผ่านต้องมีความยาว 6 ตัวขึ้นไป",
+    "password": "รหัสผ่าน",
+    "please_enter_password": "โปรดใส่รหัสผ่านของคุณ",
+    "password_min_length": "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร",
+    "confirm_password": "ยืนยันรหัสผ่าน",
+    "password_mismatch": "รหัสผ่านไม่ตรงกัน",
+    "confirm": "ยืนยัน"
+  },
+  "app_drawer": {
+    "profile": "ข้อมูลส่วนตัว",
+    "buy_points": "ซื้อพอยต์",
+    "security": "ความปลอดภัย",
+    "reward": "ฟรีพอยต์",
+    "gensub": "GenSub",
+    "redeem": "ใช้คูปอง",
+    "education": "การศึกษา",
+    "marads": "MarAds",
+    "services": "บริการ",
+    "account": "บัญชี",
+    "system": "ระบบ",
+    "voice": "Voice Studio"
+  },
+  "account": {
+    "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
+    "profile": "ข้อมูลส่วนตัว",
+    "login_with": "เข้าสู่ระบบด้วย",
+    "email": "อีเมล",
+    "username": "ชื่อผู้ใช้",
+    "password": "รหัสผ่าน",
+    "logout": "ออกจากระบบ"
+  },
+  "change_email_username": {
+    "username_changed_successfully": "ตั้งชื่อผู้ใช้งานใหม่สำเร็จ",
+    "change_username": "เปลี่ยนชื่อผู้ใช้",
+    "set_new_username_for_login": "ตั้งชื่อผู้ใช้งานใหม่สำหรับใช้ในการเข้าสู่ระบบ",
+    "new_username": "ชื่อผู้ใช้งานใหม่",
+    "please_enter_your_username": "โปรดใส่ชื่อผู้ใช้งานของคุณ",
+    "invalid_username": "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
+    "confirm_new_username": "ยืนยันชื่อผู้ใช้งานใหม่",
+    "please_confirm_your_username": "โปรดยืนยันชื่อผู้ใช้งานของคุณ",
+    "usernames_must_match": "ชื่อผู้ใช้งานทั้งสองช่องต้องตรงกัน",
+    "confirm": "ยืนยัน"
+  },
+  "delete_account": {
+    "delete_account": "ลบบัญชี",
+    "please_read": "โปรดอ่าน",
+    "account_deletion_warning": "การลบบัญชีเป็นการกระทำที่ไม่สามารถย้อนกลับได้ คุณจะไม่สามารถใช้บัญชีนี้กับผลิตภัณฑ์และบริการ พอยต์คงเหลือหรือแพ็คเกจที่สมัคร สิทธิพิเศษและโปรโมชั่นที่ได้รับอีกต่อไป โปรดระมัดระวัง",
+    "confirm_account_deletion": "หากยืนยันที่จะลบบัญชีต่อ กรุณากดปุ่ม",
+    "confirm_account_deletion_button": "ยืนยันลบบัญชี",
+    "cancel": "ยกเลิก",
+    "confirm_account_deletion_below": "ยืนยันลบบัญชีด้านล่าง"
+  },
+  "confirm_delete_account": {
+    "unable_to_delete_account": "ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยบัญชี Email หรือ บัญชี Apple",
+    "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
+    "error_try_again": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.",
+    "confirm_password": "ยืนยันรหัสผ่าน",
+    "confirm_password_to_delete": "ยืนยันรหัสผ่านของคุณเพื่อดำเนินการลบบัญชี",
+    "please_enter_your_password": "โปรดใส่รหัสผ่านของคุณ",
+    "confirm": "ยืนยัน"
+  },
+  "email_permission": {
+    "security": "ความปลอดภัย",
+    "email_access": "การเข้าถึงข้อมูลอีเมล",
+    "on": "เปิด",
+    "off": "ปิด",
+    "email_access_description": "เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณ"
+  },
+  "payment": {
+    "buy_points": "ซื้อพอยต์",
+    "price": "100",
+    "currency": "บาท",
+    "get_points": "ได้รับ {productTitle} พอยต์",
+    "buy_now": "ซื้อตอนนี้",
+    "received_points": "ได้รับพอยต์จำนวน {pointsTitle} พอยต์",
+    "error_occurred": "เกิดข้อผิดพลาด",
 
-        "redeem": "ใช้คูปอง",
-        "education": "การศึกษา"
-    },
-    "account": {
-        "uid_copy_success": "UID คัดลอกรหัสเรียบร้อยแล้ว",
-        "profile": "ข้อมูลส่วนตัว",
-        "login_with": "เข้าสู่ระบบด้วย",
-        "email": "อีเมล",
-        "username": "ชื่อผู้ใช้",
-        "password": "รหัสผ่าน",
-        "logout": "ออกจากระบบ"
-    },
-    "change_email_username": {
-        "username_changed_successfully": "ตั้งชื่อผู้ใช้งานใหม่สำเร็จ",
-        "change_username": "เปลี่ยนชื่อผู้ใช้",
-        "set_new_username_for_login": "ตั้งชื่อผู้ใช้งานใหม่สำหรับใช้ในการเข้าสู่ระบบ",
-        "new_username": "ชื่อผู้ใช้งานใหม่",
-        "please_enter_your_username": "โปรดใส่ชื่อผู้ใช้งานของคุณ",
-        "invalid_username": "ชื่อผู้ใช้งานไม่ถูกต้อง กรุณาใช้ตัวอักษร a-z, A-Z, ตัวเลข และเครื่องหมาย _ หรือ -",
-        "confirm_new_username": "ยืนยันชื่อผู้ใช้งานใหม่",
-        "please_confirm_your_username": "โปรดยืนยันชื่อผู้ใช้งานของคุณ",
-        "usernames_must_match": "ชื่อผู้ใช้งานทั้งสองช่องต้องตรงกัน",
-        "confirm": "ยืนยัน"
-    },
-    "delete_account": {
-        "delete_account": "ลบบัญชี",
-        "please_read": "โปรดอ่าน",
-        "account_deletion_warning": "การลบบัญชีเป็นการกระทำที่ไม่สามารถย้อนกลับได้ คุณจะไม่สามารถใช้บัญชีนี้กับผลิตภัณฑ์และบริการ พอยต์คงเหลือหรือแพ็คเกจที่สมัคร สิทธิพิเศษและโปรโมชั่นที่ได้รับอีกต่อไป โปรดระมัดระวัง",
-        "confirm_account_deletion": "หากยืนยันที่จะลบบัญชีต่อ กรุณากดปุ่ม",
-        "confirm_account_deletion_button": "ยืนยันลบบัญชี",
-        "cancel": "ยกเลิก",
-        "confirm_account_deletion_below": "ยืนยันลบบัญชีด้านล่าง"
-    },
-    "confirm_delete_account": {
-        "unable_to_delete_account": "ไม่สามารถลบบัญชีได้. คุณไม่ได้เข้าสู่ระบบด้วยบัญชี Email หรือ บัญชี Apple",
-        "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
-        "error_try_again": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง.",
-        "confirm_password": "ยืนยันรหัสผ่าน",
-        "confirm_password_to_delete": "ยืนยันรหัสผ่านของคุณเพื่อดำเนินการลบบัญชี",
-        "please_enter_your_password": "โปรดใส่รหัสผ่านของคุณ",
-        "confirm": "ยืนยัน"
-    },
-    "email_permission": {
-        "security": "ความปลอดภัย",
-        "email_access": "การเข้าถึงข้อมูลอีเมล",
-        "on": "เปิด",
-        "off": "ปิด",
-        "email_access_description": "เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณ"
-    },
-    "payment": {
-        "buy_points": "ซื้อพอยต์",
-        "price": "100",
-        "currency": "บาท",
-        "get_points": "ได้รับ {productTitle} พอยต์",
-        "buy_now": "ซื้อตอนนี้",
-        "received_points": "ได้รับพอยต์จำนวน {pointsTitle} พอยต์",
-        "error_occurred": "เกิดข้อผิดพลาด",
+    "normal_points": "พอยต์",
+    "monthly_points": "พอยต์รายเดือน"
+  },
+  "change_username_provider": {
+    "username_taken": "ชื่อผู้ใช้งานซ้ำกับบัญชีอื่น"
+  },
+  "delete_account_provider": {
+    "apple_signin_canceled": "ผู้ใช้ยกเลิกการลงชื่อเข้าใช้ด้วย Apple",
+    "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
+    "error_confirming_password": "เกิดข้อผิดพลาดในการยืนยันรหัสผ่าน",
+    "not_logged_in_with_username_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",
+    "unable_to_delete_account_status_code": "ไม่สามารถลบบัญชีผู้ใช้ได้ รหัสสถานะ:",
+    "error_deleting_account": "เกิดข้อผิดพลาดในการลบบัญชี:",
+    "not_logged_in_with_user_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",
+    "account_deleted_successfully": "ลบบัญชีสำเร็จ",
+    "not_logged_in_with_username_and_password_again": "ไม่ได้เข้าสู่ระบบด้วยผู้ใช้งานและรหัสผ่าน"
+  },
+  "forget_password_provider": {
+    "no_account_found": "ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้",
+    "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
+    "error_sending_reset_email": "เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน",
+    "link_expired": "ลิงค์นี้หมดอายุแล้ว",
+    "code_incorrect_or_used": "โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว",
+    "weak_new_password": "รหัสผ่านใหม่ไม่แข็งแรงพอ",
+    "error_resetting_password": "เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน"
+  },
+  "login_provider": {
+    "invalid_username": "ชื่อผู้ใช้งานไม่ถูกต้อง",
+    "error_logging_in": "เกิดข้อผิดพลาดในการเข้าสู่ระบบ:",
+    "please_verify_email_before_login": "กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ",
+    "please_verify_email": "กรุณายืนยันอีเมล:",
+    "invalid_email": "อีเมลไม่ถูกต้อง",
+    "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
+    "account_suspended": "บัญชีนี้ถูกระงับการใช้งาน",
+    "username_or_password_incorrect": "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"
+  },
+  "register_provider": {
+    "username_taken": "ชื่อผู้ใช้งานถูกใช้ไปแล้ว",
+    "error_checking_username": "เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้",
+    "error_connecting_server": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์",
+    "passwords_do_not_match": "รหัสผ่านไม่ตรงกัน",
+    "please_verify_email": "กรุณายืนยันอีเมล:",
+    "unable_to_send_verification_email": "ไม่สามารถส่งอีเมลยืนยันได้",
+    "email_used_by_another_account": "อีเมลถูกใช้โดยบัญชีอื่นแล้ว",
+    "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
+    "password_not_strong_enough": "รหัสผ่านไม่แข็งแรงพอ",
+    "action_not_allowed": "การดำเนินการนี้ไม่ได้รับอนุญาต",
+    "error_registering": "เกิดข้อผิดพลาดในการสมัครสมาชิก",
+    "no_uid_or_username": "ไม่มีรหัส UID หรือชื่อผู้ใช้งาน"
+  },
+  "android_permission": {
+    "permission_denied": "สิทธิ์ถูกปฏิเสธ",
+    "go_to_settings_to_enable_permission": "กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การเข้าถึงไฟล์.",
+    "go_to_settings_page": "ไปหน้าตั้งค่า",
+    "cancel": "ยกเลิก"
+  },
+  "audio_player": {
+    "permission_denied": "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า",
+    "audio_file_not_found": "ไม่พบไฟล์เสียงหรือไฟล์ว่างเปล่า",
+    "error_playing_audio": "เกิดข้อผิดพลาดในการเล่นไฟล์เสียง:",
+    "unable_to_save_file": "ไม่สามารถบันทึกไฟล์ได้",
+    "audio_created_successfully": "สร้างเสียงสำเร็จ",
+    "download": "ดาวน์โหลด",
+    "close": "ปิด",
+    "file_label": "ไฟล์:",
+    "share_text": "เสียงโฆษณาจาก Botnoi Voice",
+   "download_failed": "ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+   "download_error": "เกิดข้อผิดพลาดในการดาวน์โหลด",
+   "storage_permission_error": "ไม่มีสิทธิ์เข้าถึงพื้นที่จัดเก็บ"
+  },
+  "notification": {
+    "close": "ปิด"
+  },
+  "disable_email_permission": {
+    "disable_email_access": "ปิดใช้งานการเข้าถึงข้อมูลอีเมล",
+    "email_access_disabled_warning": "หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้",
+    "do_you_want_to_disable": "คุณต้องการที่จะปิดใช้งานหรือไม่",
+    "yes": "ต้องการ",
+    "no": "ไม่ต้องการ"
+  },
+  "email_permission_dialog": {
+    "request_email_permission": "ขออนุญาตในการเก็บข้อมูลอีเมล",
+    "email_permission_info": "เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณตามเงื่อนไขการเก็บข้อมูลอีเมลของคุณ โดยข้อมูลนี้จะถูกเก็บรักษาอย่างปลอดภัยและไม่ใช้เพื่อวัตถุประสงค์ทางโฆษณาโดยไม่ได้รับความยินยอม",
+    "revoke_permission_later": "คุณสามารถยกเลิกการอนุญาตได้ในภายหลัง",
+    "agree": "ยินยอม",
+    "disagree": "ไม่ยินยอม"
+  },
+  "enable_email_permission": {
+    "email_used": "เราได้ใช้อีเมลเดิมที่คุณเคยให้ไว้หากต้องการเปลี่ยนแปลงอีเมลกรุณาไปที่บัญชีของฉัน",
+    "understood": "เข้าใจแล้ว"
+  },
+  "offline_email_permission": {
+    "unable_to_change_password": "ไม่สามารถแก้ไขรหัสผ่านได้ เนื่องจาก การเข้าถึงอีเมลของคุณถูกปิด กรุณา เปิดการอนุญาตให้เข้าถึงอีเมลที่เมนู ความปลอดภัย เพื่อดำเนินการต่อ",
+    "understood": "เข้าใจแล้ว"
+  },
+  "home_screen": {
+    "please_type_message": "กรุณาพิมพ์ข้อความ",
+    "type_message_in_selected_language": "พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .",
+    "create_sound": "สร้างเสียง",
+    "unable_to_create_sound": "ไม่สามารถสร้างเสียงได้",
+    "forbidden_language_mismatch": "กรุณาพิมพ์ข้อความให้ตรงกับภาษาที่คุณเลือก"
+  },
+  "appbar_bottom": {
+    "thai": "ไทย",
+    "change": "เปลี่ยน"
+  },
+  "term": {
+    "read": "ฉันได้อ่านและยอมรับ ",
+    "service": "เงื่อนไขและข้อกำหนดในการให้บริการ",
+    "and": " และ ",
+    "policy": "นโยบายความเป็นส่วนตัว"
+  },
+  "reward_screen": {
+    "notification_dialog_success": "เติมคูปองสำเร็จแล้ว",
+    "notification_dialog_error": "เกิดข้อผิดพลาด",
+    "appbar_title": "ฟรีพอยต์",
+    "text_header": "รับของรางวัลสุดพิเศษจากเรา",
+    "widget_title01": "รับพอยต์ฟรี รายวัน",
+    "widget_text01": "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี่",
+    "widget_text_button01": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
+    "widget_title02": "รับพอยต์ฟรี ผู้ใช้งานใหม่",
+    "widget_text02": "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
+    "widget_text_button02": "รับพอยต์สำเร็จ",
+    "widget_display_points": "รับเลย {points} พอยต์"
+  },
+  "reward_service": {
+    "error_message": "เกิดข้อผิดพลาด:",
+    "coupon_already_used": "คูปองของคุณถูกใช้งานแล้ว",
+    "coupon_not_found": "ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
+    "coupon_expired_or_not_found": "ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว",
+    "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
 
-        "normal_points": "พอยต์",
-        "monthly_points": "พอยต์รายเดือน"
-    },
-    "change_username_provider": {
-        "username_taken": "ชื่อผู้ใช้งานซ้ำกับบัญชีอื่น"
-    },
-    "delete_account_provider": {
-        "apple_signin_canceled": "ผู้ใช้ยกเลิกการลงชื่อเข้าใช้ด้วย Apple",
-        "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
-        "error_confirming_password": "เกิดข้อผิดพลาดในการยืนยันรหัสผ่าน",
-        "not_logged_in_with_username_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",
-        "unable_to_delete_account_status_code": "ไม่สามารถลบบัญชีผู้ใช้ได้ รหัสสถานะ:",
-        "error_deleting_account": "เกิดข้อผิดพลาดในการลบบัญชี:",
-        "not_logged_in_with_user_and_password": "ไม่ได้เข้าสู่ระบบด้วยชื่อผู้ใช้งานและรหัสผ่าน",
-        "account_deleted_successfully": "ลบบัญชีสำเร็จ",
-        "not_logged_in_with_username_and_password_again": "ไม่ได้เข้าสู่ระบบด้วยผู้ใช้งานและรหัสผ่าน"
-    },
-    "forget_password_provider": {
-        "no_account_found": "ไม่พบบัญชีผู้ใช้ที่ตรงกับอีเมลนี้",
-        "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
-        "error_sending_reset_email": "เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน",
-        "link_expired": "ลิงค์นี้หมดอายุแล้ว",
-        "code_incorrect_or_used": "โค้ดไม่ถูกต้องหรือถูกใช้ไปแล้ว",
-        "weak_new_password": "รหัสผ่านใหม่ไม่แข็งแรงพอ",
-        "error_resetting_password": "เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน"
-    },
-    "login_provider": {
-        "invalid_username": "ชื่อผู้ใช้งานไม่ถูกต้อง",
-        "error_logging_in": "เกิดข้อผิดพลาดในการเข้าสู่ระบบ:",
-        "please_verify_email_before_login": "กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ",
-        "please_verify_email": "กรุณายืนยันอีเมล:",
-        "invalid_email": "อีเมลไม่ถูกต้อง",
-        "incorrect_password": "รหัสผ่านไม่ถูกต้อง",
-        "account_suspended": "บัญชีนี้ถูกระงับการใช้งาน",
-        "username_or_password_incorrect": "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"
-    },
-    "register_provider": {
-        "username_taken": "ชื่อผู้ใช้งานถูกใช้ไปแล้ว",
-        "error_checking_username": "เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้",
-        "error_connecting_server": "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์",
-        "passwords_do_not_match": "รหัสผ่านไม่ตรงกัน",
-        "please_verify_email": "กรุณายืนยันอีเมล:",
-        "unable_to_send_verification_email": "ไม่สามารถส่งอีเมลยืนยันได้",
-        "email_used_by_another_account": "อีเมลถูกใช้โดยบัญชีอื่นแล้ว",
-        "invalid_email_format": "รูปแบบอีเมลไม่ถูกต้อง",
-        "password_not_strong_enough": "รหัสผ่านไม่แข็งแรงพอ",
-        "action_not_allowed": "การดำเนินการนี้ไม่ได้รับอนุญาต",
-        "error_registering": "เกิดข้อผิดพลาดในการสมัครสมาชิก",
-        "no_uid_or_username": "ไม่มีรหัส UID หรือชื่อผู้ใช้งาน"
-    },
-    "android_permission": {
-        "permission_denied": "สิทธิ์ถูกปฏิเสธ",
-        "go_to_settings_to_enable_permission": "กรุณาไปที่การตั้งค่าเพื่อเปิดสิทธิ์การเข้าถึงไฟล์.",
-        "go_to_settings_page": "ไปหน้าตั้งค่า",
-        "cancel": "ยกเลิก"
-    },
-    "audio_player": {
-        "permission_denied": "สิทธิ์ถูกปฏิเสธ กรุณาไปที่การตั้งค่า",
-        "audio_file_not_found": "ไม่พบไฟล์เสียงหรือไฟล์ว่างเปล่า",
-        "error_playing_audio": "เกิดข้อผิดพลาดในการเล่นไฟล์เสียง:",
-        "unable_to_save_file": "ไม่สามารถบันทึกไฟล์ได้",
-        "audio_created_successfully": "สร้างเสียงสำเร็จ",
-        "download": "ดาวน์โหลด",
-        "close": "ปิด"
-    },
-    "notification": {
-        "close": "ปิด"
-    },
-    "disable_email_permission": {
-        "disable_email_access": "ปิดใช้งานการเข้าถึงข้อมูลอีเมล",
-        "email_access_disabled_warning": "หากปิดใช้งานการเข้าถึงข้อมูลอีเมลอาจทำให้ไม่สามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านหรือรับการแจ้งเตือนข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณได้",
-        "do_you_want_to_disable": "คุณต้องการที่จะปิดใช้งานหรือไม่",
-        "yes": "ต้องการ",
-        "no": "ไม่ต้องการ"
-    },
-    "email_permission_dialog": {
-        "request_email_permission": "ขออนุญาตในการเก็บข้อมูลอีเมล",
-        "email_permission_info": "เพื่อให้คุณสามารถใช้งานฟีเจอร์การกู้คืนรหัสผ่านและให้เราสามารถแจ้งเตือนเกี่ยวกับข้อมูลข่าวสารที่สำคัญที่เกี่ยวข้องกับการใช้งานแอปของคุณตามเงื่อนไขการเก็บข้อมูลอีเมลของคุณ โดยข้อมูลนี้จะถูกเก็บรักษาอย่างปลอดภัยและไม่ใช้เพื่อวัตถุประสงค์ทางโฆษณาโดยไม่ได้รับความยินยอม",
-        "revoke_permission_later": "คุณสามารถยกเลิกการอนุญาตได้ในภายหลัง",
-        "agree": "ยินยอม",
-        "disagree": "ไม่ยินยอม"
-    },
-    "enable_email_permission": {
-        "email_used": "เราได้ใช้อีเมลเดิมที่คุณเคยให้ไว้หากต้องการเปลี่ยนแปลงอีเมลกรุณาไปที่บัญชีของฉัน",
-        "understood": "เข้าใจแล้ว"
-    },
-    "offline_email_permission": {
-        "unable_to_change_password": "ไม่สามารถแก้ไขรหัสผ่านได้ เนื่องจาก การเข้าถึงอีเมลของคุณถูกปิด กรุณา เปิดการอนุญาตให้เข้าถึงอีเมลที่เมนู ความปลอดภัย เพื่อดำเนินการต่อ",
-        "understood": "เข้าใจแล้ว"
-    },
-    "home_screen": {
-        "please_type_message": "กรุณาพิมพ์ข้อความ",
-        "type_message_in_selected_language": "พิมพ์ข้อความให้ตรงกับภาษาที่เลือก . . .",
-        "create_sound": "สร้างเสียง",
-        "unable_to_create_sound": "ไม่สามารถสร้างเสียงได้",
-        "forbidden_language_mismatch": "กรุณาพิมพ์ข้อความให้ตรงกับภาษาที่คุณเลือก"
-    },
-    "appbar_bottom": {
-        "thai": "ไทย",
-        "change": "เปลี่ยน"
-    },
-    "term": {
-        "read": "ฉันได้อ่านและยอมรับ ",
-        "service": "เงื่อนไขและข้อกำหนดในการให้บริการ",
-        "and": " และ ",
-        "policy": "นโยบายความเป็นส่วนตัว"
-    },
-    "reward_screen": {
-        "notification_dialog_success": "เติมคูปองสำเร็จแล้ว",
-        "notification_dialog_error": "เกิดข้อผิดพลาด",
-        "appbar_title" : "ฟรีพอยต์",
-        "text_header" : "รับของรางวัลสุดพิเศษจากเรา",
-        "widget_title01" : "รับพอยต์ฟรี รายวัน",
-        "widget_text01" : "กดเพื่อรับพอยต์ฟรีจำนวน 100 พอยต์ ได้ทุกวันที่นี่",
-        "widget_text_button01": "เหลือเวลาอีกแค่ {Timeout} ชั่วโมง",
-        "widget_title02" : "รับพอยต์ฟรี ผู้ใช้งานใหม่",
-        "widget_text02" : "กดเพื่อรับพอยต์ฟรีจำนวน 1,000 พอยต์ สำหรับผู้ใช้งานใหม่",
-        "widget_text_button02" : "รับพอยต์สำเร็จ",
-        "widget_display_points": "รับเลย {points} พอยต์"
-        
-    },
-    "reward_service": {
-        "error_message": "เกิดข้อผิดพลาด:",
-        "coupon_already_used": "คูปองของคุณถูกใช้งานแล้ว",
-        "coupon_not_found": "ไม่พบคูปองนี้ คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
-        "coupon_expired_or_not_found": "ไม่พบคูปองในระบบ หรือคูปองหมดอายุไปแล้ว",
-        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
+    "no_daily_coupon_to_redeem": "คูปองยังไม่พร้อมใช้งานในขณะนี้",
 
-        "no_daily_coupon_to_redeem": "คูปองยังไม่พร้อมใช้งานในขณะนี้",
+    "success_get_education": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว",
+    "already_subscribed": "ท่านเป็นสมาชิก Subscription อยู่แล้ว กรุณารอให้ Subscription ปัจจุบันหมดอายุ จึงจะกดรับสิทธิ์ได้อีกครั้ง",
+    "failure_provider": "โครงการ Education ต้องเป็น Account ที่ล็อกอินด้วยอีเมลเท่านั้น",
+    "failcase_whitelist": "อีเมลของท่านยังไม่อยู่ในลิสต์ Education กรุณาให้ Admin ของสถานศึกษาท่านอ่านรายละเอียดและติดต่อเพื่อสมัครเข้าร่วมโครงการที่เพจ FB Botnoi Voice",
+    "failure_case": "เกิดข้อผิดพลาดในการสมัครสมาชิกโครงการ"
+  },
+  "redeem_coupon_dialog": {
+    "title": "ใช้คูปอง",
+    "use": "ใช้",
+    "input": "กรอกคูปอง",
+    "success": "ใช้คูปอง {coupon_name} สําเร็จ"
+  },
+  "redeem_coupon_service": {
+    "error_message": "เกิดข้อผิดพลาด:",
+    "coupon_already_used": "คูปอง \"{coupon_name}\" ถูกใช้งานแล้ว",
+    "coupon_not_found": "ไม่พบคูปอง \"{coupon_name}\" คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
+    "coupon_expired_or_not_found": "ไม่พบคูปอง \"{coupon_name}\" ในระบบ หรือคูปองหมดอายุไปแล้ว",
+    "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
+    "coupon_code_empty": "กรุณากรอกคูปอง",
+    "not_session": "ไม่มีการเข้าสู่ระบบ",
+    "no_daily_coupon_to_redeem": "คูปอง ยังไม่พร้อมใช้งานในขณะนี้"
+  },
+  "education_screen": {
+    "appbar_title": "การศึกษา",
+    "text_header": "สมัครสมาชิกเพื่อการศึกษา",
+    "widget_title01": "รับสิทธิ์เข้าถึงเนื้อหาและฟีเจอร์เพื่อการศึกษาโดยเฉพาะ",
+    "widget_button": "สมัครสมาชิก"
+  },
+  "favorite_screen": {
+    "background_text": "ไม่มีผู้พูดที่ถูกใจในภาษานี้"
+  },
+  "text_to_gensub": {
+    "audio_language": "ภาษาของไฟล์เสียง",
+    "file_duration": "เวลาของไฟล์",
+    "duration_auto_calculate": "คำนวณอัตโนมัติเมื่อถอดเสียง",
+    "segmentation_settings": "ตั้งค่าการตัดข้อความ",
+    "max_segment_duration": "ระยะเวลาสูงสุดในการตัด",
+    "max_silence_duration": "ช่วงเงียบสูงสุดในการตัด",
+    "transcribing": "กำลังโหลด...",
+    "transcribe_status": "ถอดไฟล์เสียง",
+    "transcribe_audio": "อัปโหลดไฟล์เสียง",
+    "create_at": "สร้างเมื่อ:",
+    "project": "โปรเจคบอทน้อยเจนซับ"
+  },
+  "result_gensub": {
+    "title": "Gensub",
+    "upload": "อัปโหลดไฟล์ใหม่",
+    "save": "บันทึก",
+    "download": "ดาวน์โหลดข้อความ",
+    "text_format": "นามสกุลไฟล์ text :",
+    "confirm": "ยืนยัน",
+    "cancel": "ยกเลิก",
+    "saved_txt": "บันทึกไฟล์ TXT เรียบร้อย:",
+    "saved_srt": "บันทึกไฟล์ SRT เรียบร้อย:",
+    "error": "เกิดข้อผิดพลาด:",
+    "no_workspace": "ไม่พบ workspace",
+    "comfirm": "ยืนยันข้อความแล้ว",
+    "save_success": "บันทึกสำเร็จ",
+    "save_fail": "บันทึกไม่สำเร็จ ลองอีกครั้ง",
+    "approve_success": "อนุมัติเรียบร้อย",
+    "approve_fail": "อนุมัติไม่สำเร็จ ลองอีกครั้ง",
+    "delete_success": "ลบเรียบร้อย",
+    "delete_fail": "ลบไม่สำเร็จ:",
+    "history": "ประวัติ",
+    "history_text": "ข้อความก่อนแก้ไข:",
+    "close": "ปิด",
+    "cer": "แก้ไขส่วนที่ผิด"
+  },
+  "upload_gensub": {
+    "upload": "อัปโหลดไฟล์",
+    "title": "อัปโหลดไฟล์เสียง",
+    "expand_title": "ถอดข้อความจากไฟล์เสียงที่อัปโหลด"
+  },
 
-        "success_get_education": "ยินดีด้วย ท่านได้เข้าร่วมโครงการแล้ว",
-        "already_subscribed": "ท่านเป็นสมาชิก Subscription อยู่แล้ว กรุณารอให้ Subscription ปัจจุบันหมดอายุ จึงจะกดรับสิทธิ์ได้อีกครั้ง",
-        "failure_provider": "โครงการ Education ต้องเป็น Account ที่ล็อกอินด้วยอีเมลเท่านั้น",
-        "failcase_whitelist": "อีเมลของท่านยังไม่อยู่ในลิสต์ Education กรุณาให้ Admin ของสถานศึกษาท่านอ่านรายละเอียดและติดต่อเพื่อสมัครเข้าร่วมโครงการที่เพจ FB Botnoi Voice",
-        "failure_case": "เกิดข้อผิดพลาดในการสมัครสมาชิกโครงการ"
-    },
-    "redeem_coupon_dialog":{
-        "title": "ใช้คูปอง",
-        "use": "ใช้",
-        "input": "กรอกคูปอง",
-        "success": "ใช้คูปอง {coupon_name} สําเร็จ"
-    },
-    "redeem_coupon_service": {
-        "error_message": "เกิดข้อผิดพลาด:",
-        "coupon_already_used": "คูปอง \"{coupon_name}\" ถูกใช้งานแล้ว",
-        "coupon_not_found": "ไม่พบคูปอง \"{coupon_name}\" คูปองอาจจะไม่สามารถใช้งานได้แล้วหรือคูปองที่คุณเพิ่มไม่ถูกต้อง",
-        "coupon_expired_or_not_found": "ไม่พบคูปอง \"{coupon_name}\" ในระบบ หรือคูปองหมดอายุไปแล้ว",
-        "api_call_error": "เกิดข้อผิดพลาดในการเรียก API:",
-        "coupon_code_empty": "กรุณากรอกคูปอง",
-        "not_session": "ไม่มีการเข้าสู่ระบบ",
-        "no_daily_coupon_to_redeem": "คูปอง ยังไม่พร้อมใช้งานในขณะนี้"
-    },
-    "education_screen": {
-        "appbar_title": "การศึกษา",
-        "text_header": "สมัครสมาชิกเพื่อการศึกษา",
-        "widget_title01": "รับสิทธิ์เข้าถึงเนื้อหาและฟีเจอร์เพื่อการศึกษาโดยเฉพาะ",
-        "widget_button": "สมัครสมาชิก"
-        
-    },
-    "favorite_screen": {
-        "background_text": "ไม่มีผู้พูดที่ถูกใจในภาษานี้"
-    }
+  "record_gensub": {
+    "record": "อัดเสียง",
+    "title": "อัดเสียงถอดข้อความ",
+    "expand_title": "ถอดเสียงจากไฟล์เสียงที่บันทึกไว้",
+    "press_to": "กดที่ปุ่มเพื่ออัดเสียง",
+    "press_correct": "กด ✓ เพื่อส่งข้อมูล"
+  },
+  "units": {
+    "seconds": "วินาที",
+    "minutes": "นาที",
+    "unlimited": "ไม่จำกัด"
+  },
+  "languages": {
+    "th": "ไทย",
+    "en": "อังกฤษ",
+    "id": "อินโดนีเซีย"
+  },
+  "dialog": {
+    "delete_project_title": "ลบโปรเจกต์",
+    "delete_project_content": "คุณแน่ใจหรือไม่ที่จะลบโปรเจกต์นี้?",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ"
+  },
+  "select_languages": {
+    "thai": "ไทย"
+  },
+  "marads_basic": {
+    "label_product": "สินค้าที่ต้องการขาย*",
+    "placeholder_product": "คอร์สสอนภาษา, โทรศัพท์มือถือ, ...",
+    "label_brand": "ชื่อแบรนด์/ชื่อยี่ห้อ (ไม่จำเป็นต้องกรอก)",
+    "placeholder_brand": "บอทน้อย",
+    "label_price": "ราคา (ไม่จำเป็นต้องกรอก)",
+    "placeholder_price": "129 บาท, 99 บาท จาก 129 บาท",
+    "label_style": "สไตล์เนื้อหา",
+    "label_length": "ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)",
+    "label_extra": "ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)",
+    "placeholder_extra": "พลาดไม่ได้, หมดเขตในอีก 3 วัน",
+    "error_required": "กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน",
+    "header_style": "สไตล์ของเนื้อหา",
+    "header_length": "ความยาวของเนื้อหา",
+    
+    "style_persuasive": "จูงใจให้ใช้",
+    "style_funny": "ตลก",
+    "style_serious": "จริงจัง",
+    "style_begging": "ออดอ้อน",
+    "style_sympathy": "เรียกความสงสาร",
+    "style_review": "รีวิวสินค้า",
+    
+    "length_15": "~15 วิ",
+    "length_30": "~30 วิ",
+    "length_60": "~60 วิ",
+
+    "text_remaining": "สร้างได้ {} ครั้ง",  
+    "btn_create": "สร้างข้อความ",
+    "point_usage_info": "การสร้างข้อความมีผลต่อพอยท์ที่ใช้ ",
+    "point_rate_15s": "50 พอยท์/ครั้ง สำหรับ ~15 วินาที",
+    "point_rate_30s": "100 พอยท์/ครั้ง สำหรับ ~30 วินาที",
+    "point_rate_60s": "150 พอยท์/ครั้ง สำหรับ ~60 วินาที"
+  },
+  "marads_adv": {
+    "label_length": "ความยาวของเนื้อหา* (มีผลต่อพอยท์ที่ใช้)",
+    "label_extra": "ข้อมูลเสริมอื่นๆ (ไม่จำเป็นต้องกรอก)",
+    "placeholder_extra": "พลาดไม่ได้, หมดเขตในอีก 3 วัน",
+    "header_character": "คาแรกเตอร์คนขาย",
+    "header_style": "สไตล์ของเนื้อหา",
+    "header_length": "ความยาวของเนื้อหา",
+    "btn_properties": "คุณสมบัติของสินค้า",
+    "error_no_product": "กรุณากรอกชื่อสินค้าที่ต้องการขาย",
+    
+    "char_beauty": "แม่ค้าสาวสุดสวย",
+    "char_kid": "เด็กประถม",
+    "char_teen_boy": "วัยรุ่นผู้ชาย",
+    "char_teen_girl": "วัยรุ่นผู้หญิง",
+    "char_pro_seller": "พ่อค้ามือทอง",
+    "char_auntie": "ป้าข้างบ้าน",
+    "char_chief": "ลุงกำนัน",
+    "char_grandpa": "คุณตา",
+    "char_grandma": "คุณยาย",
+
+    "color_black": "ดำ",
+    "color_red": "แดง",
+    "color_white": "ขาว",
+    "color_pink": "ชมพู",
+    "color_blue": "น้ำเงิน",
+
+    "section_basic_info": "ข้อมูลเบื้องต้น*",
+    "section_promotion": "ข้อมูลโปรโมชั่น (ไม่จำเป็นต้องกรอก)",
+    "section_sales_style": "สไตล์การขาย",
+    "label_promotion": "โปรโมชั่น",
+    "placeholder_promotion": "แถมฟรีหนังสือการสอน",
+    "label_target": "ลูกค้าที่เป็นกลุ่มเป้าหมาย",
+    "placeholder_target": "คนชอบเทคโนโลยี",
+    "label_selling_point": "จุดขายที่ดีกว่าคู่แข่ง",
+    "placeholder_selling_point": "ขายถูกที่สุดในย่าน",
+    "label_why_buy": "ทำไมลูกค้าถึงต้องซื้อ",
+    "placeholder_why_buy": "ประหยัดเงินจากของมือหนึ่ง"
+  },
+  "marads_props": {
+    "title": "คุณสมบัติของสินค้า",
+    "subtitle": "(ไม่จำเป็นต้องกรอกทั้งหมด)",
+    "label_size": "ขนาด/ปริมาณ",
+    "placeholder_size": "256 GB, 1 ลิตร",
+    "label_model": "รุ่น/ลาย/ประเภท",
+    "placeholder_model": "iPhone 15, ลายดอกไม้",
+    "label_material": "วัสดุ/วัตถุดิบ/สเปค",
+    "placeholder_material": "ผ้าไหม, ชิป M4",
+    "label_color": "สีของสินค้า",
+    "header_select_color": "เลือกสีของสินค้า",
+    "color_unspecified": "ไม่ระบุ",
+    "btn_save": "บันทึก"
+  },
+  "marads_history": {
+    "download_title": "ดาวน์โหลดไฟล์",
+    "select_extension": "เลือกนามสกุลไฟล์",
+    "download_warning": "หมายเหตุ : หากดาวน์โหลดเสียงแล้วเสียงพื้นหลังจะหายไป",
+    "confirm_delete_title": "ลบข้อความ Generate นี้",
+    "confirm_delete_msg": "คุณยืนยันที่จะลบกล่องเสียงที่เลือกนี้ใช่หรือไม่",
+    "processing": "กำลังประมวลผล",
+    "no_title": "ไม่ระบุหัวข้อ",
+    "generate": "สร้างเสียง",
+    "chars_unit": "ตัวอักษร",
+    "download_success": "ดาวน์โหลดสำเร็จ",
+    "download_success_msg": "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+    "generate_success": "สร้างเสียงสำเร็จ",
+    "generate_success_msg": "ระบบได้ทำการสร้างเสียงเรียบร้อยแล้ว",
+    "item_not_found": "ไม่พบรายการนี้ในระบบ (อาจถูกลบไปแล้ว) ระบบกำลังรีเฟรชข้อมูล...",
+    "incomplete_data": "รายการนี้ข้อมูลไม่สมบูรณ์ ไม่สามารถลบได้",
+    "delete_success": "ลบสำเร็จ",
+    "delete_success_msg": "ลบข้อมูลเรียบร้อยแล้ว",
+    "delete_error": "เกิดข้อผิดพลาดในการลบข้อมูล",
+    "no_audio_link": "ไม่พบลิงก์เสียง",
+    "connection_timeout": "การเชื่อมต่อล่าช้า กรุณาลองใหม่",
+    "link_expired": "ลิงก์เสียงหมดอายุ ระบบรีเซ็ตให้คุณสร้างเสียงใหม่แล้ว",
+    "play_failed": "เล่นเสียงไม่สำเร็จ",
+    "copy": "คัดลอก",
+    "copied": "คัดลอกเรียบร้อย",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "save_success": "บันทึกข้อมูลสำเร็จ",
+    "save_error": "เกิดข้อผิดพลาดในการบันทึก",
+    "sort_newest": "เรียงตาม ใหม่ -> เก่า",
+    "sort_oldest": "เรียงตาม เก่า -> ใหม่",
+    "no_history": "ไม่พบประวัติ",
+    "search_hint": "ค้นหา"
+  },
+"marads_result": {
+    "select_voice": "เลือกเสียง",
+    "make_persuasive": "ทำให้ดูโน้มน้าวมากขึ้น",
+    "create_voice": "สร้างเสียง",
+    "please_type_message": "กรุณาพิมพ์ข้อความก่อนสร้างเสียง",
+    "create_voice_failed": "สร้างเสียงไม่สำเร็จ",
+    "try_again_error": "กรุณาลองใหม่อีกครั้ง",
+    "download_success": "ดาวน์โหลดสำเร็จ",
+    "download_success_msg": "บันทึกไฟล์เสียงลงในเครื่องเรียบร้อยแล้ว",
+    "persuasive_success": "ปรับปรุงข้อความเรียบร้อยแล้ว",
+    "session_expired": "เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่",
+    "system_error": "ระบบขัดข้องชั่วคราว กรุณาลองใหม่",
+    "ok": "ตกลง"
+  },
+  "marads_mode_selector": {
+    "select_mode": "เลือกโหมดการทำงาน",
+    "mode_result": "ผลลัพธ์",
+    "mode_edit": "แก้ไข",
+    "mode_history": "ประวัติ"
+  },
+  "marads_filter_modal_sheet": {
+    "filter": "ตัวกรอง",
+    "all": "ทั้งหมด"
+  }
 }

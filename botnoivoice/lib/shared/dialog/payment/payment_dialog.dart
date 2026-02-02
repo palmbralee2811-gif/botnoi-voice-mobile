@@ -1,56 +1,68 @@
-import 'package:botnoivoice/service/login/apple_login.dart';
-import 'package:botnoivoice/service/login/email_login.dart';
-import 'package:botnoivoice/service/login/google_login.dart';
-import 'package:botnoivoice/service/login/line_login.dart';
-import 'package:botnoivoice/service/token/apple_token.dart';
-import 'package:botnoivoice/service/token/google_token.dart';
-import 'package:botnoivoice/service/token/line_token.dart';
-import 'package:botnoivoice/service/token/email_token.dart';
-import 'package:botnoivoice/shared/function/call_reload_data.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:botnoivoice/service/payment/payment_service.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 void showPaymentDialog(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    isDismissible: false, // ป้องกันการกดที่พื้นหลัง (Barrier) แล้วปิด
+    enableDrag: false,    // ป้องกันการใช้นิ้วลากลง (Swipe Down) เพื่อปิด
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
     ),
     builder: (context) {
       return SafeArea(
-        child: const _PaymentBottomSheetContent(),
+        child: _PaymentBottomSheetContent(),
       );
     },
   );
 }
 
-class _PaymentBottomSheetContent extends StatelessWidget {
-  const _PaymentBottomSheetContent({Key? key}) : super(key: key);
-
+class _PaymentBottomSheetContent extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final paymentProvider = context.watch<PaymentService>();
-    
-    // Calculate Credits based on active login provider
-    final Map<String, int> currentPoints = _getCurrentPoints(context);
-    final int normalCredits = currentPoints['normal'] ?? 0;
-    final int monthlyPoints = currentPoints['monthly'] ?? 0;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 1. Read PaymentState from paymentServiceProvider
+    final paymentState = ref.watch(paymentServiceProvider);
 
-    return paymentProvider.isLoading
+    // 2. Read UserTokenState
+    final userTokenState = ref.watch(currentUserTokenStateProvider);
+
+    final normalCredits = userTokenState.remainingNormalCredits ?? 0;
+    final monthlyPoints = userTokenState.remainingMonthlyPoints ?? 0;
+
+    // 2. สร้าง Formatter สำหรับตัวเลข
+    final formatter = NumberFormat('#,###');
+
+    return paymentState.isLoading
         ? Container(
-            height: 300.h, // Fixed height to prevent collapse during loading
-            color: Colors.white, // Ensure visibility
-            child: const Center(
-              child: CircularProgressIndicator(),
+            height: 300.h,
+            width: double.infinity,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  SizedBox(height: 16.h),
+                  Text(
+                    "Processing Payment & Updating Points...",
+                    style: TextStyle(
+                      fontSize: ResponsiveDesignOrientation.isLandscape ? 10.sp : 14.sp,
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         : Padding(
@@ -97,9 +109,54 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildPointRow('payment.normal_points'.tr(), normalCredits),
+                      SizedBox(height: 8.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'payment.normal_points'.tr(),
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp),
+                          ),
+                          // 3. ใช้ formatter.format()
+                          Text(
+                            formatter.format(normalCredits), 
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 4.h),
-                      _buildPointRow('payment.monthly_points'.tr(), monthlyPoints),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'payment.monthly_points'.tr(),
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp),
+                          ),
+                          // 3. ใช้ formatter.format()
+                          Text(
+                            formatter.format(monthlyPoints),
+                            style: TextStyle(
+                                fontSize:
+                                    ResponsiveDesignOrientation.isLandscape
+                                        ? 11.sp
+                                        : 15.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -111,8 +168,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "${'payment.price'.tr()} ${'payment.currency'.tr()}", 
-                      // TODO: Replace with dynamic price e.g. "${product.price}"
+                      "${'payment.price'.tr()} ${'payment.currency'.tr()}",
                       style: TextStyle(
                         fontSize: ResponsiveDesignOrientation.isLandscape
                             ? 25.sp
@@ -139,9 +195,8 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          'payment.get_points'.tr(namedArgs: {
-                            'productTitle': '5,000' // TODO: dynamic value
-                          }), 
+                          'payment.get_points'
+                              .tr(namedArgs: {'productTitle': '5,000'}),
                           style: TextStyle(
                             fontSize: ResponsiveDesignOrientation.isLandscape
                                 ? 13.sp
@@ -160,7 +215,7 @@ class _PaymentBottomSheetContent extends StatelessWidget {
                 GradientTextButton(
                   text: 'payment.buy_now'.tr(),
                   onPressed: () async {
-                    await _handlePurchase(context);
+                    await _handlePurchase(context, ref);
                   },
                 ),
                 SizedBox(
@@ -170,112 +225,92 @@ class _PaymentBottomSheetContent extends StatelessWidget {
           );
   }
 
-  /// Helper widget for Point Rows to reduce duplication
-  Widget _buildPointRow(String label, int value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 15.sp,
-          ),
-        ),
-        Text(
-          NumberFormat('#,###').format(value), // Added number formatting
-          style: TextStyle(
-            fontSize: ResponsiveDesignOrientation.isLandscape ? 11.sp : 15.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
+  Future<void> _handlePurchase(BuildContext context, WidgetRef ref) async {
+    final paymentServiceNotifier = ref.read(paymentServiceProvider.notifier);
 
-  /// Extracts current points based on the active login provider
-  Map<String, int> _getCurrentPoints(BuildContext context) {
-    final appleProvider = context.read<AppleLogin>();
-    final googleProvider = context.read<GoogleLogin>();
-    final lineProvider = context.read<LineLogin>();
-    final emailProvider = context.read<EmailLogin>();
+    // 1. Reset previous error status before starting
+    paymentServiceNotifier.resetStatus();
 
-    // Note: Using read() inside the logic function, but the build method 
-    // should watch the specific token providers if you want real-time updates 
-    // when the balance changes without reopening the modal.
-    // Assuming context.watch was done correctly in the parent or providers notify listeners.
-    
-    int normal = 0;
-    int monthly = 0;
-
-    if (appleProvider.isLoggedIn) {
-      final token = context.watch<AppleToken>();
-      normal = token.getRemainingNormalCredits ?? 0;
-      monthly = token.getRemainingMonthlyPoints ?? 0;
-    } else if (googleProvider.isLoggedIn) {
-      final token = context.watch<GoogleToken>();
-      normal = token.getRemainingNormalCredits ?? 0;
-      monthly = token.getRemainingMonthlyPoints ?? 0;
-    } else if (lineProvider.isLoggedIn) {
-      final token = context.watch<LineToken>();
-      normal = token.getRemainingNormalCredits ?? 0;
-      monthly = token.getRemainingMonthlyPoints ?? 0;
-    } else if (emailProvider.isLoggedIn) {
-      final token = context.watch<EmailToken>();
-      normal = token.getRemainingNormalCredits ?? 0;
-      monthly = token.getRemainingMonthlyPoints ?? 0;
-    }
-
-    return {'normal': normal, 'monthly': monthly};
-  }
-
-  Future<void> _handlePurchase(BuildContext context) async {
-    final paymentProvider = context.read<PaymentService>();
-    final creditsProvider = context.read<CallReloadData>();
+    // 2. Snapshot current points before purchase
+    final initialTokenState = ref.read(currentUserTokenStateProvider);
+    final int initialTotalPoints = (initialTokenState.remainingNormalCredits ?? 0) +
+        (initialTokenState.remainingMonthlyPoints ?? 0);
 
     try {
-      await paymentProvider.handlePurchase();
+      // 3. Call purchase method (Service will keep isLoading = true if successful)
+      await paymentServiceNotifier.handlePurchase();
 
-      if (paymentProvider.errorMessage == null) {
-        // Success Logic
-        await creditsProvider.callLoadCreditsApi(context);
+      // 4. Check result
+      final resultState = ref.read(paymentServiceProvider);
+
+      if (resultState.errorMessage == null) {
+        // --- Success Case ---
         
+        // Polling loop to wait for points update
+        int retryCount = 0;
+        const int maxRetries = 20; // Try for approx 40 seconds
+        const int delaySeconds = 2;
+
+        while (retryCount < maxRetries) {
+          // Reload tokens
+          await loadAllTokensIfLoggedIn(ref);
+
+          // Check new points
+          final currentTokenState = ref.read(currentUserTokenStateProvider);
+          final int currentTotalPoints = (currentTokenState.remainingNormalCredits ?? 0) +
+              (currentTokenState.remainingMonthlyPoints ?? 0);
+
+          // Break if points have increased
+          if (currentTotalPoints > initialTotalPoints) {
+            break;
+          }
+
+          retryCount++;
+          if (retryCount < maxRetries) {
+            await Future.delayed(const Duration(seconds: delaySeconds));
+          }
+        }
+
+        // 5. Stop loading manually
+        paymentServiceNotifier.setLoading(false);
+
         if (context.mounted) {
-           NotificationDialog(
+          // 6. Show Success Dialog
+          NotificationDialog(
             context: context,
-            text: 'payment.received_points'.tr(namedArgs: {
-              'pointsTitle': '5,000'
-            }), 
-            onPressed: () async {
-              if(context.mounted) {
-                await creditsProvider.callLoadCreditsApi(context);
-                context.pop(); // Close dialog on success confirmation
-              }
-            },
-          ).showCheckmarkModalWithAction(context);
+            text: 'payment.received_points'.tr(
+              namedArgs: {'pointsTitle': '5,000'},
+            ),
+          ).showCheckmarkModal(context);
         }
       } else {
-        // Error Logic (Business Logic Error)
+        // --- Error Case (Purchase Failed / Cancelled) ---
+        // Service sets isLoading = false automatically on error
+        
         if (context.mounted) {
           NotificationDialog(
             context: context,
-            text: paymentProvider.errorMessage!,
-            onPressed: () {},
+            text: resultState.errorMessage!,
+            onPressed: () {
+               // Clear error status when closing dialog
+               ref.read(paymentServiceProvider.notifier).resetStatus();
+            },
           ).showErrorModal(context);
         }
       }
     } catch (e) {
-      // Exception Logic
+      // General Exception
+      paymentServiceNotifier.setLoading(false);
+      
       if (context.mounted) {
         NotificationDialog(
           context: context,
           text: "${'payment.error_occurred'.tr()} $e",
-          onPressed: () {},
+          onPressed: () {
+             // Clear error status when closing dialog
+             ref.read(paymentServiceProvider.notifier).resetStatus();
+          },
         ).showErrorModal(context);
-      }
-    } finally {
-      // Ensure data is consistent
-      if(context.mounted) {
-        await creditsProvider.callLoadCreditsApi(context);
       }
     }
   }

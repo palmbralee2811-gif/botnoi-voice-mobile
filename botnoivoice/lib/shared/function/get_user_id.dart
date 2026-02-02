@@ -3,7 +3,7 @@ import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
 /// DO NOT REMOVE THIS LINE
@@ -14,7 +14,10 @@ import 'package:logger/logger.dart';
 final _logger = Logger();
 
 Future<String> _getUserIdFromProvider(
-    BuildContext context, dynamic provider, String providerId) async {
+  BuildContext context,
+  dynamic provider,
+  String providerId,
+) async {
   if (provider.isLoggedIn &&
       provider.user?.providerData[0].providerId == providerId) {
     _logger
@@ -25,28 +28,32 @@ Future<String> _getUserIdFromProvider(
 }
 
 /// Fetch User ID from all providers
-Future<String> getUserIdAll(BuildContext context) async {
+Future<String> getUserIdAll(WidgetRef ref) async {
   try {
-    final lineProvider = context.read<LineLogin>();
+    // final lineProvider = context.read<LineLogin>();
+    final lineProvider = ref.read(lineLoginNotifierProvider);
     if (lineProvider.isLoggedIn) {
-      _logger.d(
-          'User ID fetched from LINE provider: ${lineProvider.getLineUserId!}');
-      return lineProvider.getLineUserId!;
+      if (lineProvider.userId == null) {
+        _logger.e("Get User ID All from LINE is null");
+        return "";
+      }
+      _logger.d('User ID fetched from LINE provider: ${lineProvider.userId}');
+      return lineProvider.userId ?? "";
     }
 
-    final appleProvider = context.read<AppleLogin>();
+    final appleProvider = ref.read(appleLoginNotifierProvider);
     if (appleProvider.isLoggedIn) {
-      return _getUserIdFromProvider(context, appleProvider, 'apple.com');
+      return _getUserIdFromProvider(ref.context, appleProvider, 'apple.com');
     }
 
-    final googleProvider = context.read<GoogleLogin>();
+    final googleProvider = ref.read(googleLoginNotifierProvider);
     if (googleProvider.isLoggedIn) {
-      return _getUserIdFromProvider(context, googleProvider, 'google.com');
+      return _getUserIdFromProvider(ref.context, googleProvider, 'google.com');
     }
 
-    final emailProvider = context.read<EmailLogin>();
+    final emailProvider = ref.read(emailLoginNotifierProvider);
     if (emailProvider.isLoggedIn) {
-      return _getUserIdFromProvider(context, emailProvider, 'password');
+      return _getUserIdFromProvider(ref.context, emailProvider, 'password');
     }
 
     throw Exception("User is not logged in.");
@@ -57,30 +64,34 @@ Future<String> getUserIdAll(BuildContext context) async {
 }
 
 /// Fetch User ID from Email Provider
-Future<String> getUserIdEmail(BuildContext context) async {
-  final emailProvider = context.read<EmailLogin>();
-  return _getUserIdFromProvider(context, emailProvider, 'password');
+Future<String> getUserIdEmail(WidgetRef ref) async {
+  final emailProvider = ref.read(emailLoginNotifierProvider);
+  return _getUserIdFromProvider(ref.context, emailProvider, 'password');
 }
 
 /// Fetch User ID from Google Provider
-Future<String> getUserIdGoogle(BuildContext context) async {
-  final googleProvider = context.read<GoogleLogin>();
-  return _getUserIdFromProvider(context, googleProvider, 'google.com');
+Future<String> getUserIdGoogle(WidgetRef ref) async {
+  final googleProvider = ref.read(googleLoginNotifierProvider);
+  return _getUserIdFromProvider(ref.context, googleProvider, 'google.com');
 }
 
 /// Fetch User ID from Line Provider
-Future<String> getUserIdLine(BuildContext context) async {
-  final lineProvider = context.read<LineLogin>();
+Future<String> getUserIdLine(WidgetRef ref) async {
+  final lineProvider = ref.read(lineLoginNotifierProvider);
   if (lineProvider.isLoggedIn) {
-    _logger.d(
-        'User ID fetched from LINE provider: ${lineProvider.getLineUserId!}');
-    return lineProvider.getLineUserId!;
+    if (lineProvider.userId == null) {
+      _logger.e("Get User ID Line is null");
+      return "";
+    }
+
+    _logger.d('User ID fetched from LINE provider: ${lineProvider.userId!}');
+    return lineProvider.userId ?? "";
   }
   throw Exception("User is not logged in.");
 }
 
 /// Fetch User ID from Apple Provider
-Future<String> getUserIdApple(BuildContext context) async {
-  final appleProvider = context.read<AppleLogin>();
-  return _getUserIdFromProvider(context, appleProvider, 'apple.com');
+Future<String> getUserIdApple(WidgetRef ref) async {
+  final appleProvider = ref.read(appleLoginNotifierProvider);
+  return _getUserIdFromProvider(ref.context, appleProvider, 'apple.com');
 }

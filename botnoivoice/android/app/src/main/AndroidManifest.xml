@@ -15,12 +15,18 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:targetApi="33" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" tools:targetApi="33" />
 
+    <!-- recording audio for GenSub feature -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:label="Botnoi Voice"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"> <!-- 🔥 เพิ่มบรรทัดนี้เพื่อแก้ปัญหาเล่นเสียงไม่ได้ -->
+        
         <!-- Need for API level 29. Scoped Storage has some issue in Android 10. So, google recommanded to add this. -->
         <!-- Read more from here: https://developer.android.com/training/data-storage/shared/media#access-other-apps-files-->
 

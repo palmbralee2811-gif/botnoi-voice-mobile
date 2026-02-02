@@ -6,6 +6,12 @@ import 'package:botnoivoice/screen/drawer/account/change_email_username_screen.d
 import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/result/gensub_result_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_advanced_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_basic_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_history_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_result_screen.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/screen/product_properties.dart';
 import 'package:botnoivoice/screen/drawer/reward/reward_screen.dart';
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/email_permission/email_permission_screen.dart';
@@ -19,6 +25,7 @@ import 'package:botnoivoice/screen/email/register_screen.dart';
 import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
+import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -114,5 +121,57 @@ final router = GoRouter(
       path: '/confirm-delete-account',
       builder: (context, state) => const ConfirmDeleteAccountScreen(),
     ),
+    GoRoute(
+      path: '/gensub',
+      builder: (context, state) => const UploadRecScreen(),
+    ),
+    GoRoute(
+      path: '/gensub/result',
+      builder: (context, state) {
+        // รับค่า Map ที่ส่งมาจากหน้าอื่น
+        final args = state.extra as Map<String, dynamic>;
+        return GenSubResultScreen(
+          workspaceId: args['workspaceId'],
+          userId: args['userId'],
+          filePath: args['filePath'],
+          duration: args['duration'],
+          projectName: args['projectName'],
+        );
+      },
+    ),
+    GoRoute(
+      path: '/marads',
+      builder: (context, state) => const MarAdsScreen(),
+    ),
+    GoRoute(
+      path: '/marads/advanced',
+      builder: (context, state) => const MarAdsAdvancedScreen(),
+    ),
+    GoRoute(
+      path: '/marads/product-properties',
+      builder: (context, state) => const ProductPropertiesScreen(),
+    ),
+    GoRoute(
+      path: '/marads/result',
+      builder: (context, state) {
+        final generatedText = state.uri.queryParameters['text'];
+        final contentStyle = state.uri.queryParameters['style'];
+        final speakerId = state.uri.queryParameters['speaker_id'];
+
+        return MarAdsResultScreen(
+          generatedText: generatedText,
+          contentStyle: contentStyle,
+          speakerId: speakerId,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/marads/history',
+      builder: (context, state) => const MarAdsHistoryScreen(),
+    ),
+    // GoRoute(
+    //   path: '/voicebot',
+    //   builder: (context, state) => const VoicebotScreen(),
+    // ),
   ],
 );

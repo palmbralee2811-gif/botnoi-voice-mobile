@@ -1,0 +1,262 @@
+// upload_screen_logic.dart
+
+import 'dart:io';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:botnoivoice/screen/drawer/gensub/models/project_model.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_audio_api.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_asr_api.dart';
+import 'package:botnoivoice/screen/drawer/gensub/service/project_gensub_api.dart';
+import 'package:logger/logger.dart';
+
+final _logger = Logger();
+
+String _extractSeconds(String input, {Duration? fallback}) {
+  if (input.contains("ไม่จำกัด")) {
+    return fallback != null ? fallback.inSeconds.toString() : "3600";
+  }
+  final number = RegExp(r'[\d.]+').firstMatch(input)?.group(0);
+  return number ?? (fallback != null ? fallback.inSeconds.toString() : "10");
+}
+
+class UploadLogic {
+  final Function(ProjectModel) onProjectCreated;
+  final String currentUserId;
+
+  String? filePath;
+  Duration? audioDuration;
+  String? transcribeStatus;
+
+  String selectedLanguage = "TH";
+  String selectedLanguageName = "select_languages.thai".tr();
+  String selectedLanguageImage = 'assets/images/national_flag/thai.png';
+  String maxSegmentDuration = "10 วินาที";
+  String maxSilenceDuration = "0.3 วินาที";
+
+  bool _isPicking = false;
+
+  ProjectModel? lastProject;
+
+  UploadLogic({
+    required this.onProjectCreated,
+    this.currentUserId = "YOUR_USER_ID",
+  });
+
+  Future<void> pickFile() async {
+    if (_isPicking) return;
+    _isPicking = true;
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['mp3', 'wav', 'm4a', 'aac'],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final selectedPath = result.files.single.path!;
+        final player = AudioPlayer();
+        await player.setFilePath(selectedPath);
+        final d = player.duration ?? Duration.zero;
+
+        filePath = selectedPath;
+        audioDuration = d;
+        transcribeStatus = null;
+
+        await player.dispose();
+      }
+    } catch (e, st) {
+      _logger.e(
+        "pickFile error: $e",
+        stackTrace: st,
+      );
+    } finally {
+      _isPicking = false;
+    }
+  }
+
+  void clearFile() {
+    filePath = null;
+    audioDuration = null;
+    transcribeStatus = null;
+  }
+
+  Future<bool> transcribeFile(
+    WidgetRef ref,
+    BuildContext context,
+  ) async {
+    if (filePath == null) return false;
+
+    transcribeStatus = "text_to_gensub.transcribe_status".tr();
+
+    // ตัวแปรสำหรับจำ ID โปรเจคที่เพิ่งสร้าง เผื่อต้องลบทิ้งกรณี Error
+    String? createdProjectId;
+    String? createdUserId;
+
+    try {
+      // 1) upload audio
+      final uploadResult = await uploadAudioToGensub(
+        ref,
+        file: File(filePath!),
+      );
+      _logger.d(" upload result = $uploadResult");
+
+      // 2) insert workspace
+      final projectName =
+          filePath!.split(Platform.pathSeparator).last.split('.').first;
+      final durationStr = _formatDuration(audioDuration ?? Duration.zero);
+      final insertResult = await insertAsrWorkspace(
+        ref: ref,
+        projectName: projectName,
+        cer: 0.0,
+        pointAdd: 0,
+        totalPoint: 0,
+        duration: durationStr,
+      );
+      _logger.d(" insert workspace result = $insertResult");
+
+      // เก็บค่า ID ไว้ใช้ลบกรณี Error
+      createdProjectId = insertResult["data"]?["project_id"];
+      createdUserId = insertResult["data"]?["user_id"];
+
+      final projectId = createdProjectId;
+      final realUserId = createdUserId;
+
+      // 3) cut audio (จุดที่มักจะ Error ถ้าไม่มีเสียง)
+      final cutResult = await cutAudio(
+        ref,
+        filePath: filePath!,
+        projectId: projectId!,
+        projectName: projectName,
+        cutType: "sec",
+        chunk: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+        durations: (audioDuration?.inSeconds ?? 0).toString(),
+        maxDuration: _extractSeconds(maxSegmentDuration, fallback: audioDuration),
+        maxSilence: _extractSeconds(maxSilenceDuration, fallback: const Duration(seconds: 1)),
+        language: selectedLanguage.toLowerCase(),
+      );
+      _logger.d(" cut audio result = $cutResult");
+
+      // 4) get all chunks
+      final chunksRes = await getAllChunks(
+        ref,
+        projectId: projectId,
+      );
+      final rawSegments = (chunksRes['data'] as List<dynamic>? ?? []);
+
+      String? uploadText;
+      try {
+        final bodyStr = uploadResult['body'];
+        if (bodyStr != null && bodyStr.isNotEmpty) {
+          final parsed = json.decode(bodyStr);
+          uploadText = parsed['data']?['text']?.toString();
+        }
+      } catch (_) {
+        uploadText = null;
+      }
+
+      final segments = rawSegments.map<Map<String, dynamic>>((s) {
+        final durationStr = (s['duration'] ?? '') as String;
+        final parts = durationStr.split(' - ');
+        final start = parts.isNotEmpty ? _parseTime(parts[0]) : 0.0;
+        final end = parts.length > 1
+            ? _parseTime(parts[1])
+            : audioDuration?.inSeconds.toDouble() ?? 0.0;
+
+        final chunkText = (s['botnoi_asr_text'] != null &&
+                s['botnoi_asr_text'].toString().trim().isNotEmpty)
+            ? s['botnoi_asr_text']
+            : (uploadText ?? '');
+
+        return {
+          "id": s['chunk_id'],
+          "start": start,
+          "end": end,
+          "text": chunkText,
+        };
+      }).toList();
+
+      final project = ProjectModel(
+        projectId: projectId,
+        projectName: projectName,
+        createdAt: DateTime.now(),
+        duration: audioDuration ?? Duration.zero,
+        filePath: filePath!,
+        segments: segments,
+        userId: realUserId ?? currentUserId,
+        audioS3Link: null,
+      );
+
+      lastProject = project;
+      onProjectCreated(project);
+
+      transcribeStatus = " Transcribe Successfully!";
+      return true;
+    } catch (e, st) {
+      _logger.e(
+        " Error while uploading/transcribing: $e",
+        stackTrace: st,
+      );
+      transcribeStatus = " Something went wrong: $e";
+
+      // Rollback: ลบโปรเจคทิ้งถ้าเกิด Error
+      if (createdProjectId != null) {
+        _logger.w("Rolling back: Deleting invalid project $createdProjectId");
+        try {
+          // เรียก API ลบโปรเจค
+          await deleteAsrWorkspace(
+              ref, createdProjectId, createdUserId ?? currentUserId);
+        } catch (delErr, st) {
+          _logger.e(
+            "Rollback failed: $delErr",
+            stackTrace: st,
+          );
+        }
+      }
+
+      if (context.mounted) {
+        String msg = "เกิดข้อผิดพลาด: $e";
+        if (e.toString().contains("VAD script")) {
+          msg = "ไม่พบเสียงพูดในไฟล์ หรือไฟล์สั้นเกินไป (ไม่มีการสร้างโปรเจค)";
+        } else if (e.toString().contains("500")) {
+          msg = "Server Error: ไม่สามารถประมวลผลไฟล์นี้ได้";
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(msg, style: const TextStyle(color: Colors.white)),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'ปิด',
+              textColor: Colors.white,
+              onPressed: () =>
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+            ),
+          ),
+        );
+      }
+      return false;
+    }
+  }
+
+  String _formatDuration(Duration d) {
+    final minutes = d.inMinutes.toString().padLeft(2, '0');
+    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
+  double _parseTime(String t) {
+    final parts = t.split(':').map((e) => double.tryParse(e) ?? 0).toList();
+    if (parts.length == 3) {
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else if (parts.length == 2) {
+      return parts[0] * 60 + parts[1];
+    } else {
+      return parts[0];
+    }
+  }
+}

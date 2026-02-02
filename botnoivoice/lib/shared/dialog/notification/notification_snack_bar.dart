@@ -10,6 +10,7 @@ class NotificationSnackBar {
     this.label,
     this.onPressed, // กำหนด onPressed เป็น optional
     this.color,
+    this.duration,
   });
 
   final String text;
@@ -17,6 +18,7 @@ class NotificationSnackBar {
   final String? label;
   final VoidCallback? onPressed;
   final Color? color;
+  final Duration? duration;
 
   /// Show Text Notification
   /// Display Notification with Snackbar
@@ -25,7 +27,7 @@ class NotificationSnackBar {
       SnackBar(
         content: Text(text.tr()),
         backgroundColor: color ?? kDarkGray,
-        duration: const Duration(seconds: 5),
+        duration: duration ?? const Duration(seconds: 5),
       ),
     );
   }
@@ -34,12 +36,12 @@ class NotificationSnackBar {
   void showSnackBarWithAction() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(text),
+        content: Text(text.tr()),
         action: SnackBarAction(
           label: label ?? 'OPEN',
           onPressed: onPressed ?? () {},
         ),
-        duration: const Duration(seconds: 15),
+        duration: duration ?? const Duration(seconds: 15),
       ),
     );
   }

@@ -12,19 +12,19 @@ import 'package:botnoivoice/shared/dialog/notification/notification_dialog.dart'
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class EmailLoginScreen extends StatefulWidget {
+class EmailLoginScreen extends ConsumerStatefulWidget {
   const EmailLoginScreen({super.key});
 
   @override
-  State<EmailLoginScreen> createState() => _EmailLoginScreenState();
+  ConsumerState<EmailLoginScreen> createState() => _EmailLoginScreenState();
 }
 
-class _EmailLoginScreenState extends State<EmailLoginScreen> {
+class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailOrUsernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -34,7 +34,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
   /// Login with Username and Password
   void _loginUser() async {
-    final emailLoginProvider = context.read<EmailLogin>();
+    // final emailLoginProvider = context.read<EmailLogin>();
+    final emailLoginProvider = ref.watch(emailLoginNotifierProvider);
+    final emailLoginemailLoginNoifier = ref.watch(emailLoginNotifierProvider.notifier);
 
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
@@ -43,15 +45,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
       try {
         if (_emailOrUsernameController.text.contains('@')) {
-          await emailLoginProvider.loginWithEmailPassword(
+          await emailLoginemailLoginNoifier.loginWithEmailPassword(
             _emailOrUsernameController.text.trim(),
             _passwordController.text.trim(),
           );
         } else {
-          await emailLoginProvider.loginWithUsernamePassword(
+          await emailLoginemailLoginNoifier.loginWithUsernamePassword(
             _emailOrUsernameController.text.trim(),
             _passwordController.text.trim(),
-            context,
           );
         }
 
@@ -356,7 +357,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                                 : 15.w),
                         child: LineLoginButton(
                           onPressed: () {
-                            openLineLogin(context);
+                            openLineLogin(ref);
                           },
                         ),
                       ),
@@ -374,7 +375,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                                 : 15.w),
                         child: GoogleLoginButton(
                           onPressed: () {
-                            openGoogleLogin(context);
+                            openGoogleLogin(ref);
                           },
                         ),
                       ),
@@ -393,7 +394,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                                   : 15.w),
                           child: AppleLoginButton(
                             onPressed: () {
-                              openAppleLogin(context);
+                              openAppleLogin(ref);
                             },
                           ),
                         ),

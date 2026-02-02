@@ -4,18 +4,19 @@ import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart
 import 'package:botnoivoice/shared/widget/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 /// Alert Modal for displaying messages
-class EnableEmailPermissionDialog extends StatelessWidget {
+class EnableEmailPermissionDialog extends ConsumerWidget {
   const EnableEmailPermissionDialog({super.key});
 
+  // ใน ConsumerWidget จะรับ WidgetRef ref เป็นพารามิเตอร์ตัวที่สองของ build method
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.r),
@@ -52,9 +53,10 @@ class EnableEmailPermissionDialog extends StatelessWidget {
                 GradientTextButton(
                   text: 'enable_email_permission.understood'.tr(), //เข้าใจแล้ว
                   onPressed: () async {
-                    await context
-                        .read<CheckUserIsShowEmail>()
-                        .updateUserInfoShowMail(context, true);
+                    // การเรียกใช้ Notifier ด้วย ref.read นั้นถูกต้องแล้ว
+                    await ref
+                        .read(checkUserIsShowEmailNotifierProvider.notifier)
+                        .updateUserInfoShowMail(true);
 
                     // Close Enable Email Permission Dialog
                     context.pop();

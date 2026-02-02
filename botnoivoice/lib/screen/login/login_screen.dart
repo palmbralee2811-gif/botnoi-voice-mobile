@@ -9,19 +9,20 @@ import 'package:botnoivoice/shared/widget/button/line_login_button.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text_style.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final InternetChecker _internetChecker = InternetChecker();
   final Logger logger = Logger();
 
@@ -107,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
                 child: LineLoginButton(
                   onPressed: () {
-                    openLineLogin(context);
+                    openLineLogin(ref);
                   },
                 ),
               ),
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
                 child: GoogleLoginButton(
                   onPressed: () {
-                    openGoogleLogin(context);
+                    openGoogleLogin(ref);
                   },
                 ),
               ),
@@ -138,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           : 30.w),
                   child: AppleLoginButton(
                     onPressed: () {
-                      openAppleLogin(context);
+                      openAppleLogin(ref);
                     },
                   ),
                 ),

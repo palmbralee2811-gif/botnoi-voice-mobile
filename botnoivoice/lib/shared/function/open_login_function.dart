@@ -3,8 +3,8 @@ import 'package:botnoivoice/service/login/google_login.dart';
 import 'package:botnoivoice/service/login/line_login.dart';
 import 'package:botnoivoice/shared/dialog/notification/notification_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Open Email Login Screen
 void openEmailLogin(BuildContext context) {
@@ -13,42 +13,45 @@ void openEmailLogin(BuildContext context) {
 }
 
 /// Open Apple Login Function and Redirect to AuthChecker
-Future<void> openAppleLogin(BuildContext context) async {
+Future<void> openAppleLogin(WidgetRef ref) async {
   try {
-    await context.read<AppleLogin>().signInWithApple();
+    // await context.read<AppleLogin>().signInWithApple();
+    await ref.read(appleLoginNotifierProvider.notifier).signInWithApple();
     // Redirect to AuthChecker
-    context.go('/auth');
+    ref.context.go('/auth');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }
 }
 
 /// Open Google Login Function and Redirect to AuthChecker
-Future<void> openGoogleLogin(BuildContext context) async {
+Future<void> openGoogleLogin(WidgetRef ref) async {
   try {
-    await context.read<GoogleLogin>().signInWithGoogle();
+    // await context.read<GoogleLogin>().signInWithGoogle();
+    await ref.read(googleLoginNotifierProvider.notifier).signInWithGoogle();
     // Redirect to AuthChecker
-    context.go('/auth');
+    ref.context.go('/auth');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }
 }
 
 /// Open Line Login Function and Redirect to AuthChecker
-Future<void> openLineLogin(BuildContext context) async {
+Future<void> openLineLogin(WidgetRef ref) async {
   try {
-    await context.read<LineLogin>().signInWithLine();
+    // await context.read<LineLogin>().signInWithLine();
+    await ref.watch(lineLoginNotifierProvider.notifier).signInWithLine();
     // Redirect to AuthChecker
-    context.go('/auth');
+    ref.context.go('/auth');
   } catch (e) {
     NotificationPopup(
-      context: context,
+      context: ref.context,
       text: e.toString(),
     ).showAsError();
   }

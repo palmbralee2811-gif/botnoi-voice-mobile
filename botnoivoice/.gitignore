@@ -31,9 +31,6 @@ migrate_working_dir/
 .pub/
 
 # Ignore build/ ทุกตำแหน่ง	
-# ✅ /build/
-# ✅ /ios/build/
-# ✅ /lib/build/
 **/build/
 
 # Symbolication related
@@ -62,3 +59,13 @@ models.jsonc
 *.env
 *.enc
 botnoivoice-firebase-admin-sdk.json
+.config/
+
+# CI/CD with fastlane
+*.storekit
+*.cer
+*.p8
+*Appfile
+*Fastfile
+*report.xml
+ios/fastlane/README.md

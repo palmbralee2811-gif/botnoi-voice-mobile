@@ -1,3 +1,4 @@
+import 'package:botnoivoice/config/api_url_config.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/responsive/responsive_design_orientation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,17 +33,17 @@ class SpeakerGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // ระยะห่างรอบๆ item แต่ละตัว
+      // Spacing around the card
       padding: EdgeInsets.only(left: 5.w, right: 5.w, top: 7.h),
       child: GestureDetector(
-        // เมื่อกดที่ item จะเรียก callback ส่ง index และ speaker กลับไป
+        // Handle tap event to select the speaker
         onTap: () => onSpeakerTap(index, speakerItem),
         child: Container(
-          // ขนาดหลักของ item (ขึ้นอยู่กับแนวตั้ง/แนวนอน)
+          // Card dimensions based on orientation
           width: ResponsiveDesignOrientation.isLandscape ? 120.w : 100.w,
           height: ResponsiveDesignOrientation.isLandscape ? 313.h : 113.h,
           decoration: BoxDecoration(
-            // เส้นขอบแบบ gradient ใช้เมื่อ item ถูกเลือก
+            // Gradient border: colorful if selected, subtle if not
             border: GradientBoxBorder(
               width: 3.w,
               gradient: isSelected
@@ -57,9 +58,9 @@ class SpeakerGridItem extends StatelessWidget {
                       begin: const Alignment(1, 1),
                     ),
             ),
-            // มุมโค้งของกล่อง ต้องใช้ค่าเดียวกันกับ ClipRRect และ overlay เพื่อให้พอดีกัน
+            // Rounded corners (matches the ClipRRect below)
             borderRadius: BorderRadius.circular(8.r),
-            // เงาสีม่วงแสดงเมื่อ item ถูกเลือก
+            // Glow effect when selected
             boxShadow: [
               BoxShadow(
                 blurRadius: 10,
@@ -71,55 +72,47 @@ class SpeakerGridItem extends StatelessWidget {
               ),
             ],
           ),
-          // ใช้ ClipRRect ครอบ Stack เพื่อให้รูปและ overlay ถูกตัดโค้งเหมือนกัน
+          // Clips the image and overlay to match rounded corners
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.r),
             child: Stack(
               children: [
                 FadeInImage(
-                  // Placeholder: ภาพเล็กโปร่งใส ใช้ในช่วงที่รูปจริงกำลังโหลด
-                  // Placeholder image: small transparent image used while the real image is loading
+                  // Transparent placeholder while loading
                   placeholder: MemoryImage(kTransparentImage),
 
-                  // Image: ใช้ CachedNetworkImageProvider + ResizeImage
-                  // Image provider: Cached + resize to reduce memory usage
+                  // Load and resize image to save memory
                   image: ResizeImage(
                     CachedNetworkImageProvider(
-                      Uri.encodeFull(speakerItem
-                          .squareImage), // encode URL ให้ถูกต้อง / encode URL correctly
-                      headers: const {
-                        'Referer':
-                            'https://voice.botnoi.ai/', // กำหนด Referer header
-                        'Accept': 'image/webp,*/*', // กำหนด Accept header
+                      Uri.encodeFull(speakerItem.squareImage),
+                      headers: {
+                        'Referer': refererUrl,
+                        'Accept': 'image/webp,*/*',
                       },
+                      // Custom cache config: keep for 7 days, max 50 files
                       cacheManager: CacheManager(
                         Config(
-                          'customCache', // ชื่อ cache ของเรา / custom cache name
-                          stalePeriod: const Duration(
-                              days:
-                                  7), // เก็บ cache ไว้ 7 วัน / keep cache for 7 days
-                          maxNrOfCacheObjects:
-                              50, // จำกัดจำนวนไฟล์ cache เพื่อประหยัด storage / limit number of cached objects
+                          'customCache',
+                          stalePeriod: const Duration(days: 7),
+                          maxNrOfCacheObjects: 50,
                         ),
                       ),
                     ),
-                    width:
-                        1500, // ปรับขนาดให้ใกล้เคียงกับ UI / resize for UI size
-                    height: 1500,
+                    // Resize to fit within 500x500 without distorting aspect ratio
+                    policy: ResizeImagePolicy.fit,
+                    width: 500,
+                    height: 500,
                   ),
 
-                  // ปรับขนาดภาพให้เต็ม container / fit image to container
+                  // Fill the container
                   fit: BoxFit.cover,
 
-                  // fade-in effect เพื่อ smooth UX เวลาโหลดรูป / fade-in duration for smooth UX
+                  // Smooth fade-in effect
                   fadeInDuration: const Duration(milliseconds: 200),
-
-                  // กำหนดขนาดให้เต็ม container / width & height to fill container
                   width: double.infinity,
                   height: double.infinity,
 
-                  // Error builder: ถ้าภาพโหลดไม่สำเร็จ จะแสดง icon แทน
-                  // Error handling: show icon if image fails to load
+                  // Show error icon if loading fails
                   imageErrorBuilder: (context, error, stackTrace) {
                     Logger().e(
                         'Image failed to load: ${speakerItem.squareImage}, error: $error');
@@ -129,11 +122,10 @@ class SpeakerGridItem extends StatelessWidget {
                   },
                 ),
 
-                // Overlay ทับบนรูป เพื่อใส่ gradient มืดและแสดงข้อความชัดเจน
+                // Dark gradient overlay to make text readable
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                        8.r), // ให้ตรงกับ Container และ ClipRRect
+                    borderRadius: BorderRadius.circular(8.r),
                     gradient: LinearGradient(
                       begin: const Alignment(1, 1),
                       colors: [
@@ -145,11 +137,11 @@ class SpeakerGridItem extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // แถวด้านบน แสดงสถานะการเลือก และปุ่ม favorite
+                      // Top Row: "Select" badge and Favorite icon
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // ถ้า item ถูกเลือกจะแสดงป้าย select
+                          // "Select" badge (only shows when selected)
                           Padding(
                             padding: EdgeInsets.only(
                                 right: 5.w, top: 5.w, left: 5.w),
@@ -192,7 +184,7 @@ class SpeakerGridItem extends StatelessWidget {
                                 : const Icon(Icons.check,
                                     color: Colors.transparent),
                           ),
-                          // ปุ่ม favorite หัวใจ (toggle on/off)
+                          // Heart icon (toggle favorite)
                           Padding(
                             padding: EdgeInsets.only(right: 5.w, top: 5.w),
                             child: GestureDetector(
@@ -236,15 +228,15 @@ class SpeakerGridItem extends StatelessWidget {
                         ],
                       ),
 
-                      // แถวด้านล่าง ไอคอน play และชื่อ speaker
+                      // Bottom Row: Play icon and Speaker Name
                       Padding(
                         padding: EdgeInsets.only(bottom: 4.h),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: 6.w), // เว้นเล็กน้อยไม่ให้ชิดเกินไป
-                            // ไอคอน play ขึ้นอยู่กับสถานะการเลือก
+                            SizedBox(width: 6.w), // Small spacer
+                            // Play icon (color changes if selected)
                             isSelected
                                 ? ShaderMask(
                                     shaderCallback: (Rect bounds) {
@@ -279,7 +271,7 @@ class SpeakerGridItem extends StatelessWidget {
                                             : 16.w,
                                   ),
                             SizedBox(width: 3.w),
-                            // ชื่อ speaker ข้อความจะบีบให้อยู่ในพื้นที่และตัดด้วย ...
+                            // Speaker name (Localized: TH/EN)
                             Expanded(
                               child: Text(
                                 Localizations.localeOf(context).languageCode ==

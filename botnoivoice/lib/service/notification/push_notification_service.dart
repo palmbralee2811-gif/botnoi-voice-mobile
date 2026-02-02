@@ -5,8 +5,8 @@ import 'package:botnoivoice/shared/function/get_user_id.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
 class PushNotificationService {
@@ -28,11 +28,11 @@ class PushNotificationService {
   }
 
   /// 🛠 Initialize Push Notification
-  static Future<void> init(BuildContext context) async {
+  static Future<void> init(WidgetRef ref) async {
     _logger.i("🛠 Initializing Push Notification Service...");
 
     try {
-      _userId = await getUserIdAll(context);
+      _userId = await getUserIdAll(ref);
       _logger.i('✅ Fetched User ID: $_userId');
     } catch (e) {
       _logger.e('❌ Failed to fetch User ID: $e');
@@ -56,7 +56,7 @@ class PushNotificationService {
       sound: true,
     );
 
-    await _checkNotificationPermission(context);
+    await _checkNotificationPermission(ref);
 
     _firebaseMessaging.onTokenRefresh.listen((newToken) async {
       _logger.i("🔄 FCM Token เปลี่ยนใหม่: $newToken");
@@ -90,7 +90,7 @@ class PushNotificationService {
   }
 
   /// 🔄 ตรวจสอบสิทธิ์ Notification
-  static Future<void> _checkNotificationPermission(BuildContext context) async {
+  static Future<void> _checkNotificationPermission(WidgetRef ref) async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission();
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -116,7 +116,7 @@ class PushNotificationService {
 
       Future.delayed(Duration.zero, () {
         OpenAppSettingsDialog(
-          context: context,
+          context: ref.context,
           text: 'audio_player.permission_denied'.tr(),
         ).showPermissionDeniedDialog();
       });

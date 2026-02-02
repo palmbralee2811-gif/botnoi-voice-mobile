@@ -9,18 +9,18 @@ import 'package:botnoivoice/shared/widget/button/delete_account_button.dart';
 import 'package:botnoivoice/shared/widget/gradient/gradient_text_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class AccountScreen extends StatefulWidget {
+class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  State<AccountScreen> createState() => _AccountScreenState();
+  ConsumerState<AccountScreen> createState() => _AccountScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
+class _AccountScreenState extends ConsumerState<AccountScreen> {
   final AccountScreenLogic _logic = AccountScreenLogic();
   String displayName = "Loading...";
   String userId = "Loading...";
@@ -37,7 +37,7 @@ class _AccountScreenState extends State<AccountScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _logic.loadUserInfo(
-        context: context,
+        ref,
         onUpdateState: (
           String newDisplayName,
           String newUserId,
@@ -63,8 +63,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final emailProvider = context.read<EmailLogin>();
-    final appleProvider = context.read<AppleLogin>();
+    final emailProvider = ref.read(emailLoginNotifierProvider);
+    final appleProvider = ref.read(appleLoginNotifierProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -136,7 +136,7 @@ class _AccountScreenState extends State<AccountScreen> {
               GradientTextButton(
                 text: 'account.logout'.tr(),
                 onPressed: () async {
-                  await _logic.signOut(context);
+                  await _logic.signOut(context, ref);
                 },
               ),
               SizedBox(
