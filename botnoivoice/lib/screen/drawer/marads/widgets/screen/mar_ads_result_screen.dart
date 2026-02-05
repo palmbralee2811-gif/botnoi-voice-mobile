@@ -140,6 +140,12 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     final int charCount = _textController.text.length;
     final int calculatedPoints = charCount * (isV2 ? 2 : 1);
 
+    // คำนวณพื้นที่ทับซ้อนของคีย์บอร์ด
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final double buttonHeight = 140.h;
+    // ดัน Text Box ขึ้นเฉพาะส่วนที่คีย์บอร์ดบังเกินปุ่มขึ้นมา
+    final double extraBottomPadding = max(0.0, keyboardHeight - buttonHeight);
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
@@ -148,6 +154,7 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
     ));
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey, // ผูก Key กับ Scaffold
       backgroundColor: const Color(0xFFF7F8FA),
       drawer: const DrawerAppbar(),
@@ -159,17 +166,16 @@ class _MarAdsResultScreenState extends ConsumerState<MarAdsResultScreen> {
           children: [
             _buildModeSelectorRow(),
             Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: MarAdsResultTextBox(
-                    controller: _textController,
-                    mode: _selectedMode,
-                    onClear: () {
-                      _textController.text = widget.generatedText ?? '';
-                      setState(() {});
-                    },
-                  ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                    16.w, 10.h, 16.w, 10.h + extraBottomPadding),
+                child: MarAdsResultTextBox(
+                  controller: _textController,
+                  mode: _selectedMode,
+                  onClear: () {
+                    _textController.text = widget.generatedText ?? '';
+                    setState(() {});
+                  },
                 ),
               ),
             ),

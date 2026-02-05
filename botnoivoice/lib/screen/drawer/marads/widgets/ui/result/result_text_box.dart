@@ -48,8 +48,7 @@ class MarAdsResultTextBox extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 300.h,
+            Expanded(
               child: TextField(
                 key: const ValueKey('marads_result_textfield'),
                 controller: controller,
@@ -60,7 +59,8 @@ class MarAdsResultTextBox extends ConsumerWidget {
                 enableInteractiveSelection: true,
                 textInputAction: TextInputAction.done, // Enable "Done" button
                 onSubmitted: (_) {
-                  FocusManager.instance.primaryFocus?.unfocus(); // Close the keyboard with the "Done" button
+                  FocusManager.instance.primaryFocus
+                      ?.unfocus(); // Close the keyboard with the "Done" button
                 },
 
                 inputFormatters: [
