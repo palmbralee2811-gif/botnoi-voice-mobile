@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +21,7 @@ class MarAdsLogic {
     required String contentStyle,
     required String contentLengthLabel,
     required String additionalInfo,
+    String? imagePath,
   }) async {
     final token = ref.watch(currentUserTokenStateProvider).jwtToken;
 
@@ -59,6 +62,7 @@ class MarAdsLogic {
         context: context,
         token: token,
         payload: payload,
+        imageFile: imagePath != null ? File(imagePath) : null,
       );
 
       _logger.i("API Response => $res");

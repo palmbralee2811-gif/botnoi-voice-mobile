@@ -412,7 +412,16 @@
     "point_usage_info": "Pembuatan konten perlu poin ",
     "point_rate_15s": "50 poin/kali untuk ~15 detik",
     "point_rate_30s": "100 poin/kali untuk ~30 detik",
-    "point_rate_60s": "150 poin/kali untuk ~60 detik"
+    "point_rate_60s": "150 poin/kali untuk ~60 detik",
+
+    "header_image": "Gambar Produk (Opsional)",
+    "header_detail": "Rincian Produk",
+    "upload_image": "Unggah Gambar",
+    "upload_ready": "Siap untuk membuat",
+    "upload_hint": "Maks 10MB .png,.jpeg,.jpg",
+    "btn_upload": "Unggah",
+    "error_file_size": "Ukuran file harus kurang dari 10MB",
+    "error_required_image_or_product": "Silakan masukkan nama produk atau unggah gambar"
   },
   "marads_adv": {
     "label_length": "Panjang Konten* (Mempengaruhi poin)",

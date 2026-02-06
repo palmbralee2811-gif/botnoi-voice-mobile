@@ -415,7 +415,15 @@
     "point_usage_info": "Content generation affects points usage ",
     "point_rate_15s": "50 points/time for ~15 sec",
     "point_rate_30s": "100 points/time for ~30 sec",
-    "point_rate_60s": "150 points/time for ~60 sec"
+    "point_rate_60s": "150 points/time for ~60 sec",
+    "header_image": "Product Image (Optional)",
+    "header_detail": "Product Details",
+    "upload_image": "Upload Image",
+    "upload_ready": "Ready to generate",
+    "upload_hint": "Max 10MB .png,.jpeg,.jpg",
+    "btn_upload": "Upload",
+    "error_file_size": "File size must be less than 10MB",
+    "error_required_image_or_product": "Please enter product name or upload an image"
   },
   "marads_adv": {
     "label_length": "Content Length* (Affects points)",

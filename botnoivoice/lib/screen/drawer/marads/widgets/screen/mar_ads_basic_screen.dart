@@ -1,12 +1,15 @@
 import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_collapsible_section.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../ui/basic_mar_ads_text_field.dart';
 import '../ui/mar_ads_dropdown.dart';
 import '../ui/mar_ads_mode_selector.dart';
@@ -17,6 +20,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.
 import 'package:go_router/go_router.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_basic_logic.dart';
 import 'package:logger/logger.dart';
+import 'dart:io';
 
 class MarAdsScreen extends ConsumerStatefulWidget {
   const MarAdsScreen({super.key});
@@ -38,6 +42,14 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
   String _selectedContentStyle = 'จูงใจให้ใช้';
   String _selectedContentLength = '~15 วิ';
   String _selectedMode = 'Basic mode';
+
+  // ตัวแปร State สำหรับควบคุมการยืดหดของ Section
+  bool _isImageSectionExpanded = true;
+  bool _isDetailSectionExpanded = true;
+
+  //ตัวแปรเก็บ path รูปภาพที่เลือก
+  String? _selectedImagePath;
+  String? _selectedImageName;
 
   @override
   void initState() {
@@ -90,6 +102,47 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     return logicValue;
   }
 
+  // [เพิ่ม] ฟังก์ชันเลือกรูปภาพ (ลอก logic มาจาก upload_screen_logic)
+  Future<void> _pickImage() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png'],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final file = result.files.single;
+
+        // ตรวจสอบขนาดไฟล์ (10MB = 10 * 1024 * 1024 bytes)
+        if (file.size > 10 * 1024 * 1024) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text('marads_basic.error_file_size'.tr()),
+                  backgroundColor: Colors.red),
+            );
+          }
+          return;
+        }
+
+        setState(() {
+          _selectedImagePath = file.path;
+          _selectedImageName = file.name;
+        });
+      }
+    } catch (e) {
+      _logger.e("Error picking image: $e");
+    }
+  }
+
+  // [เพิ่ม] ฟังก์ชันลบรูปภาพ
+  void _clearImage() {
+    setState(() {
+      _selectedImagePath = null;
+      _selectedImageName = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -103,7 +156,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     final userToken = ref.watch(currentUserTokenStateProvider);
     final int currentPoints =
         int.tryParse(userToken.remainingCredits.toString()) ?? 0;
-    
+
     // [เพิ่ม] คำนวณราคาตามความยาวที่เลือก (~15, ~30, ~60 วิ)
     int costPerGen = 50; // เริ่มต้นที่ 50 (สำหรับ 15 วิ)
     if (_selectedContentLength.contains('30')) {
@@ -115,7 +168,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     // ถ้า cost เป็น 0 ให้โชว์เลขเยอะๆ หรือสัญลักษณ์ infinity, ถ้าไม่ 0 ก็เอา point / cost
     final int canCreateTimes =
         costPerGen == 0 ? 999 : (currentPoints / costPerGen).floor();
-        
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFFFFFFFF),
@@ -134,36 +187,65 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                       selectedMode: _selectedMode,
                       onTap: _handleModeSelectorTap,
                     ),
-                    MarAdsTextField(
-                      label: 'marads_basic.label_product'.tr(),
-                      placeholder: 'marads_basic.placeholder_product'.tr(),
-                      controller: _productController,
-                      isRequired: true,
+                    SizedBox(height: 5.h),
+                    MarAdsCollapsibleSection(
+                      title: 'marads_basic.header_image'.tr(),
+                      isExpanded: _isImageSectionExpanded,
+                      onTap: () {
+                        setState(() {
+                          _isImageSectionExpanded = !_isImageSectionExpanded;
+                        });
+                      },
                     ),
-                    MarAdsTextField(
-                      label: 'marads_basic.label_brand'.tr(),
-                      placeholder: 'marads_basic.placeholder_brand'.tr(),
-                      controller: _brandController,
+                    if (_isImageSectionExpanded) _buildImageUploadSection(),
+
+                    // 2. ส่วนรายละเอียดสินค้า
+                    SizedBox(height: 8.h),
+                    MarAdsCollapsibleSection(
+                      title: 'marads_basic.header_detail'.tr(),
+                      isExpanded: _isDetailSectionExpanded,
+                      onTap: () {
+                        setState(() {
+                          _isDetailSectionExpanded = !_isDetailSectionExpanded;
+                        });
+                      },
                     ),
-                    MarAdsTextField(
-                      label: 'marads_basic.label_price'.tr(),
-                      placeholder: 'marads_basic.placeholder_price'.tr(),
-                      controller: _priceController,
-                    ),
-                    MarAdsDropdown(
-                      label: 'marads_basic.label_style'.tr(),
-                      value: _getLocalizedStyleDisplay(
-                          context, _selectedContentStyle),
-                      onTap: _handleContentStyleTap,
-                    ),
-                    MarAdsDropdown(
-                      label: 'marads_basic.label_length'.tr(),
-                      value: _getLocalizedLengthDisplay(
-                          context, _selectedContentLength),
-                      showInfoIcon: true,
-                      onTap: _handleContentLengthTap,
-                    ),
-                    _buildAdditionalInfoLabel(), // กล่องข้อมูลเสริมพิมพ์ได้
+                    if (_isDetailSectionExpanded)
+                      Column(
+                        children: [
+                          MarAdsTextField(
+                            label: 'marads_basic.label_product'.tr(),
+                            placeholder:
+                                'marads_basic.placeholder_product'.tr(),
+                            controller: _productController,
+                            isRequired: true,
+                          ),
+                          MarAdsTextField(
+                            label: 'marads_basic.label_brand'.tr(),
+                            placeholder: 'marads_basic.placeholder_brand'.tr(),
+                            controller: _brandController,
+                          ),
+                          MarAdsTextField(
+                            label: 'marads_basic.label_price'.tr(),
+                            placeholder: 'marads_basic.placeholder_price'.tr(),
+                            controller: _priceController,
+                          ),
+                          MarAdsDropdown(
+                            label: 'marads_basic.label_style'.tr(),
+                            value: _getLocalizedStyleDisplay(
+                                context, _selectedContentStyle),
+                            onTap: _handleContentStyleTap,
+                          ),
+                          MarAdsDropdown(
+                            label: 'marads_basic.label_length'.tr(),
+                            value: _getLocalizedLengthDisplay(
+                                context, _selectedContentLength),
+                            showInfoIcon: true,
+                            onTap: _handleContentLengthTap,
+                          ),
+                          _buildAdditionalInfoLabel(), // กล่องข้อมูลเสริมพิมพ์ได้
+                        ],
+                      ),
                     SizedBox(height: 150.h),
                   ],
                 ),
@@ -171,7 +253,8 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
             ),
             MarAdsCreateButton(
               remainingCount: canCreateTimes.toString(),
-              isFormValid: _productController.text.isNotEmpty,
+              isFormValid: _productController.text.isNotEmpty ||
+                  _selectedImagePath != null,
               isLoading: _isLoading,
               onPressed: _handleCreateMessage,
             ),
@@ -242,6 +325,97 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       height: 100.h,
       maxLines: null,
       textInputAction: TextInputAction.done, // Enable "Done" button
+    );
+  }
+
+  Widget _buildImageUploadSection() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: const Color(0xFFDBDBDB),
+          style: BorderStyle.solid,
+        ),
+      ),
+      child: Row(
+        children: [
+          _selectedImagePath != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: Image.file(
+                    File(_selectedImagePath!),
+                    width: 48.w, // กำหนดขนาดรูปตัวอย่าง
+                    height: 48.w,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Icon(
+                  Icons.cloud_upload_outlined,
+                  color: const Color(0xFF555555),
+                  size: 24.sp,
+                ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _selectedImageName ?? 'marads_basic.upload_image'.tr(),
+                  style: GoogleFonts.prompt(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF00B0FF), // สีฟ้าตาม UI
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  _selectedImagePath != null
+                      ? 'marads_basic.upload_ready'.tr()
+                      : 'marads_basic.upload_hint'.tr(),
+                  style: GoogleFonts.prompt(
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF888888),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          if (_selectedImagePath != null)
+            IconButton(
+              onPressed: _clearImage,
+              icon: Icon(Icons.close, color: Colors.red, size: 20.sp),
+            )
+          else
+            ElevatedButton(
+              onPressed: () {
+                _pickImage();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF00B0FF),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                minimumSize: Size(0, 36.h),
+              ),
+              child: Text(
+                'marads_basic.btn_upload'.tr(),
+                style: GoogleFonts.prompt(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -509,10 +683,10 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     if (_isLoading) return;
 
     // กันเหนียว validate อีกที
-    if (_productController.text.isEmpty) {
+    if (_productController.text.isEmpty && _selectedImagePath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('marads_basic.error_required'.tr()),
+          content: Text('marads_basic.error_required_image_or_product'.tr()),
           backgroundColor: Colors.red,
         ),
       );
@@ -533,6 +707,7 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
         contentStyle: _selectedContentStyle,
         contentLengthLabel: _selectedContentLength,
         additionalInfo: _additionalInfoController.text,
+        imagePath: _selectedImagePath,
       );
 
       _logger.i("MarAds: create_prompt_ads response: $response");

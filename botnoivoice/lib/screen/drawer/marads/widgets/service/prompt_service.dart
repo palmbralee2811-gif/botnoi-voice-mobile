@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_history_model.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,6 +42,7 @@ class PromptService {
     required BuildContext context,
     String? token,
     required Map<String, dynamic> payload,
+    File? imageFile,
   }) async {
     final usedToken =
         (token != null && token.isNotEmpty) ? token : _selectToken(context);
@@ -49,12 +51,39 @@ class PromptService {
     _logger.i("💡 Using Token => $usedToken");
     _logger.i("POST $url");
     _logger.i("Payload => $payload");
+    if (imageFile != null) {
+      _logger.i("Image File => ${imageFile.path}");
+    }
 
-    final response = await http.post(
-      url,
-      headers: _headers(usedToken),
-      body: jsonEncode(payload),
-    );
+// เช็คว่าถ้ามีรูปภาพ ให้ส่งแบบ Multipart ถ้าไม่มีส่งแบบ JSON ปกติ
+    http.Response response;
+    if (imageFile != null) {
+      // กรณีมีไฟล์รูปภาพ ส่งแบบ Multipart
+      var request = http.MultipartRequest('POST', url);
+
+      final headers = _headers(usedToken);
+      headers.remove('Content-Type');
+      request.headers.addAll(headers);
+
+      payload.forEach((key, value) {
+        request.fields[key] = value.toString();
+      });
+
+      request.files.add(await http.MultipartFile.fromPath(
+        'ref_image',
+        imageFile.path,
+      ));
+
+      final streamedResponse = await request.send();
+      response = await http.Response.fromStream(streamedResponse);
+    } else {
+      // กรณีไม่มีไฟล์ ส่งแบบ JSON เดิม
+      response = await http.post(
+        url,
+        headers: _headers(usedToken),
+        body: jsonEncode(payload),
+      );
+    }
 
     _logger.i("Status => ${response.statusCode}");
     final responseBody = utf8.decode(response.bodyBytes);
