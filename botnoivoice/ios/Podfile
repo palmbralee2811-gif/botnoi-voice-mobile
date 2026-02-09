@@ -47,7 +47,9 @@ post_install do |installer|
         'AUDIO_SESSION_MICROPHONE=1',
         'PERMISSION_MICROPHONE=1',
       ]
+      
+      # ปิด Error เรื่อง Main Actor ใน Xcode 16
+      config.build_settings['SWIFT_STRICT_CONCURRENCY'] = 'minimal' 
     end
-
   end
 end
