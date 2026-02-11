@@ -7,6 +7,8 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_pr
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/advanced/advanced_sales_style_section.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_collapsible_section.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_image_uploader.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +154,8 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
   bool _isBasicInfoExpanded = true;
   bool _isSalesStyleExpanded = true;
   bool _isPromotionInfoExpanded = true;
+  bool _isImageSectionExpanded = true;
+  String? _selectedImagePath;
 
   void _randomizeText({
     required TextEditingController controller,
@@ -247,6 +251,25 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
                       onTap: _handleModeSelectorTap,
                     ),
                     SizedBox(height: 5.h),
+                    //  Image Upload Section
+                    MarAdsCollapsibleSection(
+                      title: 'marads_basic.header_image'.tr(),
+                      isExpanded: _isImageSectionExpanded,
+                      onTap: () {
+                        setState(() {
+                          _isImageSectionExpanded = !_isImageSectionExpanded;
+                        });
+                      },
+                    ),
+                    if (_isImageSectionExpanded)
+                      MarAdsImageUploader(
+                        onImageSelected: (path, name) {
+                          setState(() {
+                            _selectedImagePath = path;
+                          });
+                        },
+                      ),
+                    SizedBox(height: 8.h),
                     AdvancedBasicInfoSection(
                       isExpanded: _isBasicInfoExpanded,
                       onToggle: () => setState(
@@ -321,7 +344,9 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
             ),
             MarAdsCreateButton(
               remainingCount: canCreateTimes.toString(),
-              isFormValid: _productController.text.isNotEmpty,
+              // อนุญาตให้กดได้ถ้ามีรูป แม้ไม่มีชื่อสินค้า
+              isFormValid: _productController.text.isNotEmpty ||
+                  _selectedImagePath != null,
               isLoading: _isLoading,
               onPressed: _handleCreateMessage,
             ),
@@ -597,14 +622,14 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
   // เพิ่มฟังก์ชันสำหรับยิง API
   Future<void> _handleCreateMessage() async {
     if (_isLoading) return;
-    if (_productController.text.isEmpty) {
+    if (_productController.text.isEmpty && _selectedImagePath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
               const Icon(Icons.error_outline, color: Colors.white),
               SizedBox(width: 8.w),
-              Text('marads_adv.error_no_product'.tr()),
+              Text('marads_basic.error_required_image_or_product'.tr()),
             ],
           ),
           backgroundColor: Colors.redAccent,
@@ -644,6 +669,7 @@ class _MarAdsAdvancedScreenState extends ConsumerState<MarAdsAdvancedScreen> {
 
         contentLengthLabel: _selectedContentLength,
         additionalInfo: _additionalInfoController.text,
+        imagePath: _selectedImagePath,
       );
 
       _logger.i("Response: $response");
