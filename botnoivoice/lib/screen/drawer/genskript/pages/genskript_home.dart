@@ -51,16 +51,12 @@ class _GenskriptHomeState extends State<GenskriptHome> {
   bool get _isReadyToGenerate {
     bool hasFile = _pickedFiles.isNotEmpty;
     bool hasPrompt = _customPromptController.text.trim().isNotEmpty;
-    return hasFile && hasPrompt;
+    return hasFile || hasPrompt;
   }
 
   @override
   void initState() {
     super.initState();
-    if (quickPresetChips[contentType] != null &&
-        quickPresetChips[contentType]!.isNotEmpty) {
-      _customPromptController.text = quickPresetChips[contentType]![0]['text']!;
-    }
     _customPromptController.addListener(() => setState(() {}));
   }
 
@@ -428,15 +424,63 @@ class _GenskriptHomeState extends State<GenskriptHome> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("จำนวนคำ / สไลด์",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        const SizedBox(height: 8),
-        _buildDropdown(
-          List.generate(10, (i) => ((i + 1) * 20).toString()),
-          wordCount.round().toString(),
-          (v) {
-            if (v != null) setState(() => wordCount = double.parse(v));
-          },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("จำนวนคำ/สไลด์",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("(100 คำ ประมาณ 30 วินาที)",
+                    style: TextStyle(color: Colors.grey, fontSize: 14)),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.lightBlue.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    "${wordCount.round()}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(width: 4),
+                  const Text("คำ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Colors.lightBlueAccent,
+            inactiveTrackColor: Colors.lightBlue.shade100,
+            thumbColor: Colors.lightBlue,
+            overlayColor: Colors.lightBlue.withOpacity(0.2),
+            trackHeight: 10,
+            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 14),
+            overlayShape: const RoundSliderOverlayShape(overlayRadius: 24),
+          ),
+          child: Slider(
+            value: wordCount,
+            min: 20,
+            max: 200,
+            divisions: 9,
+            label: wordCount.round().toString(),
+            onChanged: (value) {
+              setState(() {
+                wordCount = value;
+              });
+            },
+          ),
         ),
       ],
     );
@@ -464,9 +508,6 @@ class _GenskriptHomeState extends State<GenskriptHome> {
               if (v != null)
                 setState(() {
                   contentType = v;
-                  if (quickPresetChips[v]!.isNotEmpty)
-                    _customPromptController.text =
-                        quickPresetChips[v]![0]['text']!;
                 });
             },
           ),
@@ -482,6 +523,9 @@ class _GenskriptHomeState extends State<GenskriptHome> {
         controller: _customPromptController,
         maxLines: 4,
         decoration: InputDecoration(
+          hintText:
+              "เช่น เขียนสคริปต์สำหรับสไลด์เกี่ยวกับ... โดยใช้ภาษาที่เป็นมิตรและเข้าใจง่าย",
+          hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey[200]!),
@@ -508,8 +552,15 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                 ),
               ),
               backgroundColor: isSelected ? Colors.lightBlue : Colors.white,
-              onPressed: () =>
-                  setState(() => _customPromptController.text = c['text']!),
+              onPressed: () => setState(() {
+                // ถ้าเลือกอยู่แล้ว ให้ลบข้อความออก (Toggle Off)
+                if (isSelected) {
+                  _customPromptController.clear();
+                } else {
+                  // ถ้ายังไม่เลือก ให้ใส่ข้อความเข้าไป (Toggle On)
+                  _customPromptController.text = c['text']!;
+                }
+              }),
             ),
           );
         }).toList(),

@@ -1,7 +1,7 @@
 // lib/services/api_constants.dart
 
 class ApiConstants {
-  static const String baseUrl = "https://api-voice-staging.botnoi.ai";
+  static const String baseUrl = "https://api-voice.botnoi.ai";
   static const String uploadEndpoint = "$baseUrl/api/genai/upload_image";
 
   static const String generateEndpoint = "$baseUrl/openapi/v1/generate-scripts";
@@ -40,7 +40,7 @@ class ApiConstants {
 // --- Voice Service Endpoints ---
   // Step 1: Generate Audio
   static const String genskriptUrl =
-      '$baseUrl/voice/v1/generate_voice?provider=studio';
+      'https://api-genvoice.botnoi.ai/voice/v1/generate_voice?provider=studio';
   // Step 2: Save Workspace (State) - NEW
   static const String workspaceEndpoint =
       "$baseUrl/api/genai/genskript-workspaces";
