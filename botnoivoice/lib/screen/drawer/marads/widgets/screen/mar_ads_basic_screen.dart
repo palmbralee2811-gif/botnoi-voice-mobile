@@ -2,14 +2,13 @@ import 'package:botnoivoice/screen/drawer/drawer_appbar.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_create_button.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_collapsible_section.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_image_uploader.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../ui/basic_mar_ads_text_field.dart';
 import '../ui/mar_ads_dropdown.dart';
 import '../ui/mar_ads_mode_selector.dart';
@@ -20,7 +19,6 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.
 import 'package:go_router/go_router.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/logic/mar_ads_basic_logic.dart';
 import 'package:logger/logger.dart';
-import 'dart:io';
 
 class MarAdsScreen extends ConsumerStatefulWidget {
   const MarAdsScreen({super.key});
@@ -49,7 +47,6 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
 
   //ตัวแปรเก็บ path รูปภาพที่เลือก
   String? _selectedImagePath;
-  String? _selectedImageName;
 
   @override
   void initState() {
@@ -100,47 +97,6 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
     if (logicValue.contains('30')) return 'marads_basic.length_30'.tr();
     if (logicValue.contains('60')) return 'marads_basic.length_60'.tr();
     return logicValue;
-  }
-
-  // [เพิ่ม] ฟังก์ชันเลือกรูปภาพ (ลอก logic มาจาก upload_screen_logic)
-  Future<void> _pickImage() async {
-    try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png'],
-      );
-
-      if (result != null && result.files.single.path != null) {
-        final file = result.files.single;
-
-        // ตรวจสอบขนาดไฟล์ (10MB = 10 * 1024 * 1024 bytes)
-        if (file.size > 10 * 1024 * 1024) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('marads_basic.error_file_size'.tr()),
-                  backgroundColor: Colors.red),
-            );
-          }
-          return;
-        }
-
-        setState(() {
-          _selectedImagePath = file.path;
-          _selectedImageName = file.name;
-        });
-      }
-    } catch (e) {
-      _logger.e("Error picking image: $e");
-    }
-  }
-
-  // [เพิ่ม] ฟังก์ชันลบรูปภาพ
-  void _clearImage() {
-    setState(() {
-      _selectedImagePath = null;
-      _selectedImageName = null;
-    });
   }
 
   @override
@@ -197,7 +153,15 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
                         });
                       },
                     ),
-                    if (_isImageSectionExpanded) _buildImageUploadSection(),
+                    if (_isImageSectionExpanded)
+                      MarAdsImageUploader(
+                        onImageSelected: (path, name) {
+                          setState(() {
+                            // อัปเดต path เพื่อนำไปใช้ validate และส่ง API
+                            _selectedImagePath = path;
+                          });
+                        },
+                      ),
 
                     // 2. ส่วนรายละเอียดสินค้า
                     SizedBox(height: 8.h),
@@ -325,97 +289,6 @@ class _MarAdsScreenState extends ConsumerState<MarAdsScreen> {
       height: 100.h,
       maxLines: null,
       textInputAction: TextInputAction.done, // Enable "Done" button
-    );
-  }
-
-  Widget _buildImageUploadSection() {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: const Color(0xFFDBDBDB),
-          style: BorderStyle.solid,
-        ),
-      ),
-      child: Row(
-        children: [
-          _selectedImagePath != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: Image.file(
-                    File(_selectedImagePath!),
-                    width: 48.w, // กำหนดขนาดรูปตัวอย่าง
-                    height: 48.w,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : Icon(
-                  Icons.cloud_upload_outlined,
-                  color: const Color(0xFF555555),
-                  size: 24.sp,
-                ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _selectedImageName ?? 'marads_basic.upload_image'.tr(),
-                  style: GoogleFonts.prompt(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF00B0FF), // สีฟ้าตาม UI
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  _selectedImagePath != null
-                      ? 'marads_basic.upload_ready'.tr()
-                      : 'marads_basic.upload_hint'.tr(),
-                  style: GoogleFonts.prompt(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF888888),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 8.w),
-          if (_selectedImagePath != null)
-            IconButton(
-              onPressed: _clearImage,
-              icon: Icon(Icons.close, color: Colors.red, size: 20.sp),
-            )
-          else
-            ElevatedButton(
-              onPressed: () {
-                _pickImage();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00B0FF),
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                minimumSize: Size(0, 36.h),
-              ),
-              child: Text(
-                'marads_basic.btn_upload'.tr(),
-                style: GoogleFonts.prompt(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 

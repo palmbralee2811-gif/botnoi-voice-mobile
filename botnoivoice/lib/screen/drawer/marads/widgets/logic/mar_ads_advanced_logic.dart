@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:botnoivoice/screen/drawer/marads/widgets/service/prompt_service.dart';
 import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class MarAdsAdvancedLogic {
     // --- การตั้งค่า ---
     required String contentLengthLabel,
     String? additionalInfo,
+    String? imagePath,
   }) async {
     //  Token จาก Riverpod
     final token = ref.watch(currentUserTokenStateProvider).jwtToken;
@@ -91,6 +93,7 @@ class MarAdsAdvancedLogic {
         context: context,
         token: token,
         payload: payload,
+        imageFile: imagePath != null ? File(imagePath) : null,
       );
       _logger.i("API Response => $res");
       return res;
