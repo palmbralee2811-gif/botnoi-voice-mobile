@@ -17,7 +17,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:logger/logger.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+// import 'package:open_file_plus/open_file_plus.dart';
 
 // Play Audio on Temporary Directory, Download File, and Open Audio File
 class AudioPlayerDialog extends StatefulWidget {
@@ -67,7 +67,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
     } else {
       _startDownload().whenComplete(() {
         _logger.d("Widget File Path: ${widget.filePath}");
-        OpenFile.open(widget.filePath);
+        // OpenFile.open(widget.filePath);
       });
     }
   }
@@ -312,7 +312,7 @@ class _AudioPlayerDialogState extends State<AudioPlayerDialog> {
                     onPressed: () async {
                       if (Platform.isIOS) {
                         _startDownload().whenComplete(() {
-                          OpenFile.open(widget.filePath);
+                          // OpenFile.open(widget.filePath);
                         });
                       } else if (Platform.isAndroid) {
                         await _checkAndroidRequestPermissions();
