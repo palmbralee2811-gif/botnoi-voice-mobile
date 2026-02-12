@@ -18,7 +18,7 @@ class ApiConstants {
 
   // --- 1. กุญแจสำหรับการอัปโหลดรูปภาพ ---
   static const String Token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Njg1MzAxODYsImlhdCI6MTc2ODQ0Mzc4NiwibmJmIjoxNzY4NDQzNzg2LCJ1aWQiOiIwNzk4MGM4Zi1jNzVkLTUyY2MtOTk0YS04YTVlN2YwZjY4MGYiLCJ1c2VyX2lkIjoiTVY0all1aXkwMVVVazlBOUZpYWNQVUl1dTBxMSIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.dq_SAozY0ZIGz2i2bmOcu-ZUdLU-R4SP0elre6p5rpM";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzA5NTYxMzgsImlhdCI6MTc3MDg2OTczOCwibmJmIjoxNzcwODY5NzM4LCJ1aWQiOiI2ZWI0MzU0Ni0yZTcwLTUzODAtYmRhZC0wYjBlYjNhN2E2NzUiLCJ1c2VyX2lkIjoibHZrbE5WS3lYSGJ6YThXbnNOS1BiMkMxZk1OMiIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.bRELf-klglDmYupCsLS-MQmBu_82z--15hGQ2mOQ1VQ";
 
   // Headers สำหรับอัปโหลดรูปภาพ (Multipart)
   static Map<String, String> get uploadHeaders => {
@@ -44,5 +44,6 @@ class ApiConstants {
   // Step 2: Save Workspace (State) - NEW
   static const String workspaceEndpoint =
       "$baseUrl/api/genai/genskript-workspaces";
-  static const String botnoiIntroSound = "https://voice-staging.botnoi.ai/assets/audio/botnoi%20(1).mp3";
+  static const String botnoiIntroSound =
+      "https://voice-staging.botnoi.ai/assets/audio/botnoi%20(1).mp3";
 }

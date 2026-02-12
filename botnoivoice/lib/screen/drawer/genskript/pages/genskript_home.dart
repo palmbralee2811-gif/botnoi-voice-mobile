@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -24,8 +25,6 @@ class GenskriptHome extends StatefulWidget {
 
 class _GenskriptHomeState extends State<GenskriptHome> {
   GenerationResult? _lastResult;
-  String? uploadedUrl;
-  String? _selectedFileName;
   String activeTab = 'upload';
   String fileType = 'image';
   double wordCount = 120;
@@ -39,14 +38,18 @@ class _GenskriptHomeState extends State<GenskriptHome> {
   bool _showResult = false;
   bool _hasGeneratedOnce = false;
   bool _isLoading = false;
+  bool _isUploading = false;
 
-  PlatformFile? _pickedFile;
-  bool _isProcessingFile = false;
-  int _pageCount = 0;
-  double _uploadProgress = 0.0;
+  List<PlatformFile> _pickedFiles = [];
+  List<String> _uploadedUrls = []; // ถ้า API รองรับหลาย URL
+  String? uploadedUrl;
+
+  // เพิ่มตัวแปรสำหรับเก็บข้อมูล PDF/PPTX
+  int? _pageCount;
+  List<String>? _previewUrls;
 
   bool get _isReadyToGenerate {
-    bool hasFile = _selectedFileName != null && _selectedFileName!.isNotEmpty;
+    bool hasFile = _pickedFiles.isNotEmpty;
     bool hasPrompt = _customPromptController.text.trim().isNotEmpty;
     return hasFile && hasPrompt;
   }
@@ -67,52 +70,54 @@ class _GenskriptHomeState extends State<GenskriptHome> {
     super.dispose();
   }
 
-  Future<void> _handleFileUpload() async {
-    final Map<String, List<String>> extensionConfig = {
-      'image': ['jpg', 'jpeg', 'png'],
-      'pdf': ['pdf'],
-      'pptx': ['pptx', 'ppt'],
-    };
+  Future<void> _handleFilesChanged(List<PlatformFile> files) async {
+    setState(() {
+      _pickedFiles = files;
+      _isLoading = true;
+      _isUploading = true;
+      _pageCount = null;
+      _previewUrls = null;
+    });
 
-    final List<String> allowedExtensions =
-        extensionConfig[fileType] ?? ['jpg', 'jpeg', 'png'];
+    // TODO: ตรงนี้คุณต้องวนลูป Upload หรือส่ง List ไปที่ Service ตาม API ของคุณ
+    // ตัวอย่างการ Loop Upload (สมมติ):
+    try {
+      _uploadedUrls.clear();
+      uploadedUrl = null;
+      for (var file in files) {
+        // เรียก Service Upload ทีละไฟล์
+        final result = await DocumentService.handleFileUpload(file);
+        if (result != null) {
+          // 1. เก็บ URL หลัก
+          if (result['image_url'] != null) {
+            _uploadedUrls.add(result['image_url']);
+          }
 
-    final PlatformFile? pickedFile = await DocumentService.pickFile(
-      type: FileType.custom,
-      allowedExtensions: allowedExtensions,
-    );
+          // 2. เก็บจำนวนหน้า (ถ้ามี)
+          if (result['page_count'] != null) {
+            _pageCount = result['page_count'];
+          }
 
-    if (pickedFile != null) {
-      setState(() {
-        _pickedFile = pickedFile;
-        _selectedFileName = pickedFile.name;
-        _isProcessingFile = true;
-        _uploadProgress = 0.2;
-      });
-
-      try {
-        final Map<String, dynamic>? result =
-            await DocumentService.handleFileUpload(pickedFile);
-
-        if (result != null && result['image_url'] != null) {
-          setState(() {
-            uploadedUrl = result['image_url'];
-            _pageCount = int.tryParse(result['page_count'].toString()) ?? 1;
-            _uploadProgress = 1.0;
-          });
-        } else {
-          throw Exception("ไม่พบ URL รูปภาพในระบบ");
+          // 3. เก็บรายการรูปภาพสำหรับ Preview (ถ้ามี)
+          if (result['image_list'] != null) {
+            // แปลง List<dynamic> เป็น List<String>
+            _previewUrls = List<String>.from(result['image_list']);
+          }
         }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("เกิดข้อผิดพลาด: ${e.toString()}"),
-            backgroundColor: Colors.red,
-          ),
-        );
-      } finally {
-        setState(() => _isProcessingFile = false);
       }
+
+      // Logic: ถ้า API รับแค่ 1 รูป ให้ใช้รูปแรก, ถ้ารับหลายรูปต้องแก้ Service
+      // สมมติว่าเอา URL แรกไปใช้งานก่อน
+      if (_uploadedUrls.isNotEmpty) {
+        uploadedUrl = _uploadedUrls.first;
+      }
+    } catch (e) {
+      print("Upload error: $e");
+    } finally {
+      setState(() {
+        _isLoading = false;
+        _isUploading = false; // จบการอัปโหลด
+      });
     }
   }
 
@@ -252,12 +257,21 @@ class _GenskriptHomeState extends State<GenskriptHome> {
           selected: fileType,
           onSelect: (id) => setState(() {
             fileType = id;
-            _selectedFileName = null;
+            _pickedFiles.clear();
             _requiredPoints = 0;
+            _pageCount = null;
+            _previewUrls = null;
           }),
         ),
         const SizedBox(height: 20),
-        _buildDynamicUploadBox(),
+        GenskriptImageUploader(
+          fileType: fileType,
+          initialFiles: _pickedFiles,
+          onFilesChanged: _handleFilesChanged,
+          pageCount: _pageCount,
+          previewUrls: _previewUrls,
+          isLoading: _isUploading,
+        ),
         const SizedBox(height: 24),
         _buildWordCountSection(),
         const SizedBox(height: 24),
@@ -340,7 +354,10 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                       } catch (e) {
                         debugPrint("Error during generation: $e");
                       } finally {
-                        setState(() => _isLoading = false);
+                        setState(() {
+                          _isLoading = false;
+                          _isUploading = false; // จบการอัปโหลด
+                        });
                       }
                     }
                   : null,
@@ -401,223 +418,6 @@ class _GenskriptHomeState extends State<GenskriptHome> {
               ),
               const TextSpan(text: " พอยท์"),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDynamicUploadBox() {
-    if (_isProcessingFile) {
-      return Container(
-        height: 80,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue.shade200),
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        child: Row(
-          children: [
-            const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                    strokeWidth: 2, color: Colors.blue)),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("กำลังประมวลผล...",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  Text("กำลังนับจำนวนหน้า...",
-                      style: TextStyle(color: Colors.grey, fontSize: 12)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_selectedFileName != null) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Icon(
-                        fileType == 'pdf'
-                            ? Icons.picture_as_pdf
-                            : Icons.slideshow,
-                        color: fileType == 'pdf' ? Colors.red : Colors.orange,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _selectedFileName!,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => setState(() {
-                    _selectedFileName = null;
-                    _pickedFile = null;
-                    _pageCount = 0;
-                    _uploadProgress = 0.0;
-                  }),
-                  child:
-                      const Icon(Icons.delete_outline, color: Colors.redAccent),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (fileType == 'image' && _pickedFile != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: kIsWeb
-                    ? Image.memory(
-                        _pickedFile!.bytes!,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.contain,
-                      )
-                    : Image.file(
-                        File(_pickedFile!.path!),
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.contain,
-                      ),
-              )
-            else
-              Container(
-                height: 150,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.insert_drive_file,
-                  size: 64,
-                  color: Colors.grey.shade300,
-                ),
-              ),
-            const SizedBox(height: 16),
-            if (_uploadProgress < 1.0)
-              Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: LinearProgressIndicator(
-                      value: _uploadProgress,
-                      backgroundColor: Colors.grey.shade200,
-                      color: const Color(0xFF455A64),
-                      minHeight: 6,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text("กำลังอัปโหลด... ${(_uploadProgress * 100).toInt()}%",
-                      style:
-                          const TextStyle(fontSize: 12, color: Colors.grey)),
-                ],
-              )
-            else
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.check_circle, color: Colors.green, size: 18),
-                      SizedBox(width: 4),
-                      Text("พร้อมใช้งาน",
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12)),
-                    ],
-                  ),
-                  Text("$_pageCount หน้า",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.grey)),
-                ],
-              )
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      height: 220,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[200]!),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: _buildDefaultUploadPlaceholder(),
-    );
-  }
-
-  Widget _buildDefaultUploadPlaceholder() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.cloud_upload_outlined, color: Colors.grey, size: 40),
-        const SizedBox(height: 12),
-        Text(
-          fileType == 'image'
-              ? "อัปโหลดรูปภาพ"
-              : "อัปโหลดไฟล์ ${fileType.toUpperCase()}",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        const Text(
-          "Limit: 200MB",
-          style: TextStyle(fontSize: 12, color: Colors.grey),
-        ),
-        const SizedBox(height: 24),
-        Container(
-          width: 200,
-          height: 48,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF9340FF), Color(0xFF34BDFA)],
-            ),
-            borderRadius: BorderRadius.circular(10.r),
-          ),
-          child: ElevatedButton(
-            onPressed: _handleFileUpload,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-            ),
-            child: const Text("อัปโหลด",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold)),
           ),
         ),
       ],
@@ -718,7 +518,10 @@ class _GenskriptHomeState extends State<GenskriptHome> {
   }
 
   Widget _buildResultImagePreview() {
-    if (_pickedFile == null) return const SizedBox.shrink();
+    if (_pickedFiles.isEmpty) return const SizedBox.shrink();
+
+    // ดึงไฟล์แรกมาโชว์เป็นตัวอย่าง
+    final firstFile = _pickedFiles.first;
     return Column(
       children: [
         const Text("อัพสไลด์ ได้สคริปต์!",
@@ -737,10 +540,10 @@ class _GenskriptHomeState extends State<GenskriptHome> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: kIsWeb
-                  ? (_pickedFile!.bytes != null
-                      ? Image.memory(_pickedFile!.bytes!, fit: BoxFit.cover)
+                  ? (firstFile.bytes != null
+                      ? Image.memory(firstFile.bytes!, fit: BoxFit.cover)
                       : const Center(child: Text("ไม่สามารถโหลดรูปบนเว็บได้")))
-                  : Image.file(File(_pickedFile!.path!), fit: BoxFit.cover),
+                  : Image.file(File(firstFile.path!), fit: BoxFit.cover),
             ),
           )
         else
@@ -774,7 +577,7 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  _selectedFileName ?? "ไฟล์เอกสาร",
+                  firstFile.name,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 16),
                   textAlign: TextAlign.center,
@@ -785,7 +588,7 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("$_pageCount หน้า",
+                    Text("${(firstFile.size / 1024).toStringAsFixed(1)} KB",
                         style:
                             const TextStyle(color: Colors.grey, fontSize: 14)),
                     const SizedBox(width: 10),
@@ -837,7 +640,7 @@ class _GenskriptHomeState extends State<GenskriptHome> {
   Widget _buildResultArea() {
     if (activeTab == 'history') return _buildHistoryDetailPlaceholder();
     if (_showResult) return _buildResultPage();
-    return _buildInitialPlaceholder(isSelected: _selectedFileName != null);
+    return _buildInitialPlaceholder();
   }
 
   // ✅ UPDATED BOTTOM NAVIGATION
@@ -936,12 +739,12 @@ class _GenskriptHomeState extends State<GenskriptHome> {
       const Center(child: Text("เลือกรายการเพื่อดูรายละเอียด"));
 
   // Helper placeholder methods for consistency if needed by desktop
-  Widget _buildInitialPlaceholder({required bool isSelected}) {
-    if (isSelected && _selectedFileName != null) {
-      // Replicate the selected state UI logic or just use the main builder
-      // For simplicity here, returning the dynamic box which handles states
-      return _buildDynamicUploadBox();
-    }
-    return _buildDynamicUploadBox();
+  Widget _buildInitialPlaceholder() {
+    // เปลี่ยนมาเรียก Widget ใหม่ในโหมด View หรือ Upload ก็ได้
+    return GenskriptImageUploader(
+      fileType: fileType,
+      initialFiles: _pickedFiles,
+      onFilesChanged: _handleFilesChanged,
+    );
   }
 }
