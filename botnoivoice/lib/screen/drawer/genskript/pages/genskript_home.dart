@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:botnoivoice/screen/drawer/genskript/models/result_item_model.dart';
 import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -80,6 +81,10 @@ class _GenskriptHomeState extends State<GenskriptHome> {
     try {
       _uploadedUrls.clear();
       uploadedUrl = null;
+
+      // สร้างตัวแปรชั่วคราวเพื่อสะสม URL ของทุกไฟล์
+      List<String> allPreviewImages = [];
+
       for (var file in files) {
         // เรียก Service Upload ทีละไฟล์
         final result = await DocumentService.handleFileUpload(file);
@@ -96,10 +101,15 @@ class _GenskriptHomeState extends State<GenskriptHome> {
 
           // 3. เก็บรายการรูปภาพสำหรับ Preview (ถ้ามี)
           if (result['image_list'] != null) {
-            // แปลง List<dynamic> เป็น List<String>
-            _previewUrls = List<String>.from(result['image_list']);
+            allPreviewImages.addAll(List<String>.from(result['image_list']));
+          } else if (result['image_url'] != null) {
+            allPreviewImages.add(result['image_url']);
           }
         }
+      }
+
+      if (allPreviewImages.isNotEmpty) {
+        _previewUrls = allPreviewImages;
       }
 
       // Logic: ถ้า API รับแค่ 1 รูป ให้ใช้รูปแรก, ถ้ารับหลายรูปต้องแก้ Service
@@ -321,10 +331,23 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                       });
 
                       try {
+                        // รวม URL ทั้งหมดคั่นด้วย comma (หรือตาม Format ที่ API คุณรองรับ)
+                        // เพื่อให้ API รู้ว่าต้องสร้างสคริปต์สำหรับหลายรูป
+                        String allImageUrlsString = _uploadedUrls.isNotEmpty
+                            ? _uploadedUrls.join(',')
+                            : (uploadedUrl ?? "");
+
+                        // กรณี previewUrls มีค่า (เช่น PDF) อาจจะต้องใช้ logic ดึงจาก _previewUrls แทนถ้าจำเป็น
+                        if (_previewUrls != null &&
+                            _previewUrls!.isNotEmpty &&
+                            _uploadedUrls.isEmpty) {
+                          allImageUrlsString = _previewUrls!.join(',');
+                        }
+
                         final models.GenerationResult? result =
                             await GenerationService.generate(
                           prompt: _customPromptController.text,
-                          imageUrl: uploadedUrl,
+                          imageUrl: allImageUrlsString,
                           language: language,
                           wordCount: wordCount,
                           temperature: 0.6,
@@ -670,16 +693,62 @@ class _GenskriptHomeState extends State<GenskriptHome> {
     if (_lastResult == null)
       return const Center(child: CircularProgressIndicator());
 
+    // เตรียมข้อมูล List<ResultItem>
+    List<ResultItem> resultItems = [];
+
+    // กรณีมี List URL (จาก PDF/PPT หรือ Upload หลายรูป)
+    List<String> imagesToUse = _previewUrls ?? _uploadedUrls;
+    if (imagesToUse.isEmpty && uploadedUrl != null) {
+      imagesToUse = [uploadedUrl!];
+    }
+
+    String defaultScript = "";
+    if (_lastResult != null && _lastResult!.script.isNotEmpty) {
+      defaultScript = _lastResult!.script;
+    } else {
+      defaultScript = "ไม่พบข้อความที่สร้าง (กรุณาลองใหม่อีกครั้ง)";
+    }
+
+    if (imagesToUse.isNotEmpty) {
+      // สร้าง ResultItem สำหรับแต่ละรูป
+      for (int i = 0; i < imagesToUse.length; i++) {
+        String scriptForThisSlide = "";
+
+        if (_lastResult!.scripts != null && i < _lastResult!.scripts!.length) {
+          var item = _lastResult!.scripts![i];
+          if (item is Map) {
+            scriptForThisSlide = item['script']?.toString() ?? defaultScript;
+          } else {
+            scriptForThisSlide = defaultScript;
+          }
+        } else if (i == 0) {
+          scriptForThisSlide = defaultScript;
+        } else {
+          scriptForThisSlide = "";
+        }
+
+        resultItems.add(ResultItem(
+          imageUrl: imagesToUse[i],
+          script: scriptForThisSlide,
+          audioUrl: (i == 0) ? _lastResult!.audioUrl : null,
+        ));
+      }
+    } else {
+      // Fallback กรณีไม่มีรูป หรือมีแค่ 1 รูปปกติ
+      resultItems.add(ResultItem(
+        imageUrl: uploadedUrl ?? "",
+        script: defaultScript,
+        audioUrl: _lastResult!.audioUrl,
+      ));
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       child: Column(
         children: [
-          _buildResultImagePreview(),
           const SizedBox(height: 10),
           ResultScreen(
-            script: _lastResult!.script,
-            audioUrl: _lastResult!.audioUrl,
-            imageUrl: uploadedUrl,
+            items: resultItems,
             language: language,
             onBack: () => setState(() => _showResult = false),
           ),

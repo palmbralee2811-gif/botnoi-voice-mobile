@@ -7,8 +7,7 @@ import '../data/app_data.dart';
 import '../data/api_constants.dart';
 
 // Initialize Logger with no emojis
-var logger = Logger(
-);
+var logger = Logger();
 
 class GenerationService {
   static GenerationResult? lastGenerationResult;
@@ -23,20 +22,31 @@ class GenerationService {
     try {
       logger.d("Starting generation with prompt: $prompt");
 
+      // Logic เตรียมข้อมูลรูปภาพ (Split URL ที่ส่งมาด้วย comma)
+      List<Map<String, dynamic>> imagesPayload = [];
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        List<String> urls = imageUrl.split(','); // แยก URL ด้วยคอมมา
+        for (int i = 0; i < urls.length; i++) {
+          String pos = "middle";
+          // กำหนด position ตามลำดับ
+          if (i == 0)
+            pos = "first";
+          else if (i == urls.length - 1) pos = "last";
+
+          // กรณีมีรูปเดียว ให้เป็น first
+          if (urls.length == 1) pos = "first";
+
+          imagesPayload.add({"url": urls[i].trim(), "position": pos});
+        }
+      }
+
       // 1. Prepare Payload
       final Map<String, dynamic> requestBody = {
         "custom_prompt": prompt,
         "language": language == 'ไทย' ? 'th' : 'en',
         "word_count": wordCount.round(),
         "temperature": temperature,
-        "images": (imageUrl != null && imageUrl.isNotEmpty)
-            ? [
-                {
-                  "url": imageUrl,
-                  "position": "first"
-                }
-              ]
-            : [],
+        "images": imagesPayload,
       };
 
       // 2. Send Request
@@ -55,7 +65,7 @@ class GenerationService {
       // 3. Handle Result
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseData = jsonDecode(decodedBody);
-        
+
         lastGenerationResult = GenerationResult.fromJson(responseData);
         return lastGenerationResult;
       } else {

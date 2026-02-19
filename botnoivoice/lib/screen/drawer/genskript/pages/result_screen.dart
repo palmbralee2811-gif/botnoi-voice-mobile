@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:botnoivoice/screen/drawer/genskript/models/result_item_model.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_speaker_selector_button.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
@@ -16,15 +16,12 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
-
 import '../services/script_service.dart';
 import '../services/translation_service.dart';
 import '../services/video_service.dart';
 import '../services/voice_service.dart';
 import '../services/download_service.dart';
 import '../data/app_data.dart';
-import '../data/api_constants.dart';
-import '../widgets/star_p_badge.dart';
 
 // ✅ Import all your dialog widgets
 import '../widgets/genskript_audio_player_dialog.dart';
@@ -35,17 +32,13 @@ import '../widgets/genskript_video_creation_dialog.dart';
 var logger = Logger();
 
 class ResultScreen extends StatefulWidget {
-  final String script;
-  final String? audioUrl;
-  final String? imageUrl;
+  final List<ResultItem> items;
   final String language;
   final VoidCallback onBack;
 
   const ResultScreen({
     super.key,
-    required this.script,
-    this.audioUrl,
-    this.imageUrl,
+    required this.items,
     required this.language,
     required this.onBack,
   });
@@ -57,6 +50,9 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   late TextEditingController _editController;
   final AudioPlayer _player = AudioPlayer();
+  final PageController _pageController =
+      PageController(); // ควบคุมการเลื่อนหน้า
+  int _currentIndex = 0; // เก็บหน้าปัจจุบัน
 
   SpeakerEntity? _selectedSpeaker;
 
@@ -94,7 +90,9 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   void initState() {
     super.initState();
-    _editController = TextEditingController(text: widget.script);
+    // เริ่มต้นด้วยสคริปต์ของหน้าแรก (ถ้ามีข้อมูล)
+    _editController = TextEditingController(
+        text: widget.items.isNotEmpty ? widget.items[0].script : "");
     _initializeDownloader();
 
     if (SpeakerModel.speakerItem.isNotEmpty) {
@@ -125,6 +123,22 @@ class _ResultScreenState extends State<ResultScreen> {
     _editController.dispose();
     _player.dispose();
     super.dispose();
+  }
+
+  // ฟังก์ชันเมื่อมีการเลื่อนเปลี่ยนหน้า
+  void _onPageChanged(int index) {
+    setState(() {
+      // 1. บันทึกสิ่งที่แก้ในหน้าเก่าลงไปใน List ก่อน
+      widget.items[_currentIndex].script = _editController.text;
+
+      // 2. เปลี่ยน index ไปหน้าใหม่
+      _currentIndex = index;
+
+      // 3. โหลดสคริปต์ของหน้าใหม่มาใส่ Controller
+      _editController.text = widget.items[index].script;
+
+      // 4. (Option) ถ้าหน้าใหม่มีเสียงแล้ว อาจจะโหลดรอไว้ตรงนี้ได้
+    });
   }
 
   // ==========================================
@@ -186,8 +200,7 @@ class _ResultScreenState extends State<ResultScreen> {
     try {
       String? videoUrl = await VideoService.handleCreateVideo(
         scriptText: _editController.text,
-        imageUrl: widget.imageUrl ??
-            "https://via.placeholder.com/500x500.png?text=No+Image",
+        imageUrl: widget.items[_currentIndex].imageUrl,
         language: "th",
         audioPoints: audioPoints,
         videoPoints: videoPoints,
@@ -291,6 +304,11 @@ class _ResultScreenState extends State<ResultScreen> {
         languageValue: langCode,
         speakerId: _selectedSpeaker?.speakerId,
       );
+
+      // บันทึก URL เสียงลงใน Item ปัจจุบันด้วย
+      if (resultUrl != null) {
+        widget.items[_currentIndex].audioUrl = resultUrl;
+      }
     } catch (e) {
       logger.e("Error in handleCreateVoice wrapper", error: e);
     }
@@ -596,11 +614,12 @@ class _ResultScreenState extends State<ResultScreen> {
       String? result = await TranslationService.handleTranslate(
           currentScript: _editController.text,
           targetLanguageName: targetLang,
-          imageUrl: widget.imageUrl ?? "");
+          imageUrl: widget.items[_currentIndex].imageUrl);
       if (mounted) Navigator.pop(context);
       if (result != null) {
         setState(() {
           _editController.text = result;
+          widget.items[_currentIndex].script = result;
           userPoints -= 100;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -662,6 +681,13 @@ class _ResultScreenState extends State<ResultScreen> {
           children: [
             _buildHeader(context),
             const SizedBox(height: 20),
+
+            // เพิ่มส่วนแสดงผล Image Carousel
+            _buildImageCarousel(),
+            const SizedBox(height: 10),
+            _buildPageIndicator(),
+            const SizedBox(height: 10),
+
             _buildScriptEditor(),
             const SizedBox(height: 20),
             Row(
@@ -687,6 +713,7 @@ class _ResultScreenState extends State<ResultScreen> {
               children: [
                 Text("${_editController.text.length} PT",
                     style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                // ปุ่มสร้างเสียงจะสร้างสำหรับหน้านี้เท่านั้น
                 _buildGenerateButton(),
               ],
             ),
@@ -732,6 +759,107 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
+  // Widget ใหม่สำหรับแสดงรูปหลายรูป
+  Widget _buildImageCarousel() {
+    if (widget.items.isEmpty) return const SizedBox.shrink();
+
+    return SizedBox(
+      height: 220,
+      child: PageView.builder(
+        controller: _pageController,
+        physics: const BouncingScrollPhysics(),
+        itemCount: widget.items.length,
+        onPageChanged: _onPageChanged,
+        itemBuilder: (context, index) {
+          final item = widget.items[index];
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.grey.shade200,
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  // เช็คว่าต้องมี URL และต้องขึ้นต้นด้วย http (กัน URL มั่ว)
+                  child: (item.imageUrl.isNotEmpty &&
+                          item.imageUrl.startsWith('http'))
+                      ? Image.network(
+                          item.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            // แสดง Icon แทนเมื่อโหลดรูปไม่ได้ (แก้ปัญหา SocketException)
+                            return const Center(
+                              child: Icon(Icons.broken_image,
+                                  size: 50, color: Colors.grey),
+                            );
+                          },
+                        )
+                      : const Center(
+                          // กรณี URL ว่างเปล่า
+                          child: Icon(Icons.image_not_supported,
+                              size: 50, color: Colors.grey),
+                        ),
+                ),
+                // เพิ่ม Overlay บอกลำดับรูป
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "${index + 1}/${widget.items.length}",
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Widget แสดงจุด (Indicator) หรือปุ่มเลื่อน
+  Widget _buildPageIndicator() {
+    if (widget.items.length <= 1) return const SizedBox.shrink();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: Icon(Icons.arrow_back_ios, size: 16),
+          onPressed: _currentIndex > 0
+              ? () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _pageController.previousPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut);
+                }
+              : null,
+        ),
+        Text("${_currentIndex + 1} of ${widget.items.length}",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.grey[700])),
+        IconButton(
+          icon: Icon(Icons.arrow_forward_ios, size: 16),
+          onPressed: _currentIndex < widget.items.length - 1
+              ? () => _pageController.nextPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut)
+              : null,
+        ),
+      ],
+    );
+  }
+
   // --- HELPER WIDGETS ---
 
   Widget _buildScriptEditor() {
@@ -750,7 +878,12 @@ class _ResultScreenState extends State<ResultScreen> {
         style:
             const TextStyle(fontSize: 15, height: 1.5, color: Colors.black87),
         onChanged: (text) {
-          setState(() {});
+          setState(() {
+            // อัปเดต Model ทันทีที่พิมพ์
+            if (widget.items.isNotEmpty) {
+              widget.items[_currentIndex].script = text;
+            }
+          });
         },
         decoration: const InputDecoration(
           border: InputBorder.none,
@@ -767,6 +900,8 @@ class _ResultScreenState extends State<ResultScreen> {
       child: ElevatedButton.icon(
         onPressed:
             _editController.text.trim().isEmpty ? null : _handleCreateVoice,
+        icon:
+            const Icon(Icons.record_voice_over, size: 18, color: Colors.white),
         label: const Text("สร้างเสียง",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         style: ElevatedButton.styleFrom(
