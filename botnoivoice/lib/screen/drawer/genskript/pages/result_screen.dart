@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:botnoivoice/screen/drawer/genskript/models/result_item_model.dart';
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_download_all_dialog.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_speaker_selector_button.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
@@ -634,6 +635,147 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
+  // ฟังก์ชันสำหรับปุ่มดาวน์โหลดทั้งหมด
+  void _showDownloadAllDialog() {
+    // คำนวณพอยท์ทั้งหมดจากทุกสไลด์ที่มีข้อความ (จำนวนตัวอักษรรวม)
+    int totalPoints =
+        widget.items.fold(0, (sum, item) => sum + item.script.trim().length);
+
+    if (totalPoints == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("ไม่มีข้อความให้สร้างเสียง")),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => GenskriptDownloadAllDialog(
+        points: totalPoints,
+        onConfirm: (String extension, DownloadMode mode) async {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (loadingContext) => const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          );
+
+          // เตรียมข้อมูล Payload ให้เหมือนในรูป API JSON ที่แนบมา
+          String langCode =
+              widget.language.toLowerCase().contains('en') ? 'en' : 'th';
+          String speakerId =
+              _selectedSpeaker?.speakerId ?? (langCode == 'en' ? '55' : '5');
+          String randomId =
+              DateTime.now().millisecondsSinceEpoch.toString().substring(5);
+          String workspaceId = "genskript_$randomId";
+
+          // ตรวจสอบและเตรียมลิงก์ไฟล์เสียงของทุกสไลด์ให้ครบ (ใช้ร่วมกันทั้ง Zip และ Single)
+          List<String> validAudioUrls = [];
+          for (int i = 0; i < widget.items.length; i++) {
+            final item = widget.items[i];
+            if (item.script.trim().isEmpty) continue;
+
+            if (item.audioUrl != null && item.audioUrl!.isNotEmpty) {
+              // ถ้ามีเสียงถูกสร้างไว้แล้ว ดึงมาใช้ได้เลย
+              validAudioUrls.add(item.audioUrl!);
+            } else {
+              // ถ้าย้งไม่มีเสียง ให้เรียก API สร้างเสียงขึ้นมาใหม่
+              String? newAudio = await VoiceService.handleCreateVoice(
+                scriptText: item.script,
+                speed: _selectedSpeed,
+                volume: _selectedVolume,
+                languageValue: langCode,
+                speakerId: speakerId,
+              );
+
+              if (newAudio != null && newAudio.isNotEmpty) {
+                setState(() {
+                  item.audioUrl = newAudio; // อัปเดตกลับไปที่หน้า UI ด้วย
+                });
+                validAudioUrls.add(newAudio);
+              }
+            }
+          }
+
+          // ถ้าพยายามสร้างแล้ว แต่ยังไม่มีไฟล์เสียงเลยสักหน้า ให้หยุดทำงาน
+          if (validAudioUrls.isEmpty) {
+            if (mounted) Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text(
+                      "เกิดข้อผิดพลาด ไม่สามารถเตรียมไฟล์เสียงสำหรับการดาวน์โหลดได้")),
+            );
+            return;
+          }
+
+          // แยกการทำงานระหว่าง Zip กับ Single File
+          if (mode == DownloadMode.zip) {
+            String finalFileName = "botnoi_genskript_$randomId.zip";
+
+            String? savedPath = await DownloadService.createLocalZip(
+              audioUrls: validAudioUrls,
+              fileName: finalFileName,
+              extension: extension, //ส่งนามสกุลไฟล์เข้าไปแพ็กใน Zip
+            );
+
+            if (mounted) Navigator.pop(context); // ปิด Loading Dialog
+
+            if (savedPath != null && mounted) {
+              showDialog(
+                context: context,
+                builder: (successContext) => const GenskriptSuccessDialog(
+                  title: "ดาวน์โหลดสำเร็จ",
+                  subtitle:
+                      "ไฟล์ Zip ของคุณถูกบันทึกลงในโฟลเดอร์ Download แล้ว",
+                ),
+              );
+            } else if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text("เกิดข้อผิดพลาดในการสร้างไฟล์ Zip")),
+              );
+            }
+          } else {
+            //  เรียก API ใหม่ สำหรับรวมไฟล์หลายสไลด์ให้เป็นไฟล์เดียว (Merge)
+            String? downloadUrl = await DownloadService.mergeAudioToSingleFile(
+              audioUrls: validAudioUrls,
+              extension: extension,
+              workspaceId: workspaceId,
+            );
+
+            if (mounted) Navigator.pop(context); // ปิด Loading
+
+            if (downloadUrl != null && downloadUrl.isNotEmpty && mounted) {
+              String finalFileName = "botnoi_genskript_$randomId.$extension";
+              await _executeDownload(
+                url: downloadUrl,
+                fileName: finalFileName,
+                onSuccess: () {
+                  if (mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (successContext) => const GenskriptSuccessDialog(
+                        title: "ดาวน์โหลดสำเร็จ",
+                        subtitle: "ไฟล์ของคุณถูกบันทึกลงเครื่องเรียบร้อยแล้ว",
+                      ),
+                    );
+                  }
+                },
+              );
+            } else if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text(
+                        "เกิดข้อผิดพลาด หรือ API ไม่ได้ส่ง URL ดาวน์โหลดกลับมา")),
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
+
   // --- UI WIDGETS ---
   @override
   Widget build(BuildContext context) {
@@ -646,7 +788,7 @@ class _ResultScreenState extends State<ResultScreen> {
       {
         'label': "Download All",
         'icon': Icons.download_rounded,
-        'action': () => DownloadService.handleDownloadAll()
+        'action': () => _showDownloadAllDialog()
       },
       {
         'label': "Translate",
