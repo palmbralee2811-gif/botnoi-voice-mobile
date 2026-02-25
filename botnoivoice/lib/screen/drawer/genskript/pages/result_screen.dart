@@ -378,8 +378,7 @@ class _ResultScreenState extends State<ResultScreen> {
               const Text("กำลังสร้างเสียงอัตโนมัติ...",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              const Text(
-                  "ระบบกำลังสร้างเสียงให้ทุกสไลด์แบบรวดเดียว\nกรุณารอสักครู่",
+              const Text("ระบบกำลังสร้างเสียงให้ทุกสไลด์\nกรุณารอสักครู่",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: Colors.grey)),
             ],
