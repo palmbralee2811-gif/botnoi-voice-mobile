@@ -43,8 +43,12 @@ class _HistoryPageState extends State<HistoryPage> {
         title: const Text("Delete Workspace"),
         content: const Text("Are you sure? This cannot be undone."),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Cancel")),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Delete", style: TextStyle(color: Colors.red))),
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancel")),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("Delete", style: TextStyle(color: Colors.red))),
         ],
       ),
     );
@@ -54,9 +58,13 @@ class _HistoryPageState extends State<HistoryPage> {
       if (success) {
         _loadHistory(); // Refresh list
         setState(() => _selectedItem = null);
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Deleted successfully")));
+        if (mounted)
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Deleted successfully")));
       } else {
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to delete")));
+        if (mounted)
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Failed to delete")));
       }
     }
   }
@@ -68,7 +76,8 @@ class _HistoryPageState extends State<HistoryPage> {
         bool isDesktop = constraints.maxWidth > 1024;
 
         if (_isLoading) {
-          return const Center(child: CircularProgressIndicator(color: Colors.blue));
+          return const Center(
+              child: CircularProgressIndicator(color: Colors.blue));
         }
 
         if (_historyItems.isEmpty) {
@@ -78,8 +87,14 @@ class _HistoryPageState extends State<HistoryPage> {
               children: [
                 Icon(Icons.history, size: 64, color: Colors.grey[300]),
                 const SizedBox(height: 16),
-                Text("ยังไม่มีประวัติ", style: GoogleFonts.prompt(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 18)),
-                Text("เริ่มสร้างสคริปต์เพื่อดูประวัติที่นี่", style: GoogleFonts.prompt(fontSize: 14, color: Colors.grey)),
+                Text("ยังไม่มีประวัติ",
+                    style: GoogleFonts.prompt(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                        fontSize: 18)),
+                Text("เริ่มสร้างสคริปต์เพื่อดูประวัติที่นี่",
+                    style:
+                        GoogleFonts.prompt(fontSize: 14, color: Colors.grey)),
               ],
             ),
           );
@@ -122,10 +137,13 @@ class _HistoryPageState extends State<HistoryPage> {
                 border: Border.all(color: Colors.grey.shade200),
               ),
               child: _selectedItem == null
-                  ? Center(child: Text("Select an item to view details", style: GoogleFonts.prompt()))
+                  ? Center(
+                      child: Text("Select an item to view details",
+                          style: GoogleFonts.prompt()))
                   : HistoryDetailPage(
-                      key: ValueKey(_selectedItem['id'] ?? _selectedItem['_id']), // Force refresh on change
-                      item: _selectedItem, 
+                      key: ValueKey(_selectedItem['id'] ??
+                          _selectedItem['_id']), // Force refresh on change
+                      item: _selectedItem,
                       onBack: () => setState(() => _selectedItem = null),
                     ),
             ),
@@ -155,12 +173,11 @@ class _HistoryPageState extends State<HistoryPage> {
                     backgroundColor: Colors.white,
                     elevation: 0,
                     leading: const BackButton(color: Colors.black),
-                    title: Text(item['title'] ?? "Detail", style: GoogleFonts.prompt(color: Colors.black)),
+                    title: Text(item['title'] ?? "Detail",
+                        style: GoogleFonts.prompt(color: Colors.black)),
                   ),
                   body: HistoryDetailPage(
-                    item: item, 
-                    onBack: () => Navigator.pop(context)
-                  ),
+                      item: item, onBack: () => Navigator.pop(context)),
                 ),
               ),
             );
@@ -172,33 +189,38 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // --- CUSTOM CARD WIDGET ---
   Widget _buildHistoryItemCard(dynamic item, {required VoidCallback onTap}) {
-    String title = item['title'] ?? "Untitled";
-    
-    // Parse Date
-    String dateStr = item['updated_at'] ?? item['created_at'] ?? DateTime.now().toIso8601String();
-    DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
-    String formattedDate = "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+    String title = item['title'] ?? item['genskript_id'] ?? "Untitled";
 
-    // Check Video Availability
-    String? videoUrl = item['video_url'] ?? item['final_video_url'];
-    if (videoUrl == null && item['scripts'] != null && (item['scripts'] as List).isNotEmpty) {
-       videoUrl = item['scripts'][0]['video_url'];
-    }
-    bool hasDownload = videoUrl != null && videoUrl.isNotEmpty;
+    // Parse Date
+    String dateStr = item['updated_at'] ??
+        item['created_at'] ??
+        DateTime.now().toIso8601String();
+    DateTime date = DateTime.tryParse(dateStr) ?? DateTime.now();
+    String formattedDate =
+        "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+
+    // เช็คว่ามีไฟล์ให้โหลดหรือไม่ โดยเช็คจากฟิลด์ audio ตาม JSON
+    bool hasDownload =
+        (item['audio'] != null && item['audio'].toString().isNotEmpty) ||
+            (item['scripts'] != null &&
+                item['scripts'].isNotEmpty &&
+                item['scripts'][0]['audio'] != null);
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300), 
-          boxShadow: [
-             BoxShadow(color: Colors.grey.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
-          ]
-        ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade300),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2))
+            ]),
         child: Row(
           children: [
             // Left Side: Title and Date
@@ -208,14 +230,18 @@ class _HistoryPageState extends State<HistoryPage> {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.prompt(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.black87),
+                    style: GoogleFonts.prompt(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: Colors.black87),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     "Last update: $formattedDate",
-                    style: GoogleFonts.inter(fontSize: 12, color: Colors.grey),
+                    style: GoogleFonts.prompt(
+                        fontSize: 13, color: Colors.grey.shade500),
                   ),
                 ],
               ),
@@ -225,29 +251,38 @@ class _HistoryPageState extends State<HistoryPage> {
             if (hasDownload) ...[
               const SizedBox(width: 8),
               Container(
-                height: 32,
+                height: 30,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF9C27B0), Color(0xFF00BCD4)], // Purple -> Cyan
+                    colors: [Color(0xFF9E81FF), Color(0xFF2CB5FF)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Download Video: $videoUrl")));
-                     // Add logic to call DownloadService here
+                    // ใส่ Logic ดาวน์โหลดเสียง (audio) หรือวิดีโอ (videoUrl) ตามต้องการ
+                    String targetUrl =
+                        item['audio'] ?? item['scripts'][0]['audio'];
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("เตรียมดาวน์โหลด...")));
+                    // Add logic to call DownloadService here
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6)),
                   ),
                   child: Text(
                     "ดาวน์โหลด",
-                    style: GoogleFonts.prompt(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.prompt(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
               ),
@@ -255,10 +290,12 @@ class _HistoryPageState extends State<HistoryPage> {
 
             // Right: 3-Dot Menu (Delete)
             PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert, color: Colors.grey),
+              icon:
+                  Icon(Icons.more_vert, color: Colors.grey.shade700, size: 20),
+              padding: EdgeInsets.zero,
               onSelected: (value) {
                 if (value == 'delete') {
-                  _handleDelete(item['_id'] ?? item['id'] ?? "");
+                  _handleDelete(item['genskript_id'] ?? item['id'] ?? "");
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -266,9 +303,11 @@ class _HistoryPageState extends State<HistoryPage> {
                   value: 'delete',
                   child: Row(
                     children: [
-                      const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                      const Icon(Icons.delete_outline,
+                          color: Colors.red, size: 20),
                       const SizedBox(width: 8),
-                      Text('Delete', style: GoogleFonts.prompt(color: Colors.red)),
+                      Text('Delete',
+                          style: GoogleFonts.prompt(color: Colors.red)),
                     ],
                   ),
                 ),

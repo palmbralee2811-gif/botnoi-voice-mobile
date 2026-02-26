@@ -6,19 +6,21 @@ import '../data/api_constants.dart';
 var logger = Logger();
 
 class HistoryService {
-  // Base URL (Using Staging based on your previous video success)
-  static const String _baseUrl = "https://api-voice-staging.botnoi.ai/api";
+  // Base URL ชี้ไปยัง Production Server
+  static const String _baseUrl = "${ApiConstants.baseUrl}/api";
 
   // 1. GET Workspaces (Fetch History)
   static Future<List<dynamic>> fetchHistory() async {
     if (ApiConstants.Token.isEmpty) return [];
 
-    final Map<String, String> headers = Map<String, String>.from(ApiConstants.generateHeaders);
-    headers['botnoi-token'] = ApiConstants.Token; 
+    final Map<String, String> headers =
+        Map<String, String>.from(ApiConstants.generateHeaders);
+    headers['botnoi-token'] = ApiConstants.Token;
+    headers['Content-Type'] = 'application/json';
 
     try {
       final response = await http.get(
-        Uri.parse("$_baseUrl/genai/genskript-workspaces"), 
+        Uri.parse("$_baseUrl/genai/genskript-workspaces"),
         headers: headers,
       );
 
@@ -26,7 +28,7 @@ class HistoryService {
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-        
+
         // Handle both list directly or { data: [...] } structure
         if (decoded is List) {
           return decoded;
@@ -46,12 +48,14 @@ class HistoryService {
 
   // 2. DELETE Workspace
   static Future<bool> deleteWorkspace(String workspaceId) async {
-    final Map<String, String> headers = Map<String, String>.from(ApiConstants.generateHeaders);
-    headers['botnoi-token'] = ApiConstants.Token; 
+    final Map<String, String> headers =
+        Map<String, String>.from(ApiConstants.generateHeaders);
+    headers['botnoi-token'] = ApiConstants.Token;
+    headers['Content-Type'] = 'application/json';
 
     try {
       final response = await http.delete(
-        Uri.parse("$_baseUrl/genai/genskript-workspaces/$workspaceId"), 
+        Uri.parse("$_baseUrl/genai/genskript-workspaces/$workspaceId"),
         headers: headers,
       );
 
@@ -70,14 +74,16 @@ class HistoryService {
   }
 
   // 3. UPDATE Workspace (PUT) - Helper for saving changes if needed
-  static Future<bool> updateWorkspace(String workspaceId, Map<String, dynamic> payload) async {
-    final Map<String, String> headers = Map<String, String>.from(ApiConstants.generateHeaders);
+  static Future<bool> updateWorkspace(
+      String workspaceId, Map<String, dynamic> payload) async {
+    final Map<String, String> headers =
+        Map<String, String>.from(ApiConstants.generateHeaders);
     headers['botnoi-token'] = ApiConstants.Token;
     headers['Content-Type'] = 'application/json';
 
     try {
       final response = await http.put(
-        Uri.parse("$_baseUrl/genai/genskript-workspaces/$workspaceId"), 
+        Uri.parse("$_baseUrl/genai/genskript-workspaces/$workspaceId"),
         headers: headers,
         body: jsonEncode(payload),
       );
