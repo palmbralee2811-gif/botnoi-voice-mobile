@@ -167,6 +167,8 @@ class _ResultScreenState extends State<ResultScreen> {
   // ✅ FIX 2: Added 'videoCodec' parameter
   Future<void> _processVideoCreation(
       int audioPoints, int videoPoints, String videoCodec) async {
+    bool isDialogClosed = false;
+
     // 3. Show Loading
     showDialog(
       context: context,
@@ -180,16 +182,31 @@ class _ResultScreenState extends State<ResultScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: Colors.blue),
-              SizedBox(height: 20.h),
+              Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: () {
+                    isDialogClosed = true;
+                    Navigator.pop(context); // อนุญาตให้กดปิด Dialog ได้
+                  },
+                  child: const Icon(Icons.close, color: Colors.black54),
+                ),
+              ),
+              Icon(Icons.movie_creation_outlined,
+                  size: 50.sp, color: Colors.blue),
+              SizedBox(height: 16.h),
               Text("กำลังเตรียมการสร้างวิดีโอ HQ...",
                   style: GoogleFonts.prompt(
                       fontSize: 16.sp, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8.h),
-              Text("ปิดหน้าต่างนี้ได้เลย\nระบบจะประมวลผลต่อในเบื้องหลัง",
+              SizedBox(height: 12.h),
+              Text(
+                  "ปิดหน้าต่างนี้ได้เลย\nระบบจะประมวลผลต่อในเบื้องหลัง\nสามารถรับวิดีโอได้ที่หน้าประวัติ",
                   textAlign: TextAlign.center,
                   style:
-                      GoogleFonts.inter(fontSize: 12.sp, color: Colors.grey)),
+                      GoogleFonts.prompt(fontSize: 13.sp, color: Colors.grey)),
+              SizedBox(height: 20.h),
+              LinearProgressIndicator(
+                  backgroundColor: Colors.grey.shade200, color: Colors.blue),
             ],
           ),
         ),
@@ -207,19 +224,33 @@ class _ResultScreenState extends State<ResultScreen> {
         videoCodec: videoCodec,
       );
 
-      if (mounted) Navigator.pop(context); // Close loading
+      if (mounted && !isDialogClosed) {
+        Navigator.pop(context); // ปิดหน้าต่างโหลด (ถ้าผู้ใช้ยังไม่กดปิดไปเอง)
+      }
 
       if (videoUrl != null) {
-        _showVideoSuccessDialog(videoUrl);
+        if (mounted && !isDialogClosed) {
+          // ถ้ารอจนเสร็จ โชว์หน้าต่าง Success ปกติ
+          _showVideoSuccessDialog(videoUrl);
+        } else if (mounted && isDialogClosed) {
+          // ถ้ากดกากบาทปิดไปก่อนหน้านี้แล้ว ให้ขึ้นแค่ SnackBar แจ้งเตือนเงียบๆ
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  "สร้างวิดีโอ HQ สำเร็จแล้ว! ตรวจสอบได้ที่หน้าประวัติ",
+                  style: TextStyle(fontFamily: 'Prompt'))));
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Failed to create video.")));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("สร้างวิดีโอไม่สำเร็จ โปรดเช็คที่หน้าประวัติ")));
+        }
       }
     } catch (e) {
-      if (mounted) Navigator.pop(context);
+      if (mounted && !isDialogClosed) Navigator.pop(context);
       logger.e("Video Create Error", error: e);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Error: $e")));
+      if (mounted)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
 

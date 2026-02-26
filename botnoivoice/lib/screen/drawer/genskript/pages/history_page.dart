@@ -26,7 +26,22 @@ class _HistoryPageState extends State<HistoryPage> {
     final items = await HistoryService.fetchHistory();
     if (mounted) {
       setState(() {
-        _historyItems = items.reversed.toList(); // Newest first
+        // Sort items เรียงตามวันที่อัปเดต/สร้าง ล่าสุดให้อยู่บนสุดเสมอ
+        items.sort((a, b) {
+          String dateA = a['updated_at'] ?? a['created_at'] ?? "";
+          String dateB = b['updated_at'] ?? b['created_at'] ?? "";
+
+          DateTime timeA = DateTime.tryParse(dateA) ??
+              DateTime.fromMillisecondsSinceEpoch(0);
+          DateTime timeB = DateTime.tryParse(dateB) ??
+              DateTime.fromMillisecondsSinceEpoch(0);
+
+          return timeB.compareTo(
+              timeA); // เอา B เทียบ A จะได้แบบ Descending (ใหม่ไปเก่า)
+        });
+
+        _historyItems = items;
+
         _isLoading = false;
         // Auto-select first item for desktop view
         if (_historyItems.isNotEmpty && _selectedItem == null) {
@@ -199,12 +214,15 @@ class _HistoryPageState extends State<HistoryPage> {
     String formattedDate =
         "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
 
+    // เช็คสถานะการประมวลผล
+    bool isProcessing = item['video_status'] == 'processing';
+
     // เช็คว่ามีไฟล์ให้โหลดหรือไม่ โดยเช็คจากฟิลด์ audio ตาม JSON
-    bool hasDownload =
-        (item['audio'] != null && item['audio'].toString().isNotEmpty) ||
+    bool hasDownload = !isProcessing &&
+        ((item['audio'] != null && item['audio'].toString().isNotEmpty) ||
             (item['scripts'] != null &&
                 item['scripts'].isNotEmpty &&
-                item['scripts'][0]['audio'] != null);
+                item['scripts'][0]['audio'] != null));
 
     return InkWell(
       onTap: onTap,
@@ -228,14 +246,44 @@ class _HistoryPageState extends State<HistoryPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.prompt(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Colors.black87),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: GoogleFonts.prompt(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.black87),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (isProcessing) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                              color: Colors.orange.shade50,
+                              borderRadius: BorderRadius.circular(4),
+                              border:
+                                  Border.all(color: Colors.orange.shade200)),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.hourglass_bottom,
+                                  size: 12, color: Colors.orange.shade600),
+                              const SizedBox(width: 4),
+                              Text("กำลังประมวลผลวิดีโอ",
+                                  style: GoogleFonts.prompt(
+                                      fontSize: 11,
+                                      color: Colors.orange.shade700)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 6),
                   Text(
