@@ -354,18 +354,12 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
                       });
 
                       try {
-                        // รวม URL ทั้งหมดคั่นด้วย comma (หรือตาม Format ที่ API คุณรองรับ)
-                        // เพื่อให้ API รู้ว่าต้องสร้างสคริปต์สำหรับหลายรูป
-                        String allImageUrlsString = _uploadedUrls.isNotEmpty
-                            ? _uploadedUrls.join(',')
-                            : (uploadedUrl ?? "");
-
-                        // กรณี previewUrls มีค่า (เช่น PDF) อาจจะต้องใช้ logic ดึงจาก _previewUrls แทนถ้าจำเป็น
-                        if (_previewUrls != null &&
-                            _previewUrls!.isNotEmpty &&
-                            _uploadedUrls.isEmpty) {
-                          allImageUrlsString = _previewUrls!.join(',');
-                        }
+                        // ใช้ _previewUrls เป็นหลักก่อน เพราะเก็บ URL ครบทุกหน้า (กรณี PDF/PPTX)
+                        // ถ้าไม่มี (เช่น อัปโหลดรูปภาพปกติ) ค่อยดึงจาก _uploadedUrls แทน
+                        String allImageUrlsString =
+                            (_previewUrls != null && _previewUrls!.isNotEmpty)
+                                ? _previewUrls!.join(',')
+                                : _uploadedUrls.join(',');
 
                         final models.GenerationResult? result =
                             await GenerationService.generate(
