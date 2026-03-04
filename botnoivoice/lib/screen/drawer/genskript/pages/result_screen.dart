@@ -56,6 +56,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       PageController(); // ควบคุมการเลื่อนหน้า
   int _currentIndex = 0; // เก็บหน้าปัจจุบัน
 
+  // เพิ่มตัวแปร Cache สำหรับเก็บ URL เสียงของแต่ละหน้าสไลด์ ป้องกันการโดนล้างค่า
+  final Map<int, String> _localAudioCache = {};
+
   SpeakerEntity? _selectedSpeaker;
 
   String _selectedSpeed = '1x';
@@ -94,6 +97,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     _editController = TextEditingController(
         text: widget.items.isNotEmpty ? widget.items[0].script : "");
     _initializeDownloader();
+
+    // เก็บ URL เสียงที่มีอยู่แล้ว (ถ้ามี) ลงในแคช
+    for (int i = 0; i < widget.items.length; i++) {
+      if (widget.items[i].audioUrl != null &&
+          widget.items[i].audioUrl!.isNotEmpty) {
+        _localAudioCache[i] = widget.items[i].audioUrl!;
+      }
+    }
 
     if (SpeakerModel.speakerItem.isNotEmpty) {
       // ตรวจสอบภาษาเพื่อเลือกเสียงเริ่มต้น (ไทย -> 1, อังกฤษ -> 55)
@@ -350,6 +361,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       // นำ URL ที่สร้างเสร็จแล้ว มาอัปเดตเก็บไว้ในข้อมูลของสไลด์ปัจจุบัน
       setState(() {
         widget.items[_currentIndex].audioUrl = resultUrl;
+        _localAudioCache[_currentIndex] = resultUrl!; // บันทึกลงแคช
       });
 
       await loadAllTokensIfLoggedIn(ref);
@@ -444,8 +456,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
         if (resultUrl != null && resultUrl.isNotEmpty) {
           setState(() {
-            item.audioUrl =
-                resultUrl; // อัปเดต URL เพื่อให้ UI สลับเป็น Audio Player
+            item.audioUrl = resultUrl; // อัปเดต URL เพื่อให้ UI สลับเป็น Audio
+            // หา index ของสไลด์นี้แล้วบันทึกลงแคช
+            int realIndex = widget.items.indexOf(item);
+            if (realIndex != -1) _localAudioCache[realIndex] = resultUrl!;
           });
           successCount++;
         } else {
@@ -798,8 +812,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               if (newAudio != null && newAudio.isNotEmpty) {
                 setState(() {
                   item.audioUrl = newAudio; // อัปเดตกลับไปที่หน้า UI ด้วย
+                  int realIndex = widget.items.indexOf(item);
+                  if (realIndex != -1) _localAudioCache[realIndex] = newAudio!;
                 });
-                validAudioUrls.add(newAudio);
+                validAudioUrls.add(newAudio!);
               }
             }
           }
@@ -1106,15 +1122,19 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final currentItem = widget.items[_currentIndex];
     final points = _editController.text.length;
 
+    // ดึง URL เสียงจากแคชก่อน ถ้าไม่มีค่อยดึงจากข้อมูลสไลด์ปกติ
+    final activeAudioUrl =
+        _localAudioCache[_currentIndex] ?? currentItem.audioUrl;
+
     // ถ้ามี URL เสียงแล้ว ให้แสดง Inline Audio Player
-    if (currentItem.audioUrl != null && currentItem.audioUrl!.isNotEmpty) {
+    if (activeAudioUrl != null && activeAudioUrl.isNotEmpty) {
       return Container(
         margin: const EdgeInsets.only(top: 10),
         child: GenskriptInlineAudioPlayer(
-          key: ValueKey(currentItem.audioUrl),
-          audioUrl: currentItem.audioUrl!,
+          key: ValueKey(activeAudioUrl),
+          audioUrl: activeAudioUrl,
           points: points,
-          onDownload: () => _handleDownload(currentItem.audioUrl!,
+          onDownload: () => _handleDownload(activeAudioUrl,
               existingFileName: _currentFileName, isShare: false),
         ),
       );
