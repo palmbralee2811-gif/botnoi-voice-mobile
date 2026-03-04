@@ -23,8 +23,8 @@ class ApiConstants {
       "$baseUrl/voice/v2/merge_voice_to_s3";
 
   // --- 1. กุญแจสำหรับการอัปโหลดรูปภาพ ---
-  static const String Token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzE2Mzk0NjYsImlhdCI6MTc3MTU1MzA2NiwibmJmIjoxNzcxNTUzMDY2LCJ1aWQiOiI2ZWI0MzU0Ni0yZTcwLTUzODAtYmRhZC0wYjBlYjNhN2E2NzUiLCJ1c2VyX2lkIjoibHZrbE5WS3lYSGJ6YThXbnNOS1BiMkMxZk1OMiIsInVzZXJfdHlwZSI6ImxpbmtlZF9hY2NvdW50In0.Dx5kMs7RxDWP7mq7V5rYxDRZCCeuOfZocQGPgJLcDK8";
+  static String Token = "";
+  static String botnoiVideoToken = ""; // สำหรับเก็บ Token สร้างวิดีโอ
 
   // Headers สำหรับอัปโหลดรูปภาพ (Multipart)
   static Map<String, String> get uploadHeaders => {

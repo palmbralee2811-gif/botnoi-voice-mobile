@@ -1,6 +1,7 @@
 // lib/service/token/user_token_notifier.dart
 import 'dart:convert';
 import 'package:botnoivoice/config/api_url_config.dart';
+import 'package:botnoivoice/screen/drawer/genskript/data/api_constants.dart';
 import 'package:botnoivoice/service/login/apple_login.dart';
 import 'package:botnoivoice/service/login/email_login.dart';
 import 'package:botnoivoice/service/login/google_login.dart';
@@ -80,6 +81,8 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
   /// Clear all the tokens
   void clearTokens() {
     state = UserTokenState(); // Reset state to initial values
+    ApiConstants.Token = "";
+    ApiConstants.botnoiVideoToken = "";
     _logger.i("Tokens cleared for $_providerType.");
   }
 
@@ -163,6 +166,12 @@ class UserTokenNotifier extends StateNotifier<UserTokenState> {
           remainingCredits: totalCredits, // Set the combined total here
           isSubscription: data['data']['subscription']?.toString() == 'Pro',
         );
+
+        // เซ็ตค่า JWT Token สำหรับใช้งาน API ทั่วไป
+        ApiConstants.Token = state.jwtToken ?? "";
+        ApiConstants.botnoiVideoToken = data['data']['token']?.toString() ?? "";
+        _logger
+            .i("✅ Botnoi Video Token loaded: ${ApiConstants.botnoiVideoToken}");
 
         _logger.i(
             'Remaining credits successfully loaded for $_providerType: ${state.remainingCredits} (Normal: $normalCredits + Monthly: $monthlyPoints)');
