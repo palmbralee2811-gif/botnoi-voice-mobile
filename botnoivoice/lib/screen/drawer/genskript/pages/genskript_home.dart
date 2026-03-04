@@ -1,9 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:botnoivoice/screen/drawer/genskript/data/api_constants.dart';
 import 'package:botnoivoice/screen/drawer/genskript/models/result_item_model.dart';
 import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_uploader.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/ui/components/mar_ads_points_badge.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,24 +21,39 @@ import '../services/generation_service.dart';
 import '../pages/result_screen.dart';
 import '../data/app_data.dart';
 import '../pages/history_page.dart';
-import '../widgets/star_p_badge.dart';
 
-class GenskriptHome extends StatefulWidget {
+class GenskriptHome extends ConsumerStatefulWidget {
   const GenskriptHome({super.key});
 
   @override
-  State<GenskriptHome> createState() => _GenskriptHomeState();
+  ConsumerState<GenskriptHome> createState() => _GenskriptHomeState();
 }
 
-class _GenskriptHomeState extends State<GenskriptHome> {
+class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
   GenerationResult? _lastResult;
   String activeTab = 'upload';
   String fileType = 'image';
   double wordCount = 120;
   String language = 'ไทย';
   String contentType = 'นำเสนองาน';
-  int userPoints = 2000;
-  int _requiredPoints = 0;
+
+  // สร้างสมการคำนวณพอยท์อัตโนมัติ
+  int get _requiredPoints {
+    int itemCount = 1;
+
+    if (fileType == 'image') {
+      // กรณีเป็นรูปภาพ ให้นับจากจำนวนไฟล์รูปภาพที่ผู้ใช้เลือก
+      itemCount = _pickedFiles.length;
+    } else {
+      // กรณีเป็น PDF/PPTX ให้นับจากจำนวนหน้าที่ API คืนค่ามา (ถ้ายังโหลดไม่เสร็จให้ตั้งต้นที่ 1)
+      itemCount = _pageCount ?? 1;
+    }
+
+    // ถ้าไม่ได้แนบไฟล์อะไรเลย (พิมพ์แค่คำสั่ง) ให้คิดขั้นต่ำ 1 รายการ
+    if (itemCount == 0) itemCount = 1;
+
+    return wordCount.toInt() * itemCount;
+  }
 
   final TextEditingController _customPromptController = TextEditingController();
 
@@ -59,6 +80,10 @@ class _GenskriptHomeState extends State<GenskriptHome> {
   void initState() {
     super.initState();
     _customPromptController.addListener(() => setState(() {}));
+    // โหลด Point ล่าสุดทุกครั้งที่เข้าหน้านี้
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadAllTokensIfLoggedIn(ref);
+    });
   }
 
   @override
@@ -96,7 +121,9 @@ class _GenskriptHomeState extends State<GenskriptHome> {
 
           // 2. เก็บจำนวนหน้า (ถ้ามี)
           if (result['page_count'] != null) {
-            _pageCount = result['page_count'];
+            setState(() {
+              _pageCount = result['page_count'];
+            });
           }
 
           // 3. เก็บรายการรูปภาพสำหรับ Preview (ถ้ามี)
@@ -163,7 +190,7 @@ class _GenskriptHomeState extends State<GenskriptHome> {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 16.0),
+          padding: EdgeInsets.only(right: 16.w),
           child: _buildPointsBadge(),
         ),
       ],
@@ -171,30 +198,11 @@ class _GenskriptHomeState extends State<GenskriptHome> {
   }
 
   Widget _buildPointsBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(
-                color: Color(0xFF333333), shape: BoxShape.circle),
-            child:
-                const Icon(Icons.stars, color: Colors.purpleAccent, size: 16),
-          ),
-          const SizedBox(width: 8),
-          Text("$userPoints",
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.black)),
-        ],
-      ),
-    );
+    // เรียกใช้ Riverpod ดึง Point จริง
+    final userToken = ref.watch(currentUserTokenStateProvider);
+    final points = userToken.remainingCredits ?? 0;
+    // ใช้ Widget มาตรฐานของแอปที่กดแล้วมี Payment Dialog เด้งได้
+    return Center(child: MarAdsPointsBadge(points: points.toString()));
   }
 
   Widget _buildInputPage() {
@@ -264,7 +272,6 @@ class _GenskriptHomeState extends State<GenskriptHome> {
           onSelect: (id) => setState(() {
             fileType = id;
             _pickedFiles.clear();
-            _requiredPoints = 0;
             _pageCount = null;
             _previewUrls = null;
           }),
@@ -324,6 +331,22 @@ class _GenskriptHomeState extends State<GenskriptHome> {
             child: ElevatedButton(
               onPressed: ready
                   ? () async {
+                      // ตรวจสอบยอดพอยท์คงเหลือก่อนเรียกใช้งาน API
+                      final userToken = ref.read(currentUserTokenStateProvider);
+                      final int currentPoints =
+                          int.tryParse(userToken.remainingCredits.toString()) ??
+                              0;
+
+                      if (currentPoints < _requiredPoints) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("พอยท์ไม่เพียงพอ กรุณาเติมพอยท์"),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                        return; // หยุดการทำงาน ไม่ส่ง API
+                      }
+
                       setState(() {
                         _isLoading = true;
                         _lastResult = null;
@@ -354,13 +377,37 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                         );
 
                         if (result != null) {
-                          setState(() {
-                            _lastResult = result;
-                            userPoints -= _requiredPoints;
-                            _isLoading = false;
-                            _hasGeneratedOnce = true;
-                            _showResult = true;
-                          });
+                          // ยิง API หักพอยท์ตามยอดที่คำนวณไว้ หลังจากสร้างข้อความสำเร็จ
+                          try {
+                            await http.put(
+                              Uri.parse(
+                                  "https://api-voice.botnoi.ai/api/payment/v2/deduct_point"),
+                              headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer ${ApiConstants.Token}"
+                              },
+                              body: jsonEncode({
+                                "platform": "genskript",
+                                "Credits": _requiredPoints,
+                                "Monthly_point": 0
+                              }),
+                            );
+                          } catch (e) {
+                            debugPrint("Deduct Point Error: $e");
+                          }
+
+                          // 1. ใส่ await เพื่อรออัปเดต Point จากเซิร์ฟเวอร์ให้เสร็จสมบูรณ์ก่อน
+                          await loadAllTokensIfLoggedIn(ref);
+
+                          // 2. ค่อยสั่งอัปเดต UI เพื่อสลับหน้า (ตัวเลขพอยท์จะเปลี่ยนทันที)
+                          if (mounted) {
+                            setState(() {
+                              _lastResult = result;
+                              _isLoading = false;
+                              _hasGeneratedOnce = true;
+                              _showResult = true;
+                            });
+                          }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -407,8 +454,9 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                             fontSize: 18,
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        buildStarPBadge(),
+                        SizedBox(width: 8.w),
+                        SvgPicture.asset('assets/images/logo/credit-icon.svg',
+                            width: 22.w, height: 22.h),
                       ],
                     ),
             ),
@@ -435,10 +483,12 @@ class _GenskriptHomeState extends State<GenskriptHome> {
                   color: Colors.black87,
                 ),
               ),
-              const TextSpan(text: " พอยท์"),
             ],
           ),
         ),
+        SizedBox(width: 4.w),
+        SvgPicture.asset('assets/images/logo/credit-icon.svg',
+            width: 16.w, height: 16.h),
       ],
     );
   }

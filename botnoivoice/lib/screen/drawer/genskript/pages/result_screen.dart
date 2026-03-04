@@ -8,7 +8,9 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_
 import 'package:botnoivoice/screen/drawer/marads/widgets/ui/mar_ads_speaker_selector_button.dart';
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
+import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
@@ -32,7 +34,7 @@ import '../widgets/genskript_video_creation_dialog.dart';
 
 var logger = Logger();
 
-class ResultScreen extends StatefulWidget {
+class ResultScreen extends ConsumerStatefulWidget {
   final List<ResultItem> items;
   final String language;
   final VoidCallback onBack;
@@ -45,10 +47,10 @@ class ResultScreen extends StatefulWidget {
   });
 
   @override
-  State<ResultScreen> createState() => _ResultScreenState();
+  ConsumerState<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
+class _ResultScreenState extends ConsumerState<ResultScreen> {
   late TextEditingController _editController;
   final PageController _pageController =
       PageController(); // ควบคุมการเลื่อนหน้า
@@ -56,8 +58,6 @@ class _ResultScreenState extends State<ResultScreen> {
 
   SpeakerEntity? _selectedSpeaker;
 
-  // Settings
-  int userPoints = 5000; // Mock balance
   String _selectedSpeed = '1x';
   String _selectedVolume = '100%';
   String? _currentFileName;
@@ -229,6 +229,9 @@ class _ResultScreenState extends State<ResultScreen> {
       }
 
       if (videoUrl != null) {
+        // อัปเดต Point หลังสร้างวิดีโอสำเร็จ
+        await loadAllTokensIfLoggedIn(ref);
+
         if (mounted && !isDialogClosed) {
           // ถ้ารอจนเสร็จ โชว์หน้าต่าง Success ปกติ
           _showVideoSuccessDialog(videoUrl);
@@ -334,11 +337,6 @@ class _ResultScreenState extends State<ResultScreen> {
         languageValue: langCode,
         speakerId: _selectedSpeaker?.speakerId,
       );
-
-      // บันทึก URL เสียงลงใน Item ปัจจุบันด้วย
-      if (resultUrl != null) {
-        widget.items[_currentIndex].audioUrl = resultUrl;
-      }
     } catch (e) {
       logger.e("Error in handleCreateVoice wrapper", error: e);
     }
@@ -349,7 +347,12 @@ class _ResultScreenState extends State<ResultScreen> {
       _currentFileName =
           "botnoi_genskript_${DateTime.now().millisecondsSinceEpoch}.mp3";
 
-      setState(() {}); // รีเฟรช UI ให้เข้าเงื่อนไขแสดง Audio Player
+      // นำ URL ที่สร้างเสร็จแล้ว มาอัปเดตเก็บไว้ในข้อมูลของสไลด์ปัจจุบัน
+      setState(() {
+        widget.items[_currentIndex].audioUrl = resultUrl;
+      });
+
+      await loadAllTokensIfLoggedIn(ref);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -455,6 +458,11 @@ class _ResultScreenState extends State<ResultScreen> {
     }
 
     if (mounted) Navigator.pop(context); // ปิด Loading Dialog
+
+    // ถ้ามีการสร้างเสียงสำเร็จอย่างน้อย 1 รายการ ให้อัปเดต Point
+    if (successCount > 0) {
+      await loadAllTokensIfLoggedIn(ref);
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -690,7 +698,12 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   void _executeTranslation(String targetLang) async {
-    if (userPoints < 100) {
+    // ดึง Point ล่าสุดจาก Provider (ใช้ read แบบไม่อิงบิลด์ตาม lifecycle)
+    final userToken = ref.read(currentUserTokenStateProvider);
+    final int currentPoints =
+        int.tryParse(userToken.remainingCredits.toString()) ?? 0;
+
+    if (currentPoints < 100) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Insufficient Points")));
       return;
@@ -706,12 +719,16 @@ class _ResultScreenState extends State<ResultScreen> {
           targetLanguageName: targetLang,
           imageUrl: widget.items[_currentIndex].imageUrl);
       if (mounted) Navigator.pop(context);
+
       if (result != null) {
+        // อัปเดต Point ให้เป็นปัจจุบันหลังจากใช้บริการ API
+        await loadAllTokensIfLoggedIn(ref);
+
         setState(() {
           _editController.text = result;
           widget.items[_currentIndex].script = result;
-          userPoints -= 100;
         });
+
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Translated to $targetLang successfully!")));
       } else {
@@ -786,6 +803,9 @@ class _ResultScreenState extends State<ResultScreen> {
               }
             }
           }
+
+          // อัปเดต Point ทันทีหลังจากเช็คและสร้างเสียงที่ขาดหายเสร็จสิ้น
+          await loadAllTokensIfLoggedIn(ref);
 
           // ถ้าพยายามสร้างแล้ว แต่ยังไม่มีไฟล์เสียงเลยสักหน้า ให้หยุดทำงาน
           if (validAudioUrls.isEmpty) {
@@ -1105,7 +1125,7 @@ class _ResultScreenState extends State<ResultScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text("$points PT",
-            style: const TextStyle(color: Colors.grey, fontSize: 14)),
+            style: const TextStyle(color: Colors.grey, fontSize: 16)),
         const SizedBox(width: 16),
         SizedBox(
           height: 36,

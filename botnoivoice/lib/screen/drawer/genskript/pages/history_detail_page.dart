@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/services.dart'; // For Clipboard
@@ -68,14 +70,15 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
     List scripts = widget.item['scripts'] ?? [];
     final scriptData = scripts.isNotEmpty ? scripts[0] : {};
     String scriptText = scriptData['script'] ?? "";
-    String? videoUrl = widget.item['video_url'] ?? widget.item['final_video_url'];
+    String? videoUrl =
+        widget.item['video_url'] ?? widget.item['final_video_url'];
     // Fallback if video is inside script object
     if (videoUrl == null && scripts.isNotEmpty) {
       videoUrl = scriptData['video_url'];
     }
 
     // Fallback speaker name (API usually returns ID like "5", we simulate a name here)
-    String speakerName = "Speaker ${scriptData['speaker'] ?? 'Unknown'}"; 
+    String speakerName = "Speaker ${scriptData['speaker'] ?? 'Unknown'}";
 
     return Column(
       children: [
@@ -95,7 +98,11 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                       child: Icon(Icons.person, size: 20, color: Colors.white),
                     ),
                     const SizedBox(width: 8),
-                    Text(speakerName, style: GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
+                    Text(speakerName,
+                        style: GoogleFonts.prompt(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87)),
                     const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
                   ],
                 ),
@@ -109,7 +116,10 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: Colors.grey.shade200),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4))
                     ],
                   ),
                   child: Column(
@@ -119,22 +129,29 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("#1", style: GoogleFonts.prompt(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text("#1",
+                              style: GoogleFonts.prompt(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
                           IconButton(
-                            icon: const Icon(Icons.copy_outlined, size: 20, color: Colors.grey),
+                            icon: const Icon(Icons.copy_outlined,
+                                size: 20, color: Colors.grey),
                             onPressed: () {
-                              Clipboard.setData(ClipboardData(text: scriptText));
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard")));
+                              Clipboard.setData(
+                                  ClipboardData(text: scriptText));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Copied to clipboard")));
                             },
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      
+
                       // Script Text
                       Text(
                         scriptText,
-                        style: GoogleFonts.prompt(fontSize: 14, height: 1.6, color: Colors.black87),
+                        style: GoogleFonts.prompt(
+                            fontSize: 14, height: 1.6, color: Colors.black87),
                       ),
                       const SizedBox(height: 24),
 
@@ -144,21 +161,28 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                           IconButton(
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
-                            icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.black87, size: 28),
+                            icon: Icon(
+                                _isPlaying ? Icons.pause : Icons.play_arrow,
+                                color: Colors.black87,
+                                size: 28),
                             onPressed: () {
-                              if (_isPlaying) _audioPlayer.pause();
-                              else _audioPlayer.play();
+                              if (_isPlaying)
+                                _audioPlayer.pause();
+                              else
+                                _audioPlayer.play();
                             },
                           ),
                           const SizedBox(width: 8),
                           Text(
                             "${_formatDuration(_position)} / ${_formatDuration(_duration)}",
-                            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey),
+                            style: GoogleFonts.inter(
+                                fontSize: 12, color: Colors.grey),
                           ),
                           Expanded(
                             child: SliderTheme(
                               data: SliderTheme.of(context).copyWith(
-                                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                                thumbShape: const RoundSliderThumbShape(
+                                    enabledThumbRadius: 6),
                                 trackHeight: 4,
                                 activeTrackColor: Colors.blue,
                                 inactiveTrackColor: Colors.grey.shade200,
@@ -166,27 +190,41 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                               ),
                               child: Slider(
                                 value: _position.inSeconds.toDouble(),
-                                max: _duration.inSeconds.toDouble() > 0 ? _duration.inSeconds.toDouble() : 1,
-                                onChanged: (v) => _audioPlayer.seek(Duration(seconds: v.toInt())),
+                                max: _duration.inSeconds.toDouble() > 0
+                                    ? _duration.inSeconds.toDouble()
+                                    : 1,
+                                onChanged: (v) => _audioPlayer
+                                    .seek(Duration(seconds: v.toInt())),
                               ),
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text("0 PT", style: GoogleFonts.prompt(fontSize: 12, color: Colors.grey)), // Placeholder
+                          Text("0",
+                              style: GoogleFonts.prompt(
+                                  fontSize: 12.sp, color: Colors.grey)),
+                          SizedBox(width: 4.w),
+                          SvgPicture.asset('assets/images/logo/credit-icon.svg',
+                              width: 14.w, height: 14.h),
                           const SizedBox(width: 8),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              minimumSize: Size.zero, 
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              minimumSize: Size.zero,
                               elevation: 0,
                             ),
                             onPressed: () {
-                               // Logic for single audio download
-                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Downloading audio...")));
+                              // Logic for single audio download
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Downloading audio...")));
                             },
-                            child: Text("ดาวน์โหลด", style: GoogleFonts.prompt(fontSize: 12, color: Colors.white)),
+                            child: Text("ดาวน์โหลด",
+                                style: GoogleFonts.prompt(
+                                    fontSize: 12, color: Colors.white)),
                           ),
                         ],
                       ),
@@ -213,33 +251,46 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                 width: double.infinity,
                 height: 50,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [Color(0xFF9C27B0), Color(0xFF00BCD4)]),
+                  gradient: const LinearGradient(
+                      colors: [Color(0xFF9C27B0), Color(0xFF00BCD4)]),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ElevatedButton(
                   onPressed: () {
                     if (videoUrl != null) {
                       // Trigger your DownloadService here using videoUrl
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Downloading Video: $videoUrl")));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Downloading Video: $videoUrl")));
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No video available yet.")));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("No video available yet.")));
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text("ดาวน์โหลดทั้งหมด", style: GoogleFonts.prompt(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: Text("ดาวน์โหลดทั้งหมด",
+                      style: GoogleFonts.prompt(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Back Button
               TextButton.icon(
                 onPressed: widget.onBack,
-                icon: const Icon(Icons.arrow_back, size: 18, color: Colors.black54),
-                label: Text("กลับไปดูประวัติ", style: GoogleFonts.prompt(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.bold)),
+                icon: const Icon(Icons.arrow_back,
+                    size: 18, color: Colors.black54),
+                label: Text("กลับไปดูประวัติ",
+                    style: GoogleFonts.prompt(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold)),
               ),
             ],
           ),
