@@ -26,6 +26,10 @@ class VideoService {
     required String language,
     String? videoUrl,
     bool isProcessingVideo = false,
+    List<Map<String, dynamic>>? scriptsData,
+    String speakerId = "5",
+    String speed = "1",
+    String volume = "100",
   }) async {
     final String scriptId = "${workspaceId}_script_1";
 
@@ -36,25 +40,30 @@ class VideoService {
       "audio": audioUrl,
       "isgenerate": true,
       "language": {"value": language, "label": "Thai"},
-      "speaker": "5",
-      "speed": "1",
-      "volume": "100",
-      "scripts": [
-        {
-          "script_id": scriptId,
-          "script": scriptText,
-          "audio": audioUrl,
-          "isgenerate": true,
-          "speaker": "5",
-          "ispaid": true
-        }
-      ]
+      "speaker": speakerId,
+      "speed": speed,
+      "volume": volume,
+      "scripts": scriptsData ??
+          [
+            {
+              "script_id": scriptId,
+              "script": scriptText,
+              "audio": audioUrl,
+              "isgenerate": true,
+              "speaker": speakerId,
+              "speed": speed,
+              "volume": volume,
+              "ispaid": true
+            }
+          ]
     };
 
     if (videoUrl != null) {
       payload['video_url'] = videoUrl;
       payload['final_video_url'] = videoUrl;
-      (payload['scripts'] as List)[0]['video_url'] = videoUrl;
+      for (var script in (payload['scripts'] as List)) {
+        script['video_url'] = videoUrl;
+      }
     }
 
     //  ฝังสถานะเพื่อเอาไปโชว์ในหน้า History
@@ -122,18 +131,31 @@ class VideoService {
           if (status == "success" ||
               status == "completed" ||
               status == "done") {
-            String? realUrl = statusData['final_video_url'] ??
-                statusData['result_url'] ??
-                statusData['video_url'];
+            // ดึง object result ออกมาก่อนเผื่อ API ซ้อนข้อมูลไว้ข้างใน
+            final resultObj =
+                statusData['result'] is Map ? statusData['result'] : {};
 
-            if (realUrl == null && statusData['result'] is Map) {
-              final result = statusData['result'];
-              realUrl = result['video_url'] ?? result['url'];
-              if (realUrl == null &&
-                  result['slides'] is List &&
-                  result['slides'].isNotEmpty) {
-                realUrl = result['slides'][0]['video_url'];
-              }
+            // ให้ความสำคัญกับไฟล์ที่รวม (merged) แล้วเป็นอันดับแรกสุด
+            String? realUrl = statusData['hq-video-merged'] ??
+                statusData['hq_video_merged'] ??
+                resultObj['hq-video-merged'] ??
+                resultObj['hq_video_merged'] ??
+                statusData['final_video_url'] ??
+                resultObj['final_video_url'];
+
+            // ถ้าไม่มีไฟล์รวมจริงๆ ค่อย URL ทั่วไปซึ่งมักจะเป็นสไลด์แรกมาใช้
+            if (realUrl == null) {
+              realUrl = statusData['result_url'] ??
+                  statusData['video_url'] ??
+                  resultObj['video_url'] ??
+                  resultObj['url'];
+            }
+
+            // หาจากใน array slides ถ้ามี
+            if (realUrl == null &&
+                resultObj['slides'] is List &&
+                resultObj['slides'].isNotEmpty) {
+              realUrl = resultObj['slides'][0]['video_url'];
             }
 
             if (realUrl != null) {
@@ -158,12 +180,14 @@ class VideoService {
   }
 
   static Future<String?> handleCreateVideo({
-    required String scriptText,
-    required String imageUrl,
+    required List<Map<String, dynamic>> slidesData,
     required String language,
     required int audioPoints,
     required int videoPoints,
     String videoCodec = "h264",
+    String speakerId = "5",
+    String speed = "1x",
+    String volume = "100%",
   }) async {
     if (ApiConstants.Token.isEmpty) {
       logger.e("❌ Error: Token is empty!");
@@ -171,10 +195,17 @@ class VideoService {
     }
 
     final String workspaceId = generateWorkspaceId();
-    final String audioId = "${workspaceId}_0";
     final Map<String, String> standardHeaders =
         Map<String, String>.from(ApiConstants.generateHeaders);
     standardHeaders['Content-Type'] = 'application/json';
+
+    String cleanSpeed = speed.replaceAll('x', '');
+    String cleanVolume = volume.replaceAll('%', '');
+
+    String combinedScriptText = "";
+    String firstAudioUrl = "";
+    List<Map<String, dynamic>> taskData = [];
+    List<Map<String, dynamic>> historyScripts = [];
 
     try {
       // ---------------------------------------------------------
@@ -183,41 +214,62 @@ class VideoService {
       String token = ApiConstants.Token;
 
       // ---------------------------------------------------------
-      // STEP 2: GENERATE VOICE
+      // STEP 2: PROCESS ALL SLIDES (GENERATE VOICE IF MISSING)
       // ---------------------------------------------------------
-      logger.d("Step 2: Generating Voice...");
-      final genVoicePayload = {
-        "audio_id": audioId,
-        "language": language,
-        "speaker": "5",
-        "speaker_v2": false,
-        "speed": "1",
-        "text": scriptText,
-        "type_media": "mp3",
-        "volume": "100"
-      };
+      logger.d("Step 2: Processing slides and generating voice...");
+      for (int i = 0; i < slidesData.length; i++) {
+        String script = slidesData[i]['script'] ?? "";
+        String imgUrl = slidesData[i]['image_url'] ?? "";
+        String audioUrl = slidesData[i]['audio_url'] ?? "";
 
-      final genResponse = await http.post(
-        Uri.parse(ApiConstants.genskriptUrl),
-        headers: standardHeaders,
-        body: jsonEncode(genVoicePayload),
-      );
+        combinedScriptText += "$script ";
 
-      if (genResponse.statusCode != 200) throw Exception("Voice Gen Failed");
-      final genData = jsonDecode(utf8.decode(genResponse.bodyBytes));
+        if (audioUrl.isEmpty && script.trim().isNotEmpty) {
+          final genVoicePayload = {
+            "audio_id": "${workspaceId}_$i",
+            "language": language,
+            "speaker": speakerId,
+            "speaker_v2": false,
+            "speed": cleanSpeed,
+            "text": script,
+            "type_media": "mp3",
+            "volume": cleanVolume
+          };
+          final genResponse = await http.post(
+            Uri.parse(ApiConstants.genskriptUrl),
+            headers: standardHeaders,
+            body: jsonEncode(genVoicePayload),
+          );
+          if (genResponse.statusCode == 200) {
+            final genData = jsonDecode(utf8.decode(genResponse.bodyBytes));
+            final dynamic dataField = genData['data'];
+            if (dataField is String)
+              audioUrl = dataField;
+            else if (dataField is List && dataField.isNotEmpty)
+              audioUrl = dataField[0]['url'] ?? "";
+            else if (dataField is Map)
+              audioUrl = dataField['url'] ?? "";
+            else
+              audioUrl = genData['url'] ?? genData['audio_url'] ?? "";
+          }
+        }
 
-      String audioUrl = "";
-      final dynamic dataField = genData['data'];
-      if (dataField is String)
-        audioUrl = dataField;
-      else if (dataField is List && dataField.isNotEmpty)
-        audioUrl = dataField[0]['url'] ?? "";
-      else if (dataField is Map)
-        audioUrl = dataField['url'] ?? "";
-      else
-        audioUrl = genData['url'] ?? genData['audio_url'] ?? "";
+        if (audioUrl.isEmpty)
+          throw Exception("Audio URL generation failed for slide ${i + 1}");
+        if (i == 0) firstAudioUrl = audioUrl;
 
-      if (audioUrl.isEmpty) throw Exception("Audio URL is empty.");
+        taskData.add({"image_url": imgUrl, "audio_url": audioUrl});
+        historyScripts.add({
+          "script_id": "${workspaceId}_script_${i + 1}",
+          "script": script,
+          "audio": audioUrl,
+          "isgenerate": true,
+          "speaker": speakerId,
+          "speed": cleanSpeed,
+          "volume": cleanVolume,
+          "ispaid": true
+        });
+      }
 
       // ---------------------------------------------------------
       // STEP 3: DEDUCT POINTS
@@ -238,11 +290,15 @@ class VideoService {
       await _saveWorkspaceToHistory(
         token: token,
         workspaceId: workspaceId,
-        scriptText: scriptText,
-        audioUrl: audioUrl,
+        scriptText: combinedScriptText.trim(),
+        audioUrl: firstAudioUrl,
         language: language,
         videoUrl: null,
         isProcessingVideo: true,
+        scriptsData: historyScripts,
+        speakerId: speakerId,
+        speed: cleanSpeed,
+        volume: cleanVolume,
       );
 
       // ---------------------------------------------------------
@@ -258,9 +314,8 @@ class VideoService {
       final taskPayload = {
         "genskript_id": workspaceId,
         "type_user": "starter",
-        "data": [
-          {"image_url": imageUrl, "audio_url": audioUrl}
-        ]
+        "codec": videoCodec,
+        "data": taskData
       };
 
       logger.d("🚀 Step 5 Sending Headers: $taskHeaders");
@@ -295,11 +350,15 @@ class VideoService {
             await _saveWorkspaceToHistory(
               token: token,
               workspaceId: workspaceId,
-              scriptText: scriptText,
-              audioUrl: audioUrl,
+              scriptText: combinedScriptText.trim(),
+              audioUrl: firstAudioUrl,
               language: language,
               videoUrl: finalVideoUrl,
               isProcessingVideo: false,
+              scriptsData: historyScripts,
+              speakerId: speakerId,
+              speed: cleanSpeed,
+              volume: cleanVolume,
             );
             return finalVideoUrl;
           }

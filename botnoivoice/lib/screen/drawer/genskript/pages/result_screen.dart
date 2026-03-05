@@ -157,17 +157,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   Future<void> _handleCreateVideo() async {
     if (_editController.text.trim().isEmpty) return;
 
-    // 1. Calculate Points based on your screenshots/logic
-    int audioPoints = _editController.text.length;
-    int videoPoints = 200;
+    // คำนวณพอยท์สำหรับทุกสไลด์รวมกัน
+    // เสียงตามจำนวนคำจริง, วิดีโอรูปละ 200
+    int audioPoints =
+        widget.items.fold(0, (sum, item) => sum + item.script.trim().length);
+    int videoPoints = widget.items.length * 200;
 
-    // 2. Show Confirmation Dialog
+    // Show Confirmation Dialog
     showDialog(
       context: context,
       builder: (context) => GenskriptVideoCreationDialog(
         videoPoints: videoPoints,
         voicePoints: audioPoints,
-        // ✅ FIX 1: Callback now accepts the selected 'codec' string
         onConfirm: (String selectedCodec) {
           _processVideoCreation(audioPoints, videoPoints, selectedCodec);
         },
@@ -180,7 +181,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       int audioPoints, int videoPoints, String videoCodec) async {
     bool isDialogClosed = false;
 
-    // 3. Show Loading
+    // Show Loading
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -225,14 +226,30 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     );
 
     try {
+      // นำทุกสไลด์มาใส่ใน List ส่งให้ VideoService จัดการ
+      List<Map<String, dynamic>> slidesData = widget.items.map((item) {
+        int index = widget.items.indexOf(item);
+        return {
+          "script": item.script,
+          "image_url": item.imageUrl,
+          "audio_url": _localAudioCache[index] ?? item.audioUrl ?? ""
+        };
+      }).toList();
+
+      String langCode =
+          widget.language.toLowerCase().contains('en') ? 'en' : 'th';
+      String speakerId =
+          _selectedSpeaker?.speakerId ?? (langCode == 'en' ? '55' : '5');
+
       String? videoUrl = await VideoService.handleCreateVideo(
-        scriptText: _editController.text,
-        imageUrl: widget.items[_currentIndex].imageUrl,
-        language: "th",
+        slidesData: slidesData,
+        language: langCode,
         audioPoints: audioPoints,
         videoPoints: videoPoints,
-        // ✅ FIX 3: Pass the codec received from the dialog
         videoCodec: videoCodec,
+        speakerId: speakerId,
+        speed: _selectedSpeed,
+        volume: _selectedVolume,
       );
 
       if (mounted && !isDialogClosed) {
@@ -377,12 +394,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   // GENERATE ALL VOICE LOGIC
   Future<void> _handleAutoGenerateAllVoice() async {
-    // หารายการสไลด์ที่ต้องสร้างเสียง
-    final itemsToGenerate = widget.items
-        .where((item) =>
-            item.script.trim().isNotEmpty &&
-            (item.audioUrl == null || item.audioUrl!.isEmpty))
-        .toList();
+    // หารายการสไลด์ที่ต้องสร้างเสียง (เช็คจาก Cache ด้วย)
+    final itemsToGenerate = widget.items.where((item) {
+      int index = widget.items.indexOf(item);
+      String? activeAudio = _localAudioCache[index] ?? item.audioUrl;
+      return item.script.trim().isNotEmpty &&
+          (activeAudio == null || activeAudio.isEmpty);
+    }).toList();
 
     // คำนวณพอยท์รวมเฉพาะสไลด์ที่ต้องสร้าง
     int totalPoints =
@@ -811,7 +829,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
               if (newAudio != null && newAudio.isNotEmpty) {
                 setState(() {
-                  item.audioUrl = newAudio; // อัปเดตกลับไปที่หน้า UI ด้วย
+                  item.audioUrl = newAudio;
                   int realIndex = widget.items.indexOf(item);
                   if (realIndex != -1) _localAudioCache[realIndex] = newAudio!;
                 });
@@ -841,10 +859,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             String? savedPath = await DownloadService.createLocalZip(
               audioUrls: validAudioUrls,
               fileName: finalFileName,
-              extension: extension, //ส่งนามสกุลไฟล์เข้าไปแพ็กใน Zip
+              extension: extension,
             );
 
-            if (mounted) Navigator.pop(context); // ปิด Loading Dialog
+            if (mounted) Navigator.pop(context);
 
             if (savedPath != null && mounted) {
               showDialog(
@@ -869,7 +887,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               workspaceId: workspaceId,
             );
 
-            if (mounted) Navigator.pop(context); // ปิด Loading
+            if (mounted) Navigator.pop(context);
 
             if (downloadUrl != null && downloadUrl.isNotEmpty && mounted) {
               String finalFileName = "botnoi_genskript_$randomId.$extension";
@@ -905,9 +923,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     // คำนวณว่ายังมีสไลด์ที่ต้องสร้างเสียงอยู่หรือไม่
-    bool hasItemsToGenerate = widget.items.any((item) =>
-        item.script.trim().isNotEmpty &&
-        (item.audioUrl == null || item.audioUrl!.isEmpty));
+    bool hasItemsToGenerate = widget.items.asMap().entries.any((entry) {
+      String? activeAudio = _localAudioCache[entry.key] ?? entry.value.audioUrl;
+      return entry.value.script.trim().isNotEmpty &&
+          (activeAudio == null || activeAudio.isEmpty);
+    });
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -936,14 +956,32 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     currentValue: _selectedSpeed,
                     options: speedOptions,
                     title: "Speed",
-                    onChanged: (val) => setState(() => _selectedSpeed = val)),
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedSpeed = val;
+                        // รีเซ็ตเสียงเมื่อมีการเปลี่ยนความเร็ว
+                        if (widget.items.isNotEmpty) {
+                          widget.items[_currentIndex].audioUrl = null;
+                          _localAudioCache.remove(_currentIndex);
+                        }
+                      });
+                    }),
                 const SizedBox(width: 8),
                 _buildDropdownSelector(
                     icon: Icons.volume_up_outlined,
                     currentValue: _selectedVolume,
                     options: volumeOptions,
                     title: "Volume",
-                    onChanged: (val) => setState(() => _selectedVolume = val)),
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedVolume = val;
+                        // รีเซ็ตเสียงเมื่อมีการเปลี่ยนความดัง
+                        if (widget.items.isNotEmpty) {
+                          widget.items[_currentIndex].audioUrl = null;
+                          _localAudioCache.remove(_currentIndex);
+                        }
+                      });
+                    }),
               ],
             ),
             const SizedBox(height: 10),
@@ -1007,7 +1045,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  // เช็คว่าต้องมี URL และต้องขึ้นต้นด้วย http (กัน URL มั่ว)
+                  // เช็คว่าต้องมี URL และต้องขึ้นต้นด้วย http
                   child: (item.imageUrl.isNotEmpty &&
                           item.imageUrl.startsWith('http'))
                       ? Image.network(
@@ -1106,6 +1144,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             // อัปเดต Model ทันทีที่พิมพ์
             if (widget.items.isNotEmpty) {
               widget.items[_currentIndex].script = text;
+              // รีเซ็ตเสียงเมื่อมีการแก้ไขข้อความเพื่อให้สร้างเสียงใหม่
+              widget.items[_currentIndex].audioUrl = null;
+              _localAudioCache.remove(_currentIndex);
             }
           });
         },
@@ -1274,6 +1315,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         onSelect: (speaker) {
           setState(() {
             _selectedSpeaker = speaker;
+            // รีเซ็ตเสียงของ "ทุกสไลด์" เมื่อมีการเปลี่ยนนักพากย์
+            if (widget.items.isNotEmpty) {
+              for (var item in widget.items) {
+                item.audioUrl = null;
+              }
+              _localAudioCache.clear(); // ล้างแคชเสียงทั้งหมด
+            }
           });
         },
       ),
@@ -1318,7 +1366,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     if (isDisabled) {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade300,
+          color: Colors.grey.shade200,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: ElevatedButton(
@@ -1335,7 +1383,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             label,
             style: GoogleFonts.prompt(
                 fontSize: 13.sp,
-                color: Colors.white,
+                color: Colors.grey.shade500,
                 fontWeight: FontWeight.w400),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
