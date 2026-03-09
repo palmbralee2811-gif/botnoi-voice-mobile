@@ -1,9 +1,21 @@
+import 'package:botnoivoice/screen/drawer/genskript/services/download_service.dart';
+import 'package:botnoivoice/screen/drawer/genskript/services/history_service.dart';
+import 'package:botnoivoice/screen/drawer/genskript/services/voice_service.dart';
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_download_all_dialog.dart';
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_download_options_dialog.dart';
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_inline_audio_player.dart';
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_success_dialog.dart';
+import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_selection_modal.dart';
+import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
+import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:flutter/services.dart'; // For Clipboard
+import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class HistoryDetailPage extends StatefulWidget {
   final dynamic item;
@@ -20,65 +32,216 @@ class HistoryDetailPage extends StatefulWidget {
 }
 
 class _HistoryDetailPageState extends State<HistoryDetailPage> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _isPlaying = false;
-  Duration _duration = Duration.zero;
-  Duration _position = Duration.zero;
+  SpeakerEntity? _selectedSpeaker;
+  List<dynamic> _localScripts = [];
+  final List<TextEditingController> _controllers = [];
+  List<bool> _isEditing = [];
+  int? _generatingIndex;
 
   @override
   void initState() {
     super.initState();
-    _initAudio();
+    // 1. คัดลอกสคริปต์มาไว้ที่ Local เพื่อให้อัปเดต UI ได้
+    _localScripts = List.from(widget.item['scripts'] ?? []);
+
+    // 2. สร้าง Controller สำหรับแต่ละกล่องข้อความ
+    for (var script in _localScripts) {
+      _controllers.add(TextEditingController(text: script['script'] ?? ""));
+    }
+
+    // สร้างตัวแปรเช็คว่ากล่องไหนถูกแก้บ้าง (เริ่มต้นเป็น false ทุกกล่อง)
+    _isEditing = List.generate(_localScripts.length, (index) => false);
+
+    // 3. หาข้อมูล Speaker เริ่มต้นจาก ID
+    String speakerId = widget.item['speaker']?.toString() ?? "5";
+    if (_localScripts.isNotEmpty && _localScripts[0]['speaker'] != null) {
+      speakerId = _localScripts[0]['speaker'].toString();
+    }
+
+    @override
+    void dispose() {
+      for (var controller in _controllers) {
+        controller.dispose();
+      }
+      super.dispose();
+    }
+
+    try {
+      if (SpeakerModel.speakerItem.isNotEmpty) {
+        _selectedSpeaker = SpeakerModel.speakerItem.firstWhere(
+          (s) => s.speakerId == speakerId,
+          orElse: () => SpeakerModel.speakerItem.first,
+        );
+      }
+    } catch (e) {
+      debugPrint("Speaker map error: $e");
+    }
   }
 
-  void _initAudio() async {
-    // Get Audio URL from scripts
-    List scripts = widget.item['scripts'] ?? [];
-    if (scripts.isNotEmpty && scripts[0]['audio'] != null) {
-      try {
-        await _audioPlayer.setUrl(scripts[0]['audio']);
-        _audioPlayer.durationStream.listen((d) {
-          if (mounted) setState(() => _duration = d ?? Duration.zero);
-        });
-        _audioPlayer.positionStream.listen((p) {
-          if (mounted) setState(() => _position = p);
-        });
-        _audioPlayer.playerStateStream.listen((state) {
-          if (mounted) setState(() => _isPlaying = state.playing);
-        });
-      } catch (e) {
-        debugPrint("Audio init error: $e");
+  // เพิ่มฟังก์ชันสำหรับดาวน์โหลดไฟล์แบบเดียวกับ ResultScreen
+  Future<void> _downloadFile(String url, String fileName) async {
+    bool hasPermission = false;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt >= 33) {
+        hasPermission = true;
+      } else {
+        var status = await Permission.storage.request();
+        hasPermission = status.isGranted;
+      }
+    } else {
+      hasPermission = true;
+    }
+
+    if (!hasPermission) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Please grant storage permission.")));
+      return;
+    }
+
+    Directory? directory;
+    if (Platform.isAndroid) {
+      directory = Directory('/storage/emulated/0/Download');
+      if (!await directory.exists())
+        directory = await getExternalStorageDirectory();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    if (directory == null) return;
+
+    try {
+      // ใช้ HTTP โหลดไฟล์และเขียนลงเครื่องโดยตรง (แก้ปัญหา Plugin Not Initialized)
+      // 1. Encode ลิงก์เพื่อป้องกัน S3 เตะออกหากมีช่องว่างหรือตัวอักษรพิเศษ
+      final encodedUrl = Uri.parse(url).toString();
+      final request = http.Request('GET', Uri.parse(encodedUrl));
+
+      // 2. แอบแนบ User-Agent ไปหลอก S3 ว่าเราคือ Browser ไม่ใช่ Bot
+      request.headers.addAll({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Accept': '*/*',
+      });
+      final response = await request.send();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        File file = File('${directory.path}/$fileName');
+        var fileStream = file.openWrite();
+
+        // ทยอยเขียนไฟล์ลงเครื่อง (รองรับไฟล์ขนาดใหญ่แบบไม่กินแรม)
+        await response.stream.pipe(fileStream);
+        await fileStream.flush();
+        await fileStream.close();
+
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => const GenskriptSuccessDialog(
+              title: "ดาวน์โหลดสำเร็จ",
+              subtitle: "ไฟล์ถูกบันทึกลงในเครื่องของคุณเรียบร้อยแล้ว",
+            ),
+          );
+        }
+      } else {
+        throw Exception("Download Error Status: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Download failed: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์")),
+        );
       }
     }
   }
 
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
+  // ฟังก์ชันเปลี่ยนนักพากย์
+  void _handleSpeakerSelectorTap() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => MarAdsSpeakerSelectionModal(
+        selectedSpeaker: _selectedSpeaker,
+        onSelect: (speaker) {
+          setState(() {
+            _selectedSpeaker = speaker;
+            // ลบเสียงเดิมของทุกสไลด์เพื่อบังคับให้ผู้ใช้กดสร้างเสียงด้วยนักพากย์ใหม่
+            for (var script in _localScripts) {
+              script['audio'] = "";
+            }
+          });
+        },
+      ),
+    );
   }
 
-  String _formatDuration(Duration d) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    return "${d.inMinutes}:$twoDigitSeconds";
+  // ฟังก์ชันสร้างเสียงเฉพาะจุดที่ขาดไป
+  Future<void> _generateAudioForSlide(int index, String scriptText) async {
+    setState(() => _generatingIndex = index);
+
+    try {
+      // ตรวจสอบภาษา
+      String langCode = widget.item['language']?['value'] ?? 'th';
+      if (langCode.isEmpty) langCode = 'th';
+
+      String? newAudioUrl = await VoiceService.handleCreateVoice(
+        scriptText: scriptText,
+        speed: "1x",
+        volume: "100%",
+        languageValue: langCode,
+        speakerId: _selectedSpeaker?.speakerId ?? "5",
+      );
+
+      if (newAudioUrl != null && newAudioUrl.isNotEmpty) {
+        setState(() {
+          _localScripts[index]['audio'] = newAudioUrl;
+        });
+
+        // (Optional) อัปเดตข้อมูลกลับไปที่ API ประวัติ เพื่อให้บันทึกถาวร
+        Map<String, dynamic> updatedItem = Map.from(widget.item);
+        updatedItem['scripts'] = _localScripts;
+        String workspaceId =
+            widget.item['genskript_id'] ?? widget.item['id'] ?? "";
+        if (workspaceId.isNotEmpty) {
+          HistoryService.updateWorkspace(workspaceId, updatedItem);
+        }
+      } else {
+        if (mounted)
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("สร้างเสียงไม่สำเร็จ")));
+      }
+    } catch (e) {
+      debugPrint("Generate error: $e");
+    } finally {
+      if (mounted) setState(() => _generatingIndex = null);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     // Extract Data
-    List scripts = widget.item['scripts'] ?? [];
-    final scriptData = scripts.isNotEmpty ? scripts[0] : {};
-    String scriptText = scriptData['script'] ?? "";
     String? videoUrl =
         widget.item['video_url'] ?? widget.item['final_video_url'];
     // Fallback if video is inside script object
-    if (videoUrl == null && scripts.isNotEmpty) {
-      videoUrl = scriptData['video_url'];
+    if (videoUrl == null && _localScripts.isNotEmpty) {
+      videoUrl = _localScripts[0]['video_url'];
     }
 
-    // Fallback speaker name (API usually returns ID like "5", we simulate a name here)
-    String speakerName = "Speaker ${scriptData['speaker'] ?? 'Unknown'}";
+    // ดึงชื่อภาษาไทยมาแสดงเป็นหลัก ถ้าไม่มีค่อยขยับไปใช้ชื่อภาษาอังกฤษ
+    String speakerName = "เลือกนักพากย์";
+    if (_selectedSpeaker != null) {
+      speakerName = _selectedSpeaker!.thaiName.isNotEmpty
+          ? _selectedSpeaker!.thaiName
+          : (_selectedSpeaker!.engName.isNotEmpty
+              ? _selectedSpeaker!.engName
+              : _selectedSpeaker!.speakerName);
+    }
+
+    // ใช้ faceImage เพื่อให้รูปหน้าซูมพอดีกับกรอบวงกลม ถ้าไม่มีค่อยใช้ image ปกติ
+    String speakerImage = (_selectedSpeaker?.faceImage.isNotEmpty == true)
+        ? _selectedSpeaker!.faceImage
+        : (_selectedSpeaker?.image ?? "");
 
     return Column(
       children: [
@@ -90,146 +253,273 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 1. Speaker Header (Top Left)
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.blue,
-                      child: Icon(Icons.person, size: 20, color: Colors.white),
+                InkWell(
+                  onTap: _handleSpeakerSelectorTap,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          radius: 14,
+                          backgroundColor: Colors.grey.shade200,
+                          backgroundImage: speakerImage.isNotEmpty
+                              ? NetworkImage(speakerImage)
+                              : null,
+                          child: speakerImage.isEmpty
+                              ? const Icon(Icons.person,
+                                  size: 18, color: Colors.white)
+                              : null,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(speakerName,
+                            style: GoogleFonts.prompt(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87)),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.keyboard_arrow_down,
+                            color: Colors.black87, size: 18),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Text(speakerName,
-                        style: GoogleFonts.prompt(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87)),
-                    const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 20),
 
-                // 2. Main Card
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.shade200),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4))
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Card Header: #1 and Copy Icon
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("#1",
-                              style: GoogleFonts.prompt(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                          IconButton(
-                            icon: const Icon(Icons.copy_outlined,
-                                size: 20, color: Colors.grey),
-                            onPressed: () {
-                              Clipboard.setData(
-                                  ClipboardData(text: scriptText));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("Copied to clipboard")));
-                            },
-                          ),
+                // 2. Main Cards (List of Scripts)
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics:
+                      const NeverScrollableScrollPhysics(), // ให้ scroll ไปพร้อมกับหน้าหลัก
+                  itemCount: _localScripts.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 16),
+                  itemBuilder: (context, index) {
+                    final scriptData = _localScripts[index];
+                    final scriptText = scriptData['script'] ?? "";
+                    final audioUrl = scriptData['audio'] ?? "";
+                    final points = scriptText.length; // ประมาณค่า Point
+
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade200),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4))
                         ],
                       ),
-                      const SizedBox(height: 12),
-
-                      // Script Text
-                      Text(
-                        scriptText,
-                        style: GoogleFonts.prompt(
-                            fontSize: 14, height: 1.6, color: Colors.black87),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Audio Player Row
-                      Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: Icon(
-                                _isPlaying ? Icons.pause : Icons.play_arrow,
-                                color: Colors.black87,
-                                size: 28),
-                            onPressed: () {
-                              if (_isPlaying)
-                                _audioPlayer.pause();
-                              else
-                                _audioPlayer.play();
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "${_formatDuration(_position)} / ${_formatDuration(_duration)}",
-                            style: GoogleFonts.inter(
-                                fontSize: 12, color: Colors.grey),
-                          ),
-                          Expanded(
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                thumbShape: const RoundSliderThumbShape(
-                                    enabledThumbRadius: 6),
-                                trackHeight: 4,
-                                activeTrackColor: Colors.blue,
-                                inactiveTrackColor: Colors.grey.shade200,
-                                thumbColor: Colors.blue,
+                          // Card Header: #1 and Copy Icon
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("#${index + 1}",
+                                  style: GoogleFonts.prompt(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                              Row(
+                                children: [
+                                  // แสดงปุ่มแก้ไขเฉพาะตอนที่ยังไม่ได้อยู่ในโหมดแก้ไข
+                                  if (!_isEditing[index])
+                                    IconButton(
+                                      icon: const Icon(Icons.edit_outlined,
+                                          size: 20, color: Colors.blue),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isEditing[index] =
+                                              true; // เปิดโหมดแก้ไข
+                                        });
+                                      },
+                                    ),
+                                  IconButton(
+                                    icon: const Icon(Icons.copy_outlined,
+                                        size: 20, color: Colors.grey),
+                                    onPressed: () {
+                                      Clipboard.setData(ClipboardData(
+                                          text: _controllers[index].text));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content:
+                                                  Text("Copied to clipboard")));
+                                    },
+                                  ),
+                                ],
                               ),
-                              child: Slider(
-                                value: _position.inSeconds.toDouble(),
-                                max: _duration.inSeconds.toDouble() > 0
-                                    ? _duration.inSeconds.toDouble()
-                                    : 1,
-                                onChanged: (v) => _audioPlayer
-                                    .seek(Duration(seconds: v.toInt())),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Editable Script Textbox
+                          TextField(
+                            controller: _controllers[index],
+                            maxLines: null,
+                            readOnly: !_isEditing[index],
+                            style: GoogleFonts.prompt(
+                                fontSize: 14,
+                                height: 1.6,
+                                color: Colors.black87),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: _isEditing[index]
+                                  ? Colors.grey.shade50
+                                  : Colors.white,
+                              contentPadding: const EdgeInsets.all(12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isEditing[index]
+                                        ? Colors.grey.shade300
+                                        : Colors.transparent),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _isEditing[index]
+                                        ? Colors.grey.shade400
+                                        : Colors.transparent),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Text("0",
-                              style: GoogleFonts.prompt(
-                                  fontSize: 12.sp, color: Colors.grey)),
-                          SizedBox(width: 4.w),
-                          SvgPicture.asset('assets/images/logo/credit-icon.svg',
-                              width: 14.w, height: 14.h),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              minimumSize: Size.zero,
-                              elevation: 0,
+                          const SizedBox(height: 12),
+
+                          // ปุ่ม บันทึก / ยกเลิก (แสดงเมื่อกดเข้าโหมดแก้ไข)
+                          if (_isEditing[index]) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      // คืนค่าเดิมจาก _localScripts ให้ Textbox
+                                      _controllers[index].text =
+                                          _localScripts[index]['script'] ?? "";
+                                      _isEditing[index] = false; // ปิดโหมดแก้ไข
+                                      FocusScope.of(context)
+                                          .unfocus(); // ซ่อนคีย์บอร์ด
+                                    });
+                                  },
+                                  child: Text("ยกเลิก",
+                                      style: GoogleFonts.prompt(
+                                          color: Colors.grey.shade600,
+                                          fontSize: 13)),
+                                ),
+                                const SizedBox(width: 8),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      // 1. บันทึกข้อความใหม่ทับของเดิม
+                                      _localScripts[index]['script'] =
+                                          _controllers[index].text.trim();
+                                      // 2. ลบเสียงเก่าทิ้งเพื่อให้ปุ่มสร้างเสียงสีฟ้าโผล่มา
+                                      _localScripts[index]['audio'] = "";
+                                      _isEditing[index] = false; // ปิดโหมดแก้ไข
+                                      FocusScope.of(context)
+                                          .unfocus(); // ซ่อนคีย์บอร์ด
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6)),
+                                    minimumSize: const Size(
+                                        0, 36), // ปรับขนาดปุ่มให้กำลังดี
+                                  ),
+                                  child: Text("บันทึก",
+                                      style: GoogleFonts.prompt(
+                                          color: Colors.white, fontSize: 13)),
+                                ),
+                              ],
                             ),
-                            onPressed: () {
-                              // Logic for single audio download
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("Downloading audio...")));
-                            },
-                            child: Text("ดาวน์โหลด",
-                                style: GoogleFonts.prompt(
-                                    fontSize: 12, color: Colors.white)),
-                          ),
+                            const SizedBox(height: 8),
+                          ],
+
+                          // เปลี่ยนส่วนล่างสุดให้เหมือน UI ใน ResultScreen
+                          if (audioUrl.isNotEmpty) ...[
+                            GenskriptInlineAudioPlayer(
+                              key: ValueKey(
+                                  audioUrl), // บังคับรีโหลดเมื่อ URL เปลี่ยน
+                              audioUrl: audioUrl,
+                              points: points,
+                              onDownload: () {
+                                // แสดง Dialog ดาวน์โหลดรายการเดี่ยว
+                                showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      GenskriptDownloadOptionsDialog(
+                                    points: points,
+                                    onConfirm: (extension) {
+                                      // สำหรับรายการเดี่ยว โหลดจากลิงก์ S3 ตรงๆ ได้เลย (เพราะฟังก์ชัน _downloadFile เราหลบ 403 ให้แล้ว)
+                                      _downloadFile(audioUrl,
+                                          "slide_${index + 1}_${DateTime.now().millisecondsSinceEpoch}.$extension");
+                                    },
+                                  ),
+                                );
+                              },
+                            )
+                          ] else ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text("$points PT",
+                                    style: GoogleFonts.prompt(
+                                        color: Colors.grey, fontSize: 12)),
+                                const SizedBox(width: 12),
+                                SizedBox(
+                                  height: 32,
+                                  child: ElevatedButton(
+                                    onPressed: _generatingIndex != null ||
+                                            scriptText.trim().isEmpty
+                                        ? null
+                                        : () => _generateAudioForSlide(
+                                            index, scriptText),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF00BFFF),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      elevation: 0,
+                                    ),
+                                    child: _generatingIndex == index
+                                        ? const SizedBox(
+                                            // แสดงหัวหมุนๆ ตอนกำลังสร้างเสียงเฉพาะปุ่มนี้
+                                            width: 14,
+                                            height: 14,
+                                            child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2),
+                                          )
+                                        : Text("สร้างเสียง",
+                                            style: GoogleFonts.prompt(
+                                                color: Colors.white,
+                                                fontSize: 12)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
                         ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -246,38 +536,142 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Download All Button
-              Container(
-                width: double.infinity,
-                height: 50,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                      colors: [Color(0xFF9C27B0), Color(0xFF00BCD4)]),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (videoUrl != null) {
-                      // Trigger your DownloadService here using videoUrl
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Downloading Video: $videoUrl")));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("No video available yet.")));
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+              // Download Buttons Row (แบ่งโหลดเสียง กับ โหลดวิดีโอ)
+              Row(
+                children: [
+                  // ปุ่มดาวน์โหลดเสียงทั้งหมด (เรียก Dialog Zip/Merge)
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                            colors: [Color(0xFF9340FF), Color(0xFF34BDFA)]),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          bool hasMissing = _localScripts.any((s) =>
+                              s['audio'] == null ||
+                              s['audio'].toString().isEmpty);
+                          if (hasMissing) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        "กรุณาสร้างเสียงให้ครบทุกหน้าก่อนดาวน์โหลด")));
+                            return;
+                          }
+                          int totalPoints = _localScripts.fold(
+                              0,
+                              (sum, item) =>
+                                  sum +
+                                  (item['script']?.toString().length ?? 0));
+                          showDialog(
+                            context: context,
+                            builder: (context) => GenskriptDownloadAllDialog(
+                              points: totalPoints,
+                              onConfirm: (extension, mode) async {
+                                List<Map<String, dynamic>> payload =
+                                    _localScripts
+                                        .map((s) => {"audio_url": s['audio']})
+                                        .toList();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "กำลังเตรียมไฟล์เสียงทั้งหมด...")));
+                                String? resultUrl;
+                                // แยกการทำงานตาม Mode ที่ผู้ใช้เลือก
+                                if (mode == DownloadMode.zip) {
+                                  // 1. โหมด ZIP โหลดแยกไฟล์
+                                  resultUrl =
+                                      await DownloadService.requestDownloadUrl(
+                                    payloadData: payload,
+                                    totalPoints: totalPoints,
+                                    extension: extension,
+                                    mode: mode,
+                                  );
+                                } else {
+                                  // 2. โหมด Single โหลดรวมไฟล์ (Merge Voice)
+                                  List<String> audioUrls = _localScripts
+                                      .map((s) => s['audio'].toString())
+                                      .toList();
+                                  String workspaceId = widget
+                                          .item['genskript_id']
+                                          ?.toString() ??
+                                      widget.item['id']?.toString() ??
+                                      "genskript_merge_${DateTime.now().millisecondsSinceEpoch}";
+
+                                  resultUrl = await DownloadService
+                                      .mergeAudioToSingleFile(
+                                    audioUrls: audioUrls,
+                                    extension: extension,
+                                    workspaceId: workspaceId,
+                                  );
+                                }
+
+                                if (resultUrl != null) {
+                                  _downloadFile(resultUrl,
+                                      "genskript_audio_all_${DateTime.now().millisecondsSinceEpoch}.${mode == DownloadMode.zip ? 'zip' : extension}");
+                                } else {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "เกิดข้อผิดพลาดในการดาวน์โหลด")));
+                                  }
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12))),
+                        child: Text("โหลดเสียงทั้งหมด",
+                            style: GoogleFonts.prompt(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                    ),
                   ),
-                  child: Text("ดาวน์โหลดทั้งหมด",
-                      style: GoogleFonts.prompt(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold)),
-                ),
+                  if (videoUrl != null) ...[
+                    const SizedBox(width: 12),
+                    // ปุ่มดาวน์โหลดวิดีโอ (ถ้ามีวิดีโอ)
+                    Expanded(
+                      child: Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(12)),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            String ext =
+                                videoUrl!.split('.').last.split('?').first;
+                            if (ext.length > 4 || ext.isEmpty) ext = 'mp4';
+                            _downloadFile(videoUrl!,
+                                "genskript_video_${DateTime.now().millisecondsSinceEpoch}.$ext");
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12))),
+                          child: Text("ดาวน์โหลดวิดีโอ",
+                              style: GoogleFonts.prompt(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
               const SizedBox(height: 16),
 

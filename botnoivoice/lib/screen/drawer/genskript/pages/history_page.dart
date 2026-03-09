@@ -214,15 +214,63 @@ class _HistoryPageState extends State<HistoryPage> {
     String formattedDate =
         "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
 
+    // 1. ฟังก์ชันตัวช่วยดึง URL วิดีโอ (กรองค่าว่าง, คำว่า 'null' และบังคับให้เป็นลิงก์ http จริงๆ)
+    String extractValidUrl(dynamic data) {
+      if (data is! Map) return "";
+      final keys = [
+        'hq-video-merged',
+        'hq_video_merged',
+        'final_video_url',
+        'video_url'
+      ];
+      for (String k in keys) {
+        String val = data[k]?.toString().trim() ?? "";
+        // บังคับว่าต้องเป็นลิงก์เว็บ และต้องเป็นไฟล์วิดีโอ (.mp4) ป้องกัน API ส่งลิงก์รูปหรือเสียงมาแทน
+        if (val.isNotEmpty &&
+            val.toLowerCase() != 'null' &&
+            val.startsWith('http') &&
+            val.toLowerCase().contains('.mp4')) {
+          return val;
+        }
+      }
+      return "";
+    }
+
+    // ค้นหา URL วิดีโอจากชั้นนอกสุด
+    String realVideoUrl = extractValidUrl(item);
+
+    // ค้นหาใน object result หากยังไม่เจอ
+    if (realVideoUrl.isEmpty && item['result'] is Map) {
+      realVideoUrl = extractValidUrl(item['result']);
+    }
+
+    // ค้นหาใน scripts ด้วย เผื่อ API เอาลิงก์วิดีโอไปซ่อนไว้ในสไลด์ย่อย
+    if (realVideoUrl.isEmpty && item['scripts'] is List) {
+      for (var s in (item['scripts'] as List)) {
+        String temp = extractValidUrl(s);
+        if (temp.isNotEmpty) {
+          realVideoUrl = temp;
+          break;
+        }
+      }
+    }
+
+    // 2. ดึง URL เสียง (ค้นหาจากสไลด์หลัก หรือสไลด์ย่อยถ้าสไลด์หลักไม่มี)
+    String realAudioUrl = item['audio']?.toString() ?? "";
+    if (realAudioUrl.isEmpty && item['scripts'] is List) {
+      for (var s in (item['scripts'] as List)) {
+        if (s['audio'] != null && s['audio'].toString().isNotEmpty) {
+          realAudioUrl = s['audio'].toString();
+          break;
+        }
+      }
+    }
+
     // เช็คสถานะการประมวลผล
     bool isProcessing = item['video_status'] == 'processing';
 
-    // เช็คว่ามีไฟล์ให้โหลดหรือไม่ โดยเช็คจากฟิลด์ audio ตาม JSON
-    bool hasDownload = !isProcessing &&
-        ((item['audio'] != null && item['audio'].toString().isNotEmpty) ||
-            (item['scripts'] != null &&
-                item['scripts'].isNotEmpty &&
-                item['scripts'][0]['audio'] != null));
+    // เช็คว่ามีไฟล์ให้โหลดหรือไม่ (แสดงปุ่มเฉพาะกรณีที่มีวิดีโอเท่านั้น)
+    bool hasDownload = !isProcessing && realVideoUrl.isNotEmpty;
 
     return InkWell(
       onTap: onTap,
@@ -310,11 +358,10 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    // ใส่ Logic ดาวน์โหลดเสียง (audio) หรือวิดีโอ (videoUrl) ตามต้องการ
-                    String targetUrl =
-                        item['audio'] ?? item['scripts'][0]['audio'];
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("เตรียมดาวน์โหลด...")));
+                    // ดาวน์โหลดวิดีโอ
+                    String targetUrl = realVideoUrl;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("กำลังเตรียมดาวน์โหลดวิดีโอ...")));
                     // Add logic to call DownloadService here
                   },
                   style: ElevatedButton.styleFrom(
