@@ -286,55 +286,26 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   }
 
   void _showVideoSuccessDialog(String videoUrl) {
-    showDialog(
-      context: context,
-      builder: (context) => GenskriptSuccessDialog(
-        title: "Video Generation Started",
-        subtitle:
-            "Your video is being processed. You can download or share it below.",
-      ),
-    ).then((_) {
-      // Bottom sheet to download/share the video result
-      if (mounted) {
-        showModalBottomSheet(
-          context: context,
-          builder: (c) => Container(
-            padding: EdgeInsets.all(20.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("Video Options",
-                    style: GoogleFonts.prompt(
-                        fontSize: 18.sp, fontWeight: FontWeight.bold)),
-                SizedBox(height: 20.h),
-                ListTile(
-                  leading: const Icon(Icons.download, color: Colors.blue),
-                  title: Text("Download Video", style: GoogleFonts.prompt()),
-                  onTap: () {
-                    Navigator.pop(c);
-                    _executeDownload(
-                        url: videoUrl,
-                        fileName:
-                            "genskript_video_${DateTime.now().millisecondsSinceEpoch}.mp4",
-                        onSuccess: () => ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                                content: Text("Video Downloaded!"))));
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.share, color: Colors.blue),
-                  title: Text("Share Video", style: GoogleFonts.prompt()),
-                  onTap: () {
-                    Navigator.pop(c);
-                    _downloadAndShare(videoUrl);
-                  },
-                ),
-              ],
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Text("สร้างวิดีโอสำเร็จ กำลังดาวน์โหลดลงเครื่อง...")),
+    );
+
+    _executeDownload(
+      url: videoUrl,
+      fileName: "genskript_video_${DateTime.now().millisecondsSinceEpoch}.mp4",
+      onSuccess: () {
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => const GenskriptSuccessDialog(
+              title: "ดาวน์โหลดสำเร็จ",
+              subtitle: "วิดีโอถูกสร้างและบันทึกลงในเครื่องของคุณเรียบร้อยแล้ว",
             ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      },
+    );
   }
 
   // ==========================================
