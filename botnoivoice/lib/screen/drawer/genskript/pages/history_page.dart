@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_delete_confirm_dialog.dart';
 import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_success_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -61,18 +62,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Future<void> _handleDelete(String id) async {
     bool? confirm = await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Delete Workspace"),
-        content: const Text("Are you sure? This cannot be undone."),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancel")),
-          TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text("Delete", style: TextStyle(color: Colors.red))),
-        ],
-      ),
+      builder: (context) => const GenskriptDeleteConfirmDialog(),
     );
 
     if (confirm == true) {

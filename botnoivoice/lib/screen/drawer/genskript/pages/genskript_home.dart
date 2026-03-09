@@ -463,7 +463,39 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
   Widget _buildPointDisplay() {
     return Row(
       children: [
-        const Icon(Icons.help_outline, size: 18, color: Colors.black54),
+        Tooltip(
+          triggerMode: TooltipTriggerMode.tap,
+          preferBelow: false,
+          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          showDuration: const Duration(seconds: 4),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          richMessage: TextSpan(
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              height: 1.5,
+            ),
+            children: [
+              const TextSpan(text: "การสร้างข้อความมีผลต่อพอยท์ที่ใช้ "),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: SvgPicture.asset(
+                  'assets/images/logo/credit-icon.svg',
+                  width: 14,
+                  height: 14,
+                ),
+              ),
+              const TextSpan(
+                  text: "\nพ้อยท์ที่ใช้ = จำนวนหน้า x จำนวนคำต่อหน้า"),
+            ],
+          ),
+          child:
+              const Icon(Icons.help_outline, size: 18, color: Colors.black54),
+        ),
         const SizedBox(width: 8),
         RichText(
           text: TextSpan(
