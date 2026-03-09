@@ -1003,8 +1003,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     isDisabled: !hasItemsToGenerate),
                 _buildGridAction("ดาวน์โหลดทั้งหมด", _showDownloadAllDialog,
                     isPrimary: true),
-                _buildGridAction("สร้างวิดีโอฟรี",
-                    () => VideoService.handleFreeVideo(context)),
                 _buildGridAction("สร้างวิดีโอ", _handleCreateVideo),
               ],
             ),
