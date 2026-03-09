@@ -117,9 +117,10 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
       final encodedUrl = Uri.parse(url).toString();
       final request = http.Request('GET', Uri.parse(encodedUrl));
 
-      // 2. แอบแนบ User-Agent ไปหลอก S3 ว่าเราคือ Browser ไม่ใช่ Bot
+      // 2. แนบ Referer และ User-Agent ให้ตรงกับที่ระบบ S3 ของ Botnoi บังคับเป๊ะๆ
       request.headers.addAll({
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Referer': 'https://voice.botnoi.ai/',
+        'User-Agent': 'BotnoiVoiceMobile',
         'Accept': '*/*',
       });
       final response = await request.send();
