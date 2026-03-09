@@ -1,7 +1,14 @@
+import 'dart:io';
+
+import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_success_dialog.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../services/history_service.dart';
-import 'history_detail_page.dart'; // ✅ Import the detail page
+import 'history_detail_page.dart'; // ✅ Import the detail
+import 'package:http/http.dart' as http;
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -80,6 +87,84 @@ class _HistoryPageState extends State<HistoryPage> {
         if (mounted)
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Failed to delete")));
+      }
+    }
+  }
+
+  // เพิ่มฟังก์ชันดาวน์โหลดไฟล์
+  Future<void> _downloadFile(String url, String fileName) async {
+    bool hasPermission = false;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt >= 33) {
+        hasPermission = true;
+      } else {
+        var status = await Permission.storage.request();
+        hasPermission = status.isGranted;
+      }
+    } else {
+      hasPermission = true;
+    }
+
+    if (!hasPermission) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Please grant storage permission.")));
+      return;
+    }
+
+    Directory? directory;
+    if (Platform.isAndroid) {
+      directory = Directory('/storage/emulated/0/Download');
+      if (!await directory.exists())
+        directory = await getExternalStorageDirectory();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    if (directory == null) return;
+
+    try {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("เริ่มดาวน์โหลดวิดีโอแล้ว...")));
+      }
+
+      final encodedUrl = Uri.parse(url).toString();
+      final request = http.Request('GET', Uri.parse(encodedUrl));
+      request.headers.addAll({
+        'Referer': 'https://voice.botnoi.ai/',
+        'User-Agent': 'BotnoiVoiceMobile',
+      });
+
+      final response = await request.send();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        File file = File('${directory.path}/$fileName');
+        var fileStream = file.openWrite();
+
+        await response.stream.pipe(fileStream);
+        await fileStream.flush();
+        await fileStream.close();
+
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => const GenskriptSuccessDialog(
+              title: "ดาวน์โหลดสำเร็จ",
+              subtitle: "ไฟล์ถูกบันทึกลงในเครื่องของคุณเรียบร้อยแล้ว",
+            ),
+          );
+        }
+      } else {
+        throw Exception("Download Error Status: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Download failed: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์")),
+        );
       }
     }
   }
@@ -221,7 +306,8 @@ class _HistoryPageState extends State<HistoryPage> {
         'hq-video-merged',
         'hq_video_merged',
         'final_video_url',
-        'video_url'
+        'video_url',
+        'render_final_url'
       ];
       for (String k in keys) {
         String val = data[k]?.toString().trim() ?? "";
@@ -267,7 +353,11 @@ class _HistoryPageState extends State<HistoryPage> {
     }
 
     // เช็คสถานะการประมวลผล
-    bool isProcessing = item['video_status'] == 'processing';
+    // เช็คสถานะการประมวลผลครอบคลุมทั้ง API รูปแบบเก่าและใหม่
+    bool isProcessing = item['video_status'] == 'processing' ||
+        item['render_status'] == 'processing' ||
+        item['video_url'] == 'processing' ||
+        item['final_video_url'] == 'processing';
 
     // เช็คว่ามีไฟล์ให้โหลดหรือไม่ (แสดงปุ่มเฉพาะกรณีที่มีวิดีโอเท่านั้น)
     bool hasDownload = !isProcessing && realVideoUrl.isNotEmpty;
@@ -358,11 +448,14 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    // ดาวน์โหลดวิดีโอ
+                    // ดึงนามสกุลไฟล์จาก URL หรือใช้ค่าเริ่มต้น mp4 และสั่งดาวน์โหลดลงเครื่อง
                     String targetUrl = realVideoUrl;
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("กำลังเตรียมดาวน์โหลดวิดีโอ...")));
-                    // Add logic to call DownloadService here
+                    String ext = targetUrl.split('.').last.split('?').first;
+                    if (ext.length > 4 || ext.isEmpty) ext = 'mp4';
+                    String fileName =
+                        "genskript_video_${DateTime.now().millisecondsSinceEpoch}.$ext";
+
+                    _downloadFile(targetUrl, fileName);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,

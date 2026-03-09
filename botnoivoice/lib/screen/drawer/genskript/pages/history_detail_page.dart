@@ -219,6 +219,85 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
     }
   }
 
+  // ฟังก์ชันวนลูปสร้างเสียงเฉพาะจุดที่ยังไม่มี
+  Future<void> _generateMissingAudio() async {
+    for (int i = 0; i < _localScripts.length; i++) {
+      String audio = _localScripts[i]['audio'] ?? "";
+      String scriptText = _localScripts[i]['script'] ?? "";
+      // ตรวจสอบว่าช่องไหนไม่มีเสียง และมีข้อความให้สร้าง
+      if (audio.isEmpty && scriptText.trim().isNotEmpty) {
+        await _generateAudioForSlide(i, scriptText);
+      }
+    }
+
+    // เช็คว่ามีสไลด์ไหนที่ "มีข้อความ" แต่ "ยังไม่มีเสียง" หลงเหลืออยู่หรือไม่
+    bool stillMissing = _localScripts.any((s) =>
+        (s['audio'] == null || s['audio'].toString().isEmpty) &&
+        (s['script'] != null && s['script'].toString().trim().isNotEmpty));
+    if (!stillMissing && mounted) {
+      _showDownloadAllDialog(); // ครบแล้วไปหน้าดาวน์โหลดต่อ
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("สร้างเสียงไม่สำเร็จบางรายการ")));
+    }
+  }
+
+  // ฟังก์ชันแสดงหน้าต่างเลือกสกุลไฟล์ดาวน์โหลด (ย้ายมาจากในปุ่มเดิม)
+  void _showDownloadAllDialog() {
+    int totalPoints = _localScripts.fold(
+        0, (sum, item) => sum + (item['script']?.toString().length ?? 0));
+    showDialog(
+      context: context,
+      builder: (context) => GenskriptDownloadAllDialog(
+        points: totalPoints,
+        onConfirm: (extension, mode) async {
+          // กรองเอาเฉพาะสไลด์ที่มี URL เสียงจริงๆ ป้องกันการส่งค่าว่างไปให้ API
+          List<Map<String, dynamic>> payload = _localScripts
+              .where(
+                  (s) => s['audio'] != null && s['audio'].toString().isNotEmpty)
+              .map((s) => {"audio_url": s['audio']})
+              .toList();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("กำลังเตรียมไฟล์เสียงทั้งหมด...")));
+          String? resultUrl;
+          if (mode == DownloadMode.zip) {
+            resultUrl = await DownloadService.requestDownloadUrl(
+              payloadData: payload,
+              totalPoints: totalPoints,
+              extension: extension,
+              mode: mode,
+            );
+          } else {
+            // กรองค่าว่างทิ้งเช่นเดียวกันสำหรับโหมด Merge
+            List<String> audioUrls = _localScripts
+                .where((s) =>
+                    s['audio'] != null && s['audio'].toString().isNotEmpty)
+                .map((s) => s['audio'].toString())
+                .toList();
+
+            String workspaceId = widget.item['genskript_id']?.toString() ??
+                widget.item['id']?.toString() ??
+                "genskript_merge_${DateTime.now().millisecondsSinceEpoch}";
+            resultUrl = await DownloadService.mergeAudioToSingleFile(
+              audioUrls: audioUrls,
+              extension: extension,
+              workspaceId: workspaceId,
+            );
+          }
+          if (resultUrl != null) {
+            _downloadFile(resultUrl,
+                "genskript_audio_all_${DateTime.now().millisecondsSinceEpoch}.${mode == DownloadMode.zip ? 'zip' : extension}");
+          } else {
+            if (mounted)
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("เกิดข้อผิดพลาดในการดาวน์โหลด")));
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Extract Data
@@ -301,7 +380,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                     final scriptData = _localScripts[index];
                     final scriptText = scriptData['script'] ?? "";
                     final audioUrl = scriptData['audio'] ?? "";
-                    final points = scriptText.length; // ประมาณค่า Point
+                    final points = audioUrl.isNotEmpty ? 0 : scriptText.length;
 
                     return Container(
                       padding: const EdgeInsets.all(20),
@@ -591,7 +670,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                                     mode: mode,
                                   );
                                 } else {
-                                  // 2. โหมด Single โหลดรวมไฟล์ (Merge Voice)
+                                  // 2. โหมด Single โหลดรวมไฟล์ (ผ)
                                   List<String> audioUrls = _localScripts
                                       .map((s) => s['audio'].toString())
                                       .toList();
