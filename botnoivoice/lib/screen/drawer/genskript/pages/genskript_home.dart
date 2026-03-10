@@ -35,7 +35,7 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
   String fileType = 'image';
   double wordCount = 120;
   String language = 'ไทย';
-  String contentType = 'นำเสนองาน';
+  String contentType = 'เล่าเรื่อง';
 
   // สร้างสมการคำนวณพอยท์อัตโนมัติ
   int get _requiredPoints {
@@ -72,8 +72,7 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
 
   bool get _isReadyToGenerate {
     bool hasFile = _pickedFiles.isNotEmpty;
-    bool hasPrompt = _customPromptController.text.trim().isNotEmpty;
-    return hasFile || hasPrompt;
+    return hasFile;
   }
 
   @override
@@ -610,7 +609,7 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
         _buildInputLabel(
           "ภาษาของสคริปต์",
           _buildDropdown(
-            ['ไทย', 'ENG'],
+            ['ไทย'],
             language,
             (v) => setState(() => language = v!),
           ),
@@ -619,7 +618,7 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
         _buildInputLabel(
           "ประเภทเนื้อหา",
           _buildDropdown(
-            ['นำเสนองาน', 'สอนวิธีทำ', 'เล่าเรื่อง', 'บรรยายอาจารย์'],
+            ['เล่าเรื่อง', 'สอนวิธีทำ', 'นำเสนองาน', 'บรรยายอาจารย์'],
             contentType,
             (v) {
               if (v != null)

@@ -274,9 +274,25 @@ class _GenskriptImageUploaderState extends State<GenskriptImageUploader> {
   }
 
   Widget _buildEmptyState() {
+    String displayTitle = '';
+    String displayLimit = '';
+    if (widget.fileType == 'image') {
+      displayTitle = 'รูปภาพ';
+      displayLimit = 'Limit: 200MB (.jpg, .jpeg, .png)';
+    } else if (widget.fileType == 'pdf') {
+      displayTitle = 'PDF';
+      displayLimit = 'Limit: 200MB (.pdf)';
+    } else if (widget.fileType == 'pptx') {
+      displayTitle = 'PPTX';
+      displayLimit = 'Limit: 200MB (.pptx)';
+    } else {
+      displayTitle = widget.fileType.toUpperCase();
+      displayLimit = 'Limit: 200MB';
+    }
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
       decoration: _commonDecoration, // ใช้ Decoration กลาง
       child: Row(
         children: [
@@ -291,18 +307,18 @@ class _GenskriptImageUploaderState extends State<GenskriptImageUploader> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.fileType.toUpperCase(),
+                  displayTitle,
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF00B0FF),
+                    color: const Color(0xFF333333),
                     fontFamily: 'Prompt',
                   ),
                 ),
                 Text(
-                  'Limit: 200MB (${widget.fileType == 'image' ? 'jpg, png' : widget.fileType})',
+                  displayLimit,
                   style: TextStyle(
-                    fontSize: 10.sp,
+                    fontSize: 9.sp,
                     fontWeight: FontWeight.w400,
                     color: const Color(0xFF888888),
                     fontFamily: 'Prompt',
