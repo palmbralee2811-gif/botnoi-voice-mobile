@@ -134,6 +134,34 @@ class _GenskriptDownloadAllDialogState
               ],
             ),
 
+            SizedBox(height: 8.h),
+            const Divider(color: Colors.black87),
+            SizedBox(height: 12.h),
+
+            // ส่วนแสดงพอยท์ที่ต้องจ่าย
+            Text(
+              "ยืนยันการดาวน์โหลดไฟล์",
+              style: GoogleFonts.prompt(
+                  fontSize: 16.sp, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 12.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("พอยท์ที่ต้องจ่ายทั้งหมด:",
+                    style: GoogleFonts.prompt(fontSize: 14.sp)),
+                Text(
+                  "${widget.points} PT",
+                  style: GoogleFonts.prompt(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF00BFFF),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+
             // 5. หมายเหตุ
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,

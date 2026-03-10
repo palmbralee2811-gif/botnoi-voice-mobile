@@ -242,56 +242,109 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
     }
   }
 
-  // ฟังก์ชันแสดงหน้าต่างเลือกสกุลไฟล์ดาวน์โหลด (ย้ายมาจากในปุ่มเดิม)
+  // ฟังก์ชันแสดงหน้าต่างเลือกสกุลไฟล์ดาวน์โหลด
   void _showDownloadAllDialog() {
-    int totalPoints = _localScripts.fold(
-        0, (sum, item) => sum + (item['script']?.toString().length ?? 0));
+    // คำนวณพอยท์ถ้ามีครบแล้วจะเป็น 0 PT
+    int totalPoints = 0;
+    for (var item in _localScripts) {
+      String audio = item['audio']?.toString() ?? "";
+      String scriptText = item['script']?.toString() ?? "";
+      if (audio.isEmpty && scriptText.trim().isNotEmpty) {
+        totalPoints += scriptText.length;
+      }
+    }
+
     showDialog(
       context: context,
-      builder: (context) => GenskriptDownloadAllDialog(
+      builder: (dialogContext) => GenskriptDownloadAllDialog(
         points: totalPoints,
         onConfirm: (extension, mode) async {
-          // กรองเอาเฉพาะสไลด์ที่มี URL เสียงจริงๆ ป้องกันการส่งค่าว่างไปให้ API
-          List<Map<String, dynamic>> payload = _localScripts
+          if (!mounted) return;
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (loadingContext) => const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          );
+
+          // ตรวจสอบและสร้างเสียงสำหรับสไลด์ที่ยังไม่มี
+          String langCode = widget.item['language']?['value'] ?? 'th';
+          if (langCode.isEmpty) langCode = 'th';
+
+          for (int i = 0; i < _localScripts.length; i++) {
+            String audio = _localScripts[i]['audio']?.toString() ?? "";
+            String scriptText = _localScripts[i]['script']?.toString() ?? "";
+
+            if (audio.isEmpty && scriptText.trim().isNotEmpty) {
+              String? newAudioUrl = await VoiceService.handleCreateVoice(
+                scriptText: scriptText,
+                speed: "1x",
+                volume: "100%",
+                languageValue: langCode,
+                speakerId: _selectedSpeaker?.speakerId ?? "5",
+              );
+
+              if (newAudioUrl != null && newAudioUrl.isNotEmpty) {
+                setState(() {
+                  _localScripts[i]['audio'] = newAudioUrl;
+                });
+              }
+            }
+          }
+
+          // ดึง URL เสียงทั้งหมดที่พร้อมใช้งาน
+          List<String> validAudioUrls = _localScripts
               .where(
                   (s) => s['audio'] != null && s['audio'].toString().isNotEmpty)
-              .map((s) => {"audio_url": s['audio']})
+              .map((s) => s['audio'].toString())
               .toList();
 
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("กำลังเตรียมไฟล์เสียงทั้งหมด...")));
-          String? resultUrl;
           if (mode == DownloadMode.zip) {
-            resultUrl = await DownloadService.requestDownloadUrl(
-              payloadData: payload,
-              totalPoints: totalPoints,
+            // สร้างไฟล์ Zip ภายในแอป (Local) โดยใช้ Library
+            String finalFileName =
+                "botnoi_genskript_${DateTime.now().millisecondsSinceEpoch}.zip";
+            String? savedPath = await DownloadService.createLocalZip(
+              audioUrls: validAudioUrls,
+              fileName: finalFileName,
               extension: extension,
-              mode: mode,
             );
-          } else {
-            // กรองค่าว่างทิ้งเช่นเดียวกันสำหรับโหมด Merge
-            List<String> audioUrls = _localScripts
-                .where((s) =>
-                    s['audio'] != null && s['audio'].toString().isNotEmpty)
-                .map((s) => s['audio'].toString())
-                .toList();
 
+            if (mounted) Navigator.pop(context);
+
+            if (savedPath != null && mounted) {
+              showDialog(
+                context: context,
+                builder: (successContext) => const GenskriptSuccessDialog(
+                  title: "ดาวน์โหลดสำเร็จ",
+                  subtitle: "ไฟล์ Zip ของคุณถูกบันทึกลงในเครื่องเรียบร้อยแล้ว",
+                ),
+              );
+            } else if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("เกิดข้อผิดพลาดในการสร้างไฟล์ Zip")));
+            }
+          } else {
+            // โหมด Merge รวมไฟล์ผ่าน API
             String workspaceId = widget.item['genskript_id']?.toString() ??
                 widget.item['id']?.toString() ??
                 "genskript_merge_${DateTime.now().millisecondsSinceEpoch}";
-            resultUrl = await DownloadService.mergeAudioToSingleFile(
-              audioUrls: audioUrls,
+
+            String? resultUrl = await DownloadService.mergeAudioToSingleFile(
+              audioUrls: validAudioUrls,
               extension: extension,
               workspaceId: workspaceId,
             );
-          }
-          if (resultUrl != null) {
-            _downloadFile(resultUrl,
-                "genskript_audio_all_${DateTime.now().millisecondsSinceEpoch}.${mode == DownloadMode.zip ? 'zip' : extension}");
-          } else {
-            if (mounted)
+
+            if (mounted) Navigator.pop(context);
+
+            if (resultUrl != null && mounted) {
+              _downloadFile(resultUrl,
+                  "botnoi_genskript_${DateTime.now().millisecondsSinceEpoch}.$extension");
+            } else if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("เกิดข้อผิดพลาดในการดาวน์โหลด")));
+                  content: Text("เกิดข้อผิดพลาดในการรวมไฟล์ (Merge)")));
+            }
           }
         },
       ),
@@ -541,7 +594,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                                 // แสดง Dialog ดาวน์โหลดรายการเดี่ยว
                                 showDialog(
                                   context: context,
-                                  builder: (context) =>
+                                  builder: (dialogContext) =>
                                       GenskriptDownloadOptionsDialog(
                                     points: points,
                                     onConfirm: (extension) {
@@ -629,80 +682,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {
-                          bool hasMissing = _localScripts.any((s) =>
-                              s['audio'] == null ||
-                              s['audio'].toString().isEmpty);
-                          if (hasMissing) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        "กรุณาสร้างเสียงให้ครบทุกหน้าก่อนดาวน์โหลด")));
-                            return;
-                          }
-                          int totalPoints = _localScripts.fold(
-                              0,
-                              (sum, item) =>
-                                  sum +
-                                  (item['script']?.toString().length ?? 0));
-                          showDialog(
-                            context: context,
-                            builder: (context) => GenskriptDownloadAllDialog(
-                              points: totalPoints,
-                              onConfirm: (extension, mode) async {
-                                List<Map<String, dynamic>> payload =
-                                    _localScripts
-                                        .map((s) => {"audio_url": s['audio']})
-                                        .toList();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            "กำลังเตรียมไฟล์เสียงทั้งหมด...")));
-                                String? resultUrl;
-                                // แยกการทำงานตาม Mode ที่ผู้ใช้เลือก
-                                if (mode == DownloadMode.zip) {
-                                  // 1. โหมด ZIP โหลดแยกไฟล์
-                                  resultUrl =
-                                      await DownloadService.requestDownloadUrl(
-                                    payloadData: payload,
-                                    totalPoints: totalPoints,
-                                    extension: extension,
-                                    mode: mode,
-                                  );
-                                } else {
-                                  // 2. โหมด Single โหลดรวมไฟล์ (ผ)
-                                  List<String> audioUrls = _localScripts
-                                      .map((s) => s['audio'].toString())
-                                      .toList();
-                                  String workspaceId = widget
-                                          .item['genskript_id']
-                                          ?.toString() ??
-                                      widget.item['id']?.toString() ??
-                                      "genskript_merge_${DateTime.now().millisecondsSinceEpoch}";
-
-                                  resultUrl = await DownloadService
-                                      .mergeAudioToSingleFile(
-                                    audioUrls: audioUrls,
-                                    extension: extension,
-                                    workspaceId: workspaceId,
-                                  );
-                                }
-
-                                if (resultUrl != null) {
-                                  _downloadFile(resultUrl,
-                                      "genskript_audio_all_${DateTime.now().millisecondsSinceEpoch}.${mode == DownloadMode.zip ? 'zip' : extension}");
-                                } else {
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                "เกิดข้อผิดพลาดในการดาวน์โหลด")));
-                                  }
-                                }
-                              },
-                            ),
-                          );
-                        },
+                        onPressed: _showDownloadAllDialog,
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
                             shadowColor: Colors.transparent,

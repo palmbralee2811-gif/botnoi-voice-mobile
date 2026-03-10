@@ -93,6 +93,26 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
   }
 
   Future<void> _handleFilesChanged(List<PlatformFile> files) async {
+    // ตรวจสอบขนาดไฟล์ จำกัดไม่เกิน 200MB
+    const int maxFileSizeInBytes = 200 * 1024 * 1024;
+    for (var file in files) {
+      if (file.size > maxFileSizeInBytes) {
+        // หากขนาดเกิน ให้แสดงแจ้งเตือนและยกเลิกการอัปโหลดทันที
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("ไฟล์ ${file.name} มีขนาดใหญ่เกินไป (จำกัดไม่เกิน 200MB)"),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+        // ล้างค่าไฟล์ที่เลือกมาผิด และหยุดการทำงาน
+        setState(() {
+          _pickedFiles.clear();
+        });
+        return;
+      }
+    }
+
     setState(() {
       _pickedFiles = files;
       _isLoading = true;
@@ -101,8 +121,6 @@ class _GenskriptHomeState extends ConsumerState<GenskriptHome> {
       _previewUrls = null;
     });
 
-    // TODO: ตรงนี้คุณต้องวนลูป Upload หรือส่ง List ไปที่ Service ตาม API ของคุณ
-    // ตัวอย่างการ Loop Upload (สมมติ):
     try {
       _uploadedUrls.clear();
       uploadedUrl = null;
