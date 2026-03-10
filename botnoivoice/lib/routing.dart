@@ -7,6 +7,7 @@ import 'package:botnoivoice/screen/drawer/account/confirm_delete_account_screen.
 import 'package:botnoivoice/screen/drawer/account/delete_account_screen.dart';
 import 'package:botnoivoice/screen/drawer/education/education_screen.dart';
 import 'package:botnoivoice/screen/drawer/genskript/pages/genskript_home.dart';
+import 'package:botnoivoice/screen/drawer/genskript/pages/history_detail_page.dart';
 import 'package:botnoivoice/screen/drawer/gensub/result/gensub_result_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_advanced_screen.dart';
 import 'package:botnoivoice/screen/drawer/marads/widgets/screen/mar_ads_basic_screen.dart';
@@ -27,7 +28,9 @@ import 'package:botnoivoice/screen/login/login_screen.dart';
 import 'package:botnoivoice/screen/main/home/home_screen.dart';
 import 'package:botnoivoice/screen/main/speaker/speaker_screen.dart';
 import 'package:botnoivoice/screen/drawer/gensub/uploadwithrecord/upload_rec_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final router = GoRouter(
   debugLogDiagnostics: true,
@@ -177,6 +180,31 @@ final router = GoRouter(
     GoRoute(
       path: '/genskript',
       builder: (context, state) => const GenskriptHome(),
+    ),
+    GoRoute(
+      path: '/genskript/history-detail',
+      builder: (context, state) {
+        // รับค่า item ที่ส่งผ่าน extra มา
+        final item = state.extra as dynamic;
+
+        return Scaffold(
+          backgroundColor: const Color(0xFFF9FAFB),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => context.pop(),
+            ),
+            title: Text(item['title'] ?? "Detail",
+                style: GoogleFonts.prompt(color: Colors.black)),
+          ),
+          body: HistoryDetailPage(
+            item: item,
+            onBack: () => context.pop(),
+          ),
+        );
+      },
     ),
   ],
 );

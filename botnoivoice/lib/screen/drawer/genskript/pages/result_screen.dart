@@ -12,6 +12,7 @@ import 'package:botnoivoice/service/token/user_token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -199,7 +200,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 child: GestureDetector(
                   onTap: () {
                     isDialogClosed = true;
-                    Navigator.pop(context); // อนุญาตให้กดปิด Dialog ได้
+                    context.pop(); // อนุญาตให้กดปิด Dialog ได้
                   },
                   child: const Icon(Icons.close, color: Colors.black54),
                 ),
@@ -253,7 +254,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       );
 
       if (mounted && !isDialogClosed) {
-        Navigator.pop(context); // ปิดหน้าต่างโหลด (ถ้าผู้ใช้ยังไม่กดปิดไปเอง)
+        context.pop(); // ปิดหน้าต่างโหลด (ถ้าผู้ใช้ยังไม่กดปิดไปเอง)
       }
 
       if (videoUrl != null) {
@@ -277,7 +278,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         }
       }
     } catch (e) {
-      if (mounted && !isDialogClosed) Navigator.pop(context);
+      if (mounted && !isDialogClosed) context.pop();
       logger.e("Video Create Error", error: e);
       if (mounted)
         ScaffoldMessenger.of(context)
@@ -340,7 +341,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       logger.e("Error in handleCreateVoice wrapper", error: e);
     }
 
-    if (mounted) Navigator.pop(context);
+    if (mounted) context.pop();
 
     if (resultUrl != null && resultUrl.isNotEmpty) {
       _currentFileName =
@@ -460,7 +461,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       }
     }
 
-    if (mounted) Navigator.pop(context); // ปิด Loading Dialog
+    if (mounted) context.pop(); // ปิด Loading Dialog
 
     // ถ้ามีการสร้างเสียงสำเร็จอย่างน้อย 1 รายการ ให้อัปเดต Point
     if (successCount > 0) {
@@ -554,14 +555,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
       if (response.statusCode == 200) {
         await file.writeAsBytes(response.bodyBytes);
-        if (mounted) Navigator.pop(context);
+        if (mounted) context.pop();
         await Share.shareXFiles([XFile(file.path)],
             text: 'Created with Genskript!');
       } else {
         throw Exception("Share download failed");
       }
     } catch (e) {
-      if (mounted && Navigator.canPop(context)) Navigator.pop(context);
+      if (mounted && context.canPop()) context.pop();
       logger.e("Share failed", error: e);
     }
   }
@@ -680,7 +681,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     child: ElevatedButton(
                       onPressed: tempSelected!.isEmpty
                           ? null
-                          : () => Navigator.pop(context, tempSelected),
+                          : () => context.pop(tempSelected),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
@@ -721,7 +722,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           currentScript: _editController.text,
           targetLanguageName: targetLang,
           imageUrl: widget.items[_currentIndex].imageUrl);
-      if (mounted) Navigator.pop(context);
+      if (mounted) context.pop();
 
       if (result != null) {
         // อัปเดต Point ให้เป็นปัจจุบันหลังจากใช้บริการ API
@@ -740,7 +741,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       }
     } catch (e) {
       logger.e("Translation Error", error: e);
-      if (mounted) Navigator.pop(context);
+      if (mounted) context.pop();
     }
   }
 
@@ -814,7 +815,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
           // ถ้าพยายามสร้างแล้ว แต่ยังไม่มีไฟล์เสียงเลยสักหน้า ให้หยุดทำงาน
           if (validAudioUrls.isEmpty) {
-            if (mounted) Navigator.pop(context);
+            if (mounted) context.pop();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                   content: Text(
@@ -833,7 +834,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               extension: extension,
             );
 
-            if (mounted) Navigator.pop(context);
+            if (mounted) context.pop();
 
             if (savedPath != null && mounted) {
               showDialog(
@@ -858,7 +859,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               workspaceId: workspaceId,
             );
 
-            if (mounted) Navigator.pop(context);
+            if (mounted) context.pop();
 
             if (downloadUrl != null && downloadUrl.isNotEmpty && mounted) {
               String finalFileName = "botnoi_genskript_$randomId.$extension";
@@ -1261,7 +1262,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                         : null,
                     onTap: () {
                       onSelect(item);
-                      Navigator.pop(context);
+                      context.pop();
                     },
                   );
                 },

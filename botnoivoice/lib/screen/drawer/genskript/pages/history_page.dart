@@ -4,6 +4,7 @@ import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_delete_con
 import 'package:botnoivoice/screen/drawer/genskript/widgets/genskript_success_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -254,23 +255,8 @@ class _HistoryPageState extends State<HistoryPage> {
         itemBuilder: (context, index) {
           final item = _historyItems[index];
           return _buildHistoryItemCard(item, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  backgroundColor: const Color(0xFFF9FAFB),
-                  appBar: AppBar(
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    leading: const BackButton(color: Colors.black),
-                    title: Text(item['title'] ?? "Detail",
-                        style: GoogleFonts.prompt(color: Colors.black)),
-                  ),
-                  body: HistoryDetailPage(
-                      item: item, onBack: () => Navigator.pop(context)),
-                ),
-              ),
-            );
+            // เปลี่ยนมาใช้ GoRouter และส่งข้อมูล item ไปทาง extra
+            context.push('/genskript/history-detail', extra: item);
           });
         },
       ),

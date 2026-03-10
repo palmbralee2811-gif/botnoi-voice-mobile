@@ -9,6 +9,7 @@ import 'package:botnoivoice/screen/drawer/marads/widgets/models/mar_ads_speaker_
 import 'package:botnoivoice/screen/main/speaker/entities/speaker_entity.dart';
 import 'package:botnoivoice/screen/main/speaker/model/speaker_model.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
@@ -310,7 +311,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
               extension: extension,
             );
 
-            if (mounted) Navigator.pop(context);
+            if (mounted) context.pop();
 
             if (savedPath != null && mounted) {
               showDialog(
@@ -336,7 +337,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
               workspaceId: workspaceId,
             );
 
-            if (mounted) Navigator.pop(context);
+            if (mounted) context.pop();
 
             if (resultUrl != null && mounted) {
               _downloadFile(resultUrl,

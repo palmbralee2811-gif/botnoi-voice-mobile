@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GenskriptDeleteConfirmDialog extends StatelessWidget {
@@ -50,8 +51,8 @@ class GenskriptDeleteConfirmDialog extends StatelessWidget {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () => Navigator.pop(
-                              context, false), // ส่งค่า false กลับไป (ยกเลิก)
+                          onPressed: () => context
+                              .pop(false), // ส่งค่า false กลับไป (ยกเลิก)
                           style: OutlinedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 12.h),
                             side: BorderSide(color: Colors.grey.shade300),
@@ -68,8 +69,8 @@ class GenskriptDeleteConfirmDialog extends StatelessWidget {
                       SizedBox(width: 12.w),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () => Navigator.pop(
-                              context, true), // ส่งค่า true กลับไป (ยืนยันลบ)
+                          onPressed: () => context
+                              .pop(true), // ส่งค่า true กลับไป (ยืนยันลบ)
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -98,7 +99,7 @@ class GenskriptDeleteConfirmDialog extends StatelessWidget {
               child: IconButton(
                 icon:
                     Icon(Icons.close, color: Colors.grey.shade600, size: 24.sp),
-                onPressed: () => Navigator.pop(context, false),
+                onPressed: () => context.pop(false),
               ),
             ),
           ],
