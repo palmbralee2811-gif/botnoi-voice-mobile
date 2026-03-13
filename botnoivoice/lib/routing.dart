@@ -193,7 +193,7 @@ final router = GoRouter(
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
               onPressed: () => context.pop(),
             ),
             title: Text(item['title'] ?? "Detail",
