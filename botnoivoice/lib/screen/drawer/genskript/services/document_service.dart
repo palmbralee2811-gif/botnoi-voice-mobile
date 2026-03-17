@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 // ignore: depend_on_referenced_packages
-import 'package:http_parser/http_parser.dart';
 import 'package:logger/logger.dart';
 import '../data/api_constants.dart';
 

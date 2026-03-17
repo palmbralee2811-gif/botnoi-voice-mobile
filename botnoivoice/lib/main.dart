@@ -12,22 +12,33 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock the orientation to portrait
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await LineSDK.instance.setup(lineSdkChannelId).then((_) {
-    print("LineSDK Prepared");
-  });
+  // Lock the orientation to portrait (not applicable on web)
+  if (!kIsWeb) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 
-  // โหลดภาษาเริ่มต้นจาก LanguageHelper                 
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // LineSDK setup (only on mobile platforms)
+  if (!kIsWeb) {
+    try {
+      await LineSDK.instance.setup(lineSdkChannelId).then((_) {
+        print("LineSDK Prepared");
+      });
+    } catch (e) {
+      print("LineSDK setup error: $e");
+    }
+  }
+
+  // โหลดภาษาเริ่มต้นจาก LanguageHelper
   String localeCode = await loadSelectedLanguage();
   Locale initialLocale =
       localeCode.isNotEmpty ? Locale(localeCode) : const Locale('th');

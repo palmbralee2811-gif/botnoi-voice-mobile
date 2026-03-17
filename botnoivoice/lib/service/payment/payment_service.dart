@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 // Define the state structure for the payment service
 class PaymentState {
@@ -51,6 +52,11 @@ class PaymentService extends StateNotifier<PaymentState> {
 
   // Public method to handle the payment process based on the platform
   Future<void> handlePurchase() async {
+    // Web platform not supported for purchases
+    if (kIsWeb) {
+      state = state.copyWith(errorMessage: 'Purchases not supported on web');
+      return;
+    }
     // Check current platform and call the appropriate payment method
     if (Platform.isAndroid) return await _androidPayment();
     if (Platform.isIOS) return await _iosPayment();
@@ -77,13 +83,14 @@ class PaymentService extends StateNotifier<PaymentState> {
         _logger.i("Purchase successful: $purchaseResult");
         // No error, clear any existing error message
         state = state.copyWith(errorMessage: null);
-        
+
         // NOTE: On success, we DO NOT set isLoading = false here.
         // We let the UI handle it after polling for updated points.
       } else {
         _logger.w("No available package found for offering: $productId");
         // Set error message if no package is found
-        state = state.copyWith(errorMessage: "No packages available for this offering.");
+        state = state.copyWith(
+            errorMessage: "No packages available for this offering.");
         // Stop loading on error
         state = state.copyWith(isLoading: false);
       }
@@ -113,7 +120,7 @@ class PaymentService extends StateNotifier<PaymentState> {
         _logger.i("Purchase successful: $purchaseResult");
         // No error, clear any existing error message
         state = state.copyWith(errorMessage: null);
-        
+
         // NOTE: On success, we DO NOT set isLoading = false here.
       } else {
         _logger.w("No product found for ID: $productId");
@@ -132,7 +139,7 @@ class PaymentService extends StateNotifier<PaymentState> {
     // Handle user cancellation specifically
     if (e is PlatformException &&
         (e.details?['readableErrorCode'] == 'PurchaseCancelledError' ||
-         e.details?['readableErrorCode'] == 'PURCHASE_CANCELLED')) {
+            e.details?['readableErrorCode'] == 'PURCHASE_CANCELLED')) {
       _logger.e("Purchase cancelled: $e");
       errorMessage = "Purchase Cancelled";
     } else {
@@ -146,6 +153,7 @@ class PaymentService extends StateNotifier<PaymentState> {
 }
 
 // Global provider to expose the PaymentService instance
-final paymentServiceProvider = StateNotifierProvider<PaymentService, PaymentState>(
+final paymentServiceProvider =
+    StateNotifierProvider<PaymentService, PaymentState>(
   (ref) => PaymentService(),
-); 
+);

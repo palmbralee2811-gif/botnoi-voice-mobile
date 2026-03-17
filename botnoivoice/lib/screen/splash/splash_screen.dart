@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,23 +12,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/splash_screen/background-320x684.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Center(
-          child: Image.asset(
-            'assets/images/splash_screen/splash-icon.png',
-            width: 100,
-            height: 113.3,
-          ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SvgPicture.asset(
+          'assets/images/logo/Group 289891.svg',
+          width: 100,
+          height: 113.3,
+          fit: BoxFit.contain,
         ),
       ),
     );
   }
 }
-

@@ -1,7 +1,7 @@
 name: botnoivoice
 description: "Botnoi Voice Mobile"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.2.8+65 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
+version: 1.2.8+82 # 1.0.0 คือ flutterVersionName # +1 คือ flutterVersionCode
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
@@ -13,50 +13,53 @@ dependencies:
   # User Interface
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
-  flutter_svg: ^2.0.10+1
-  gradient_borders: ^1.0.1
+  flutter_svg: ^2.0.14
+  gradient_borders: ^1.0.2
   flutter_screenutil: ^5.9.3
-  flutter_styled_toast: ^2.2.1
+  flutter_styled_toast: ^2.3.0
 
   # Statate Management
-  provider: ^6.1.2 
+  provider: ^6.1.5+1
 
   # Apple Login
   sign_in_with_apple: ^7.0.1
 
   # Google Login
-  firebase_core: ^3.3.0
-  firebase_auth: ^5.1.2
-  google_sign_in: ^6.2.1
+  firebase_core: ^4.5.0
+  firebase_auth: ^6.2.0
+  google_sign_in: ^6.2.2
 
   # LINE Login
   flutter_line_sdk: ^2.6.2
 
   # Audio Player
-  http: ^1.2.1
-  audioplayers: ^6.1.0
-  just_audio: ^0.9.39
+  http: ^1.6.0
+  audioplayers: ^6.4.0
+  just_audio: ^0.9.34
   
   # Language Switcher
   easy_localization: ^3.0.0
   shared_preferences: ^2.0.15
 
   # Download File, Android Permission, and Open File
-  dio: ^5.6.0
+  dio: ^5.0.0
   path_provider: ^2.1.3
   # open_file_plus: ^3.4.1+1
   path: ^1.9.0
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   flutter_downloader: ^1.11.8
+  
+  # Network Connectivity
+  connectivity_plus: ^7.0.0
 
   # Share File to Other App 
-  share_plus: ^10.1.2
+  share_plus: ^12.0.1
 
   # Debugging Logger
-  logger: ^2.4.0
+  logger: ^2.7.0
   
   # Check OS Device Version
-  device_info_plus: ^10.1.2
+  device_info_plus: ^11.3.0
 
   # Check Email for Register & Forgot Password
   email_validator: ^3.0.0
@@ -71,23 +74,23 @@ dependencies:
   intl: ^0.19.0
 
   #internet_checker
-  internet_connection_checker_plus: ^2.7.0
+  internet_connection_checker_plus: ^2.9.1+2
 
   # State Management
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: ^2.6.0
 
   # Upload Audio File from Device
-  file_picker: ^8.1.7
+  file_picker: ^10.3.10
   
   #sound manage
-  flutter_sound: ^9.28.0
+  flutter_sound: ^9.2.0
 
   # Router
-  go_router: ^14.8.1
+  go_router: ^15.1.2
 
   # Push Notification
-  firebase_messaging: ^15.2.4
-  flutter_local_notifications: ^18.0.1
+  firebase_messaging: ^16.1.2
+  flutter_local_notifications: ^19.5.0
 
   # Caching Image form URL
   cached_network_image: ^3.4.1
@@ -103,8 +106,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.13.1"
-  flutter_lints: ^4.0.0
+  flutter_launcher_icons: "^0.14.4"
+  flutter_lints: ^5.0.0
 
 flutter_launcher_icons:
   image_path_android: "assets/app_icon/icon-710x599-android.png"

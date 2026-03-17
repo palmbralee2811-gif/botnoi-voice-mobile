@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// Android Permission
 class AndroidPermission {
@@ -9,6 +10,12 @@ class AndroidPermission {
 
   Future<bool> requestAndroidPermission() async {
     try {
+      // Web platform doesn't need Android permissions
+      if (kIsWeb) {
+        _logger.d("Web platform, skipping Android permission");
+        return true;
+      }
+
       if (Platform.isAndroid) {
         // Get Android OS Version Info
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

@@ -80,10 +80,7 @@ class _AppBarBottomState extends ConsumerState<AppBarBottom> {
                   );
                   final audioBytes = response.bodyBytes;
                   if (audioBytes.isNotEmpty) {
-                    final mimeType =
-                        response.headers['content-type'] ?? 'audio/wav';
-                    await audioPlayer
-                        .play(BytesSource(audioBytes, mimeType: mimeType));
+                    await audioPlayer.play(BytesSource(audioBytes));
                     setState(() {
                       isPlaying = true;
                     });

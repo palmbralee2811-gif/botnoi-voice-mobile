@@ -713,7 +713,7 @@ class _HistoryDetailPageState extends State<HistoryDetailPage> {
                             String ext =
                                 videoUrl!.split('.').last.split('?').first;
                             if (ext.length > 4 || ext.isEmpty) ext = 'mp4';
-                            _downloadFile(videoUrl!,
+                            _downloadFile(videoUrl,
                                 "genskript_video_${DateTime.now().millisecondsSinceEpoch}.$ext");
                           },
                           style: ElevatedButton.styleFrom(

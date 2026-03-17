@@ -173,9 +173,8 @@ class _MarAdsSpeakerSelectionModalState
       if (response.statusCode == 200) {
         final audioBytes = response.bodyBytes;
         if (audioBytes.isNotEmpty) {
-          final mimeType = response.headers['content-type'] ?? 'audio/wav';
           await _audioPlayer.play(
-            BytesSource(audioBytes, mimeType: mimeType),
+            BytesSource(audioBytes),
           );
         }
       }

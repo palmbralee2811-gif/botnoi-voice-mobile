@@ -449,7 +449,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             item.audioUrl = resultUrl; // อัปเดต URL เพื่อให้ UI สลับเป็น Audio
             // หา index ของสไลด์นี้แล้วบันทึกลงแคช
             int realIndex = widget.items.indexOf(item);
-            if (realIndex != -1) _localAudioCache[realIndex] = resultUrl!;
+            if (realIndex != -1) _localAudioCache[realIndex] = resultUrl;
           });
           successCount++;
         } else {
@@ -803,9 +803,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 setState(() {
                   item.audioUrl = newAudio;
                   int realIndex = widget.items.indexOf(item);
-                  if (realIndex != -1) _localAudioCache[realIndex] = newAudio!;
+                  if (realIndex != -1) _localAudioCache[realIndex] = newAudio;
                 });
-                validAudioUrls.add(newAudio!);
+                validAudioUrls.add(newAudio);
               }
             }
           }

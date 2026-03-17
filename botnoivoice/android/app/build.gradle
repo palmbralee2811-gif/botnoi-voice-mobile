@@ -32,22 +32,22 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.mobile.botnoivoice"
     compileSdk = 35
-    ndkVersion = "28.0.12433566"
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = '17'
     }
 
     defaultConfig {
         applicationId = "com.mobile.botnoivoice"
-        minSdkVersion = 24 // Version 24 For Support LINE Login
-        targetSdkVersion = 35 // targetSdkVersion = flutter.targetSdkVersion
+        minSdkVersion = 24
+        targetSdkVersion = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -75,23 +75,22 @@ android {
     // }
     buildTypes {
         release {
-            // signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
-
-            // เปิดใช้งาน R8/ProGuard บอกให้ Gradle เปิดการย่อโค้ด (ใช้ R8)
-            minifyEnabled true
-            // ตัด resource ที่ไม่ได้ใช้ (ลดขนาด APK)
-            shrinkResources true
-            // บอกว่าจะใช้ไฟล์ rules ตัวไหน (ของ Android + ของคุณเอง)
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             
-            // ndk.debugSymbolLevel = "FULL"
             ndk {
                 debugSymbolLevel 'FULL'
             }
         }
+        
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
     }
-    buildToolsVersion '35.0.0'
+    buildToolsVersion '34.0.0'
 }
 
 flutter {
@@ -99,7 +98,7 @@ flutter {
 }
 
 dependencies {
-  implementation platform('com.google.firebase:firebase-bom:33.2.0')
+  implementation platform('com.google.firebase:firebase-bom:33.1.0')
   implementation 'com.android.billingclient:billing:6.0.1'
-  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }

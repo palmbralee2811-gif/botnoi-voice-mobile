@@ -35,12 +35,12 @@ Future<void> handleSpeakerTap({
       if (response.statusCode == 200) {
         final audioBytes = response.bodyBytes;
         if (audioBytes.isNotEmpty) {
-          final mimeType = response.headers['content-type'] ?? 'audio/wav';
-          await audioPlayer.play(BytesSource(audioBytes, mimeType: mimeType));
+          await audioPlayer.play(BytesSource(audioBytes));
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading audio: ${response.statusCode}')),
+          SnackBar(
+              content: Text('Error loading audio: ${response.statusCode}')),
         );
       }
     } catch (e) {

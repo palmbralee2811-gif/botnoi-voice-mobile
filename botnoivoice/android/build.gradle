@@ -1,53 +1,63 @@
-buildscript {
-    ext.kotlin_version = '1.9.0' // ใช้เวอร์ชัน Kotlin ที่ทันสมัย
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        // กำหนดเวอร์ชัน Android Gradle Plugin (AGP) ที่ทันสมัย
-        classpath 'com.android.tools.build:gradle:8.1.0'
-        // กำหนดเวอร์ชัน Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
+// For old Kotlin version variable
+ext.kotlin_version = '1.9.0'
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-        // *** สำคัญ: เพิ่มบรรทัดนี้เพื่อช่วยให้ปลั๊กอินเก่ารู้จัก Flutter ***
+        // Maven repository for Flutter plugins
         maven { url 'https://storage.googleapis.com/download.flutter.io' }
     }
+}
+
+// Configure all subprojects
+subprojects {
+    // Dependency version resolution for old support libraries
+    configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                        && !details.requested.name.contains('multidex')) {
+                details.useVersion "28.0.0"
+            }
+        }
+    }
     
-    // This code finds any subproject that is an Android library (a plugin)
-    // and enables buildConfig for it.
+    // Configure Android library plugins
     plugins.withId('com.android.library') {
         android {
+            // Set compileSdk if not already set
+            if (!android.compileSdk) {
+                compileSdk = 35
+            }
+            
             buildFeatures {
                 buildConfig = true
             }
         }
+        
+        // Add flutter extension for old plugins
+        if (!extensions.findByName('flutter')) {
+            extensions.create('flutter', FlutterExtensionCompat)
+        }
     }
+}
+
+// Compatibility extension for old Flutter plugins
+class FlutterExtensionCompat {
+    def source = null
+    def compileSdkVersion = 35
 }
 
 rootProject.buildDir = "../build"
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(":app")
-}
-subprojects {
-    project.configurations.all {
-        resolutionStrategy.eachDependency { details ->
-            if (details.requested.group == 'com.android.support'
-                        && !details.requested.name.contains('multidex') ) {
-                details.useVersion "28.0.0" // เปลี่ยนจาก 27.1.1 เป็น 28.0.0 หรือสูงกว่า
-            }
-        }
+    String rootDrive = rootProject.rootDir.absolutePath.substring(0, 1).toLowerCase()
+    String projectDrive = project.projectDir.absolutePath.substring(0, 1).toLowerCase()
+    if (rootDrive != projectDrive) {
+        project.buildDir = "${project.projectDir}/build"
+    } else {
+        project.buildDir = "${rootProject.buildDir}/${project.name}"
     }
+    project.evaluationDependsOn(":app")
 }
 
 tasks.register("clean", Delete) {
