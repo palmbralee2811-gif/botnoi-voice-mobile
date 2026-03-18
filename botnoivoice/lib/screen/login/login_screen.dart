@@ -48,9 +48,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
+          // Background Gradient
           Container(
-            width: 320.w,
-            height: 684.h,
+            width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -62,13 +63,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ),
           ),
+          // Background Image
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: Image.asset(
-              'assets/images/auth_screen/background.png',
-              width: 320.w,
+              'assets/images/auth_screen/bg_new.png',
+              width: MediaQuery.of(context).size.width,
               height: 684.h,
               fit: BoxFit.cover,
             ),
@@ -80,214 +82,233 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildForm(BuildContext context) {
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 80.h : 127.h),
-              _buildCenter(context),
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 75.h : 95.h),
-              EmailLoginButton(
-                onPressed: () {
-                  openEmailLogin(context);
-                },
-              ),
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 10.h : 20.h),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w,
-                    right:
-                        ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
-                child: LineLoginButton(
-                  onPressed: () {
-                    openLineLogin(ref);
-                  },
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: IntrinsicHeight(
+                child: Column(
+                  children: [
+                    // 1. ขยับตำแหน่งข้อความขึ้นไปอีกนิดนึง (ปรับจาก 340 เป็น 280)
+                    SizedBox(height: ResponsiveDesignOrientation.isLandscape ? 50.h : 260.h), 
+                    _buildCenter(context),
+                    
+                    // ใช้ Spacer เพื่อดันก้อนปุ่มด้านล่างให้อยู่เป็นกลุ่มเดียวกัน
+                    const Spacer(),
+
+                    // --- ปุ่ม Email (กล่องสีเทาดำ) ---
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52.h,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          openEmailLogin(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF262626), // สีดำเทาตามดีไซน์
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.mail_outline, color: Colors.white),
+                            SizedBox(width: 12.w),
+                            Text(
+                              'เข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่าน',
+                              style: GoogleFonts.prompt(
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+
+                    // --- แถวปุ่ม Social Login แบบไอคอนล้วน ---
+                    // --- แถวปุ่ม Social Login แบบไอคอนล้วน ---
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // 1. ปุ่ม LINE
+                        SizedBox(
+                          width: 68.w,
+                          height: 52.h,
+                          child: InkWell(
+                            onTap: () { openLineLogin(ref); },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF00B900),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Center(
+                                // ใส่รูปโลโก้ LINE ตรงนี้ (แก้ path ให้ตรงกับไฟล์ของคุณ)
+                                child: Image.asset(
+                                  'assets/images/icon/line.png', // ถ้าเป็น svg ให้เปลี่ยนเป็น SvgPicture.asset('...')
+                                  width: 28.w, 
+                                  height: 28.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 22.w),
+
+                        // 2. ปุ่ม Google
+                        SizedBox(
+                          width: 68.w,
+                          height: 52.h,
+                          child: InkWell(
+                            onTap: () { openGoogleLogin(ref); },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+                              ),
+                              child: Center(
+                                // ใส่รูปโลโก้ Google ตรงนี้
+                                child: Image.asset(
+                                  'assets/images/icon/google.png', 
+                                  width: 24.w,
+                                  height: 24.w,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // 3. ปุ่ม Apple (แสดงเฉพาะ iOS)
+                        if (Platform.isIOS) ...[
+                          SizedBox(width: 22.w),
+                          SizedBox(
+                            width: 68.w,
+                            height: 52.h,
+                            child: InkWell(
+                              onTap: () { openAppleLogin(ref); },
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  // ใส่รูปโลโก้ Apple ตรงนี้
+                                  child: Image.asset(
+                                    'assets/images/icon/apple.png', 
+                                    width: 24.w,
+                                    height: 24.w,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    SizedBox(height: 40.h),
+
+                    // เส้นคั่น "หรือ"
+                    Row(
+                      children: [
+                        const Expanded(child: Divider(color: Color(0xFFD1D1D1), thickness: 1)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Text(
+                            'หรือ',
+                            style: GoogleFonts.prompt(
+                              color: const Color(0xFF4B5563),
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const Expanded(child: Divider(color: Color(0xFFD1D1D1), thickness: 1)),
+                      ],
+                    ),
+                    SizedBox(height: 30.h),
+
+                    // ข้อความ "ยังไม่มีบัญชี ? สมัครเข้าใช้งาน"
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ยังไม่มีบัญชี ? ',
+                          style: GoogleFonts.prompt(
+                            color: const Color(0xFF6B7280),
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            // TODO: ใส่ฟังก์ชันเปิดหน้าสมัครสมาชิก
+                          },
+                          child: Text(
+                            'สมัครเข้าใช้งาน',
+                            style: GoogleFonts.prompt(
+                              color: const Color(0xFFC084FC),
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30.h), // ระยะขอบล่างสุด
+                  ],
                 ),
               ),
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 10.h : 20.h),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w,
-                    right:
-                        ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w),
-                child: GoogleLoginButton(
-                  onPressed: () {
-                    openGoogleLogin(ref);
-                  },
-                ),
-              ),
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 10.h : 20.h),
-              if (Platform.isIOS)
-                Padding(
-                  padding: EdgeInsets.only(
-                      left:
-                          ResponsiveDesignOrientation.isLandscape ? 65.w : 30.w,
-                      right: ResponsiveDesignOrientation.isLandscape
-                          ? 65.w
-                          : 30.w),
-                  child: AppleLoginButton(
-                    onPressed: () {
-                      openAppleLogin(ref);
-                    },
-                  ),
-                ),
-              SizedBox(
-                  height:
-                      ResponsiveDesignOrientation.isLandscape ? 70.h : 40.h),
-            ],
-          ),
-        ),
-      ],
+            ),
+          );
+        }
+      ),
     );
   }
 
   Widget _buildCenter(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SingleChildScrollView(
-          child: SizedBox(
-            width: 320.w,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: [
-                    SizedBox(width: 20.w),
-                    SvgPicture.asset(
-                      'assets/images/icon/play-on.svg',
-                      width: ResponsiveDesignOrientation.isLandscape
-                          ? 66.66.w
-                          : 33.33.w,
-                      height: ResponsiveDesignOrientation.isLandscape
-                          ? 66.66.h
-                          : 33.33.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 5.w, bottom: 10.h),
-                      child: GradientTextStyle(
-                        'welcome_message.line1'.tr(), //เปลี่ยนข้อความเป็นเสียง
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF9340FF),
-                            Color(0xFF34BDFA),
-                          ],
-                        ),
-                        style: GoogleFonts.prompt(
-                          fontWeight: FontWeight.w500,
-                          fontSize: ResponsiveDesignOrientation.isLandscape
-                              ? 15.sp
-                              : 20.sp,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                ResponsiveDesignOrientation.isLandscape
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 20.w,
-                              bottom: 13.h,
-                            ),
-                            child: GradientTextStyle(
-                              'welcome_message.line2'.tr(), // บอทน้อย
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF9340FF),
-                                  Color(0xFF34BDFA),
-                                ],
-                              ),
-                              style: GoogleFonts.prompt(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32.sp, // ขนาดตัวอักษรเมื่อเป็นแนวนอน
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 10.w), // ระยะห่างระหว่างข้อความ
-                            child: GradientTextStyle(
-                              'welcome_message.line3'.tr(), // ว้อยส์
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF9340FF),
-                                  Color(0xFF34BDFA),
-                                ],
-                              ),
-                              style: GoogleFonts.prompt(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32.sp, // ขนาดตัวอักษรเมื่อเป็นแนวนอน
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 20.w,
-                              bottom: 13.h,
-                            ),
-                            child: GradientTextStyle(
-                              'welcome_message.line2'.tr(), // บอทน้อย
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF9340FF),
-                                  Color(0xFF34BDFA),
-                                ],
-                              ),
-                              style: GoogleFonts.prompt(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 56.sp, // ขนาดตัวอักษรเมื่อเป็นแนวตั้ง
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20.w),
-                            child: GradientTextStyle(
-                              'welcome_message.line3'.tr(), // ว้อยส์
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF9340FF),
-                                  Color(0xFF34BDFA),
-                                ],
-                              ),
-                              style: GoogleFonts.prompt(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 48.sp, // ขนาดตัวอักษรเมื่อเป็นแนวตั้ง
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-              ],
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // ชิดซ้าย
+        children: [
+          Text(
+            'สร้างสรรค์ไปกับเสียง', 
+            textAlign: TextAlign.left,
+            style: GoogleFonts.prompt(
+              color: const Color(0xFF262626),
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-      ],
+          SizedBox(height: 4.h),
+          GradientTextStyle(
+            'บอทน้อยว้อยส์', 
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF3EC4FF),
+                Color(0xFF889DFC),
+                Color(0xFFEB85FC),
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            style: GoogleFonts.prompt(
+              fontWeight: FontWeight.w700,
+              fontSize: 45.sp,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
